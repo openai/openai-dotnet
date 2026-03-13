@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI.Internal;
 
@@ -20,22 +21,19 @@ namespace OpenAI
             Schema = schema;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseTextFormatConfigurationJsonSchema(ResponseTextFormatConfigurationType kind, in JsonPatch patch, string description, string name, InternalResponseFormatJsonSchemaSchema schema, bool? strict) : base(kind, patch)
+        internal ResponseTextFormatConfigurationJsonSchema(ResponseTextFormatConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string description, string name, InternalResponseFormatJsonSchemaSchema schema, bool? strict) : base(kind, additionalBinaryDataProperties)
         {
             Description = description;
             Name = name;
             Schema = schema;
             Strict = strict;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Description { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; }
 
-        internal InternalResponseFormatJsonSchemaSchema Schema { get; set; }
+        internal InternalResponseFormatJsonSchemaSchema Schema { get; }
 
         public bool? Strict { get; set; }
     }

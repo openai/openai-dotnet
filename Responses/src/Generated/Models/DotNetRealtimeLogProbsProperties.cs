@@ -27,7 +27,7 @@ namespace OpenAI
             // Plugin customization: ensure initialization of collections
             Token = token;
             Logprob = logprob;
-            Bytes = bytes ?? new OpenAI.Responses.ChangeTrackingList<int>();
+            Bytes = bytes ?? new ChangeTrackingList<int>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

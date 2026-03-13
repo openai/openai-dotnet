@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
@@ -11,31 +11,29 @@ namespace OpenAI
     [Experimental("OPENAI001")]
     public partial class FunctionTool : Tool
     {
-        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(ToolType.Function)
+        public FunctionTool(string name, BinaryData parameters, bool? strict) : base(ToolType.Function)
         {
-            Argument.AssertNotNull(functionName, nameof(functionName));
+            Argument.AssertNotNull(name, nameof(name));
 
-            FunctionName = functionName;
-            FunctionParameters = functionParameters;
-            StrictModeEnabled = strictModeEnabled;
+            Name = name;
+            Parameters = parameters;
+            Strict = strict;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FunctionTool(ToolType kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters, bool? strictModeEnabled) : base(kind, patch)
+        internal FunctionTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string description, BinaryData parameters, bool? strict) : base(kind, additionalBinaryDataProperties)
         {
-            FunctionName = functionName;
-            FunctionDescription = functionDescription;
-            FunctionParameters = functionParameters;
-            StrictModeEnabled = strictModeEnabled;
+            Name = name;
+            Description = description;
+            Parameters = parameters;
+            Strict = strict;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string FunctionName { get; set; }
+        public string Name { get; }
 
-        public string FunctionDescription { get; set; }
+        public string Description { get; set; }
 
-        public BinaryData FunctionParameters { get; set; }
+        public BinaryData Parameters { get; }
 
-        public bool? StrictModeEnabled { get; set; }
+        public bool? Strict { get; }
     }
 }

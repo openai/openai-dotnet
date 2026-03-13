@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -20,21 +19,18 @@ namespace OpenAI
             VectorStoreIds = vectorStoreIds.ToList();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FileSearchTool(ToolType kind, in JsonPatch patch, IList<string> vectorStoreIds, int? maxResultCount, RankingOptions rankingOptions, BinaryData filters) : base(kind, patch)
+        internal FileSearchTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> vectorStoreIds, int? maxNumResults, RankingOptions rankingOptions, BinaryData filters) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             VectorStoreIds = vectorStoreIds ?? new ChangeTrackingList<string>();
-            MaxResultCount = maxResultCount;
+            MaxNumResults = maxNumResults;
             RankingOptions = rankingOptions;
             Filters = filters;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> VectorStoreIds { get; }
 
-        public int? MaxResultCount { get; set; }
+        public int? MaxNumResults { get; set; }
 
         public RankingOptions RankingOptions { get; set; }
 

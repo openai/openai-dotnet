@@ -14,7 +14,7 @@ namespace OpenAI
     {
         public DotNetAssistantResponseFormatJsonSchema(DotNetAssistantResponseFormatJsonSchemaJsonSchema jsonSchema) : base(ResponseFormatType.JsonSchema)
         {
-            OpenAI.Responses.Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
+            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
             JsonSchema = jsonSchema;
         }

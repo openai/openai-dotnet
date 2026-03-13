@@ -22,7 +22,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, OpenAI.Responses.ModelSerializationExtensions.JsonDocumentOptions))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeDotNetChatResponseFormatJsonSchemaJsonSchema(document.RootElement, options);
                     }
@@ -37,7 +37,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAI.Responses.OpenAIResponsesContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(DotNetChatResponseFormatJsonSchemaJsonSchema)} does not support writing '{options.Format}' format.");
             }
@@ -63,7 +63,7 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(DotNetChatResponseFormatJsonSchemaJsonSchema)} does not support writing '{format}' format.");
             }
-            if (OpenAI.Responses.Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
@@ -73,7 +73,7 @@ namespace OpenAI
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (OpenAI.Responses.Optional.IsDefined(Schema) && _additionalBinaryDataProperties?.ContainsKey("schema") != true)
+            if (Optional.IsDefined(Schema) && _additionalBinaryDataProperties?.ContainsKey("schema") != true)
             {
                 writer.WritePropertyName("schema"u8);
 #if NET6_0_OR_GREATER
@@ -85,7 +85,7 @@ namespace OpenAI
                 }
 #endif
             }
-            if (OpenAI.Responses.Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
             {
                 writer.WritePropertyName("strict"u8);
                 writer.WriteBooleanValue(Strict.Value);
@@ -95,7 +95,7 @@ namespace OpenAI
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
-                    if (OpenAI.Responses.ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
                         continue;
                     }
@@ -135,7 +135,7 @@ namespace OpenAI
             string name = default;
             BinaryData schema = default;
             bool? strict = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>();
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("description"u8))

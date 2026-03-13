@@ -14,11 +14,11 @@ namespace OpenAI.Responses
         public static BinaryContent FromEnumerable<T>(IEnumerable<T> enumerable)
             where T : notnull
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartArray();
             foreach (var item in enumerable)
             {
-                content.JsonWriter.WriteObjectValue<T>(item, OpenAI.Responses.ModelSerializationExtensions.WireOptions);
+                content.JsonWriter.WriteObjectValue(item, ModelSerializationExtensions.WireOptions);
             }
             content.JsonWriter.WriteEndArray();
 
@@ -27,7 +27,7 @@ namespace OpenAI.Responses
 
         public static BinaryContent FromEnumerable(IEnumerable<BinaryData> enumerable)
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartArray();
             foreach (var item in enumerable)
             {
@@ -55,12 +55,12 @@ namespace OpenAI.Responses
         public static BinaryContent FromEnumerable<T>(ReadOnlySpan<T> span)
             where T : notnull
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartArray();
             int i = 0;
             for (; i < span.Length; i++)
             {
-                content.JsonWriter.WriteObjectValue<T>(span[i], OpenAI.Responses.ModelSerializationExtensions.WireOptions);
+                content.JsonWriter.WriteObjectValue(span[i], ModelSerializationExtensions.WireOptions);
             }
             content.JsonWriter.WriteEndArray();
 
@@ -70,12 +70,12 @@ namespace OpenAI.Responses
         public static BinaryContent FromDictionary<TValue>(IDictionary<string, TValue> dictionary)
             where TValue : notnull
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartObject();
             foreach (var item in dictionary)
             {
                 content.JsonWriter.WritePropertyName(item.Key);
-                content.JsonWriter.WriteObjectValue<TValue>(item.Value, OpenAI.Responses.ModelSerializationExtensions.WireOptions);
+                content.JsonWriter.WriteObjectValue(item.Value, ModelSerializationExtensions.WireOptions);
             }
             content.JsonWriter.WriteEndObject();
 
@@ -84,7 +84,7 @@ namespace OpenAI.Responses
 
         public static BinaryContent FromDictionary(IDictionary<string, BinaryData> dictionary)
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
             content.JsonWriter.WriteStartObject();
             foreach (var item in dictionary)
             {
@@ -112,14 +112,14 @@ namespace OpenAI.Responses
 
         public static BinaryContent FromObject(object value)
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
-            content.JsonWriter.WriteObjectValue<object>(value, OpenAI.Responses.ModelSerializationExtensions.WireOptions);
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
+            content.JsonWriter.WriteObjectValue<object>(value, ModelSerializationExtensions.WireOptions);
             return content;
         }
 
         public static BinaryContent FromObject(BinaryData value)
         {
-            OpenAI.Responses.Utf8JsonBinaryContent content = new OpenAI.Responses.Utf8JsonBinaryContent();
+            Utf8JsonBinaryContent content = new Utf8JsonBinaryContent();
 #if NET6_0_OR_GREATER
             content.JsonWriter.WriteRawValue(value);
 #else

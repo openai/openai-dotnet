@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI.Internal;
 
@@ -12,7 +12,7 @@ namespace OpenAI
 {
     public partial class ResponseTextFormatConfigurationJsonSchema : ResponseTextFormatConfiguration, IJsonModel<ResponseTextFormatConfigurationJsonSchema>
     {
-        internal ResponseTextFormatConfigurationJsonSchema() : this(ResponseTextFormatConfigurationType.JsonSchema, default, null, null, null, default)
+        internal ResponseTextFormatConfigurationJsonSchema() : this(ResponseTextFormatConfigurationType.JsonSchema, null, null, null, null, default)
         {
         }
 
@@ -24,7 +24,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseTextFormatConfigurationJsonSchema(document.RootElement, data, options);
+                        return DeserializeResponseTextFormatConfigurationJsonSchema(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ResponseTextFormatConfigurationJsonSchema)} does not support reading '{options.Format}' format.");
@@ -51,14 +51,6 @@ namespace OpenAI
 
         void IJsonModel<ResponseTextFormatConfigurationJsonSchema>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -72,30 +64,26 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(ResponseTextFormatConfigurationJsonSchema)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Description) && !Patch.Contains("$.description"u8))
+            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (!Patch.Contains("$.name"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (!Patch.Contains("$.schema"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("schema") != true)
             {
                 writer.WritePropertyName("schema"u8);
                 writer.WriteObjectValue(Schema, options);
             }
-            if (Optional.IsDefined(Strict) && !Patch.Contains("$.strict"u8))
+            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
             {
                 writer.WritePropertyName("strict"u8);
                 writer.WriteBooleanValue(Strict.Value);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ResponseTextFormatConfigurationJsonSchema IJsonModel<ResponseTextFormatConfigurationJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseTextFormatConfigurationJsonSchema)JsonModelCreateCore(ref reader, options);
@@ -108,19 +96,17 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(ResponseTextFormatConfigurationJsonSchema)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseTextFormatConfigurationJsonSchema(document.RootElement, null, options);
+            return DeserializeResponseTextFormatConfigurationJsonSchema(document.RootElement, options);
         }
 
-        internal static ResponseTextFormatConfigurationJsonSchema DeserializeResponseTextFormatConfigurationJsonSchema(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseTextFormatConfigurationJsonSchema DeserializeResponseTextFormatConfigurationJsonSchema(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseTextFormatConfigurationType kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string description = default;
             string name = default;
             InternalResponseFormatJsonSchemaSchema schema = default;
@@ -157,32 +143,16 @@ namespace OpenAI
                     strict = prop.Value.GetBoolean();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ResponseTextFormatConfigurationJsonSchema(
                 kind,
-                patch,
+                additionalBinaryDataProperties,
                 description,
                 name,
                 schema,
                 strict);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

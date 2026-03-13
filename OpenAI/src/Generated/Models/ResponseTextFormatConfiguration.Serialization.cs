@@ -23,7 +23,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseTextFormatConfiguration(document.RootElement, data, options);
+                        return DeserializeResponseTextFormatConfiguration(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ResponseTextFormatConfiguration)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI
 
         void IJsonModel<ResponseTextFormatConfiguration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -70,13 +62,31 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(ResponseTextFormatConfiguration)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ResponseTextFormatConfiguration IJsonModel<ResponseTextFormatConfiguration>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -89,10 +99,10 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(ResponseTextFormatConfiguration)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseTextFormatConfiguration(document.RootElement, null, options);
+            return DeserializeResponseTextFormatConfiguration(document.RootElement, options);
         }
 
-        internal static ResponseTextFormatConfiguration DeserializeResponseTextFormatConfiguration(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseTextFormatConfiguration DeserializeResponseTextFormatConfiguration(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -103,14 +113,14 @@ namespace OpenAI
                 switch (discriminator.GetString())
                 {
                     case "text":
-                        return ResponseTextFormatConfigurationText.DeserializeResponseTextFormatConfigurationText(element, data, options);
+                        return ResponseTextFormatConfigurationText.DeserializeResponseTextFormatConfigurationText(element, options);
                     case "json_object":
-                        return ResponseTextFormatConfigurationJsonObject.DeserializeResponseTextFormatConfigurationJsonObject(element, data, options);
+                        return ResponseTextFormatConfigurationJsonObject.DeserializeResponseTextFormatConfigurationJsonObject(element, options);
                     case "json_schema":
-                        return ResponseTextFormatConfigurationJsonSchema.DeserializeResponseTextFormatConfigurationJsonSchema(element, data, options);
+                        return ResponseTextFormatConfigurationJsonSchema.DeserializeResponseTextFormatConfigurationJsonSchema(element, options);
                 }
             }
-            return UnknownResponseTextFormatConfiguration.DeserializeUnknownResponseTextFormatConfiguration(element, data, options);
+            return UnknownResponseTextFormatConfiguration.DeserializeUnknownResponseTextFormatConfiguration(element, options);
         }
     }
 }

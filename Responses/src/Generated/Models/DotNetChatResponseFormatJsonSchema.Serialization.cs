@@ -22,7 +22,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, OpenAI.Responses.ModelSerializationExtensions.JsonDocumentOptions))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeDotNetChatResponseFormatJsonSchema(document.RootElement, options);
                     }
@@ -37,7 +37,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAI.Responses.OpenAIResponsesContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(DotNetChatResponseFormatJsonSchema)} does not support writing '{options.Format}' format.");
             }
@@ -67,7 +67,7 @@ namespace OpenAI
             if (_additionalBinaryDataProperties?.ContainsKey("json_schema") != true)
             {
                 writer.WritePropertyName("json_schema"u8);
-                writer.WriteObjectValue<DotNetChatResponseFormatJsonSchemaJsonSchema>(JsonSchema, options);
+                writer.WriteObjectValue(JsonSchema, options);
             }
         }
 
@@ -91,7 +91,7 @@ namespace OpenAI
                 return null;
             }
             ResponseFormatType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>();
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             DotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema = default;
             foreach (var prop in element.EnumerateObject())
             {

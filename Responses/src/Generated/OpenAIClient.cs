@@ -17,7 +17,7 @@ namespace OpenAI
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
-        private OpenAI.Responses _cachedResponses;
+        private ResponsesClient _cachedResponsesClient;
 
         protected OpenAIClient()
         {
@@ -33,8 +33,8 @@ namespace OpenAI
 
         public OpenAIClient(Uri endpoint, ApiKeyCredential credential, OpenAIClientOptions options)
         {
-            OpenAI.Responses.Argument.AssertNotNull(endpoint, nameof(endpoint));
-            OpenAI.Responses.Argument.AssertNotNull(credential, nameof(credential));
+            Argument.AssertNotNull(endpoint, nameof(endpoint));
+            Argument.AssertNotNull(credential, nameof(credential));
 
             options ??= new OpenAIClientOptions();
 
@@ -46,9 +46,9 @@ namespace OpenAI
         public ClientPipeline Pipeline { get; }
 
         [Experimental("OPENAI001")]
-        public virtual OpenAI.Responses GetResponsesClient()
+        public virtual ResponsesClient GetResponsesClient()
         {
-            return Volatile.Read(ref _cachedResponses) ?? Interlocked.CompareExchange(ref _cachedResponses, new OpenAI.Responses(Pipeline, _endpoint), null) ?? _cachedResponses;
+            return Volatile.Read(ref _cachedResponsesClient) ?? Interlocked.CompareExchange(ref _cachedResponsesClient, new ResponsesClient(Pipeline, _endpoint), null) ?? _cachedResponsesClient;
         }
     }
 }

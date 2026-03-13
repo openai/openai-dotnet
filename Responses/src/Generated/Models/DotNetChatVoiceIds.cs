@@ -27,7 +27,7 @@ namespace OpenAI
 
         public DotNetChatVoiceIds(string value)
         {
-            OpenAI.Responses.Argument.AssertNotNull(value, nameof(value));
+            Argument.AssertNotNull(value, nameof(value));
 
             _value = value;
         }

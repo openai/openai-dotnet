@@ -4,14 +4,14 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI
 {
     public partial class CodeInterpreterTool : Tool, IJsonModel<CodeInterpreterTool>
     {
-        internal CodeInterpreterTool() : this(ToolType.CodeInterpreter, default, null)
+        internal CodeInterpreterTool() : this(ToolType.CodeInterpreter, null, null)
         {
         }
 
@@ -23,7 +23,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCodeInterpreterTool(document.RootElement, data, options);
+                        return DeserializeCodeInterpreterTool(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI
 
         void IJsonModel<CodeInterpreterTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,8 +63,7 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.container"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("container") != true)
             {
                 writer.WritePropertyName("container"u8);
 #if NET6_0_OR_GREATER
@@ -84,9 +75,6 @@ namespace OpenAI
                 }
 #endif
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         CodeInterpreterTool IJsonModel<CodeInterpreterTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterTool)JsonModelCreateCore(ref reader, options);
@@ -99,19 +87,17 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterTool(document.RootElement, null, options);
+            return DeserializeCodeInterpreterTool(document.RootElement, options);
         }
 
-        internal static CodeInterpreterTool DeserializeCodeInterpreterTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static CodeInterpreterTool DeserializeCodeInterpreterTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ToolType kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             BinaryData container = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -125,9 +111,10 @@ namespace OpenAI
                     container = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new CodeInterpreterTool(kind, patch, container);
+            return new CodeInterpreterTool(kind, additionalBinaryDataProperties, container);
         }
     }
 }

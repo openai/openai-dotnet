@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
@@ -10,12 +11,11 @@ namespace OpenAI
     [Experimental("OPENAI001")]
     public partial class ImageGenTool : Tool
     {
-        public ImageGenTool() : this(ToolType.ImageGeneration, default, default, default, default, default, default, default, default, default, null, default)
+        public ImageGenTool() : this(ToolType.ImageGeneration, null, default, default, default, default, default, default, default, default, null, default)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenTool(ToolType kind, in JsonPatch patch, ImageGenToolModel? model, ImageGenToolQuality? quality, ImageGenToolSize? size, ImageGenToolOutputFormat? outputFormat, int? outputCompression, ImageGenToolModeration? moderation, ImageGenToolBackground? background, ImageGenToolInputFidelity? inputFidelity, ImageGenToolInputImageMask inputImageMask, int? partialImages) : base(kind, patch)
+        internal ImageGenTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, ImageGenToolModel? model, ImageGenToolQuality? quality, ImageGenToolSize? size, ImageGenToolOutputFormat? outputFormat, int? outputCompression, ImageGenToolModeration? moderation, ImageGenToolBackground? background, ImageGenToolInputFidelity? inputFidelity, ImageGenToolInputImageMask inputImageMask, int? partialImages) : base(kind, additionalBinaryDataProperties)
         {
             Model = model;
             Quality = quality;
@@ -27,9 +27,7 @@ namespace OpenAI
             InputFidelity = inputFidelity;
             InputImageMask = inputImageMask;
             PartialImages = partialImages;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ImageGenToolModel? Model { get; set; }
 

@@ -16,7 +16,7 @@ namespace OpenAI
 
         public DotNetChatResponseFormatJsonSchemaJsonSchema(string name)
         {
-            OpenAI.Responses.Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(name, nameof(name));
 
             Name = name;
         }

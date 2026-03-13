@@ -74,7 +74,7 @@ namespace OpenAI.Responses
 
             return format switch
             {
-                "U" => OpenAI.Responses.TypeFormatters.FromBase64UrlString(element.GetRequiredString()),
+                "U" => TypeFormatters.FromBase64UrlString(element.GetRequiredString()),
                 "D" => element.GetBytesFromBase64(),
                 _ => throw new ArgumentException($"Format is not supported: '{format}'", nameof(format))
             };
@@ -83,10 +83,10 @@ namespace OpenAI.Responses
         public static DateTimeOffset GetDateTimeOffset(this JsonElement element, string format) => format switch
         {
             "U" when element.ValueKind == JsonValueKind.Number => DateTimeOffset.FromUnixTimeSeconds(element.GetInt64()),
-            _ => OpenAI.Responses.TypeFormatters.ParseDateTimeOffset(element.GetString(), format)
+            _ => TypeFormatters.ParseDateTimeOffset(element.GetString(), format)
         };
 
-        public static TimeSpan GetTimeSpan(this JsonElement element, string format) => OpenAI.Responses.TypeFormatters.ParseTimeSpan(element.GetString(), format);
+        public static TimeSpan GetTimeSpan(this JsonElement element, string format) => TypeFormatters.ParseTimeSpan(element.GetString(), format);
 
         public static char GetChar(this JsonElement element)
         {
@@ -123,17 +123,17 @@ namespace OpenAI.Responses
 
         public static void WriteStringValue(this Utf8JsonWriter writer, DateTimeOffset value, string format)
         {
-            writer.WriteStringValue(OpenAI.Responses.TypeFormatters.ToString(value, format));
+            writer.WriteStringValue(TypeFormatters.ToString(value, format));
         }
 
         public static void WriteStringValue(this Utf8JsonWriter writer, DateTime value, string format)
         {
-            writer.WriteStringValue(OpenAI.Responses.TypeFormatters.ToString(value, format));
+            writer.WriteStringValue(TypeFormatters.ToString(value, format));
         }
 
         public static void WriteStringValue(this Utf8JsonWriter writer, TimeSpan value, string format)
         {
-            writer.WriteStringValue(OpenAI.Responses.TypeFormatters.ToString(value, format));
+            writer.WriteStringValue(TypeFormatters.ToString(value, format));
         }
 
         public static void WriteStringValue(this Utf8JsonWriter writer, char value)
@@ -151,7 +151,7 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "U":
-                    writer.WriteStringValue(OpenAI.Responses.TypeFormatters.ToBase64UrlString(value));
+                    writer.WriteStringValue(TypeFormatters.ToBase64UrlString(value));
                     break;
                 case "D":
                     writer.WriteBase64StringValue(value);
@@ -178,7 +178,7 @@ namespace OpenAI.Responses
                     writer.WriteNullValue();
                     break;
                 case IJsonModel<T> jsonModel:
-                    jsonModel.Write(writer, options ?? OpenAI.Responses.ModelSerializationExtensions.WireOptions);
+                    jsonModel.Write(writer, options ?? WireOptions);
                     break;
                 case byte[] bytes:
                     writer.WriteBase64StringValue(bytes);

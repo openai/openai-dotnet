@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI
@@ -23,7 +23,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeComparisonFilter(document.RootElement, data, options);
+                        return DeserializeComparisonFilter(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ComparisonFilter)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI
 
         void IJsonModel<ComparisonFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -70,18 +62,17 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(ComparisonFilter)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-            if (!Patch.Contains("$.key"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("key") != true)
             {
                 writer.WritePropertyName("key"u8);
                 writer.WriteStringValue(Key);
             }
-            if (!Patch.Contains("$.value"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("value") != true)
             {
                 writer.WritePropertyName("value"u8);
 #if NET6_0_OR_GREATER
@@ -93,9 +84,26 @@ namespace OpenAI
                 }
 #endif
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         ComparisonFilter IJsonModel<ComparisonFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -108,10 +116,10 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(ComparisonFilter)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeComparisonFilter(document.RootElement, null, options);
+            return DeserializeComparisonFilter(document.RootElement, options);
         }
 
-        internal static ComparisonFilter DeserializeComparisonFilter(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ComparisonFilter DeserializeComparisonFilter(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -120,9 +128,7 @@ namespace OpenAI
             ComparisonFilterType kind = default;
             string key = default;
             BinaryData value = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -140,9 +146,10 @@ namespace OpenAI
                     value = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ComparisonFilter(kind, key, value, patch);
+            return new ComparisonFilter(kind, key, value, additionalBinaryDataProperties);
         }
     }
 }

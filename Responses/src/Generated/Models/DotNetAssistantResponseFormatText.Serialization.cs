@@ -18,7 +18,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, OpenAI.Responses.ModelSerializationExtensions.JsonDocumentOptions))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeDotNetAssistantResponseFormatText(document.RootElement, options);
                     }
@@ -33,7 +33,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAI.Responses.OpenAIResponsesContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(DotNetAssistantResponseFormatText)} does not support writing '{options.Format}' format.");
             }
@@ -82,7 +82,7 @@ namespace OpenAI
                 return null;
             }
             ResponseFormatType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>();
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))

@@ -23,7 +23,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeTool(document.RootElement, data, options);
+                        return DeserializeTool(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(Tool)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI
 
         void IJsonModel<Tool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -70,13 +62,31 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(Tool)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         Tool IJsonModel<Tool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -89,10 +99,10 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(Tool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeTool(document.RootElement, null, options);
+            return DeserializeTool(document.RootElement, options);
         }
 
-        internal static Tool DeserializeTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static Tool DeserializeTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -103,26 +113,26 @@ namespace OpenAI
                 switch (discriminator.GetString())
                 {
                     case "function":
-                        return FunctionTool.DeserializeFunctionTool(element, data, options);
+                        return FunctionTool.DeserializeFunctionTool(element, options);
                     case "file_search":
-                        return FileSearchTool.DeserializeFileSearchTool(element, data, options);
+                        return FileSearchTool.DeserializeFileSearchTool(element, options);
                     case "computer_use_preview":
-                        return ComputerUsePreviewTool.DeserializeComputerUsePreviewTool(element, data, options);
+                        return ComputerUsePreviewTool.DeserializeComputerUsePreviewTool(element, options);
                     case "web_search_preview":
-                        return WebSearchPreviewTool.DeserializeWebSearchPreviewTool(element, data, options);
+                        return WebSearchPreviewTool.DeserializeWebSearchPreviewTool(element, options);
                     case "web_search":
-                        return WebSearchTool.DeserializeWebSearchTool(element, data, options);
+                        return WebSearchTool.DeserializeWebSearchTool(element, options);
                     case "code_interpreter":
-                        return CodeInterpreterTool.DeserializeCodeInterpreterTool(element, data, options);
+                        return CodeInterpreterTool.DeserializeCodeInterpreterTool(element, options);
                     case "image_generation":
-                        return ImageGenTool.DeserializeImageGenTool(element, data, options);
+                        return ImageGenTool.DeserializeImageGenTool(element, options);
                     case "local_shell":
-                        return LocalShellTool.DeserializeLocalShellTool(element, data, options);
+                        return LocalShellTool.DeserializeLocalShellTool(element, options);
                     case "mcp":
-                        return MCPTool.DeserializeMCPTool(element, data, options);
+                        return MCPTool.DeserializeMCPTool(element, options);
                 }
             }
-            return UnknownTool.DeserializeUnknownTool(element, data, options);
+            return UnknownTool.DeserializeUnknownTool(element, options);
         }
     }
 }

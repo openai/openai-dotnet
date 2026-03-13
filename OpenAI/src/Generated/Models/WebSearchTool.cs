@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
@@ -10,19 +11,16 @@ namespace OpenAI
     [Experimental("OPENAI001")]
     public partial class WebSearchTool : Tool
     {
-        public WebSearchTool() : this(ToolType.WebSearch, default, null, null, default)
+        public WebSearchTool() : this(ToolType.WebSearch, null, null, null, default)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchTool(ToolType kind, in JsonPatch patch, WebSearchToolFilters filters, Location userLocation, SearchContextSize? searchContextSize) : base(kind, patch)
+        internal WebSearchTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, WebSearchToolFilters filters, Location userLocation, SearchContextSize? searchContextSize) : base(kind, additionalBinaryDataProperties)
         {
             Filters = filters;
             UserLocation = userLocation;
             SearchContextSize = searchContextSize;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public WebSearchToolFilters Filters { get; set; }
 

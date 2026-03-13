@@ -21,7 +21,7 @@ namespace OpenAI
         internal ResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties)
         {
             // Plugin customization: ensure initialization of collections
-            _additionalBinaryDataProperties = additionalProperties ?? new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>();
+            _additionalBinaryDataProperties = additionalProperties ?? new ChangeTrackingDictionary<string, BinaryData>();
         }
 
         public IDictionary<string, BinaryData> AdditionalProperties => _additionalBinaryDataProperties;

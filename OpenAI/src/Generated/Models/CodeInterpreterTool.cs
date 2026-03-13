@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
@@ -18,13 +18,11 @@ namespace OpenAI
             Container = container;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CodeInterpreterTool(ToolType kind, in JsonPatch patch, BinaryData container) : base(kind, patch)
+        internal CodeInterpreterTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, BinaryData container) : base(kind, additionalBinaryDataProperties)
         {
             Container = container;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public BinaryData Container { get; set; }
+        public BinaryData Container { get; }
     }
 }

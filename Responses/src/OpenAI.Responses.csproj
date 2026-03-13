@@ -4,6 +4,7 @@
     <AssemblyTitle>OpenAI Responses client library for .NET</AssemblyTitle>
 
     <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
+    <DefineConstants>$(DefineConstants);OPENAI_RESPONSES</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,7 +38,7 @@
   <ItemGroup>
     <Compile Include="..\..\src\Utility\*.cs" />
     <Compile Include="..\..\src\Utility\CodeGen\*.cs" />
-    <Compile Include="..\..\src\Utility\Telemetry\*.cs" />
+    <Compile Include="..\..\src\Utility\Telemetry\TelemetryDetails.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">

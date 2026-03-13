@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
@@ -17,19 +18,17 @@ namespace OpenAI
             DisplayHeight = displayHeight;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerUsePreviewTool(ToolType kind, in JsonPatch patch, ComputerUsePreviewToolEnvironment environment, int displayWidth, int displayHeight) : base(kind, patch)
+        internal ComputerUsePreviewTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerUsePreviewToolEnvironment environment, int displayWidth, int displayHeight) : base(kind, additionalBinaryDataProperties)
         {
             Environment = environment;
             DisplayWidth = displayWidth;
             DisplayHeight = displayHeight;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public ComputerUsePreviewToolEnvironment Environment { get; set; }
+        public ComputerUsePreviewToolEnvironment Environment { get; }
 
-        public int DisplayWidth { get; set; }
+        public int DisplayWidth { get; }
 
-        public int DisplayHeight { get; set; }
+        public int DisplayHeight { get; }
     }
 }

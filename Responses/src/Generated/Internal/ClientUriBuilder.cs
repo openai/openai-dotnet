@@ -47,28 +47,28 @@ namespace OpenAI.Responses
             _pathLength = _pathLength + value.Length;
         }
 
-        public void AppendPath(bool value, bool escape = false) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendPath(bool value, bool escape = false) => AppendPath(TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendPath(float value, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendPath(float value, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendPath(double value, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendPath(double value, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendPath(int value, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendPath(int value, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendPath(byte[] value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value, format), escape);
+        public void AppendPath(byte[] value, SerializationFormat format = SerializationFormat.Default, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value, format), escape);
 
-        public void AppendPath(DateTimeOffset value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value, format), escape);
+        public void AppendPath(DateTimeOffset value, SerializationFormat format = SerializationFormat.Default, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value, format), escape);
 
-        public void AppendPath(TimeSpan value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value, format), escape);
+        public void AppendPath(TimeSpan value, SerializationFormat format = SerializationFormat.Default, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value, format), escape);
 
-        public void AppendPath(Guid value, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendPath(Guid value, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendPath(int value, bool escape = true) => AppendPath(OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendPath(int value, bool escape = true) => AppendPath(TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendPathDelimited<T>(IEnumerable<T> value, string delimiter, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true)
+        public void AppendPathDelimited<T>(IEnumerable<T> value, string delimiter, SerializationFormat format = SerializationFormat.Default, bool escape = true)
         {
             delimiter ??= ",";
-            IEnumerable<string> stringValues = value.Select(v => OpenAI.Responses.TypeFormatters.ConvertToString(v, format));
+            IEnumerable<string> stringValues = value.Select(v => TypeFormatters.ConvertToString(v, format));
             AppendPath(string.Join(delimiter, stringValues), escape);
         }
 
@@ -91,32 +91,32 @@ namespace OpenAI.Responses
             PathAndQuery.Append(value);
         }
 
-        public void AppendQuery(string name, bool value, bool escape = false) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, bool value, bool escape = false) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, float value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, float value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, DateTimeOffset value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value, format), escape);
+        public void AppendQuery(string name, DateTimeOffset value, SerializationFormat format = SerializationFormat.Default, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value, format), escape);
 
-        public void AppendQuery(string name, TimeSpan value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value, format), escape);
+        public void AppendQuery(string name, TimeSpan value, SerializationFormat format = SerializationFormat.Default, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value, format), escape);
 
-        public void AppendQuery(string name, double value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, double value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, decimal value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, decimal value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, int value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, int value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, int value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, int value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, TimeSpan value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, TimeSpan value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQuery(string name, byte[] value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value, format), escape);
+        public void AppendQuery(string name, byte[] value, SerializationFormat format = SerializationFormat.Default, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value, format), escape);
 
-        public void AppendQuery(string name, Guid value, bool escape = true) => AppendQuery(name, OpenAI.Responses.TypeFormatters.ConvertToString(value), escape);
+        public void AppendQuery(string name, Guid value, bool escape = true) => AppendQuery(name, TypeFormatters.ConvertToString(value), escape);
 
-        public void AppendQueryDelimited<T>(string name, IEnumerable<T> value, string delimiter, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default, bool escape = true)
+        public void AppendQueryDelimited<T>(string name, IEnumerable<T> value, string delimiter, SerializationFormat format = SerializationFormat.Default, bool escape = true)
         {
             delimiter ??= ",";
-            IEnumerable<string> stringValues = value.Select(v => OpenAI.Responses.TypeFormatters.ConvertToString(v, format));
+            IEnumerable<string> stringValues = value.Select(v => TypeFormatters.ConvertToString(v, format));
             AppendQuery(name, string.Join(delimiter, stringValues), escape);
         }
 
