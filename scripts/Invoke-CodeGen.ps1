@@ -317,7 +317,7 @@ try {
 
     Set-Location $specificationFolderPath
     Invoke-ScriptWithLogging { npx tsp compile ./main_openai.tsp --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI" --stats --trace @typespec/http-client-csharp }
-    # Invoke-ScriptWithLogging { npx tsp compile ./main_responses.tsp --options "@open-ai/plugin.emitter-output-dir={project-root}/../Responses" --options "@open-ai/plugin.package-name=OpenAI.Responses" --stats --trace @typespec/http-client-csharp }
+    Invoke-ScriptWithLogging { npx tsp compile ./main_responses.tsp --options "@open-ai/plugin.emitter-output-dir={project-root}/../Responses" --options "@open-ai/plugin.package-name=OpenAI.Responses" --stats --trace @typespec/http-client-csharp }
 }
 finally {
     Pop-Location

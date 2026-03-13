@@ -2,41 +2,37 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI
 {
     [Experimental("OPENAI001")]
     public partial class MCPToolFilter
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public MCPToolFilter() : this(null, default, default)
+        public MCPToolFilter() : this(null, default, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal MCPToolFilter(IList<string> toolNames, bool? isReadOnly, in JsonPatch patch)
+        internal MCPToolFilter(IList<string> toolNames, bool? readOnly, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ToolNames = toolNames ?? new ChangeTrackingList<string>();
-            IsReadOnly = isReadOnly;
-            _patch = patch;
+            ReadOnly = readOnly;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
 
         public IList<string> ToolNames { get; }
 
-        public bool? IsReadOnly { get; set; }
+        public bool? ReadOnly { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

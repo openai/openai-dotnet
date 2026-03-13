@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace OpenAI
@@ -20,7 +19,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMCPToolFilter(document.RootElement, data, options);
+                        return DeserializeMCPToolFilter(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(MCPToolFilter)} does not support reading '{options.Format}' format.");
@@ -47,14 +46,6 @@ namespace OpenAI
 
         void IJsonModel<MCPToolFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -67,43 +58,46 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(MCPToolFilter)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$.tool_names"u8))
-            {
-                if (!Patch.IsRemoved("$.tool_names"u8))
-                {
-                    writer.WritePropertyName("tool_names"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tool_names"u8));
-                }
-            }
-            else if (Optional.IsCollectionDefined(ToolNames))
+            if (Optional.IsCollectionDefined(ToolNames) && _additionalBinaryDataProperties?.ContainsKey("tool_names") != true)
             {
                 writer.WritePropertyName("tool_names"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < ToolNames.Count; i++)
+                foreach (string item in ToolNames)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_names[{i}]")))
-                    {
-                        continue;
-                    }
-                    if (ToolNames[i] == null)
+                    if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(ToolNames[i]);
+                    writer.WriteStringValue(item);
                 }
-                Patch.WriteTo(writer, "$.tool_names"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(IsReadOnly) && !Patch.Contains("$.read_only"u8))
+            if (Optional.IsDefined(ReadOnly) && _additionalBinaryDataProperties?.ContainsKey("read_only") != true)
             {
                 writer.WritePropertyName("read_only"u8);
-                writer.WriteBooleanValue(IsReadOnly.Value);
+                writer.WriteBooleanValue(ReadOnly.Value);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         MCPToolFilter IJsonModel<MCPToolFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -116,20 +110,18 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(MCPToolFilter)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMCPToolFilter(document.RootElement, null, options);
+            return DeserializeMCPToolFilter(document.RootElement, options);
         }
 
-        internal static MCPToolFilter DeserializeMCPToolFilter(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static MCPToolFilter DeserializeMCPToolFilter(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             IList<string> toolNames = default;
-            bool? isReadOnly = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            bool? readOnly = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("tool_names"u8))
@@ -159,12 +151,13 @@ namespace OpenAI
                     {
                         continue;
                     }
-                    isReadOnly = prop.Value.GetBoolean();
+                    readOnly = prop.Value.GetBoolean();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new MCPToolFilter(toolNames ?? new ChangeTrackingList<string>(), isReadOnly, patch);
+            return new MCPToolFilter(toolNames ?? new ChangeTrackingList<string>(), readOnly, additionalBinaryDataProperties);
         }
     }
 }

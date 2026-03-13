@@ -187,7 +187,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    responseFormat = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    responseFormat = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))

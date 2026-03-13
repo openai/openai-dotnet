@@ -18,7 +18,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, OpenAI.Responses.ModelSerializationExtensions.JsonDocumentOptions))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeResponseFormatJsonSchemaSchema(document.RootElement, data, options);
                     }
@@ -33,7 +33,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAI.Responses.OpenAIResponsesContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(ResponseFormatJsonSchemaSchema)} does not support writing '{options.Format}' format.");
             }
@@ -92,7 +92,7 @@ namespace OpenAI
             {
                 return null;
             }
-            IDictionary<string, BinaryData> additionalProperties = new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>();
+            IDictionary<string, BinaryData> additionalProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 additionalProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));

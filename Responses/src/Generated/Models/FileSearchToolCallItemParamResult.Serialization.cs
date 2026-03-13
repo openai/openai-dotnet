@@ -19,7 +19,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, OpenAI.Responses.ModelSerializationExtensions.JsonDocumentOptions))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeFileSearchToolCallItemParamResult(document.RootElement, data, options);
                     }
@@ -34,7 +34,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAI.Responses.OpenAIResponsesContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(FileSearchToolCallItemParamResult)} does not support writing '{options.Format}' format.");
             }
@@ -69,22 +69,22 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(FileSearchToolCallItemParamResult)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (OpenAI.Responses.Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
+            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
             }
-            if (OpenAI.Responses.Optional.IsDefined(Text) && !Patch.Contains("$.text"u8))
+            if (Optional.IsDefined(Text) && !Patch.Contains("$.text"u8))
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (OpenAI.Responses.Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
+            if (Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
             {
                 writer.WritePropertyName("filename"u8);
                 writer.WriteStringValue(Filename);
             }
-            if (OpenAI.Responses.Optional.IsCollectionDefined(Attributes) && !Patch.Contains("$.attributes"u8))
+            if (Optional.IsCollectionDefined(Attributes) && !Patch.Contains("$.attributes"u8))
             {
                 writer.WritePropertyName("attributes"u8);
                 writer.WriteStartObject();
@@ -121,7 +121,7 @@ namespace OpenAI
                 Patch.WriteTo(writer, "$.attributes"u8);
                 writer.WriteEndObject();
             }
-            if (OpenAI.Responses.Optional.IsDefined(Score) && !Patch.Contains("$.score"u8))
+            if (Optional.IsDefined(Score) && !Patch.Contains("$.score"u8))
             {
                 writer.WritePropertyName("score"u8);
                 writer.WriteNumberValue(Score.Value);
@@ -211,7 +211,7 @@ namespace OpenAI
                 fileId,
                 text,
                 filename,
-                attributes ?? new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>(),
+                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 score,
                 patch);
         }

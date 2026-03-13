@@ -29,7 +29,7 @@ namespace OpenAI
             FileId = fileId;
             Text = text;
             Filename = filename;
-            Attributes = attributes ?? new OpenAI.Responses.ChangeTrackingDictionary<string, BinaryData>();
+            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             Score = score;
             _patch = patch;
         }

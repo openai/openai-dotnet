@@ -87,7 +87,7 @@ namespace OpenAI.Responses
 
         public static string CheckNotNullOrEmpty(string value, string name)
         {
-            OpenAI.Responses.Argument.AssertNotNullOrEmpty(value, name);
+            AssertNotNullOrEmpty(value, name);
             return value;
         }
     }

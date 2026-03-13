@@ -3,18 +3,15 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
 
 namespace OpenAI
 {
     [Experimental("OPENAI001")]
     public partial class ComparisonFilter
     {
-        [Experimental("SCME0001")]
-        private JsonPatch _patch;
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
         public ComparisonFilter(ComparisonFilterType kind, string key, BinaryData value)
         {
@@ -26,25 +23,24 @@ namespace OpenAI
             Value = value;
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComparisonFilter(ComparisonFilterType kind, string key, BinaryData value, in JsonPatch patch)
+        internal ComparisonFilter(ComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Key = key;
             Value = value;
-            _patch = patch;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        [JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        public ComparisonFilterType Kind { get; }
 
-        public ComparisonFilterType Kind { get; set; }
+        public string Key { get; }
 
-        public string Key { get; set; }
+        public BinaryData Value { get; }
 
-        public BinaryData Value { get; set; }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, OpenAI.Responses.ModelSerializationExtensions.JsonDocumentOptions))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeDotNetChatResponseFormat(document.RootElement, options);
                     }
@@ -37,7 +37,7 @@ namespace OpenAI
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAI.Responses.OpenAIResponsesContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(DotNetChatResponseFormat)} does not support writing '{options.Format}' format.");
             }
@@ -73,7 +73,7 @@ namespace OpenAI
             {
                 foreach (var item in _additionalBinaryDataProperties)
                 {
-                    if (OpenAI.Responses.ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
                     {
                         continue;
                     }

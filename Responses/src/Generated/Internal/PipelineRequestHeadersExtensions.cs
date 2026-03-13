@@ -12,13 +12,13 @@ namespace OpenAI.Responses
     {
         public static void SetDelimited<T>(this PipelineRequestHeaders headers, string name, IEnumerable<T> value, string delimiter)
         {
-            IEnumerable<string> stringValues = value.Select(v => OpenAI.Responses.TypeFormatters.ConvertToString(v));
+            IEnumerable<string> stringValues = value.Select(v => TypeFormatters.ConvertToString(v));
             headers.Set(name, string.Join(delimiter, stringValues));
         }
 
-        public static void SetDelimited<T>(this PipelineRequestHeaders headers, string name, IEnumerable<T> value, string delimiter, OpenAI.Responses.SerializationFormat format)
+        public static void SetDelimited<T>(this PipelineRequestHeaders headers, string name, IEnumerable<T> value, string delimiter, SerializationFormat format)
         {
-            IEnumerable<string> stringValues = value.Select(v => OpenAI.Responses.TypeFormatters.ConvertToString(v, format));
+            IEnumerable<string> stringValues = value.Select(v => TypeFormatters.ConvertToString(v, format));
             headers.Set(name, string.Join(delimiter, stringValues));
         }
 

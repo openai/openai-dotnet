@@ -4,14 +4,14 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
+using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI
 {
     public partial class ComputerUsePreviewTool : Tool, IJsonModel<ComputerUsePreviewTool>
     {
-        internal ComputerUsePreviewTool() : this(ToolType.ComputerUsePreview, default, default, default, default)
+        internal ComputerUsePreviewTool() : this(ToolType.ComputerUsePreview, null, default, default, default)
         {
         }
 
@@ -23,7 +23,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeComputerUsePreviewTool(document.RootElement, data, options);
+                        return DeserializeComputerUsePreviewTool(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ComputerUsePreviewTool)} does not support reading '{options.Format}' format.");
@@ -50,14 +50,6 @@ namespace OpenAI
 
         void IJsonModel<ComputerUsePreviewTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,25 +63,21 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(ComputerUsePreviewTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.environment"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("environment") != true)
             {
                 writer.WritePropertyName("environment"u8);
                 writer.WriteStringValue(Environment.ToSerialString());
             }
-            if (!Patch.Contains("$.display_width"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("display_width") != true)
             {
                 writer.WritePropertyName("display_width"u8);
                 writer.WriteNumberValue(DisplayWidth);
             }
-            if (!Patch.Contains("$.display_height"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("display_height") != true)
             {
                 writer.WritePropertyName("display_height"u8);
                 writer.WriteNumberValue(DisplayHeight);
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ComputerUsePreviewTool IJsonModel<ComputerUsePreviewTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ComputerUsePreviewTool)JsonModelCreateCore(ref reader, options);
@@ -102,19 +90,17 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(ComputerUsePreviewTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeComputerUsePreviewTool(document.RootElement, null, options);
+            return DeserializeComputerUsePreviewTool(document.RootElement, options);
         }
 
-        internal static ComputerUsePreviewTool DeserializeComputerUsePreviewTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ComputerUsePreviewTool DeserializeComputerUsePreviewTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ToolType kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             ComputerUsePreviewToolEnvironment environment = default;
             int displayWidth = default;
             int displayHeight = default;
@@ -140,9 +126,10 @@ namespace OpenAI
                     displayHeight = prop.Value.GetInt32();
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ComputerUsePreviewTool(kind, patch, environment, displayWidth, displayHeight);
+            return new ComputerUsePreviewTool(kind, additionalBinaryDataProperties, environment, displayWidth, displayHeight);
         }
     }
 }

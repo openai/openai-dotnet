@@ -5,6 +5,10 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 
+#if OPENAI_RESPONSES
+using OpenAI.Responses;
+#endif
+
 namespace OpenAI;
 
 internal static partial class CustomSerializationHelpers

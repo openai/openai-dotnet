@@ -115,7 +115,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    format = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    format = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

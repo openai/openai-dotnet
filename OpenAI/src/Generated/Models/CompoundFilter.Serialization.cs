@@ -5,14 +5,13 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.Json;
 
 namespace OpenAI
 {
     public partial class CompoundFilter : IJsonModel<CompoundFilter>
     {
-        internal CompoundFilter() : this(default, null, default)
+        internal CompoundFilter() : this(default, null, null)
         {
         }
 
@@ -24,7 +23,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCompoundFilter(document.RootElement, data, options);
+                        return DeserializeCompoundFilter(document.RootElement, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CompoundFilter)} does not support reading '{options.Format}' format.");
@@ -51,14 +50,6 @@ namespace OpenAI
 
         void IJsonModel<CompoundFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,50 +62,53 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(CompoundFilter)} does not support writing '{format}' format.");
             }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-            if (Patch.Contains("$.filters"u8))
-            {
-                if (!Patch.IsRemoved("$.filters"u8))
-                {
-                    writer.WritePropertyName("filters"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.filters"u8));
-                }
-            }
-            else
+            if (_additionalBinaryDataProperties?.ContainsKey("filters") != true)
             {
                 writer.WritePropertyName("filters"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Filters.Count; i++)
+                foreach (BinaryData item in Filters)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.filters[{i}]")))
-                    {
-                        continue;
-                    }
-                    if (Filters[i] == null)
+                    if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(Filters[i]);
+                    writer.WriteRawValue(item);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(Filters[i]))
+                    using (JsonDocument document = JsonDocument.Parse(item))
                     {
                         JsonSerializer.Serialize(writer, document.RootElement);
                     }
 #endif
                 }
-                Patch.WriteTo(writer, "$.filters"u8);
                 writer.WriteEndArray();
             }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         CompoundFilter IJsonModel<CompoundFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -127,10 +121,10 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(CompoundFilter)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCompoundFilter(document.RootElement, null, options);
+            return DeserializeCompoundFilter(document.RootElement, options);
         }
 
-        internal static CompoundFilter DeserializeCompoundFilter(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static CompoundFilter DeserializeCompoundFilter(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -138,9 +132,7 @@ namespace OpenAI
             }
             CompoundFilterType kind = default;
             IList<BinaryData> filters = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -165,9 +157,10 @@ namespace OpenAI
                     filters = array;
                     continue;
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new CompoundFilter(kind, filters, patch);
+            return new CompoundFilter(kind, filters, additionalBinaryDataProperties);
         }
     }
 }

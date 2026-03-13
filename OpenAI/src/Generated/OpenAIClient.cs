@@ -14,7 +14,6 @@ namespace OpenAI
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
-        private Responses _cachedResponses;
 
         protected OpenAIClient()
         {

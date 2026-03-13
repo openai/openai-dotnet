@@ -5,7 +5,7 @@
 
 import "../chat";
 import "../common";
-import "../responses";
+import "../responses/models.tsp";
 import "./custom.tsp";
 
 using Http;

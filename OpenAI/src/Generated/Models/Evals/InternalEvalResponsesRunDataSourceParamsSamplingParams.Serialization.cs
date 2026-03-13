@@ -189,7 +189,7 @@ namespace OpenAI.Evals
                     List<Tool> array = new List<Tool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(Tool.DeserializeTool(item, item.GetUtf8Bytes(), options));
+                        array.Add(Tool.DeserializeTool(item, options));
                     }
                     tools = array;
                     continue;

@@ -18,7 +18,7 @@ namespace OpenAI.Responses
 
         public static string ToString(DateTime value, string format) => value.Kind switch
         {
-            DateTimeKind.Utc => OpenAI.Responses.TypeFormatters.ToString((DateTimeOffset)value, format),
+            DateTimeKind.Utc => ToString((DateTimeOffset)value, format),
             _ => throw new NotSupportedException($"DateTime {value} has a Kind of {value.Kind}. Generated clients require it to be UTC. You can call DateTime.SpecifyKind to change Kind property value to DateTimeKind.Utc.")
         };
 
@@ -40,7 +40,7 @@ namespace OpenAI.Responses
 
         public static string ToString(byte[] value, string format) => format switch
         {
-            "U" => OpenAI.Responses.TypeFormatters.ToBase64UrlString(value),
+            "U" => ToBase64UrlString(value),
             "D" => Convert.ToBase64String(value),
             _ => throw new ArgumentException($"Format is not supported: '{format}'", nameof(format))
         };
@@ -131,46 +131,46 @@ namespace OpenAI.Responses
             _ => TimeSpan.ParseExact(value, format, CultureInfo.InvariantCulture)
         };
 
-        public static string ToFormatSpecifier(OpenAI.Responses.SerializationFormat format) => format switch
+        public static string ToFormatSpecifier(SerializationFormat format) => format switch
         {
-            OpenAI.Responses.SerializationFormat.DateTime_RFC1123 => "R",
-            OpenAI.Responses.SerializationFormat.DateTime_RFC3339 => "O",
-            OpenAI.Responses.SerializationFormat.DateTime_RFC7231 => "R",
-            OpenAI.Responses.SerializationFormat.DateTime_ISO8601 => "O",
-            OpenAI.Responses.SerializationFormat.Date_ISO8601 => "D",
-            OpenAI.Responses.SerializationFormat.DateTime_Unix => "U",
-            OpenAI.Responses.SerializationFormat.Bytes_Base64Url => "U",
-            OpenAI.Responses.SerializationFormat.Bytes_Base64 => "D",
-            OpenAI.Responses.SerializationFormat.Duration_ISO8601 => "P",
-            OpenAI.Responses.SerializationFormat.Duration_Constant => "c",
-            OpenAI.Responses.SerializationFormat.Duration_Seconds => "%s",
-            OpenAI.Responses.SerializationFormat.Duration_Seconds_Float => "s\\.FFF",
-            OpenAI.Responses.SerializationFormat.Duration_Seconds_Double => "s\\.FFFFFF",
-            OpenAI.Responses.SerializationFormat.Time_ISO8601 => "T",
+            SerializationFormat.DateTime_RFC1123 => "R",
+            SerializationFormat.DateTime_RFC3339 => "O",
+            SerializationFormat.DateTime_RFC7231 => "R",
+            SerializationFormat.DateTime_ISO8601 => "O",
+            SerializationFormat.Date_ISO8601 => "D",
+            SerializationFormat.DateTime_Unix => "U",
+            SerializationFormat.Bytes_Base64Url => "U",
+            SerializationFormat.Bytes_Base64 => "D",
+            SerializationFormat.Duration_ISO8601 => "P",
+            SerializationFormat.Duration_Constant => "c",
+            SerializationFormat.Duration_Seconds => "%s",
+            SerializationFormat.Duration_Seconds_Float => "s\\.FFF",
+            SerializationFormat.Duration_Seconds_Double => "s\\.FFFFFF",
+            SerializationFormat.Time_ISO8601 => "T",
             _ => null
         };
 
-        public static string ConvertToString(object value, OpenAI.Responses.SerializationFormat format = OpenAI.Responses.SerializationFormat.Default)
+        public static string ConvertToString(object value, SerializationFormat format = SerializationFormat.Default)
         {
-            string formatSpecifier = OpenAI.Responses.TypeFormatters.ToFormatSpecifier(format);
+            string formatSpecifier = ToFormatSpecifier(format);
 
             return value switch
             {
                 null => "null",
                 string s => s,
-                bool b => OpenAI.Responses.TypeFormatters.ToString(b),
+                bool b => ToString(b),
                 int  or  float  or  double  or  long  or  decimal => ((IFormattable)value).ToString(DefaultNumberFormat, CultureInfo.InvariantCulture),
-                byte[] b0 when formatSpecifier != null => OpenAI.Responses.TypeFormatters.ToString(b0, formatSpecifier),
+                byte[] b0 when formatSpecifier != null => ToString(b0, formatSpecifier),
                 IEnumerable<string> s0 => string.Join(",", s0),
-                DateTimeOffset dateTime when formatSpecifier != null => OpenAI.Responses.TypeFormatters.ToString(dateTime, formatSpecifier),
-                TimeSpan timeSpan when format == OpenAI.Responses.SerializationFormat.Duration_Seconds => Convert.ToInt32(timeSpan.TotalSeconds).ToString(CultureInfo.InvariantCulture),
-                TimeSpan timeSpan0 when format == OpenAI.Responses.SerializationFormat.Duration_Seconds_Float || format == OpenAI.Responses.SerializationFormat.Duration_Seconds_Double => timeSpan0.TotalSeconds.ToString(CultureInfo.InvariantCulture),
-                TimeSpan timeSpan1 when format == OpenAI.Responses.SerializationFormat.Duration_Milliseconds => Convert.ToInt32(timeSpan1.TotalMilliseconds).ToString(CultureInfo.InvariantCulture),
-                TimeSpan timeSpan2 when format == OpenAI.Responses.SerializationFormat.Duration_Milliseconds_Float || format == OpenAI.Responses.SerializationFormat.Duration_Milliseconds_Double => timeSpan2.TotalMilliseconds.ToString(CultureInfo.InvariantCulture),
-                TimeSpan timeSpan3 when formatSpecifier != null => OpenAI.Responses.TypeFormatters.ToString(timeSpan3, formatSpecifier),
+                DateTimeOffset dateTime when formatSpecifier != null => ToString(dateTime, formatSpecifier),
+                TimeSpan timeSpan when format == SerializationFormat.Duration_Seconds => Convert.ToInt32(timeSpan.TotalSeconds).ToString(CultureInfo.InvariantCulture),
+                TimeSpan timeSpan0 when format == SerializationFormat.Duration_Seconds_Float || format == SerializationFormat.Duration_Seconds_Double => timeSpan0.TotalSeconds.ToString(CultureInfo.InvariantCulture),
+                TimeSpan timeSpan1 when format == SerializationFormat.Duration_Milliseconds => Convert.ToInt32(timeSpan1.TotalMilliseconds).ToString(CultureInfo.InvariantCulture),
+                TimeSpan timeSpan2 when format == SerializationFormat.Duration_Milliseconds_Float || format == SerializationFormat.Duration_Milliseconds_Double => timeSpan2.TotalMilliseconds.ToString(CultureInfo.InvariantCulture),
+                TimeSpan timeSpan3 when formatSpecifier != null => ToString(timeSpan3, formatSpecifier),
                 TimeSpan timeSpan4 => XmlConvert.ToString(timeSpan4),
                 Guid guid => guid.ToString(),
-                BinaryData binaryData => OpenAI.Responses.TypeFormatters.ConvertToString(binaryData.ToArray(), format),
+                BinaryData binaryData => ConvertToString(binaryData.ToArray(), format),
                 _ => value.ToString()
             };
         }

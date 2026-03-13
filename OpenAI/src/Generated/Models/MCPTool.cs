@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -20,35 +19,32 @@ namespace OpenAI
             Headers = new ChangeTrackingDictionary<string, string>();
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal MCPTool(ToolType kind, in JsonPatch patch, string serverLabel, Uri serverUri, MCPToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, MCPToolFilter allowedTools, BinaryData requireApproval) : base(kind, patch)
+        internal MCPTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, string serverUrl, MCPToolConnectorId? connectorId, string authorization, string serverDescription, IDictionary<string, string> headers, BinaryData allowedTools, BinaryData requireApproval) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
-            ServerUri = serverUri;
+            ServerUrl = serverUrl;
             ConnectorId = connectorId;
-            AuthorizationToken = authorizationToken;
+            Authorization = authorization;
             ServerDescription = serverDescription;
             Headers = headers ?? new ChangeTrackingDictionary<string, string>();
             AllowedTools = allowedTools;
             RequireApproval = requireApproval;
-            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ServerLabel { get; set; }
+        public string ServerLabel { get; }
 
-        public Uri ServerUri { get; set; }
+        public string ServerUrl { get; set; }
 
         public MCPToolConnectorId? ConnectorId { get; set; }
 
-        public string AuthorizationToken { get; set; }
+        public string Authorization { get; set; }
 
         public string ServerDescription { get; set; }
 
         public IDictionary<string, string> Headers { get; set; }
 
-        public MCPToolFilter AllowedTools { get; set; }
+        public BinaryData AllowedTools { get; set; }
 
         public BinaryData RequireApproval { get; set; }
     }

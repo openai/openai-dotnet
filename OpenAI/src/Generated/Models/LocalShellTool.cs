@@ -2,7 +2,8 @@
 
 #nullable disable
 
-using System.ClientModel.Primitives;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
@@ -10,14 +11,12 @@ namespace OpenAI
     [Experimental("OPENAI001")]
     public partial class LocalShellTool : Tool
     {
-        public LocalShellTool() : this(ToolType.LocalShell, default)
+        public LocalShellTool() : this(ToolType.LocalShell, null)
         {
         }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal LocalShellTool(ToolType kind, in JsonPatch patch) : base(kind, patch)
+        internal LocalShellTool(ToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }
