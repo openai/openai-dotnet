@@ -966,6 +966,35 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static AudioTranscriptionInputTokenUsageDetails AudioTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
+        {
+            return new AudioTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static DiarizedAudioTranscription DiarizedAudioTranscription(TimeSpan duration = default, string text = default, IEnumerable<DiarizedTranscriptionSegment> segments = default, AudioTranscriptionUsage usage = default)
+        {
+            segments ??= new ChangeTrackingList<DiarizedTranscriptionSegment>();
+
+            return new DiarizedAudioTranscription(
+                "transcribe",
+                duration,
+                text,
+                segments.ToList(),
+                usage,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static DiarizedTranscriptionSegment DiarizedTranscriptionSegment(string id = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speaker = default)
+        {
+            return new DiarizedTranscriptionSegment(
+                id,
+                startTime,
+                endTime,
+                text,
+                speaker,
+                additionalBinaryDataProperties: null);
+        }
+
         public static TranscribedWord TranscribedWord(string word = default, TimeSpan startTime = default, TimeSpan endTime = default)
         {
             return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties: null);
@@ -1396,28 +1425,21 @@ namespace OpenAI
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
         }
 
-        public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
+        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, AudioTranscriptionUsage usage = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
         {
-            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionTextSegmentUpdate StreamingAudioTranscriptionTextSegmentUpdate(string segmentId = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
-        {
-            return new StreamingAudioTranscriptionTextSegmentUpdate(
-                StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment,
-                additionalBinaryDataProperties: null,
-                segmentId,
-                startTime,
-                endTime,
-                text,
-                speakerLabel);
-        }
-
-        public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default, string segmentId = default)
-        {
+            words ??= new ChangeTrackingList<TranscribedWord>();
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
             transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
 
-            return new StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, additionalBinaryDataProperties: null, delta, transcriptionTokenLogProbabilities.ToList(), segmentId);
+            return new AudioTranscription(
+                language,
+                duration,
+                text,
+                words.ToList(),
+                segments.ToList(),
+                usage,
+                transcriptionTokenLogProbabilities.ToList(),
+                additionalBinaryDataProperties: null);
         }
 
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)

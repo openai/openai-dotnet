@@ -15,15 +15,10 @@ namespace OpenAI.Audio;
 [CodeGenType("UnknownDotNetCreateTranscriptionStreamingResponse")] internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent { }
 [CodeGenType("CreateTranscriptionResponseJsonLogprobs")] internal partial class InternalCreateTranscriptionResponseJsonLogprob { }
 [CodeGenType("CreateSpeechRequestStreamFormat")] internal readonly partial struct InternalCreateSpeechRequestStreamFormat { }
-[CodeGenType("CreateTranscriptionResponseJsonUsageType")] internal readonly partial struct InternalCreateTranscriptionResponseJsonUsageType{ }
-[CodeGenType("CreateTranscriptionResponseJsonUsage")] internal partial class InternalCreateTranscriptionResponseJsonUsage { }
+[CodeGenType("CreateTranscriptionResponseJsonUsageType")] internal readonly partial struct InternalCreateTranscriptionResponseJsonUsageType { }
 [CodeGenType("UnknownCreateTranscriptionResponseJsonUsage")] internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage { }
-[CodeGenType("TranscriptTextUsageTokens")] internal partial class InternalTranscriptTextUsageTokens { }
-[CodeGenType("TranscriptTextUsageTokensInputTokenDetails")] internal partial class InternalTranscriptTextUsageTokensInputTokenDetails { }
-[CodeGenType("TranscriptTextUsageDuration")] internal partial class InternalTranscriptTextUsageDuration { }
-[CodeGenType("CreateTranscriptionResponseDiarizedJson")] internal partial class InternalCreateTranscriptionResponseDiarizedJson { }
-[CodeGenType("TranscriptionDiarizedSegment")] internal partial class InternalTranscriptionDiarizedSegment { }
 [CodeGenType("VadConfig")] internal partial class InternalVadConfig { }
+[CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }
 
 // Remove these after https://github.com/microsoft/openai-openapi-pr/issues/478 is fixed
 [CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent { }

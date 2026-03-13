@@ -185,6 +185,30 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task TranscriptionUsageWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
+        string path = Path.Combine("Assets", "audio_hello_world.mp3");
+
+        AudioTranscription transcription = await client.TranscribeAudioAsync(path);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
+        Assert.That(transcription.Usage, Is.Not.Null);
+
+        if (transcription.Usage is AudioTranscriptionTokenUsage tokenUsage)
+        {
+            Assert.That(tokenUsage.TotalTokenCount, Is.GreaterThan(0));
+            Assert.That(tokenUsage.InputTokenCount, Is.GreaterThanOrEqualTo(0));
+            Assert.That(tokenUsage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
+        }
+        else if (transcription.Usage is AudioTranscriptionDurationUsage durationUsage)
+        {
+            Assert.That(durationUsage.Duration, Is.GreaterThan(TimeSpan.Zero));
+        }
+    }
+
+    [RecordedTest]
     public async Task IncludesWork()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
@@ -332,5 +356,199 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
                 _ = client.TranscribeAudioStreamingAsync(path);
             });
         }
+    }
+
+    [RecordedTest]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task DiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string filename = "audio_meeting.wav";
+        string path = Path.Combine("Assets", filename);
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        DiarizedAudioTranscription transcription = null;
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            using FileStream inputStream = File.OpenRead(path);
+            transcription = await client.TranscribeAudioDiarizedAsync(inputStream, filename, options);
+        }
+        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+        {
+            transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+        }
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(0));
+
+        foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Speaker, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+    }
+
+    [RecordedTest]
+    public async Task DiarizedTranscriptionWithKnownSpeakersWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string audioFilePath = Path.Combine("Assets", "audio_meeting.wav");
+        string speakerRefPath = Path.Combine("Assets", "audio_agent_reference.wav");
+
+        byte[] speakerRefBytes = File.ReadAllBytes(speakerRefPath);
+        string speakerRefBase64 = Convert.ToBase64String(speakerRefBytes);
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            KnownSpeakerNames = { "agent" },
+            KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(audioFilePath, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(0));
+
+        bool foundKnownSpeaker = false;
+
+        foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Speaker, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+
+            if (segment.Speaker == "agent")
+            {
+                foundKnownSpeaker = true;
+            }
+        }
+
+        Assert.That(foundKnownSpeaker, Is.True, "Expected at least one segment attributed to the known speaker 'agent'.");
+    }
+
+    [RecordedTest]
+    public async Task DiarizedTranscriptionHasUsage()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Usage, Is.Not.Null);
+
+        if (transcription.Usage is AudioTranscriptionTokenUsage tokenUsage)
+        {
+            Assert.That(tokenUsage.TotalTokenCount, Is.GreaterThan(0));
+            Assert.That(tokenUsage.InputTokenCount, Is.GreaterThanOrEqualTo(0));
+            Assert.That(tokenUsage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
+        }
+        else if (transcription.Usage is AudioTranscriptionDurationUsage durationUsage)
+        {
+            Assert.That(durationUsage.Duration, Is.GreaterThan(TimeSpan.Zero));
+        }
+    }
+
+    [RecordedTest]
+    public async Task DiarizedTranscriptionSegmentsAreOrdered()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(1));
+
+        for (int i = 1; i < transcription.Segments.Count; i++)
+        {
+            Assert.That(
+                transcription.Segments[i].StartTime,
+                Is.GreaterThanOrEqualTo(transcription.Segments[i - 1].StartTime),
+                $"Segment {i} starts before segment {i - 1}.");
+        }
+    }
+
+    [RecordedTest]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task StreamingDiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string filename = "audio_meeting.wav";
+        string path = Path.Combine("Assets", filename);
+
+        FileStream inputStream = null;
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            inputStream = File.OpenRead(path);
+            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename, options);
+        }
+        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+        {
+            streamingUpdates = client.TranscribeAudioStreamingAsync(path, options);
+        }
+
+        string doneText = null;
+        List<StreamingAudioTranscriptionTextSegmentUpdate> segments = [];
+
+        await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
+        {
+            if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+            {
+                Assert.That(doneUpdate.Text, Is.Not.Null.And.Not.Empty);
+                doneText = doneUpdate.Text;
+            }
+            else if (update is StreamingAudioTranscriptionTextSegmentUpdate segmentUpdate)
+            {
+                segments.Add(segmentUpdate);
+            }
+        }
+
+        Assert.That(doneText, Is.Not.Null.And.Not.Empty);
+        Assert.That(segments, Has.Count.GreaterThan(0));
+
+        foreach (StreamingAudioTranscriptionTextSegmentUpdate segment in segments)
+        {
+            Assert.That(segment.SegmentId, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+
+        inputStream?.Dispose();
     }
 }

@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>
     {
-        internal StreamingAudioTranscriptionTextDeltaUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, null, null, null, null)
+        internal StreamingAudioTranscriptionTextDeltaUpdate() : this(InternalCreateTranscriptionStreamingResponseType.TranscriptTextDelta, null, null, null, null)
         {
         }
 
@@ -105,7 +105,7 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            StreamingAudioTranscriptionUpdateKind kind = default;
+            InternalCreateTranscriptionStreamingResponseType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string delta = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
@@ -114,7 +114,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingAudioTranscriptionUpdateKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionStreamingResponseType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("delta"u8))

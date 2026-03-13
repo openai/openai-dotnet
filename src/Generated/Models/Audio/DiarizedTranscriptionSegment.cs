@@ -4,40 +4,35 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalTranscriptionDiarizedSegment
+    [Experimental("OPENAI001")]
+    public partial class DiarizedTranscriptionSegment
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalTranscriptionDiarizedSegment(string id, TimeSpan start, TimeSpan end, string text, string speaker)
+        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speaker)
         {
             Id = id;
-            Start = start;
-            End = end;
+            StartTime = startTime;
+            EndTime = endTime;
             Text = text;
             Speaker = speaker;
         }
 
-        internal InternalTranscriptionDiarizedSegment(string kind, string id, TimeSpan start, TimeSpan end, string text, string speaker, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speaker, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Kind = kind;
             Id = id;
-            Start = start;
-            End = end;
+            StartTime = startTime;
+            EndTime = endTime;
             Text = text;
             Speaker = speaker;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "transcript.text.segment";
-
         public string Id { get; }
-
-        public TimeSpan Start { get; }
-
-        public TimeSpan End { get; }
 
         public string Text { get; }
 

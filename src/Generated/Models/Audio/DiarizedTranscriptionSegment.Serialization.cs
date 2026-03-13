@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalTranscriptionDiarizedSegment : IJsonModel<InternalTranscriptionDiarizedSegment>
+    public partial class DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>
     {
-        internal InternalTranscriptionDiarizedSegment()
+        internal DiarizedTranscriptionSegment()
         {
         }
 
-        protected virtual InternalTranscriptionDiarizedSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual DiarizedTranscriptionSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalTranscriptionDiarizedSegment(document.RootElement, options);
+                        return DeserializeDiarizedTranscriptionSegment(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DiarizedTranscriptionSegment)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DiarizedTranscriptionSegment)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalTranscriptionDiarizedSegment>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<DiarizedTranscriptionSegment>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalTranscriptionDiarizedSegment IPersistableModel<InternalTranscriptionDiarizedSegment>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        DiarizedTranscriptionSegment IPersistableModel<DiarizedTranscriptionSegment>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalTranscriptionDiarizedSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<DiarizedTranscriptionSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalTranscriptionDiarizedSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<DiarizedTranscriptionSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,15 +58,10 @@ namespace OpenAI.Audio
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support writing '{format}' format.");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
+                throw new FormatException($"The model {nameof(DiarizedTranscriptionSegment)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
@@ -76,12 +71,12 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Start.TotalSeconds);
+                writer.WriteNumberValue(StartTime.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(End.TotalSeconds);
+                writer.WriteNumberValue(EndTime.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -115,39 +110,33 @@ namespace OpenAI.Audio
             }
         }
 
-        InternalTranscriptionDiarizedSegment IJsonModel<InternalTranscriptionDiarizedSegment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        DiarizedTranscriptionSegment IJsonModel<DiarizedTranscriptionSegment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalTranscriptionDiarizedSegment JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual DiarizedTranscriptionSegment JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(DiarizedTranscriptionSegment)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalTranscriptionDiarizedSegment(document.RootElement, options);
+            return DeserializeDiarizedTranscriptionSegment(document.RootElement, options);
         }
 
-        internal static InternalTranscriptionDiarizedSegment DeserializeInternalTranscriptionDiarizedSegment(JsonElement element, ModelReaderWriterOptions options)
+        internal static DiarizedTranscriptionSegment DeserializeDiarizedTranscriptionSegment(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string kind = default;
             string id = default;
-            TimeSpan start = default;
-            TimeSpan end = default;
+            TimeSpan startTime = default;
+            TimeSpan endTime = default;
             string text = default;
             string speaker = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("type"u8))
-                {
-                    kind = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
@@ -155,12 +144,12 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("start"u8))
                 {
-                    start = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    startTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("end"u8))
                 {
-                    end = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    endTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -176,11 +165,10 @@ namespace OpenAI.Audio
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalTranscriptionDiarizedSegment(
-                kind,
+            return new DiarizedTranscriptionSegment(
                 id,
-                start,
-                end,
+                startTime,
+                endTime,
                 text,
                 speaker,
                 additionalBinaryDataProperties);
