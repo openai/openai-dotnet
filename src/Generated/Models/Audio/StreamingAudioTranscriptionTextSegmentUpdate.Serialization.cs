@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class StreamingAudioTranscriptionTextSegmentUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextSegmentUpdate>
     {
-        internal StreamingAudioTranscriptionTextSegmentUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment, null, null, default, default, null, null)
+        internal StreamingAudioTranscriptionTextSegmentUpdate() : this(InternalCreateTranscriptionStreamingResponseType.TranscriptTextSegment, null, null, default, default, null, null)
         {
         }
 
@@ -110,7 +110,7 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            StreamingAudioTranscriptionUpdateKind kind = default;
+            InternalCreateTranscriptionStreamingResponseType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string segmentId = default;
             TimeSpan startTime = default;
@@ -121,7 +121,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingAudioTranscriptionUpdateKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionStreamingResponseType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))

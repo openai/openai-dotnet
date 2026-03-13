@@ -966,30 +966,9 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static AudioTranscriptionUsage AudioTranscriptionUsage(string kind = default)
-        {
-            return new InternalUnknownCreateTranscriptionResponseJsonUsage(new AudioTranscriptionUsageKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscriptionTokenUsage AudioTranscriptionTokenUsage(int inputTokenCount = default, AudioTranscriptionInputTokenUsageDetails inputTokenDetails = default, int outputTokenCount = default, int totalTokenCount = default)
-        {
-            return new AudioTranscriptionTokenUsage(
-                AudioTranscriptionUsageKind.Tokens,
-                additionalBinaryDataProperties: null,
-                inputTokenCount,
-                inputTokenDetails,
-                outputTokenCount,
-                totalTokenCount);
-        }
-
         public static AudioTranscriptionInputTokenUsageDetails AudioTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
             return new AudioTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscriptionDurationUsage AudioTranscriptionDurationUsage(TimeSpan duration = default)
-        {
-            return new AudioTranscriptionDurationUsage(AudioTranscriptionUsageKind.Duration, additionalBinaryDataProperties: null, duration);
         }
 
         public static DiarizedAudioTranscription DiarizedAudioTranscription(TimeSpan duration = default, string text = default, IEnumerable<DiarizedTranscriptionSegment> segments = default, AudioTranscriptionUsage usage = default)
@@ -1461,37 +1440,6 @@ namespace OpenAI
                 usage,
                 transcriptionTokenLogProbabilities.ToList(),
                 additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
-        {
-            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionTextSegmentUpdate StreamingAudioTranscriptionTextSegmentUpdate(string segmentId = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
-        {
-            return new StreamingAudioTranscriptionTextSegmentUpdate(
-                StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment,
-                additionalBinaryDataProperties: null,
-                segmentId,
-                startTime,
-                endTime,
-                text,
-                speakerLabel);
-        }
-
-        public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default, string segmentId = default)
-        {
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, additionalBinaryDataProperties: null, delta, transcriptionTokenLogProbabilities.ToList(), segmentId);
-        }
-
-        public static StreamingAudioTranscriptionTextDoneUpdate StreamingAudioTranscriptionTextDoneUpdate(string text = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default, AudioTranscriptionTokenUsage usage = default)
-        {
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, additionalBinaryDataProperties: null, text, transcriptionTokenLogProbabilities.ToList(), usage);
         }
 
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)

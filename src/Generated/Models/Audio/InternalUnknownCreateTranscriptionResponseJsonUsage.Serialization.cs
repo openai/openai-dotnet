@@ -85,13 +85,13 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            AudioTranscriptionUsageKind kind = default;
+            InternalCreateTranscriptionResponseJsonUsageType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new AudioTranscriptionUsageKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionResponseJsonUsageType(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>
     {
-        internal AudioTranscriptionDurationUsage() : this(AudioTranscriptionUsageKind.Duration, null, default)
+        internal AudioTranscriptionDurationUsage() : this(InternalCreateTranscriptionResponseJsonUsageType.Duration, null, default)
         {
         }
 
@@ -90,14 +90,14 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            AudioTranscriptionUsageKind kind = default;
+            InternalCreateTranscriptionResponseJsonUsageType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             TimeSpan duration = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new AudioTranscriptionUsageKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionResponseJsonUsageType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("seconds"u8))

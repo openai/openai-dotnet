@@ -13,18 +13,18 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected AudioTranscriptionUsage(AudioTranscriptionUsageKind kind)
+        private protected AudioTranscriptionUsage(InternalCreateTranscriptionResponseJsonUsageType kind)
         {
             Kind = kind;
         }
 
-        internal AudioTranscriptionUsage(AudioTranscriptionUsageKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public AudioTranscriptionUsageKind Kind { get; }
+        internal InternalCreateTranscriptionResponseJsonUsageType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

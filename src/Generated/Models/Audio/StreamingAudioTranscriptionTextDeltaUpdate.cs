@@ -12,13 +12,13 @@ namespace OpenAI.Audio
     [Experimental("OPENAI001")]
     public partial class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate
     {
-        internal StreamingAudioTranscriptionTextDeltaUpdate(string delta) : base(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta)
+        internal StreamingAudioTranscriptionTextDeltaUpdate(string delta) : base(InternalCreateTranscriptionStreamingResponseType.TranscriptTextDelta)
         {
             Delta = delta;
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
         }
 
-        internal StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string delta, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, string segmentId) : base(kind, additionalBinaryDataProperties)
+        internal StreamingAudioTranscriptionTextDeltaUpdate(InternalCreateTranscriptionStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string delta, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, string segmentId) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Delta = delta;

@@ -30,12 +30,17 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("ChunkingStrategy")]
     internal BinaryData ChunkingStrategy { get; set; }
 
+    // CUSTOM: Renamed and changed type from IList<string> to IList<Uri> for data URI consistency.
+    [CodeGenMember("KnownSpeakerReferences")]
+    [Experimental("OPENAI001")]
+    public IList<Uri> KnownSpeakerReferenceUris { get; }
+
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="AudioTranscriptionOptions"/>. </summary>
     public AudioTranscriptionOptions()
     {
         KnownSpeakerNames = new ChangeTrackingList<string>();
-        KnownSpeakerReferences = new ChangeTrackingList<string>();
+        KnownSpeakerReferenceUris = new ChangeTrackingList<Uri>();
     }
 
     /// <summary>
@@ -106,9 +111,9 @@ public partial class AudioTranscriptionOptions
             content.Add(name, "known_speaker_names[]");
         }
 
-        foreach (string reference in KnownSpeakerReferences)
+        foreach (Uri referenceUri in KnownSpeakerReferenceUris)
         {
-            content.Add(reference, "known_speaker_references[]");
+            content.Add(referenceUri.AbsoluteUri, "known_speaker_references[]");
         }
 
         return content;

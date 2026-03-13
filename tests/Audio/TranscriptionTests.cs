@@ -369,7 +369,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = AudioTranscriptionFormat.DiarizedJson,
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
         DiarizedAudioTranscription transcription = null;
@@ -410,9 +410,9 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = AudioTranscriptionFormat.DiarizedJson,
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
             KnownSpeakerNames = { "agent" },
-            KnownSpeakerReferences = { $"data:audio/wav;base64,{speakerRefBase64}" },
+            KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
         };
 
         DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(audioFilePath, options);
@@ -448,7 +448,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = AudioTranscriptionFormat.DiarizedJson,
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
         DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
@@ -476,7 +476,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = AudioTranscriptionFormat.DiarizedJson,
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
         DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
@@ -507,7 +507,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = AudioTranscriptionFormat.DiarizedJson,
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
         AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;

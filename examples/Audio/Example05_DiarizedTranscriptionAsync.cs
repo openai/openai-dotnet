@@ -21,9 +21,9 @@ public partial class AudioExamples
 
         AudioTranscriptionOptions options = new()
         {
-            ResponseFormat = AudioTranscriptionFormat.DiarizedJson,
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
             KnownSpeakerNames = { "agent" },
-            KnownSpeakerReferences = { $"data:audio/wav;base64,{speakerRefBase64}" },
+            KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
         };
 
         DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(audioFilePath, options);

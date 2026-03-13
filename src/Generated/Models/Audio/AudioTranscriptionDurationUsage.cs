@@ -11,12 +11,12 @@ namespace OpenAI.Audio
     [Experimental("OPENAI001")]
     public partial class AudioTranscriptionDurationUsage : AudioTranscriptionUsage
     {
-        internal AudioTranscriptionDurationUsage(TimeSpan duration) : base(AudioTranscriptionUsageKind.Duration)
+        internal AudioTranscriptionDurationUsage(TimeSpan duration) : base(InternalCreateTranscriptionResponseJsonUsageType.Duration)
         {
             Duration = duration;
         }
 
-        internal AudioTranscriptionDurationUsage(AudioTranscriptionUsageKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, TimeSpan duration) : base(kind, additionalBinaryDataProperties)
+        internal AudioTranscriptionDurationUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, TimeSpan duration) : base(kind, additionalBinaryDataProperties)
         {
             Duration = duration;
         }

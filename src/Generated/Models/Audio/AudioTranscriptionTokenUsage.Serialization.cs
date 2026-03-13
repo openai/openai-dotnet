@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscriptionTokenUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionTokenUsage>
     {
-        internal AudioTranscriptionTokenUsage() : this(AudioTranscriptionUsageKind.Tokens, null, default, null, default, default)
+        internal AudioTranscriptionTokenUsage() : this(InternalCreateTranscriptionResponseJsonUsageType.Tokens, null, default, null, default, default)
         {
         }
 
@@ -105,7 +105,7 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            AudioTranscriptionUsageKind kind = default;
+            InternalCreateTranscriptionResponseJsonUsageType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int inputTokenCount = default;
             AudioTranscriptionInputTokenUsageDetails inputTokenDetails = default;
@@ -115,7 +115,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new AudioTranscriptionUsageKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionResponseJsonUsageType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("input_tokens"u8))

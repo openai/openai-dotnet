@@ -9,7 +9,7 @@ namespace OpenAI.Audio
 {
     internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage : AudioTranscriptionUsage
     {
-        internal InternalUnknownCreateTranscriptionResponseJsonUsage(AudioTranscriptionUsageKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownCreateTranscriptionResponseJsonUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

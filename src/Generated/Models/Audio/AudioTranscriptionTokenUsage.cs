@@ -11,14 +11,14 @@ namespace OpenAI.Audio
     [Experimental("OPENAI001")]
     public partial class AudioTranscriptionTokenUsage : AudioTranscriptionUsage
     {
-        internal AudioTranscriptionTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount) : base(AudioTranscriptionUsageKind.Tokens)
+        internal AudioTranscriptionTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount) : base(InternalCreateTranscriptionResponseJsonUsageType.Tokens)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
         }
 
-        internal AudioTranscriptionTokenUsage(AudioTranscriptionUsageKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int inputTokenCount, AudioTranscriptionInputTokenUsageDetails inputTokenDetails, int outputTokenCount, int totalTokenCount) : base(kind, additionalBinaryDataProperties)
+        internal AudioTranscriptionTokenUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int inputTokenCount, AudioTranscriptionInputTokenUsageDetails inputTokenDetails, int outputTokenCount, int totalTokenCount) : base(kind, additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             InputTokenDetails = inputTokenDetails;

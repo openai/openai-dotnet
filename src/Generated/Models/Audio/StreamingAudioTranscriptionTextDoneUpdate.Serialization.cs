@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>
     {
-        internal StreamingAudioTranscriptionTextDoneUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, null, null, null, null)
+        internal StreamingAudioTranscriptionTextDoneUpdate() : this(InternalCreateTranscriptionStreamingResponseType.TranscriptTextDone, null, null, null, null)
         {
         }
 
@@ -105,7 +105,7 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            StreamingAudioTranscriptionUpdateKind kind = default;
+            InternalCreateTranscriptionStreamingResponseType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
@@ -114,7 +114,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingAudioTranscriptionUpdateKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionStreamingResponseType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

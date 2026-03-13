@@ -1249,7 +1249,7 @@ namespace OpenAI.Audio {
     }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
         public AudioTranscriptionFormat(string value);
-        public static AudioTranscriptionFormat DiarizedJson { get; }
+        public static AudioTranscriptionFormat Diarized { get; }
         public static AudioTranscriptionFormat Simple { get; }
         public static AudioTranscriptionFormat Srt { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1288,7 +1288,7 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public IList<string> KnownSpeakerNames { get; }
         [Experimental("OPENAI001")]
-        public IList<string> KnownSpeakerReferences { get; }
+        public IList<Uri> KnownSpeakerReferenceUris { get; }
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
@@ -1316,27 +1316,10 @@ namespace OpenAI.Audio {
     }
     [Experimental("OPENAI001")]
     public class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>, IPersistableModel<AudioTranscriptionUsage> {
-        public AudioTranscriptionUsageKind Kind { get; }
         protected virtual AudioTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual AudioTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct AudioTranscriptionUsageKind : IEquatable<AudioTranscriptionUsageKind> {
-        public AudioTranscriptionUsageKind(string value);
-        public static AudioTranscriptionUsageKind Duration { get; }
-        public static AudioTranscriptionUsageKind Tokens { get; }
-        public readonly bool Equals(AudioTranscriptionUsageKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(AudioTranscriptionUsageKind left, AudioTranscriptionUsageKind right);
-        public static implicit operator AudioTranscriptionUsageKind(string value);
-        public static implicit operator AudioTranscriptionUsageKind?(string value);
-        public static bool operator !=(AudioTranscriptionUsageKind left, AudioTranscriptionUsageKind right);
-        public override readonly string ToString();
     }
     public class AudioTranslation : IJsonModel<AudioTranslation>, IPersistableModel<AudioTranslation> {
         public TimeSpan? Duration { get; }
@@ -1518,23 +1501,6 @@ namespace OpenAI.Audio {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct StreamingAudioTranscriptionUpdateKind : IEquatable<StreamingAudioTranscriptionUpdateKind> {
-        public StreamingAudioTranscriptionUpdateKind(string value);
-        public static StreamingAudioTranscriptionUpdateKind TranscriptTextDelta { get; }
-        public static StreamingAudioTranscriptionUpdateKind TranscriptTextDone { get; }
-        public static StreamingAudioTranscriptionUpdateKind TranscriptTextSegment { get; }
-        public readonly bool Equals(StreamingAudioTranscriptionUpdateKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(StreamingAudioTranscriptionUpdateKind left, StreamingAudioTranscriptionUpdateKind right);
-        public static implicit operator StreamingAudioTranscriptionUpdateKind(string value);
-        public static implicit operator StreamingAudioTranscriptionUpdateKind?(string value);
-        public static bool operator !=(StreamingAudioTranscriptionUpdateKind left, StreamingAudioTranscriptionUpdateKind right);
-        public override readonly string ToString();
     }
     public readonly partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IPersistableModel<TranscribedSegment>, IJsonModel<object>, IPersistableModel<object> {
         public float AverageLogProbability { get; }
