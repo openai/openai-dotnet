@@ -1,5 +1,5 @@
 ---
-name: spec-ingestion
+name: ingesting-spec
 description: Guide for ingesting the latest OpenAI TypeSpec specification into the openai-dotnet SDK. Use this when asked to update or ingest OpenAI API specs, copy base TypeSpec files from upstream, fix client TSP compile errors, or run code generation for new API areas.
 ---
 
