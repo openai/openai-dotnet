@@ -44,10 +44,10 @@ jobs:
       - name: Run unit tests
         run: dotnet test
           --configuration Release
-          --filter="TestCategory=Smoke&TestCategory!=Manual"
           --logger "trx;LogFilePrefix=smoke"
           --results-directory ${{github.workspace}}/artifacts/test-results
           ${{ env.version_suffix_args}}
+          -- NUnit.Where="cat == Smoke and cat != Manual"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v6
