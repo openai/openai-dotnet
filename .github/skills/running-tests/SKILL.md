@@ -51,7 +51,7 @@ Treat these as practical indicators instead of a rigid checklist.
 
 ### Strong signals that a test is not a recorded test:
 
-- The test class does not rely on `OpenAIRecordedTestBase` (instead it inherits from `ClientTestBase` or has no special test base class).
+- The test class inherits from something other than `OpenAIRecordedTestBase` or has no base class.
 - The test method uses plain `[Test]` instead of `[RecordedTest]`.
 - The test uses mocked transports or handcrafted responses to simulate HTTP responses, such as `MockPipelineTransport`, `MockPipelineResponse`, or `GetClientOptionsWithMockResponse`.
 - The test does not need to reach a live cloud service.
