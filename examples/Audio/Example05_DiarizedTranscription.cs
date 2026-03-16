@@ -37,7 +37,7 @@ public partial class AudioExamples
         Console.WriteLine($"Segments:");
         foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
         {
-            Console.WriteLine($"  [{segment.Speaker}] {segment.Text,90} : {segment.StartTime.TotalMilliseconds,5:0} - {segment.EndTime.TotalMilliseconds,5:0}");
+            Console.WriteLine($"  [{segment.SpeakerLabel}] {segment.Text,90} : {segment.StartTime.TotalMilliseconds,5:0} - {segment.EndTime.TotalMilliseconds,5:0}");
         }
 
         Console.WriteLine();

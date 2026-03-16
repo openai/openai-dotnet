@@ -185,9 +185,11 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task TranscriptionUsageWorks()
+    [TestCase(TestModel.Audio_Gpt_4o_Mini_Transcribe)]
+    [TestCase(TestModel.Audio_Whisper)]
+    public async Task TranscriptionUsageWorks(string model)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(model);
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscription transcription = await client.TranscribeAudioAsync(path);
@@ -196,15 +198,19 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
         Assert.That(transcription.Usage, Is.Not.Null);
 
-        if (transcription.Usage is AudioTranscriptionTokenUsage tokenUsage)
+        if (model == TestModel.Audio_Whisper)
         {
+            Assert.That(transcription.Usage, Is.InstanceOf<AudioTranscriptionDurationUsage>());
+            AudioTranscriptionDurationUsage durationUsage = (AudioTranscriptionDurationUsage)transcription.Usage;
+            Assert.That(durationUsage.Duration, Is.GreaterThan(TimeSpan.Zero));
+        }
+        else
+        {
+            Assert.That(transcription.Usage, Is.InstanceOf<AudioTranscriptionTokenUsage>());
+            AudioTranscriptionTokenUsage tokenUsage = (AudioTranscriptionTokenUsage)transcription.Usage;
             Assert.That(tokenUsage.TotalTokenCount, Is.GreaterThan(0));
             Assert.That(tokenUsage.InputTokenCount, Is.GreaterThanOrEqualTo(0));
             Assert.That(tokenUsage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
-        }
-        else if (transcription.Usage is AudioTranscriptionDurationUsage durationUsage)
-        {
-            Assert.That(durationUsage.Duration, Is.GreaterThan(TimeSpan.Zero));
         }
     }
 
@@ -393,7 +399,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         {
             Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
-            Assert.That(segment.Speaker, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
             Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
         }
     }
@@ -428,10 +434,10 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         {
             Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
-            Assert.That(segment.Speaker, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
             Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
 
-            if (segment.Speaker == "agent")
+            if (segment.SpeakerLabel == "agent")
             {
                 foundKnownSpeaker = true;
             }

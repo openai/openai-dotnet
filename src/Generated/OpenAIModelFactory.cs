@@ -984,14 +984,14 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static DiarizedTranscriptionSegment DiarizedTranscriptionSegment(string id = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speaker = default)
+        public static DiarizedTranscriptionSegment DiarizedTranscriptionSegment(string id = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
         {
             return new DiarizedTranscriptionSegment(
                 id,
                 startTime,
                 endTime,
                 text,
-                speaker,
+                speakerLabel,
                 additionalBinaryDataProperties: null);
         }
 

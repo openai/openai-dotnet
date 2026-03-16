@@ -9,26 +9,26 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Audio
 {
     [Experimental("OPENAI001")]
-    public partial class DiarizedTranscriptionSegment
+    public readonly partial struct DiarizedTranscriptionSegment
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private readonly IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speaker)
+        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel)
         {
             Id = id;
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
-            Speaker = speaker;
+            SpeakerLabel = speakerLabel;
         }
 
-        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speaker, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             StartTime = startTime;
             EndTime = endTime;
             Text = text;
-            Speaker = speaker;
+            SpeakerLabel = speakerLabel;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -36,12 +36,6 @@ namespace OpenAI.Audio
 
         public string Text { get; }
 
-        public string Speaker { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData => _additionalBinaryDataProperties;
     }
 }

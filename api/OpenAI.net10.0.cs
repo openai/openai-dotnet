@@ -1381,16 +1381,12 @@ namespace OpenAI.Audio {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IPersistableModel<DiarizedTranscriptionSegment> {
+    public readonly partial struct DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IPersistableModel<DiarizedTranscriptionSegment>, IJsonModel<object>, IPersistableModel<object> {
         public TimeSpan EndTime { get; }
         public string Id { get; }
-        public string Speaker { get; }
+        public string SpeakerLabel { get; }
         public TimeSpan StartTime { get; }
         public string Text { get; }
-        protected virtual DiarizedTranscriptionSegment JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DiarizedTranscriptionSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat> {
         public GeneratedSpeechFormat(string value);

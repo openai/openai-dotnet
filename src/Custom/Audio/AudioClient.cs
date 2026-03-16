@@ -198,6 +198,13 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
+        if (options?.ResponseFormat == AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must not be set to {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudio)}. "
+                + $"For diarized transcription, call {nameof(TranscribeAudioDiarized)} instead.");
+        }
+
         using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
@@ -221,6 +228,13 @@ public partial class AudioClient
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        if (options?.ResponseFormat == AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must not be set to {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudio)}. "
+                + $"For diarized transcription, call {nameof(TranscribeAudioDiarized)} instead.");
+        }
 
         using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options)
@@ -281,6 +295,13 @@ public partial class AudioClient
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
+        if (options?.ResponseFormat is not null && options.ResponseFormat != AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must be {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudioDiarized)}. "
+                + $"For non-diarized transcription, call {nameof(TranscribeAudio)} instead.");
+        }
+
         using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
@@ -306,6 +327,13 @@ public partial class AudioClient
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        if (options?.ResponseFormat is not null && options.ResponseFormat != AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must be {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudioDiarized)}. "
+                + $"For non-diarized transcription, call {nameof(TranscribeAudio)} instead.");
+        }
 
         using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options)

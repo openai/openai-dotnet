@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public partial class DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>
+    public readonly partial struct DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IJsonModel<object>
     {
-        internal DiarizedTranscriptionSegment()
+        public DiarizedTranscriptionSegment()
         {
         }
 
-        protected virtual DiarizedTranscriptionSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        private DiarizedTranscriptionSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -31,7 +31,7 @@ namespace OpenAI.Audio
             }
         }
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        private BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -49,6 +49,12 @@ namespace OpenAI.Audio
 
         string IPersistableModel<DiarizedTranscriptionSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
+        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<DiarizedTranscriptionSegment>)this).Write(options);
+
+        string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options);
+
+        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<DiarizedTranscriptionSegment>)this).Create(data, options);
+
         void IJsonModel<DiarizedTranscriptionSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -56,7 +62,7 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        private void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -86,7 +92,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("speaker") != true)
             {
                 writer.WritePropertyName("speaker"u8);
-                writer.WriteStringValue(Speaker);
+                writer.WriteStringValue(SpeakerLabel);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -112,7 +118,7 @@ namespace OpenAI.Audio
 
         DiarizedTranscriptionSegment IJsonModel<DiarizedTranscriptionSegment>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual DiarizedTranscriptionSegment JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        private DiarizedTranscriptionSegment JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DiarizedTranscriptionSegment>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -127,13 +133,13 @@ namespace OpenAI.Audio
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
-                return null;
+                return default;
             }
             string id = default;
             TimeSpan startTime = default;
             TimeSpan endTime = default;
             string text = default;
-            string speaker = default;
+            string speakerLabel = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -159,7 +165,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("speaker"u8))
                 {
-                    speaker = prop.Value.GetString();
+                    speakerLabel = prop.Value.GetString();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -170,8 +176,12 @@ namespace OpenAI.Audio
                 startTime,
                 endTime,
                 text,
-                speaker,
+                speakerLabel,
                 additionalBinaryDataProperties);
         }
+
+        void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<DiarizedTranscriptionSegment>)this).Write(writer, options);
+
+        object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<DiarizedTranscriptionSegment>)this).Create(ref reader, options);
     }
 }
