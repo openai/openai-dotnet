@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunCreationOptions : IJsonModel<RunCreationOptions>
     {
-        internal RunCreationOptions() : this(null, null, default, null, null, null, null, null, default, default, default, default, default, null, null, default, null, null)
+        public RunCreationOptions() : this(null, null, default, null, null, null, null, null, default, default, default, default, default, null, null, default, null, null)
         {
         }
 

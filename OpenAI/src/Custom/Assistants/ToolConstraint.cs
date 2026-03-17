@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace OpenAI.Assistants;
 
 [CodeGenType("AssistantsNamedToolChoice")]
-[CodeGenVisibility(nameof(ToolConstraint), CodeGenVisibility.Internal, typeof(InternalAssistantsNamedToolChoiceType))]
+[CodeGenVisibility(nameof(ToolConstraint), CodeGenVisibility.Internal, typeof(InternalAssistantsNamedToolChoiceType?))]
 public partial class ToolConstraint
 {
     private readonly string _plainTextValue;

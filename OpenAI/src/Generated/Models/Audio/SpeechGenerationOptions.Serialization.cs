@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>
     {
-        internal SpeechGenerationOptions()
+        public SpeechGenerationOptions()
         {
         }
 

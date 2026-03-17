@@ -13,7 +13,7 @@ namespace OpenAI.Images
 {
     public partial class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>
     {
-        internal ImageGenerationOptions()
+        public ImageGenerationOptions()
         {
         }
 

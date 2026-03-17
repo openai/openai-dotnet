@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public RealtimeMcpToolCallApprovalPolicy()
+        internal RealtimeMcpToolCallApprovalPolicy()
         {
         }
 

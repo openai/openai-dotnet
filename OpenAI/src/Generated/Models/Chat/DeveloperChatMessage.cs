@@ -10,7 +10,7 @@ namespace OpenAI.Chat
     [Experimental("OPENAI001")]
     public partial class DeveloperChatMessage : ChatMessage
     {
-        public DeveloperChatMessage() : this(ChatMessageRole.Developer, null, default, null)
+        internal DeveloperChatMessage() : this(ChatMessageRole.Developer, null, default, null)
         {
         }
 

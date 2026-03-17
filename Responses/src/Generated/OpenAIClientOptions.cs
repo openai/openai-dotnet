@@ -3,9 +3,11 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI
+namespace OpenAI.Responses
 {
+    [Experimental("OPENAI001")]
     public partial class OpenAIClientOptions : ClientPipelineOptions
     {
     }

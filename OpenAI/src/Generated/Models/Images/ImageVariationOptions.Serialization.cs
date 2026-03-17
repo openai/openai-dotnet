@@ -13,7 +13,7 @@ namespace OpenAI.Images
 {
     public partial class ImageVariationOptions : IJsonModel<ImageVariationOptions>
     {
-        internal ImageVariationOptions()
+        public ImageVariationOptions()
         {
         }
 

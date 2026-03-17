@@ -4,6 +4,10 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
+#if OPENAI_RESPONSES
+using OpenAI.Responses;
+#endif
+
 #nullable enable
 
 namespace OpenAI;

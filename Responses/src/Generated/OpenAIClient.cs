@@ -7,10 +7,10 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using OpenAI.Responses;
 
-namespace OpenAI
+namespace OpenAI.Responses
 {
+    [Experimental("OPENAI001")]
     public partial class OpenAIClient
     {
         private readonly Uri _endpoint;
@@ -45,7 +45,6 @@ namespace OpenAI
 
         public ClientPipeline Pipeline { get; }
 
-        [Experimental("OPENAI001")]
         public virtual ResponsesClient GetResponsesClient()
         {
             return Volatile.Read(ref _cachedResponsesClient) ?? Interlocked.CompareExchange(ref _cachedResponsesClient, new ResponsesClient(Pipeline, _endpoint), null) ?? _cachedResponsesClient;

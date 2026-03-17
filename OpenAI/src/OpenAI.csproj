@@ -15,7 +15,7 @@
   <ItemGroup>
     <PackageReference Include="System.ClientModel" />
     <PackageReference Include="System.Net.ServerSentEvents" />
-    <!-- <ProjectReference Include="../../Responses/src/OpenAI.Responses.csproj" /> -->
+    <ProjectReference Include="../../Responses/src/OpenAI.Responses.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Compile Include="..\..\src\Utility\*.cs" />
-    <Compile Include="..\..\src\Utility\CodeGen\*.cs" />
     <Compile Include="..\..\src\Utility\Telemetry\*.cs" />
   </ItemGroup>
 

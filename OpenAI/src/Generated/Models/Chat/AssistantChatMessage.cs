@@ -10,7 +10,7 @@ namespace OpenAI.Chat
 {
     public partial class AssistantChatMessage : ChatMessage
     {
-        public AssistantChatMessage() : this(ChatMessageRole.Assistant, null, default, null, null, null, null, null)
+        internal AssistantChatMessage() : this(ChatMessageRole.Assistant, null, default, null, null, null, null, null)
         {
         }
 
