@@ -20,6 +20,8 @@ namespace OpenAI.Tests.Responses;
 [Category("ResponsesTools")]
 public partial class ResponsesToolTests : OpenAIRecordedTestBase
 {
+    private const int VectorStoreIndexingDelaySeconds = 5;
+
     public ResponsesToolTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
@@ -369,7 +371,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         if (Mode != RecordedTestMode.Playback)
         {
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(VectorStoreIndexingDelaySeconds));
         }
 
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -426,7 +428,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         if (Mode != RecordedTestMode.Playback)
         {
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Task.Delay(TimeSpan.FromSeconds(VectorStoreIndexingDelaySeconds));
         }
 
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -443,6 +445,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         int inProgressCount = 0;
         int searchingCount = 0;
         int completedCount = 0;
+        int stateTransitionCount = 0;
         bool gotFinishedSearchItem = false;
 
         await foreach (StreamingResponseUpdate update
@@ -454,6 +457,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 searchItemId ??= searchCallInProgressUpdate.ItemId;
                 Assert.That(searchItemId, Is.EqualTo(searchCallInProgressUpdate.ItemId));
                 Assert.That(searchCallInProgressUpdate.OutputIndex, Is.EqualTo(0));
+                Assert.That(stateTransitionCount, Is.EqualTo(0));
+                stateTransitionCount++;
                 inProgressCount++;
             }
             else if (update is StreamingResponseFileSearchCallSearchingUpdate searchCallSearchingUpdate)
@@ -462,6 +467,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 searchItemId ??= searchCallSearchingUpdate.ItemId;
                 Assert.That(searchItemId, Is.EqualTo(searchCallSearchingUpdate.ItemId));
                 Assert.That(searchCallSearchingUpdate.OutputIndex, Is.EqualTo(0));
+                Assert.That(stateTransitionCount, Is.EqualTo(1));
+                stateTransitionCount++;
                 searchingCount++;
             }
             else if (update is StreamingResponseFileSearchCallCompletedUpdate searchCallCompletedUpdate)
@@ -470,6 +477,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 searchItemId ??= searchCallCompletedUpdate.ItemId;
                 Assert.That(searchItemId, Is.EqualTo(searchCallCompletedUpdate.ItemId));
                 Assert.That(searchCallCompletedUpdate.OutputIndex, Is.EqualTo(0));
+                Assert.That(stateTransitionCount, Is.EqualTo(2));
+                stateTransitionCount++;
                 completedCount++;
             }
             else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
@@ -487,6 +496,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(searchingCount, Is.EqualTo(1));
         Assert.That(inProgressCount, Is.EqualTo(1));
         Assert.That(completedCount, Is.EqualTo(1));
+        Assert.That(stateTransitionCount, Is.EqualTo(3));
         Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
     }
 
