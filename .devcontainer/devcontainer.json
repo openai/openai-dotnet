@@ -6,6 +6,9 @@
   "overrideCommand": false,
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
   "workspaceFolder": "/home/codespace/workspace",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.dotnet/tools"
+  },
   "containerEnv": {
     "CLIENTMODEL_TEST_MODE": "Playback",
     "CLIENTMODEL_DISABLE_AUTO_RECORDING": "true"
@@ -33,5 +36,5 @@
     }
   },
 
-  "postCreateCommand": "dotnet --version && node --version && pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion' && dotnet restore OpenAI.slnx"
+  "postCreateCommand": "dotnet tool restore && dotnet --version && node --version && pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion' && dotnet restore OpenAI.slnx"
 }

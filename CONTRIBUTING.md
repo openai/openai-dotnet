@@ -39,6 +39,12 @@ dotnet build OpenAI.slnx
 
 Tests use the [Microsoft.ClientModel.TestFramework](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Microsoft.ClientModel.TestFramework/README.md) and can run in three modes:
 
+Before running tests, restore the repo's local .NET tools (this installs the `test-proxy` tool used by the test framework):
+
+```bash
+dotnet tool restore
+```
+
 | Mode | Description |
 |------|-------------|
 | **Playback** | Tests run against pre-recorded session data in `tests/SessionRecords/`. No API key required. This is the default mode. |
