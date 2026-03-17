@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
 {
     public partial class MessageCreationOptions : IJsonModel<MessageCreationOptions>
     {
-        internal MessageCreationOptions() : this(default, null, null, null, null)
+        public MessageCreationOptions() : this(default, null, null, null, null)
         {
         }
 

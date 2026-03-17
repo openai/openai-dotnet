@@ -26,7 +26,7 @@ namespace OpenAI.Assistants
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal RunStepToolCallKind Kind { get; set; }
+        public RunStepToolCallKind Kind { get; }
 
         public string Id { get; }
 

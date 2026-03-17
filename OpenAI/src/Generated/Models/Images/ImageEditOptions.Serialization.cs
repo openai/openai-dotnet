@@ -13,7 +13,7 @@ namespace OpenAI.Images
 {
     public partial class ImageEditOptions : IJsonModel<ImageEditOptions>
     {
-        internal ImageEditOptions()
+        public ImageEditOptions()
         {
         }
 

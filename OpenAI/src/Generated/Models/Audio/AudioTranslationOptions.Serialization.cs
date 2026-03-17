@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranslationOptions : IJsonModel<AudioTranslationOptions>
     {
-        internal AudioTranslationOptions()
+        public AudioTranslationOptions()
         {
         }
 

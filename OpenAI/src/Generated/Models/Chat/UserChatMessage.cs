@@ -8,7 +8,7 @@ namespace OpenAI.Chat
 {
     public partial class UserChatMessage : ChatMessage
     {
-        public UserChatMessage() : this(ChatMessageRole.User, null, default, null)
+        internal UserChatMessage() : this(ChatMessageRole.User, null, default, null)
         {
         }
 

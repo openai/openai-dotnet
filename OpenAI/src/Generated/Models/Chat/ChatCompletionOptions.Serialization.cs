@@ -14,7 +14,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>
     {
-        internal ChatCompletionOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, default, null, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default)
+        public ChatCompletionOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, default, null, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default)
         {
         }
 

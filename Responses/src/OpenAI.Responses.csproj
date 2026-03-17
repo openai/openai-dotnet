@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <Compile Include="..\..\src\Utility\*.cs" />
-    <Compile Include="..\..\src\Utility\CodeGen\*.cs" />
     <Compile Include="..\..\src\Utility\Telemetry\TelemetryDetails.cs" />
   </ItemGroup>
 

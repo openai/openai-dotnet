@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ToolConstraint(InternalAssistantsNamedToolChoiceType? kind)
+        internal ToolConstraint(InternalAssistantsNamedToolChoiceType? kind)
         {
             Kind = kind;
         }

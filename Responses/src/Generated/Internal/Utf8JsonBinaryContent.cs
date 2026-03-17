@@ -36,7 +36,7 @@ namespace OpenAI.Responses
             _content.WriteTo(stream, cancellationToken);
         }
 
-        public override bool TryComputeLength(out int length)
+        public override bool TryComputeLength(out long length)
         {
             length = JsonWriter.BytesCommitted + JsonWriter.BytesPending;
             return true;

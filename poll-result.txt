@@ -1,0 +1,21 @@
+CODEGEN COMPLETE
+> 97 | scalar string;
+     |        ^^^^^^
+../node_modules/@typespec/compiler/lib/intrinsics.tsp:97:8 - warning @azure-tools/typespec-client-generator-core/multiple-response-types: Multiple response types found in operation createTranscription. Some emitters might not support returning all of these response types
+> 97 | scalar string;
+     |        ^^^^^^
+../node_modules/@typespec/compiler/lib/intrinsics.tsp:97:8 - warning @azure-tools/typespec-client-generator-core/multiple-response-types: Multiple response types found in operation createImageEdit. Some emitters might not support returning all of these response types
+> 97 | scalar string;
+     |        ^^^^^^
+../node_modules/@typespec/compiler/lib/intrinsics.tsp:97:8 - warning @azure-tools/typespec-client-generator-core/multiple-response-types: Multiple response types found in operation createImage. Some emitters might not support returning all of these response types
+> 97 | scalar string;
+     |        ^^^^^^
+../node_modules/@typespec/compiler/lib/intrinsics.tsp:97:8 - warning @azure-tools/typespec-client-generator-core/multiple-response-types: Multiple response types found in operation RetrieveVideoContent. Some emitters might not support returning all of these response types
+> 97 | scalar string;
+     |        ^^^^^^
+<unknown location>:1:1 - warning @azure-tools/typespec-azure-core/union-enums-invalid-kind: Kind Scalar prevents this union from being resolved as an enum.
+
+Found 186 warnings.
+
+TSP_EXIT:0
+FINISHED at Mon Mar 16 09:25:29 CDT 2026

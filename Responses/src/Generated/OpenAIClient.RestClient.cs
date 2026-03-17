@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace OpenAI
+namespace OpenAI.Responses
 {
     public partial class OpenAIClient
     {
