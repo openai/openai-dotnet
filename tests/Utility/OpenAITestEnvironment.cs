@@ -154,7 +154,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(VectorStoreClient) => new VectorStoreClient(credential, options),
             nameof(OpenAIClient) => new OpenAIClient(credential, options),
             nameof(RealtimeClient) => new RealtimeClient(credential, CreateRealtimeClientOptions(options)),
-            nameof(ResponsesClient) => new ResponsesClient(credential, options),
+            nameof(ResponsesClient) => new ResponsesClient(credential, CreateResponsesClientOptions(options)),
             _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
         };
 
@@ -164,6 +164,14 @@ public class OpenAITestEnvironment : TestEnvironment
     public override Dictionary<string, string> ParseEnvironmentFile() =>  EnvironmentFile;
 
     public override Task WaitForEnvironmentAsync() => Task.CompletedTask;
+
+    private static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options) => new()
+    {
+        Endpoint = options?.Endpoint,
+        OrganizationId = options?.OrganizationId,
+        ProjectId = options?.ProjectId,
+        UserAgentApplicationId = options?.UserAgentApplicationId,
+    };
 
     private static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options) => new()
     {
