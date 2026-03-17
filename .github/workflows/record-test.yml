@@ -62,11 +62,12 @@ jobs:
       - name: Run tests in Record mode
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --framework "$LATEST_TEST_TFM"
+          --framework "$env:LATEST_TEST_TFM"
           --logger "trx;LogFilePrefix=record"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.VERSION_SUFFIX_ARGS }}
-          -- NUnit.Where="$TEST_NUNIT_WHERE"
+          -- NUnit.Where="$env:TEST_NUNIT_WHERE"
+        shell: pwsh
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           CLIENTMODEL_TEST_MODE: Record
@@ -105,7 +106,8 @@ jobs:
           --logger "trx;LogFilePrefix=playback"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.VERSION_SUFFIX_ARGS }}
-          -- NUnit.Where="$TEST_NUNIT_WHERE"
+          -- NUnit.Where="$env:TEST_NUNIT_WHERE"
+        shell: pwsh
         env:
           CLIENTMODEL_TEST_MODE: Playback
           CLIENTMODEL_DISABLE_AUTO_RECORDING: "true"
