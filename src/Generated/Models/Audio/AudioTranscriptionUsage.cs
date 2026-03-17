@@ -4,19 +4,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
-    internal abstract partial class InternalCreateTranscriptionResponseJsonUsage
+    [Experimental("OPENAI001")]
+    public partial class AudioTranscriptionUsage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalCreateTranscriptionResponseJsonUsage(InternalCreateTranscriptionResponseJsonUsageType kind)
+        private protected AudioTranscriptionUsage(InternalCreateTranscriptionResponseJsonUsageType kind)
         {
             Kind = kind;
         }
 
-        internal InternalCreateTranscriptionResponseJsonUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

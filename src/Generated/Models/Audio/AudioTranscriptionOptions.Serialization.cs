@@ -157,18 +157,18 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(KnownSpeakerReferences) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
+            if (Optional.IsCollectionDefined(KnownSpeakerReferenceUris) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
             {
                 writer.WritePropertyName("known_speaker_references"u8);
                 writer.WriteStartArray();
-                foreach (string item in KnownSpeakerReferences)
+                foreach (Uri item in KnownSpeakerReferenceUris)
                 {
                     if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteStringValue(item.AbsoluteUri);
                 }
                 writer.WriteEndArray();
             }
@@ -225,7 +225,7 @@ namespace OpenAI.Audio
             bool? stream = default;
             BinaryData chunkingStrategy = default;
             IList<string> knownSpeakerNames = default;
-            IList<string> knownSpeakerReferences = default;
+            IList<Uri> knownSpeakerReferenceUris = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -349,7 +349,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    List<string> array = new List<string>();
+                    List<Uri> array = new List<Uri>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
                         if (item.ValueKind == JsonValueKind.Null)
@@ -358,10 +358,10 @@ namespace OpenAI.Audio
                         }
                         else
                         {
-                            array.Add(item.GetString());
+                            array.Add(string.IsNullOrEmpty(item.GetString()) ? null : new Uri(item.GetString(), UriKind.RelativeOrAbsolute));
                         }
                     }
-                    knownSpeakerReferences = array;
+                    knownSpeakerReferenceUris = array;
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -379,7 +379,7 @@ namespace OpenAI.Audio
                 stream,
                 chunkingStrategy,
                 knownSpeakerNames ?? new ChangeTrackingList<string>(),
-                knownSpeakerReferences ?? new ChangeTrackingList<string>(),
+                knownSpeakerReferenceUris ?? new ChangeTrackingList<Uri>(),
                 additionalBinaryDataProperties);
         }
     }

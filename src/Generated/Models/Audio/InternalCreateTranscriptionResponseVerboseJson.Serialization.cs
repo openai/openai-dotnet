@@ -151,7 +151,7 @@ namespace OpenAI.Audio
             string text = default;
             IReadOnlyList<TranscribedWord> words = default;
             IReadOnlyList<TranscribedSegment> segments = default;
-            InternalTranscriptTextUsageDuration usage = default;
+            AudioTranscriptionUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -204,7 +204,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    usage = InternalTranscriptTextUsageDuration.DeserializeInternalTranscriptTextUsageDuration(prop.Value, options);
+                    usage = AudioTranscriptionUsage.DeserializeAudioTranscriptionUsage(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

@@ -166,7 +166,7 @@ namespace OpenAI.Audio
             string text = default;
             IReadOnlyList<TranscribedWord> words = default;
             IReadOnlyList<TranscribedSegment> segments = default;
-            InternalTranscriptTextUsageDuration usage = default;
+            AudioTranscriptionUsage usage = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -220,7 +220,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    usage = InternalTranscriptTextUsageDuration.DeserializeInternalTranscriptTextUsageDuration(prop.Value, options);
+                    usage = AudioTranscriptionUsage.DeserializeAudioTranscriptionUsage(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("logprobs"u8))

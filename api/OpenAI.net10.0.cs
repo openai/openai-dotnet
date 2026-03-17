@@ -1174,6 +1174,14 @@ namespace OpenAI.Audio {
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioTranscriptionOptions options = null);
         [Experimental("OPENAI001")]
+        public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(string audioFilePath, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
@@ -1217,6 +1225,8 @@ namespace OpenAI.Audio {
         public string Text { get; }
         [Experimental("OPENAI001")]
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
+        [Experimental("OPENAI001")]
+        public AudioTranscriptionUsage Usage { get; }
         public IReadOnlyList<TranscribedWord> Words { get; }
         [Experimental("OPENAI001")]
         protected virtual AudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -1229,8 +1239,17 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>, IPersistableModel<AudioTranscriptionDurationUsage> {
+        public TimeSpan Duration { get; }
+        protected override AudioTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override AudioTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
         public AudioTranscriptionFormat(string value);
+        public static AudioTranscriptionFormat Diarized { get; }
         public static AudioTranscriptionFormat Simple { get; }
         public static AudioTranscriptionFormat Srt { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1254,9 +1273,22 @@ namespace OpenAI.Audio {
         Default = 0,
         Logprobs = 1
     }
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionInputTokenUsageDetails : IJsonModel<AudioTranscriptionInputTokenUsageDetails>, IPersistableModel<AudioTranscriptionInputTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        public int? TextTokenCount { get; }
+        protected virtual AudioTranscriptionInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual AudioTranscriptionInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class AudioTranscriptionOptions : IJsonModel<AudioTranscriptionOptions>, IPersistableModel<AudioTranscriptionOptions> {
         [Experimental("OPENAI001")]
         public AudioTranscriptionIncludes Includes { get; set; }
+        [Experimental("OPENAI001")]
+        public IList<string> KnownSpeakerNames { get; }
+        [Experimental("OPENAI001")]
+        public IList<Uri> KnownSpeakerReferenceUris { get; }
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
@@ -1269,6 +1301,24 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         protected virtual AudioTranscriptionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionTokenUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionTokenUsage>, IPersistableModel<AudioTranscriptionTokenUsage> {
+        public int InputTokenCount { get; }
+        public AudioTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
+        public int OutputTokenCount { get; }
+        public int TotalTokenCount { get; }
+        protected override AudioTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override AudioTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>, IPersistableModel<AudioTranscriptionUsage> {
+        protected virtual AudioTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual AudioTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class AudioTranslation : IJsonModel<AudioTranslation>, IPersistableModel<AudioTranslation> {
@@ -1318,6 +1368,25 @@ namespace OpenAI.Audio {
         protected virtual AudioTranslationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DiarizedAudioTranscription : IJsonModel<DiarizedAudioTranscription>, IPersistableModel<DiarizedAudioTranscription> {
+        public TimeSpan Duration { get; }
+        public IReadOnlyList<DiarizedTranscriptionSegment> Segments { get; }
+        public string Text { get; }
+        public AudioTranscriptionUsage Usage { get; }
+        protected virtual DiarizedAudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DiarizedAudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IPersistableModel<DiarizedTranscriptionSegment>, IJsonModel<object>, IPersistableModel<object> {
+        public TimeSpan EndTime { get; }
+        public string Id { get; }
+        public string SpeakerLabel { get; }
+        public TimeSpan StartTime { get; }
+        public string Text { get; }
     }
     public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat> {
         public GeneratedSpeechFormat(string value);
@@ -1404,6 +1473,7 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDoneUpdate> {
         public string Text { get; }
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
+        public AudioTranscriptionTokenUsage Usage { get; }
         protected override StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1427,23 +1497,6 @@ namespace OpenAI.Audio {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct StreamingAudioTranscriptionUpdateKind : IEquatable<StreamingAudioTranscriptionUpdateKind> {
-        public StreamingAudioTranscriptionUpdateKind(string value);
-        public static StreamingAudioTranscriptionUpdateKind TranscriptTextDelta { get; }
-        public static StreamingAudioTranscriptionUpdateKind TranscriptTextDone { get; }
-        public static StreamingAudioTranscriptionUpdateKind TranscriptTextSegment { get; }
-        public readonly bool Equals(StreamingAudioTranscriptionUpdateKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(StreamingAudioTranscriptionUpdateKind left, StreamingAudioTranscriptionUpdateKind right);
-        public static implicit operator StreamingAudioTranscriptionUpdateKind(string value);
-        public static implicit operator StreamingAudioTranscriptionUpdateKind?(string value);
-        public static bool operator !=(StreamingAudioTranscriptionUpdateKind left, StreamingAudioTranscriptionUpdateKind right);
-        public override readonly string ToString();
     }
     public readonly partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IPersistableModel<TranscribedSegment>, IJsonModel<object>, IPersistableModel<object> {
         public float AverageLogProbability { get; }

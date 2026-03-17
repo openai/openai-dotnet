@@ -85,13 +85,13 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            StreamingAudioTranscriptionUpdateKind kind = default;
+            InternalCreateTranscriptionStreamingResponseType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingAudioTranscriptionUpdateKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionStreamingResponseType(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
