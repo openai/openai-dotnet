@@ -202,7 +202,7 @@ public partial class AudioClient
         {
             throw new InvalidOperationException(
                 $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must not be set to {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudio)}. "
-                + $"For diarized transcription, call {nameof(TranscribeAudioDiarized)} instead.");
+                + $"For diarized transcription, call {nameof(TranscribeAudioDiarizedAsync)} instead.");
         }
 
         using MultiPartFormDataBinaryContent content
@@ -299,7 +299,7 @@ public partial class AudioClient
         {
             throw new InvalidOperationException(
                 $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must be {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudioDiarized)}. "
-                + $"For non-diarized transcription, call {nameof(TranscribeAudio)} instead.");
+                + $"For non-diarized transcription, call {nameof(TranscribeAudioAsync)} instead.");
         }
 
         using MultiPartFormDataBinaryContent content
