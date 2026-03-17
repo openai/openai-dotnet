@@ -405,6 +405,93 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task FileSearchCallStreaming()
+    {
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
+        OpenAIFile testFile = await fileClient.UploadFileAsync(
+            BinaryData.FromString("""
+                    Travis's favorite food is pizza.
+                    """),
+            "test_favorite_foods.txt",
+            FileUploadPurpose.UserData);
+        Validate(testFile);
+
+        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>();
+        VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
+            new VectorStoreCreationOptions()
+            {
+                FileIds = { testFile.Id },
+            });
+        Validate(vectorStore);
+
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+        }
+
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        CreateResponseOptions responseOptions = new(
+            TestModel.Responses,
+            [ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
+        {
+            Tools =
+            {
+                ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
+            },
+            StreamingEnabled = true,
+        };
+
+        string fileSearchItemId = null;
+        int inProgressCount = 0;
+        int searchingCount = 0;
+        int completedCount = 0;
+        bool gotFinishedFileSearchItem = false;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(responseOptions))
+        {
+            if (update is StreamingResponseFileSearchCallInProgressUpdate inProgressUpdate)
+            {
+                Assert.That(inProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                fileSearchItemId ??= inProgressUpdate.ItemId;
+                Assert.That(fileSearchItemId, Is.EqualTo(inProgressUpdate.ItemId));
+                Assert.That(inProgressUpdate.OutputIndex, Is.EqualTo(0));
+                inProgressCount++;
+            }
+            else if (update is StreamingResponseFileSearchCallSearchingUpdate searchingUpdate)
+            {
+                Assert.That(searchingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                fileSearchItemId ??= searchingUpdate.ItemId;
+                Assert.That(fileSearchItemId, Is.EqualTo(searchingUpdate.ItemId));
+                Assert.That(searchingUpdate.OutputIndex, Is.EqualTo(0));
+                searchingCount++;
+            }
+            else if (update is StreamingResponseFileSearchCallCompletedUpdate completedUpdate)
+            {
+                Assert.That(completedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                fileSearchItemId ??= completedUpdate.ItemId;
+                Assert.That(fileSearchItemId, Is.EqualTo(completedUpdate.ItemId));
+                Assert.That(completedUpdate.OutputIndex, Is.EqualTo(0));
+                completedCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+            {
+                if (outputItemDoneUpdate.Item is FileSearchCallResponseItem fileSearchCallItem)
+                {
+                    Assert.That(fileSearchCallItem.Status, Is.EqualTo(FileSearchCallStatus.Completed));
+                    Assert.That(fileSearchCallItem.Id, Is.EqualTo(fileSearchItemId));
+                    gotFinishedFileSearchItem = true;
+                }
+            }
+        }
+
+        Assert.That(gotFinishedFileSearchItem, Is.True);
+        Assert.That(inProgressCount, Is.EqualTo(1));
+        Assert.That(searchingCount, Is.EqualTo(1));
+        Assert.That(completedCount, Is.EqualTo(1));
+        Assert.That(fileSearchItemId, Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
