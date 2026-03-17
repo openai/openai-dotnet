@@ -65,15 +65,13 @@ Request recordings from a human before considering your work complete in either 
 1. You added a new recorded test (which implies its recording is missing because it has never been recorded before).
 2. An existing recorded test fails in Playback mode because its recording is missing or stale (for example, if the recorded test was modified and the existing recording no longer matches).
 
-If you are currently working on a pull request, you must also include the recording request in the pull request description. This ensures that a human reviewer can see it directly and capture the recordings as part of the review process.
-
 When asking for recordings, always provide:
 
 1. The link to the recording workflow
 2. The exact `NUnit.Where` expression
 3. A copy-pasteable `dotnet test` command
 
-Use this template:
+You must use this template:
 
 > Please record tests using the recording workflow:
 > https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
