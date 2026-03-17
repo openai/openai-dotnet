@@ -2,6 +2,7 @@
   "name": "OpenAI .NET (Dev Container)",
   "image": "mcr.microsoft.com/devcontainers/universal:5",
   "remoteUser": "codespace",
+  "updateRemoteUserUID": false,
   "overrideCommand": false,
   "workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
   "workspaceFolder": "/home/codespace/workspace",
