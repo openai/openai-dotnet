@@ -28,14 +28,14 @@ public partial class ResponseExamples
     #endregion
 
     #region
-    private static readonly FunctionTool getCurrentLocationTool = ResponseTool.CreateFunctionTool(
+    private static readonly Responses.FunctionTool getCurrentLocationTool = ResponseTool.CreateFunctionTool(
         functionName: nameof(GetCurrentLocation),
         functionDescription: "Get the user's current location",
         functionParameters: null,
         strictModeEnabled: false
     );
 
-    private static readonly FunctionTool getCurrentWeatherTool = ResponseTool.CreateFunctionTool(
+    private static readonly Responses.FunctionTool getCurrentWeatherTool = ResponseTool.CreateFunctionTool(
         functionName: nameof(GetCurrentWeather),
         functionDescription: "Get the current weather in a given location",
         functionParameters: BinaryData.FromBytes("""

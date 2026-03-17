@@ -11,7 +11,7 @@
     <None Remove="aspnet-core/**" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\OpenAI.csproj" />
+    <ProjectReference Include="..\OpenAI\src\OpenAI.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
