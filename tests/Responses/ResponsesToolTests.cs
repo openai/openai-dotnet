@@ -369,6 +369,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         if (Mode != RecordedTestMode.Playback)
         {
+            // Allow time for vector store indexing before file search is invoked.
             await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
