@@ -23,6 +23,10 @@ The following tools are required for development:
 - **Node.js** — Required for TypeSpec compilation and code generation. Install from [nodejs.org](https://nodejs.org/).
 - **PowerShell** — Required for running development scripts. Available by default on Windows; install [PowerShell Core](https://github.com/PowerShell/PowerShell) on macOS/Linux.
 
+### Optional: VS Code Dev Container / Codespaces
+
+This repo includes a `.devcontainer/devcontainer.json` for contributors who prefer a containerized dev environment (VS Code Dev Containers extension or GitHub Codespaces). It installs the required .NET SDK, Node.js, and PowerShell, then restores `OpenAI.slnx` on first create. The container defaults tests to Playback mode and disables auto-recording; override `CLIENTMODEL_TEST_MODE`/`CLIENTMODEL_DISABLE_AUTO_RECORDING` if you want Record/Live behavior.
+
 ## Building the Library
 
 Build the library from the repository root:
