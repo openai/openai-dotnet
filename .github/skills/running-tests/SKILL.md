@@ -117,3 +117,32 @@ Example for both fixture instances of the `GenerateSingleEmbedding` recorded tes
 ```text
 (test == 'OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding') or (test == 'OpenAI.Tests.Embeddings.EmbeddingsTests(False).GenerateSingleEmbedding')
 ```
+
+## PR Body Requirement for Recording Requests
+
+When recordings are required, include a **Recording Request** section in the PR description so reviewers can act without reading the full comment thread.
+
+Include:
+
+1. The recording workflow link
+2. The exact `NUnit.Where` expression
+3. A copy-pasteable `dotnet test` command
+
+Use this PR description snippet:
+
+~~~markdown
+### Recording Request
+
+Please record tests using the recording workflow:
+https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
+
+`NUnit.Where`:
+```text
+test == 'Namespace.TestClass.TestMethodName'
+```
+
+Local command:
+```powershell
+dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test == 'Namespace.TestClass.TestMethodName'"
+```
+~~~
