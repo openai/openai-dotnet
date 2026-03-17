@@ -78,17 +78,23 @@ Use this template:
 >
 > Use the following `NUnit.Where` expression:
 > ```text
-> test =~ '.*Namespace.TestClass.*' and test =~ '.*TestMethodName$'
+> test == 'Namespace.TestClass.TestMethodName'
 > ```
 >
 > Alternatively, run the following command locally and push the recordings manually:
 > ```powershell
-> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test =~ '.*Namespace.TestClass.*' and test =~ '.*TestMethodName$'"
+> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test == 'Namespace.TestClass.TestMethodName'"
 > ```
 
-Use `NUnit.Where` for recording requests even when `dotnet test --filter` would work locally. `NUnit.Where` is the contract used by the recording workflow. It works for ordinary tests and for NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, where the underlying test names may include fixture arguments like `(True)` or `(False)`.
+Use `NUnit.Where` for recording requests even when `dotnet test --filter` would work locally. `NUnit.Where` is the contract used by the recording workflow. Prefer `test == ...` because it matches the exact discovered NUnit test name and avoids ambiguity. For NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, the discovered test names may include fixture arguments like `(True)` or `(False)`.
 
-If you need one exact fixture instance, use `test == ...` instead of a regex match:
+For a single ordinary test, use:
+
+```text
+test == 'Namespace.TestClass.TestMethodName'
+```
+
+If you need one exact fixture instance, use:
 
 ```text
 test == 'Namespace.TestClass(True).TestMethodName'
@@ -103,11 +109,11 @@ test == 'OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding'
 If multiple tests need recording, combine them in a single `NUnit.Where` expression:
 
 ```text
-(test =~ '.*Namespace.TestClass.*' and test =~ '.*TestA$') or (test =~ '.*Namespace.TestClass.*' and test =~ '.*TestB$')
+(test == 'Namespace.TestClass.TestA') or (test == 'Namespace.TestClass.TestB')
 ```
 
 Example for both fixture instances of the `GenerateSingleEmbedding` recorded test:
 
 ```text
-test =~ '.*OpenAI.Tests.Embeddings.EmbeddingsTests.*' and test =~ '.*GenerateSingleEmbedding$'
+(test == 'OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding') or (test == 'OpenAI.Tests.Embeddings.EmbeddingsTests(False).GenerateSingleEmbedding')
 ```
