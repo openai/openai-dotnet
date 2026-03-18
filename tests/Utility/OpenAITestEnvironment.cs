@@ -171,6 +171,7 @@ public class OpenAITestEnvironment : TestEnvironment
         OrganizationId = options?.OrganizationId,
         ProjectId = options?.ProjectId,
         UserAgentApplicationId = options?.UserAgentApplicationId,
+        Transport = options?.Transport,
     };
 
     private static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options) => new()
@@ -179,6 +180,7 @@ public class OpenAITestEnvironment : TestEnvironment
         OrganizationId = options?.OrganizationId,
         ProjectId = options?.ProjectId,
         UserAgentApplicationId = options?.UserAgentApplicationId,
+        Transport = options?.Transport,
     };
 
     private static bool TryReadEnvFile(string filePath,
