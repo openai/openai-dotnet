@@ -1,0 +1,40 @@
+{
+  "name": "OpenAI .NET (Dev Container)",
+  "image": "mcr.microsoft.com/devcontainers/universal:5",
+  "remoteUser": "codespace",
+  "updateRemoteUserUID": false,
+  "overrideCommand": false,
+  "workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
+  "workspaceFolder": "/home/codespace/workspace",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:${containerEnv:HOME}/.dotnet/tools"
+  },
+  "containerEnv": {
+    "CLIENTMODEL_TEST_MODE": "Playback",
+    "CLIENTMODEL_DISABLE_AUTO_RECORDING": "true"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "10.0"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/powershell:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "GitHub.vscode-pull-request-github",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit"
+      ]
+    }
+  },
+
+  "postCreateCommand": "dotnet tool restore && dotnet --version && node --version && pwsh -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion' && dotnet restore OpenAI.slnx"
+}
