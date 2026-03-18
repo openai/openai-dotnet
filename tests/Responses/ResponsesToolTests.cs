@@ -431,7 +431,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         // Basic validation that the response was created successfully
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
 
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<OpenAI.Responses.CodeInterpreterTool>());
     }
 
     [RecordedTest]
@@ -462,7 +462,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         // Basic validation that the response was created successfully
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
 
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<OpenAI.Responses.CodeInterpreterTool>());
     }
 
     [RecordedTest]
@@ -504,7 +504,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
 
-            Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
+            Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<OpenAI.Responses.CodeInterpreterTool>());
         }
         finally
         {
@@ -561,7 +561,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-            Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
+            Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<OpenAI.Responses.CodeInterpreterTool>());
         }
         catch
         {
@@ -1059,7 +1059,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
 
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<OpenAI.Responses.WebSearchTool>());
     }
 
     [RecordedTest]
@@ -1086,7 +1086,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
 
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<OpenAI.Responses.WebSearchPreviewTool>());
     }
 
     [RecordedTest]
