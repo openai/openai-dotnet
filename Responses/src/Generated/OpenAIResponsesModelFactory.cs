@@ -51,11 +51,9 @@ namespace OpenAI.Responses
             return new ResponseTextOptions(textFormat, default);
         }
 
-        public static ResponseFormatJsonSchemaSchema ResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties = default)
+        public static ResponseFormatJsonSchemaSchema ResponseFormatJsonSchemaSchema()
         {
-            additionalProperties ??= new ChangeTrackingDictionary<string, BinaryData>();
-
-            return new ResponseFormatJsonSchemaSchema(additionalProperties);
+            return new ResponseFormatJsonSchemaSchema(default);
         }
 
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)

@@ -181,7 +181,9 @@ namespace OpenAI {
         High = 4
     }
     public class ResponseFormatJsonSchemaSchema : IJsonModel<ResponseFormatJsonSchemaSchema>, IPersistableModel<ResponseFormatJsonSchemaSchema> {
-        public IDictionary<string, BinaryData> AdditionalProperties { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         protected virtual ResponseFormatJsonSchemaSchema JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseFormatJsonSchemaSchema PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -958,7 +960,7 @@ namespace OpenAI.Responses {
         public static ResponseConversationOptions ResponseConversationOptions(string conversationId = null);
         public static ResponseDeletionResult ResponseDeletionResult(string responseId = null, bool deleted = false);
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = null);
-        public static ResponseFormatJsonSchemaSchema ResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties = null);
+        public static ResponseFormatJsonSchemaSchema ResponseFormatJsonSchemaSchema();
         public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = null);
         public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = 0);
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = null, string afterId = null, string beforeId = null, int? pageSizeLimit = null, ResponseItemCollectionOrder? order = null);
