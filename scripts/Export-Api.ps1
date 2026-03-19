@@ -150,6 +150,9 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     # Remove IJsonModel/IPersistableModel interface method entries.
     $content = $content -creplace "        .*(IJsonModel|IPersistableModel).*`n", ""
 
+    # Remove JsonModelCreateCore, JsonModelWriteCore, PersistableModelCreateCore, PersistableModelWriteCore methods.
+    $content = $content -creplace "        protected (virtual|override) .*(JsonModelCreateCore|JsonModelWriteCore|PersistableModelCreateCore|PersistableModelWriteCore).*`n", ""
+
     # Other cosmetic simplifications.
     $content = $content -creplace "partial class", "class"
     $content = $content -creplace " { throw null; }", ";"
