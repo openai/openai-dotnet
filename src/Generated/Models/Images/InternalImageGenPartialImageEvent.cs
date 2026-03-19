@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -12,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, int partialImageIndex)
+        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalGeneratedImageSize size, InternalGeneratedImageQuality quality, InternalGeneratedImageBackground background, InternalGeneratedImageOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -23,7 +22,7 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalGeneratedImageSize size, InternalGeneratedImageQuality quality, InternalGeneratedImageBackground background, InternalGeneratedImageOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -42,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        public OpenAI. Size { get; }
+        internal InternalGeneratedImageSize Size { get; }
 
-        public OpenAI. Quality { get; }
+        internal InternalGeneratedImageQuality Quality { get; }
 
-        public OpenAI. Background { get; }
+        internal InternalGeneratedImageBackground Background { get; }
 
-        public OpenAI. OutputFormat { get; }
+        internal InternalGeneratedImageOutputFormat OutputFormat { get; }
 
         public int PartialImageIndex { get; }
 

@@ -4,22 +4,19 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using OpenAI.Audio;
 
-namespace OpenAI
+namespace OpenAI.Audio
 {
-    [Experimental("OPENAI001")]
-    public partial class SpeechAudioDoneEvent
+    internal partial class InternalSpeechAudioDoneEvent
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal SpeechAudioDoneEvent(InternalSpeechAudioDoneEventUsage usage)
+        internal InternalSpeechAudioDoneEvent(InternalSpeechAudioDoneEventUsage usage)
         {
             Usage = usage;
         }
 
-        internal SpeechAudioDoneEvent(string kind, InternalSpeechAudioDoneEventUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalSpeechAudioDoneEvent(string kind, InternalSpeechAudioDoneEventUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Usage = usage;
