@@ -9,6 +9,8 @@
 namespace OpenAI {
     public class OpenAIClient {
         protected OpenAIClient();
+        [Experimental("SCME0002")]
+        public OpenAIClient(OpenAIClientSettings settings);
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIClient(ApiKeyCredential credential);
         [Experimental("OPENAI001")]
@@ -55,6 +57,12 @@ namespace OpenAI {
         public string OrganizationId { get; set; }
         public string ProjectId { get; set; }
         public string UserAgentApplicationId { get; set; }
+    }
+    [Experimental("SCME0002")]
+    public class OpenAIClientSettings : ClientSettings {
+        public Uri Endpoint { get; set; }
+        public OpenAIClientOptions Options { get; set; }
+        protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
     public class OpenAIContext : ModelReaderWriterContext {
