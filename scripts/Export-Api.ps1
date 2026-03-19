@@ -49,11 +49,11 @@ Write-Host "Target Frameworks: $clientTargetFrameworks" -ForegroundColor Green
 Write-Host "Configuration: $configuration"
 Write-Host ""
 
-# Ensure output directory exists and is clean
+# Ensure output directory exists and is clean (only remove generated .cs files, not other files like README.md)
 if (Test-Path $outputDirectory) {
     Write-Host "Cleaning existing output directory..." -ForegroundColor Cyan
     try {
-        Get-ChildItem -Path $outputDirectory -Force | Remove-Item -Recurse -Force
+        Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" -Force | Remove-Item -Force
     }
     catch {
         Write-Warning "Failed to clean some items in output directory: $_"
