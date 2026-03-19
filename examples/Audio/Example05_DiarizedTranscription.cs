@@ -21,6 +21,7 @@ public partial class AudioExamples
         AudioTranscriptionOptions options = new()
         {
             ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = AudioTranscriptionDefaultChunkingStrategy.Auto,
             KnownSpeakerNames = { "agent" },
             KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
         };

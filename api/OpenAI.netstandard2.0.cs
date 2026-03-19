@@ -1119,6 +1119,41 @@ namespace OpenAI.Audio {
         protected virtual AudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class AudioTranscriptionChunkingStrategy : IJsonModel<AudioTranscriptionChunkingStrategy>, IPersistableModel<AudioTranscriptionChunkingStrategy> {
+        public AudioTranscriptionChunkingStrategy(AudioTranscriptionCustomChunkingStrategy customChunkingStrategy);
+        public AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy defaultChunkingStrategy);
+        public AudioTranscriptionCustomChunkingStrategy CustomChunkingStrategy { get; }
+        public AudioTranscriptionDefaultChunkingStrategy? DefaultChunkingStrategy { get; }
+        protected virtual AudioTranscriptionChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator AudioTranscriptionChunkingStrategy(AudioTranscriptionCustomChunkingStrategy customChunkingStrategy);
+        public static implicit operator AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy defaultChunkingStrategy);
+        protected virtual AudioTranscriptionChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class AudioTranscriptionCustomChunkingStrategy : IJsonModel<AudioTranscriptionCustomChunkingStrategy>, IPersistableModel<AudioTranscriptionCustomChunkingStrategy> {
+        public float? ChunkingStrategyThreshold { get; set; }
+        public TimeSpan? PrefixPadding { get; set; }
+        public TimeSpan? SilenceDuration { get; set; }
+        protected virtual AudioTranscriptionCustomChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual AudioTranscriptionCustomChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct AudioTranscriptionDefaultChunkingStrategy : IEquatable<AudioTranscriptionDefaultChunkingStrategy> {
+        public AudioTranscriptionDefaultChunkingStrategy(string value);
+        public static AudioTranscriptionDefaultChunkingStrategy Auto { get; }
+        public readonly bool Equals(AudioTranscriptionDefaultChunkingStrategy other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AudioTranscriptionDefaultChunkingStrategy left, AudioTranscriptionDefaultChunkingStrategy right);
+        public static implicit operator AudioTranscriptionDefaultChunkingStrategy(string value);
+        public static implicit operator AudioTranscriptionDefaultChunkingStrategy?(string value);
+        public static bool operator !=(AudioTranscriptionDefaultChunkingStrategy left, AudioTranscriptionDefaultChunkingStrategy right);
+        public override readonly string ToString();
+    }
     public class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>, IPersistableModel<AudioTranscriptionDurationUsage> {
         public TimeSpan Duration { get; }
         protected override AudioTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -1160,6 +1195,7 @@ namespace OpenAI.Audio {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class AudioTranscriptionOptions : IJsonModel<AudioTranscriptionOptions>, IPersistableModel<AudioTranscriptionOptions> {
+        public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
         public AudioTranscriptionIncludes Includes { get; set; }
         public IList<string> KnownSpeakerNames { get; }
         public IList<Uri> KnownSpeakerReferenceUris { get; }

@@ -966,6 +966,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static AudioTranscriptionCustomChunkingStrategy AudioTranscriptionCustomChunkingStrategy(TimeSpan? prefixPadding = default, TimeSpan? silenceDuration = default, float? chunkingStrategyThreshold = default)
+        {
+            return new AudioTranscriptionCustomChunkingStrategy("server_vad", prefixPadding, silenceDuration, chunkingStrategyThreshold, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTranscriptionInputTokenUsageDetails AudioTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
             return new AudioTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
@@ -1440,6 +1445,11 @@ namespace OpenAI
                 usage,
                 transcriptionTokenLogProbabilities.ToList(),
                 additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
+        {
+            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
         }
 
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)

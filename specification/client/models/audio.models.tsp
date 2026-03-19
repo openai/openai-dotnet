@@ -57,3 +57,17 @@ model DotNetSpeechAudioDeltaEvent extends DotNetCreateSpeechStreamingResponse {
 model DotNetSpeechAudioDoneEvent extends DotNetCreateSpeechStreamingResponse {
   ...SpeechAudioDoneEvent;
 }
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+union DotNetTranscriptionDefaultChunkingStrategy {
+  string,
+  auto: "auto",
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetTranscriptionChunkingStrategy {
+  default_chunking_strategy?: DotNetTranscriptionDefaultChunkingStrategy;
+  custom_chunking_strategy?: VadConfig;
+}

@@ -4,33 +4,29 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalVadConfig
+    [Experimental("OPENAI001")]
+    public partial class AudioTranscriptionCustomChunkingStrategy
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalVadConfig()
+        public AudioTranscriptionCustomChunkingStrategy()
         {
         }
 
-        internal InternalVadConfig(string kind, int? prefixPaddingMs, int? silenceDurationMs, float? threshold, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionCustomChunkingStrategy(string kind, TimeSpan? prefixPadding, TimeSpan? silenceDuration, float? chunkingStrategyThreshold, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
-            PrefixPaddingMs = prefixPaddingMs;
-            SilenceDurationMs = silenceDurationMs;
-            Threshold = threshold;
+            PrefixPadding = prefixPadding;
+            SilenceDuration = silenceDuration;
+            ChunkingStrategyThreshold = chunkingStrategyThreshold;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         internal string Kind { get; } = "server_vad";
-
-        public int? PrefixPaddingMs { get; set; }
-
-        public int? SilenceDurationMs { get; set; }
-
-        public float? Threshold { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
