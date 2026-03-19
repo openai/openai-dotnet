@@ -143,6 +143,4 @@ union DotNetChatServiceTier {
    ServiceTier
 }
 
-union DotNetResponseServiceTier {
-  ServiceTier
-}
+
