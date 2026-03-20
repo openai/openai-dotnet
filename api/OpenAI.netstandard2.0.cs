@@ -922,6 +922,36 @@ namespace OpenAI.Audio {
         public IReadOnlyList<TranscribedWord> Words { get; }
         public static explicit operator AudioTranscription(ClientResult result);
     }
+    public class AudioTranscriptionChunkingStrategy : IJsonModel<AudioTranscriptionChunkingStrategy>, IPersistableModel<AudioTranscriptionChunkingStrategy> {
+        public AudioTranscriptionChunkingStrategy(AudioTranscriptionCustomChunkingStrategy customChunkingStrategy);
+        public AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy defaultChunkingStrategy);
+        public AudioTranscriptionCustomChunkingStrategy CustomChunkingStrategy { get; }
+        public AudioTranscriptionDefaultChunkingStrategy? DefaultChunkingStrategy { get; }
+        public static implicit operator AudioTranscriptionChunkingStrategy(AudioTranscriptionCustomChunkingStrategy customChunkingStrategy);
+        public static implicit operator AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy defaultChunkingStrategy);
+    }
+    public class AudioTranscriptionCustomChunkingStrategy : IJsonModel<AudioTranscriptionCustomChunkingStrategy>, IPersistableModel<AudioTranscriptionCustomChunkingStrategy> {
+    }
+    public class AudioTranscriptionCustomServerVadChunkingStrategy : AudioTranscriptionCustomChunkingStrategy, IJsonModel<AudioTranscriptionCustomServerVadChunkingStrategy>, IPersistableModel<AudioTranscriptionCustomServerVadChunkingStrategy> {
+        public AudioTranscriptionCustomServerVadChunkingStrategy();
+        public float? DetectionThreshold { get; set; }
+        public TimeSpan? PrefixPadding { get; set; }
+        public TimeSpan? SilenceDuration { get; set; }
+    }
+    public readonly partial struct AudioTranscriptionDefaultChunkingStrategy : IEquatable<AudioTranscriptionDefaultChunkingStrategy> {
+        public AudioTranscriptionDefaultChunkingStrategy(string value);
+        public static AudioTranscriptionDefaultChunkingStrategy Auto { get; }
+        public readonly bool Equals(AudioTranscriptionDefaultChunkingStrategy other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AudioTranscriptionDefaultChunkingStrategy left, AudioTranscriptionDefaultChunkingStrategy right);
+        public static implicit operator AudioTranscriptionDefaultChunkingStrategy(string value);
+        public static implicit operator AudioTranscriptionDefaultChunkingStrategy?(string value);
+        public static bool operator !=(AudioTranscriptionDefaultChunkingStrategy left, AudioTranscriptionDefaultChunkingStrategy right);
+        public override readonly string ToString();
+    }
     public class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>, IPersistableModel<AudioTranscriptionDurationUsage> {
         public TimeSpan Duration { get; }
     }
@@ -955,6 +985,7 @@ namespace OpenAI.Audio {
         public int? TextTokenCount { get; }
     }
     public class AudioTranscriptionOptions : IJsonModel<AudioTranscriptionOptions>, IPersistableModel<AudioTranscriptionOptions> {
+        public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
         public AudioTranscriptionIncludes Includes { get; set; }
         public IList<string> KnownSpeakerNames { get; }
         public IList<Uri> KnownSpeakerReferenceUris { get; }

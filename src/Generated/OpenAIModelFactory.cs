@@ -1442,6 +1442,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
+        {
+            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
+        }
+
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)
         {
             return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);

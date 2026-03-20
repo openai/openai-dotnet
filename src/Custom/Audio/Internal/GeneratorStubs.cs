@@ -17,7 +17,8 @@ namespace OpenAI.Audio;
 [CodeGenType("CreateSpeechRequestStreamFormat")] internal readonly partial struct InternalCreateSpeechRequestStreamFormat { }
 [CodeGenType("CreateTranscriptionResponseJsonUsageType")] internal readonly partial struct InternalCreateTranscriptionResponseJsonUsageType { }
 [CodeGenType("UnknownCreateTranscriptionResponseJsonUsage")] internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage { }
-[CodeGenType("VadConfig")] internal partial class InternalVadConfig { }
+[CodeGenType("ChunkingStrategyConfigType")] internal readonly partial struct InternalChunkingStrategyConfigType { }
+[CodeGenType("UnknownChunkingStrategyConfig")] internal partial class InternalUnknownChunkingStrategyConfig { }
 [CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }
 
 // Remove these after https://github.com/microsoft/openai-openapi-pr/issues/478 is fixed
