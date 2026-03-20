@@ -27,7 +27,7 @@ namespace OpenAILibraryPlugin
             AddVisitor(new InvariantFormatAdditionalPropertiesVisitor());
             AddVisitor(new OpenAILibraryVisitor());
             AddVisitor(new VirtualMessageCreationVisitor());
-            AddVisitor(new ProhibitedNamespaceVisitor());
+            // AddVisitor(new ProhibitedNamespaceVisitor());
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());
             AddVisitor(new ModelDirectoryVisitor());

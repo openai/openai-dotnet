@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="examples/OpenAI.Examples.csproj" />
-  <Project Path="src/OpenAI.csproj" />
+  <Project Path="OpenAI/src/OpenAI.csproj" />
+  <Project Path="Responses/src/OpenAI.Responses.csproj" />
   <Project Path="tests/OpenAI.Tests.csproj" />
 </Solution>

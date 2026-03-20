@@ -75,11 +75,14 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
         List<AttributeStatement> matchingAttributes = [];
 
-        foreach (AttributeStatement attribute in allAttributes.Where(attribute => attribute.Type.Name == "CodeGenVisibilityAttribute"))
+        foreach (AttributeStatement attribute in allAttributes.Where(attribute =>
+            attribute.Type.Name == "CodeGenVisibilityAttribute" || attribute.Type.Name == "CodeGenVisibility"))
         {
             if (attribute.Arguments.Count < 2 || attribute.Arguments[0] is not LiteralExpression)
             {
-                throw new ArgumentException($"Invalid CodeGenVisibilityAttribute provided for {type.Name}; a target name and visibility specifier are required");
+                // When Roslyn can't fully resolve the CodeGenVisibilityAttribute, its short name "CodeGenVisibility"
+                // may also match other symbols (e.g. the CodeGenVisibility enum). Skip non-matching entries.
+                continue;
             }
             matchingAttributes.Add(attribute);
         }
@@ -89,11 +92,11 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static bool TryUpdateVisibilityFromAttributes<T>(T target, IEnumerable<AttributeStatement> visibilityAttributes)
     {
-        (string targetName, IReadOnlyList<ParameterProvider> targetParameters, MethodSignatureModifiers startingModifiers, TypeProvider enclosingType) = target switch
+        (string targetName, IReadOnlyList<ParameterProvider> targetParameters, MethodSignatureModifiers startingModifiers) = target switch
         {
-            PropertyProvider propertyTarget => (propertyTarget.Name, [], propertyTarget.Modifiers, propertyTarget.EnclosingType),
-            ConstructorProvider constructorTarget => (constructorTarget.EnclosingType.Name, constructorTarget.Signature.Parameters, constructorTarget.Signature.Modifiers, constructorTarget.EnclosingType),
-            MethodProvider methodTarget => (methodTarget.Signature.Name, methodTarget.Signature.Parameters, methodTarget.Signature.Modifiers, methodTarget.EnclosingType),
+            PropertyProvider propertyTarget => (propertyTarget.Name, (IReadOnlyList<ParameterProvider>)[], propertyTarget.Modifiers),
+            ConstructorProvider constructorTarget => (constructorTarget.EnclosingType.Name, constructorTarget.Signature.Parameters, constructorTarget.Signature.Modifiers),
+            MethodProvider methodTarget => (methodTarget.Signature.Name, methodTarget.Signature.Parameters, methodTarget.Signature.Modifiers),
             _ => throw new NotImplementedException()
         };
 

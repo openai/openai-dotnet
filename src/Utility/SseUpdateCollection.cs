@@ -7,6 +7,10 @@ using System.Net.ServerSentEvents;
 using System.Text.Json;
 using System.Threading;
 
+#if OPENAI_RESPONSES
+using OpenAI.Responses;
+#endif
+
 #nullable enable
 
 namespace OpenAI;
