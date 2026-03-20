@@ -1036,11 +1036,7 @@ namespace OpenAI.Audio {
         public AudioTranscriptionUsage Usage { get; }
         public IReadOnlyList<TranscribedWord> Words { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator AudioTranscription(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>, IPersistableModel<AudioTranscriptionDurationUsage> {
@@ -1089,10 +1085,6 @@ namespace OpenAI.Audio {
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
         public float? Temperature { get; set; }
         public AudioTimestampGranularities TimestampGranularities { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class AudioTranscriptionTokenUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionTokenUsage>, IPersistableModel<AudioTranscriptionTokenUsage> {
@@ -1110,11 +1102,7 @@ namespace OpenAI.Audio {
         public IReadOnlyList<TranscribedSegment> Segments { get; }
         public string Text { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator AudioTranslation(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public readonly partial struct AudioTranslationFormat : IEquatable<AudioTranslationFormat> {
         public AudioTranslationFormat(string value);
@@ -1139,10 +1127,6 @@ namespace OpenAI.Audio {
         public string Prompt { get; set; }
         public AudioTranslationFormat? ResponseFormat { get; set; }
         public float? Temperature { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class DiarizedAudioTranscription : IJsonModel<DiarizedAudioTranscription>, IPersistableModel<DiarizedAudioTranscription> {
@@ -1221,10 +1205,6 @@ namespace OpenAI.Audio {
         public string Instructions { get; set; }
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
         public float? SpeedRatio { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate> {
@@ -1356,10 +1336,6 @@ namespace OpenAI.Chat {
         public string ParticipantName { get; set; }
         public string Refusal { get; set; }
         public IList<ChatToolCall> ToolCalls { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class ChatAudioOptions : IJsonModel<ChatAudioOptions>, IPersistableModel<ChatAudioOptions> {
@@ -1471,11 +1447,7 @@ namespace OpenAI.Chat {
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         public ChatTokenUsage Usage { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator ChatCompletion(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class ChatCompletionCollectionOptions : IJsonModel<ChatCompletionCollectionOptions>, IPersistableModel<ChatCompletionCollectionOptions> {
@@ -1596,10 +1568,6 @@ namespace OpenAI.Chat {
         public float? TopP { get; set; }
         [Experimental("OPENAI001")]
         public ChatWebSearchOptions WebSearchOptions { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public enum ChatFinishReason {
         Stop = 0,
@@ -1618,10 +1586,6 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Obsolete("This class is obsolete. Please use ChatToolCall instead.")]
     public class ChatFunctionCall : IJsonModel<ChatFunctionCall>, IPersistableModel<ChatFunctionCall> {
@@ -1632,10 +1596,6 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Obsolete("This class is obsolete. Please use ChatToolChoice instead.")]
     public class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>, IPersistableModel<ChatFunctionChoice> {
@@ -1646,10 +1606,6 @@ namespace OpenAI.Chat {
         public static ChatFunctionChoice CreateAutoChoice();
         public static ChatFunctionChoice CreateNamedChoice(string functionName);
         public static ChatFunctionChoice CreateNoneChoice();
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public readonly partial struct ChatImageDetailLevel : IEquatable<ChatImageDetailLevel> {
         public ChatImageDetailLevel(string value);
@@ -1690,10 +1646,6 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ChatMessage : IJsonModel<ChatMessage>, IPersistableModel<ChatMessage> {
         public ChatMessageContent Content { get; }
@@ -1726,11 +1678,7 @@ namespace OpenAI.Chat {
         public static UserChatMessage CreateUserMessage(params ChatMessageContentPart[] contentParts);
         public static UserChatMessage CreateUserMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public static UserChatMessage CreateUserMessage(string content);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static implicit operator ChatMessage(string content);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class ChatMessageAnnotation : IJsonModel<ChatMessageAnnotation>, IPersistableModel<ChatMessageAnnotation> {
@@ -1783,11 +1731,7 @@ namespace OpenAI.Chat {
         public static ChatMessageContentPart CreateInputAudioPart(BinaryData inputAudioBytes, ChatInputAudioFormat inputAudioFormat);
         public static ChatMessageContentPart CreateRefusalPart(string refusal);
         public static ChatMessageContentPart CreateTextPart(string text);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static implicit operator ChatMessageContentPart(string text);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public enum ChatMessageContentPartKind {
         Text = 0,
@@ -1889,10 +1833,6 @@ namespace OpenAI.Chat {
         public int ReasoningTokenCount { get; }
         [Experimental("OPENAI001")]
         public int RejectedPredictionTokenCount { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ChatReasoningEffortLevel : IEquatable<ChatReasoningEffortLevel> {
@@ -1921,10 +1861,6 @@ namespace OpenAI.Chat {
         public static ChatResponseFormat CreateJsonObjectFormat();
         public static ChatResponseFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
         public static ChatResponseFormat CreateTextFormat();
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     [Flags]
@@ -1960,10 +1896,6 @@ namespace OpenAI.Chat {
         public string Token { get; }
         public IReadOnlyList<ChatTokenTopLogProbabilityDetails> TopLogProbabilities { get; }
         public ReadOnlyMemory<byte>? Utf8Bytes { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ChatTokenTopLogProbabilityDetails : IJsonModel<ChatTokenTopLogProbabilityDetails>, IPersistableModel<ChatTokenTopLogProbabilityDetails> {
         public float LogProbability { get; }
@@ -1973,10 +1905,6 @@ namespace OpenAI.Chat {
         public ref JsonPatch Patch { get; }
         public string Token { get; }
         public ReadOnlyMemory<byte>? Utf8Bytes { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ChatTokenUsage : IJsonModel<ChatTokenUsage>, IPersistableModel<ChatTokenUsage> {
         public int InputTokenCount { get; }
@@ -1988,10 +1916,6 @@ namespace OpenAI.Chat {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public int TotalTokenCount { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ChatTool : IJsonModel<ChatTool>, IPersistableModel<ChatTool> {
         public string FunctionDescription { get; }
@@ -2004,10 +1928,6 @@ namespace OpenAI.Chat {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null, bool? functionSchemaIsStrict = null);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ChatToolCall : IJsonModel<ChatToolCall>, IPersistableModel<ChatToolCall> {
         public BinaryData FunctionArguments { get; }
@@ -2019,10 +1939,6 @@ namespace OpenAI.Chat {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static ChatToolCall CreateFunctionToolCall(string id, string functionName, BinaryData functionArguments);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public enum ChatToolCallKind {
         Function = 0
@@ -2036,10 +1952,6 @@ namespace OpenAI.Chat {
         public static ChatToolChoice CreateFunctionChoice(string functionName);
         public static ChatToolChoice CreateNoneChoice();
         public static ChatToolChoice CreateRequiredChoice();
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public enum ChatToolKind {
         Function = 0
@@ -2062,10 +1974,6 @@ namespace OpenAI.Chat {
     public class FunctionChatMessage : ChatMessage, IJsonModel<FunctionChatMessage>, IPersistableModel<FunctionChatMessage> {
         public FunctionChatMessage(string functionName, string content);
         public string FunctionName { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public static class OpenAIChatModelFactory {
         [Experimental("OPENAI001")]
@@ -2123,10 +2031,6 @@ namespace OpenAI.Chat {
         public string SystemFingerprint { get; }
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCallUpdates { get; }
         public ChatTokenUsage Usage { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Obsolete("This class is obsolete. Please use StreamingChatToolCallUpdate instead.")]
     public class StreamingChatFunctionCallUpdate : IJsonModel<StreamingChatFunctionCallUpdate>, IPersistableModel<StreamingChatFunctionCallUpdate> {
@@ -2136,10 +2040,6 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public class StreamingChatOutputAudioUpdate : IJsonModel<StreamingChatOutputAudioUpdate>, IPersistableModel<StreamingChatOutputAudioUpdate> {
@@ -2162,40 +2062,24 @@ namespace OpenAI.Chat {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public string ToolCallId { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class SystemChatMessage : ChatMessage, IJsonModel<SystemChatMessage>, IPersistableModel<SystemChatMessage> {
         public SystemChatMessage(params ChatMessageContentPart[] contentParts);
         public SystemChatMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public SystemChatMessage(string content);
         public string ParticipantName { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ToolChatMessage : ChatMessage, IJsonModel<ToolChatMessage>, IPersistableModel<ToolChatMessage> {
         public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts);
         public ToolChatMessage(string toolCallId, IEnumerable<ChatMessageContentPart> contentParts);
         public ToolChatMessage(string toolCallId, string content);
         public string ToolCallId { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class UserChatMessage : ChatMessage, IJsonModel<UserChatMessage>, IPersistableModel<UserChatMessage> {
         public UserChatMessage(params ChatMessageContentPart[] contentParts);
         public UserChatMessage(IEnumerable<ChatMessageContentPart> contentParts);
         public UserChatMessage(string content);
         public string ParticipantName { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
 }
 namespace OpenAI.Containers {
@@ -2441,10 +2325,6 @@ namespace OpenAI.Embeddings {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class EmbeddingTokenUsage : IJsonModel<EmbeddingTokenUsage>, IPersistableModel<EmbeddingTokenUsage> {
         public int InputTokenCount { get; }
@@ -2453,10 +2333,6 @@ namespace OpenAI.Embeddings {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public int TotalTokenCount { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class OpenAIEmbedding : IJsonModel<OpenAIEmbedding>, IPersistableModel<OpenAIEmbedding> {
         public int Index { get; }
@@ -2464,10 +2340,6 @@ namespace OpenAI.Embeddings {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public ReadOnlyMemory<float> ToFloats();
     }
     public class OpenAIEmbeddingCollection : ObjectModel.ReadOnlyCollection<OpenAIEmbedding>, IJsonModel<OpenAIEmbeddingCollection>, IPersistableModel<OpenAIEmbeddingCollection> {
@@ -2478,11 +2350,7 @@ namespace OpenAI.Embeddings {
         public ref JsonPatch Patch { get; }
         public EmbeddingTokenUsage Usage { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator OpenAIEmbeddingCollection(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public static class OpenAIEmbeddingsModelFactory {
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = 0, int totalTokenCount = 0);
@@ -2541,11 +2409,7 @@ namespace OpenAI.Files {
         public bool Deleted { get; }
         public string FileId { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator FileDeletionResult(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public enum FilePurpose {
         Assistants = 0,
@@ -2601,11 +2465,7 @@ namespace OpenAI.Files {
         [Obsolete("This property is obsolete. For details on why a fine-tuning training file failed validation, see the `error` field on the fine-tuning job.")]
         public string StatusDetails { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator OpenAIFile(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class OpenAIFileClient {
         protected OpenAIFileClient();
@@ -2676,11 +2536,7 @@ namespace OpenAI.Files {
     }
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator OpenAIFileCollection(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public static class OpenAIFilesModelFactory {
         public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = false);
@@ -3195,10 +3051,6 @@ namespace OpenAI.Images {
         public BinaryData ImageBytes { get; }
         public Uri ImageUri { get; }
         public string RevisedPrompt { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public readonly partial struct GeneratedImageBackground : IEquatable<GeneratedImageBackground> {
@@ -3230,11 +3082,7 @@ namespace OpenAI.Images {
         [Experimental("OPENAI001")]
         public ImageTokenUsage Usage { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator GeneratedImageCollection(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public readonly partial struct GeneratedImageFileFormat : IEquatable<GeneratedImageFileFormat> {
@@ -3416,10 +3264,6 @@ namespace OpenAI.Images {
         public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>, IPersistableModel<ImageGenerationOptions> {
         [Experimental("OPENAI001")]
@@ -3435,10 +3279,6 @@ namespace OpenAI.Images {
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
         public GeneratedImageStyle? Style { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ImageInputFidelity : IEquatable<ImageInputFidelity> {
@@ -3478,10 +3318,6 @@ namespace OpenAI.Images {
         public string EndUserId { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public static class OpenAIImagesModelFactory {
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
@@ -3500,22 +3336,14 @@ namespace OpenAI.Models {
         public bool Deleted { get; }
         public string ModelId { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator ModelDeletionResult(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class OpenAIModel : IJsonModel<OpenAIModel>, IPersistableModel<OpenAIModel> {
         public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
         public string OwnedBy { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator OpenAIModel(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class OpenAIModelClient {
         protected OpenAIModelClient();
@@ -3552,11 +3380,7 @@ namespace OpenAI.Models {
     }
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator OpenAIModelCollection(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public static class OpenAIModelsModelFactory {
         public static ModelDeletionResult ModelDeletionResult(string modelId = null, bool deleted = false);
@@ -3645,20 +3469,12 @@ namespace OpenAI.Moderations {
         public ModerationCategory SexualMinors { get; }
         public ModerationCategory Violence { get; }
         public ModerationCategory ViolenceGraphic { get; }
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public class ModerationResultCollection : ObjectModel.ReadOnlyCollection<ModerationResult>, IJsonModel<ModerationResultCollection>, IPersistableModel<ModerationResultCollection> {
         public string Id { get; }
         public string Model { get; }
         [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
         public static explicit operator ModerationResultCollection(ClientResult result);
-        [Experimental("OPENAI001")]
-        [Experimental("OPENAI001")]
     }
     public static class OpenAIModerationsModelFactory {
         public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
