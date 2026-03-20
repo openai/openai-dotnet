@@ -1044,19 +1044,11 @@ namespace OpenAI.Audio {
         public AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy defaultChunkingStrategy);
         public AudioTranscriptionCustomChunkingStrategy CustomChunkingStrategy { get; }
         public AudioTranscriptionDefaultChunkingStrategy? DefaultChunkingStrategy { get; }
-        protected virtual AudioTranscriptionChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         public static implicit operator AudioTranscriptionChunkingStrategy(AudioTranscriptionCustomChunkingStrategy customChunkingStrategy);
         public static implicit operator AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy defaultChunkingStrategy);
-        protected virtual AudioTranscriptionChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public class AudioTranscriptionCustomChunkingStrategy : IJsonModel<AudioTranscriptionCustomChunkingStrategy>, IPersistableModel<AudioTranscriptionCustomChunkingStrategy> {
-        protected virtual AudioTranscriptionCustomChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual AudioTranscriptionCustomChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public class AudioTranscriptionCustomServerVadChunkingStrategy : AudioTranscriptionCustomChunkingStrategy, IJsonModel<AudioTranscriptionCustomServerVadChunkingStrategy>, IPersistableModel<AudioTranscriptionCustomServerVadChunkingStrategy> {
@@ -1064,10 +1056,6 @@ namespace OpenAI.Audio {
         public float? DetectionThreshold { get; set; }
         public TimeSpan? PrefixPadding { get; set; }
         public TimeSpan? SilenceDuration { get; set; }
-        protected override AudioTranscriptionCustomChunkingStrategy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override AudioTranscriptionCustomChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct AudioTranscriptionDefaultChunkingStrategy : IEquatable<AudioTranscriptionDefaultChunkingStrategy> {
