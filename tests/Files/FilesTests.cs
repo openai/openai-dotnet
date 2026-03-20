@@ -176,13 +176,12 @@ public class FilesTests : OpenAIRecordedTestBase
 
             long expectedSize = new FileInfo(path).Length;
             long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-            string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? path : filename;
 
             Assert.That(fileInfo, Is.Not.Null);
             Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
             Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(fileInfo.Filename, Is.EqualTo(expectedFilename));
+            Assert.That(fileInfo.Filename, Is.EqualTo(filename));
             Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
             Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
