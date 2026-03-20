@@ -164,7 +164,7 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
 
     # Remove JsonModelCreateCore, JsonModelWriteCore, PersistableModelCreateCore, PersistableModelWriteCore methods,
     # including any attribute lines (e.g. [Experimental(...)]) that immediately precede them.
-    $content = $content -creplace "(?:        \[[^\n]+\]\n)*        protected (?:virtual|override) [^\n]*(JsonModelCreateCore|JsonModelWriteCore|PersistableModelCreateCore|PersistableModelWriteCore)[^\n]*\n", ""
+    $content = $content -creplace "(?:        \[[^\n]+\]\r?\n)*        protected (?:virtual|override) [^\n]*(JsonModelCreateCore|JsonModelWriteCore|PersistableModelCreateCore|PersistableModelWriteCore)[^\n]*\r?\n", ""
 
     # Other cosmetic simplifications.
     $content = $content -creplace "partial class", "class"
