@@ -7,3 +7,6 @@ using Azure.ClientGenerator.Core;
 @@clientName(Containers.retrieveContainer, "GetContainer");
 @@clientName(Containers.retrieveContainerFile, "GetContainerFile");
 @@clientName(Containers.retrieveContainerFileContent, "DownloadContainerFile");
+
+@@clientName(ContainerFileResource.bytes, "SizeInBytes");
+@@alternateType(ContainerFileResource.bytes, int64 | null);

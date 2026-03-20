@@ -287,14 +287,14 @@ namespace OpenAI
             return new CreateContainerFileBody(fileId, @file, additionalBinaryDataProperties: null);
         }
 
-        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, int bytes = default, string path = default, string source = default)
+        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, long? sizeInBytes = default, string path = default, string source = default)
         {
             return new ContainerFileResource(
                 id,
                 @object,
                 containerId,
                 createdAt,
-                bytes,
+                sizeInBytes,
                 path,
                 source,
                 additionalBinaryDataProperties: null);

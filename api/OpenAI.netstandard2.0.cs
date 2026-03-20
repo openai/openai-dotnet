@@ -1900,12 +1900,12 @@ namespace OpenAI.Containers {
         public int? PageSizeLimit { get; set; }
     }
     public class ContainerFileResource : IJsonModel<ContainerFileResource>, IPersistableModel<ContainerFileResource> {
-        public int Bytes { get; }
         public string ContainerId { get; }
         public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
         public string Object { get; }
         public string Path { get; }
+        public long? SizeInBytes { get; }
         public string Source { get; }
         public static explicit operator ContainerFileResource(ClientResult result);
     }
