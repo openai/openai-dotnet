@@ -69,5 +69,5 @@ union DotNetTranscriptionDefaultChunkingStrategy {
 @usage(Usage.input | Usage.output)
 model DotNetTranscriptionChunkingStrategy {
   default_chunking_strategy?: DotNetTranscriptionDefaultChunkingStrategy;
-  custom_chunking_strategy?: VadConfig;
+  custom_chunking_strategy?: ChunkingStrategyConfig;
 }

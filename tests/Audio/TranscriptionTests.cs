@@ -595,22 +595,22 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         AudioTranscriptionOptions shortSilenceOptions = new()
         {
             ResponseFormat = AudioTranscriptionFormat.Diarized,
-            ChunkingStrategy = new AudioTranscriptionCustomChunkingStrategy()
+            ChunkingStrategy = new AudioTranscriptionCustomServerVadChunkingStrategy()
             {
                 PrefixPadding = TimeSpan.FromMilliseconds(100),
                 SilenceDuration = TimeSpan.FromMilliseconds(100),
-                ChunkingStrategyThreshold = 0.3f,
+                DetectionThreshold = 0.3f,
             },
         };
 
         AudioTranscriptionOptions longSilenceOptions = new()
         {
             ResponseFormat = AudioTranscriptionFormat.Diarized,
-            ChunkingStrategy = new AudioTranscriptionCustomChunkingStrategy()
+            ChunkingStrategy = new AudioTranscriptionCustomServerVadChunkingStrategy()
             {
                 PrefixPadding = TimeSpan.FromMilliseconds(500),
                 SilenceDuration = TimeSpan.FromMilliseconds(1500),
-                ChunkingStrategyThreshold = 0.8f,
+                DetectionThreshold = 0.8f,
             },
         };
 

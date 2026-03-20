@@ -100,7 +100,7 @@ model CreateTranscriptionRequest {
   stream?: HttpPart<boolean | null>;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  chunking_strategy?: HttpPart<"auto" | VadConfig | null>;
+  chunking_strategy?: HttpPart<"auto" | ChunkingStrategyConfig | null>;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   known_speaker_names?: HttpPart<KnownSpeakerNames>;
@@ -109,10 +109,21 @@ model CreateTranscriptionRequest {
   known_speaker_references?: HttpPart<KnownSpeakerReferences>;
 }
 
+union ChunkingStrategyConfigType {
+  string,
+  server_vad: "server_vad",
+}
+
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model VadConfig {
+@discriminator("type")
+model ChunkingStrategyConfig {
+  type: ChunkingStrategyConfigType;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model VadConfig extends ChunkingStrategyConfig {
   /** Must be set to `server_vad` to enable manual chunking using server side VAD. */
-  type: "server_vad";
+  type: ChunkingStrategyConfigType.server_vad;
 
   /**Amount of audio to include before the VAD detected speech (in
   milliseconds).*/

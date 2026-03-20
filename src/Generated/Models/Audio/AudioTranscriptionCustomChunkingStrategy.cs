@@ -13,20 +13,18 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public AudioTranscriptionCustomChunkingStrategy()
-        {
-        }
-
-        internal AudioTranscriptionCustomChunkingStrategy(string kind, TimeSpan? prefixPadding, TimeSpan? silenceDuration, float? chunkingStrategyThreshold, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        private protected AudioTranscriptionCustomChunkingStrategy(InternalChunkingStrategyConfigType kind)
         {
             Kind = kind;
-            PrefixPadding = prefixPadding;
-            SilenceDuration = silenceDuration;
-            ChunkingStrategyThreshold = chunkingStrategyThreshold;
+        }
+
+        internal AudioTranscriptionCustomChunkingStrategy(InternalChunkingStrategyConfigType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Kind { get; } = "server_vad";
+        internal InternalChunkingStrategyConfigType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
