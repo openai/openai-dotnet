@@ -3,6 +3,7 @@ namespace OpenAI.Tests;
 internal static class TestModel
 {
     public const string Audio_TTS = "tts-1";
+    public const string Audio_TTS_Streaming = "gpt-4o-mini-tts";
     public const string Audio_Whisper = "whisper-1";
     public const string Audio_Gpt_4o_Mini_Transcribe = "gpt-4o-mini-transcribe";
     public const string Audio_Gpt_4o_Transcribe_Diarize = "gpt-4o-transcribe-diarize";

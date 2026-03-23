@@ -20,6 +20,8 @@ namespace OpenAI.Audio;
 [CodeGenType("ChunkingStrategyConfigType")] internal readonly partial struct InternalChunkingStrategyConfigType { }
 [CodeGenType("UnknownChunkingStrategyConfig")] internal partial class InternalUnknownChunkingStrategyConfig { }
 [CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }
+[CodeGenType("DotNetCreateSpeechStreamingResponseType")] internal readonly partial struct InternalDotNetCreateSpeechStreamingResponseType { }
+[CodeGenType("UnknownDotNetCreateSpeechStreamingResponse")] internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse { }
 
 // Remove these after https://github.com/microsoft/openai-openapi-pr/issues/478 is fixed
 [CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent { }
@@ -28,10 +30,3 @@ namespace OpenAI.Audio;
 [CodeGenType("TranscriptTextDoneEventLogprobs")] internal partial class InternalTranscriptTextDoneEventLogprobs { }
 [CodeGenType("TranscriptTextSegmentEvent")] internal partial class InternalTranscriptTextSegmentEvent { }
 
-// Remove these after streaming events are implemented
-[CodeGenType("DotNetCreateSpeechStreamingResponseType")] internal readonly partial struct InternalDotNetCreateSpeechStreamingResponseType { }
-[CodeGenType("SpeechAudioDoneEventUsage")] internal partial class InternalSpeechAudioDoneEventUsage { }
-[CodeGenType("DotNetCreateSpeechStreamingResponse")] internal partial class InternalDotNetCreateSpeechStreamingResponse { }
-[CodeGenType("UnknownDotNetCreateSpeechStreamingResponse")] internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse { }
-[CodeGenType("DotNetSpeechAudioDeltaEvent")] internal partial class InternalDotNetSpeechAudioDeltaEvent { }
-[CodeGenType("DotNetSpeechAudioDoneEvent")] internal partial class InternalDotNetSpeechAudioDoneEvent { }

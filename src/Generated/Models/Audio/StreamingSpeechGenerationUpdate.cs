@@ -4,19 +4,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
-    internal abstract partial class InternalDotNetCreateSpeechStreamingResponse
+    [Experimental("OPENAI001")]
+    public partial class StreamingSpeechGenerationUpdate
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected InternalDotNetCreateSpeechStreamingResponse(InternalDotNetCreateSpeechStreamingResponseType kind)
+        private protected StreamingSpeechGenerationUpdate(InternalDotNetCreateSpeechStreamingResponseType kind)
         {
             Kind = kind;
         }
 
-        internal InternalDotNetCreateSpeechStreamingResponse(InternalDotNetCreateSpeechStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingSpeechGenerationUpdate(InternalDotNetCreateSpeechStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

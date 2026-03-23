@@ -4,19 +4,19 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse : StreamingSpeechGenerationUpdate, IJsonModel<StreamingSpeechGenerationUpdate>
+    [PersistableModelProxy(typeof(InternalUnknownDotNetCreateSpeechStreamingResponse))]
+    public partial class StreamingSpeechGenerationUpdate : IJsonModel<StreamingSpeechGenerationUpdate>
     {
-        internal InternalUnknownDotNetCreateSpeechStreamingResponse() : this(default, null)
+        internal StreamingSpeechGenerationUpdate()
         {
         }
 
-        protected override StreamingSpeechGenerationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual StreamingSpeechGenerationUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingSpeechGenerationUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -31,7 +31,7 @@ namespace OpenAI.Audio
             }
         }
 
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingSpeechGenerationUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -56,19 +56,43 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingSpeechGenerationUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(StreamingSpeechGenerationUpdate)} does not support writing '{format}' format.");
             }
-            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
+            }
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         StreamingSpeechGenerationUpdate IJsonModel<StreamingSpeechGenerationUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override StreamingSpeechGenerationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual StreamingSpeechGenerationUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingSpeechGenerationUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -79,25 +103,23 @@ namespace OpenAI.Audio
             return DeserializeStreamingSpeechGenerationUpdate(document.RootElement, options);
         }
 
-        internal static InternalUnknownDotNetCreateSpeechStreamingResponse DeserializeInternalUnknownDotNetCreateSpeechStreamingResponse(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingSpeechGenerationUpdate DeserializeStreamingSpeechGenerationUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalDotNetCreateSpeechStreamingResponseType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            foreach (var prop in element.EnumerateObject())
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
-                if (prop.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    kind = new InternalDotNetCreateSpeechStreamingResponseType(prop.Value.GetString());
-                    continue;
+                    case "speech.audio.delta":
+                        return StreamingSpeechGenerationAudioDeltaUpdate.DeserializeStreamingSpeechGenerationAudioDeltaUpdate(element, options);
+                    case "speech.audio.done":
+                        return StreamingSpeechGenerationAudioDoneUpdate.DeserializeStreamingSpeechGenerationAudioDoneUpdate(element, options);
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUnknownDotNetCreateSpeechStreamingResponse(kind, additionalBinaryDataProperties);
+            return InternalUnknownDotNetCreateSpeechStreamingResponse.DeserializeInternalUnknownDotNetCreateSpeechStreamingResponse(element, options);
         }
     }
 }

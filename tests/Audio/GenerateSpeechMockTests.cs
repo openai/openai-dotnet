@@ -29,4 +29,18 @@ internal class GenerateSpeechMockTests : ClientTestBase
         Assert.That(async () => await client.GenerateSpeechAsync("text", GeneratedSpeechVoice.Echo, cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
     }
+
+    [Test]
+    [TestCase("tts-1")]
+    [TestCase("tts-1-hd")]
+    public void GenerateSpeechStreamingThrowsForUnsupportedModel(string model)
+    {
+        AudioClient client = new AudioClient(model, s_fakeCredential);
+
+        Assert.That(
+            () => client.GenerateSpeechStreaming("text", GeneratedSpeechVoice.Alloy),
+            Throws.InstanceOf<NotSupportedException>()
+                .With.Message.Contains(model)
+                .And.Message.Contains("OPENAI_ENABLE_TTS_STREAMING"));
+    }
 }
