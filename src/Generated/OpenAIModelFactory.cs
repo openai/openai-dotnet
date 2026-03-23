@@ -966,6 +966,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static SpeechAudioDeltaEvent SpeechAudioDeltaEvent(BinaryData audio = default)
+        {
+            return new SpeechAudioDeltaEvent("speech.audio.delta", audio, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTranscriptionInputTokenUsageDetails AudioTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
             return new AudioTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
