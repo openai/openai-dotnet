@@ -110,8 +110,85 @@ public partial class ResponsesSmokeTests
             Is.InstanceOf<ResponseTool>());
         Assert.That(
             ModelReaderWriter.Read<ResponseTool>(
+                BinaryData.FromString("""
+                    {
+                      "type": "openapi",
+                      "openapi": {
+                        "name": "frc_data",
+                        "description": "FRC lookup tool",
+                        "auth": {
+                          "type": "project_connection"
+                        },
+                        "spec": {
+                          "openapi": "3.1.1",
+                          "paths": {}
+                        }
+                      }
+                    }
+                    """)),
+            Is.InstanceOf<global::OpenAI.OpenApiTool>());
+        Assert.That(
+            ModelReaderWriter.Read<ResponseTool>(
                 BinaryData.FromString(@"{""type"": ""something_else""}")),
             Is.InstanceOf<ResponseTool>());
+    }
+
+    [Test]
+    public void OpenApiToolSerializationPreservesFoundryData()
+    {
+        ResponseTool tool = ModelReaderWriter.Read<ResponseTool>(
+            BinaryData.FromString(
+                """
+                {
+                  "type": "openapi",
+                  "openapi": {
+                    "name": "frc_data",
+                    "description": "Can get current (near real-time) & historical data about First Robotics Competition (FRC) Districts, Teams, Events, and Matches",
+                    "auth": {
+                      "type": "project_connection",
+                      "security_scheme": {
+                        "project_connection_id": "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.CognitiveServices/accounts/test-account/projects/test-project/connections/frc_data"
+                      }
+                    },
+                    "spec": {
+                      "openapi": "3.1.1",
+                      "info": {
+                        "title": "The Blue Alliance API",
+                        "version": "3.12.1"
+                      },
+                      "paths": {}
+                    },
+                    "x-foundry-extension": {
+                      "enabled": true
+                    }
+                  },
+                  "x-top-level-extension": {
+                    "source": "foundry"
+                  }
+                }
+                """));
+
+        Assert.That(tool, Is.InstanceOf<global::OpenAI.OpenApiTool>());
+
+        global::OpenAI.OpenApiTool openApiTool = (global::OpenAI.OpenApiTool)tool;
+        Assert.That(openApiTool.Name, Is.EqualTo("frc_data"));
+        Assert.That(openApiTool.Description, Does.Contain("First Robotics Competition"));
+
+        using JsonDocument authDocument = JsonDocument.Parse(openApiTool.Authentication);
+        Assert.That(
+            authDocument.RootElement.GetProperty("security_scheme").GetProperty("project_connection_id").GetString(),
+            Does.EndWith("/connections/frc_data"));
+
+        using JsonDocument specificationDocument = JsonDocument.Parse(openApiTool.Specification);
+        Assert.That(specificationDocument.RootElement.GetProperty("openapi").GetString(), Is.EqualTo("3.1.1"));
+        Assert.That(specificationDocument.RootElement.GetProperty("info").GetProperty("title").GetString(), Is.EqualTo("The Blue Alliance API"));
+
+        string reserialized = ModelReaderWriter.Write(tool).ToString();
+        using JsonDocument document = JsonDocument.Parse(reserialized);
+        Assert.That(document.RootElement.GetProperty("type").GetString(), Is.EqualTo("openapi"));
+        Assert.That(document.RootElement.GetProperty("openapi").GetProperty("name").GetString(), Is.EqualTo("frc_data"));
+        Assert.That(document.RootElement.GetProperty("openapi").GetProperty("x-foundry-extension").GetProperty("enabled").GetBoolean(), Is.True);
+        Assert.That(document.RootElement.GetProperty("x-top-level-extension").GetProperty("source").GetString(), Is.EqualTo("foundry"));
     }
 
     [Test]

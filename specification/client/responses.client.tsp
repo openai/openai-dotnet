@@ -190,6 +190,8 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(CodeInterpreterTool);
 @@dynamicModel(CodeInterpreterToolAuto);
 @@dynamicModel(ImageGenTool);
+@@dynamicModel(OpenApiTool);
+@@dynamicModel(OpenApiToolDetails);
 @@dynamicModel(LocalShellExecAction);
 @@dynamicModel(LocalShellTool);
 @@dynamicModel(MCPListToolsTool);

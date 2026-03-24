@@ -143,4 +143,16 @@ public partial class ResponseTool
             inputImageMask: inputImageMask,
             partialImageCount: partialImageCount);
     }
+
+    public static global::OpenAI.OpenApiTool CreateOpenApiTool(string name, BinaryData specification, string description = null, BinaryData authentication = null)
+    {
+        Argument.AssertNotNullOrEmpty(name, nameof(name));
+        Argument.AssertNotNull(specification, nameof(specification));
+
+        return new(new OpenApiToolDetails(name, specification)
+        {
+            Description = description,
+            Auth = authentication,
+        });
+    }
 }

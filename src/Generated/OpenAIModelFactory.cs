@@ -52,6 +52,11 @@ namespace OpenAI
             return new FileSearchRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
+        public static OpenApiToolDefinitionDetails OpenApiToolDefinitionDetails(string name = default, string description = default, BinaryData auth = default, BinaryData spec = default)
+        {
+            return new OpenApiToolDefinitionDetails(name, description, auth, spec, additionalBinaryDataProperties: null);
+        }
+
         public static ToolResources ToolResources(CodeInterpreterToolResources codeInterpreter = default, FileSearchToolResources fileSearch = default)
         {
             return new ToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties: null);
@@ -476,6 +481,11 @@ namespace OpenAI
             toolNames ??= new ChangeTrackingList<string>();
 
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
+        }
+
+        public static OpenApiToolDetails OpenApiToolDetails(string name = default, string description = default, BinaryData auth = default, BinaryData spec = default)
+        {
+            return new OpenApiToolDetails(name, description, auth, spec, default);
         }
 
         public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default)

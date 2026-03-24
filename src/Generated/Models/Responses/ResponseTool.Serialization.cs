@@ -121,6 +121,8 @@ namespace OpenAI.Responses
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, data, options);
                     case "mcp":
                         return McpTool.DeserializeMcpTool(element, data, options);
+                    case "openapi":
+                        return OpenApiTool.DeserializeOpenApiTool(element, data, options);
                 }
             }
             return InternalUnknownTool.DeserializeInternalUnknownTool(element, data, options);
