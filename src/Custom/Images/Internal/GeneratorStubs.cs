@@ -28,25 +28,13 @@ namespace OpenAI.Images;
 // Streaming image generation.
 [CodeGenType("ImageGenPartialImageEvent")] internal partial class InternalImageGenPartialImageEvent { }
 [CodeGenType("ImageGenCompletedEvent")] internal partial class InternalImageGenCompletedEvent { }
-[CodeGenType("ImageGenPartialImageEventBackground")] internal readonly partial struct InternalImageGenPartialImageEventBackground { }
-[CodeGenType("ImageGenPartialImageEventOutputFormat")] internal readonly partial struct InternalImageGenPartialImageEventOutputFormat { }
-[CodeGenType("ImageGenPartialImageEventQuality")] internal readonly partial struct InternalImageGenPartialImageEventQuality { }
-[CodeGenType("ImageGenPartialImageEventSize")] internal readonly partial struct InternalImageGenPartialImageEventSize { }
-[CodeGenType("ImageGenCompletedEventBackground")] internal readonly partial struct InternalImageGenCompletedEventBackground { }
-[CodeGenType("ImageGenCompletedEventOutputFormat")] internal readonly partial struct InternalImageGenCompletedEventOutputFormat { }
-[CodeGenType("ImageGenCompletedEventQuality")] internal readonly partial struct InternalImageGenCompletedEventQuality { }
-[CodeGenType("ImageGenCompletedEventSize")] internal readonly partial struct InternalImageGenCompletedEventSize { }
+[CodeGenType("DotNetImageStreamingSize")] internal readonly partial struct InternalDotNetImageStreamingSize { }
+[CodeGenType("DotNetImageStreamingQuality")] internal readonly partial struct InternalDotNetImageStreamingQuality { }
+[CodeGenType("DotNetImageStreamingBackground")] internal readonly partial struct InternalDotNetImageStreamingBackground { }
+[CodeGenType("DotNetImageStreamingOutputFormat")] internal readonly partial struct InternalDotNetImageStreamingOutputFormat { }
 [CodeGenType("ImagesUsage")] internal partial class InternalImagesUsage { }
 [CodeGenType("ImagesUsageInputTokensDetails")] internal partial class InternalImagesUsageInputTokensDetails { }
 
 // Streaming image edit generation.
 [CodeGenType("ImageEditPartialImageEvent")] internal partial class InternalImageEditPartialImageEvent { }
 [CodeGenType("ImageEditCompletedEvent")] internal partial class InternalImageEditCompletedEvent { }
-[CodeGenType("ImageEditPartialImageEventBackground")] internal readonly partial struct InternalImageEditPartialImageEventBackground { }
-[CodeGenType("ImageEditPartialImageEventOutputFormat")] internal readonly partial struct InternalImageEditPartialImageEventOutputFormat { }
-[CodeGenType("ImageEditPartialImageEventQuality")] internal readonly partial struct InternalImageEditPartialImageEventQuality { }
-[CodeGenType("ImageEditPartialImageEventSize")] internal readonly partial struct InternalImageEditPartialImageEventSize { }
-[CodeGenType("ImageEditCompletedEventBackground")] internal readonly partial struct InternalImageEditCompletedEventBackground { }
-[CodeGenType("ImageEditCompletedEventOutputFormat")] internal readonly partial struct InternalImageEditCompletedEventOutputFormat { }
-[CodeGenType("ImageEditCompletedEventQuality")] internal readonly partial struct InternalImageEditCompletedEventQuality { }
-[CodeGenType("ImageEditCompletedEventSize")] internal readonly partial struct InternalImageEditCompletedEventSize { }

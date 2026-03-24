@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 namespace OpenAI
 {
     [Experimental("SCME0002")]
-    public partial class OpenAIClientSettings : ClientSettings
+    internal partial class InternalOpenAIClientSettings : ClientSettings
     {
         public Uri Endpoint { get; set; }
 

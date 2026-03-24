@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -12,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, InternalImagesUsage usage)
+        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalDotNetImageStreamingSize size, InternalDotNetImageStreamingQuality quality, InternalDotNetImageStreamingBackground background, InternalDotNetImageStreamingOutputFormat outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -23,7 +22,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalDotNetImageStreamingSize size, InternalDotNetImageStreamingQuality quality, InternalDotNetImageStreamingBackground background, InternalDotNetImageStreamingOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -42,15 +41,15 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        public OpenAI. Size { get; }
+        internal InternalDotNetImageStreamingSize Size { get; }
 
-        public OpenAI. Quality { get; }
+        internal InternalDotNetImageStreamingQuality Quality { get; }
 
-        public OpenAI. Background { get; }
+        internal InternalDotNetImageStreamingBackground Background { get; }
 
-        public OpenAI. OutputFormat { get; }
+        internal InternalDotNetImageStreamingOutputFormat OutputFormat { get; }
 
-        internal OpenAI.Images.InternalImagesUsage Usage { get; }
+        internal InternalImagesUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

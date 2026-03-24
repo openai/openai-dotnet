@@ -81,22 +81,22 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.ToSerialString());
+                writer.WriteStringValue(Size.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
                 writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.ToSerialString());
+                writer.WriteStringValue(Quality.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
-                writer.WriteStringValue(Background.ToSerialString());
+                writer.WriteStringValue(Background.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFormat.ToSerialString());
+                writer.WriteStringValue(OutputFormat.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("partial_image_index") != true)
             {
@@ -147,10 +147,10 @@ namespace OpenAI.Images
             string kind = default;
             BinaryData b64Json = default;
             DateTimeOffset createdAt = default;
-            OpenAI. size = default;
-            OpenAI. quality = default;
-            OpenAI. background = default;
-            OpenAI. outputFormat = default;
+            InternalDotNetImageStreamingSize size = default;
+            InternalDotNetImageStreamingQuality quality = default;
+            InternalDotNetImageStreamingBackground background = default;
+            InternalDotNetImageStreamingOutputFormat outputFormat = default;
             int partialImageIndex = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -172,22 +172,22 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("size"u8))
                 {
-                    size = prop.Value.GetString().To();
+                    size = new InternalDotNetImageStreamingSize(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
                 {
-                    quality = prop.Value.GetString().To();
+                    quality = new InternalDotNetImageStreamingQuality(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
                 {
-                    background = prop.Value.GetString().To();
+                    background = new InternalDotNetImageStreamingBackground(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
                 {
-                    outputFormat = prop.Value.GetString().To();
+                    outputFormat = new InternalDotNetImageStreamingOutputFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("partial_image_index"u8))
