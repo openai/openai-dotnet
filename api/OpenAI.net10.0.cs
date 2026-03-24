@@ -99,6 +99,24 @@ namespace OpenAI {
         public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
+    [Experimental("OPENAI001")]
+    public class OpenApiTool : ResponseTool, IJsonModel<OpenApiTool>, IPersistableModel<OpenApiTool> {
+        public OpenApiTool(OpenApiToolDetails openapi);
+        public BinaryData Authentication { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public OpenApiToolDetails Openapi { get; set; }
+        public BinaryData Specification { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class OpenApiToolDefinition : ToolDefinition, IJsonModel<OpenApiToolDefinition>, IPersistableModel<OpenApiToolDefinition> {
+        public OpenApiToolDefinition(OpenApiToolDefinitionDetails openapi);
+        public BinaryData Authentication { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public OpenApiToolDefinitionDetails Openapi { get; set; }
+        public BinaryData Specification { get; set; }
+    }
 }
 namespace OpenAI.Assistants {
     [Experimental("OPENAI001")]
@@ -491,6 +509,14 @@ namespace OpenAI.Assistants {
     }
     [Experimental("OPENAI001")]
     public class MessageStatusUpdate : StreamingUpdate<ThreadMessage> {
+    }
+    [Experimental("OPENAI001")]
+    public class OpenApiToolDefinitionDetails : IJsonModel<OpenApiToolDefinitionDetails>, IPersistableModel<OpenApiToolDefinitionDetails> {
+        public OpenApiToolDefinitionDetails(string name, BinaryData spec);
+        public BinaryData Auth { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public BinaryData Spec { get; set; }
     }
     [Experimental("OPENAI001")]
     public abstract class RequiredAction {
@@ -933,6 +959,7 @@ namespace OpenAI.Assistants {
         public static CodeInterpreterToolDefinition CreateCodeInterpreter();
         public static FileSearchToolDefinition CreateFileSearch(int? maxResults = null);
         public static FunctionToolDefinition CreateFunction(string name, string description = null, BinaryData parameters = null, bool? strictParameterSchemaEnabled = null);
+        public static OpenApiToolDefinition CreateOpenApi(string name, BinaryData specification, string description = null, BinaryData authentication = null);
     }
     [Experimental("OPENAI001")]
     public class ToolOutput : IJsonModel<ToolOutput>, IPersistableModel<ToolOutput> {
@@ -5726,6 +5753,18 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     [Experimental("OPENAI001")]
+    public class OpenApiToolDetails : IJsonModel<OpenApiToolDetails>, IPersistableModel<OpenApiToolDetails> {
+        public OpenApiToolDetails(string name, BinaryData spec);
+        public BinaryData Auth { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public BinaryData Spec { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public ReasoningResponseItem(string summaryText);
@@ -6224,6 +6263,7 @@ namespace OpenAI.Responses {
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
+        public static OpenApiTool CreateOpenApiTool(string name, BinaryData specification, string description = null, BinaryData authentication = null);
         public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null);
     }
