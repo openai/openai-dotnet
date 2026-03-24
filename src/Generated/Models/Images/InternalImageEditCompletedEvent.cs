@@ -11,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage)
+        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalDotNetImageStreamingSize size, InternalDotNetImageStreamingQuality quality, InternalDotNetImageStreamingBackground background, InternalDotNetImageStreamingOutputFormat outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -22,7 +22,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalDotNetImageStreamingSize size, InternalDotNetImageStreamingQuality quality, InternalDotNetImageStreamingBackground background, InternalDotNetImageStreamingOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        internal InternalImageEditCompletedEventSize Size { get; }
+        internal InternalDotNetImageStreamingSize Size { get; }
 
-        internal InternalImageEditCompletedEventQuality Quality { get; }
+        internal InternalDotNetImageStreamingQuality Quality { get; }
 
-        internal InternalImageEditCompletedEventBackground Background { get; }
+        internal InternalDotNetImageStreamingBackground Background { get; }
 
-        internal InternalImageEditCompletedEventOutputFormat OutputFormat { get; }
+        internal InternalDotNetImageStreamingOutputFormat OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
 

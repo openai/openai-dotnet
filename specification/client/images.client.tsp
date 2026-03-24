@@ -18,3 +18,23 @@ using Azure.ClientGenerator.Core;
 @@usage(ImageEditCompletedEvent, Usage.output);
 @@usage(ImageGenPartialImageEvent, Usage.output);
 @@usage(ImageGenCompletedEvent, Usage.output);
+
+@@alternateType(ImageEditCompletedEvent.size, DotNetImageStreamingSize);
+@@alternateType(ImageEditCompletedEvent.quality, DotNetImageStreamingQuality);
+@@alternateType(ImageEditCompletedEvent.background, DotNetImageStreamingBackground);
+@@alternateType(ImageEditCompletedEvent.output_format, DotNetImageStreamingOutputFormat);
+
+@@alternateType(ImageEditPartialImageEvent.size, DotNetImageStreamingSize);
+@@alternateType(ImageEditPartialImageEvent.quality, DotNetImageStreamingQuality);
+@@alternateType(ImageEditPartialImageEvent.background, DotNetImageStreamingBackground);
+@@alternateType(ImageEditPartialImageEvent.output_format, DotNetImageStreamingOutputFormat);
+
+@@alternateType(ImageGenCompletedEvent.size, DotNetImageStreamingSize);
+@@alternateType(ImageGenCompletedEvent.quality, DotNetImageStreamingQuality);
+@@alternateType(ImageGenCompletedEvent.background, DotNetImageStreamingBackground);
+@@alternateType(ImageGenCompletedEvent.output_format, DotNetImageStreamingOutputFormat);
+
+@@alternateType(ImageGenPartialImageEvent.size, DotNetImageStreamingSize);
+@@alternateType(ImageGenPartialImageEvent.quality, DotNetImageStreamingQuality);
+@@alternateType(ImageGenPartialImageEvent.background, DotNetImageStreamingBackground);
+@@alternateType(ImageGenPartialImageEvent.output_format, DotNetImageStreamingOutputFormat);

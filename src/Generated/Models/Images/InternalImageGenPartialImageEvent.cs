@@ -11,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageGenPartialImageEventSize size, InternalImageGenPartialImageEventQuality quality, InternalImageGenPartialImageEventBackground background, InternalImageGenPartialImageEventOutputFormat outputFormat, int partialImageIndex)
+        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalDotNetImageStreamingSize size, InternalDotNetImageStreamingQuality quality, InternalDotNetImageStreamingBackground background, InternalDotNetImageStreamingOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -22,7 +22,7 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageGenPartialImageEventSize size, InternalImageGenPartialImageEventQuality quality, InternalImageGenPartialImageEventBackground background, InternalImageGenPartialImageEventOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalDotNetImageStreamingSize size, InternalDotNetImageStreamingQuality quality, InternalDotNetImageStreamingBackground background, InternalDotNetImageStreamingOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        internal InternalImageGenPartialImageEventSize Size { get; }
+        internal InternalDotNetImageStreamingSize Size { get; }
 
-        internal InternalImageGenPartialImageEventQuality Quality { get; }
+        internal InternalDotNetImageStreamingQuality Quality { get; }
 
-        internal InternalImageGenPartialImageEventBackground Background { get; }
+        internal InternalDotNetImageStreamingBackground Background { get; }
 
-        internal InternalImageGenPartialImageEventOutputFormat OutputFormat { get; }
+        internal InternalDotNetImageStreamingOutputFormat OutputFormat { get; }
 
         public int PartialImageIndex { get; }
 
