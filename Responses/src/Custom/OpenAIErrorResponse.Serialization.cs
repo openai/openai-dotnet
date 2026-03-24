@@ -38,7 +38,7 @@ namespace OpenAI.Internal
             switch (format)
             {
                 case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                    return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
                     throw new FormatException($"The model {nameof(OpenAIErrorResponse)} does not support writing '{options.Format}' format.");
             }

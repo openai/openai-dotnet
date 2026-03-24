@@ -723,18 +723,6 @@ namespace OpenAI.Responses {
         Completed = 1,
         Incomplete = 2
     }
-    public class OpenAIClient {
-        protected OpenAIClient();
-        public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
-        public OpenAIClient(ApiKeyCredential credential);
-        public OpenAIClient(Uri endpoint, ApiKeyCredential credential, OpenAIClientOptions options);
-        public ClientPipeline Pipeline { get; }
-        public virtual ResponsesClient GetResponsesClient();
-    }
-    public class OpenAIClientOptions : ClientPipelineOptions {
-    }
-    public class OpenAIContext : ModelReaderWriterContext {
-    }
     public class OpenAIResponsesContext : ModelReaderWriterContext {
         public static OpenAIResponsesContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
