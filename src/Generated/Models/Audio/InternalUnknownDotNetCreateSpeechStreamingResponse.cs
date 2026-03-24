@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse : StreamingSpeechGenerationUpdate
+    internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse : StreamingSpeechUpdate
     {
         internal InternalUnknownDotNetCreateSpeechStreamingResponse(InternalDotNetCreateSpeechStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

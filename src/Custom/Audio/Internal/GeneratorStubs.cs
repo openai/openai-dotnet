@@ -22,11 +22,5 @@ namespace OpenAI.Audio;
 [CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }
 [CodeGenType("DotNetCreateSpeechStreamingResponseType")] internal readonly partial struct InternalDotNetCreateSpeechStreamingResponseType { }
 [CodeGenType("UnknownDotNetCreateSpeechStreamingResponse")] internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse { }
-
-// Remove these after https://github.com/microsoft/openai-openapi-pr/issues/478 is fixed
-[CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent { }
 [CodeGenType("TranscriptTextDeltaEventLogprobs")] internal partial class InternalTranscriptTextDeltaEventLogprobs { }
-[CodeGenType("TranscriptTextDoneEvent")] internal partial class InternalTranscriptTextDoneEvent { }
 [CodeGenType("TranscriptTextDoneEventLogprobs")] internal partial class InternalTranscriptTextDoneEventLogprobs { }
-[CodeGenType("TranscriptTextSegmentEvent")] internal partial class InternalTranscriptTextSegmentEvent { }
-

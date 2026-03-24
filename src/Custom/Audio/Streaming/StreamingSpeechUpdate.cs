@@ -2,8 +2,8 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Audio;
 
-// CUSTOM: Renamed .
+// CUSTOM: Renamed.
 [CodeGenType("DotNetCreateSpeechStreamingResponse")]
-public partial class StreamingSpeechGenerationUpdate
+public partial class StreamingSpeechUpdate
 {
 }

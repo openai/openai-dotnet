@@ -186,7 +186,7 @@ public partial class AudioClient
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
     [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingSpeechGenerationUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
@@ -196,9 +196,9 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        return new AsyncSseUpdateCollection<StreamingSpeechGenerationUpdate>(
+        return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
             async () => await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
-            StreamingSpeechGenerationUpdate.DeserializeStreamingSpeechGenerationUpdate,
+            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
     }
 
@@ -210,7 +210,7 @@ public partial class AudioClient
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
     [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingSpeechGenerationUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
@@ -220,9 +220,9 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        return new SseUpdateCollection<StreamingSpeechGenerationUpdate>(
+        return new SseUpdateCollection<StreamingSpeechUpdate>(
             () => GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingSpeechGenerationUpdate.DeserializeStreamingSpeechGenerationUpdate,
+            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
     }
 

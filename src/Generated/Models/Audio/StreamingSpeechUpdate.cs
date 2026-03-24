@@ -9,16 +9,16 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Audio
 {
     [Experimental("OPENAI001")]
-    public partial class StreamingSpeechGenerationUpdate
+    public partial class StreamingSpeechUpdate
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected StreamingSpeechGenerationUpdate(InternalDotNetCreateSpeechStreamingResponseType kind)
+        private protected StreamingSpeechUpdate(InternalDotNetCreateSpeechStreamingResponseType kind)
         {
             Kind = kind;
         }
 
-        internal StreamingSpeechGenerationUpdate(InternalDotNetCreateSpeechStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingSpeechUpdate(InternalDotNetCreateSpeechStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;

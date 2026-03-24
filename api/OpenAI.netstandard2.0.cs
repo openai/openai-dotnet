@@ -875,8 +875,8 @@ namespace OpenAI.Audio {
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingSpeechGenerationUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingSpeechGenerationUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
@@ -1105,7 +1105,7 @@ namespace OpenAI.Audio {
         public GeneratedSpeechFormat? ResponseFormat { get; set; }
         public float? SpeedRatio { get; set; }
     }
-    public class SpeechGenerationTokenUsage : IJsonModel<SpeechGenerationTokenUsage>, IPersistableModel<SpeechGenerationTokenUsage> {
+    public class SpeechTokenUsage : IJsonModel<SpeechTokenUsage>, IPersistableModel<SpeechTokenUsage> {
         public int InputTokenCount { get; }
         public int OutputTokenCount { get; }
         public int TotalTokenCount { get; }
@@ -1129,13 +1129,13 @@ namespace OpenAI.Audio {
     }
     public class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>, IPersistableModel<StreamingAudioTranscriptionUpdate> {
     }
-    public class StreamingSpeechGenerationAudioDeltaUpdate : StreamingSpeechGenerationUpdate, IJsonModel<StreamingSpeechGenerationAudioDeltaUpdate>, IPersistableModel<StreamingSpeechGenerationAudioDeltaUpdate> {
-        public BinaryData Audio { get; }
+    public class StreamingSpeechAudioDeltaUpdate : StreamingSpeechUpdate, IJsonModel<StreamingSpeechAudioDeltaUpdate>, IPersistableModel<StreamingSpeechAudioDeltaUpdate> {
+        public BinaryData AudioBytes { get; }
     }
-    public class StreamingSpeechGenerationAudioDoneUpdate : StreamingSpeechGenerationUpdate, IJsonModel<StreamingSpeechGenerationAudioDoneUpdate>, IPersistableModel<StreamingSpeechGenerationAudioDoneUpdate> {
-        public SpeechGenerationTokenUsage Usage { get; }
+    public class StreamingSpeechAudioDoneUpdate : StreamingSpeechUpdate, IJsonModel<StreamingSpeechAudioDoneUpdate>, IPersistableModel<StreamingSpeechAudioDoneUpdate> {
+        public SpeechTokenUsage Usage { get; }
     }
-    public class StreamingSpeechGenerationUpdate : IJsonModel<StreamingSpeechGenerationUpdate>, IPersistableModel<StreamingSpeechGenerationUpdate> {
+    public class StreamingSpeechUpdate : IJsonModel<StreamingSpeechUpdate>, IPersistableModel<StreamingSpeechUpdate> {
     }
     public readonly partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IPersistableModel<TranscribedSegment>, IJsonModel<object>, IPersistableModel<object> {
         public float AverageLogProbability { get; }

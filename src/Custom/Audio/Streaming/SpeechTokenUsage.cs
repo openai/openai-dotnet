@@ -4,7 +4,7 @@ namespace OpenAI.Audio;
 
 // CUSTOM: Renamed.
 [CodeGenType("SpeechAudioDoneEventUsage")]
-public partial class SpeechGenerationTokenUsage
+public partial class SpeechTokenUsage
 {
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokens")]

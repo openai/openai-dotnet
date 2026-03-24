@@ -9,18 +9,18 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Audio
 {
     [Experimental("OPENAI001")]
-    public partial class SpeechGenerationTokenUsage
+    public partial class SpeechTokenUsage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal SpeechGenerationTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount)
+        internal SpeechTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
         }
 
-        internal SpeechGenerationTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal SpeechTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;

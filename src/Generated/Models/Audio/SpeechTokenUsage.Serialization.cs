@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public partial class SpeechGenerationTokenUsage : IJsonModel<SpeechGenerationTokenUsage>
+    public partial class SpeechTokenUsage : IJsonModel<SpeechTokenUsage>
     {
-        internal SpeechGenerationTokenUsage()
+        internal SpeechTokenUsage()
         {
         }
 
-        protected virtual SpeechGenerationTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual SpeechTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeSpeechGenerationTokenUsage(document.RootElement, options);
+                        return DeserializeSpeechTokenUsage(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(SpeechGenerationTokenUsage)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(SpeechGenerationTokenUsage)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<SpeechGenerationTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<SpeechTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        SpeechGenerationTokenUsage IPersistableModel<SpeechGenerationTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        SpeechTokenUsage IPersistableModel<SpeechTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<SpeechGenerationTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<SpeechTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<SpeechGenerationTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<SpeechTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,10 +58,10 @@ namespace OpenAI.Audio
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(SpeechGenerationTokenUsage)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
             {
@@ -100,20 +100,20 @@ namespace OpenAI.Audio
             }
         }
 
-        SpeechGenerationTokenUsage IJsonModel<SpeechGenerationTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        SpeechTokenUsage IJsonModel<SpeechTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual SpeechGenerationTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual SpeechTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<SpeechGenerationTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(SpeechGenerationTokenUsage)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeSpeechGenerationTokenUsage(document.RootElement, options);
+            return DeserializeSpeechTokenUsage(document.RootElement, options);
         }
 
-        internal static SpeechGenerationTokenUsage DeserializeSpeechGenerationTokenUsage(JsonElement element, ModelReaderWriterOptions options)
+        internal static SpeechTokenUsage DeserializeSpeechTokenUsage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -143,7 +143,7 @@ namespace OpenAI.Audio
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new SpeechGenerationTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties);
+            return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties);
         }
     }
 }

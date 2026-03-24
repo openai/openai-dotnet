@@ -4,6 +4,6 @@ namespace OpenAI.Audio;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetSpeechAudioDoneEvent")]
-public partial class StreamingSpeechGenerationAudioDoneUpdate
+public partial class StreamingSpeechAudioDoneUpdate
 {
 }
