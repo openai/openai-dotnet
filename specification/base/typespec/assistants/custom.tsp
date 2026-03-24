@@ -57,6 +57,7 @@ union AssistantToolDefinitionType {
   code_interpreter: "code_interpreter",
   file_search: "file_search",
   function: "function",
+  openapi: "openapi",
 }
 
 @discriminator("type")

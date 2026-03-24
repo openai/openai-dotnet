@@ -16,6 +16,9 @@ public readonly partial struct AssistantCollectionOrder { }
 [CodeGenType("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition { }
 
+[CodeGenType("OpenApiToolDefinitionDetails")]
+public partial class OpenApiToolDefinitionDetails { }
+
 [CodeGenType("MessageCollectionOptions")]
 public partial class MessageCollectionOptions { }
 

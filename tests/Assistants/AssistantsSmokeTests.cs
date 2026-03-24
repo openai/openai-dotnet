@@ -2,6 +2,7 @@ using NUnit.Framework;
 using OpenAI.Assistants;
 using System;
 using System.ClientModel.Primitives;
+using System.Text.Json;
 
 namespace OpenAI.Tests.Assistants;
 
@@ -97,6 +98,122 @@ public class AssistantsSmokeTests
 
         Assert.That(jsonSchemaFormat == AssistantResponseFormat.CreateJsonSchemaFormat("test_schema", BinaryData.FromObjectAsJson(new { })));
         Assert.That(jsonSchemaFormat != AssistantResponseFormat.CreateJsonSchemaFormat("not_test_schema", BinaryData.FromObjectAsJson(new { })));
+    }
+
+    [Test]
+    public void FoundryOpenApiToolDeserializesAsTypedTool()
+    {
+        BinaryData foundryAgentData = BinaryData.FromString(
+            """
+            {
+              "definition": {
+                "tools": [
+                  {
+                    "type": "openapi",
+                    "openapi": {
+                      "name": "frc_data",
+                      "description": "Can get current (near real-time) & historical data about First Robotics Competition (FRC) Districts, Teams, Events, and Matches",
+                      "auth": {
+                        "type": "project_connection",
+                        "security_scheme": {
+                          "project_connection_id": "/subscriptions/test-sub/resourceGroups/test-rg/providers/Microsoft.CognitiveServices/accounts/test-account/projects/test-project/connections/frc_data"
+                        }
+                      },
+                      "spec": {
+                        "openapi": "3.1.1",
+                        "info": {
+                          "title": "The Blue Alliance API",
+                          "version": "3.12.1"
+                        },
+                        "paths": {}
+                      },
+                      "x-foundry-extension": {
+                        "enabled": true
+                      }
+                    },
+                    "x-top-level-extension": {
+                      "source": "foundry"
+                    }
+                  }
+                ]
+              }
+            }
+            """);
+
+        using JsonDocument document = JsonDocument.Parse(foundryAgentData);
+        BinaryData toolData = BinaryData.FromString(
+            document.RootElement
+                .GetProperty("definition")
+                .GetProperty("tools")[0]
+                .GetRawText());
+
+        ToolDefinition tool = ModelReaderWriter.Read<ToolDefinition>(toolData);
+
+        Assert.That(tool, Is.InstanceOf<global::OpenAI.OpenApiToolDefinition>());
+
+        global::OpenAI.OpenApiToolDefinition openApiTool = (global::OpenAI.OpenApiToolDefinition)tool;
+        Assert.That(openApiTool.Name, Is.EqualTo("frc_data"));
+        Assert.That(openApiTool.Description, Does.Contain("First Robotics Competition"));
+
+        using JsonDocument authDocument = JsonDocument.Parse(openApiTool.Authentication);
+        Assert.That(
+            authDocument.RootElement.GetProperty("security_scheme").GetProperty("project_connection_id").GetString(),
+            Does.EndWith("/connections/frc_data"));
+
+        using JsonDocument specificationDocument = JsonDocument.Parse(openApiTool.Specification);
+        Assert.That(specificationDocument.RootElement.GetProperty("openapi").GetString(), Is.EqualTo("3.1.1"));
+        Assert.That(specificationDocument.RootElement.GetProperty("info").GetProperty("title").GetString(), Is.EqualTo("The Blue Alliance API"));
+    }
+
+    [Test]
+    public void OpenApiToolRoundTripsPreservingFoundryData()
+    {
+        BinaryData assistantData = BinaryData.FromString(
+            """
+            {
+              "id": "asst_123",
+              "object": "assistant",
+              "created_at": 1710000000,
+              "model": "gpt-4o",
+              "tools": [
+                {
+                  "type": "openapi",
+                  "openapi": {
+                    "name": "frc_data",
+                    "description": "FRC lookup tool",
+                    "auth": {
+                      "type": "project_connection"
+                    },
+                    "spec": {
+                      "openapi": "3.1.1",
+                      "paths": {}
+                    },
+                    "x-foundry-extension": {
+                      "enabled": true
+                    }
+                  },
+                  "x-top-level-extension": {
+                    "source": "foundry"
+                  }
+                }
+              ]
+            }
+            """);
+
+        Assistant assistant = ModelReaderWriter.Read<Assistant>(assistantData);
+
+        Assert.That(assistant.Tools, Has.Count.EqualTo(1));
+        Assert.That(assistant.Tools[0], Is.InstanceOf<global::OpenAI.OpenApiToolDefinition>());
+
+        string reserialized = ModelReaderWriter.Write(assistant).ToString();
+        using JsonDocument document = JsonDocument.Parse(reserialized);
+
+        JsonElement tool = document.RootElement.GetProperty("tools")[0];
+        Assert.That(tool.GetProperty("type").GetString(), Is.EqualTo("openapi"));
+        Assert.That(tool.GetProperty("openapi").GetProperty("name").GetString(), Is.EqualTo("frc_data"));
+        Assert.That(tool.GetProperty("openapi").GetProperty("description").GetString(), Is.EqualTo("FRC lookup tool"));
+        Assert.That(tool.GetProperty("openapi").GetProperty("x-foundry-extension").GetProperty("enabled").GetBoolean(), Is.True);
+        Assert.That(tool.GetProperty("x-top-level-extension").GetProperty("source").GetString(), Is.EqualTo("foundry"));
     }
 }
 

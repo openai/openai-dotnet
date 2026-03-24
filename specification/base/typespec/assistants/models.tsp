@@ -225,6 +225,30 @@ model AssistantToolsFunction extends AssistantToolDefinition {
   function: FunctionObject;
 }
 
+// Tool customization (apply_discriminator): apply a common model base for tool definitions
+model OpenApiToolDefinition extends AssistantToolDefinition {
+  @doc("""
+    The type of tool being defined: `openapi`
+    """)
+  type: AssistantToolDefinitionType.openapi;
+
+  openapi: OpenApiToolDefinitionDetails;
+}
+
+model OpenApiToolDefinitionDetails {
+  /** The name of the OpenAPI tool. */
+  name: string;
+
+  /** A description of the OpenAPI tool. */
+  description?: string | null;
+
+  /** Authentication configuration for the OpenAPI tool. */
+  auth?: unknown | null;
+
+  /** The OpenAPI specification for the tool. */
+  spec: unknown;
+}
+
 @doc("""
   Represents an `assistant` that can call the model and use tools.
   """)

@@ -13,6 +13,7 @@ namespace OpenAI.Assistants
         private const string CodeInterpreterValue = "code_interpreter";
         private const string FileSearchValue = "file_search";
         private const string FunctionValue = "function";
+        private const string OpenapiValue = "openapi";
 
         public InternalAssistantToolDefinitionType(string value)
         {
@@ -24,6 +25,8 @@ namespace OpenAI.Assistants
         internal static InternalAssistantToolDefinitionType FileSearch { get; } = new InternalAssistantToolDefinitionType(FileSearchValue);
 
         internal static InternalAssistantToolDefinitionType Function { get; } = new InternalAssistantToolDefinitionType(FunctionValue);
+
+        internal static InternalAssistantToolDefinitionType Openapi { get; } = new InternalAssistantToolDefinitionType(OpenapiValue);
 
         public static bool operator ==(InternalAssistantToolDefinitionType left, InternalAssistantToolDefinitionType right) => left.Equals(right);
 

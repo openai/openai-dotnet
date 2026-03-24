@@ -119,6 +119,8 @@ namespace OpenAI.Assistants
                         return FileSearchToolDefinition.DeserializeFileSearchToolDefinition(element, options);
                     case "function":
                         return FunctionToolDefinition.DeserializeFunctionToolDefinition(element, options);
+                    case "openapi":
+                        return OpenApiToolDefinition.DeserializeOpenApiToolDefinition(element, options);
                 }
             }
             return UnknownAssistantToolDefinition.DeserializeUnknownAssistantToolDefinition(element, options);
