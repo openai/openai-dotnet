@@ -1,5 +1,5 @@
 import "../../base/typespec/responses/main.tsp";
-import "./common.models.tsp";
+import "./common.shared.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;

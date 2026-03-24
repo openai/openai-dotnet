@@ -4,6 +4,8 @@ import "@typespec/openapi";
 import "../common/custom.tsp";
 import "./custom.tsp";
 import "./models.tsp";
+import "./image_gen.tsp";
+import "./tools.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;

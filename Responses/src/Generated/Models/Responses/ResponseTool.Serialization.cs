@@ -102,6 +102,8 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
+                    case "image_generation":
+                        return ImageGenerationTool.DeserializeImageGenerationTool(element, data, options);
                     case "function":
                         return FunctionTool.DeserializeFunctionTool(element, data, options);
                     case "file_search":
@@ -114,8 +116,6 @@ namespace OpenAI.Responses
                         return WebSearchTool.DeserializeWebSearchTool(element, data, options);
                     case "code_interpreter":
                         return CodeInterpreterTool.DeserializeCodeInterpreterTool(element, data, options);
-                    case "image_generation":
-                        return ImageGenerationTool.DeserializeImageGenerationTool(element, data, options);
                     case "local_shell":
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, data, options);
                     case "mcp":

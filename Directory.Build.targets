@@ -76,15 +76,8 @@
           DependsOnTargets="Build"
           Condition="('$(MSBuildProjectName)' == 'OpenAI' or '$(MSBuildProjectName)' == 'OpenAI.Responses') and '$(TargetFramework)' != ''">
 
-    <!-- Include assemblies from project references alongside the current project -->
-    <ItemGroup>
-      <_ProjectReferenceAssemblies Include="@(ReferencePath)" Condition="'%(ReferencePath.ReferenceSourceTarget)' == 'ProjectReference'" />
-      <_GenApiAssemblies Include="$(TargetPath)" />
-      <_GenApiAssemblies Include="@(_ProjectReferenceAssemblies)" />
-    </ItemGroup>
-
     <!-- Run GenAPI task -->
-    <GenAPITask Assemblies="@(_GenApiAssemblies)"
+    <GenAPITask Assemblies="$(TargetPath)"
                 AssemblyReferences="@(ReferencePath)"
                 OutputPath="$(GenAPIOutputDirectory)$(MSBuildProjectName).$(TargetFramework).cs" />
 

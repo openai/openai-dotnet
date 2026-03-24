@@ -163,14 +163,6 @@ namespace OpenAI.Responses
                         return StreamingResponseWebSearchCallInProgressUpdate.DeserializeStreamingResponseWebSearchCallInProgressUpdate(element, data, options);
                     case "response.web_search_call.searching":
                         return StreamingResponseWebSearchCallSearchingUpdate.DeserializeStreamingResponseWebSearchCallSearchingUpdate(element, data, options);
-                    case "response.image_generation_call.completed":
-                        return StreamingResponseImageGenerationCallCompletedUpdate.DeserializeStreamingResponseImageGenerationCallCompletedUpdate(element, data, options);
-                    case "response.image_generation_call.generating":
-                        return StreamingResponseImageGenerationCallGeneratingUpdate.DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(element, data, options);
-                    case "response.image_generation_call.in_progress":
-                        return StreamingResponseImageGenerationCallInProgressUpdate.DeserializeStreamingResponseImageGenerationCallInProgressUpdate(element, data, options);
-                    case "response.image_generation_call.partial_image":
-                        return StreamingResponseImageGenerationCallPartialImageUpdate.DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(element, data, options);
                     case "response.mcp_call_arguments.delta":
                         return StreamingResponseMcpCallArgumentsDeltaUpdate.DeserializeStreamingResponseMcpCallArgumentsDeltaUpdate(element, data, options);
                     case "response.mcp_call_arguments.done":
@@ -209,6 +201,14 @@ namespace OpenAI.Responses
                         return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, data, options);
                     case "response.code_interpreter_call.interpreting":
                         return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, data, options);
+                    case "response.image_generation_call.completed":
+                        return StreamingResponseImageGenerationCallCompletedUpdate.DeserializeStreamingResponseImageGenerationCallCompletedUpdate(element, data, options);
+                    case "response.image_generation_call.generating":
+                        return StreamingResponseImageGenerationCallGeneratingUpdate.DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(element, data, options);
+                    case "response.image_generation_call.in_progress":
+                        return StreamingResponseImageGenerationCallInProgressUpdate.DeserializeStreamingResponseImageGenerationCallInProgressUpdate(element, data, options);
+                    case "response.image_generation_call.partial_image":
+                        return StreamingResponseImageGenerationCallPartialImageUpdate.DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(element, data, options);
                 }
             }
             return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, data, options);

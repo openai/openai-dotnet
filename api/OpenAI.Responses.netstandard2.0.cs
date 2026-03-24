@@ -6,195 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-namespace OpenAI {
-    public enum CreateResponseRequestAccept {
-        ApplicationJson = 0,
-        TextEventStream = 1
-    }
-    public abstract class DotNetAssistantResponseFormat : IJsonModel<DotNetAssistantResponseFormat>, IPersistableModel<DotNetAssistantResponseFormat> {
-        protected virtual DotNetAssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DotNetAssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetAssistantResponseFormatJsonObject : DotNetAssistantResponseFormat, IJsonModel<DotNetAssistantResponseFormatJsonObject>, IPersistableModel<DotNetAssistantResponseFormatJsonObject> {
-        public DotNetAssistantResponseFormatJsonObject();
-        protected override DotNetAssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override DotNetAssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetAssistantResponseFormatJsonSchema : DotNetAssistantResponseFormat, IJsonModel<DotNetAssistantResponseFormatJsonSchema>, IPersistableModel<DotNetAssistantResponseFormatJsonSchema> {
-        public DotNetAssistantResponseFormatJsonSchema(DotNetAssistantResponseFormatJsonSchemaJsonSchema jsonSchema);
-        public DotNetAssistantResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
-        protected override DotNetAssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override DotNetAssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetAssistantResponseFormatJsonSchemaJsonSchema : IJsonModel<DotNetAssistantResponseFormatJsonSchemaJsonSchema>, IPersistableModel<DotNetAssistantResponseFormatJsonSchemaJsonSchema> {
-        public DotNetAssistantResponseFormatJsonSchemaJsonSchema(string name);
-        public string Description { get; set; }
-        public string Name { get; set; }
-        public BinaryData Schema { get; set; }
-        public bool? Strict { get; set; }
-        protected virtual DotNetAssistantResponseFormatJsonSchemaJsonSchema JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DotNetAssistantResponseFormatJsonSchemaJsonSchema PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetAssistantResponseFormatText : DotNetAssistantResponseFormat, IJsonModel<DotNetAssistantResponseFormatText>, IPersistableModel<DotNetAssistantResponseFormatText> {
-        public DotNetAssistantResponseFormatText();
-        protected override DotNetAssistantResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override DotNetAssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetAudioLogProbsProperties : IJsonModel<DotNetAudioLogProbsProperties>, IPersistableModel<DotNetAudioLogProbsProperties> {
-        public IList<int> Bytes { get; }
-        public float Logprob { get; }
-        public string Token { get; }
-        protected virtual DotNetAudioLogProbsProperties JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DotNetAudioLogProbsProperties PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct DotNetAudioVoiceIds : IEquatable<DotNetAudioVoiceIds> {
-        public DotNetAudioVoiceIds(string value);
-        public static DotNetAudioVoiceIds Alloy { get; }
-        public static DotNetAudioVoiceIds Ash { get; }
-        public static DotNetAudioVoiceIds Ballad { get; }
-        public static DotNetAudioVoiceIds Coral { get; }
-        public static DotNetAudioVoiceIds Echo { get; }
-        public static DotNetAudioVoiceIds Fable { get; }
-        public static DotNetAudioVoiceIds Nova { get; }
-        public static DotNetAudioVoiceIds Onyx { get; }
-        public static DotNetAudioVoiceIds Sage { get; }
-        public static DotNetAudioVoiceIds Shimmer { get; }
-        public static DotNetAudioVoiceIds Verse { get; }
-        public readonly bool Equals(DotNetAudioVoiceIds other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(DotNetAudioVoiceIds left, DotNetAudioVoiceIds right);
-        public static implicit operator DotNetAudioVoiceIds(string value);
-        public static implicit operator DotNetAudioVoiceIds?(string value);
-        public static bool operator !=(DotNetAudioVoiceIds left, DotNetAudioVoiceIds right);
-        public override readonly string ToString();
-    }
-    public abstract class DotNetChatResponseFormat : IJsonModel<DotNetChatResponseFormat>, IPersistableModel<DotNetChatResponseFormat> {
-        protected virtual DotNetChatResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DotNetChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetChatResponseFormatJsonObject : DotNetChatResponseFormat, IJsonModel<DotNetChatResponseFormatJsonObject>, IPersistableModel<DotNetChatResponseFormatJsonObject> {
-        public DotNetChatResponseFormatJsonObject();
-        protected override DotNetChatResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override DotNetChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetChatResponseFormatJsonSchema : DotNetChatResponseFormat, IJsonModel<DotNetChatResponseFormatJsonSchema>, IPersistableModel<DotNetChatResponseFormatJsonSchema> {
-        public DotNetChatResponseFormatJsonSchema(DotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema);
-        public DotNetChatResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
-        protected override DotNetChatResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override DotNetChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetChatResponseFormatJsonSchemaJsonSchema : IJsonModel<DotNetChatResponseFormatJsonSchemaJsonSchema>, IPersistableModel<DotNetChatResponseFormatJsonSchemaJsonSchema> {
-        public DotNetChatResponseFormatJsonSchemaJsonSchema(string name);
-        public string Description { get; set; }
-        public string Name { get; set; }
-        public BinaryData Schema { get; set; }
-        public bool? Strict { get; set; }
-        protected virtual DotNetChatResponseFormatJsonSchemaJsonSchema JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DotNetChatResponseFormatJsonSchemaJsonSchema PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class DotNetChatResponseFormatText : DotNetChatResponseFormat, IJsonModel<DotNetChatResponseFormatText>, IPersistableModel<DotNetChatResponseFormatText> {
-        public DotNetChatResponseFormatText();
-        protected override DotNetChatResponseFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override DotNetChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct DotNetChatVoiceIds : IEquatable<DotNetChatVoiceIds> {
-        public DotNetChatVoiceIds(string value);
-        public static DotNetChatVoiceIds Alloy { get; }
-        public static DotNetChatVoiceIds Ash { get; }
-        public static DotNetChatVoiceIds Ballad { get; }
-        public static DotNetChatVoiceIds Coral { get; }
-        public static DotNetChatVoiceIds Echo { get; }
-        public static DotNetChatVoiceIds Fable { get; }
-        public static DotNetChatVoiceIds Nova { get; }
-        public static DotNetChatVoiceIds Onyx { get; }
-        public static DotNetChatVoiceIds Sage { get; }
-        public static DotNetChatVoiceIds Shimmer { get; }
-        public static DotNetChatVoiceIds Verse { get; }
-        public readonly bool Equals(DotNetChatVoiceIds other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(DotNetChatVoiceIds left, DotNetChatVoiceIds right);
-        public static implicit operator DotNetChatVoiceIds(string value);
-        public static implicit operator DotNetChatVoiceIds?(string value);
-        public static bool operator !=(DotNetChatVoiceIds left, DotNetChatVoiceIds right);
-        public override readonly string ToString();
-    }
-    public class DotNetRealtimeLogProbsProperties : IJsonModel<DotNetRealtimeLogProbsProperties>, IPersistableModel<DotNetRealtimeLogProbsProperties> {
-        public IList<int> Bytes { get; }
-        public float Logprob { get; }
-        public string Token { get; }
-        protected virtual DotNetRealtimeLogProbsProperties JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual DotNetRealtimeLogProbsProperties PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class FileSearchToolCallItemParamResult : IJsonModel<FileSearchToolCallItemParamResult>, IPersistableModel<FileSearchToolCallItemParamResult> {
-        public IDictionary<string, BinaryData> Attributes { get; }
-        public string FileId { get; set; }
-        public string Filename { get; set; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        public float? Score { get; set; }
-        public string Text { get; set; }
-        protected virtual FileSearchToolCallItemParamResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual FileSearchToolCallItemParamResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public enum PageOrderOptions {
-        Asc = 0,
-        Desc = 1
-    }
-    public enum ReasoningEffort {
-        None = 0,
-        Minimal = 1,
-        Low = 2,
-        Medium = 3,
-        High = 4
-    }
-    public class ResponseFormatJsonSchemaSchema : IJsonModel<ResponseFormatJsonSchemaSchema>, IPersistableModel<ResponseFormatJsonSchemaSchema> {
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        protected virtual ResponseFormatJsonSchemaSchema JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ResponseFormatJsonSchemaSchema PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public enum ResponseFormatType {
-        Text = 0,
-        JsonObject = 1,
-        JsonSchema = 2
-    }
-}
 namespace OpenAI.Responses {
     public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
         public AutomaticCodeInterpreterToolContainerConfiguration();
@@ -491,7 +302,6 @@ namespace OpenAI.Responses {
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
         public FileSearchCallResponseItem(IEnumerable<string> queries);
         public IList<string> Queries { get; }
-        public IList<FileSearchToolCallItemParamResult> Results { get; set; }
         public FileSearchCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -936,21 +746,8 @@ namespace OpenAI.Responses {
         public static ContainerFileCitationMessageAnnotation ContainerFileCitationMessageAnnotation(string containerId = null, string fileId = null, int startIndex = 0, int endIndex = 0, string filename = null);
         public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = null, float? temperature = null, int? topLogProbabilityCount = null, float? topP = null, string endUserId = null, string safetyIdentifier = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, string model = null, ResponseReasoningOptions reasoningOptions = null, bool? backgroundModeEnabled = null, int? maxOutputTokenCount = null, int? maxToolCallCount = null, ResponseTextOptions textOptions = null, IEnumerable<ResponseTool> tools = null, ResponseToolChoice toolChoice = null, ResponseTruncationMode? truncationMode = null, IEnumerable<ResponseItem> inputItems = null, IEnumerable<IncludedResponseProperty> includedProperties = null, bool? parallelToolCallsEnabled = null, bool? storedOutputEnabled = null, string instructions = null, bool? streamingEnabled = null, ResponseConversationOptions conversationOptions = null);
         public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = null, McpToolFilter toolsNeverRequiringApproval = null);
-        public static DotNetAssistantResponseFormat DotNetAssistantResponseFormat(string kind = null);
-        public static DotNetAssistantResponseFormatJsonObject DotNetAssistantResponseFormatJsonObject();
-        public static DotNetAssistantResponseFormatJsonSchema DotNetAssistantResponseFormatJsonSchema(DotNetAssistantResponseFormatJsonSchemaJsonSchema jsonSchema = null);
-        public static DotNetAssistantResponseFormatJsonSchemaJsonSchema DotNetAssistantResponseFormatJsonSchemaJsonSchema(string description = null, string name = null, BinaryData schema = null, bool? strict = null);
-        public static DotNetAssistantResponseFormatText DotNetAssistantResponseFormatText();
-        public static DotNetAudioLogProbsProperties DotNetAudioLogProbsProperties(string token = null, float logprob = 0, IEnumerable<int> bytes = null);
-        public static DotNetChatResponseFormat DotNetChatResponseFormat(string kind = null);
-        public static DotNetChatResponseFormatJsonObject DotNetChatResponseFormatJsonObject();
-        public static DotNetChatResponseFormatJsonSchema DotNetChatResponseFormatJsonSchema(DotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema = null);
-        public static DotNetChatResponseFormatJsonSchemaJsonSchema DotNetChatResponseFormatJsonSchemaJsonSchema(string description = null, string name = null, BinaryData schema = null, bool? strict = null);
-        public static DotNetChatResponseFormatText DotNetChatResponseFormatText();
-        public static DotNetRealtimeLogProbsProperties DotNetRealtimeLogProbsProperties(string token = null, float logprob = 0, IEnumerable<int> bytes = null);
         public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = null, int index = 0, string filename = null);
         public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = null, int index = 0);
-        public static FileSearchToolCallItemParamResult FileSearchToolCallItemParamResult(string fileId = null, string text = null, string filename = null, IDictionary<string, BinaryData> attributes = null, float? score = null);
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = null, float? scoreThreshold = null);
         public static GetResponseOptions GetResponseOptions(string responseId = null, int? startingAfter = null, bool? includeObfuscation = null, IEnumerable<IncludedResponseProperty> includedProperties = null, bool? streamingEnabled = null);
         public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(Uri imageUri = null, string fileId = null);
@@ -960,7 +757,6 @@ namespace OpenAI.Responses {
         public static ResponseConversationOptions ResponseConversationOptions(string conversationId = null);
         public static ResponseDeletionResult ResponseDeletionResult(string responseId = null, bool deleted = false);
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = null);
-        public static ResponseFormatJsonSchemaSchema ResponseFormatJsonSchemaSchema();
         public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = null);
         public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = 0);
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = null, string afterId = null, string beforeId = null, int? pageSizeLimit = null, ResponseItemCollectionOrder? order = null);

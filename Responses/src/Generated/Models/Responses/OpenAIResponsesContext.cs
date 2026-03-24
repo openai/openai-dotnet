@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -24,23 +23,10 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(ContainerFileCitationMessageAnnotation))]
     [ModelReaderWriterBuildable(typeof(CreateResponseOptions))]
     [ModelReaderWriterBuildable(typeof(CustomMcpToolCallApprovalPolicy))]
-    [ModelReaderWriterBuildable(typeof(DotNetAssistantResponseFormat))]
-    [ModelReaderWriterBuildable(typeof(DotNetAssistantResponseFormatJsonObject))]
-    [ModelReaderWriterBuildable(typeof(DotNetAssistantResponseFormatJsonSchema))]
-    [ModelReaderWriterBuildable(typeof(DotNetAssistantResponseFormatJsonSchemaJsonSchema))]
-    [ModelReaderWriterBuildable(typeof(DotNetAssistantResponseFormatText))]
-    [ModelReaderWriterBuildable(typeof(DotNetAudioLogProbsProperties))]
-    [ModelReaderWriterBuildable(typeof(DotNetChatResponseFormat))]
-    [ModelReaderWriterBuildable(typeof(DotNetChatResponseFormatJsonObject))]
-    [ModelReaderWriterBuildable(typeof(DotNetChatResponseFormatJsonSchema))]
-    [ModelReaderWriterBuildable(typeof(DotNetChatResponseFormatJsonSchemaJsonSchema))]
-    [ModelReaderWriterBuildable(typeof(DotNetChatResponseFormatText))]
-    [ModelReaderWriterBuildable(typeof(DotNetRealtimeLogProbsProperties))]
     [ModelReaderWriterBuildable(typeof(FileCitationMessageAnnotation))]
     [ModelReaderWriterBuildable(typeof(FilePathMessageAnnotation))]
     [ModelReaderWriterBuildable(typeof(FileSearchCallResponseItem))]
     [ModelReaderWriterBuildable(typeof(FileSearchTool))]
-    [ModelReaderWriterBuildable(typeof(FileSearchToolCallItemParamResult))]
     [ModelReaderWriterBuildable(typeof(FileSearchToolRankingOptions))]
     [ModelReaderWriterBuildable(typeof(FunctionCallOutputResponseItem))]
     [ModelReaderWriterBuildable(typeof(FunctionCallResponseItem))]
@@ -66,6 +52,7 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(InternalComputerUsePreviewToolCallOutputItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalCoordinate))]
     [ModelReaderWriterBuildable(typeof(InternalFileSearchToolCallItemParam))]
+    [ModelReaderWriterBuildable(typeof(InternalFileSearchToolCallItemParamResult))]
     [ModelReaderWriterBuildable(typeof(InternalFunctionToolCallItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalFunctionToolCallOutputItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalImageGenToolCallItemParam))]
@@ -93,6 +80,7 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(InternalMCPToolRequireApproval1))]
     [ModelReaderWriterBuildable(typeof(InternalReasoningItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalResponseErrorResponse))]
+    [ModelReaderWriterBuildable(typeof(InternalResponseFormatJsonSchemaSchema))]
     [ModelReaderWriterBuildable(typeof(InternalResponseReasoningDeltaEvent))]
     [ModelReaderWriterBuildable(typeof(InternalResponseReasoningDoneEvent))]
     [ModelReaderWriterBuildable(typeof(InternalResponseReasoningSummaryDeltaEvent))]
@@ -151,7 +139,6 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(ResponseConversationOptions))]
     [ModelReaderWriterBuildable(typeof(ResponseDeletionResult))]
     [ModelReaderWriterBuildable(typeof(ResponseError))]
-    [ModelReaderWriterBuildable(typeof(ResponseFormatJsonSchemaSchema))]
     [ModelReaderWriterBuildable(typeof(ResponseIncompleteStatusDetails))]
     [ModelReaderWriterBuildable(typeof(ResponseInputTokenUsageDetails))]
     [ModelReaderWriterBuildable(typeof(ResponseItem))]
@@ -213,8 +200,6 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(StreamingResponseWebSearchCallCompletedUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseWebSearchCallInProgressUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseWebSearchCallSearchingUpdate))]
-    [ModelReaderWriterBuildable(typeof(UnknownDotNetAssistantResponseFormat))]
-    [ModelReaderWriterBuildable(typeof(UnknownDotNetChatResponseFormat))]
     [ModelReaderWriterBuildable(typeof(UnknownResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(UriCitationMessageAnnotation))]
     [ModelReaderWriterBuildable(typeof(WebSearchCallResponseItem))]

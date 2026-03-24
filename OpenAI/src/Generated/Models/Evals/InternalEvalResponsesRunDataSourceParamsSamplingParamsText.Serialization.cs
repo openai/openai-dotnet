@@ -105,7 +105,7 @@ namespace OpenAI.Evals
             {
                 return null;
             }
-            ResponseTextFormatConfiguration format = default;
+            InternalResponseTextFormatConfiguration format = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -115,7 +115,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    format = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, options);
+                    format = InternalResponseTextFormatConfiguration.DeserializeInternalResponseTextFormatConfiguration(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

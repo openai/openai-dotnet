@@ -6,7 +6,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -18,22 +17,22 @@ namespace OpenAI.Responses
             Argument.AssertNotNull(queries, nameof(queries));
 
             Queries = queries.ToList();
-            Results = new ChangeTrackingList<FileSearchToolCallItemParamResult>();
+            Results = new ChangeTrackingList<InternalFileSearchToolCallItemParamResult>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FileSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchToolCallItemParamResult> results) : base(kind, id, patch)
+        internal FileSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<InternalFileSearchToolCallItemParamResult> results) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             Queries = queries ?? new ChangeTrackingList<string>();
-            Results = results ?? new ChangeTrackingList<FileSearchToolCallItemParamResult>();
+            Results = results ?? new ChangeTrackingList<InternalFileSearchToolCallItemParamResult>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> Queries { get; }
 
-        public IList<FileSearchToolCallItemParamResult> Results { get; set; }
+        internal IList<InternalFileSearchToolCallItemParamResult> Results { get; set; }
     }
 }

@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -51,9 +50,9 @@ namespace OpenAI.Responses
             return new ResponseTextOptions(textFormat, default);
         }
 
-        public static ResponseFormatJsonSchemaSchema ResponseFormatJsonSchemaSchema()
+        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(Uri imageUri = default, string fileId = default)
         {
-            return new ResponseFormatJsonSchemaSchema(default);
+            return new ImageGenerationToolInputImageMask(imageUri, fileId, default);
         }
 
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
@@ -66,11 +65,6 @@ namespace OpenAI.Responses
             allowedDomains ??= new ChangeTrackingList<string>();
 
             return new WebSearchToolFilters(allowedDomains.ToList(), default);
-        }
-
-        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(Uri imageUri = default, string fileId = default)
-        {
-            return new ImageGenerationToolInputImageMask(imageUri, fileId, default);
         }
 
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
@@ -116,19 +110,6 @@ namespace OpenAI.Responses
         public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = default, int index = default)
         {
             return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, default, fileId, index);
-        }
-
-        public static FileSearchToolCallItemParamResult FileSearchToolCallItemParamResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
-        {
-            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
-
-            return new FileSearchToolCallItemParamResult(
-                fileId,
-                text,
-                filename,
-                attributes,
-                score,
-                default);
         }
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
@@ -276,70 +257,6 @@ namespace OpenAI.Responses
         public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
         {
             return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
-        }
-
-        public static DotNetChatResponseFormat DotNetChatResponseFormat(string kind = default)
-        {
-            return new UnknownDotNetChatResponseFormat(kind.ToResponseFormatType(), additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetChatResponseFormatText DotNetChatResponseFormatText()
-        {
-            return new DotNetChatResponseFormatText(ResponseFormatType.Text, additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetChatResponseFormatJsonObject DotNetChatResponseFormatJsonObject()
-        {
-            return new DotNetChatResponseFormatJsonObject(ResponseFormatType.JsonObject, additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetChatResponseFormatJsonSchema DotNetChatResponseFormatJsonSchema(DotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema = default)
-        {
-            return new DotNetChatResponseFormatJsonSchema(ResponseFormatType.JsonSchema, additionalBinaryDataProperties: null, jsonSchema);
-        }
-
-        public static DotNetChatResponseFormatJsonSchemaJsonSchema DotNetChatResponseFormatJsonSchemaJsonSchema(string description = default, string name = default, BinaryData schema = default, bool? strict = default)
-        {
-            return new DotNetChatResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetAssistantResponseFormat DotNetAssistantResponseFormat(string kind = default)
-        {
-            return new UnknownDotNetAssistantResponseFormat(kind.ToResponseFormatType(), additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetAssistantResponseFormatText DotNetAssistantResponseFormatText()
-        {
-            return new DotNetAssistantResponseFormatText(ResponseFormatType.Text, additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetAssistantResponseFormatJsonObject DotNetAssistantResponseFormatJsonObject()
-        {
-            return new DotNetAssistantResponseFormatJsonObject(ResponseFormatType.JsonObject, additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetAssistantResponseFormatJsonSchema DotNetAssistantResponseFormatJsonSchema(DotNetAssistantResponseFormatJsonSchemaJsonSchema jsonSchema = default)
-        {
-            return new DotNetAssistantResponseFormatJsonSchema(ResponseFormatType.JsonSchema, additionalBinaryDataProperties: null, jsonSchema);
-        }
-
-        public static DotNetAssistantResponseFormatJsonSchemaJsonSchema DotNetAssistantResponseFormatJsonSchemaJsonSchema(string description = default, string name = default, BinaryData schema = default, bool? strict = default)
-        {
-            return new DotNetAssistantResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetAudioLogProbsProperties DotNetAudioLogProbsProperties(string token = default, float logprob = default, IEnumerable<int> bytes = default)
-        {
-            bytes ??= new ChangeTrackingList<int>();
-
-            return new DotNetAudioLogProbsProperties(token, logprob, bytes.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static DotNetRealtimeLogProbsProperties DotNetRealtimeLogProbsProperties(string token = default, float logprob = default, IEnumerable<int> bytes = default)
-        {
-            bytes ??= new ChangeTrackingList<int>();
-
-            return new DotNetRealtimeLogProbsProperties(token, logprob, bytes.ToList(), additionalBinaryDataProperties: null);
         }
     }
 }

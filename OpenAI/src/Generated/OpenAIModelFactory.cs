@@ -453,178 +453,6 @@ namespace OpenAI
             return new ValidateGraderResponse(grader, additionalBinaryDataProperties: null);
         }
 
-        public static ResponseTextFormatConfiguration ResponseTextFormatConfiguration(string kind = default)
-        {
-            return new UnknownResponseTextFormatConfiguration(new ResponseTextFormatConfigurationType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseTextFormatConfigurationText ResponseTextFormatConfigurationText()
-        {
-            return new ResponseTextFormatConfigurationText(ResponseTextFormatConfigurationType.Text, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseTextFormatConfigurationJsonObject ResponseTextFormatConfigurationJsonObject()
-        {
-            return new ResponseTextFormatConfigurationJsonObject(ResponseTextFormatConfigurationType.JsonObject, additionalBinaryDataProperties: null);
-        }
-
-        public static Tool Tool(string kind = default)
-        {
-            return new UnknownTool(new ToolType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static FunctionTool FunctionTool(string name = default, string description = default, BinaryData parameters = default, bool? strict = default)
-        {
-            return new FunctionTool(
-                ToolType.Function,
-                additionalBinaryDataProperties: null,
-                name,
-                description,
-                parameters,
-                strict);
-        }
-
-        public static FileSearchTool FileSearchTool(IEnumerable<string> vectorStoreIds = default, int? maxNumResults = default, RankingOptions rankingOptions = default, BinaryData filters = default)
-        {
-            vectorStoreIds ??= new ChangeTrackingList<string>();
-
-            return new FileSearchTool(
-                ToolType.FileSearch,
-                additionalBinaryDataProperties: null,
-                vectorStoreIds.ToList(),
-                maxNumResults,
-                rankingOptions,
-                filters);
-        }
-
-        public static RankingOptions RankingOptions(RankingOptionsRanker? ranker = default, float? scoreThreshold = default)
-        {
-            return new RankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
-        }
-
-        public static ComparisonFilter ComparisonFilter(ComparisonFilterType kind = default, string key = default, BinaryData value = default)
-        {
-            return new ComparisonFilter(kind, key, value, additionalBinaryDataProperties: null);
-        }
-
-        public static CompoundFilter CompoundFilter(CompoundFilterType kind = default, IEnumerable<BinaryData> filters = default)
-        {
-            filters ??= new ChangeTrackingList<BinaryData>();
-
-            return new CompoundFilter(kind, filters.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static ComputerUsePreviewTool ComputerUsePreviewTool(ComputerUsePreviewToolEnvironment environment = default, int displayWidth = default, int displayHeight = default)
-        {
-            return new ComputerUsePreviewTool(ToolType.ComputerUsePreview, additionalBinaryDataProperties: null, environment, displayWidth, displayHeight);
-        }
-
-        public static WebSearchPreviewTool WebSearchPreviewTool(Location userLocation = default, SearchContextSize? searchContextSize = default)
-        {
-            return new WebSearchPreviewTool(ToolType.WebSearchPreview, additionalBinaryDataProperties: null, userLocation, searchContextSize);
-        }
-
-        public static Location Location(string kind = default)
-        {
-            return new UnknownLocation(new LocationType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static ApproximateLocation ApproximateLocation(string country = default, string region = default, string city = default, string timezone = default)
-        {
-            return new ApproximateLocation(
-                LocationType.Approximate,
-                additionalBinaryDataProperties: null,
-                country,
-                region,
-                city,
-                timezone);
-        }
-
-        public static WebSearchTool WebSearchTool(WebSearchToolFilters filters = default, Location userLocation = default, SearchContextSize? searchContextSize = default)
-        {
-            return new WebSearchTool(ToolType.WebSearch, additionalBinaryDataProperties: null, filters, userLocation, searchContextSize);
-        }
-
-        public static WebSearchToolFilters WebSearchToolFilters(IEnumerable<string> allowedDomains = default)
-        {
-            allowedDomains ??= new ChangeTrackingList<string>();
-
-            return new WebSearchToolFilters(allowedDomains.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static CodeInterpreterTool CodeInterpreterTool(BinaryData container = default)
-        {
-            return new CodeInterpreterTool(ToolType.CodeInterpreter, additionalBinaryDataProperties: null, container);
-        }
-
-        public static CodeInterpreterToolAuto CodeInterpreterToolAuto(IEnumerable<string> fileIds = default)
-        {
-            fileIds ??= new ChangeTrackingList<string>();
-
-            return new CodeInterpreterToolAuto(CodeInterpreterContainerConfigurationType.Auto, additionalBinaryDataProperties: null, fileIds.ToList());
-        }
-
-        public static CodeInterpreterContainerConfiguration CodeInterpreterContainerConfiguration(string kind = default)
-        {
-            return new UnknownCodeInterpreterContainerConfiguration(new CodeInterpreterContainerConfigurationType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static ImageGenTool ImageGenTool(ImageGenToolModel? model = default, ImageGenToolQuality? quality = default, ImageGenToolSize? size = default, ImageGenToolOutputFormat? outputFormat = default, int? outputCompression = default, ImageGenToolModeration? moderation = default, ImageGenToolBackground? background = default, ImageGenToolInputFidelity? inputFidelity = default, ImageGenToolInputImageMask inputImageMask = default, int? partialImages = default)
-        {
-            return new ImageGenTool(
-                ToolType.ImageGeneration,
-                additionalBinaryDataProperties: null,
-                model,
-                quality,
-                size,
-                outputFormat,
-                outputCompression,
-                moderation,
-                background,
-                inputFidelity,
-                inputImageMask,
-                partialImages);
-        }
-
-        public static ImageGenToolInputImageMask ImageGenToolInputImageMask(Uri imageUrl = default, string fileId = default)
-        {
-            return new ImageGenToolInputImageMask(imageUrl, fileId, additionalBinaryDataProperties: null);
-        }
-
-        public static LocalShellTool LocalShellTool()
-        {
-            return new LocalShellTool(ToolType.LocalShell, additionalBinaryDataProperties: null);
-        }
-
-        public static MCPTool MCPTool(string serverLabel = default, string serverUrl = default, MCPToolConnectorId? connectorId = default, string authorization = default, string serverDescription = default, IDictionary<string, string> headers = default, BinaryData allowedTools = default, BinaryData requireApproval = default)
-        {
-            headers ??= new ChangeTrackingDictionary<string, string>();
-
-            return new MCPTool(
-                ToolType.Mcp,
-                additionalBinaryDataProperties: null,
-                serverLabel,
-                serverUrl,
-                connectorId,
-                authorization,
-                serverDescription,
-                headers,
-                allowedTools,
-                requireApproval);
-        }
-
-        public static MCPToolFilter MCPToolFilter(IEnumerable<string> toolNames = default, bool? readOnly = default)
-        {
-            toolNames ??= new ChangeTrackingList<string>();
-
-            return new MCPToolFilter(toolNames.ToList(), readOnly, additionalBinaryDataProperties: null);
-        }
-
-        public static MCPToolRequireApproval1 MCPToolRequireApproval1(MCPToolFilter always = default, MCPToolFilter never = default)
-        {
-            return new MCPToolRequireApproval1(always, never, additionalBinaryDataProperties: null);
-        }
-
         public static MessageCreationOptions MessageCreationOptions(MessageRole role = default, IEnumerable<MessageContent> content = default, IEnumerable<MessageCreationAttachment> attachments = default, IDictionary<string, string> metadata = default)
         {
             content ??= new ChangeTrackingList<MessageContent>();
@@ -1233,6 +1061,18 @@ namespace OpenAI
         public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default)
         {
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
+        }
+
+        public static ComparisonFilter ComparisonFilter(ComparisonFilterType kind = default, string key = default, BinaryData value = default)
+        {
+            return new ComparisonFilter(kind, key, value, additionalBinaryDataProperties: null);
+        }
+
+        public static CompoundFilter CompoundFilter(CompoundFilterType kind = default, IEnumerable<BinaryData> filters = default)
+        {
+            filters ??= new ChangeTrackingList<BinaryData>();
+
+            return new CompoundFilter(kind, filters.ToList(), additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice()

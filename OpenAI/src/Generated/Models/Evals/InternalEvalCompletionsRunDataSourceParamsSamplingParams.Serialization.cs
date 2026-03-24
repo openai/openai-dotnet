@@ -140,7 +140,7 @@ namespace OpenAI.Evals
             int? maxCompletionTokens = default;
             float? topP = default;
             int? seed = default;
-            ResponseTextFormatConfiguration responseFormat = default;
+            InternalResponseTextFormatConfiguration responseFormat = default;
             IList<ChatTool> tools = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -187,7 +187,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    responseFormat = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, options);
+                    responseFormat = InternalResponseTextFormatConfiguration.DeserializeInternalResponseTextFormatConfiguration(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))

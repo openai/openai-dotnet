@@ -83,7 +83,7 @@ namespace OpenAI.Evals
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                foreach (Tool item in Tools)
+                foreach (InternalTool item in Tools)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -139,7 +139,7 @@ namespace OpenAI.Evals
             int? maxCompletionTokens = default;
             float? topP = default;
             int? seed = default;
-            IList<Tool> tools = default;
+            IList<InternalTool> tools = default;
             InternalEvalResponsesRunDataSourceParamsSamplingParamsText text = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -186,10 +186,10 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    List<Tool> array = new List<Tool>();
+                    List<InternalTool> array = new List<InternalTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(Tool.DeserializeTool(item, options));
+                        array.Add(InternalTool.DeserializeInternalTool(item, options));
                     }
                     tools = array;
                     continue;
@@ -211,7 +211,7 @@ namespace OpenAI.Evals
                 maxCompletionTokens,
                 topP,
                 seed,
-                tools ?? new ChangeTrackingList<Tool>(),
+                tools ?? new ChangeTrackingList<InternalTool>(),
                 text,
                 additionalBinaryDataProperties);
         }

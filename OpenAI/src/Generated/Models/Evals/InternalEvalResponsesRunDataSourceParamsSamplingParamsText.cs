@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -16,13 +15,13 @@ namespace OpenAI.Evals
         {
         }
 
-        internal InternalEvalResponsesRunDataSourceParamsSamplingParamsText(ResponseTextFormatConfiguration format, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalResponsesRunDataSourceParamsSamplingParamsText(InternalResponseTextFormatConfiguration format, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Format = format;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public ResponseTextFormatConfiguration Format { get; set; }
+        internal InternalResponseTextFormatConfiguration Format { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
