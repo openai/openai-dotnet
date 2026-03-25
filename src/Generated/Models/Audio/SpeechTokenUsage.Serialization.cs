@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalSpeechAudioDoneEventUsage : IJsonModel<InternalSpeechAudioDoneEventUsage>
+    public partial class SpeechTokenUsage : IJsonModel<SpeechTokenUsage>
     {
-        internal InternalSpeechAudioDoneEventUsage()
+        internal SpeechTokenUsage()
         {
         }
 
-        protected virtual InternalSpeechAudioDoneEventUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual SpeechTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalSpeechAudioDoneEventUsage(document.RootElement, options);
+                        return DeserializeSpeechTokenUsage(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalSpeechAudioDoneEventUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<SpeechTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalSpeechAudioDoneEventUsage IPersistableModel<InternalSpeechAudioDoneEventUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        SpeechTokenUsage IPersistableModel<SpeechTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalSpeechAudioDoneEventUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<SpeechTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalSpeechAudioDoneEventUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<SpeechTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,25 +58,25 @@ namespace OpenAI.Audio
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
             {
                 writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(InputTokens);
+                writer.WriteNumberValue(InputTokenCount);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
             {
                 writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokens);
+                writer.WriteNumberValue(OutputTokenCount);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
             {
                 writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
+                writer.WriteNumberValue(TotalTokenCount);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -100,50 +100,50 @@ namespace OpenAI.Audio
             }
         }
 
-        InternalSpeechAudioDoneEventUsage IJsonModel<InternalSpeechAudioDoneEventUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        SpeechTokenUsage IJsonModel<SpeechTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalSpeechAudioDoneEventUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual SpeechTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<SpeechTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalSpeechAudioDoneEventUsage(document.RootElement, options);
+            return DeserializeSpeechTokenUsage(document.RootElement, options);
         }
 
-        internal static InternalSpeechAudioDoneEventUsage DeserializeInternalSpeechAudioDoneEventUsage(JsonElement element, ModelReaderWriterOptions options)
+        internal static SpeechTokenUsage DeserializeSpeechTokenUsage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            int inputTokens = default;
-            int outputTokens = default;
-            int totalTokens = default;
+            int inputTokenCount = default;
+            int outputTokenCount = default;
+            int totalTokenCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("input_tokens"u8))
                 {
-                    inputTokens = prop.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("output_tokens"u8))
                 {
-                    outputTokens = prop.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("total_tokens"u8))
                 {
-                    totalTokens = prop.Value.GetInt32();
+                    totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalSpeechAudioDoneEventUsage(inputTokens, outputTokens, totalTokens, additionalBinaryDataProperties);
+            return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties);
         }
     }
 }

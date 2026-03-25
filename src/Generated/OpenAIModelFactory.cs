@@ -1287,6 +1287,11 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
+        public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
+        {
+            return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
         public static ChatFunctionChoice ChatFunctionChoice()
         {
             return new ChatFunctionChoice(default);

@@ -978,6 +978,10 @@ namespace OpenAI.Audio {
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
@@ -1243,6 +1247,12 @@ namespace OpenAI.Audio {
         public float? SpeedRatio { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class SpeechTokenUsage : IJsonModel<SpeechTokenUsage>, IPersistableModel<SpeechTokenUsage> {
+        public int InputTokenCount { get; }
+        public int OutputTokenCount { get; }
+        public int TotalTokenCount { get; }
+    }
+    [Experimental("OPENAI001")]
     public class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate> {
         public string Delta { get; }
         public string SegmentId { get; }
@@ -1264,6 +1274,17 @@ namespace OpenAI.Audio {
     }
     [Experimental("OPENAI001")]
     public class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>, IPersistableModel<StreamingAudioTranscriptionUpdate> {
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingSpeechAudioDeltaUpdate : StreamingSpeechUpdate, IJsonModel<StreamingSpeechAudioDeltaUpdate>, IPersistableModel<StreamingSpeechAudioDeltaUpdate> {
+        public BinaryData AudioBytes { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingSpeechAudioDoneUpdate : StreamingSpeechUpdate, IJsonModel<StreamingSpeechAudioDoneUpdate>, IPersistableModel<StreamingSpeechAudioDoneUpdate> {
+        public SpeechTokenUsage Usage { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingSpeechUpdate : IJsonModel<StreamingSpeechUpdate>, IPersistableModel<StreamingSpeechUpdate> {
     }
     public readonly partial struct TranscribedSegment : IJsonModel<TranscribedSegment>, IPersistableModel<TranscribedSegment>, IJsonModel<object>, IPersistableModel<object> {
         public float AverageLogProbability { get; }
