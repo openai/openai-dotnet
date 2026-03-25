@@ -82,4 +82,35 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
 
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));
     }
+
+    [RecordedTest]
+    public async Task StreamingSpeechWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_TTS);
+
+        bool gotDelta = false;
+        bool gotDone = false;
+
+        await foreach (StreamingSpeechUpdate update
+            in client.GenerateSpeechStreamingAsync("Hello, world! This is a streaming test.", GeneratedSpeechVoice.Alloy))
+        {
+            if (update is StreamingSpeechAudioDeltaUpdate deltaUpdate)
+            {
+                Assert.That(deltaUpdate.AudioBytes, Is.Not.Null);
+                Assert.That(deltaUpdate.AudioBytes.ToArray().Length, Is.GreaterThan(0));
+                gotDelta = true;
+            }
+            else if (update is StreamingSpeechAudioDoneUpdate doneUpdate)
+            {
+                Assert.That(doneUpdate.Usage, Is.Not.Null);
+                Assert.That(doneUpdate.Usage.InputTokenCount, Is.GreaterThan(0));
+                Assert.That(doneUpdate.Usage.OutputTokenCount, Is.GreaterThan(0));
+                Assert.That(doneUpdate.Usage.TotalTokenCount, Is.GreaterThan(0));
+                gotDone = true;
+            }
+        }
+
+        Assert.That(gotDelta, Is.True);
+        Assert.That(gotDone, Is.True);
+    }
 }

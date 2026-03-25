@@ -5,6 +5,7 @@ using System.Buffers.Binary;
 using System.Buffers.Text;
 using System.ClientModel.Primitives;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Embeddings;
@@ -66,22 +67,47 @@ public partial class OpenAIEmbedding
         return ConvertFromJsonArray(binaryData);
     }
 
-    private static ReadOnlyMemory<float> ConvertFromBase64(ReadOnlySpan<byte> base64)
+    private static ReadOnlyMemory<float> ConvertFromBase64(ReadOnlySpan<byte> quotedBase64)
     {
-        base64 = base64.Slice(1, base64.Length - 2);
+        scoped ReadOnlySpan<byte> base64 = quotedBase64.Slice(1, quotedBase64.Length - 2);
 
-        // Decode base64 string to bytes.
+        // Per RFC 8259 §7, JSON strings may contain escape sequences (e.g., '\/' for '/').
+        // Since '/' is a valid base64 character, we must unescape before decoding.
+        byte[] unescaped = null;
         byte[] bytes = null;
+
         try
         {
+            if (base64.IndexOf((byte)'\\') >= 0)
+            {
+                Utf8JsonReader reader = new(quotedBase64);
+                reader.Read();
+
+#if NET8_0_OR_GREATER
+                unescaped = ArrayPool<byte>.Shared.Rent(base64.Length);
+                base64 = unescaped.AsSpan(0, reader.CopyString(unescaped));
+#else
+                base64 = Encoding.UTF8.GetBytes(reader.GetString()!);
+#endif
+            }
+
+            // Decode base64 string to bytes.
             bytes = ArrayPool<byte>.Shared.Rent(Base64.GetMaxDecodedFromUtf8Length(base64.Length));
-            OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out int bytesConsumed, out int bytesWritten);
+            OperationStatus status = Base64.DecodeFromUtf8(base64, bytes.AsSpan(), out _, out int bytesWritten);
+
+            // Done with the unescape buffer — release before validation and float conversion.
+            if (unescaped is not null)
+            {
+                ArrayPool<byte>.Shared.Return(unescaped);
+                unescaped = null;
+            }
+
             if (status != OperationStatus.Done || bytesWritten % sizeof(float) != 0)
             {
                 ThrowInvalidData();
             }
 
-            // Interpret bytes as floats
+            // Interpret bytes as floats.
             float[] vector = new float[bytesWritten / sizeof(float)];
             bytes.AsSpan(0, bytesWritten).CopyTo(MemoryMarshal.AsBytes(vector.AsSpan()));
             if (!BitConverter.IsLittleEndian)
@@ -101,6 +127,10 @@ public partial class OpenAIEmbedding
         }
         finally
         {
+            if (unescaped is not null)
+            {
+                ArrayPool<byte>.Shared.Return(unescaped);
+            }
             if (bytes is not null)
             {
                 ArrayPool<byte>.Shared.Return(bytes);

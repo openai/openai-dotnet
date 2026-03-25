@@ -557,4 +557,98 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         inputStream?.Dispose();
     }
+
+    [RecordedTest]
+    public async Task TranscriptionWithAutoChunkingStrategyWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = AudioTranscriptionDefaultChunkingStrategy.Auto,
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(0));
+
+        foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+    }
+
+    [RecordedTest]
+    public async Task TranscriptionWithCustomChunkingStrategyWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions shortSilenceOptions = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = new AudioTranscriptionCustomServerVadChunkingStrategy()
+            {
+                PrefixPadding = TimeSpan.FromMilliseconds(100),
+                SilenceDuration = TimeSpan.FromMilliseconds(100),
+                DetectionThreshold = 0.3f,
+            },
+        };
+
+        AudioTranscriptionOptions longSilenceOptions = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = new AudioTranscriptionCustomServerVadChunkingStrategy()
+            {
+                PrefixPadding = TimeSpan.FromMilliseconds(500),
+                SilenceDuration = TimeSpan.FromMilliseconds(1500),
+                DetectionThreshold = 0.8f,
+            },
+        };
+
+        DiarizedAudioTranscription shortSilenceResult = await client.TranscribeAudioDiarizedAsync(path, shortSilenceOptions);
+        DiarizedAudioTranscription longSilenceResult = await client.TranscribeAudioDiarizedAsync(path, longSilenceOptions);
+
+        Assert.That(shortSilenceResult, Is.Not.Null);
+        Assert.That(shortSilenceResult.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(shortSilenceResult.Segments, Is.Not.Null);
+        Assert.That(shortSilenceResult.Segments.Count, Is.GreaterThan(0));
+
+        Assert.That(longSilenceResult, Is.Not.Null);
+        Assert.That(longSilenceResult.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(longSilenceResult.Segments, Is.Not.Null);
+        Assert.That(longSilenceResult.Segments.Count, Is.GreaterThan(0));
+
+        // Different VAD parameters should produce different segmentation.
+        // A shorter silence_duration_ms with lower threshold splits more aggressively,
+        // so it should produce at least as many segments as the longer/higher-threshold config.
+        Assert.That(
+            shortSilenceResult.Segments.Count,
+            Is.GreaterThanOrEqualTo(longSilenceResult.Segments.Count),
+            "Expected short silence_duration / low threshold to produce at least as many segments as long silence_duration / high threshold.");
+
+        foreach (DiarizedTranscriptionSegment segment in shortSilenceResult.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+
+        foreach (DiarizedTranscriptionSegment segment in longSilenceResult.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+    }
 }

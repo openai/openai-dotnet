@@ -133,14 +133,7 @@ namespace OpenAI.Audio
             if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ChunkingStrategy);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ChunkingStrategy))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             if (Optional.IsCollectionDefined(KnownSpeakerNames) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_names") != true)
             {
@@ -223,7 +216,7 @@ namespace OpenAI.Audio
             IList<InternalTranscriptionInclude> internalInclude = default;
             IList<BinaryData> internalTimestampGranularities = default;
             bool? stream = default;
-            BinaryData chunkingStrategy = default;
+            AudioTranscriptionChunkingStrategy chunkingStrategy = default;
             IList<string> knownSpeakerNames = default;
             IList<Uri> knownSpeakerReferenceUris = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -319,7 +312,7 @@ namespace OpenAI.Audio
                         chunkingStrategy = null;
                         continue;
                     }
-                    chunkingStrategy = BinaryData.FromString(prop.Value.GetRawText());
+                    chunkingStrategy = AudioTranscriptionChunkingStrategy.DeserializeAudioTranscriptionChunkingStrategy(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("known_speaker_names"u8))

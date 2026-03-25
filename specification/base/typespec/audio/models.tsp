@@ -100,7 +100,7 @@ model CreateTranscriptionRequest {
   stream?: HttpPart<boolean | null>;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  chunking_strategy?: HttpPart<TranscriptionChunkingStrategy>;
+  chunking_strategy?: HttpPart<"auto" | ChunkingStrategyConfig | null>;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   known_speaker_names?: HttpPart<KnownSpeakerNames>;
@@ -109,28 +109,45 @@ model CreateTranscriptionRequest {
   known_speaker_references?: HttpPart<KnownSpeakerReferences>;
 }
 
+union ChunkingStrategyConfigType {
+  string,
+  server_vad: "server_vad",
+}
+
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model VadConfig {
+@discriminator("type")
+model ChunkingStrategyConfig {
+  type: ChunkingStrategyConfigType;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model VadConfig extends ChunkingStrategyConfig {
   /** Must be set to `server_vad` to enable manual chunking using server side VAD. */
-  type: "server_vad";
+  type: ChunkingStrategyConfigType.server_vad;
 
   /**Amount of audio to include before the VAD detected speech (in
   milliseconds).*/
+  // Default is 300 ms.
   #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  prefix_padding_ms?: integer = 300;
+  @encode(DurationKnownEncoding.milliseconds, integer)
+  prefix_padding_ms?: duration;
 
   /**Duration of silence to detect speech stop (in milliseconds).
   With shorter values the model will respond more quickly,
   but may jump in on short pauses from the user.*/
+  // Default is 200 ms.
   #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  silence_duration_ms?: integer = 200;
+  @encode(DurationKnownEncoding.milliseconds, integer)
+  silence_duration_ms?: duration;
 
   /**Sensitivity threshold (0.0 to 1.0) for voice activity detection. A
   higher threshold will require louder audio to activate the model, and
   thus might perform better in noisy environments.*/
   #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  @maxValue(1.0)
+  @minValue(0.0)
   threshold?: numeric = 0.5;
 }
 
@@ -730,16 +747,6 @@ model TranscriptTextSegmentEvent {
 
   /** Speaker label for this segment. */
   speaker: string;
-}
-
-/** Controls how the audio is cut into chunks. When set to `"auto"`, the server first normalizes loudness and then uses voice activity detection (VAD) to choose boundaries. `server_vad` object can be provided to tweak VAD detection parameters manually. If unset, the audio is transcribed as a single block. Required when using `gpt-4o-transcribe-diarize` for inputs longer than 30 seconds. */
-#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-@extension("x-oaiTypeLabel", "string")
-union TranscriptionChunkingStrategy {
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
-  "auto" | VadConfig,
-  null,
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."

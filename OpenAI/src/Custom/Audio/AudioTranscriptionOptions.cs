@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -26,9 +27,10 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("Stream")]
     internal bool? Stream { get; set; }
 
-    // CUSTOM: Made internal
+    // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("ChunkingStrategy")]
-    internal BinaryData ChunkingStrategy { get; set; }
+    [Experimental("OPENAI001")]
+    public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
 
     // CUSTOM: Renamed and changed type from IList<string> to IList<Uri> for data URI consistency.
     [CodeGenMember("KnownSpeakerReferences")]
@@ -104,6 +106,18 @@ public partial class AudioTranscriptionOptions
         if (Stream == true)
         {
             content.Add(true, "stream");
+        }
+
+        if (ChunkingStrategy is not null)
+        {
+            if (ChunkingStrategy.DefaultChunkingStrategy is not null)
+            {
+                content.Add(ChunkingStrategy.DefaultChunkingStrategy.Value.ToString(), "chunking_strategy");
+            }
+            else if (ChunkingStrategy.CustomChunkingStrategy is not null)
+            {
+                content.Add(ModelReaderWriter.Write(ChunkingStrategy.CustomChunkingStrategy, ModelReaderWriterOptions.Json, OpenAIContext.Default), "chunking_strategy");
+            }
         }
 
         foreach (string name in KnownSpeakerNames)

@@ -1,5 +1,12 @@
 # Release History
 
+## Unreleased
+
+### Bugs Fixed
+
+- OpenAI.Embeddings:
+  - Fixed an issue where base64-encoded embedding values containing JSON escape sequences (e.g., `\/` or `\u002F` for `/`) failed to decode, causing a `FormatException`. Per RFC 8259 §7, these are valid JSON representations that the OpenAI API may produce.
+
 ## 2.9.1 (2026-03-02)
 
 ### Features Added

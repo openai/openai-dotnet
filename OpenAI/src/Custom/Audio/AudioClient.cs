@@ -178,6 +178,54 @@ public partial class AudioClient
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
     }
 
+    /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
+    /// <param name="text"> The text to generate audio for. </param>
+    /// <param name="voice"> The voice to use in the generated audio. </param>
+    /// <param name="options"> The options to configure the audio generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
+    /// <returns> A streaming collection of speech generation updates. </returns>
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(text, nameof(text));
+        EnsureModelSupportsSpeechStreaming();
+
+        options ??= new();
+        options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
+        CreateSpeechGenerationOptions(text, voice, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
+            async () => await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
+            cancellationToken);
+    }
+
+    /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
+    /// <param name="text"> The text to generate audio for. </param>
+    /// <param name="voice"> The voice to use in the generated audio. </param>
+    /// <param name="options"> The options to configure the audio generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
+    /// <returns> A streaming collection of speech generation updates. </returns>
+    [Experimental("OPENAI001")]
+    public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(text, nameof(text));
+        EnsureModelSupportsSpeechStreaming();
+
+        options ??= new();
+        options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
+        CreateSpeechGenerationOptions(text, voice, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        return new SseUpdateCollection<StreamingSpeechUpdate>(
+            () => GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
+            cancellationToken);
+    }
+
     #endregion
 
     #region TranscribeAudio
@@ -466,12 +514,27 @@ public partial class AudioClient
     {
         if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
         {
-            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_WHISPER_1_STREAMING");
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TRANSCRIPTION_SSE_STREAMING");
             if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
             {
                 throw new NotSupportedException(
-                    "The selected model 'whisper-1' does not support streaming transcription. " +
-                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_WHISPER_1_STREAMING=true' to bypass this check.");
+                    "The selected model 'whisper-1' does not support SSE streaming transcription. " +
+                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TRANSCRIPTION_SSE_STREAMING=true' to bypass this check.");
+            }
+        }
+    }
+
+    private void EnsureModelSupportsSpeechStreaming()
+    {
+        if (string.Equals(_model, "tts-1", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(_model, "tts-1-hd", StringComparison.OrdinalIgnoreCase))
+        {
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TTS_SSE_STREAMING");
+            if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new NotSupportedException(
+                    $"The selected model '{_model}' does not support SSE streaming for speech generation. "
+                    + "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TTS_SSE_STREAMING=true' to bypass this check.");
             }
         }
     }

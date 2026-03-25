@@ -1075,6 +1075,11 @@ namespace OpenAI
             return new CompoundFilter(kind, filters.ToList(), additionalBinaryDataProperties: null);
         }
 
+        public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
+        {
+            return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
         public static ChatFunctionChoice ChatFunctionChoice()
         {
             return new ChatFunctionChoice(default);
@@ -1228,6 +1233,11 @@ namespace OpenAI
                 usage,
                 transcriptionTokenLogProbabilities.ToList(),
                 additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
+        {
+            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
         }
 
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)

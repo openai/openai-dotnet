@@ -17,20 +17,10 @@ namespace OpenAI.Audio;
 [CodeGenType("CreateSpeechRequestStreamFormat")] internal readonly partial struct InternalCreateSpeechRequestStreamFormat { }
 [CodeGenType("CreateTranscriptionResponseJsonUsageType")] internal readonly partial struct InternalCreateTranscriptionResponseJsonUsageType { }
 [CodeGenType("UnknownCreateTranscriptionResponseJsonUsage")] internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage { }
-[CodeGenType("VadConfig")] internal partial class InternalVadConfig { }
+[CodeGenType("ChunkingStrategyConfigType")] internal readonly partial struct InternalChunkingStrategyConfigType { }
+[CodeGenType("UnknownChunkingStrategyConfig")] internal partial class InternalUnknownChunkingStrategyConfig { }
 [CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }
-
-// Remove these after https://github.com/microsoft/openai-openapi-pr/issues/478 is fixed
-[CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent { }
-[CodeGenType("TranscriptTextDeltaEventLogprobs")] internal partial class InternalTranscriptTextDeltaEventLogprobs { }
-[CodeGenType("TranscriptTextDoneEvent")] internal partial class InternalTranscriptTextDoneEvent { }
-[CodeGenType("TranscriptTextDoneEventLogprobs")] internal partial class InternalTranscriptTextDoneEventLogprobs { }
-[CodeGenType("TranscriptTextSegmentEvent")] internal partial class InternalTranscriptTextSegmentEvent { }
-
-// Remove these after streaming events are implemented
 [CodeGenType("DotNetCreateSpeechStreamingResponseType")] internal readonly partial struct InternalDotNetCreateSpeechStreamingResponseType { }
-[CodeGenType("SpeechAudioDoneEventUsage")] internal partial class InternalSpeechAudioDoneEventUsage { }
-[CodeGenType("DotNetCreateSpeechStreamingResponse")] internal partial class InternalDotNetCreateSpeechStreamingResponse { }
 [CodeGenType("UnknownDotNetCreateSpeechStreamingResponse")] internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse { }
-[CodeGenType("DotNetSpeechAudioDeltaEvent")] internal partial class InternalDotNetSpeechAudioDeltaEvent { }
-[CodeGenType("DotNetSpeechAudioDoneEvent")] internal partial class InternalDotNetSpeechAudioDoneEvent { }
+[CodeGenType("TranscriptTextDeltaEventLogprobs")] internal partial class InternalTranscriptTextDeltaEventLogprobs { }
+[CodeGenType("TranscriptTextDoneEventLogprobs")] internal partial class InternalTranscriptTextDoneEventLogprobs { }
