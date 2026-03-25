@@ -514,12 +514,12 @@ public partial class AudioClient
     {
         if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
         {
-            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_WHISPER_1_STREAMING");
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TRANSCRIPTION_SSE_STREAMING");
             if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
             {
                 throw new NotSupportedException(
-                    "The selected model 'whisper-1' does not support streaming transcription. " +
-                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_WHISPER_1_STREAMING=true' to bypass this check.");
+                    "The selected model 'whisper-1' does not support SSE streaming transcription. " +
+                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TRANSCRIPTION_SSE_STREAMING=true' to bypass this check.");
             }
         }
     }
@@ -529,12 +529,12 @@ public partial class AudioClient
         if (string.Equals(_model, "tts-1", StringComparison.OrdinalIgnoreCase)
             || string.Equals(_model, "tts-1-hd", StringComparison.OrdinalIgnoreCase))
         {
-            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TTS_STREAMING");
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TTS_SSE_STREAMING");
             if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
             {
                 throw new NotSupportedException(
                     $"The selected model '{_model}' does not support SSE streaming for speech generation. "
-                    + "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TTS_STREAMING=true' to bypass this check.");
+                    + "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TTS_SSE_STREAMING=true' to bypass this check.");
             }
         }
     }

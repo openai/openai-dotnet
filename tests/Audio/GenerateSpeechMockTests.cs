@@ -41,6 +41,6 @@ internal class GenerateSpeechMockTests : ClientTestBase
             () => client.GenerateSpeechStreaming("text", GeneratedSpeechVoice.Alloy),
             Throws.InstanceOf<NotSupportedException>()
                 .With.Message.Contains(model)
-                .And.Message.Contains("OPENAI_ENABLE_TTS_STREAMING"));
+                .And.Message.Contains("OPENAI_ENABLE_TTS_SSE_STREAMING"));
     }
 }
