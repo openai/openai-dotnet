@@ -26,7 +26,11 @@ public class NumericTypesVisitor : ScmLibraryVisitor
     private static readonly HashSet<string> _excludedDoubleProperties = new(StringComparer.OrdinalIgnoreCase) { };
 
     // Add any long parameters that should remain long here (format: "Namespace.ClassName.MethodName.ParameterName").
-    private static readonly HashSet<string> _excludedLongParameters = new(StringComparer.OrdinalIgnoreCase) { };
+    private static readonly HashSet<string> _excludedLongParameters = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "OpenAI.Responses.ClientUriBuilder.AppendPath.value",
+        "OpenAI.Responses.ClientUriBuilder.AppendQuery.value",
+    };
 
     // Add any long fields that should remain long here (format: "Namespace.ClassName.FieldName").
     private static readonly HashSet<string> _excludedLongFields = new(StringComparer.OrdinalIgnoreCase) { };
@@ -68,7 +72,7 @@ public class NumericTypesVisitor : ScmLibraryVisitor
     {
         // Convert long parameters to int
         if (methodProvider.EnclosingType is not null
-            && methodProvider.EnclosingType.Type.Namespace != "OpenAI")
+            && methodProvider.EnclosingType.Type.Namespace != "OpenAI" && !methodProvider.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Override))
         {
             foreach (var parameter in methodProvider.Signature.Parameters)
             {

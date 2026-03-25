@@ -1,0 +1,1 @@
+Binary file /Users/christopherscott/.nuget/packages/microsoft.typespec.generator/1.0.0-alpha.20260227.3/lib/net10.0/Microsoft.TypeSpec.Generator.dll matches

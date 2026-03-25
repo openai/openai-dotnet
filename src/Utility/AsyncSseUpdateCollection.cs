@@ -8,6 +8,10 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+#if OPENAI_RESPONSES
+using OpenAI.Responses;
+#endif
+
 #nullable enable
 
 namespace OpenAI;

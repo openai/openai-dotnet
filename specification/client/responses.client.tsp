@@ -1,10 +1,15 @@
 import "../base/typespec/responses/main.tsp";
+import "./models/responses.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
+
+union DotNetResponseServiceTier {
+  ServiceTier
+}
 
 @@alternateType(CreateResponse.conversation, `ConversationParam-2`);
 @@alternateType(CreateResponse.`model`, string);

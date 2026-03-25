@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Generates the public API surface for the OpenAI .NET library using GenAPI.
+    Generates the public API surface for the OpenAI .NET libraries using GenAPI.
 
 .DESCRIPTION
-    This script invokes the MSBuild GenerateApi target to produce C# source files
-    representing the public API contract of the OpenAI library. The output files
-    are placed in the 'api' folder at the repository root.
+    This script invokes the MSBuild ExportApi target to produce C# source files
+    representing the public API contract of the OpenAI and OpenAI.Responses
+    libraries. The output files are placed in the 'api' folder at the repository root.
 
 .EXAMPLE
     .\Export-Api.ps1
@@ -13,7 +13,8 @@
     ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
 
 .NOTES
-    Outputs are written to api/OpenAI.<TargetFramework>.cs
+    Outputs are written to api/OpenAI.<TargetFramework>.cs and
+    api/OpenAI.Responses.<TargetFramework>.cs
 #>
 
 [CmdletBinding()]
@@ -26,8 +27,12 @@ $configuration = "Release"
 
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
 $outputDirectory = Join-Path $repoRootPath "api"
+
+$projects = @(
+    (Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"),
+    (Join-Path $repoRootPath "Responses" "src" "OpenAI.Responses.csproj")
+)
 
 # Get ClientTargetFrameworks from Directory.Build.props
 $propsPath = Join-Path $repoRootPath "Directory.Build.props"
@@ -63,26 +68,28 @@ if (Test-Path $outputDirectory) {
     Write-Host "Created output directory: $outputDirectory"
 }
 
-# Build the dotnet command arguments
-$buildArgs = @(
-    "build"
-    $projectPath
-    "-t:ExportApi"
-    "-c:$configuration"
-    "-p:ExportingApi=true"
-    "-m"
-)
-
 Write-Host "Output Directory: $outputDirectory"
 Write-Host ""
-Write-Host "Running GenAPI for all target frameworks..." -ForegroundColor Cyan
-Write-Host ""
 
-# Run a single build command - the MSBuild target handles all frameworks
-& dotnet @buildArgs
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "GenAPI failed with exit code $LASTEXITCODE"
-    exit $LASTEXITCODE
+foreach ($projectPath in $projects) {
+    $projectName = [System.IO.Path]::GetFileNameWithoutExtension($projectPath)
+    Write-Host "Running GenAPI for $projectName..." -ForegroundColor Cyan
+    Write-Host ""
+
+    $buildArgs = @(
+        "build"
+        $projectPath
+        "-t:ExportApi"
+        "-c:$configuration"
+        "-p:ExportingApi=true"
+        "-m"
+    )
+
+    & dotnet @buildArgs
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "GenAPI failed for $projectName with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
+    }
 }
 
 Write-Host ""

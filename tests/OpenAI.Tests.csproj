@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\OpenAI.csproj" />
+    <ProjectReference Include="..\OpenAI\src\OpenAI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +31,7 @@
   <ItemGroup>
     <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
     <Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Generated\Internal\Argument.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
   <ItemGroup>
