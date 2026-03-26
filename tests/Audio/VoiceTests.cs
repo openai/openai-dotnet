@@ -16,7 +16,8 @@ public partial class VoiceTests : OpenAIRecordedTestBase
     public VoiceTests(bool isAsync) : base(isAsync)
     {
     }
-
+    
+    [Ignore("Voice API requires organization-level access that is not yet available.")]
     [RecordedTest]
     public async Task CreateVoiceConsentAndVoiceWorks()
     {
