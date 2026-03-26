@@ -504,6 +504,7 @@ union ToolType {
   code_interpreter: "code_interpreter",
   image_generation: "image_generation",
   local_shell: "local_shell",
+  apply_patch: "apply_patch",
 }
 @discriminator("type")
 model Tool {
@@ -2949,4 +2950,11 @@ model CompactResource {
 
   /** Token accounting for the compaction pass, including cached, reasoning, and total tokens. */
   usage: ResponseUsage;
+}
+
+/** Allows the assistant to create, delete, or update files using unified diffs. */
+@summary("Apply patch tool")
+model ApplyPatchTool extends Tool {
+  /** The type of the tool. Always `apply_patch`. */
+  type: ToolType.apply_patch;
 }

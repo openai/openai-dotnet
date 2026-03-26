@@ -72,6 +72,12 @@ public partial class ResponseTool
     }
 
     // CUSTOM: Added factory method as a convenience.
+    public static ApplyPatchTool CreateApplyPatchTool()
+    {
+        return new ApplyPatchTool();
+    }
+
+    // CUSTOM: Added factory method as a convenience.
     public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
