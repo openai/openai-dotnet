@@ -4459,6 +4459,72 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
+    public class ApplyPatchCallItem : ResponseItem, IJsonModel<ApplyPatchCallItem>, IPersistableModel<ApplyPatchCallItem> {
+        public ApplyPatchCallItem(string callId, ApplyPatchOperation operation);
+        public string CallId { get; set; }
+        public string CreatedBy { get; set; }
+        public ApplyPatchOperation Operation { get; set; }
+        public ApplyPatchCallStatus? Status { get; set; }
+    }
+    public class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>, IPersistableModel<ApplyPatchCallOutputItem> {
+        public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status);
+        public string CallId { get; set; }
+        public string CreatedBy { get; set; }
+        public string Output { get; set; }
+        public ApplyPatchCallOutputStatus Status { get; set; }
+    }
+    public readonly partial struct ApplyPatchCallOutputStatus : IEquatable<ApplyPatchCallOutputStatus> {
+        public ApplyPatchCallOutputStatus(string value);
+        public static ApplyPatchCallOutputStatus Completed { get; }
+        public static ApplyPatchCallOutputStatus Failed { get; }
+        public readonly bool Equals(ApplyPatchCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ApplyPatchCallOutputStatus left, ApplyPatchCallOutputStatus right);
+        public static implicit operator ApplyPatchCallOutputStatus(string value);
+        public static implicit operator ApplyPatchCallOutputStatus?(string value);
+        public static bool operator !=(ApplyPatchCallOutputStatus left, ApplyPatchCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct ApplyPatchCallStatus : IEquatable<ApplyPatchCallStatus> {
+        public ApplyPatchCallStatus(string value);
+        public static ApplyPatchCallStatus Completed { get; }
+        public static ApplyPatchCallStatus InProgress { get; }
+        public readonly bool Equals(ApplyPatchCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ApplyPatchCallStatus left, ApplyPatchCallStatus right);
+        public static implicit operator ApplyPatchCallStatus(string value);
+        public static implicit operator ApplyPatchCallStatus?(string value);
+        public static bool operator !=(ApplyPatchCallStatus left, ApplyPatchCallStatus right);
+        public override readonly string ToString();
+    }
+    public class ApplyPatchCreateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchCreateFileOperation>, IPersistableModel<ApplyPatchCreateFileOperation> {
+        public ApplyPatchCreateFileOperation(string filePath, string diff);
+        public string Diff { get; set; }
+        public string FilePath { get; set; }
+    }
+    public class ApplyPatchDeleteFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchDeleteFileOperation>, IPersistableModel<ApplyPatchDeleteFileOperation> {
+        public ApplyPatchDeleteFileOperation(string filePath);
+        public string FilePath { get; set; }
+    }
+    public class ApplyPatchOperation : IJsonModel<ApplyPatchOperation>, IPersistableModel<ApplyPatchOperation> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class ApplyPatchTool : ResponseTool, IJsonModel<ApplyPatchTool>, IPersistableModel<ApplyPatchTool> {
+        public ApplyPatchTool();
+    }
+    public class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>, IPersistableModel<ApplyPatchUpdateFileOperation> {
+        public ApplyPatchUpdateFileOperation(string filePath, string diff);
+        public string Diff { get; set; }
+        public string FilePath { get; set; }
+    }
     public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
         public AutomaticCodeInterpreterToolContainerConfiguration();
         public IList<string> FileIds { get; }
@@ -5292,6 +5358,8 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
+        public static ApplyPatchCallItem CreateApplyPatchCallItem(string callId, ApplyPatchOperation operation);
+        public static ApplyPatchCallOutputItem CreateApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status);
         public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
@@ -5565,6 +5633,7 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
+        public static ApplyPatchTool CreateApplyPatchTool();
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);

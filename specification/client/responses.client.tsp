@@ -69,6 +69,11 @@ using TypeSpec.HttpClient.CSharp;
 @@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
 
+@@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
+
+// NOTE: Contrary to other tools, the status property of ApplyPatchToolCallOutputItemResource is
+// set by the client and is therefore not read-only.
+
 // ------------ Tools ------------
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
