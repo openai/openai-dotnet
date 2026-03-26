@@ -153,7 +153,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options);
         await foreach (ContainerFileResource file in files)
         {
-            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
             Validate(file);
             Assert.That(file.ContainerId, Is.EqualTo(_testContainerId), "File should belong to the correct container");
             count++;
@@ -226,7 +226,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId);
         await foreach (ContainerFileResource file in files)
         {
-            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
             Validate(file);
             Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
             count++;
@@ -569,9 +569,9 @@ public class ContainerTests : OpenAIRecordedTestBase
                 Validate(fileResource);
                 Assert.That(fileResource.Id, Is.EqualTo(fileId));
                 Assert.That(fileResource.ContainerId, Is.EqualTo(_testContainerId));
-                Assert.That(fileResource.Bytes, Is.GreaterThan(0), "File size should be greater than 0");
+                Assert.That(fileResource.SizeInBytes, Is.GreaterThan(0), "File size should be greater than 0");
 
-                Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
+                Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.SizeInBytes} bytes");
 
                 // Get the file content
                 ClientResult<BinaryData> contentResult = await client.DownloadContainerFileAsync(_testContainerId, fileId);
@@ -802,7 +802,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Assert.That(file.Object, Is.Not.Null.And.Not.Empty);
         Assert.That(file.ContainerId, Is.Not.Null.And.Not.Empty);
         Assert.That(file.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
-        Assert.That(file.Bytes, Is.GreaterThanOrEqualTo(0));
+        Assert.That(file.SizeInBytes, Is.GreaterThanOrEqualTo(0));
         Assert.That(file.Path, Is.Not.Null);
         Assert.That(file.Source, Is.Not.Null);
     }

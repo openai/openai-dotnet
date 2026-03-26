@@ -20,6 +20,8 @@ public class NumericTypesVisitor : ScmLibraryVisitor
         "OpenAI.Chat.ChatCompletionOptions.Seed",
 
         "OpenAI.LegacyCompletions.InternalCreateCompletionRequest.Seed",
+
+        "OpenAI.Containers.ContainerFileResource.SizeInBytes",
     };
 
     // Add any double properties that should remain double here.
