@@ -83,8 +83,15 @@ namespace OpenAI.VectorStores
             }
             if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
             {
-                writer.WritePropertyName("usage_bytes"u8);
-                writer.WriteNumberValue(Size);
+                if (Optional.IsDefined(UsageInBytes))
+                {
+                    writer.WritePropertyName("usage_bytes"u8);
+                    writer.WriteNumberValue(UsageInBytes.Value);
+                }
+                else
+                {
+                    writer.WriteNull("usage_bytes"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -184,7 +191,7 @@ namespace OpenAI.VectorStores
             }
             string fileId = default;
             string @object = default;
-            int size = default;
+            long? usageInBytes = default;
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
             VectorStoreFileStatus status = default;
@@ -206,7 +213,12 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("usage_bytes"u8))
                 {
-                    size = prop.Value.GetInt32();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        usageInBytes = null;
+                        continue;
+                    }
+                    usageInBytes = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
@@ -270,7 +282,7 @@ namespace OpenAI.VectorStores
             return new VectorStoreFile(
                 fileId,
                 @object,
-                size,
+                usageInBytes,
                 createdAt,
                 vectorStoreId,
                 status,
