@@ -1539,3 +1539,334 @@ op createTranslation(
   @multipartBody
   body: CreateTranslationRequest,
 ): Body<CreateTranslationResponseJson | CreateTranslationResponseVerboseJson>;
+
+/**List consent recordings available to your organization for creating custom voices.
+See the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.*/
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Returns a list of voice consent recordings.")
+@get
+@route("/audio/voice_consents")
+@extension("x-ms-list", true)
+@list
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "List voice consents",
+    group: "audio",
+    examples: #{
+      request: #{
+        curl: """
+          curl https://api.openai.com/v1/audio/voice_consents?limit=20 \\
+            -H "Authorization: Bearer $OPENAI_API_KEY"
+          
+          """,
+      },
+      response: "",
+    },
+  }
+)
+@tag("Audio")
+op listVoiceConsents(
+  /** A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  @continuationToken
+  @extension("x-ms-list-continuation-token", true)
+  after?: string,
+
+  /** A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  limit?: integer = 20,
+): VoiceConsentListResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
+
+/**Upload a consent recording that authorizes creation of a custom voice.
+See the [custom voices guide](/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.*/
+#suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Upload a voice consent recording.")
+@post
+@route("/audio/voice_consents")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "Create voice consent",
+    group: "audio",
+    examples: #{
+      request: #{
+        curl: """
+          curl https://api.openai.com/v1/audio/voice_consents \\
+            -X POST \\
+            -H "Authorization: Bearer $OPENAI_API_KEY" \\
+            -F "name=John Doe" \\
+            -F "language=en-US" \\
+            -F "recording=@$HOME/consent_recording.wav;type=audio/x-wav"
+          
+          """,
+      },
+      response: "",
+    },
+  }
+)
+@tag("Audio")
+op createVoiceConsent(
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @header
+  contentType: "multipart/form-data",
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @multipartBody
+  body: CreateVoiceConsentRequest,
+): VoiceConsentResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
+
+/**Delete a consent recording that was uploaded for creating custom voices.
+See the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.*/
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Deletes a voice consent recording.")
+@delete
+@route("/audio/voice_consents/{consent_id}")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "Delete voice consent",
+    group: "audio",
+    examples: #{
+      request: #{
+        curl: """
+          curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \\
+            -X DELETE \\
+            -H "Authorization: Bearer $OPENAI_API_KEY"
+          
+          """,
+      },
+      response: "",
+    },
+  }
+)
+@tag("Audio")
+op deleteVoiceConsent(
+  /** The ID of the consent recording to delete. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @path
+  consent_id: string,
+): VoiceConsentDeletedResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
+
+/**Retrieve consent recording metadata used for creating custom voices.
+See the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.*/
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Retrieves a voice consent recording.")
+@get
+@route("/audio/voice_consents/{consent_id}")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "Retrieve voice consent",
+    group: "audio",
+    examples: #{
+      request: #{
+        curl: """
+          curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \\
+            -H "Authorization: Bearer $OPENAI_API_KEY"
+          
+          """,
+      },
+      response: "",
+    },
+  }
+)
+@tag("Audio")
+op getVoiceConsent(
+  /** The ID of the consent recording to retrieve. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @path
+  consent_id: string,
+): VoiceConsentResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
+
+/**Update consent recording metadata used for creating custom voices. This endpoint updates metadata only and does not replace the underlying audio.
+See the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.*/
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Updates a voice consent recording (metadata only).")
+@post
+@route("/audio/voice_consents/{consent_id}")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "Update voice consent",
+    group: "audio",
+    examples: #{
+      request: #{
+        curl: """
+          curl https://api.openai.com/v1/audio/voice_consents/cons_1234 \\
+            -X POST \\
+            -H "Authorization: Bearer $OPENAI_API_KEY" \\
+            -H "Content-Type: application/json" \\
+            -d '{
+              "name": "John Doe"
+            }'
+          
+          """,
+      },
+      response: "",
+    },
+  }
+)
+@tag("Audio")
+op updateVoiceConsent(
+  /** The ID of the consent recording to update. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @path
+  consent_id: string,
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @body
+  body: UpdateVoiceConsentRequest,
+): VoiceConsentResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
+
+/**Create a custom voice you can use for audio output (for example, in Text-to-Speech and the Realtime API). This requires an audio sample and a previously uploaded consent recording.
+See the [custom voices guide](/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.*/
+#suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Creates a custom voice.")
+@post
+@route("/audio/voices")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "Create voice",
+    group: "audio",
+    examples: #{
+      request: #{
+        curl: """
+          curl https://api.openai.com/v1/audio/voices \\
+            -X POST \\
+            -H "Authorization: Bearer $OPENAI_API_KEY" \\
+            -F "name=My new voice" \\
+            -F "consent=cons_1234" \\
+            -F "audio_sample=@$HOME/audio_sample.wav;type=audio/x-wav"
+          
+          """,
+      },
+      response: "",
+    },
+  }
+)
+@tag("Audio")
+op createVoice(
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @header
+  contentType: "multipart/form-data",
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @multipartBody
+  body: CreateVoiceRequest,
+): VoiceResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};

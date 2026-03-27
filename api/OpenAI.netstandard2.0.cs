@@ -871,12 +871,22 @@ namespace OpenAI.Audio {
         public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateVoice(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateVoiceAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateVoiceConsent(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateVoiceConsentAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteVoiceConsent(string consentId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteVoiceConsentAsync(string consentId, RequestOptions options = null);
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetVoiceConsent(string consentId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetVoiceConsentAsync(string consentId, RequestOptions options = null);
+        public virtual CollectionResult GetVoiceConsents(string after = null, int? limit = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetVoiceConsentsAsync(string after = null, int? limit = null, RequestOptions options = null);
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
@@ -897,6 +907,8 @@ namespace OpenAI.Audio {
         public virtual Task<ClientResult> TranslateAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(string audioFilePath, AudioTranslationOptions options = null);
+        public virtual ClientResult UpdateVoiceConsent(string consentId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> UpdateVoiceConsentAsync(string consentId, BinaryContent content, RequestOptions options = null);
     }
     public sealed class AudioClientSettings : ClientSettings {
         public string Model { get; set; }
