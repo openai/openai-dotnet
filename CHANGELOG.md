@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Features Added
+
+- OpenAI.Responses:
+  - Added `Action` property to `ImageGenerationTool` and `ImageGenerationToolAction` enum with values `Generate`, `Edit`, and `Auto`. The `CreateImageGenerationTool` factory method defaults the action to `Auto`.
+
 ### Bugs Fixed
 
 - OpenAI.Embeddings:

@@ -872,6 +872,41 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task ImageGenToolWithAction()
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        ImageGenerationTool imageGenTool = ResponseTool.CreateImageGenerationTool(
+            model: "gpt-image-1",
+            quality: ImageGenerationToolQuality.High,
+            size: ImageGenerationToolSize.W1024xH1024,
+            outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+            moderationLevel: ImageGenerationToolModerationLevel.Auto,
+            background: ImageGenerationToolBackground.Transparent);
+        imageGenTool.Action = ImageGenerationToolAction.Generate;
+
+        CreateResponseOptions options = new(
+            TestModel.Responses,
+            [ResponseItem.CreateUserMessageItem("Generate an image of a golden retriever playing fetch in a sunny park")])
+        {
+            Tools = { imageGenTool }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
+        ImageGenerationTool responseTool = (ImageGenerationTool)response.Tools.First();
+
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
+        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
+        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();

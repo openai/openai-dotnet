@@ -663,7 +663,6 @@ model WebSearchTool extends Tool {
   type: ToolType.web_search;
 
   filters?: WebSearchToolFilters | null;
-  
   user_location?: Location | null;
 
   /** High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default. */
@@ -2051,6 +2050,18 @@ model ImageGenTool extends Tool {
   @minValue(0)
   @maxValue(3)
   partial_images?: int32 = 0;
+
+  /** Whether to generate a new image or edit an existing image. Default: `auto`. */
+  action?: ImageGenerationToolAction = ImageGenerationToolAction.auto;
+}
+
+enum ImageGenerationToolAction {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  generate,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  edit,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  auto,
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2250,7 +2261,7 @@ model MCPTool extends Tool {
     """)
   type: ToolType.mcp;
 
- /** A label for this MCP server, used to identify it in tool calls. */
+  /** A label for this MCP server, used to identify it in tool calls. */
   server_label: string;
 
   /**The URL for the MCP server. One of `server_url` or `connector_id` must be
