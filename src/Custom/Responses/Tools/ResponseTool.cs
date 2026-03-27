@@ -141,6 +141,7 @@ public partial class ResponseTool
             background: background,
             inputFidelity: inputFidelity,
             inputImageMask: inputImageMask,
-            partialImageCount: partialImageCount);
+            partialImageCount: partialImageCount,
+            action: ImageGenerationToolAction.Auto);
     }
 }

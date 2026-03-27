@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
-        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default)
+        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, patch)
+        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount, ImageGenerationToolAction? action) : base(kind, patch)
         {
             Model = model;
             Quality = quality;
@@ -27,6 +27,7 @@ namespace OpenAI.Responses
             InputFidelity = inputFidelity;
             InputImageMask = inputImageMask;
             PartialImageCount = partialImageCount;
+            Action = action;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -40,5 +41,7 @@ namespace OpenAI.Responses
         public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
 
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
+
+        public ImageGenerationToolAction? Action { get; set; }
     }
 }
