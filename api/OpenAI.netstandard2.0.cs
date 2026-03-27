@@ -4784,6 +4784,7 @@ namespace OpenAI.Responses {
     }
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
         public ImageGenerationTool();
+        public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
         public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
@@ -4794,6 +4795,11 @@ namespace OpenAI.Responses {
         public int? PartialImageCount { get; set; }
         public ImageGenerationToolQuality? Quality { get; set; }
         public ImageGenerationToolSize? Size { get; set; }
+    }
+    public enum ImageGenerationToolAction {
+        Generate = 0,
+        Edit = 1,
+        Auto = 2
     }
     public readonly partial struct ImageGenerationToolBackground : IEquatable<ImageGenerationToolBackground> {
         public ImageGenerationToolBackground(string value);
