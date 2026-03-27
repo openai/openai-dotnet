@@ -5990,8 +5990,8 @@ namespace OpenAI.VectorStores {
         public DateTimeOffset CreatedAt { get; }
         public string FileId { get; }
         public VectorStoreFileError LastError { get; }
-        public int Size { get; }
         public VectorStoreFileStatus Status { get; }
+        public long? UsageInBytes { get; }
         public string VectorStoreId { get; }
         public static explicit operator VectorStoreFile(ClientResult result);
     }
