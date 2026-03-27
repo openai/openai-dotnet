@@ -913,7 +913,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - Removed the common `ListOrder` enum from the top-level `OpenAI` namespace in favor of individual enums in their corresponding sub-namespace. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
 - Renamed the `PageSize` property to `PageSizeLimit`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
 - Updated deletion methods to return a result object instead of a `bool`. Affected methods:
-  - `DeleteAssitant`, `DeleteMessage`, and `DeleteThread` in `AssistantClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
+  - `DeleteAssistant`, `DeleteMessage`, and `DeleteThread` in `AssistantClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
   - `DeleteVectorStore` and `RemoveFileFromStore` in `VectorStoreClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
   - `DeleteModel` in `ModelClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
   - `DeleteFile` in `FileClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
