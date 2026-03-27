@@ -14,10 +14,10 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal VectorStoreFile(string fileId, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileStatus status, VectorStoreFileError lastError)
+        internal VectorStoreFile(string fileId, long? usageInBytes, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileStatus status, VectorStoreFileError lastError)
         {
             FileId = fileId;
-            Size = size;
+            UsageInBytes = usageInBytes;
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
@@ -25,12 +25,12 @@ namespace OpenAI.VectorStores
             Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal VectorStoreFile(string fileId, string @object, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileStatus status, VectorStoreFileError lastError, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreFile(string fileId, string @object, long? usageInBytes, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileStatus status, VectorStoreFileError lastError, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileId = fileId;
             Object = @object;
-            Size = size;
+            UsageInBytes = usageInBytes;
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
@@ -39,6 +39,8 @@ namespace OpenAI.VectorStores
             Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public long? UsageInBytes { get; }
 
         public DateTimeOffset CreatedAt { get; }
 

@@ -21,13 +21,6 @@ public partial class VectorStoreFile
     [CodeGenMember("Id")]
     public string FileId { get; }
 
-    /// <summary>
-    /// The total count of bytes used for vector storage of the file. Note that this may differ from the size of the
-    /// file.
-    /// </summary>
-    [CodeGenMember("UsageBytes")]
-    public int Size { get; }
-
     // CUSTOM: Changed type.
     [CodeGenMember("Attributes")]
     public IDictionary<string, BinaryData> Attributes { get; }
