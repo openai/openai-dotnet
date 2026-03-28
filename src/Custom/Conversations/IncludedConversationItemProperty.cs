@@ -10,7 +10,7 @@ namespace OpenAI.Conversations
     // - Implemented in custom code due to a bug in the code generator that skips generation for this type when only
     //   protocol methods are generated.
     [CodeGenType("IncludeEnum")]
-    public readonly partial struct IncludedConversationItemProperty : IEquatable<IncludedConversationItemProperty>
+    public readonly partial struct IncludedConversationItemProperty
     {
         private const string MessageInputImageImageUrlValue = "message.input_image.image_url";
         private const string ComputerCallOutputOutputImageUrlValue = "computer_call_output.output.image_url";
@@ -22,5 +22,9 @@ namespace OpenAI.Conversations
         // CUSTOM: Renamed.
         [CodeGenMember("ComputerCallOutputOutputImageUrl")]
         public static IncludedConversationItemProperty ComputerCallOutputImageUri { get; } = new IncludedConversationItemProperty(ComputerCallOutputOutputImageUrlValue);
+
+        // CUSTOM: Renamed.
+        [CodeGenMember("MessageOutputTextLogprobs")]
+        public static IncludedConversationItemProperty MessageOutputTextLogProbabilities { get; } = new IncludedConversationItemProperty(MessageOutputTextLogprobsValue);
     }
 }

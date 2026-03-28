@@ -373,27 +373,7 @@ alias FunctionToolCallOutputItemBase = {
     
     """
 );
-// Tool customization: Rename to supply base for split input/output models
-/**
- * The results of a web search tool call. See the
- * [web search guide](/docs/guides/tools-web-search) for more information.
- */
-alias WebSearchToolCallItemBase = {};
 
-@@doc(WebSearchToolCallItemResource,
-  """
-    The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
-    
-    """
-);
-@@doc(WebSearchToolCallItemParam,
-  """
-    The results of a web search tool call. See the
-    [web search guide](/docs/guides/tools-web-search) for more information.
-    
-    """
-);
 // Tool customization: Rename to supply base for split input/output models
 /**
  * A tool call to a computer use tool. See the
@@ -1012,27 +992,32 @@ model ResponseTextFormatConfigurationJsonSchema
   strict?: boolean | null = false;
 }
 
-@doc("""
-  Specify additional output data to include in the model response. Currently
-  supported values are:
-  - `file_search_call.results`: Include the search results of
-    the file search tool call.
-  - `message.input_image.image_url`: Include image urls from the input message.
-  - `computer_call_output.output.image_url`: Include image urls from the computer call output.
-  - `reasoning.encrypted_content`: Includes an encrypted version of reasoning
-    tokens in reasoning item outputs. This enables reasoning items to be used in
-    multi-turn conversations when using the Responses API statelessly (like
-    when the `store` parameter is set to `false`, or when an organization is
-    enrolled in the zero data retention program).
-  - `code_interpreter_call.outputs`: Includes the outputs of python code execution
-    in code interpreter tool call items.
-  """)
+/**Specify additional output data to include in the model response. Currently supported values are:
+- `web_search_call.action.sources`: Include the sources of the web search tool call.
+- `code_interpreter_call.outputs`: Includes the outputs of python code execution in code interpreter tool call items.
+- `computer_call_output.output.image_url`: Include image urls from the computer call output.
+- `file_search_call.results`: Include the search results of the file search tool call.
+- `message.input_image.image_url`: Include image urls from the input message.
+- `message.output_text.logprobs`: Include logprobs with assistant messages.
+- `reasoning.encrypted_content`: Includes an encrypted version of reasoning tokens in reasoning item outputs. This enables reasoning items to be used in multi-turn conversations when using the Responses API statelessly (like when the `store` parameter is set to `false`, or when an organization is enrolled in the zero data retention program).*/
 union Includable {
+  string,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   "file_search_call.results",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  "web_search_call.results",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  "web_search_call.action.sources",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   "message.input_image.image_url",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   "computer_call_output.output.image_url",
-  "reasoning.encrypted_content",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   "code_interpreter_call.outputs",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  "reasoning.encrypted_content",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  "message.output_text.logprobs",
 }
 
 // Tool customization: Establish discriminated type hierarchy

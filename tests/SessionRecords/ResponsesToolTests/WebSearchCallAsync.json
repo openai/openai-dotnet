@@ -6,15 +6,22 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "245",
+        "Content-Length": "417",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
         "tools": [
           {
-            "type": "web_search"
+            "type": "web_search",
+            "user_location": {
+              "type": "approximate",
+              "country": "US",
+              "region": "Washington",
+              "city": "Redmond"
+            },
+            "search_context_size": "low"
           }
         ],
         "tool_choice": {
@@ -27,19 +34,22 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Searching the internet, what's the weather like in Seattle?"
+                "text": "Searching the internet, what is the weather today in Redmond, WA?"
               }
             ]
           }
+        ],
+        "include": [
+          "web_search_call.action.sources"
         ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99c97c7a5dc1168b-DFW",
+        "CF-RAY": "9e3366efa8bbb0df-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "4535",
+        "Content-Length": "6300",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -47,25 +57,23 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2419",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_04ca51c04ed6dd5f0069127ba8445881929372ffd11e707a65",
+        "id": "resp_03e6a8347c8916c80069c7450290e8819589e6c704f6409335",
         "object": "response",
-        "created_at": 1762818984,
+        "created_at": 1774667010,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1774667012,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
@@ -73,16 +81,73 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "ws_04ca51c04ed6dd5f0069127ba85b488192aadb76846aeeef8d",
+            "id": "ws_03e6a8347c8916c80069c74502aac08195824b098385f44c1a",
             "type": "web_search_call",
             "status": "completed",
             "action": {
               "type": "search",
-              "query": "Searching the internet, what's the weather like in Seattle?"
+              "queries": [
+                "Searching the internet, what is the weather today in Redmond, WA?"
+              ],
+              "query": "Searching the internet, what is the weather today in Redmond, WA?",
+              "sources": [
+                {
+                  "type": "url",
+                  "url": "https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weather-atlas.com/en/west-virginia-usa/redmond-weather-march?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weatherspark.com/h/m/905/2026/3/Historical-Weather-in-March-2026-in-Redmond-Washington-United-States?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weatherspark.com/h/m/1218/2026/3/Historical-Weather-in-March-2026-in-Redmond-Oregon-United-States?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weatherspark.com/h/m/905/2026/3/%25E9%259B%25B7%25E5%25BE%25B7%25E8%2592%2599%25E5%25BE%25B7%25E3%2580%2581%25E5%258D%258E%25E7%259B%259B%25E9%25A1%25BF%25E5%25B7%259E%25E3%2580%2581%25E7%25BE%258E%25E5%259C%258B2026%25E5%25B9%25B43%25E6%259C%2588%25E6%25AD%25B7%25E5%258F%25B2%25E5%25A4%25A9%25E6%25B0%25A3?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weather-us.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.almanac.com/weather/forecast/WA/Redmond?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weather2visit.com/north-america/united-states/redmond-wa-march.htm?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.theweathernetwork.com/en/city/us/washington/redmond/monthly?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.theweathernetwork.com/en/city/au/western-australia/redmond/monthly?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weatherworld.com/forecast/wa/redmond.html?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weathershogun.com/weather/usa/wa/redmond/5359/march/2026-03-10?utm_source=openai"
+                },
+                {
+                  "type": "api",
+                  "name": "oai-weather"
+                }
+              ]
             }
           },
           {
-            "id": "msg_04ca51c04ed6dd5f0069127ba8ffec8192911fceb7f4be4330",
+            "id": "msg_03e6a8347c8916c80069c745035fb0819595de19cf690dbc15",
             "type": "message",
             "status": "completed",
             "content": [
@@ -91,27 +156,21 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 1342,
-                    "start_index": 1223,
-                    "title": "Seattle Weather in November 2025 | United States Averages | Weather-2-Visit",
-                    "url": "https://www.weather2visit.com/north-america/united-states/seattle-november.htm?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 1611,
-                    "start_index": 1480,
-                    "title": "West Coast watches for La Niña",
-                    "url": "https://www.axios.com/local/seattle/2025/09/04/la-nina-west-coast-winter-weather-seattle-san-diego?utm_source=openai"
+                    "end_index": 1022,
+                    "start_index": 912,
+                    "title": "March weather - Spring 2026 - Redmond, WA",
+                    "url": "https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "As of 3:56 PM PST on Monday, November 10, 2025, the weather in Seattle is cloudy with a temperature of 58°F (14°C).\n\n## Weather for Seattle, WA:\nCurrent Conditions: Cloudy, 58°F (14°C)\n\nDaily Forecast:\n* Monday, November 10: Low: 45°F (7°C), High: 62°F (16°C), Description: Mostly cloudy\n* Tuesday, November 11: Low: 46°F (8°C), High: 54°F (12°C), Description: Times of clouds and sun\n* Wednesday, November 12: Low: 49°F (9°C), High: 55°F (13°C), Description: Cloudy with a couple of showers\n* Thursday, November 13: Low: 44°F (6°C), High: 52°F (11°C), Description: Cloudy with a bit of rain; winds gusting to 65 kph in the afternoon\n* Friday, November 14: Low: 45°F (7°C), High: 50°F (10°C), Description: Breezy in the morning; cloudy with a couple of showers\n* Saturday, November 15: Low: 47°F (9°C), High: 56°F (14°C), Description: Cloudy and not as cool; an afternoon shower in the area\n* Sunday, November 16: Low: 43°F (6°C), High: 53°F (12°C), Description: Rain\n\n\nIn November, Seattle typically experiences cooler temperatures and increased rainfall. The average high temperature is around 50°F (10°C), with lows near 40°F (4°C). The city averages about 150 mm (5.9 inches) of rainfall over 17 days during the month. ([weather2visit.com](https://www.weather2visit.com/north-america/united-states/seattle-november.htm?utm_source=openai))\n\nAdditionally, Seattle is currently monitoring a developing La Niña event, which could lead to colder and wetter conditions this winter. ([axios.com](https://www.axios.com/local/seattle/2025/09/04/la-nina-west-coast-winter-weather-seattle-san-diego?utm_source=openai)) "
+                "text": "As of 3:03 AM on Saturday, March 28, 2026, in Redmond, Washington, the current weather is cloudy with a temperature of 53°F (12°C).\n\n## Weather for Redmond, WA:\nCurrent Conditions: Cloudy, 53°F (12°C)\n\nHourly Forecast:\n* 8:00\u202FPM: 53°F (12°C), Intermittent clouds\n* 9:00\u202FPM: 50°F (10°C), Partly cloudy\n* 10:00\u202FPM: 46°F (8°C), Partly cloudy\n* 11:00\u202FPM: 43°F (6°C), Partly cloudy\n* 12:00\u202FAM: 40°F (5°C), Partly cloudy\n* 1:00\u202FAM: 42°F (6°C), Partly cloudy\n* 2:00\u202FAM: 42°F (6°C), Partly cloudy\n* 3:00\u202FAM: 43°F (6°C), Partly cloudy\n* 4:00\u202FAM: 42°F (6°C), Partly cloudy\n* 5:00\u202FAM: 42°F (6°C), Partly cloudy\n* 6:00\u202FAM: 42°F (5°C), Partly cloudy\n* 7:00\u202FAM: 41°F (5°C), Partly sunny\n\n\nIn March, Redmond typically experiences average high temperatures around 50.2°F (10.1°C) and lows around 36.5°F (2.5°C). The city usually receives about 3.11 inches (79 mm) of precipitation over approximately 19.7 days during the month. ([weather-atlas.com](https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai))\n\nPlease note that weather conditions can change rapidly. For the most accurate and up-to-date information, consider checking a local weather service. "
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
         "prompt_cache_retention": null,
@@ -135,13 +194,12 @@
         "tools": [
           {
             "type": "web_search",
-            "filters": null,
-            "search_context_size": "medium",
+            "search_context_size": "low",
             "user_location": {
               "type": "approximate",
-              "city": null,
+              "city": "Redmond",
               "country": "US",
-              "region": null,
+              "region": "Washington",
               "timezone": null
             }
           }
@@ -150,15 +208,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 8508,
+          "input_tokens": 8516,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 470,
+          "output_tokens": 413,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 8978
+          "total_tokens": 8929
         },
         "user": null,
         "metadata": {}
@@ -166,6 +224,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

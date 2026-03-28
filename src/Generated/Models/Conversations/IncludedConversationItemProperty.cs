@@ -37,8 +37,6 @@ namespace OpenAI.Conversations
 
         public static IncludedConversationItemProperty ReasoningEncryptedContent { get; } = new IncludedConversationItemProperty(ReasoningEncryptedContentValue);
 
-        public static IncludedConversationItemProperty MessageOutputTextLogprobs { get; } = new IncludedConversationItemProperty(MessageOutputTextLogprobsValue);
-
         public static bool operator ==(IncludedConversationItemProperty left, IncludedConversationItemProperty right) => left.Equals(right);
 
         public static bool operator !=(IncludedConversationItemProperty left, IncludedConversationItemProperty right) => !left.Equals(right);

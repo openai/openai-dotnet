@@ -124,3 +124,8 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownCodeInterpreterContainerConfiguration")] internal partial class InternalUnknownCodeInterpreterContainerConfiguration {}
 [CodeGenType("GetInputTokenCountsRequestContentType")] internal readonly partial struct InternalGetInputTokenCountsRequestContentType {}
 [CodeGenType("CompactConversationRequestContentType")] internal readonly partial struct InternalCompactConversationRequestContentType {}
+[CodeGenType("WebSearchActionType")] internal readonly partial struct InternalWebSearchActionType { }
+[CodeGenType("UnknownWebSearchActionBase")] internal partial class InternalUnknownWebSearchActionBase { }
+
+[CodeGenType("WebSearchActionSearchSourcesType")] internal readonly partial struct InternalWebSearchActionSearchSourcesType { }
+[CodeGenType("UnknownWebSearchActionSearchSourceBase")] internal partial class InternalUnknownWebSearchActionSearchSourceBase { }

@@ -244,7 +244,6 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ComputerToolCallItemResource);
 @@dynamicModel(ComputerToolCallOutputItemParam);
 @@dynamicModel(ComputerToolCallOutputItemResource);
-@@dynamicModel(WebSearchToolCallItemParam);
 @@dynamicModel(WebSearchToolCallItemResource);
 @@dynamicModel(FunctionToolCallItemParam);
 @@dynamicModel(FunctionToolCallItemResource);

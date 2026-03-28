@@ -14,10 +14,13 @@ namespace OpenAI.Responses
     {
         private readonly string _value;
         private const string FileSearchCallResultsValue = "file_search_call.results";
+        private const string WebSearchCallResultsValue = "web_search_call.results";
+        private const string WebSearchCallActionSourcesValue = "web_search_call.action.sources";
         private const string MessageInputImageImageUrlValue = "message.input_image.image_url";
         private const string ComputerCallOutputOutputImageUrlValue = "computer_call_output.output.image_url";
-        private const string ReasoningEncryptedContentValue = "reasoning.encrypted_content";
         private const string CodeInterpreterCallOutputsValue = "code_interpreter_call.outputs";
+        private const string ReasoningEncryptedContentValue = "reasoning.encrypted_content";
+        private const string MessageOutputTextLogprobsValue = "message.output_text.logprobs";
 
         public IncludedResponseProperty(string value)
         {
@@ -28,9 +31,13 @@ namespace OpenAI.Responses
 
         public static IncludedResponseProperty FileSearchCallResults { get; } = new IncludedResponseProperty(FileSearchCallResultsValue);
 
-        public static IncludedResponseProperty ReasoningEncryptedContent { get; } = new IncludedResponseProperty(ReasoningEncryptedContentValue);
+        public static IncludedResponseProperty WebSearchCallResults { get; } = new IncludedResponseProperty(WebSearchCallResultsValue);
+
+        public static IncludedResponseProperty WebSearchCallActionSources { get; } = new IncludedResponseProperty(WebSearchCallActionSourcesValue);
 
         public static IncludedResponseProperty CodeInterpreterCallOutputs { get; } = new IncludedResponseProperty(CodeInterpreterCallOutputsValue);
+
+        public static IncludedResponseProperty ReasoningEncryptedContent { get; } = new IncludedResponseProperty(ReasoningEncryptedContentValue);
 
         public static bool operator ==(IncludedResponseProperty left, IncludedResponseProperty right) => left.Equals(right);
 
