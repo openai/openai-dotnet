@@ -27,7 +27,7 @@ public partial class StreamingChatToolCallUpdate
     public string ToolCallId { get; }
 
     /// <summary>
-    /// The name of the the tool that the streaming tool call requests invocation of.
+    /// The name of the tool that the streaming tool call requests invocation of.
     /// </summary>
     public string FunctionName => Function?.Name;
 
