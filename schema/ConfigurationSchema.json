@@ -185,9 +185,9 @@
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
-        "FileClient": {
+        "OpenAIFileClient": {
           "type": "object",
-          "description": "Configuration for the OpenAI FileClient.",
+          "description": "Configuration for the OpenAI OpenAIFileClient.",
           "properties": {
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -199,9 +199,9 @@
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
-        "ModelClient": {
+        "OpenAIModelClient": {
           "type": "object",
-          "description": "Configuration for the OpenAI ModelClient.",
+          "description": "Configuration for the OpenAI OpenAIModelClient.",
           "properties": {
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
