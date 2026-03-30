@@ -187,7 +187,7 @@
         },
         "OpenAIFileClient": {
           "type": "object",
-          "description": "Configuration for the OpenAI OpenAIFileClient.",
+          "description": "Configuration for the OpenAIFileClient.",
           "properties": {
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -201,7 +201,7 @@
         },
         "OpenAIModelClient": {
           "type": "object",
-          "description": "Configuration for the OpenAI OpenAIModelClient.",
+          "description": "Configuration for the OpenAIModelClient.",
           "properties": {
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
