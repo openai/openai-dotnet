@@ -4796,10 +4796,21 @@ namespace OpenAI.Responses {
         public ImageGenerationToolQuality? Quality { get; set; }
         public ImageGenerationToolSize? Size { get; set; }
     }
-    public enum ImageGenerationToolAction {
-        Generate = 0,
-        Edit = 1,
-        Auto = 2
+    public readonly partial struct ImageGenerationToolAction : IEquatable<ImageGenerationToolAction> {
+        public ImageGenerationToolAction(string value);
+        public static ImageGenerationToolAction Auto { get; }
+        public static ImageGenerationToolAction Edit { get; }
+        public static ImageGenerationToolAction Generate { get; }
+        public readonly bool Equals(ImageGenerationToolAction other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolAction left, ImageGenerationToolAction right);
+        public static implicit operator ImageGenerationToolAction(string value);
+        public static implicit operator ImageGenerationToolAction?(string value);
+        public static bool operator !=(ImageGenerationToolAction left, ImageGenerationToolAction right);
+        public override readonly string ToString();
     }
     public readonly partial struct ImageGenerationToolBackground : IEquatable<ImageGenerationToolBackground> {
         public ImageGenerationToolBackground(string value);
@@ -5465,7 +5476,7 @@ namespace OpenAI.Responses {
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
-        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
+        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);

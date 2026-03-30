@@ -122,7 +122,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
             {
                 writer.WritePropertyName("action"u8);
-                writer.WriteStringValue(Action.Value.ToSerialString());
+                writer.WriteStringValue(Action.Value.ToString());
             }
 
             Patch.WriteTo(writer);
@@ -262,7 +262,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    action = prop.Value.GetString().ToImageGenerationToolAction();
+                    action = new ImageGenerationToolAction(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

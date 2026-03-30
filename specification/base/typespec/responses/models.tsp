@@ -2052,16 +2052,17 @@ model ImageGenTool extends Tool {
   partial_images?: int32 = 0;
 
   /** Whether to generate a new image or edit an existing image. Default: `auto`. */
-  action?: ImageGenerationToolAction = ImageGenerationToolAction.auto;
+  action?: ImageGenerationToolAction = ImageGenerationToolAction.Auto;
 }
 
-enum ImageGenerationToolAction {
+union ImageGenerationToolAction {
+  string,
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  generate,
+  Generate: "generate",
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  edit,
+  Edit: "edit",
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  auto,
+  Auto: "auto",
 }
 
 // Tool customization: Rename to supply base for split input/output models
