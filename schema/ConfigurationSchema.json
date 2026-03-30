@@ -1,0 +1,286 @@
+{
+  "definitions": {
+    "openAIClientOptions": {
+      "allOf": [
+        { "$ref": "#/definitions/options" },
+        {
+          "type": "object",
+          "description": "Options for configuring the OpenAI client.",
+          "properties": {
+            "Endpoint": {
+              "type": "string",
+              "format": "uri",
+              "description": "The service endpoint that the client will send requests to. If not set, the default OpenAI endpoint (https://api.openai.com/v1) will be used."
+            },
+            "OrganizationId": {
+              "type": "string",
+              "description": "The value to use for the OpenAI-Organization request header. Users who belong to multiple organizations can set this value to specify which organization is used for an API request."
+            },
+            "ProjectId": {
+              "type": "string",
+              "description": "The value to use for the OpenAI-Project request header. Users who are accessing their projects through their legacy user API key can set this value to specify which project is used for an API request."
+            },
+            "UserAgentApplicationId": {
+              "type": "string",
+              "description": "An optional application ID to use as part of the request User-Agent header."
+            }
+          }
+        }
+      ]
+    },
+    "chatModel": {
+      "anyOf": [
+        {
+          "enum": [
+            "gpt-5.4",
+            "gpt-5.4-mini",
+            "gpt-5.4-nano",
+            "gpt-4.1",
+            "gpt-4.1-mini",
+            "gpt-4.1-nano",
+            "gpt-4o",
+            "gpt-4o-mini",
+            "o3",
+            "o3-mini",
+            "o4-mini"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The model to use for chat completions. This is not a complete list; any model that supports the chat completions endpoint can be used."
+    },
+    "audioModel": {
+      "anyOf": [
+        {
+          "enum": [
+            "gpt-4o-mini-tts",
+            "gpt-4o-transcribe",
+            "gpt-4o-mini-transcribe",
+            "tts-1",
+            "tts-1-hd",
+            "whisper-1"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The model to use for audio operations. This is not a complete list; any model that supports the audio endpoint can be used."
+    },
+    "embeddingModel": {
+      "anyOf": [
+        {
+          "enum": [
+            "text-embedding-3-large",
+            "text-embedding-3-small"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The model to use for embeddings. This is not a complete list; any model that supports the embeddings endpoint can be used."
+    },
+    "imageModel": {
+      "anyOf": [
+        {
+          "enum": [
+            "gpt-image-1.5",
+            "gpt-image-1",
+            "gpt-image-1-mini",
+            "dall-e-3",
+            "dall-e-2"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The model to use for image generation. This is not a complete list; any model that supports the images endpoint can be used."
+    },
+    "moderationModel": {
+      "anyOf": [
+        {
+          "enum": [
+            "omni-moderation-latest"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The model to use for content moderation. This is not a complete list; any model that supports the moderations endpoint can be used."
+    },
+    "responsesModel": {
+      "anyOf": [
+        {
+          "enum": [
+            "gpt-5.4",
+            "gpt-5.4-mini",
+            "gpt-5.4-nano",
+            "gpt-4.1",
+            "gpt-4.1-mini",
+            "gpt-4.1-nano",
+            "gpt-4o",
+            "gpt-4o-mini",
+            "o3",
+            "o3-mini",
+            "o4-mini"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The model to use for the Responses API. This is not a complete list; any model that supports the responses endpoint can be used."
+    }
+  },
+  "type": "object",
+  "properties": {
+    "Clients": {
+      "type": "object",
+      "properties": {
+        "ChatClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ChatClient.",
+          "properties": {
+            "Model": { "$ref": "#/definitions/chatModel" },
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "AudioClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI AudioClient.",
+          "properties": {
+            "Model": { "$ref": "#/definitions/audioModel" },
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "EmbeddingClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI EmbeddingClient.",
+          "properties": {
+            "Model": { "$ref": "#/definitions/embeddingModel" },
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "ImageClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ImageClient.",
+          "properties": {
+            "Model": { "$ref": "#/definitions/imageModel" },
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "ModerationClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ModerationClient.",
+          "properties": {
+            "Model": { "$ref": "#/definitions/moderationModel" },
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "ResponsesClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ResponsesClient.",
+          "properties": {
+            "Model": { "$ref": "#/definitions/responsesModel" },
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "AssistantClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI AssistantClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "BatchClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI BatchClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "FileClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI FileClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "FineTuningClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI FineTuningClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "ModelClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ModelClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "VectorStoreClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI VectorStoreClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "RealtimeClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI RealtimeClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "ContainerClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ContainerClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "ConversationClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI ConversationClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "EvaluationClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI EvaluationClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "GraderClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI GraderClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        },
+        "VideoClient": {
+          "type": "object",
+          "description": "Configuration for the OpenAI VideoClient.",
+          "properties": {
+            "Options": { "$ref": "#/definitions/openAIClientOptions" }
+          }
+        }
+      }
+    }
+  }
+}
