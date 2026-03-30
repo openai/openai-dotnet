@@ -117,30 +117,6 @@
         }
       ],
       "description": "The model to use for content moderation. This is not a complete list; any model that supports the moderations endpoint can be used."
-    },
-    "responsesModel": {
-      "anyOf": [
-        {
-          "enum": [
-            "gpt-5.4",
-            "gpt-5.4-mini",
-            "gpt-5.4-nano",
-            "gpt-4.1",
-            "gpt-4.1-mini",
-            "gpt-4.1-nano",
-            "gpt-4o",
-            "gpt-4o-mini",
-            "o3",
-            "o3-mini",
-            "o4-mini"
-          ],
-          "type": "string"
-        },
-        {
-          "type": "string"
-        }
-      ],
-      "description": "The model to use for the Responses API. This is not a complete list; any model that supports the responses endpoint can be used."
     }
   },
   "type": "object",
@@ -192,7 +168,6 @@
           "type": "object",
           "description": "Configuration for the OpenAI ResponsesClient.",
           "properties": {
-            "Model": { "$ref": "#/definitions/responsesModel" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
