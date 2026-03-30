@@ -72,7 +72,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Moderations:
   - Added support for `ModerationClient` configuration and dependency injection via the new `ModerationClientSettings` class.
   - Added support for classifying multi-modal inputs via new `ClassifyInputs` and `ClassifyInputsAsync` methods in the `ModerationClient`.
-    - Use the new `ModerationInputPart` class to create text or image inputs for classication.
+    - Use the new `ModerationInputPart` class to create text or image inputs for classification.
     - Use the new `ApplicableInputKinds` property of the `ModerationCategory` class to understand to which parts of the input the moderation results apply.
 - OpenAI.Realtime:
   - Added support for the stable version of the Realtime REST API.
@@ -212,7 +212,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Responses:
   - Until now, this feature area has been marked as experimental via the `[Experimental]` attribute. As we prepare to stabilize it and remove its experimental designation, we are cleaning up the APIs to better align them with the service REST APIs, as well as to offer more flexibility and improve usability. See our [examples](https://github.com/openai/openai-dotnet/tree/main/examples/Responses) for helpful references on how to use the updated APIs.
     - The `OpenAIResponseClient` class has been renamed to `ResponsesClient`.
-    - The `ResponseCreationOptions` class has been renamedto `CreateResponseOptions`.
+    - The `ResponseCreationOptions` class has been renamed to `CreateResponseOptions`.
     - The `OpenAIResponse` class has been renamed to `ResponseResult`.
     - When calling the `CreateResponse`, `CreateResponseAsync`, `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the input items must now be specified via the new `InputItems` property of `CreateResponseOptions`.
     - When calling the `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the `StreamingEnabled` property of `CreateResponseOptions` must be set to `true`.
@@ -572,7 +572,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
     - `GetEvaluations` and `GetEvaluationsAsync`
     - `UpdateEvaluation` and `UpdateEvaluationAsync`
     - `DeleteEvaluation` and `DeleteEvaluationAsync`
-    - `CreateEvaluatinRun` and `CreateEvaluationRunAsync`
+    - `CreateEvaluationRun` and `CreateEvaluationRunAsync`
     - `GetEvaluationRun` and `GetEvaluationRunAsync`
     - `GetEvaluationRuns` and `GetEvaluationRunsAsync`
     - `CancelEvaluationRun` and `CancelEvaluationRunAsync`
@@ -607,7 +607,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Added new methods to `VectorStoreClient`:
     - `RetrieveVectorStoreFileContent` and `RetrieveVectorStoreFileContentAsync`
     - `SearchVectorStore` and `SearchVectorStoreAsync`
-    - `UpdateVectorStoreFileAttributes` and `UpdateVectorStoreFileAttributes`
+    - `UpdateVectorStoreFileAttributes` and `UpdateVectorStoreFileAttributesAsync`
 
 ### Bugs Fixed
 
@@ -913,7 +913,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - Removed the common `ListOrder` enum from the top-level `OpenAI` namespace in favor of individual enums in their corresponding sub-namespace. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
 - Renamed the `PageSize` property to `PageSizeLimit`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
 - Updated deletion methods to return a result object instead of a `bool`. Affected methods:
-  - `DeleteAssitant`, `DeleteMessage`, and `DeleteThread` in `AssistantClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
+  - `DeleteAssistant`, `DeleteMessage`, and `DeleteThread` in `AssistantClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
   - `DeleteVectorStore` and `RemoveFileFromStore` in `VectorStoreClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
   - `DeleteModel` in `ModelClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
   - `DeleteFile` in `FileClient`. ([2ab1a94](https://github.com/openai/openai-dotnet/commit/2ab1a94269125e6bed45d134a402ad8addd8fea4))
@@ -958,7 +958,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 ### Bugs Fixed
 
 - Corrected an internal deserialization issue that caused recent updates to Assistants `file_search` to fail when streaming a run. Strongly typed support for `ranking_options` is not included but will arrive soon. ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
-- Mitigated a .NET runtime issue that prevented `ChatResponseFormat` from serializing correct on targets including Unity. ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
+- Mitigated a .NET runtime issue that prevented `ChatResponseFormat` from serializing correctly on targets including Unity. ([cc9169a](https://github.com/openai/openai-dotnet/commit/cc9169ad2ff92bb7312eed3b7e64e45da5da1d18))
 
 ### Other Changes
 
@@ -1073,7 +1073,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 ### Bugs Fixed
 
-- ([#30](https://github.com/openai/openai-dotnet/issues/30)) Mitigated a .NET runtime issue that prevented chat message content and several other types from serializing correct on targets including mono and wasm ([896b9e0](https://github.com/openai/openai-dotnet/commit/896b9e0bc60f0ace90bd0d1af1254cf2680f8df6))
+- ([#30](https://github.com/openai/openai-dotnet/issues/30)) Mitigated a .NET runtime issue that prevented chat message content and several other types from serializing correctly on targets including mono and wasm ([896b9e0](https://github.com/openai/openai-dotnet/commit/896b9e0bc60f0ace90bd0d1af1254cf2680f8df6))
 - Assistants: Fixed an issue that threw an exception when receiving code interpreter run step logs when streaming a run ([207d597](https://github.com/openai/openai-dotnet/commit/207d59762e7eeb666b7ab2728a0bbee7c0cdd918))
 - Fixed a concurrency condition that could cause `multipart/form-data` requests to no longer generate random content part boundaries (no direct scenario impact) ([7cacdee](https://github.com/openai/openai-dotnet/commit/7cacdee2366df3cfa7e6c43bb050da54d23f8db9))
 

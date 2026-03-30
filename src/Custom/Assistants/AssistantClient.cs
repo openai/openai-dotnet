@@ -971,7 +971,7 @@ public partial class AssistantClient
             tools: runOptions.ToolsOverride,
             metadata: runOptions.Metadata,
             temperature: runOptions.Temperature,
-            // TODO: reconcile exposure of the the two different tool_resources, if needed
+            // TODO: reconcile exposure of the two different tool_resources, if needed
             topP: runOptions.NucleusSamplingFactor,
             stream: runOptions.Stream,
             maxPromptTokens: runOptions.MaxInputTokenCount,
