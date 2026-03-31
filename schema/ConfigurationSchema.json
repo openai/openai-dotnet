@@ -38,10 +38,6 @@
             "gpt-4.1",
             "gpt-4.1-mini",
             "gpt-4.1-nano",
-            "gpt-4o",
-            "gpt-4o-mini",
-            "o3",
-            "o3-mini",
             "o4-mini"
           ],
           "type": "string"
@@ -50,7 +46,7 @@
           "type": "string"
         }
       ],
-      "description": "The model to use for chat completions. This is not a complete list; any model that supports the chat completions endpoint can be used."
+      "description": "The model to use in the chat completions APIs. Enum contains the most popular models, for a full list see https://developers.openai.com/api/docs/models/all."
     },
     "audioModel": {
       "anyOf": [
@@ -58,10 +54,7 @@
           "enum": [
             "gpt-4o-mini-tts",
             "gpt-4o-transcribe",
-            "gpt-4o-mini-transcribe",
-            "tts-1",
-            "tts-1-hd",
-            "whisper-1"
+            "gpt-4o-mini-transcribe"
           ],
           "type": "string"
         },
@@ -69,7 +62,7 @@
           "type": "string"
         }
       ],
-      "description": "The model to use for audio operations. This is not a complete list; any model that supports the audio endpoint can be used."
+      "description": "The model to use in the audio APIs. Enum contains the most popular models, for a full list see https://developers.openai.com/api/docs/models/all."
     },
     "embeddingModel": {
       "anyOf": [
@@ -84,7 +77,7 @@
           "type": "string"
         }
       ],
-      "description": "The model to use for embeddings. This is not a complete list; any model that supports the embeddings endpoint can be used."
+      "description": "The model to use in the embeddings APIs. Enum contains the most popular models, for a full list see https://developers.openai.com/api/docs/models/all."
     },
     "imageModel": {
       "anyOf": [
@@ -92,9 +85,7 @@
           "enum": [
             "gpt-image-1.5",
             "gpt-image-1",
-            "gpt-image-1-mini",
-            "dall-e-3",
-            "dall-e-2"
+            "gpt-image-1-mini"
           ],
           "type": "string"
         },
@@ -102,7 +93,7 @@
           "type": "string"
         }
       ],
-      "description": "The model to use for image generation. This is not a complete list; any model that supports the images endpoint can be used."
+      "description": "The model to use in the image generation APIs. Enum contains the most popular models, for a full list see https://developers.openai.com/api/docs/models/all."
     },
     "moderationModel": {
       "anyOf": [
@@ -116,7 +107,7 @@
           "type": "string"
         }
       ],
-      "description": "The model to use for content moderation. This is not a complete list; any model that supports the moderations endpoint can be used."
+      "description": "The model to use in the content moderation APIs. Enum contains the most popular models, for a full list see https://developers.openai.com/api/docs/models/all."
     }
   },
   "type": "object",
@@ -128,6 +119,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI ChatClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Model": { "$ref": "#/definitions/chatModel" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -136,6 +128,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI AudioClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Model": { "$ref": "#/definitions/audioModel" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -144,6 +137,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI EmbeddingClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Model": { "$ref": "#/definitions/embeddingModel" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -152,6 +146,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI ImageClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Model": { "$ref": "#/definitions/imageModel" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -160,6 +155,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI ModerationClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Model": { "$ref": "#/definitions/moderationModel" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
@@ -168,6 +164,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI ResponsesClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -175,6 +172,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI AssistantClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -182,6 +180,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI BatchClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -189,6 +188,7 @@
           "type": "object",
           "description": "Configuration for the OpenAIFileClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -196,6 +196,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI FineTuningClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -203,6 +204,7 @@
           "type": "object",
           "description": "Configuration for the OpenAIModelClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -210,6 +212,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI VectorStoreClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -217,6 +220,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI RealtimeClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -224,6 +228,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI ContainerClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -231,6 +236,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI ConversationClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -238,6 +244,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI EvaluationClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -245,6 +252,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI GraderClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
@@ -252,6 +260,7 @@
           "type": "object",
           "description": "Configuration for the OpenAI VideoClient.",
           "properties": {
+            "Credential": { "$ref": "#/definitions/credential" },
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         }
