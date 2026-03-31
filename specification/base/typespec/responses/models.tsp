@@ -1002,22 +1002,14 @@ model ResponseTextFormatConfigurationJsonSchema
 - `reasoning.encrypted_content`: Includes an encrypted version of reasoning tokens in reasoning item outputs. This enables reasoning items to be used in multi-turn conversations when using the Responses API statelessly (like when the `store` parameter is set to `false`, or when an organization is enrolled in the zero data retention program).*/
 union Includable {
   string,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "file_search_call.results",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "web_search_call.results",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "web_search_call.action.sources",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "message.input_image.image_url",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "computer_call_output.output.image_url",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "code_interpreter_call.outputs",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "reasoning.encrypted_content",
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  "message.output_text.logprobs",
+  `file_search_call.results`: "file_search_call.results",
+  `web_search_call.results`: "web_search_call.results",
+  `web_search_call.action.sources`: "web_search_call.action.sources",
+  `message.input_image.image_url`: "message.input_image.image_url",
+  `computer_call_output.output.image_url`: "computer_call_output.output.image_url",
+  `code_interpreter_call.outputs`: "code_interpreter_call.outputs",
+  `reasoning.encrypted_content`: "reasoning.encrypted_content",
+  `message.output_text.logprobs`: "message.output_text.logprobs",
 }
 
 // Tool customization: Establish discriminated type hierarchy

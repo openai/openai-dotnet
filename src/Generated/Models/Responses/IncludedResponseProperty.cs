@@ -16,11 +16,11 @@ namespace OpenAI.Responses
         private const string FileSearchCallResultsValue = "file_search_call.results";
         private const string WebSearchCallResultsValue = "web_search_call.results";
         private const string WebSearchCallActionSourcesValue = "web_search_call.action.sources";
-        private const string MessageInputImageImageUrlValue = "message.input_image.image_url";
-        private const string ComputerCallOutputOutputImageUrlValue = "computer_call_output.output.image_url";
+        private const string MessageInputImageUriValue = "message.input_image.image_url";
+        private const string ComputerCallOutputImageUriValue = "computer_call_output.output.image_url";
         private const string CodeInterpreterCallOutputsValue = "code_interpreter_call.outputs";
         private const string ReasoningEncryptedContentValue = "reasoning.encrypted_content";
-        private const string MessageOutputTextLogprobsValue = "message.output_text.logprobs";
+        private const string MessageOutputTextLogProbabilitiesValue = "message.output_text.logprobs";
 
         public IncludedResponseProperty(string value)
         {
@@ -35,9 +35,15 @@ namespace OpenAI.Responses
 
         public static IncludedResponseProperty WebSearchCallActionSources { get; } = new IncludedResponseProperty(WebSearchCallActionSourcesValue);
 
+        public static IncludedResponseProperty MessageInputImageUri { get; } = new IncludedResponseProperty(MessageInputImageUriValue);
+
+        public static IncludedResponseProperty ComputerCallOutputImageUri { get; } = new IncludedResponseProperty(ComputerCallOutputImageUriValue);
+
         public static IncludedResponseProperty CodeInterpreterCallOutputs { get; } = new IncludedResponseProperty(CodeInterpreterCallOutputsValue);
 
         public static IncludedResponseProperty ReasoningEncryptedContent { get; } = new IncludedResponseProperty(ReasoningEncryptedContentValue);
+
+        public static IncludedResponseProperty MessageOutputTextLogProbabilities { get; } = new IncludedResponseProperty(MessageOutputTextLogProbabilitiesValue);
 
         public static bool operator ==(IncludedResponseProperty left, IncludedResponseProperty right) => left.Equals(right);
 
