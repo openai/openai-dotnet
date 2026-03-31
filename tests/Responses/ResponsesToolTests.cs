@@ -882,8 +882,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             size: ImageGenerationToolSize.W1024xH1024,
             outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
             moderationLevel: ImageGenerationToolModerationLevel.Auto,
-            background: ImageGenerationToolBackground.Transparent);
-        imageGenTool.Action = ImageGenerationToolAction.Generate;
+            background: ImageGenerationToolBackground.Transparent,
+            action: ImageGenerationToolAction.Generate);
 
         CreateResponseOptions options = new(
             TestModel.Responses,
