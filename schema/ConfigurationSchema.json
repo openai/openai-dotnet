@@ -99,7 +99,8 @@
       "anyOf": [
         {
           "enum": [
-            "omni-moderation-latest"
+            "text-moderation-latest",
+            "text-moderation-stable"
           ],
           "type": "string"
         },
