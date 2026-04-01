@@ -73,7 +73,7 @@ using TypeSpec.HttpClient.CSharp;
 
 // NOTE: Contrary to other tools, the "status" property of `ApplyPatchToolCallOutputItemResource`
 // is set by the client instead of being set by the server, and it is also required. The "status"
-// property is used to indicate if the client successfuly applied the patch or not.
+// property is used to indicate if the client successfully applied the patch or not.
 
 // ------------ Tools ------------
 
