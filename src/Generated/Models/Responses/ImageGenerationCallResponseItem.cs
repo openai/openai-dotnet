@@ -11,18 +11,35 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationCallResponseItem : ResponseItem
     {
-        public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(InternalItemType.ImageGenerationCall)
+        public ImageGenerationCallResponseItem(ImageGenerationToolAction action, ImageGenToolCallBackground background, BinaryData imageResultBytes) : base(InternalItemType.ImageGenerationCall)
         {
+            Action = action;
+            Background = background;
             ImageResultBytes = imageResultBytes;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, BinaryData imageResultBytes) : base(kind, id, patch)
+        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, ImageGenerationToolAction action, ImageGenToolCallBackground background, ImageGenToolCallOutputFormat? outputFormat, ImageGenToolCallQuality? quality, ImageGenToolCallSize? size, BinaryData imageResultBytes) : base(kind, id, patch)
         {
             Status = status;
+            Action = action;
+            Background = background;
+            OutputFormat = outputFormat;
+            Quality = quality;
+            Size = size;
             ImageResultBytes = imageResultBytes;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public ImageGenerationToolAction Action { get; set; }
+
+        public ImageGenToolCallBackground Background { get; set; }
+
+        public ImageGenToolCallOutputFormat? OutputFormat { get; set; }
+
+        public ImageGenToolCallQuality? Quality { get; set; }
+
+        public ImageGenToolCallSize? Size { get; set; }
 
         public BinaryData ImageResultBytes { get; set; }
     }

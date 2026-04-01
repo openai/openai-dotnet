@@ -1,9 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.TypeSpec.Generator.Customizations;
 
-namespace OpenAI.Responses
-{
-    [CodeGenType("ImageGenerationToolAction")]
-    public readonly partial struct ImageGenerationToolAction
-    { }
-}
+namespace OpenAI.Responses;
+
+[CodeGenType("ImageGenerationToolAction")]
+public readonly partial struct ImageGenerationToolAction
+{ }

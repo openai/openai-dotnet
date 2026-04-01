@@ -900,10 +900,16 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
         ImageGenerationTool responseTool = (ImageGenerationTool)response.Tools.First();
+        // The action is not populated in the Tool response. It is, however, in the ImageGenerationCallResponseItem
+        // Assert.That(responseTool.Action, Is.EqualTo(ImageGenerationToolAction.Generate));
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.Action, Is.EqualTo(ImageGenerationToolAction.Generate));
+        Assert.That(imageGenResponse.Background, Is.EqualTo(ImageGenToolCallBackground.Transparent));
+        Assert.That(imageGenResponse.Quality, Is.EqualTo(ImageGenToolCallQuality.High));
+        Assert.That(imageGenResponse.Size, Is.EqualTo(ImageGenToolCallSize.W1024x1024));
     }
 
     [RecordedTest]

@@ -162,6 +162,27 @@ model ImageGenToolCallItemParam extends ItemParam {
 model ImageGenToolCallItemResource extends ItemResource {
   type: ItemType.image_generation_call;
   status: "in_progress" | "completed" | "generating" | "failed";
+  action: ImageGenerationToolAction;
+  background: "transparent" | "opaque" | "auto" = "auto";
+  output_format?: "png" | "jpeg" | "webp" | null = "png";
+  quality?:
+    | "standard"
+    | "hd"
+    | "low"
+    | "medium"
+    | "high"
+    | "auto"
+    | null = "auto";
+  size?:
+    | "auto"
+    | "1024x1024"
+    | "1536x1024"
+    | "1024x1536"
+    | "256x256"
+    | "512x512"
+    | "1792x1024"
+    | "1024x1792"
+    | null = "auto";
   ...ImageGenToolCallItemBase;
 }
 
