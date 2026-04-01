@@ -79,7 +79,8 @@ namespace OpenAI.Responses
                 writer.WriteStringValue(CallId);
             }
             // Plugin customization: remove options.Format != "W" check
-            if (!Patch.Contains("$.status"u8))
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToString());
