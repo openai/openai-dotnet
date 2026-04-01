@@ -71,8 +71,9 @@ using TypeSpec.HttpClient.CSharp;
 
 @@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
 
-// NOTE: Contrary to other tools, the status property of ApplyPatchToolCallOutputItemResource is
-// set by the client and is therefore not read-only.
+// NOTE: Contrary to other tools, the "status" property of `ApplyPatchToolCallOutputItemResource`
+// is set by the client instead of being set by the server, and it is also required. The "status"
+// property is used to indicate if the client successfuly applied the patch or not.
 
 // ------------ Tools ------------
 
