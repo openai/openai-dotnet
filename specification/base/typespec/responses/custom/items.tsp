@@ -155,7 +155,7 @@ model WebSearchActionOpenPage extends WebSearchActionBase {
 
 /** Action type "find_in_page": Searches for a pattern within a loaded page. */
 @summary("Find action")
-model WebSearchActionFind  extends WebSearchActionBase {
+model WebSearchActionFind extends WebSearchActionBase {
   /** The action type. */
   type: WebSearchActionType.find_in_page;
 

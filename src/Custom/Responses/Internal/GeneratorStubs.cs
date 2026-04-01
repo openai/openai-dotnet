@@ -86,7 +86,6 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownResponseTextFormatConfiguration")] internal partial class InternalUnknownResponseTextFormatConfiguration {}
 [CodeGenType("UnknownTool")] internal partial class InternalUnknownTool {}
 [CodeGenType("UnknownToolChoiceObject")] internal partial class InternalUnknownToolChoiceObject {}
-[CodeGenType("WebSearchToolCallItemParam")] internal partial class InternalWebSearchToolCallItemParam {}
 [CodeGenType("CodeInterpreterFileOutputType")] internal readonly partial struct InternalCodeInterpreterFileOutputType {}
 [CodeGenType("CodeInterpreterTextOutputType")] internal readonly partial struct InternalCodeInterpreterTextOutputType {}
 [CodeGenType("CodeInterpreterToolOutputType")] internal readonly partial struct InternalCodeInterpreterToolOutputType {}
