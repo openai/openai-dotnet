@@ -39,7 +39,6 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
                 new("Id", "id", isCollection: false),
             ],
         ["ApplyPatchCallItem"] = [_readonlyStatusReplacementInfo],
-        ["ApplyPatchCallOutputItem"] = [_readonlyStatusReplacementInfo],
         ["CodeInterpreterCallResponseItem"] = [_readonlyStatusReplacementInfo],
         ["ComputerCallResponseItem"] = [_readonlyStatusReplacementInfo],
         ["ComputerCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
