@@ -119,6 +119,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("partial_images"u8);
                 writer.WriteNumberValue(PartialImageCount.Value);
             }
+            if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
+            {
+                writer.WritePropertyName("action"u8);
+                writer.WriteStringValue(Action.Value.ToString());
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -157,6 +162,7 @@ namespace OpenAI.Responses
             ImageGenerationToolInputFidelity? inputFidelity = default;
             ImageGenerationToolInputImageMask inputImageMask = default;
             int? partialImageCount = default;
+            ImageGenerationToolAction? action = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -250,6 +256,15 @@ namespace OpenAI.Responses
                     partialImageCount = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("action"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    action = new ImageGenerationToolAction(prop.Value.GetString());
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ImageGenerationTool(
@@ -264,7 +279,8 @@ namespace OpenAI.Responses
                 background,
                 inputFidelity,
                 inputImageMask,
-                partialImageCount);
+                partialImageCount,
+                action);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

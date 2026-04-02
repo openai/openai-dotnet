@@ -4,6 +4,8 @@
 
 ### Features Added
 
+- OpenAI.Responses:
+  - Added `Action` property to `ImageGenerationTool` and `ImageGenerationToolAction` enum with values `Generate`, `Edit`, and `Auto`. The `CreateImageGenerationTool` factory method defaults the action to `Auto`.
 - Added `ConfigurationSchema.json` to the NuGet package via the MSBuild `JsonSchemaSegment` feature, enabling automatic JSON IntelliSense and validation for `appsettings.json` when configuring OpenAI clients. Provides per-client model suggestions and OpenAI-specific options, composing with System.ClientModel's base credential and pipeline definitions.
 
 ### Bugs Fixed

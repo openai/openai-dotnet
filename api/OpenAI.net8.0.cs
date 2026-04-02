@@ -5496,8 +5496,14 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
-        public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
+        public ImageGenerationCallResponseItem(ImageGenerationToolAction action, ImageGenToolCallBackground background, BinaryData imageResultBytes);
+        public ImageGenerationToolAction Action { get; set; }
+        public ImageGenToolCallBackground Background { get; set; }
         public BinaryData ImageResultBytes { get; set; }
+        public ImageGenToolCallOutputFormat? OutputFormat { get; set; }
+        public ImageGenToolCallQuality? Quality { get; set; }
+        public string RevisedPrompt { get; set; }
+        public ImageGenToolCallSize? Size { get; set; }
         public ImageGenerationCallStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -5510,6 +5516,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
         public ImageGenerationTool();
+        public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
         public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
@@ -5520,6 +5527,23 @@ namespace OpenAI.Responses {
         public int? PartialImageCount { get; set; }
         public ImageGenerationToolQuality? Quality { get; set; }
         public ImageGenerationToolSize? Size { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolAction : IEquatable<ImageGenerationToolAction> {
+        public ImageGenerationToolAction(string value);
+        public static ImageGenerationToolAction Auto { get; }
+        public static ImageGenerationToolAction Edit { get; }
+        public static ImageGenerationToolAction Generate { get; }
+        public readonly bool Equals(ImageGenerationToolAction other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolAction left, ImageGenerationToolAction right);
+        public static implicit operator ImageGenerationToolAction(string value);
+        public static implicit operator ImageGenerationToolAction?(string value);
+        public static bool operator !=(ImageGenerationToolAction left, ImageGenerationToolAction right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ImageGenerationToolBackground : IEquatable<ImageGenerationToolBackground> {
@@ -5630,6 +5654,82 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ImageGenerationToolSize left, ImageGenerationToolSize right);
         public static bool operator !=(ImageGenerationToolSize left, ImageGenerationToolSize right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenToolCallBackground : IEquatable<ImageGenToolCallBackground> {
+        public ImageGenToolCallBackground(string value);
+        public static ImageGenToolCallBackground Auto { get; }
+        public static ImageGenToolCallBackground Opaque { get; }
+        public static ImageGenToolCallBackground Transparent { get; }
+        public readonly bool Equals(ImageGenToolCallBackground other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenToolCallBackground left, ImageGenToolCallBackground right);
+        public static implicit operator ImageGenToolCallBackground(string value);
+        public static implicit operator ImageGenToolCallBackground?(string value);
+        public static bool operator !=(ImageGenToolCallBackground left, ImageGenToolCallBackground right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenToolCallOutputFormat : IEquatable<ImageGenToolCallOutputFormat> {
+        public ImageGenToolCallOutputFormat(string value);
+        public static ImageGenToolCallOutputFormat Jpeg { get; }
+        public static ImageGenToolCallOutputFormat Png { get; }
+        public static ImageGenToolCallOutputFormat Webp { get; }
+        public readonly bool Equals(ImageGenToolCallOutputFormat other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenToolCallOutputFormat left, ImageGenToolCallOutputFormat right);
+        public static implicit operator ImageGenToolCallOutputFormat(string value);
+        public static implicit operator ImageGenToolCallOutputFormat?(string value);
+        public static bool operator !=(ImageGenToolCallOutputFormat left, ImageGenToolCallOutputFormat right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenToolCallQuality : IEquatable<ImageGenToolCallQuality> {
+        public ImageGenToolCallQuality(string value);
+        public static ImageGenToolCallQuality Auto { get; }
+        public static ImageGenToolCallQuality Hd { get; }
+        public static ImageGenToolCallQuality High { get; }
+        public static ImageGenToolCallQuality Low { get; }
+        public static ImageGenToolCallQuality Medium { get; }
+        public static ImageGenToolCallQuality Standard { get; }
+        public readonly bool Equals(ImageGenToolCallQuality other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenToolCallQuality left, ImageGenToolCallQuality right);
+        public static implicit operator ImageGenToolCallQuality(string value);
+        public static implicit operator ImageGenToolCallQuality?(string value);
+        public static bool operator !=(ImageGenToolCallQuality left, ImageGenToolCallQuality right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenToolCallSize : IEquatable<ImageGenToolCallSize> {
+        public ImageGenToolCallSize(string value);
+        public static ImageGenToolCallSize Auto { get; }
+        public static ImageGenToolCallSize W1024x1024 { get; }
+        public static ImageGenToolCallSize W1024x1536 { get; }
+        public static ImageGenToolCallSize W1024x1792 { get; }
+        public static ImageGenToolCallSize W1536x1024 { get; }
+        public static ImageGenToolCallSize W1792x1024 { get; }
+        public static ImageGenToolCallSize W256x256 { get; }
+        public static ImageGenToolCallSize W512x512 { get; }
+        public readonly bool Equals(ImageGenToolCallSize other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenToolCallSize left, ImageGenToolCallSize right);
+        public static implicit operator ImageGenToolCallSize(string value);
+        public static implicit operator ImageGenToolCallSize?(string value);
+        public static bool operator !=(ImageGenToolCallSize left, ImageGenToolCallSize right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
@@ -6266,7 +6366,7 @@ namespace OpenAI.Responses {
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
-        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
+        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
