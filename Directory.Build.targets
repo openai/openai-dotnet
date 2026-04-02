@@ -84,4 +84,19 @@
              Text="Generated API surface: $(GenAPIOutputDirectory)OpenAI.$(TargetFramework).cs" />
   </Target>
 
+  <!--
+    ==============================================================
+      ConfigurationSchema.json auto-pack
+
+      Pack the JSON schema at the NuGet package root and include
+      the static .targets file in buildTransitive/ to register the
+      JsonSchemaSegment for appsettings.*.json IntelliSense.
+    ==============================================================
+  -->
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'OpenAI'">
+    <None Include="$(RepositoryRoot)schema\ConfigurationSchema.json" Pack="true" PackagePath="\" Link="schema\ConfigurationSchema.json" />
+    <None Include="$(RepositoryRoot)eng\OpenAI.NuGet.targets" Pack="true" PackagePath="buildTransitive\netstandard2.0\OpenAI.targets" />
+  </ItemGroup>
+
 </Project>

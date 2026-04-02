@@ -14,7 +14,7 @@ public class GitHubTests
         Assert.That(gitHubSecretString, Is.Not.Null.And.Not.Empty);
     }
 
-    [Test(Description = "That that we can run some tests without secrets")]
+    [Test(Description = "That we can run some tests without secrets")]
     [Category("Offline")]
     [Ignore("Placeholder")]
     public void CanTestWithoutSecretAccess()

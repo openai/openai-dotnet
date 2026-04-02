@@ -22,7 +22,7 @@ IMcpClient mcpClient = await McpClientFactory.CreateAsync(new StdioClientTranspo
     Arguments = [],
 }));
 
-// get avaliable tools and add them to completion options
+// get available tools and add them to completion options
 ChatCompletionOptions options = new();
 await foreach (McpClientTool tool in mcpClient.EnumerateToolsAsync())
 {

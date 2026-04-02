@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -65,6 +66,110 @@ namespace OpenAI.Audio
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateTranslateAudioRequest(content, contentType, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult GetVoiceConsents(string after = default, int? limit = default, RequestOptions options = null)
+        {
+            return new AudioClientGetVoiceConsentsCollectionResult(this, after, limit, options);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult GetVoiceConsentsAsync(string after = default, int? limit = default, RequestOptions options = null)
+        {
+            return new AudioClientGetVoiceConsentsAsyncCollectionResult(this, after, limit, options);
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult CreateVoiceConsent(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVoiceConsentRequest(content, contentType, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> CreateVoiceConsentAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVoiceConsentRequest(content, contentType, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult DeleteVoiceConsent(string consentId, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(consentId, nameof(consentId));
+
+            using PipelineMessage message = CreateDeleteVoiceConsentRequest(consentId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> DeleteVoiceConsentAsync(string consentId, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(consentId, nameof(consentId));
+
+            using PipelineMessage message = CreateDeleteVoiceConsentRequest(consentId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult GetVoiceConsent(string consentId, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(consentId, nameof(consentId));
+
+            using PipelineMessage message = CreateGetVoiceConsentRequest(consentId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> GetVoiceConsentAsync(string consentId, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(consentId, nameof(consentId));
+
+            using PipelineMessage message = CreateGetVoiceConsentRequest(consentId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult UpdateVoiceConsent(string consentId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(consentId, nameof(consentId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateVoiceConsentRequest(consentId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> UpdateVoiceConsentAsync(string consentId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(consentId, nameof(consentId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateVoiceConsentRequest(consentId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual ClientResult CreateVoice(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVoiceRequest(content, contentType, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> CreateVoiceAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVoiceRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }

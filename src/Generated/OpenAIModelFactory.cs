@@ -1260,14 +1260,14 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFile VectorStoreFile(string fileId = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileStatus status = default, VectorStoreFileError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
+        public static VectorStoreFile VectorStoreFile(string fileId = default, long? usageInBytes = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileStatus status = default, VectorStoreFileError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
 
             return new VectorStoreFile(
                 fileId,
                 "vector_store.file",
-                size,
+                usageInBytes,
                 createdAt,
                 vectorStoreId,
                 status,

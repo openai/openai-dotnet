@@ -22,6 +22,8 @@ public class NumericTypesVisitor : ScmLibraryVisitor
         "OpenAI.LegacyCompletions.InternalCreateCompletionRequest.Seed",
 
         "OpenAI.Containers.ContainerFileResource.SizeInBytes",
+
+        "OpenAI.VectorStores.VectorStoreFile.UsageInBytes",
     };
 
     // Add any double properties that should remain double here.
