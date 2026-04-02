@@ -267,7 +267,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                 Assert.That(itemsInRehydratedPage[0].FileId, Is.EqualTo(itemsInPage[0].FileId));
                 Assert.That(itemsInRehydratedPage[0].VectorStoreId, Is.EqualTo(itemsInPage[0].VectorStoreId));
                 Assert.That(itemsInRehydratedPage[0].CreatedAt, Is.EqualTo(itemsInPage[0].CreatedAt));
-                Assert.That(itemsInRehydratedPage[0].Size, Is.EqualTo(itemsInPage[0].Size));
+                Assert.That(itemsInRehydratedPage[0].UsageInBytes, Is.EqualTo(itemsInPage[0].UsageInBytes));
             }
 
             pageCount++;
@@ -568,7 +568,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                 Assert.That(vectorStoreFile.FileId, Is.Not.Null);
                 Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
                 Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.Completed));
-                // Assert.That(vectorStoreFile.Size, Is.GreaterThan(0));
+                // Assert.That(vectorStoreFile.UsageInBytes, Is.GreaterThan(0));
                 Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
                 Assert.That(vectorStoreFile.LastError, Is.Null);
             });

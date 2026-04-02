@@ -15,6 +15,9 @@ using Azure.ClientGenerator.Core;
 
 @@alternateType(VectorStoreExpirationAfter.anchor, VectorStoreExpirationAnchor);
 
+@@clientName(VectorStoreFileObject.usage_bytes, "UsageInBytes");
+@@alternateType(VectorStoreFileObject.usage_bytes, int64 | null);
+
 @@clientName(deleteVectorStoreFile, "RemoveFileFromVectorStore");
 @@clientName(listVectorStores, "GetVectorStores");
 @@clientName(listFilesInVectorStoreBatch, "GetVectorStoreFilesInBatch");
