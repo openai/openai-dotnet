@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalThreadObjectToolResourcesCodeInterpreter : IJsonModel<InternalThreadObjectToolResourcesCodeInterpreter>
     {
+        protected virtual InternalThreadObjectToolResourcesCodeInterpreter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalThreadObjectToolResourcesCodeInterpreter(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalThreadObjectToolResourcesCodeInterpreter)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalThreadObjectToolResourcesCodeInterpreter)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalThreadObjectToolResourcesCodeInterpreter IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalThreadObjectToolResourcesCodeInterpreter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -112,38 +145,5 @@ namespace OpenAI.Assistants
             }
             return new InternalThreadObjectToolResourcesCodeInterpreter(fileIds ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalThreadObjectToolResourcesCodeInterpreter)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalThreadObjectToolResourcesCodeInterpreter IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalThreadObjectToolResourcesCodeInterpreter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalThreadObjectToolResourcesCodeInterpreter(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalThreadObjectToolResourcesCodeInterpreter)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalThreadObjectToolResourcesCodeInterpreter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

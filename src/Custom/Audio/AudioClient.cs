@@ -4,6 +4,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -111,6 +112,12 @@ public partial class AudioClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public AudioClient(AudioClientSettings settings)
+        : this(settings?.Model, AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>
@@ -171,6 +178,54 @@ public partial class AudioClient
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
     }
 
+    /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
+    /// <param name="text"> The text to generate audio for. </param>
+    /// <param name="voice"> The voice to use in the generated audio. </param>
+    /// <param name="options"> The options to configure the audio generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
+    /// <returns> A streaming collection of speech generation updates. </returns>
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(text, nameof(text));
+        EnsureModelSupportsSpeechStreaming();
+
+        options ??= new();
+        options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
+        CreateSpeechGenerationOptions(text, voice, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
+            async () => await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
+            cancellationToken);
+    }
+
+    /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
+    /// <param name="text"> The text to generate audio for. </param>
+    /// <param name="voice"> The voice to use in the generated audio. </param>
+    /// <param name="options"> The options to configure the audio generation. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
+    /// <returns> A streaming collection of speech generation updates. </returns>
+    [Experimental("OPENAI001")]
+    public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(text, nameof(text));
+        EnsureModelSupportsSpeechStreaming();
+
+        options ??= new();
+        options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
+        CreateSpeechGenerationOptions(text, voice, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        return new SseUpdateCollection<StreamingSpeechUpdate>(
+            () => GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
+            cancellationToken);
+    }
+
     #endregion
 
     #region TranscribeAudio
@@ -190,6 +245,13 @@ public partial class AudioClient
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        if (options?.ResponseFormat == AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must not be set to {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudio)}. "
+                + $"For diarized transcription, call {nameof(TranscribeAudioDiarizedAsync)} instead.");
+        }
 
         using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options)
@@ -214,6 +276,13 @@ public partial class AudioClient
     {
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        if (options?.ResponseFormat == AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must not be set to {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudio)}. "
+                + $"For diarized transcription, call {nameof(TranscribeAudioDiarized)} instead.");
+        }
 
         using MultiPartFormDataBinaryContent content
             = CreatePerCallTranscriptionOptions(options)
@@ -255,6 +324,108 @@ public partial class AudioClient
 
         using FileStream audioStream = File.OpenRead(audioFilePath);
         return TranscribeAudio(audioStream, audioFilePath, options);
+    }
+
+    /// <summary> Transcribes the input audio with diarization. </summary>
+    /// <param name="audio"> The audio stream to transcribe. </param>
+    /// <param name="audioFilename">
+    ///     The filename associated with the audio stream. The filename's extension (for example: .mp3) will be used to
+    ///     validate the format of the input audio. The request may fail if the filename's extension and the actual
+    ///     format of the input audio do not match.
+    /// </param>
+    /// <param name="options"> The options to configure the audio transcription. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="audio"/> or <paramref name="audioFilename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="audioFilename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(audio, nameof(audio));
+        Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        if (options?.ResponseFormat is not null && options.ResponseFormat != AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must be {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudioDiarized)}. "
+                + $"For non-diarized transcription, call {nameof(TranscribeAudioAsync)} instead.");
+        }
+
+        using MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options)
+                .ToMultipartContent(audio, audioFilename);
+
+        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using var document = JsonDocument.Parse(result.GetRawResponse().Content);
+        return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), result.GetRawResponse());
+    }
+
+    /// <summary> Transcribes the input audio with diarization. </summary>
+    /// <param name="audio"> The audio stream to transcribe. </param>
+    /// <param name="audioFilename">
+    ///     The filename associated with the audio stream. The filename's extension (for example: .mp3) will be used to
+    ///     validate the format of the input audio. The request may fail if the filename's extension and the actual
+    ///     format of the input audio do not match.
+    /// </param>
+    /// <param name="options"> The options to configure the audio transcription. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="audio"/> or <paramref name="audioFilename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="audioFilename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(audio, nameof(audio));
+        Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
+
+        if (options?.ResponseFormat is not null && options.ResponseFormat != AudioTranscriptionFormat.Diarized)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(AudioTranscriptionOptions.ResponseFormat)} must be {nameof(AudioTranscriptionFormat.Diarized)} when calling {nameof(TranscribeAudioDiarized)}. "
+                + $"For non-diarized transcription, call {nameof(TranscribeAudio)} instead.");
+        }
+
+        using MultiPartFormDataBinaryContent content
+            = CreatePerCallTranscriptionOptions(options)
+                .ToMultipartContent(audio, audioFilename);
+
+        ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
+        using var document = JsonDocument.Parse(result.GetRawResponse().Content);
+        return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), result.GetRawResponse());
+    }
+
+    /// <summary> Transcribes the input audio with diarization. </summary>
+    /// <param name="audioFilePath">
+    ///     The path of the audio file to transcribe. The provided file path's extension (for example: .mp3) will be
+    ///     used to validate the format of the input audio. The request may fail if the file path's extension and the
+    ///     actual format of the input audio do not match.
+    /// </param>
+    /// <param name="options"> The options to configure the audio transcription. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="audioFilePath"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="audioFilePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioTranscriptionOptions options = null)
+    {
+        Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
+
+        using FileStream audioStream = File.OpenRead(audioFilePath);
+        return await TranscribeAudioDiarizedAsync(audioStream, audioFilePath, options).ConfigureAwait(false);
+    }
+
+    /// <summary> Transcribes the input audio with diarization. </summary>
+    /// <param name="audioFilePath">
+    ///     The path of the audio file to transcribe. The provided file path's extension (for example: .mp3) will be
+    ///     used to validate the format of the input audio. The request may fail if the file path's extension and the
+    ///     actual format of the input audio do not match.
+    /// </param>
+    /// <param name="options"> The options to configure the audio transcription. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="audioFilePath"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="audioFilePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(string audioFilePath, AudioTranscriptionOptions options = null)
+    {
+        Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
+
+        using FileStream audioStream = File.OpenRead(audioFilePath);
+        return TranscribeAudioDiarized(audioStream, audioFilePath, options);
     }
 
     // CUSTOM: Added Experimental attribute.
@@ -343,12 +514,27 @@ public partial class AudioClient
     {
         if (string.Equals(_model, "whisper-1", StringComparison.OrdinalIgnoreCase))
         {
-            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_WHISPER_1_STREAMING");
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TRANSCRIPTION_SSE_STREAMING");
             if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
             {
                 throw new NotSupportedException(
-                    "The selected model 'whisper-1' does not support streaming transcription. " +
-                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_WHISPER_1_STREAMING=true' to bypass this check.");
+                    "The selected model 'whisper-1' does not support SSE streaming transcription. " +
+                    "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TRANSCRIPTION_SSE_STREAMING=true' to bypass this check.");
+            }
+        }
+    }
+
+    private void EnsureModelSupportsSpeechStreaming()
+    {
+        if (string.Equals(_model, "tts-1", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(_model, "tts-1-hd", StringComparison.OrdinalIgnoreCase))
+        {
+            string isEnabled = Environment.GetEnvironmentVariable("OPENAI_ENABLE_TTS_SSE_STREAMING");
+            if (!string.Equals(isEnabled, "true", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new NotSupportedException(
+                    $"The selected model '{_model}' does not support SSE streaming for speech generation. "
+                    + "Please use a compatible model or set the environment variable 'OPENAI_ENABLE_TTS_SSE_STREAMING=true' to bypass this check.");
             }
         }
     }

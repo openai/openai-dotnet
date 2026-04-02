@@ -91,4 +91,58 @@ interface Responses {
 
     ...CommonPageQueryParameters,
   ): ResponseItemList | ResponseErrorResponse;
+
+ /** Get input token counts */
+ @summary("Get input token counts")
+ @post
+ @route("input_tokens")
+ @operationId("getInputTokenCounts")
+ op getInputTokenCounts(
+  @header
+  contentType: "application/json" | "application/x-www-form-urlencoded",
+  @body
+  body: TokenCountsBody,
+): TokenCountsResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
+
+  @post
+  @route("compact")
+  @operationId("compactConversation")
+  op compactConversation(
+  @header
+  contentType: "application/json" | "application/x-www-form-urlencoded",
+  @body
+  body: CompactResponseMethodPublicBody,
+): CompactResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ErrorResponse;
+};
 }

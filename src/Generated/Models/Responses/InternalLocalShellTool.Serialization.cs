@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellTool : ResponseTool, IJsonModel<InternalLocalShellTool>
     {
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalLocalShellTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalLocalShellTool(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalLocalShellTool)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalLocalShellTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalLocalShellTool)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalLocalShellTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalLocalShellTool IPersistableModel<InternalLocalShellTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalLocalShellTool)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalLocalShellTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalLocalShellTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -75,38 +108,5 @@ namespace OpenAI.Responses
             }
             return new InternalLocalShellTool(kind, patch);
         }
-
-        BinaryData IPersistableModel<InternalLocalShellTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLocalShellTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalLocalShellTool)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalLocalShellTool IPersistableModel<InternalLocalShellTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalLocalShellTool)PersistableModelCreateCore(data, options);
-
-        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLocalShellTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalLocalShellTool(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalLocalShellTool)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalLocalShellTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

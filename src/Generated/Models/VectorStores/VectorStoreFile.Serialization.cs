@@ -17,6 +17,46 @@ namespace OpenAI.VectorStores
         {
         }
 
+        protected virtual VectorStoreFile PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFile>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeVectorStoreFile(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(VectorStoreFile)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFile>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(VectorStoreFile)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<VectorStoreFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        VectorStoreFile IPersistableModel<VectorStoreFile>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<VectorStoreFile>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator VectorStoreFile(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeVectorStoreFile(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<VectorStoreFile>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -43,8 +83,15 @@ namespace OpenAI.VectorStores
             }
             if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
             {
-                writer.WritePropertyName("usage_bytes"u8);
-                writer.WriteNumberValue(Size);
+                if (Optional.IsDefined(UsageInBytes))
+                {
+                    writer.WritePropertyName("usage_bytes"u8);
+                    writer.WriteNumberValue(UsageInBytes.Value);
+                }
+                else
+                {
+                    writer.WriteNull("usage_bytes"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -144,7 +191,7 @@ namespace OpenAI.VectorStores
             }
             string fileId = default;
             string @object = default;
-            int size = default;
+            long? usageInBytes = default;
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
             VectorStoreFileStatus status = default;
@@ -166,7 +213,12 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("usage_bytes"u8))
                 {
-                    size = prop.Value.GetInt32();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        usageInBytes = null;
+                        continue;
+                    }
+                    usageInBytes = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
@@ -230,7 +282,7 @@ namespace OpenAI.VectorStores
             return new VectorStoreFile(
                 fileId,
                 @object,
-                size,
+                usageInBytes,
                 createdAt,
                 vectorStoreId,
                 status,
@@ -238,46 +290,6 @@ namespace OpenAI.VectorStores
                 chunkingStrategy,
                 attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<VectorStoreFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFile>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreFile)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        VectorStoreFile IPersistableModel<VectorStoreFile>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual VectorStoreFile PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreFile>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeVectorStoreFile(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreFile)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<VectorStoreFile>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator VectorStoreFile(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeVectorStoreFile(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

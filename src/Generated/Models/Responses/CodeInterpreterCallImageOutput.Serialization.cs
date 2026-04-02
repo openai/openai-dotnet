@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallImageOutput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeCodeInterpreterCallImageOutput(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(CodeInterpreterCallImageOutput)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallImageOutput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(CodeInterpreterCallImageOutput)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<CodeInterpreterCallImageOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        CodeInterpreterCallImageOutput IPersistableModel<CodeInterpreterCallImageOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterCallImageOutput)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<CodeInterpreterCallImageOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<CodeInterpreterCallImageOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,45 +116,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new CodeInterpreterCallImageOutput(kind, patch, imageUri);
         }
-
-        BinaryData IPersistableModel<CodeInterpreterCallImageOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallImageOutput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterCallImageOutput)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        CodeInterpreterCallImageOutput IPersistableModel<CodeInterpreterCallImageOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterCallImageOutput)PersistableModelCreateCore(data, options);
-
-        protected override CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallImageOutput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeCodeInterpreterCallImageOutput(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterCallImageOutput)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<CodeInterpreterCallImageOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

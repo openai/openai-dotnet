@@ -149,6 +149,47 @@ public partial class TranscriptionMockTests : ClientTestBase
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
+    [Test]
+    public void TranscribeAudioThrowsForDiarizedFormat()
+    {
+        AudioClient client = new("model", s_fakeCredential);
+        string path = Path.Combine("Assets", "audio_hello_world.mp3");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        Assert.Throws<InvalidOperationException>(() => client.TranscribeAudio(path, options));
+    }
+
+    [Test]
+    [TestCase("text")]
+    [TestCase("json")]
+    [TestCase("verbose_json")]
+    [TestCase("srt")]
+    [TestCase("vtt")]
+    public void TranscribeAudioDiarizedThrowsForNonDiarizedFormat(string responseFormat)
+    {
+        AudioClient client = new("model", s_fakeCredential);
+        string path = Path.Combine("Assets", "audio_hello_world.mp3");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = responseFormat switch
+            {
+                "text" => AudioTranscriptionFormat.Text,
+                "json" => AudioTranscriptionFormat.Simple,
+                "verbose_json" => AudioTranscriptionFormat.Verbose,
+                "srt" => AudioTranscriptionFormat.Srt,
+                "vtt" => AudioTranscriptionFormat.Vtt,
+                _ => throw new ArgumentException(nameof(responseFormat)),
+            }
+        };
+
+        Assert.Throws<InvalidOperationException>(() => client.TranscribeAudioDiarized(path, options));
+    }
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);

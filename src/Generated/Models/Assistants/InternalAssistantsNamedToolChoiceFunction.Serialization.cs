@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual InternalAssistantsNamedToolChoiceFunction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalAssistantsNamedToolChoiceFunction(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalAssistantsNamedToolChoiceFunction)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalAssistantsNamedToolChoiceFunction)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalAssistantsNamedToolChoiceFunction IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalAssistantsNamedToolChoiceFunction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -90,38 +123,5 @@ namespace OpenAI.Assistants
             }
             return new InternalAssistantsNamedToolChoiceFunction(name, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalAssistantsNamedToolChoiceFunction)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalAssistantsNamedToolChoiceFunction IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalAssistantsNamedToolChoiceFunction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAssistantsNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalAssistantsNamedToolChoiceFunction(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalAssistantsNamedToolChoiceFunction)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalAssistantsNamedToolChoiceFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

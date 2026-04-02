@@ -9,7 +9,7 @@ namespace OpenAI.Audio
 {
     internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent : StreamingAudioTranscriptionUpdate
     {
-        internal InternalUnknownCreateTranscriptionResponseStreamEvent(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownCreateTranscriptionResponseStreamEvent(InternalCreateTranscriptionStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

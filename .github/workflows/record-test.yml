@@ -1,0 +1,152 @@
+# This workflow is triggered manually for a target branch and requires an NUnit.Where expression to run a
+# subset of tests in Record mode. It commits the resulting session recordings and creates a PR 
+# against the target branch. Use this workflow to record new tests or re-record existing tests on
+# behalf of the Copilot Coding Agent.
+#
+# For more information, about expressions using NUnit's Test Selection Language, see:
+# https://docs.nunit.org/articles/nunit/running-tests/Test-Selection-Language.html
+#
+# Example:
+# test =~ ".*ChatTests.*" or test == "OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding"
+name: "[Test] Record tests"
+
+on:
+  workflow_dispatch:
+    inputs:
+      nunit_where:
+        description: 'NUnit.Where expression'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Runs targeting the same branch are queued to prevent conflicting recording branches.
+# Runs targeting different branches are allowed in parallel.
+concurrency:
+  group: record-test-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  record:
+    name: Record tests
+    runs-on: ubuntu-latest
+    environment: Live Testing
+    env:
+      LATEST_TEST_TFM: net10.0
+      TEST_NUNIT_WHERE: ${{ inputs.nunit_where }}
+      VERSION_SUFFIX_ARGS: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '10.x'
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '9.x'
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore tools
+        run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
+
+      - name: Run tests in Record mode
+        run: dotnet test ./tests/OpenAI.Tests.csproj
+          --configuration Release
+          --framework "$LATEST_TEST_TFM"
+          --logger "trx;LogFilePrefix=record"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.VERSION_SUFFIX_ARGS }}
+          -- NUnit.Where="$TEST_NUNIT_WHERE"
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLIENTMODEL_TEST_MODE: Record
+
+      - name: Check for recording changes
+        id: changes
+        run: |
+          STATUS_OUTPUT="$(git status --porcelain tests/SessionRecords/)"
+          if [ -z "$STATUS_OUTPUT" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "### No recording changes detected" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "### Recording changes detected:" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            echo "$STATUS_OUTPUT" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Scan recordings for unsanitized secrets
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          CHANGED_FILES="$(git status --porcelain tests/SessionRecords/ | awk '{print $NF}')"
+          if echo "$CHANGED_FILES" | xargs grep -qE '(sk-|ek-)[A-Za-z0-9]'; then
+            echo "::error::Potential unsanitized secret key detected in session recordings. Please inspect and sanitize before committing."
+            exit 1
+          else
+            echo "### No unsanitized secrets detected in recordings" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      # Playback deliberately omits --framework to validate recordings across all TFMs.
+      - name: Validate recordings in Playback mode
+        if: steps.changes.outputs.has_changes == 'true'
+        run: dotnet test ./tests/OpenAI.Tests.csproj
+          --configuration Release
+          --logger "trx;LogFilePrefix=playback"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.VERSION_SUFFIX_ARGS }}
+          -- NUnit.Where="$TEST_NUNIT_WHERE"
+        env:
+          CLIENTMODEL_TEST_MODE: Playback
+          CLIENTMODEL_DISABLE_AUTO_RECORDING: "true"
+
+      - name: Create PR with recordings
+        if: steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BASE_BRANCH="${{ github.ref_name }}"
+          RECORDING_BRANCH="recordings/${{ github.run_id }}-${{ github.run_attempt }}"
+          
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout -b "$RECORDING_BRANCH"
+          git add tests/SessionRecords/
+          git commit -m "Record tests for $BASE_BRANCH"
+          git push origin "$RECORDING_BRANCH"
+          
+          BODY_FILE=$(mktemp)
+          trap 'rm -f "$BODY_FILE"' EXIT
+
+          printf 'This PR contains session recordings generated by the record-test workflow.\n\n**NUnit.Where:** `%s`\n**Workflow run:** %s' \
+            "$TEST_NUNIT_WHERE" \
+            "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            > "$BODY_FILE"
+          
+          PR_URL=$(gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$RECORDING_BRANCH" \
+            --title "Record tests for $BASE_BRANCH" \
+            --draft \
+            --body-file "$BODY_FILE" \
+            --assignee "${{ github.actor }}")
+          
+          echo "### Pull request created:" >> $GITHUB_STEP_SUMMARY
+          echo "$PR_URL" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: ${{ !cancelled() }}
+        with:
+          name: test-artifacts-${{ github.run_attempt }}
+          path: ${{ github.workspace }}/artifacts

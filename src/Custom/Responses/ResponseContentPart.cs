@@ -28,11 +28,12 @@ public partial class ResponseContentPart
     // CUSTOM: Exposed input image properties.
     public string InputImageFileId => (this as InternalItemContentInputImage)?.FileId;
     public ResponseImageDetailLevel? InputImageDetailLevel => (this as InternalItemContentInputImage)?.Detail;
-    public string InputImageUrl => (this as InternalItemContentInputImage)?.ImageUrl;
+    public Uri InputImageUri => (this as InternalItemContentInputImage)?.ImageUrl;
 
     // CUSTOM: Exposed input file properties.
     public string InputFileId => (this as InternalItemContentInputFile)?.FileId;
     public string InputFilename => (this as InternalItemContentInputFile)?.Filename;
+    public Uri InputFileUri => (this as InternalItemContentInputFile)?.FileUrl;
     public BinaryData InputFileBytes => (this as InternalItemContentInputFile)?.InternalFileBytes;
     public string InputFileBytesMediaType => (this as InternalItemContentInputFile)?.InternalFileBytesMediaType;
 
@@ -45,17 +46,6 @@ public partial class ResponseContentPart
     public static ResponseContentPart CreateInputTextPart(string text)
     {
         return new InternalItemContentInputText(text);
-    }
-
-    public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, string imageBytesMediaType, ResponseImageDetailLevel? imageDetailLevel = null)
-    {
-        string base64EncodedData = Convert.ToBase64String(imageBytes.ToArray());
-        string dataUri = $"data:{imageBytesMediaType};base64,{base64EncodedData}";
-        return new InternalItemContentInputImage()
-        {
-            ImageUrl = dataUri,
-            Detail = imageDetailLevel,
-        };
     }
 
     public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null)
@@ -71,7 +61,7 @@ public partial class ResponseContentPart
     {
         return new InternalItemContentInputImage()
         {
-            ImageUrl = imageUri?.AbsoluteUri,
+            ImageUrl = imageUri,
             Detail = imageDetailLevel,
         };
     }
@@ -91,6 +81,16 @@ public partial class ResponseContentPart
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
         return new InternalItemContentInputFile(filename, fileBytes, fileBytesMediaType);
+    }
+
+    public static ResponseContentPart CreateInputFilePart(Uri fileUri)
+    {
+        Argument.AssertNotNull(fileUri, nameof(fileUri));
+
+        return new InternalItemContentInputFile()
+        {
+            FileUrl = fileUri,
+        };
     }
 
     public static ResponseContentPart CreateOutputTextPart(string text, IEnumerable<ResponseMessageAnnotation> annotations)

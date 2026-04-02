@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ReasoningSummaryPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ReasoningSummaryTextPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeReasoningSummaryTextPart(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ReasoningSummaryTextPart)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ReasoningSummaryTextPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ReasoningSummaryTextPart)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ReasoningSummaryTextPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ReasoningSummaryTextPart IPersistableModel<ReasoningSummaryTextPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (ReasoningSummaryTextPart)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ReasoningSummaryTextPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ReasoningSummaryTextPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -90,38 +123,5 @@ namespace OpenAI.Responses
             }
             return new ReasoningSummaryTextPart(kind, patch, text);
         }
-
-        BinaryData IPersistableModel<ReasoningSummaryTextPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ReasoningSummaryTextPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ReasoningSummaryTextPart)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ReasoningSummaryTextPart IPersistableModel<ReasoningSummaryTextPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (ReasoningSummaryTextPart)PersistableModelCreateCore(data, options);
-
-        protected override ReasoningSummaryPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ReasoningSummaryTextPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeReasoningSummaryTextPart(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ReasoningSummaryTextPart)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ReasoningSummaryTextPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -12,8 +12,9 @@ namespace OpenAI.Assistants
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateThreadRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -29,6 +30,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetThreadRequest(string threadId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -43,6 +45,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateModifyThreadRequest(string threadId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -59,6 +62,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteThreadRequest(string threadId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

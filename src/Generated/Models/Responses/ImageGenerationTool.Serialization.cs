@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     public partial class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>
     {
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeImageGenerationTool(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ImageGenerationTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ImageGenerationTool IPersistableModel<ImageGenerationTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (ImageGenerationTool)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ImageGenerationTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ImageGenerationTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -86,6 +119,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("partial_images"u8);
                 writer.WriteNumberValue(PartialImageCount.Value);
             }
+            if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
+            {
+                writer.WritePropertyName("action"u8);
+                writer.WriteStringValue(Action.Value.ToString());
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -124,6 +162,7 @@ namespace OpenAI.Responses
             ImageGenerationToolInputFidelity? inputFidelity = default;
             ImageGenerationToolInputImageMask inputImageMask = default;
             int? partialImageCount = default;
+            ImageGenerationToolAction? action = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -217,6 +256,15 @@ namespace OpenAI.Responses
                     partialImageCount = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("action"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    action = new ImageGenerationToolAction(prop.Value.GetString());
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ImageGenerationTool(
@@ -231,41 +279,9 @@ namespace OpenAI.Responses
                 background,
                 inputFidelity,
                 inputImageMask,
-                partialImageCount);
+                partialImageCount,
+                action);
         }
-
-        BinaryData IPersistableModel<ImageGenerationTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ImageGenerationTool IPersistableModel<ImageGenerationTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (ImageGenerationTool)PersistableModelCreateCore(data, options);
-
-        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeImageGenerationTool(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ImageGenerationTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

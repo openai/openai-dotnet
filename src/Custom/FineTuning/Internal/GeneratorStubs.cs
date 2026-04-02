@@ -4,9 +4,6 @@ namespace OpenAI.FineTuning;
 
 // CUSTOM: Made internal.
 
-[CodeGenType("FineTuningIntegration")]
-internal partial class InternalFineTuningIntegration { }
-
 [CodeGenType("FineTuningIntegrationType")]
 internal readonly partial struct InternalFineTuningIntegrationType { }
 

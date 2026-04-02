@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -69,12 +70,16 @@ public partial class ResponseResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public string Object { get; set; } = "response";
 
+    // CUSTOM: Changed from BinaryData to IReadOnlyList<ResponseItem> to support instructions returned as
+    // either a string or an array of ResponseItem.
+    [CodeGenMember("Instructions")]
+    public IList<ResponseItem> Instructions { get; }
+
     public string GetOutputText()
     {
-        IEnumerable<string> outputTextSegments = OutputItems.Where(item => item is MessageResponseItem)
-            .Select(item => item as MessageResponseItem)
-            .SelectMany(message => message.Content.Where(contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
-                .Select(outputTextPart => outputTextPart.Text));
+        IEnumerable<string> outputTextSegments = OutputItems.OfType<MessageResponseItem>()
+            .SelectMany(static message => message.Content.Where(static contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
+                .Select(static outputTextPart => outputTextPart.Text));
         return outputTextSegments.Any() ? string.Concat(outputTextSegments) : null;
     }
 }

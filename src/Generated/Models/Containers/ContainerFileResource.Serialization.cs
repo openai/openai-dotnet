@@ -17,6 +17,46 @@ namespace OpenAI.Containers
         {
         }
 
+        protected virtual ContainerFileResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeContainerFileResource(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ContainerFileResource)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ContainerFileResource)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ContainerFileResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ContainerFileResource IPersistableModel<ContainerFileResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ContainerFileResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ContainerFileResource(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeContainerFileResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<ContainerFileResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -53,8 +93,15 @@ namespace OpenAI.Containers
             }
             if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
-                writer.WritePropertyName("bytes"u8);
-                writer.WriteNumberValue(Bytes);
+                if (Optional.IsDefined(SizeInBytes))
+                {
+                    writer.WritePropertyName("bytes"u8);
+                    writer.WriteNumberValue(SizeInBytes.Value);
+                }
+                else
+                {
+                    writer.WriteNull("bytes"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("path") != true)
             {
@@ -111,7 +158,7 @@ namespace OpenAI.Containers
             string @object = default;
             string containerId = default;
             DateTimeOffset createdAt = default;
-            int bytes = default;
+            long? sizeInBytes = default;
             string path = default;
             string source = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -139,7 +186,12 @@ namespace OpenAI.Containers
                 }
                 if (prop.NameEquals("bytes"u8))
                 {
-                    bytes = prop.Value.GetInt32();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        sizeInBytes = null;
+                        continue;
+                    }
+                    sizeInBytes = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("path"u8))
@@ -160,50 +212,10 @@ namespace OpenAI.Containers
                 @object,
                 containerId,
                 createdAt,
-                bytes,
+                sizeInBytes,
                 path,
                 source,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<ContainerFileResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ContainerFileResource)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ContainerFileResource IPersistableModel<ContainerFileResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ContainerFileResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeContainerFileResource(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ContainerFileResource)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ContainerFileResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator ContainerFileResource(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeContainerFileResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

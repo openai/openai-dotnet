@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "827",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "temperature": 0,
@@ -59,7 +59,7 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9aad8efd489569e2-DFW",
+        "CF-RAY": "9cd10007acdec37c-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -68,10 +68,10 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "569",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
@@ -82,9 +82,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CkYAx7J1K8puNOYWDNUyOdzx8Las9",
+        "id": "chatcmpl-D8dV6YM8K4S69Kz2X4DAevT8LBNUx",
         "object": "chat.completion",
-        "created": 1765210495,
+        "created": 1770950836,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
@@ -126,7 +126,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "323",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -150,7 +150,7 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9aad8f01691f69e2-DFW",
+        "CF-RAY": "9cd1000c0e9fc37c-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -159,10 +159,10 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1456",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
@@ -173,16 +173,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CkYAyYhJZdoMPzu4sOdjcKCama8sN",
+        "id": "chatcmpl-D8dV7SLGPodYxc09jC6uQMcF1TpgU",
         "object": "chat.completion",
-        "created": 1765210496,
+        "created": 1770950837,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "I can't assist with that request because it involves illegal activities. If you have questions about legal matters or need information on a different topic, feel free to ask, and I'll be happy to help.",
+              "content": "I can't assist with that request because it involves illegal activity. If you have any other questions or need information on a different topic, feel free to ask!",
               "refusal": null,
               "annotations": []
             },
@@ -192,8 +192,8 @@
         ],
         "usage": {
           "prompt_tokens": 52,
-          "completion_tokens": 39,
-          "total_tokens": 91,
+          "completion_tokens": 31,
+          "total_tokens": 83,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -211,6 +211,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

@@ -5,6 +5,7 @@
 
 import "../common";
 import "./custom.tsp";
+import "../specialized-types/models.tsp";
 
 using Http;
 using TypeSpec.OpenAPI;
@@ -79,6 +80,13 @@ model CreateResponse {
    * API.
    */
   store?: boolean | null = true;
+
+  /**
+   * A system (or developer) message inserted into the model's context.
+   * When using along with previous_response_id, the instructions from a previous response will not be carried over to the next response.
+   * This makes it simple to swap out system (or developer) messages in new responses.
+   */
+  instructions?: string | null;
 
   /**
    * If set to true, the model response data will be streamed to the client
@@ -157,6 +165,13 @@ model Response {
     """)
   output: OutputItem[];
 
+  /**
+   * A collection of system (or developer) messages inserted into the model's context.
+   * When using along with previous_response_id, the instructions from a previous response will not be carried over to the next response.
+   * This makes it simple to swap out system (or developer) messages in new responses.
+   */
+  instructions: string | InputItem[] | null;
+
   @doc("""
     SDK-only convenience property that contains the aggregated text output
     from all `output_text` items in the `output` array, if any are present.
@@ -202,15 +217,6 @@ model ResponseProperties {
 
   /** The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored. */
   max_tool_calls?: int32 | null;
-
-  @doc("""
-    Inserts a system (or developer) message as the first item in the model's context.
-    
-    When using along with `previous_response_id`, the instructions from a previous
-    response will not be carried over to the next response. This makes it simple
-    to swap out system (or developer) messages in new responses.
-    """)
-  instructions?: string | null;
 
   /**
    * Configuration options for a text response from the model. Can be plain
@@ -269,8 +275,16 @@ union ModelIdsResponses {
     | "o1-pro-2025-03-19"
     | "o3-pro"
     | "o3-pro-2025-06-10"
+    | "o3-deep-research"
+    | "o3-deep-research-2025-06-26"
+    | "o4-mini-deep-research"
+    | "o4-mini-deep-research-2025-06-26"
     | "computer-use-preview"
-    | "computer-use-preview-2025-03-11",
+    | "computer-use-preview-2025-03-11"
+    | "gpt-5-codex"
+    | "gpt-5-pro"
+    | "gpt-5-pro-2025-10-06"
+    | "gpt-5.1-codex-max",
 }
 
 // Tool customization: Establish a discriminated type base
@@ -649,7 +663,6 @@ model WebSearchTool extends Tool {
   type: ToolType.web_search;
 
   filters?: WebSearchToolFilters | null;
-  
   user_location?: Location | null;
 
   /** High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default. */
@@ -1200,7 +1213,7 @@ model ItemContentInputImage extends ItemContent {
   type: ItemContentType.input_image;
 
   /** The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL. */
-  image_url?: string | null;
+  image_url?: url | null;
 
   /** The ID of the file to be sent to the model. */
   file_id?: string | null;
@@ -1222,6 +1235,9 @@ model ItemContentInputFile extends ItemContent {
 
   /** The ID of the file to be sent to the model. */
   file_id?: string | null;
+
+  /** The URL of the file to be sent to the model. */
+  file_url?: url | null;
 
   /** The name of the file to be sent to the model. */
   filename?: string;
@@ -2024,7 +2040,7 @@ model ImageGenTool extends Tool {
     """)
   input_image_mask?: {
     /** Base64-encoded mask image. */
-    image_url?: string;
+    image_url?: url;
 
     /** File ID for the mask image. */
     file_id?: string;
@@ -2034,6 +2050,19 @@ model ImageGenTool extends Tool {
   @minValue(0)
   @maxValue(3)
   partial_images?: int32 = 0;
+
+  /** Whether to generate a new image or edit an existing image. Default: `auto`. */
+  action?: ImageGenerationToolAction = ImageGenerationToolAction.Auto;
+}
+
+union ImageGenerationToolAction {
+  string,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  Generate: "generate",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  Edit: "edit",
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  Auto: "auto",
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2233,7 +2262,7 @@ model MCPTool extends Tool {
     """)
   type: ToolType.mcp;
 
- /** A label for this MCP server, used to identify it in tool calls. */
+  /** A label for this MCP server, used to identify it in tool calls. */
   server_label: string;
 
   /**The URL for the MCP server. One of `server_url` or `connector_id` must be
@@ -2790,4 +2819,146 @@ model LogProb {
   logprob: float32;
   bytes: int32[];
   top_logprobs: TopLogProb[];
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model TokenCountsBody {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  `model`?: string | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
+  input?: string | InputItem[] | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  previous_response_id?: string | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  tools?: Tool[] | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  text?: ResponseTextParam | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  reasoning?: Reasoning | null;
+
+  /** The truncation strategy to use for the model response. - `auto`: If the input to this Response exceeds the model's context window size, the model will truncate the response to fit the context window by dropping items from the beginning of the conversation. - `disabled` (default): If the input size will exceed the context window size for a model, the request will fail with a 400 error. */
+  truncation?: TruncationEnum;
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  instructions?: string | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  conversation?: ConversationParam | null;
+
+  /** Controls which tool the model should use, if any. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
+  tool_choice?: ToolChoiceObject | null | ToolChoiceOptions;
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  parallel_tool_calls?: boolean | null;
+}
+
+/**Configuration options for a text response from the model. Can be plain
+text or structured JSON data. Learn more:
+- [Text inputs and outputs](https://platform.openai.com/docs/guides/text)
+- [Structured Outputs](https://platform.openai.com/docs/guides/structured-outputs)*/
+model ResponseTextParam {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  format?: ResponseTextFormatConfiguration;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  verbosity?: Verbosity;
+}
+
+/**Constrains the verbosity of the model's response. Lower values will result in
+more concise responses, while higher values will result in more verbose responses.
+Currently supported values are `low`, `medium`, and `high`.*/
+#suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
+union Verbosity {
+  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
+  "low" | "medium" | "high",
+  null,
+}
+
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+enum TruncationEnum {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  auto,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  disabled,
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Token counts")
+model TokenCountsResource {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  object: "response.input_tokens" = "response.input_tokens";
+
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  input_tokens: integer;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model CompactResponseMethodPublicBody {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  `model`: ModelIdsCompaction;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
+  input?: string | InputItem[] | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  previous_response_id?: string | null;
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
+  instructions?: string | null;
+}
+
+/** Model ID used to generate the response, like `gpt-5` or `o3`. OpenAI offers a wide range of models with different capabilities, performance characteristics, and price points. Refer to the [model guide](https://platform.openai.com/docs/models) to browse and compare available models. */
+union ModelIdsCompaction {
+  ModelIdsResponses,
+  string,
+  null,
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+@summary("The compacted response object")
+model CompactResource {
+  /** The unique identifier for the compacted response. */
+  id: string;
+
+  /** The object type. Always `response.compaction`. */
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  object: "response.compaction" = "response.compaction";
+
+  /** The compacted list of output items. This is a list of all user messages, followed by a single compaction item. */
+  output: OutputItem[];
+
+  /** Unix timestamp (in seconds) when the compacted conversation was created. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @encode(DateTimeKnownEncoding.unixTimestamp, integer)
+  created_at: utcDateTime;
+
+  /** Token accounting for the compaction pass, including cached, reasoning, and total tokens. */
+  usage: ResponseUsage;
 }

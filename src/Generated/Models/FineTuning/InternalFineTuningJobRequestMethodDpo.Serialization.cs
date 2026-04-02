@@ -12,6 +12,39 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningJobRequestMethodDpo : IJsonModel<InternalFineTuningJobRequestMethodDpo>
     {
+        protected virtual InternalFineTuningJobRequestMethodDpo PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobRequestMethodDpo>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalFineTuningJobRequestMethodDpo(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalFineTuningJobRequestMethodDpo)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobRequestMethodDpo>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalFineTuningJobRequestMethodDpo)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalFineTuningJobRequestMethodDpo>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalFineTuningJobRequestMethodDpo IPersistableModel<InternalFineTuningJobRequestMethodDpo>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalFineTuningJobRequestMethodDpo>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalFineTuningJobRequestMethodDpo>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -90,38 +123,5 @@ namespace OpenAI.FineTuning
             }
             return new InternalFineTuningJobRequestMethodDpo(hyperparameters, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalFineTuningJobRequestMethodDpo>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobRequestMethodDpo>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFineTuningJobRequestMethodDpo)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFineTuningJobRequestMethodDpo IPersistableModel<InternalFineTuningJobRequestMethodDpo>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalFineTuningJobRequestMethodDpo PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobRequestMethodDpo>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalFineTuningJobRequestMethodDpo(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFineTuningJobRequestMethodDpo)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFineTuningJobRequestMethodDpo>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

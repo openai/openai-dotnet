@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     public partial class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>
     {
+        protected virtual ImageGenerationToolInputImageMask PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationToolInputImageMask>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeImageGenerationToolInputImageMask(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationToolInputImageMask>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ImageGenerationToolInputImageMask>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ImageGenerationToolInputImageMask IPersistableModel<ImageGenerationToolInputImageMask>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ImageGenerationToolInputImageMask>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ImageGenerationToolInputImageMask>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -35,10 +68,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
+            if (Optional.IsDefined(ImageUri) && !Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUrl);
+                writer.WriteStringValue(ImageUri.AbsoluteUri);
             }
             if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
@@ -69,7 +102,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            string imageUrl = default;
+            Uri imageUri = default;
             string fileId = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -78,7 +111,11 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("image_url"u8))
                 {
-                    imageUrl = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -88,40 +125,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ImageGenerationToolInputImageMask(imageUrl, fileId, patch);
+            return new ImageGenerationToolInputImageMask(imageUri, fileId, patch);
         }
-
-        BinaryData IPersistableModel<ImageGenerationToolInputImageMask>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationToolInputImageMask>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ImageGenerationToolInputImageMask IPersistableModel<ImageGenerationToolInputImageMask>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ImageGenerationToolInputImageMask PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationToolInputImageMask>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeImageGenerationToolInputImageMask(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ImageGenerationToolInputImageMask>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -13,6 +13,39 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningJobsPageToken : ContinuationToken, IJsonModel<InternalFineTuningJobsPageToken>
     {
+        protected virtual InternalFineTuningJobsPageToken PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalFineTuningJobsPageToken(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalFineTuningJobsPageToken)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalFineTuningJobsPageToken)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalFineTuningJobsPageToken>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalFineTuningJobsPageToken IPersistableModel<InternalFineTuningJobsPageToken>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalFineTuningJobsPageToken>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalFineTuningJobsPageToken>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -102,38 +135,5 @@ namespace OpenAI.FineTuning
             }
             return new InternalFineTuningJobsPageToken(limit, after, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalFineTuningJobsPageToken>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFineTuningJobsPageToken)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFineTuningJobsPageToken IPersistableModel<InternalFineTuningJobsPageToken>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalFineTuningJobsPageToken PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalFineTuningJobsPageToken(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFineTuningJobsPageToken)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFineTuningJobsPageToken>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

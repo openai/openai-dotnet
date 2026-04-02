@@ -12,9 +12,10 @@ namespace OpenAI.Files
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateGetFilesRequest(string purpose, long? limit, string order, string after, RequestOptions options)
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetFilesRequest(string purpose, int? limit, string order, string after, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -42,6 +43,7 @@ namespace OpenAI.Files
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateUploadFileRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -56,6 +58,7 @@ namespace OpenAI.Files
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteFileRequest(string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -69,6 +72,7 @@ namespace OpenAI.Files
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetFileRequest(string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -82,6 +86,7 @@ namespace OpenAI.Files
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDownloadFileRequest(string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

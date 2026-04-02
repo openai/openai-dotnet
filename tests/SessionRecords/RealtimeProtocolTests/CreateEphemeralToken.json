@@ -1,30 +1,37 @@
 {
   "Entries": [
     {
-      "RequestUri": "https://api.openai.com/v1/realtime/sessions",
+      "RequestUri": "https://api.openai.com/v1/realtime/client_secrets",
       "RequestMethod": "POST",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "93",
+        "Content-Length": "225",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.0; macOS 26.2.0)"
       },
       "RequestBody": {
-        "model": "gpt-4o-realtime-preview",
-        "instructions": "You are a friendly assistant."
+        "expires_after": {
+          "anchor": "created_at",
+          "seconds": 600
+        },
+        "session": {
+          "type": "realtime",
+          "model": "gpt-realtime",
+          "instructions": "You are a friendly assistant."
+        }
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984c3cee5d22a362-SEA",
+        "CF-RAY": "9c63ff38d87157eb-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "920",
+        "Content-Length": "1148",
         "Content-Type": "application/json",
-        "Date": "Thu, 25 Sep 2025 17:28:26 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "75",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
@@ -34,47 +41,58 @@
         ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "79",
+        "x-envoy-upstream-service-time": "65",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "object": "realtime.session",
-        "id": "sess_CJk3WVzxbIskFPA57v1wT",
-        "model": "gpt-4o-realtime-preview",
-        "modalities": [
-          "audio",
-          "text"
-        ],
-        "instructions": "You are a friendly assistant.",
-        "voice": "alloy",
-        "output_audio_format": "pcm16",
-        "tools": [],
-        "tool_choice": "auto",
-        "temperature": 0.8,
-        "max_response_output_tokens": "inf",
-        "turn_detection": {
-          "type": "server_vad",
-          "threshold": 0.5,
-          "prefix_padding_ms": 300,
-          "silence_duration_ms": 200,
-          "idle_timeout_ms": null,
-          "create_response": true,
-          "interrupt_response": true
-        },
-        "speed": 1.0,
-        "tracing": null,
-        "truncation": "auto",
-        "prompt": null,
-        "expires_at": 0,
-        "input_audio_noise_reduction": null,
-        "input_audio_format": "pcm16",
-        "input_audio_transcription": null,
-        "client_secret": {
-          "value": "ek_68d57bbadb2881919c4f7c15264e181a",
-          "expires_at": 1758821906
-        },
-        "include": null
+        "value": "ek_697d1fefc6e08191b06f445668109f34",
+        "expires_at": 1769808455,
+        "session": {
+          "type": "realtime",
+          "object": "realtime.session",
+          "id": "sess_D3q9v5LPrGYFBWFRtHAJp",
+          "model": "gpt-realtime",
+          "output_modalities": [
+            "audio"
+          ],
+          "instructions": "You are a friendly assistant.",
+          "tools": [],
+          "tool_choice": "auto",
+          "max_output_tokens": "inf",
+          "tracing": null,
+          "truncation": "auto",
+          "prompt": null,
+          "expires_at": 0,
+          "audio": {
+            "input": {
+              "format": {
+                "type": "audio/pcm",
+                "rate": 24000
+              },
+              "transcription": null,
+              "noise_reduction": null,
+              "turn_detection": {
+                "type": "server_vad",
+                "threshold": 0.5,
+                "prefix_padding_ms": 300,
+                "silence_duration_ms": 200,
+                "idle_timeout_ms": null,
+                "create_response": true,
+                "interrupt_response": true
+              }
+            },
+            "output": {
+              "format": {
+                "type": "audio/pcm",
+                "rate": 24000
+              },
+              "voice": "alloy",
+              "speed": 1.0
+            }
+          },
+          "include": null
+        }
       }
     }
   ],

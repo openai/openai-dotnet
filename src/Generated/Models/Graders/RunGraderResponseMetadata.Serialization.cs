@@ -16,6 +16,39 @@ namespace OpenAI.Graders
         {
         }
 
+        protected virtual RunGraderResponseMetadata PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponseMetadata>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRunGraderResponseMetadata(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RunGraderResponseMetadata)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponseMetadata>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RunGraderResponseMetadata)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RunGraderResponseMetadata>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RunGraderResponseMetadata IPersistableModel<RunGraderResponseMetadata>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RunGraderResponseMetadata>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RunGraderResponseMetadata>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -195,38 +228,5 @@ namespace OpenAI.Graders
                 sampledModelName,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<RunGraderResponseMetadata>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponseMetadata>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RunGraderResponseMetadata)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RunGraderResponseMetadata IPersistableModel<RunGraderResponseMetadata>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RunGraderResponseMetadata PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponseMetadata>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRunGraderResponseMetadata(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RunGraderResponseMetadata)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RunGraderResponseMetadata>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -28,8 +28,10 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("CancelVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveVectorStoreFileContent", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveVectorStoreFileContentAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("SearchVectorStore", typeof(string), typeof(BinaryData), typeof(bool?), typeof(int?), typeof(BinaryData), typeof(InternalVectorStoreSearchRequestRankingOptions), typeof(CancellationToken))]
-[CodeGenSuppress("SearchVectorStoreAsync", typeof(string), typeof(BinaryData), typeof(bool?), typeof(int?), typeof(BinaryData), typeof(InternalVectorStoreSearchRequestRankingOptions), typeof(CancellationToken))]
+[CodeGenSuppress("UpdateVectorStoreFileAttributes", typeof(string), typeof(string), typeof(InternalUpdateVectorStoreFileAttributesRequest), typeof(CancellationToken))]
+[CodeGenSuppress("UpdateVectorStoreFileAttributesAsync", typeof(string), typeof(string), typeof(InternalUpdateVectorStoreFileAttributesRequest), typeof(CancellationToken))]
+[CodeGenSuppress("SearchVectorStore", typeof(string), typeof(InternalVectorStoreSearchRequest), typeof(CancellationToken))]
+[CodeGenSuppress("SearchVectorStoreAsync", typeof(string), typeof(InternalVectorStoreSearchRequest), typeof(CancellationToken))]
 [CodeGenSuppress("VectorStoreClient", typeof(ClientPipeline), typeof(Uri))]
 public partial class VectorStoreClient
 {
@@ -98,6 +100,12 @@ public partial class VectorStoreClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
+    [Experimental("SCME0002")]
+    public VectorStoreClient(VectorStoreClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
     }
 
     /// <summary>

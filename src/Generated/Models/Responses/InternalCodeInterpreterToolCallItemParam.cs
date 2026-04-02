@@ -29,7 +29,7 @@ namespace OpenAI.Responses
 
         public string ContainerId { get; set; }
 
-        public string Code { get; }
+        public string Code { get; set; }
 
         public IList<CodeInterpreterCallOutput> Outputs { get; }
     }

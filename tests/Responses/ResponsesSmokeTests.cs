@@ -194,19 +194,48 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
+    public void StableInputFileUrlContentPartSerialization()
+    {
+        static void AssertExpectedFilePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
+            Assert.That(filePart.InputFileUri, Is.EqualTo("https://example.com/document.pdf"));
+            Assert.That(filePart.InputFileId, Is.Null);
+            Assert.That(filePart.InputFileBytes, Is.Null);
+            Assert.That(filePart.InputFileBytesMediaType, Is.Null);
+            Assert.That(filePart.InputFilename, Is.Null);
+        }
+
+        ResponseContentPart filePart = ResponseContentPart.CreateInputFilePart(
+            new Uri("https://example.com/document.pdf"));
+
+        AssertExpectedFilePart(filePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedFilePart(deserializedFilePart);
+    }
+
+    [Test]
     public void StableInputImageDataContentPartSerialization()
     {
         static void AssertExpectedImagePart(ResponseContentPart filePart)
         {
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
             Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.Low));
-            Assert.That(filePart.InputImageUrl, Is.EqualTo($"data:image/png;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes("image data"))}"));
+            Assert.That(filePart.InputImageUri, Is.EqualTo($"data:image/png;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes("image data"))}"));
             Assert.That(filePart.InputImageFileId, Is.Null);
         }
 
+        string imageMediaType = "image/png";
+        BinaryData imageBytes = BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data"));
+        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
+
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
-            BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data")),
-            "image/png",
+            imageDataUri,
             ResponseImageDetailLevel.Low);
 
         AssertExpectedImagePart(imagePart);
@@ -227,7 +256,7 @@ public partial class ResponsesSmokeTests
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
             Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.Auto));
             Assert.That(filePart.InputImageFileId, Is.EqualTo("image_123abc"));
-            Assert.That(filePart.InputImageUrl, Is.Null);
+            Assert.That(filePart.InputImageUri, Is.Null);
         }
 
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
@@ -251,7 +280,7 @@ public partial class ResponsesSmokeTests
         {
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
             Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
-            Assert.That(filePart.InputImageUrl, Is.EqualTo("https://example.com/image.jpg"));
+            Assert.That(filePart.InputImageUri, Is.EqualTo("https://example.com/image.jpg"));
             Assert.That(filePart.InputImageFileId, Is.Null);
         }
 
@@ -603,4 +632,5 @@ public partial class ResponsesSmokeTests
         Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
     }
+
 }

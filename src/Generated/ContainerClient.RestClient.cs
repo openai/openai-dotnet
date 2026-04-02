@@ -12,8 +12,9 @@ namespace OpenAI.Containers
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetContainersRequest(int? limit, string order, string after, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -38,6 +39,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateContainerRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -52,6 +54,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetContainerRequest(string containerId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -65,6 +68,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteContainerRequest(string containerId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -78,6 +82,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateContainerFileRequest(string containerId, BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -94,6 +99,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetContainerFilesRequest(string containerId, int? limit, string order, string after, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -120,6 +126,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetContainerFileRequest(string containerId, string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -135,6 +142,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteContainerFileRequest(string containerId, string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -150,6 +158,7 @@ namespace OpenAI.Containers
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDownloadContainerFileRequest(string containerId, string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

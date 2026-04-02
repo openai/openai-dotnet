@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<UriCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeUriCitationMessageAnnotation(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(UriCitationMessageAnnotation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<UriCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(UriCitationMessageAnnotation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<UriCitationMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        UriCitationMessageAnnotation IPersistableModel<UriCitationMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => (UriCitationMessageAnnotation)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<UriCitationMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<UriCitationMessageAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,7 +134,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    uri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    uri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("start_index"u8))
@@ -129,38 +162,5 @@ namespace OpenAI.Responses
                 endIndex,
                 title);
         }
-
-        BinaryData IPersistableModel<UriCitationMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<UriCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(UriCitationMessageAnnotation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        UriCitationMessageAnnotation IPersistableModel<UriCitationMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => (UriCitationMessageAnnotation)PersistableModelCreateCore(data, options);
-
-        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<UriCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeUriCitationMessageAnnotation(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(UriCitationMessageAnnotation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<UriCitationMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

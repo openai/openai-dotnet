@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected virtual ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallAction>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeComputerCallAction(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ComputerCallAction)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallAction>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ComputerCallAction)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ComputerCallAction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ComputerCallAction IPersistableModel<ComputerCallAction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ComputerCallAction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ComputerCallAction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -92,38 +125,5 @@ namespace OpenAI.Responses
             }
             return InternalUnknownComputerAction.DeserializeInternalUnknownComputerAction(element, data, options);
         }
-
-        BinaryData IPersistableModel<ComputerCallAction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallAction>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ComputerCallAction)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ComputerCallAction IPersistableModel<ComputerCallAction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallAction>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeComputerCallAction(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ComputerCallAction)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ComputerCallAction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

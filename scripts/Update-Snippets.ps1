@@ -3,8 +3,8 @@ param(
     [string]$Path
 )
 
-# If this is not a real path, assume snippets should be refreshed in a relative
-# path to the OpenAI.csproj file from the git root.
+# If this is not a real path, use the git root so the tool can find both
+# the snippet source files (in /tests) and the markdown files (README.md at root).
 if (-not $Path) {
     $_gitRoot = git rev-parse --show-toplevel 2>$null
 
@@ -13,8 +13,7 @@ if (-not $Path) {
         exit 1
     }
 
-    $Path = Join-Path -Path $_gitRoot -ChildPath '/src/OpenAI.csproj'
-    $Path = (Resolve-Path -LiteralPath $Path).Path
+    $Path = (Resolve-Path -LiteralPath $_gitRoot).Path
 }
 
 # Update snippets

@@ -12,6 +12,13 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(Response.`model`, string);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
 
+// Do not generate convenience methods for these operations
+@@convenientAPI(Responses.getInputTokenCounts, false);
+@@convenientAPI(Responses.compactConversation, false);
+
+@@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
+@@clientName(Responses.compactConversation, "CompactResponse");
+
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);
@@ -274,17 +281,9 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ResponsesDeveloperMessageItemResource);
 @@dynamicModel(ResponsesAssistantMessageItemResource);
 @@dynamicModel(ImplicitUserMessage);
-// base/entrypoints/sdk.dotnet/specialized-types.tsp models
+// base/typespec/specialized-types/models.tsp models
 @@dynamicModel(ComparisonFilter);
-@@dynamicModel(ComparisonFilterEquals);
-@@dynamicModel(ComparisonFilterNotEquals);
-@@dynamicModel(ComparisonFilterGreaterThan);
-@@dynamicModel(ComparisonFilterGreaterThanOrEquals);
-@@dynamicModel(ComparisonFilterLessThan);
-@@dynamicModel(ComparisonFilterLessThanOrEquals);
 @@dynamicModel(CompoundFilter);
-@@dynamicModel(CompoundFilterAnd);
-@@dynamicModel(CompoundFilterOr);
 // client/models/responses.models.tsp models
 @@dynamicModel(DotNetItemReferenceItemResource);
 @@dynamicModel(DotNetResponseItemCollectionOrder);

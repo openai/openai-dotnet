@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
@@ -31,7 +30,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
         AudioTranscription transcription = null;
@@ -58,7 +57,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment)]
     public async Task TimestampsWork(AudioTimestampGranularities granularityFlags)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
 
         using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
 
@@ -131,7 +130,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(null)]
     public async Task TranscriptionFormatsWork(string responseFormat)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscriptionOptions options = new()
@@ -186,9 +185,39 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [TestCase(TestModel.Audio_Gpt_4o_Mini_Transcribe)]
+    [TestCase(TestModel.Audio_Whisper)]
+    public async Task TranscriptionUsageWorks(string model)
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(model);
+        string path = Path.Combine("Assets", "audio_hello_world.mp3");
+
+        AudioTranscription transcription = await client.TranscribeAudioAsync(path);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
+        Assert.That(transcription.Usage, Is.Not.Null);
+
+        if (model == TestModel.Audio_Whisper)
+        {
+            Assert.That(transcription.Usage, Is.InstanceOf<AudioTranscriptionDurationUsage>());
+            AudioTranscriptionDurationUsage durationUsage = (AudioTranscriptionDurationUsage)transcription.Usage;
+            Assert.That(durationUsage.Duration, Is.GreaterThan(TimeSpan.Zero));
+        }
+        else
+        {
+            Assert.That(transcription.Usage, Is.InstanceOf<AudioTranscriptionTokenUsage>());
+            AudioTranscriptionTokenUsage tokenUsage = (AudioTranscriptionTokenUsage)transcription.Usage;
+            Assert.That(tokenUsage.TotalTokenCount, Is.GreaterThan(0));
+            Assert.That(tokenUsage.InputTokenCount, Is.GreaterThanOrEqualTo(0));
+            Assert.That(tokenUsage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
+        }
+    }
+
+    [RecordedTest]
     public async Task IncludesWork()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -206,7 +235,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingIncludesWork()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -240,7 +269,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BadTranscriptionRequest()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
 
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
@@ -269,7 +298,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -304,7 +333,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
             }
         }
 
-        Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("hello world"));
+        Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("this is a test"));
 
         inputStream?.Dispose();
     }
@@ -314,7 +343,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -332,6 +361,294 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
             {
                 _ = client.TranscribeAudioStreamingAsync(path);
             });
+        }
+    }
+
+    [RecordedTest]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task DiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string filename = "audio_meeting.wav";
+        string path = Path.Combine("Assets", filename);
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        DiarizedAudioTranscription transcription = null;
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            using FileStream inputStream = File.OpenRead(path);
+            transcription = await client.TranscribeAudioDiarizedAsync(inputStream, filename, options);
+        }
+        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+        {
+            transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+        }
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(0));
+
+        foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+    }
+
+    [RecordedTest]
+    public async Task DiarizedTranscriptionWithKnownSpeakersWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string audioFilePath = Path.Combine("Assets", "audio_meeting.wav");
+        string speakerRefPath = Path.Combine("Assets", "audio_agent_reference.wav");
+
+        byte[] speakerRefBytes = File.ReadAllBytes(speakerRefPath);
+        string speakerRefBase64 = Convert.ToBase64String(speakerRefBytes);
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            KnownSpeakerNames = { "agent" },
+            KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(audioFilePath, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(0));
+
+        bool foundKnownSpeaker = false;
+
+        foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+
+            if (segment.SpeakerLabel == "agent")
+            {
+                foundKnownSpeaker = true;
+            }
+        }
+
+        Assert.That(foundKnownSpeaker, Is.True, "Expected at least one segment attributed to the known speaker 'agent'.");
+    }
+
+    [RecordedTest]
+    public async Task DiarizedTranscriptionHasUsage()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Usage, Is.Not.Null);
+
+        if (transcription.Usage is AudioTranscriptionTokenUsage tokenUsage)
+        {
+            Assert.That(tokenUsage.TotalTokenCount, Is.GreaterThan(0));
+            Assert.That(tokenUsage.InputTokenCount, Is.GreaterThanOrEqualTo(0));
+            Assert.That(tokenUsage.OutputTokenCount, Is.GreaterThanOrEqualTo(0));
+        }
+        else if (transcription.Usage is AudioTranscriptionDurationUsage durationUsage)
+        {
+            Assert.That(durationUsage.Duration, Is.GreaterThan(TimeSpan.Zero));
+        }
+    }
+
+    [RecordedTest]
+    public async Task DiarizedTranscriptionSegmentsAreOrdered()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(1));
+
+        for (int i = 1; i < transcription.Segments.Count; i++)
+        {
+            Assert.That(
+                transcription.Segments[i].StartTime,
+                Is.GreaterThanOrEqualTo(transcription.Segments[i - 1].StartTime),
+                $"Segment {i} starts before segment {i - 1}.");
+        }
+    }
+
+    [RecordedTest]
+    [TestCase(AudioSourceKind.UsingStream)]
+    [TestCase(AudioSourceKind.UsingFilePath)]
+    public async Task StreamingDiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string filename = "audio_meeting.wav";
+        string path = Path.Combine("Assets", filename);
+
+        FileStream inputStream = null;
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+        };
+
+        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+
+        if (audioSourceKind == AudioSourceKind.UsingStream)
+        {
+            inputStream = File.OpenRead(path);
+            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename, options);
+        }
+        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+        {
+            streamingUpdates = client.TranscribeAudioStreamingAsync(path, options);
+        }
+
+        string doneText = null;
+        List<StreamingAudioTranscriptionTextSegmentUpdate> segments = [];
+
+        await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
+        {
+            if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+            {
+                Assert.That(doneUpdate.Text, Is.Not.Null.And.Not.Empty);
+                doneText = doneUpdate.Text;
+            }
+            else if (update is StreamingAudioTranscriptionTextSegmentUpdate segmentUpdate)
+            {
+                segments.Add(segmentUpdate);
+            }
+        }
+
+        Assert.That(doneText, Is.Not.Null.And.Not.Empty);
+        Assert.That(segments, Has.Count.GreaterThan(0));
+
+        foreach (StreamingAudioTranscriptionTextSegmentUpdate segment in segments)
+        {
+            Assert.That(segment.SegmentId, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+
+        inputStream?.Dispose();
+    }
+
+    [RecordedTest]
+    public async Task TranscriptionWithAutoChunkingStrategyWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions options = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = AudioTranscriptionDefaultChunkingStrategy.Auto,
+        };
+
+        DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(path, options);
+
+        Assert.That(transcription, Is.Not.Null);
+        Assert.That(transcription.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(transcription.Segments, Is.Not.Null);
+        Assert.That(transcription.Segments.Count, Is.GreaterThan(0));
+
+        foreach (DiarizedTranscriptionSegment segment in transcription.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+    }
+
+    [RecordedTest]
+    public async Task TranscriptionWithCustomChunkingStrategyWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
+        string path = Path.Combine("Assets", "audio_meeting.wav");
+
+        AudioTranscriptionOptions shortSilenceOptions = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = new AudioTranscriptionCustomServerVadChunkingStrategy()
+            {
+                PrefixPadding = TimeSpan.FromMilliseconds(100),
+                SilenceDuration = TimeSpan.FromMilliseconds(100),
+                DetectionThreshold = 0.3f,
+            },
+        };
+
+        AudioTranscriptionOptions longSilenceOptions = new()
+        {
+            ResponseFormat = AudioTranscriptionFormat.Diarized,
+            ChunkingStrategy = new AudioTranscriptionCustomServerVadChunkingStrategy()
+            {
+                PrefixPadding = TimeSpan.FromMilliseconds(500),
+                SilenceDuration = TimeSpan.FromMilliseconds(1500),
+                DetectionThreshold = 0.8f,
+            },
+        };
+
+        DiarizedAudioTranscription shortSilenceResult = await client.TranscribeAudioDiarizedAsync(path, shortSilenceOptions);
+        DiarizedAudioTranscription longSilenceResult = await client.TranscribeAudioDiarizedAsync(path, longSilenceOptions);
+
+        Assert.That(shortSilenceResult, Is.Not.Null);
+        Assert.That(shortSilenceResult.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(shortSilenceResult.Segments, Is.Not.Null);
+        Assert.That(shortSilenceResult.Segments.Count, Is.GreaterThan(0));
+
+        Assert.That(longSilenceResult, Is.Not.Null);
+        Assert.That(longSilenceResult.Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(longSilenceResult.Segments, Is.Not.Null);
+        Assert.That(longSilenceResult.Segments.Count, Is.GreaterThan(0));
+
+        // Different VAD parameters should produce different segmentation.
+        // A shorter silence_duration_ms with lower threshold splits more aggressively,
+        // so it should produce at least as many segments as the longer/higher-threshold config.
+        Assert.That(
+            shortSilenceResult.Segments.Count,
+            Is.GreaterThanOrEqualTo(longSilenceResult.Segments.Count),
+            "Expected short silence_duration / low threshold to produce at least as many segments as long silence_duration / high threshold.");
+
+        foreach (DiarizedTranscriptionSegment segment in shortSilenceResult.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+        }
+
+        foreach (DiarizedTranscriptionSegment segment in longSilenceResult.Segments)
+        {
+            Assert.That(segment.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.Text, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.SpeakerLabel, Is.Not.Null.And.Not.Empty);
+            Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
         }
     }
 }

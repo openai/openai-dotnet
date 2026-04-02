@@ -2,6 +2,33 @@
 
   <!--
     ==============================================================
+      Central Package Management Metadata Propagation
+
+      CPM does not propagate metadata such as PrivateAssets from 
+      PackageVersion to PackageReference. This bridges that gap 
+      so the intent can be declared centrally in Directory.Packages.props.
+
+      This must operate at evaluation time (not inside a Target) for
+      NuGet restore to observe the metadata. MSBuild evaluation does
+      not support dynamic metadata inspection, so each known NuGet
+      metadata type is handled explicitly.
+    ==============================================================
+  -->
+
+  <ItemGroup>
+    <_CpmPrivateAssets Include="@(PackageVersion->HasMetadata('PrivateAssets'))" />
+    <_CpmIncludeAssets Include="@(PackageVersion->HasMetadata('IncludeAssets'))" />
+    <_CpmExcludeAssets Include="@(PackageVersion->HasMetadata('ExcludeAssets'))" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="@(_CpmPrivateAssets)" PrivateAssets="%(_CpmPrivateAssets.PrivateAssets)" />
+    <PackageReference Update="@(_CpmIncludeAssets)" IncludeAssets="%(_CpmIncludeAssets.IncludeAssets)" />
+    <PackageReference Update="@(_CpmExcludeAssets)" ExcludeAssets="%(_CpmExcludeAssets.ExcludeAssets)" />
+  </ItemGroup>
+
+  <!--
+    ==============================================================
       GenAPI Target: Generate public API surface
     ==============================================================
   -->
@@ -32,10 +59,15 @@
     <ItemGroup>
       <_ExportApiTargetFramework Include="$(TargetFrameworks)" />
     </ItemGroup>
-    
-    <MSBuild Projects="$(MSBuildProjectFile)"
+
+    <ItemGroup>
+      <_ExportApiProject Include="$(MSBuildProjectFile)"
+                         AdditionalProperties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(_ExportApiProject)"
              Targets="ExportApiInner"
-             Properties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true" />
+             BuildInParallel="true" />
   </Target>
 
   <!-- Inner build target: Runs for each specific target framework -->
@@ -51,5 +83,20 @@
     <Message Importance="high"
              Text="Generated API surface: $(GenAPIOutputDirectory)OpenAI.$(TargetFramework).cs" />
   </Target>
+
+  <!--
+    ==============================================================
+      ConfigurationSchema.json auto-pack
+
+      Pack the JSON schema at the NuGet package root and include
+      the static .targets file in buildTransitive/ to register the
+      JsonSchemaSegment for appsettings.*.json IntelliSense.
+    ==============================================================
+  -->
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'OpenAI'">
+    <None Include="$(RepositoryRoot)schema\ConfigurationSchema.json" Pack="true" PackagePath="\" Link="schema\ConfigurationSchema.json" />
+    <None Include="$(RepositoryRoot)eng\OpenAI.NuGet.targets" Pack="true" PackagePath="buildTransitive\netstandard2.0\OpenAI.targets" />
+  </ItemGroup>
 
 </Project>

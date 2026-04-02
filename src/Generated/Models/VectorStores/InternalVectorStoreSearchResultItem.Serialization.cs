@@ -16,6 +16,39 @@ namespace OpenAI.VectorStores
         {
         }
 
+        protected virtual InternalVectorStoreSearchResultItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchResultItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalVectorStoreSearchResultItem(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchResultItem)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchResultItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchResultItem)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalVectorStoreSearchResultItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalVectorStoreSearchResultItem IPersistableModel<InternalVectorStoreSearchResultItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalVectorStoreSearchResultItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalVectorStoreSearchResultItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -192,38 +225,5 @@ namespace OpenAI.VectorStores
                 content,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalVectorStoreSearchResultItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchResultItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchResultItem)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalVectorStoreSearchResultItem IPersistableModel<InternalVectorStoreSearchResultItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalVectorStoreSearchResultItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchResultItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalVectorStoreSearchResultItem(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchResultItem)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalVectorStoreSearchResultItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

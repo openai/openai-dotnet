@@ -12,13 +12,13 @@ namespace OpenAI.Audio
     [Experimental("OPENAI001")]
     public partial class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate
     {
-        internal StreamingAudioTranscriptionTextDoneUpdate(string text) : base(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone)
+        internal StreamingAudioTranscriptionTextDoneUpdate(string text) : base(InternalCreateTranscriptionStreamingResponseType.TranscriptTextDone)
         {
             Text = text;
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
         }
 
-        internal StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, InternalTranscriptTextUsageTokens usage) : base(kind, additionalBinaryDataProperties)
+        internal StreamingAudioTranscriptionTextDoneUpdate(InternalCreateTranscriptionStreamingResponseType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, AudioTranscriptionTokenUsage usage) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Text = text;
@@ -28,6 +28,6 @@ namespace OpenAI.Audio
 
         public string Text { get; }
 
-        internal InternalTranscriptTextUsageTokens Usage { get; }
+        public AudioTranscriptionTokenUsage Usage { get; }
     }
 }

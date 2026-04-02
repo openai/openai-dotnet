@@ -12,9 +12,42 @@ namespace OpenAI.Audio
 {
     public partial class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>
     {
-        internal StreamingAudioTranscriptionTextDeltaUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, null, null, null, null)
+        internal StreamingAudioTranscriptionTextDeltaUpdate() : this(InternalCreateTranscriptionStreamingResponseType.TranscriptTextDelta, null, null, null, null)
         {
         }
+
+        protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeStreamingAudioTranscriptionTextDeltaUpdate(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextDeltaUpdate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextDeltaUpdate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        StreamingAudioTranscriptionTextDeltaUpdate IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextDeltaUpdate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
         void IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -72,7 +105,7 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            StreamingAudioTranscriptionUpdateKind kind = default;
+            InternalCreateTranscriptionStreamingResponseType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string delta = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
@@ -81,7 +114,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new StreamingAudioTranscriptionUpdateKind(prop.Value.GetString());
+                    kind = new InternalCreateTranscriptionStreamingResponseType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("delta"u8))
@@ -113,38 +146,5 @@ namespace OpenAI.Audio
             }
             return new StreamingAudioTranscriptionTextDeltaUpdate(kind, additionalBinaryDataProperties, delta, transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>(), segmentId);
         }
-
-        BinaryData IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextDeltaUpdate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        StreamingAudioTranscriptionTextDeltaUpdate IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextDeltaUpdate)PersistableModelCreateCore(data, options);
-
-        protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeStreamingAudioTranscriptionTextDeltaUpdate(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextDeltaUpdate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -13,6 +13,41 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscriptionOptions : IJsonModel<AudioTranscriptionOptions>
     {
+        [Experimental("OPENAI001")]
+        protected virtual AudioTranscriptionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeAudioTranscriptionOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<AudioTranscriptionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        AudioTranscriptionOptions IPersistableModel<AudioTranscriptionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<AudioTranscriptionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<AudioTranscriptionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -98,14 +133,7 @@ namespace OpenAI.Audio
             if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ChunkingStrategy);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ChunkingStrategy))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             if (Optional.IsCollectionDefined(KnownSpeakerNames) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_names") != true)
             {
@@ -122,18 +150,18 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(KnownSpeakerReferences) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
+            if (Optional.IsCollectionDefined(KnownSpeakerReferenceUris) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
             {
                 writer.WritePropertyName("known_speaker_references"u8);
                 writer.WriteStartArray();
-                foreach (string item in KnownSpeakerReferences)
+                foreach (Uri item in KnownSpeakerReferenceUris)
                 {
                     if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteStringValue(item.AbsoluteUri);
                 }
                 writer.WriteEndArray();
             }
@@ -188,9 +216,9 @@ namespace OpenAI.Audio
             IList<InternalTranscriptionInclude> internalInclude = default;
             IList<BinaryData> internalTimestampGranularities = default;
             bool? stream = default;
-            BinaryData chunkingStrategy = default;
+            AudioTranscriptionChunkingStrategy chunkingStrategy = default;
             IList<string> knownSpeakerNames = default;
-            IList<string> knownSpeakerReferences = default;
+            IList<Uri> knownSpeakerReferenceUris = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -284,7 +312,7 @@ namespace OpenAI.Audio
                         chunkingStrategy = null;
                         continue;
                     }
-                    chunkingStrategy = BinaryData.FromString(prop.Value.GetRawText());
+                    chunkingStrategy = AudioTranscriptionChunkingStrategy.DeserializeAudioTranscriptionChunkingStrategy(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("known_speaker_names"u8))
@@ -314,7 +342,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    List<string> array = new List<string>();
+                    List<Uri> array = new List<Uri>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
                         if (item.ValueKind == JsonValueKind.Null)
@@ -323,10 +351,10 @@ namespace OpenAI.Audio
                         }
                         else
                         {
-                            array.Add(item.GetString());
+                            array.Add(string.IsNullOrEmpty(item.GetString()) ? null : new Uri(item.GetString(), UriKind.RelativeOrAbsolute));
                         }
                     }
-                    knownSpeakerReferences = array;
+                    knownSpeakerReferenceUris = array;
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -344,43 +372,8 @@ namespace OpenAI.Audio
                 stream,
                 chunkingStrategy,
                 knownSpeakerNames ?? new ChangeTrackingList<string>(),
-                knownSpeakerReferences ?? new ChangeTrackingList<string>(),
+                knownSpeakerReferenceUris ?? new ChangeTrackingList<Uri>(),
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<AudioTranscriptionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        AudioTranscriptionOptions IPersistableModel<AudioTranscriptionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual AudioTranscriptionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AudioTranscriptionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeAudioTranscriptionOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<AudioTranscriptionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

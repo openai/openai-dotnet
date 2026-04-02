@@ -68,3 +68,7 @@ model VectorStoreFileCollectionOptions {
 
   @query filter?: ListVectorStoreFilesFilter;
 }
+
+enum VectorStoreExpirationAnchor {
+  last_active_at,
+}

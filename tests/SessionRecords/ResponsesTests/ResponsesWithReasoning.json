@@ -6,15 +6,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "318",
+        "Content-Length": "265",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "metadata": {
-          "superfluous_key": "superfluous_value"
-        },
-        "model": "o3-mini",
+        "model": "gpt-5",
         "reasoning": {
           "effort": "low",
           "summary": "detailed"
@@ -37,55 +34,60 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "983df419186fb89e-SEA",
+        "CF-RAY": "9c9117861c8827ea-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "4236",
+        "Content-Length": "4180",
         "Content-Type": "application/json",
-        "Date": "Tue, 23 Sep 2025 23:52:12 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "10004",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "10009",
-        "x-ratelimit-limit-requests": "30000",
-        "x-ratelimit-limit-tokens": "150000000",
-        "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999722",
-        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999640",
+        "x-ratelimit-reset-requests": "4ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d332a2cdb8819389a33c96ea7c6ba20628e20de1ff3cd0",
+        "id": "resp_07d68e67219d15cc006984570628988196a19ff3cb996f5154",
         "object": "response",
-        "created_at": 1758671522,
+        "created_at": 1770280710,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1770280725,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": "Perform reasoning over any questions asked by the user.",
         "max_output_tokens": null,
         "max_tool_calls": null,
-        "model": "o3-mini-2025-01-31",
+        "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "rs_68d332a4bfe881938068dfb04da456da0628e20de1ff3cd0",
+            "id": "rs_07d68e67219d15cc00698457066a688196a5543925521174fa",
             "type": "reasoning",
             "summary": [
               {
                 "type": "summary_text",
-                "text": "**Explaining burrito folding**\n\nI’m focusing on answering the question about the best way to fold a burrito. I’ll provide clear, step-by-step instructions for an effective method. First, I’ll suggest warming the tortilla, then placing the filling in the center and folding the bottom up over it. Next, I’ll guide folding the sides inward before finally rolling it up to secure everything tightly. I want to ensure the ingredients are balanced, so the burrito remains neat. I'll produce these instructions."
+                "text": "**Providing taco advice**\n\nThe user is looking for general advice on making tacos, so I want to give some concise step-by-step tips. First, I would emphasize warming the tortilla to make it pliable before filling. I should mention filling placement, folding the sides, and rolling it up while tucking in the fillings. I'll also touch on variations for wet fillings and sizes, suggesting using a rice barrier to soak up moisture. It’s important to keep it concise and practical!"
+              },
+              {
+                "type": "summary_text",
+                "text": "**Summarizing burrito tips**\n\nI want to finish by placing the burrito seam side down to let it rest and seal, or I could toast it on the seam. If I have a very full filling, I can use the envelope method by folding the bottom up, tucking the sides in, then rolling it from the top down. Wrapping it in foil can help keep everything together. I should also mention common mistakes and clarify that smaller tortillas should be used for tacos, not burritos. Keeping it actionable is key!"
               }
             ]
           },
           {
-            "id": "msg_68d332a849d48193a3e28bd8fecbd1d80628e20de1ff3cd0",
+            "id": "msg_07d68e67219d15cc006984571388508196854195003f1f2283",
             "type": "message",
             "status": "completed",
             "content": [
@@ -93,15 +95,17 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Here's a step-by-step method that many consider the best way to fold a burrito for a neat, secure wrap:\n\n1. Warm the tortilla: Use a flour tortilla large enough to hold all your fillings. Warming it slightly (by heating in a dry skillet or microwave) makes it more pliable and less likely to tear.\n\n2. Lay out the tortilla: Place it on a clean surface. Imagine it as a clock face to help guide your folds.\n\n3. Add the filling: Spoon in your chosen ingredients (rice, beans, meat or veggies, cheese, salsa, etc.) roughly in a line across the center of the tortilla. Keep the filling away from the edges (leaving about 2 inches free on the sides) to allow room for folding.\n\n4. Fold the bottom edge: Imagine the bottom of the tortilla is at the 6 o’clock position. Fold it upward over the filling so it covers about a third or half of the ingredients. This initial fold tucks in one side of the burrito.\n\n5. Tuck in the sides: Next, fold the left and right sides inward (toward the center) so that they overlap the filling slightly. These folds help contain the ingredients and prevent them from spilling out.\n\n6. Roll it up: Starting from the bottom (where you made your initial fold), roll the burrito tightly and evenly. Use your thumbs and fingers to keep the burrito snug as you roll. The earlier folds help keep everything contained.\n\n7. Final check: Once rolled, make sure the ends are neatly tucked and the burrito is secure. If you’re not eating immediately, you can wrap it in foil to help it keep its shape and retain heat.\n\nTip: If your burrito is stuffed with a lot of wet ingredients, consider putting drier foods (like rice or cheese) at the edges to act as a barrier. Also, don’t overfill; too many ingredients make it harder to fold and might cause spillage.\n\nThis method produces a well-structured burrito that holds together better whether you’re eating it on the go or packing it for later. Enjoy your perfect, neatly folded burrito!"
+                "text": "Here’s a reliable, tidy way to fold a burrito so it doesn’t fall apart:\n\n1) Warm the tortilla\n- Use a 10–12 inch flour tortilla.\n- Heat 15–30 seconds per side (pan, griddle, or microwave with a damp towel) until pliable.\n\n2) Build the filling smartly\n- Drain wet fillings; use rice/beans as a moisture barrier.\n- Place fillings in a horizontal line slightly below center.\n- Keep it compact; leave 2 inches clear on left/right edges and 1–2 inches at the bottom. Don’t overfill.\n\n3) Start the fold\n- Fold the left and right sides in so they just overlap the filling.\n\n4) Tuck and roll\n- Lift the bottom edge up over the filling.\n- Tuck it back toward you to compress and tighten.\n- Roll forward away from you, keeping sides tucked, until seam is underneath.\n\n5) Set the seam\n- Rest seam-side down for 30 seconds, or toast the seam on a dry pan to seal.\n- For transport, wrap snugly in foil; cut through foil to eat.\n\nTips\n- Super-saucy fillings: add cheese/rice first, then meat/veg, sauce last in a thin line.\n- Overfilled burrito: use the “envelope” variation—bottom up, sides in, top down, then roll.\n- Add crunch: toast the rolled burrito on all sides.\n- If your tortilla is smaller than 10 inches, make two smaller burritos or tacos instead of overstuffing one."
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": "low",
           "summary": "detailed"
@@ -126,16 +130,14 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 567,
+          "output_tokens": 576,
           "output_tokens_details": {
-            "reasoning_tokens": 128
+            "reasoning_tokens": 192
           },
-          "total_tokens": 597
+          "total_tokens": 606
         },
         "user": null,
-        "metadata": {
-          "superfluous_key": "superfluous_value"
-        }
+        "metadata": {}
       }
     }
   ],

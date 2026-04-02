@@ -11,12 +11,12 @@ namespace OpenAI.Videos
     internal partial class VideoClientGetVideosCollectionResult : CollectionResult
     {
         private readonly VideoClient _client;
-        private readonly long? _limit;
+        private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
         private readonly RequestOptions _options;
 
-        public VideoClientGetVideosCollectionResult(VideoClient client, long? limit, string order, string after, RequestOptions options)
+        public VideoClientGetVideosCollectionResult(VideoClient client, int? limit, string order, string after, RequestOptions options)
         {
             _client = client;
             _limit = limit;

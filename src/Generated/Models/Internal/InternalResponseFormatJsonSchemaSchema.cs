@@ -2,32 +2,32 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Internal
 {
     internal partial class InternalResponseFormatJsonSchemaSchema
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        public InternalResponseFormatJsonSchemaSchema() : this(null)
+        public InternalResponseFormatJsonSchemaSchema()
         {
         }
 
-        internal InternalResponseFormatJsonSchemaSchema(IDictionary<string, BinaryData> additionalProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalResponseFormatJsonSchemaSchema(in JsonPatch patch)
         {
-            // Plugin customization: ensure initialization of collections
-            _additionalBinaryDataProperties = additionalProperties ?? new ChangeTrackingDictionary<string, BinaryData>();
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public IDictionary<string, BinaryData> AdditionalProperties => _additionalBinaryDataProperties;
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
     }
 }

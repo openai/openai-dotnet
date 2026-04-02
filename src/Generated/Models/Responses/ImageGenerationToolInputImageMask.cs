@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -15,10 +16,14 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationToolInputImageMask(string imageUrl, string fileId, in JsonPatch patch)
+        internal ImageGenerationToolInputImageMask()
         {
-            ImageUrl = imageUrl;
+        }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ImageGenerationToolInputImageMask(Uri imageUri, string fileId, in JsonPatch patch)
+        {
+            ImageUri = imageUri;
             FileId = fileId;
             _patch = patch;
         }

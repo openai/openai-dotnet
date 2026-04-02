@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Check if issue already has labels
         id: check-labels
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const issue = context.payload.issue;
@@ -25,7 +25,7 @@ jobs:
       - name: Check if author has write permissions
         id: check-permissions
         if: steps.check-labels.outputs.has-labels == 'false'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const issue = context.payload.issue;
@@ -53,7 +53,7 @@ jobs:
         if: >-
           steps.check-labels.outputs.has-labels == 'false' &&
           steps.check-permissions.outputs.has-write-access == 'false'
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             await github.rest.issues.addLabels({

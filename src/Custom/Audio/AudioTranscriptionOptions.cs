@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -26,22 +27,22 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("Stream")]
     internal bool? Stream { get; set; }
 
-    // CUSTOM: Made internal
+    // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("ChunkingStrategy")]
-    internal BinaryData ChunkingStrategy { get; set; }
+    [Experimental("OPENAI001")]
+    public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
 
-    // CUSTOM: Made internal
-    [CodeGenMember("KnownSpeakerNames")]
-    internal IList<string> KnownSpeakerNames { get; }
-
-    // CUSTOM: Made internal
+    // CUSTOM: Renamed and changed type from IList<string> to IList<Uri> for data URI consistency.
     [CodeGenMember("KnownSpeakerReferences")]
-    internal IList<string> KnownSpeakerReferences { get; }
+    [Experimental("OPENAI001")]
+    public IList<Uri> KnownSpeakerReferenceUris { get; }
 
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="AudioTranscriptionOptions"/>. </summary>
     public AudioTranscriptionOptions()
     {
+        KnownSpeakerNames = new ChangeTrackingList<string>();
+        KnownSpeakerReferenceUris = new ChangeTrackingList<Uri>();
     }
 
     /// <summary>
@@ -105,6 +106,28 @@ public partial class AudioTranscriptionOptions
         if (Stream == true)
         {
             content.Add(true, "stream");
+        }
+
+        if (ChunkingStrategy is not null)
+        {
+            if (ChunkingStrategy.DefaultChunkingStrategy is not null)
+            {
+                content.Add(ChunkingStrategy.DefaultChunkingStrategy.Value.ToString(), "chunking_strategy");
+            }
+            else if (ChunkingStrategy.CustomChunkingStrategy is not null)
+            {
+                content.Add(ModelReaderWriter.Write(ChunkingStrategy.CustomChunkingStrategy, ModelReaderWriterOptions.Json, OpenAIContext.Default), "chunking_strategy");
+            }
+        }
+
+        foreach (string name in KnownSpeakerNames)
+        {
+            content.Add(name, "known_speaker_names[]");
+        }
+
+        foreach (Uri referenceUri in KnownSpeakerReferenceUris)
+        {
+            content.Add(referenceUri.AbsoluteUri, "known_speaker_references[]");
         }
 
         return content;

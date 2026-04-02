@@ -13,10 +13,11 @@ namespace OpenAI.Evals
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
         private static PipelineMessageClassifier _pipelineMessageClassifier201;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        private static PipelineMessageClassifier PipelineMessageClassifier201 => _pipelineMessageClassifier201 = PipelineMessageClassifier.Create(stackalloc ushort[] { 201 });
+        private static PipelineMessageClassifier PipelineMessageClassifier201 => _pipelineMessageClassifier201 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 201 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetEvalsRequest(string after, int? limit, string order, string orderBy, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -45,6 +46,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateEvalRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -59,6 +61,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetEvalRequest(string evalId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -72,6 +75,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateUpdateEvalRequest(string evalId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -87,6 +91,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteEvalRequest(string evalId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -100,6 +105,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetEvalRunsRequest(string evalId, string after, int? limit, string order, string status, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -130,6 +136,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateEvalRunRequest(string evalId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -146,6 +153,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetEvalRunRequest(string evalId, string runId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -161,6 +169,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCancelEvalRunRequest(string evalId, string runId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -176,6 +185,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteEvalRunRequest(string evalId, string runId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -191,6 +201,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetEvalRunOutputItemsRequest(string evalId, string runId, string after, int? limit, string status, string order, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -223,6 +234,7 @@ namespace OpenAI.Evals
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetEvalRunOutputItemRequest(string evalId, string runId, string outputItemId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

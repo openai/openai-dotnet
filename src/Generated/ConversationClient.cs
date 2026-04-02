@@ -23,7 +23,7 @@ namespace OpenAI.Conversations
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetConversationItems(string conversationId, long? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
+        public virtual CollectionResult GetConversationItems(string conversationId, int? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
@@ -37,7 +37,7 @@ namespace OpenAI.Conversations
                 options);
         }
 
-        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, long? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, int? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 

@@ -100,7 +100,7 @@ model CreateTranscriptionRequest {
   stream?: HttpPart<boolean | null>;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  chunking_strategy?: HttpPart<TranscriptionChunkingStrategy>;
+  chunking_strategy?: HttpPart<"auto" | ChunkingStrategyConfig | null>;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   known_speaker_names?: HttpPart<KnownSpeakerNames>;
@@ -109,28 +109,45 @@ model CreateTranscriptionRequest {
   known_speaker_references?: HttpPart<KnownSpeakerReferences>;
 }
 
+union ChunkingStrategyConfigType {
+  string,
+  server_vad: "server_vad",
+}
+
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model VadConfig {
+@discriminator("type")
+model ChunkingStrategyConfig {
+  type: ChunkingStrategyConfigType;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model VadConfig extends ChunkingStrategyConfig {
   /** Must be set to `server_vad` to enable manual chunking using server side VAD. */
-  type: "server_vad";
+  type: ChunkingStrategyConfigType.server_vad;
 
   /**Amount of audio to include before the VAD detected speech (in
   milliseconds).*/
+  // Default is 300 ms.
   #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  prefix_padding_ms?: integer = 300;
+  @encode(DurationKnownEncoding.milliseconds, integer)
+  prefix_padding_ms?: duration;
 
   /**Duration of silence to detect speech stop (in milliseconds).
   With shorter values the model will respond more quickly,
   but may jump in on short pauses from the user.*/
+  // Default is 200 ms.
   #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  silence_duration_ms?: integer = 200;
+  @encode(DurationKnownEncoding.milliseconds, integer)
+  silence_duration_ms?: duration;
 
   /**Sensitivity threshold (0.0 to 1.0) for voice activity detection. A
   higher threshold will require louder audio to activate the model, and
   thus might perform better in noisy environments.*/
   #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  @maxValue(1.0)
+  @minValue(0.0)
   threshold?: numeric = 0.5;
 }
 
@@ -732,16 +749,6 @@ model TranscriptTextSegmentEvent {
   speaker: string;
 }
 
-/** Controls how the audio is cut into chunks. When set to `"auto"`, the server first normalizes loudness and then uses voice activity detection (VAD) to choose boundaries. `server_vad` object can be provided to tweak VAD detection parameters manually. If unset, the audio is transcribed as a single block. Required when using `gpt-4o-transcribe-diarize` for inputs longer than 30 seconds. */
-#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-@extension("x-oaiTypeLabel", "string")
-union TranscriptionChunkingStrategy {
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
-  "auto" | VadConfig,
-  null,
-}
-
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
 @events
@@ -800,4 +807,199 @@ union CreateTranscriptionResponseJsonUsageType {
   string,
   "tokens",
   "duration",
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model CreateVoiceConsentRequest {
+  /** The label to use for this consent recording. */
+  name: HttpPart<string>;
+
+  /**The consent audio recording file. Maximum size is 10 MiB.
+  Supported MIME types:
+  `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.*/
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-oaiTypeLabel", "file")
+  recording: HttpPart<bytes>;
+
+  /** The BCP 47 language tag for the consent phrase (for example, `en-US`). */
+  language: HttpPart<string>;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model CreateVoiceRequest {
+  /** The name of the new voice. */
+  name: HttpPart<string>;
+
+  /**The sample audio recording file. Maximum size is 10 MiB.
+  Supported MIME types:
+  `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.*/
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-oaiTypeLabel", "file")
+  audio_sample: HttpPart<bytes>;
+
+  /** The consent recording ID (for example, `cons_1234`). */
+  consent: HttpPart<string>;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model UpdateVoiceConsentRequest {
+  /** The updated label for this consent recording. */
+  name: string;
+}
+
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "The voice consent deletion object",
+    example: """
+      {
+        "object": "audio.voice_consent",
+        "id": "cons_1234",
+        "deleted": true
+      }
+      
+      """,
+  }
+)
+model VoiceConsentDeletedResource {
+  /** The consent recording identifier. */
+  id: string;
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  object: "audio.voice_consent";
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  deleted: boolean;
+}
+
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "The voice consent list object",
+    example: """
+      {
+        "object": "list",
+        "data": [
+          {
+            "object": "audio.voice_consent",
+            "id": "cons_1234",
+            "name": "John Doe",
+            "language": "en-US",
+            "created_at": 1734220800
+          }
+        ],
+        "first_id": "cons_1234",
+        "last_id": "cons_1234",
+        "has_more": false
+      }
+      
+      """,
+  }
+)
+model VoiceConsentListResource {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  object: "list";
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @pageItems
+  @extension("x-ms-list-page-items", true)
+  data: VoiceConsentResource[];
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  first_id: string;
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  last_id: string;
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  has_more: boolean;
+}
+
+/** A consent recording used to authorize creation of a custom voice. */
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Voice consent")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "The voice consent object",
+    example: """
+      {
+        "object": "audio.voice_consent",
+        "id": "cons_1234",
+        "name": "John Doe",
+        "language": "en-US",
+        "created_at": 1734220800
+      }
+      
+      """,
+  }
+)
+model VoiceConsentResource {
+  /** The object type, which is always `audio.voice_consent`. */
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  object: "audio.voice_consent";
+
+  /** The consent recording identifier. */
+  id: string;
+
+  /** The label provided when the consent recording was uploaded. */
+  name: string;
+
+  /** The BCP 47 language tag for the consent phrase (for example, `en-US`). */
+  language: string;
+
+  /** The Unix timestamp (in seconds) for when the consent recording was created. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @encode(DateTimeKnownEncoding.unixTimestamp, integer)
+  created_at: utcDateTime;
+}
+
+/** A custom voice that can be used for audio output. */
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@summary("Voice")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "The voice object",
+    example: """
+      {
+        "object": "audio.voice",
+        "id": "voice_123abc",
+        "name": "My new voice",
+        "created_at": 1734220800
+      }
+      
+      """,
+  }
+)
+model VoiceResource {
+  /** The object type, which is always `audio.voice`. */
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  object: "audio.voice";
+
+  /** The voice identifier, which can be referenced in API endpoints. */
+  id: string;
+
+  /** The name of the voice. */
+  name: string;
+
+  /** The Unix timestamp (in seconds) for when the voice was created. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @encode(DateTimeKnownEncoding.unixTimestamp, integer)
+  created_at: utcDateTime;
 }

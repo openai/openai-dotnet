@@ -14,7 +14,7 @@ public readonly partial struct GeneratedImageFormat
 
     // CUSTOM: Renamed.
     /// <summary>
-    ///     Returned as a URI pointing to a temporary internet location from where the image can be downlaoded. This
+    ///     Returned as a URI pointing to a temporary internet location from where the image can be downloaded. This
     ///     URI is only valid for 60 minutes after the image is generated.
     /// </summary>
     [CodeGenMember("Url")]

@@ -12,8 +12,9 @@ namespace OpenAI.Batch
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateBatchRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -28,6 +29,7 @@ namespace OpenAI.Batch
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetBatchesRequest(string after, int? limit, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -48,6 +50,7 @@ namespace OpenAI.Batch
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetBatchRequest(string batchId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -61,6 +64,7 @@ namespace OpenAI.Batch
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCancelBatchRequest(string batchId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

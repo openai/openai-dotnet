@@ -5,9 +5,9 @@ using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
@@ -15,6 +15,8 @@ namespace OpenAI.Tests.Chat;
 [Category("ChatStore")]
 public class ChatStoreTests : OpenAIRecordedTestBase
 {
+    private const int DelayInMilliseconds = 5000;
+
     public ChatStoreTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
@@ -23,7 +25,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatMetadata()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         ChatCompletionOptions options = new()
         {
@@ -49,7 +51,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithPagination()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create multiple completions with stored output enabled
         var completionIds = new List<string>();
@@ -68,7 +70,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Test pagination with limit
         ChatCompletionCollectionOptions paginationOptions = new()
@@ -106,7 +108,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithAfterIdPagination()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create multiple completions
         var completionIds = new List<string>();
@@ -124,7 +126,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Get first completion to use as afterId
         string afterId = null;
@@ -166,7 +168,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithOrderFiltering()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completions with timestamps
         var completionIds = new List<string>();
@@ -186,7 +188,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             await Task.Delay(1000); // Ensure different timestamps
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Test ascending order
         ChatCompletionCollectionOptions ascOptions = new()
@@ -239,7 +241,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithMetadataFiltering()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completions with different metadata
         var testMetadataKey = $"test_scenario_{Guid.NewGuid():N}";
@@ -269,7 +271,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             options2);
         completionIds.Add(otherCompletion.Id);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Filter by specific metadata
         ChatCompletionCollectionOptions filterOptions = new()
@@ -304,7 +306,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithModelFiltering()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion with default model
         ChatCompletionOptions createOptions = new()
@@ -317,7 +319,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Model filter test: Say 'Hello'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Filter by the model used by the test client
         ChatCompletionCollectionOptions filterOptions = new()
@@ -348,7 +350,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithEmptyOptions()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create a completion to ensure we have something to fetch
         ChatCompletionOptions createOptions = new()
@@ -360,7 +362,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Empty options test: Say 'Hello'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Test with default/empty options
         int count = 0;
@@ -386,7 +388,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithCombinedFilters()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion with combined metadata for filtering
         var testKey = $"combined_test_{Guid.NewGuid():N}";
@@ -404,7 +406,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Combined filters test: Say 'Combined test'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Test with combined filters
         ChatCompletionCollectionOptions combinedOptions = new()
@@ -437,7 +439,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StoredChatCompletionsWork()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         ChatCompletionOptions options = new()
         {
@@ -448,9 +450,8 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             [new UserChatMessage("Say `this is a test`.")],
             options);
 
-        await TestHelpers.RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
-
             ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
 
             Assert.That(storedCompletion.Id, Is.EqualTo(completion.Id));
@@ -461,7 +462,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             Assert.That(deletionResult.Deleted, Is.True);
         });
 
-        await Task.Delay(s_delayInMilliseconds);
+        await Task.Delay(DelayInMilliseconds);
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -473,7 +474,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task UpdateChatCompletionWorks()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         var testMetadataKey = $"test_key_{Guid.NewGuid():N}";
         var initialOptions = new ChatCompletionOptions
@@ -486,7 +487,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             [new UserChatMessage("Say `this is a test`.")],
             initialOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         var newMetadata = new Dictionary<string, string>
         {
@@ -496,7 +497,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
 
         ChatCompletion updated = await client.UpdateChatCompletionAsync(chatCompletion.Id, newMetadata);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be updated
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be updated
 
         Assert.That(updated, Is.Not.Null);
         Assert.That(updated.Id, Is.EqualTo(chatCompletion.Id));
@@ -504,7 +505,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(chatCompletion.Id);
         Assert.That(deletionResult.Deleted, Is.True);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be deleted
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be deleted
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -515,7 +516,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsValidatesCollectionEnumeration()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create a completion to ensure we have data
         ChatCompletionOptions createOptions = new()
@@ -570,7 +571,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsHandlesLargeLimits()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create a completion for testing
         ChatCompletionOptions createOptions = new()
@@ -582,7 +583,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Large limit test: Say 'Testing large limits'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Test with a large page size limit
         ChatCompletionCollectionOptions largeOptions = new()
@@ -611,7 +612,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionsWithMinimalLimits()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create a completion for testing
         ChatCompletionOptions createOptions = new()
@@ -623,7 +624,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Minimal limit test: Say 'Testing minimal limits'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await Task.Delay(DelayInMilliseconds); // Wait for completions to be stored
 
         // Test with minimal page size
         ChatCompletionCollectionOptions minimalOptions = new()
@@ -652,7 +653,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesWithBasicUsage()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create a completion with stored output enabled to have messages
         ChatCompletionOptions createOptions = new()
@@ -665,7 +666,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Basic messages test: Say 'Hello, this is a test message.'"],
             createOptions);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
             // Test basic enumeration of messages
             int messageCount = 0;
@@ -692,7 +693,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesWithPagination()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion with multiple messages (conversation with tool calls)
         // and one with multiple content parts
@@ -734,7 +735,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             conversationMessages,
             createOptions);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
             // Test pagination with limit
             int totalMessages = 0;
@@ -780,7 +781,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesWithAfterIdPagination()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion
         ChatCompletionOptions createOptions = new()
@@ -793,7 +794,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["After ID pagination test: Please provide a detailed response with multiple sentences."],
             createOptions);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
             // Get first message to use as afterId
             string afterId = null;
@@ -837,7 +838,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesWithOrderFiltering()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion with detailed conversation
         ChatCompletionOptions createOptions = new()
@@ -850,7 +851,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Order filtering test: Please provide a comprehensive response about machine learning."],
             createOptions);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
             // Test ascending order
             List<ChatCompletionMessageListDatum> ascMessages = new();
@@ -896,7 +897,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesWithCancellationToken()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion
         ChatCompletionOptions createOptions = new()
@@ -912,7 +913,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         // Test with cancellation token
         using var cts = new CancellationTokenSource();
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
             try
             {
@@ -948,7 +949,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesWithCombinedOptions()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Create completion with comprehensive options
         ChatCompletionOptions createOptions = new()
@@ -961,7 +962,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Combined options test: Provide a detailed explanation of artificial intelligence."],
             createOptions);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await RetryUntilExists(async () =>
         {
             // Test combined options: limit + order + cancellation token
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -996,10 +997,42 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    private const int s_delayInMilliseconds = 5000;
+    public static async Task RetryUntilExists(
+        Func<Task> action,
+        int maxRetries = 5,
+        int initialWaitMs = 750,
+        CancellationToken cancellationToken = default)
+    {
+        int waitDuration = initialWaitMs;
+        int retryCount = 0;
+        bool successful = false;
 
-    private ChatClient GetTestClient(string overrideModel = null)
-        => GetProxiedOpenAIClient<ChatClient>(
-            scenario: TestScenario.Chat,
-            overrideModel: overrideModel);
+        while (retryCount < maxRetries && !successful)
+        {
+            try
+            {
+                await action();
+                successful = true;
+            }
+            catch (ClientResultException ex) when (ex.Status == 404)
+            {
+                try
+                {
+                    await Task.Delay(waitDuration).AwaitWithCancellation(cancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Expected
+                }
+
+                waitDuration *= 2;
+                retryCount++;
+
+                if (retryCount >= maxRetries)
+                {
+                    throw;
+                }
+            }
+        }
+    }
 }
