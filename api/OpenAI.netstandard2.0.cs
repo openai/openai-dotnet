@@ -4790,6 +4790,7 @@ namespace OpenAI.Responses {
         public BinaryData ImageResultBytes { get; set; }
         public ImageGenToolCallOutputFormat? OutputFormat { get; set; }
         public ImageGenToolCallQuality? Quality { get; set; }
+        public string RevisedPrompt { get; set; }
         public ImageGenToolCallSize? Size { get; set; }
         public ImageGenerationCallStatus? Status { get; set; }
     }
