@@ -86,7 +86,6 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownResponseTextFormatConfiguration")] internal partial class InternalUnknownResponseTextFormatConfiguration {}
 [CodeGenType("UnknownTool")] internal partial class InternalUnknownTool {}
 [CodeGenType("UnknownToolChoiceObject")] internal partial class InternalUnknownToolChoiceObject {}
-[CodeGenType("WebSearchToolCallItemParam")] internal partial class InternalWebSearchToolCallItemParam {}
 [CodeGenType("CodeInterpreterFileOutputType")] internal readonly partial struct InternalCodeInterpreterFileOutputType {}
 [CodeGenType("CodeInterpreterTextOutputType")] internal readonly partial struct InternalCodeInterpreterTextOutputType {}
 [CodeGenType("CodeInterpreterToolOutputType")] internal readonly partial struct InternalCodeInterpreterToolOutputType {}
@@ -124,3 +123,8 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownCodeInterpreterContainerConfiguration")] internal partial class InternalUnknownCodeInterpreterContainerConfiguration {}
 [CodeGenType("GetInputTokenCountsRequestContentType")] internal readonly partial struct InternalGetInputTokenCountsRequestContentType {}
 [CodeGenType("CompactConversationRequestContentType")] internal readonly partial struct InternalCompactConversationRequestContentType {}
+[CodeGenType("WebSearchActionType")] internal readonly partial struct InternalWebSearchActionType { }
+[CodeGenType("UnknownWebSearchActionBase")] internal partial class InternalUnknownWebSearchActionBase { }
+
+[CodeGenType("WebSearchActionSearchSourcesType")] internal readonly partial struct InternalWebSearchActionSearchSourcesType { }
+[CodeGenType("UnknownWebSearchActionSearchSourceBase")] internal partial class InternalUnknownWebSearchActionSearchSourceBase { }

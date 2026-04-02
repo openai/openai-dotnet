@@ -78,18 +78,92 @@ model ComputerToolCallOutputItemResource extends ItemResource {
   ...ComputerToolCallOutputItemBase;
 }
 
-model WebSearchToolCallItemParam extends ItemParam {
-  type: ItemType.web_search_call;
-  ...WebSearchToolCallItemBase;
-}
-
+/**The results of a web search tool call. See the
+[web search guide](/docs/guides/tools-web-search) for more information.*/
+@summary("Web search tool call")
 model WebSearchToolCallItemResource extends ItemResource {
+  /** The type of the web search tool call. Always `web_search_call`. */
   type: ItemType.web_search_call;
 
   /** The status of the web search tool call. */
   status: "in_progress" | "searching" | "completed" | "failed";
 
-  ...WebSearchToolCallItemBase;
+  // CUSTOM: Based on service behavior, "action" is optional.
+  /**An object describing the specific action taken in this web search call.
+  Includes details on how the model used the web (search, open_page, find_in_page).*/
+  action?: WebSearchActionBase;
+}
+
+union WebSearchActionSearchSourcesType {
+  string,
+  url: "url",
+}
+
+@discriminator("type")
+model WebSearchActionSearchSourceBase {
+  type: WebSearchActionSearchSourcesType;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model WebSearchActionSearchSourceUrl extends WebSearchActionSearchSourceBase {
+  type: WebSearchActionSearchSourcesType.url;
+  
+  url: url;
+}
+
+union WebSearchActionType {
+  string,
+  search: "search",
+  open_page: "open_page",
+  find_in_page: "find_in_page",
+}
+
+@discriminator("type")
+model WebSearchActionBase {
+  type: WebSearchActionType;
+}
+
+/** Action type "search" - Performs a web search query. */
+@summary("Search action")
+model WebSearchActionSearch extends WebSearchActionBase {
+  /** The action type. */
+  type: WebSearchActionType.search;
+
+  // CUSTOM: Based on service behavior, "query" became optional after the introduction of "queries"
+  /** [DEPRECATED] The search query. */
+  #deprecated "deprecated"
+  query?: string;
+
+  /** The search queries. */
+  @summary("Search queries")
+  queries?: string[];
+
+  /** The sources used in the search. */
+  @summary("Web search sources")
+  sources?: WebSearchActionSearchSourceBase[];
+}
+
+/** Action type "open_page" - Opens a specific URL from search results. */
+@summary("Open page action")
+model WebSearchActionOpenPage extends WebSearchActionBase {
+  /** The action type. */
+  type: WebSearchActionType.open_page;
+
+  /** The URL opened by the model. */
+  url?: url | null;
+}
+
+/** Action type "find_in_page": Searches for a pattern within a loaded page. */
+@summary("Find action")
+model WebSearchActionFind extends WebSearchActionBase {
+  /** The action type. */
+  type: WebSearchActionType.find_in_page;
+
+  /** The URL of the page searched for the pattern. */
+  url: url;
+
+  /** The pattern or text to search for within the page. */
+  pattern: string;
 }
 
 model FunctionToolCallItemParam extends ItemParam {

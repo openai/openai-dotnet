@@ -1168,54 +1168,143 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task WebSearchCall()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
-        ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+        ];
+
+        CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
+        {
+            Tools =
             {
-                Tools =
+                new WebSearchTool()
                 {
-                    ResponseTool.CreateWebSearchTool()
-                },
-                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
-            });
+                    UserLocation = new WebSearchToolApproximateLocation() { City = "Redmond", Region = "Washington", Country = "US" },
+                    SearchContextSize = WebSearchToolContextSize.Low
+                }
+            },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
+        };
 
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+        ResponseResult response = await client.CreateResponseAsync(createResponseOptions);
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
 
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        List<WebSearchCallResponseItem> webSearchCalls = response.OutputItems.OfType<WebSearchCallResponseItem>().ToList();
+        Assert.That(webSearchCalls, Has.Count.GreaterThan(0));
+        Assert.That(webSearchCalls.All(call => call.Action != null), Is.True);
+
+        List<WebSearchCallResponseItem> searchWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchSearchAction).ToList();
+        Assert.That(searchWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in searchWebSearchCalls)
+        {
+            WebSearchSearchAction searchAction = (WebSearchSearchAction)call.Action;
+            Assert.That(searchAction.Queries, Has.Count.GreaterThan(0));
+            Assert.That(searchAction.Sources, Has.Count.GreaterThan(0));
+        }
+
+        MessageResponseItem message = response.OutputItems.Last() as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+    }
 
+    [RecordedTest]
+    public async Task WebSearchCallWithReasoning()
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Open the following page and tell me what it says about sources: https://developers.openai.com/api/docs/guides/tools-web-search")
+        ];
+
+        // NOTE: The "open page" and "find in page" actions are only support by reasoning models.
+        CreateResponseOptions createResponseOptions = new("gpt-5.1", inputItems)
+        {
+            Tools = { new WebSearchTool() },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            ReasoningOptions = new() { ReasoningEffortLevel = ResponseReasoningEffortLevel.High },
+            IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(createResponseOptions);
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+
+        List<WebSearchCallResponseItem> webSearchCalls = response.OutputItems.OfType<WebSearchCallResponseItem>().ToList();
+        Assert.That(webSearchCalls, Has.Count.GreaterThan(0));
+        Assert.That(webSearchCalls.All(call => call.Action != null), Is.True);
+
+        List<WebSearchCallResponseItem> openPageWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchOpenPageAction).ToList();
+        Assert.That(openPageWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in openPageWebSearchCalls)
+        {
+            WebSearchOpenPageAction openPageAction = (WebSearchOpenPageAction)call.Action;
+            Assert.That(openPageAction.Uri.AbsoluteUri, Is.Not.Null.Or.Empty);
+        }
+
+        List<WebSearchCallResponseItem> findInPageWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchFindInPageAction).ToList();
+        Assert.That(findInPageWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in findInPageWebSearchCalls)
+        {
+            WebSearchFindInPageAction findInPageAction = (WebSearchFindInPageAction)call.Action;
+            Assert.That(findInPageAction.Uri.AbsoluteUri, Is.Not.Null.Or.Empty);
+            Assert.That(findInPageAction.Pattern, Is.Not.Null.Or.Empty);
+        }
+
+        MessageResponseItem message = response.OutputItems.Last() as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
     }
 
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
-        ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
-            {
-                Tools =
-                {
-                    ResponseTool.CreateWebSearchPreviewTool()
-                },
-                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
-            });
 
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+        ];
 
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
+        {
+            Tools = { new WebSearchPreviewTool() },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(createResponseOptions);
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+
+        List<WebSearchCallResponseItem> webSearchCalls = response.OutputItems.OfType<WebSearchCallResponseItem>().ToList();
+        Assert.That(webSearchCalls, Has.Count.GreaterThan(0));
+        Assert.That(webSearchCalls.All(call => call.Action != null), Is.True);
+
+        List<WebSearchCallResponseItem> searchWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchSearchAction).ToList();
+        Assert.That(searchWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in searchWebSearchCalls)
+        {
+            WebSearchSearchAction searchAction = (WebSearchSearchAction)call.Action;
+            Assert.That(searchAction.Queries, Has.Count.GreaterThan(0));
+            Assert.That(searchAction.Sources, Has.Count.GreaterThan(0));
+        }
+
+        MessageResponseItem message = response.OutputItems.Last() as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
     }
 
     [RecordedTest]
@@ -1223,16 +1312,22 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        const string message = "Searching the internet, what's the weather like in San Francisco?";
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+        ];
 
-        CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem(message)])
+        CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
         {
             Tools =
             {
-                ResponseTool.CreateWebSearchTool(
-                    userLocation: WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
-                    searchContextSize: WebSearchToolContextSize.Low)
+                new WebSearchTool()
+                {
+                    UserLocation = new WebSearchToolApproximateLocation() { City = "Redmond", Region = "Washington", Country = "US" },
+                    SearchContextSize = WebSearchToolContextSize.Low
+                }
             },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
             StreamingEnabled = true,
         };
 
@@ -1242,8 +1337,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         int completedCount = 0;
         bool gotFinishedSearchItem = false;
 
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(createResponseOptions))
         {
             if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
             {

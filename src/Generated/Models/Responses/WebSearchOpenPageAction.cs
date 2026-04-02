@@ -2,19 +2,23 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalWebSearchToolCallItemParam : InternalItemParam
+    [Experimental("OPENAI001")]
+    public partial class WebSearchOpenPageAction : WebSearchAction
     {
-        public InternalWebSearchToolCallItemParam() : this(InternalItemType.WebSearchCall, default)
+        public WebSearchOpenPageAction() : this(InternalWebSearchActionType.OpenPage, default, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalWebSearchToolCallItemParam(InternalItemType kind, in JsonPatch patch) : base(kind, patch)
+        internal WebSearchOpenPageAction(InternalWebSearchActionType kind, in JsonPatch patch, Uri uri) : base(kind, patch)
         {
+            Uri = uri;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

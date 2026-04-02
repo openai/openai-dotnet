@@ -2048,7 +2048,7 @@ namespace OpenAI.Conversations {
         public static IncludedConversationItemProperty ComputerCallOutputImageUri { get; }
         public static IncludedConversationItemProperty FileSearchCallResults { get; }
         public static IncludedConversationItemProperty MessageInputImageUri { get; }
-        public static IncludedConversationItemProperty MessageOutputTextLogprobs { get; }
+        public static IncludedConversationItemProperty MessageOutputTextLogProbabilities { get; }
         public static IncludedConversationItemProperty ReasoningEncryptedContent { get; }
         public static IncludedConversationItemProperty WebSearchCallActionSources { get; }
         public static IncludedConversationItemProperty WebSearchCallResults { get; }
@@ -5011,7 +5011,10 @@ namespace OpenAI.Responses {
         public static IncludedResponseProperty ComputerCallOutputImageUri { get; }
         public static IncludedResponseProperty FileSearchCallResults { get; }
         public static IncludedResponseProperty MessageInputImageUri { get; }
+        public static IncludedResponseProperty MessageOutputTextLogProbabilities { get; }
         public static IncludedResponseProperty ReasoningEncryptedContent { get; }
+        public static IncludedResponseProperty WebSearchCallActionSources { get; }
+        public static IncludedResponseProperty WebSearchCallResults { get; }
         public readonly bool Equals(IncludedResponseProperty other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -5886,8 +5889,19 @@ namespace OpenAI.Responses {
         public string Title { get; set; }
         public Uri Uri { get; set; }
     }
+    public class WebSearchAction : IJsonModel<WebSearchAction>, IPersistableModel<WebSearchAction> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class WebSearchActionSource : IJsonModel<WebSearchActionSource>, IPersistableModel<WebSearchActionSource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
         public WebSearchCallResponseItem();
+        public WebSearchAction Action { get; set; }
         public WebSearchCallStatus? Status { get; set; }
     }
     public enum WebSearchCallStatus {
@@ -5896,10 +5910,26 @@ namespace OpenAI.Responses {
         Completed = 2,
         Failed = 3
     }
+    public class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>, IPersistableModel<WebSearchFindInPageAction> {
+        public WebSearchFindInPageAction(Uri uri, string pattern);
+        public string Pattern { get; set; }
+        public Uri Uri { get; set; }
+    }
+    public class WebSearchOpenPageAction : WebSearchAction, IJsonModel<WebSearchOpenPageAction>, IPersistableModel<WebSearchOpenPageAction> {
+        public WebSearchOpenPageAction();
+        public Uri Uri { get; set; }
+    }
     public class WebSearchPreviewTool : ResponseTool, IJsonModel<WebSearchPreviewTool>, IPersistableModel<WebSearchPreviewTool> {
         public WebSearchPreviewTool();
         public WebSearchToolContextSize? SearchContextSize { get; set; }
         public WebSearchToolLocation UserLocation { get; set; }
+    }
+    public class WebSearchSearchAction : WebSearchAction, IJsonModel<WebSearchSearchAction>, IPersistableModel<WebSearchSearchAction> {
+        public WebSearchSearchAction();
+        public IList<string> Queries { get; }
+        [Obsolete("This property is obsolete. Use the Queries property instead.")]
+        public string Query { get; set; }
+        public IList<WebSearchActionSource> Sources { get; }
     }
     public class WebSearchTool : ResponseTool, IJsonModel<WebSearchTool>, IPersistableModel<WebSearchTool> {
         public WebSearchTool();
@@ -5941,6 +5971,10 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
+    }
+    public class WebSearchUriActionSource : WebSearchActionSource, IJsonModel<WebSearchUriActionSource>, IPersistableModel<WebSearchUriActionSource> {
+        public WebSearchUriActionSource(Uri uri);
+        public Uri Uri { get; set; }
     }
 }
 namespace OpenAI.VectorStores {

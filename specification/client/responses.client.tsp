@@ -19,6 +19,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
 @@clientName(Responses.compactConversation, "CompactResponse");
 
+@@clientName(Includable.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
+@@clientName(Includable.`message.input_image.image_url`, "MessageInputImageUri");
+@@clientName(Includable.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");
+
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);
@@ -244,7 +248,6 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ComputerToolCallItemResource);
 @@dynamicModel(ComputerToolCallOutputItemParam);
 @@dynamicModel(ComputerToolCallOutputItemResource);
-@@dynamicModel(WebSearchToolCallItemParam);
 @@dynamicModel(WebSearchToolCallItemResource);
 @@dynamicModel(FunctionToolCallItemParam);
 @@dynamicModel(FunctionToolCallItemResource);

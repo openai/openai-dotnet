@@ -113,8 +113,6 @@ namespace OpenAI.Responses
                         return InternalComputerUsePreviewToolCallItemParam.DeserializeInternalComputerUsePreviewToolCallItemParam(element, data, options);
                     case "computer_call_output":
                         return InternalComputerUsePreviewToolCallOutputItemParam.DeserializeInternalComputerUsePreviewToolCallOutputItemParam(element, data, options);
-                    case "web_search_call":
-                        return InternalWebSearchToolCallItemParam.DeserializeInternalWebSearchToolCallItemParam(element, data, options);
                     case "function_call":
                         return InternalFunctionToolCallItemParam.DeserializeInternalFunctionToolCallItemParam(element, data, options);
                     case "reasoning":
