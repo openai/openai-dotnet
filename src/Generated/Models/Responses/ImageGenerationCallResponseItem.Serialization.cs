@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>
     {
-        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, default, default, default, default, default, default, default, null)
+        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, default, default, default, default, default, default, default, null, null)
         {
         }
 
@@ -104,6 +104,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
             }
+            if (Optional.IsDefined(RevisedPrompt) && !Patch.Contains("$.revised_prompt"u8))
+            {
+                writer.WritePropertyName("revised_prompt"u8);
+                writer.WriteStringValue(RevisedPrompt);
+            }
             if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
                 writer.WritePropertyName("result"u8);
@@ -148,6 +153,7 @@ namespace OpenAI.Responses
             ImageGenToolCallOutputFormat? outputFormat = default;
             ImageGenToolCallQuality? quality = default;
             ImageGenToolCallSize? size = default;
+            string revisedPrompt = default;
             BinaryData imageResultBytes = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -206,6 +212,11 @@ namespace OpenAI.Responses
                     size = new ImageGenToolCallSize(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("revised_prompt"u8))
+                {
+                    revisedPrompt = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("result"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -228,6 +239,7 @@ namespace OpenAI.Responses
                 outputFormat,
                 quality,
                 size,
+                revisedPrompt,
                 imageResultBytes);
         }
     }

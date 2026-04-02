@@ -183,6 +183,7 @@ model ImageGenToolCallItemResource extends ItemResource {
     | "1792x1024"
     | "1024x1792"
     | null = "auto";
+  revised_prompt?: string;
   ...ImageGenToolCallItemBase;
 }
 
