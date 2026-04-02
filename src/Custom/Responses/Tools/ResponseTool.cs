@@ -142,6 +142,6 @@ public partial class ResponseTool
             inputFidelity: inputFidelity,
             inputImageMask: inputImageMask,
             partialImageCount: partialImageCount,
-            action: action ?? ImageGenerationToolAction.Auto);
+            action: action);
     }
 }
