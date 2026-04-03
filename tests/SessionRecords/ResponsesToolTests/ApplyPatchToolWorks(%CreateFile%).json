@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "637",
+        "Content-Length": "617",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
@@ -35,7 +35,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "The user has the following files:\r\n<BEGIN_FILES>\r\n===== src/app.py\r\nprint(\"hello\")\r\n<END_FILES>\r\n\r\nCreate a new file named NOTES.md with exactly these two lines:\r\nreview tests\r\nupdate docs\r\n\r\nDo not modify any existing files."
+                "text": "The user has the following files:\n<BEGIN_FILES>\n===== src/app.py\nprint(\"hello\")\n<END_FILES>\n\nCreate a new file named NOTES.md with exactly these two lines:\nreview tests\nupdate docs\n\nDo not modify any existing files."
               }
             ]
           }
@@ -45,7 +45,7 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e29270f4ce6df18-SEA",
+        "CF-RAY": "9e645bfab8331ef1-SEA",
         "Connection": "keep-alive",
         "Content-Length": "1587",
         "Content-Type": "application/json",
@@ -67,15 +67,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_00c8deec1841255d0069c5a130d6208193bfa4730420144f44",
+        "id": "resp_0e6d9ab2ae9cbf5c0069cf1a4c46088197846df22acaf7a6ec",
         "object": "response",
-        "created_at": 1774559536,
+        "created_at": 1775180364,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1774559537,
+        "completed_at": 1775180365,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -85,10 +85,10 @@
         "model": "gpt-5.1-2025-11-13",
         "output": [
           {
-            "id": "apc_00c8deec1841255d0069c5a1319e5c8193bc273046d71b60eb",
+            "id": "apc_0e6d9ab2ae9cbf5c0069cf1a4cce0481978b9c92a334bbb938",
             "type": "apply_patch_call",
             "status": "completed",
-            "call_id": "call_VnXPpyMnStTa9wGCGLc70MoK",
+            "call_id": "call_N54RdUiFU10lh2gcFsk9DckN",
             "operation": {
               "type": "create_file",
               "diff": "+review tests\n+update docs\n",
@@ -150,7 +150,7 @@
         "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_00c8deec1841255d0069c5a130d6208193bfa4730420144f44",
+        "previous_response_id": "resp_0e6d9ab2ae9cbf5c0069cf1a4c46088197846df22acaf7a6ec",
         "model": "gpt-5.1",
         "tools": [
           {
@@ -161,7 +161,7 @@
         "input": [
           {
             "type": "apply_patch_call_output",
-            "call_id": "call_VnXPpyMnStTa9wGCGLc70MoK",
+            "call_id": "call_N54RdUiFU10lh2gcFsk9DckN",
             "status": "completed"
           }
         ]
@@ -170,9 +170,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e292719ec86df18-SEA",
+        "CF-RAY": "9e645c02ff5e1ef1-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1715",
+        "Content-Length": "1726",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -191,15 +191,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_00c8deec1841255d0069c5a132906481939cdecc61714163bb",
+        "id": "resp_0e6d9ab2ae9cbf5c0069cf1a4d9fd48197ab130d89d56aa852",
         "object": "response",
-        "created_at": 1774559538,
+        "created_at": 1775180365,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1774559539,
+        "completed_at": 1775180367,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -209,7 +209,7 @@
         "model": "gpt-5.1-2025-11-13",
         "output": [
           {
-            "id": "msg_00c8deec1841255d0069c5a13358848193814b7293fc21ecf9",
+            "id": "msg_0e6d9ab2ae9cbf5c0069cf1a4eba3881978af8bdf5f1e44b1c",
             "type": "message",
             "status": "completed",
             "content": [
@@ -217,7 +217,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "I have added `NOTES.md` with exactly the requested contents:\n\nreview tests  \nupdate docs"
+                "text": "I’ve created `NOTES.md` with exactly the requested content and did not modify any existing files."
               }
             ],
             "role": "assistant"
@@ -225,7 +225,7 @@
         ],
         "parallel_tool_calls": true,
         "presence_penalty": 0.0,
-        "previous_response_id": "resp_00c8deec1841255d0069c5a130d6208193bfa4730420144f44",
+        "previous_response_id": "resp_0e6d9ab2ae9cbf5c0069cf1a4c46088197846df22acaf7a6ec",
         "prompt_cache_key": null,
         "prompt_cache_retention": null,
         "reasoning": {
@@ -252,15 +252,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 790,
+          "input_tokens": 789,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 23,
+          "output_tokens": 25,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 813
+          "total_tokens": 814
         },
         "user": null,
         "metadata": {}

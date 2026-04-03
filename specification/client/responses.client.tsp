@@ -75,6 +75,10 @@ using TypeSpec.HttpClient.CSharp;
 // is set by the client instead of being set by the server, and it is also required. The "status"
 // property is used to indicate if the client successfully applied the patch or not.
 
+// This is a data URL. Treat it as a string internally to avoid Uri limits.
+@@alternateType(ItemContentInputImage.image_url, string | null); 
+@@clientName(ItemContentInputImage.image_url, "ImageUri");
+
 // ------------ Tools ------------
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
@@ -92,6 +96,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(MCPToolFilter.read_only, "IsReadOnly");
 
 @@clientName(Responses.listInputItems, "GetResponseInputItems");
+
+// This is a data URL. Treat it as a string internally to avoid Uri limits.
+@@alternateType(ImageGenToolInputImageMask.image_url, string);
+@@clientName(ImageGenToolInputImageMask.image_url, "ImageUri");
 
 // ------------ Streaming ------------
 

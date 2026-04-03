@@ -2016,13 +2016,7 @@ model ImageGenTool extends Tool {
     Optional mask for inpainting. Contains `image_url`
     (string, optional) and `file_id` (string, optional).
     """)
-  input_image_mask?: {
-    /** Base64-encoded mask image. */
-    image_url?: url;
-
-    /** File ID for the mask image. */
-    file_id?: string;
-  };
+  input_image_mask?: ImageGenToolInputImageMask;
 
   /** Number of partial images to generate in streaming mode, from 0 (default value) to 3. */
   @minValue(0)
@@ -2031,6 +2025,11 @@ model ImageGenTool extends Tool {
 
   /** Whether to generate a new image or edit an existing image. Default: `auto`. */
   action?: ImageGenerationToolAction = ImageGenerationToolAction.Auto;
+}
+
+model ImageGenToolInputImageMask {
+  image_url?: url;
+  file_id?: string;
 }
 
 union ImageGenerationToolAction {
