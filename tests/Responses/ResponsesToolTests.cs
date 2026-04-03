@@ -25,7 +25,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 30;
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MCPToolWorks()
     {
         string serverLabel = "dmcp";
@@ -77,7 +77,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MCPToolStreamingWorks()
     {
         string serverLabel = "dmcp";
@@ -181,7 +181,6 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task MCPToolNeverRequiresApproval(bool useGlobalPolicy)
@@ -222,7 +221,6 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task MCPToolAlwaysRequiresApproval(bool useGlobalPolicy)
@@ -274,7 +272,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MCPToolWithAllowedTools()
     {
         string serverLabel = "dmcp";
@@ -315,7 +313,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(toolCallItem.Error, Is.Null);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MCPToolWithDisallowedTools()
     {
         string serverLabel = "dmcp";
@@ -347,7 +345,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FileSearch()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -404,7 +402,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FileSearchCallStreaming()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -491,7 +489,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(fileSearchItemId, Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -521,7 +519,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CodeInterpreterToolWithEmptyFileIds()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -552,7 +550,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
         ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>();
@@ -607,7 +605,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -669,7 +667,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CodeInterpreterToolStreaming()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -703,7 +701,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(completedCount, Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -768,7 +766,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -832,7 +830,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ImageGenToolWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -871,7 +869,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ImageGenToolWithAction()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -913,7 +911,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.RevisedPrompt, Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ImageGenToolStreaming()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -999,7 +997,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
 #if NET10_0_OR_GREATER
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
@@ -1051,7 +1049,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 #endif
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
@@ -1094,7 +1092,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     [Category("MPFD")]
     public async Task ImageGenToolInputMaskWithFileId()
     {
@@ -1164,7 +1162,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task WebSearchCall()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -1213,7 +1211,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task WebSearchCallWithReasoning()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -1265,7 +1263,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task WebSearchCallPreview()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -1307,7 +1305,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task WebSearchCallStreaming()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -1381,7 +1379,6 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase("CreateFile")]
     [TestCase("UpdateFile")]
     [TestCase("DeleteFile")]

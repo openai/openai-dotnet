@@ -14,7 +14,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         TestTimeoutInSeconds = 30;
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task BasicGenerationWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
@@ -29,7 +29,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageUri, ["stop"]);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GenerationWithOptionsWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
@@ -49,7 +49,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageUri, ["stop"]);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GenerationWithBytesResponseWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
@@ -68,7 +68,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void GenerateImageCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -77,7 +77,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GenerationOfMultipleImagesWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
@@ -105,7 +105,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>();
@@ -127,7 +127,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void GenerateImagesCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -137,7 +137,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GptImage1Works()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>("gpt-image-1");

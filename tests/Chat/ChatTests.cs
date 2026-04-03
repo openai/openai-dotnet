@@ -31,7 +31,7 @@ public class ChatTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 75;
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task HelloWorldChat()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -42,7 +42,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.Length, Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task HelloWorldWithTopLevelClient()
     {
         OpenAIClient client = GetProxiedOpenAIClient<OpenAIClient>();
@@ -52,7 +52,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.Length, Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MultiMessageChat()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -65,7 +65,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [Ignore("This test is failing consistently.")]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StreamingChat()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -98,7 +98,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(usage?.OutputTokenDetails?.ReasoningTokenCount, Is.Null.Or.EqualTo(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task TwoTurnChat()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -118,7 +118,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [Ignore("Temporarily disabled due to service instability.")]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ChatWithVision()
     {
         string mediaType = "image/png";
@@ -139,7 +139,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ChatWithBasicAudioOutput()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-audio-preview");
@@ -189,7 +189,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(streamedExpiresAt, Is.GreaterThan(DateTimeOffset.Parse("2025-01-01")));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ChatWithAudio()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-audio-preview");
@@ -279,7 +279,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(streamedUsage?.OutputTokenDetails?.AudioTokenCount, Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task AuthFailure()
     {
         string fakeApiKey = "not-a-real-key-but-should-be-sanitized";
@@ -300,7 +300,6 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(clientResultException.Message, Does.Not.Contain(fakeApiKey));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task TokenLogProbabilities(bool includeLogProbabilities)
@@ -352,7 +351,6 @@ public class ChatTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
@@ -408,7 +406,7 @@ public class ChatTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task NonStrictJsonSchemaWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-mini");
@@ -430,7 +428,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Console.WriteLine(completion);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task JsonResult()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -451,7 +449,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(blueProperty.GetString().ToLowerInvariant(), Contains.Substring("0000ff"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MultipartContentWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -472,7 +470,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Content[0].Text.ToLowerInvariant(), Does.Contain("dog").Or.Contain("pup").Or.Contain("kit"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StructuredOutputsWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -519,7 +517,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(stepsProperty.ValueKind == JsonValueKind.Array);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StructuredRefusalWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-2024-08-06");
@@ -576,7 +574,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Content[0].Text, Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StreamingStructuredRefusalWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-2024-08-06");
@@ -637,7 +635,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(finishReason, Is.EqualTo(ChatFinishReason.Stop));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     [NonParallelizable]
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
@@ -669,7 +667,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(output.value, Is.EqualTo(result.Value.Usage.OutputTokenCount));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ReasoningTokensWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
@@ -693,7 +691,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Usage.OutputTokenDetails?.ReasoningTokenCount, Is.LessThan(completion.Usage.OutputTokenCount));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task PredictedOutputsWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -747,7 +745,7 @@ public class ChatTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task O3miniDeveloperMessagesWork()
     {
         List<ChatMessage> messages =
@@ -768,7 +766,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Content[0].Text, Does.EndWith("Hope this helps!"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task WebSearchWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-search-preview");
@@ -785,7 +783,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Annotations, Has.Count.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     [Category("MPFD")]
     public async Task FileIdContentWorks()
     {
@@ -813,7 +811,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FileBinaryContentWorks()
     {
         ChatMessageContentPart binaryFileContentPart
@@ -840,7 +838,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesHandlesNonExistentCompletion()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -863,7 +861,7 @@ public class ChatTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void GetChatCompletionMessagesWithInvalidParameters()
     {
         ChatClient client = CreateProxyFromClient(TestEnvironment.GetTestClient<ChatClient>());
@@ -887,7 +885,7 @@ public class ChatTests : OpenAIRecordedTestBase
         });
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ChatServiceTierWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
@@ -905,7 +903,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [SyncOnly]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void StreamingChatCanBeCancelled()
     {
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
@@ -949,7 +947,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [AsyncOnly]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StreamingChatCanBeCancelledAsync()
     {
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
@@ -995,7 +993,7 @@ public class ChatTests : OpenAIRecordedTestBase
         });
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CompleteChatStreamingClosesNetworkStream()
     {
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
@@ -1040,7 +1038,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(response.IsDisposed);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ValidateConcurrency()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();

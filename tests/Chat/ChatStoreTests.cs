@@ -22,7 +22,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 30;
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ChatMetadata()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -48,7 +48,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithPagination()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -105,7 +105,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithAfterIdPagination()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -165,7 +165,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithOrderFiltering()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -238,7 +238,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     }
 
     [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithMetadataFiltering()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -303,7 +303,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithModelFiltering()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -347,7 +347,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithEmptyOptions()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -385,7 +385,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     }
 
     [LiveOnly(Reason ="Temp while sorting out flakiness in playback")]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithCombinedFilters()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -436,7 +436,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StoredChatCompletionsWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -471,7 +471,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     }
 
     [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task UpdateChatCompletionWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -513,7 +513,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         });
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsValidatesCollectionEnumeration()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -568,7 +568,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsHandlesLargeLimits()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -609,7 +609,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionsWithMinimalLimits()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -650,7 +650,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesWithBasicUsage()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -690,7 +690,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesWithPagination()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -778,7 +778,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesWithAfterIdPagination()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -835,7 +835,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesWithOrderFiltering()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -894,7 +894,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesWithCancellationToken()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -946,7 +946,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetChatCompletionMessagesWithCombinedOptions()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();

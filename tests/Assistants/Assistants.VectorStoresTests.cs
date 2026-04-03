@@ -33,7 +33,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 45;
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanCreateGetAndDeleteVectorStores()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -103,7 +103,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         });
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanEnumerateVectorStores()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -150,7 +150,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         Assert.That(lastIdSeen, Is.EqualTo(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanAssociateFiles()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -200,7 +200,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         Assert.That(count, Is.EqualTo(fileCount - 1));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task Pagination_CanRehydrateVectorStoreFileCollection()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -278,7 +278,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.EqualTo(2));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanPaginateGetVectorStoreFilesInBatch()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -355,7 +355,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         Assert.That(itemsInPages, Is.EqualTo(10));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanTestGetVectorStoreFilesInBatchCollectionOptions()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -462,7 +462,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanRehydrateGetVectorStoreFilesInBatchPagination()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -537,7 +537,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         return els.Select(el => ModelReaderWriter.Read<VectorStoreFile>(BinaryData.FromString(el.GetRawText())));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanUseBatchIngestion()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
@@ -575,7 +575,6 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(ChunkingStrategyKind.Auto)]
     [TestCase(ChunkingStrategyKind.Static)]
     public async Task CanApplyChunkingStrategy(ChunkingStrategyKind strategyKind)
@@ -632,7 +631,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanGetVectorStores()
     {
         VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();

@@ -22,7 +22,6 @@ public partial class TranslationTests : OpenAIRecordedTestBase
         UsingFilePath,
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranslationWorks(AudioSourceKind audioSourceKind)
@@ -47,7 +46,6 @@ public partial class TranslationTests : OpenAIRecordedTestBase
         Assert.That(translation.Text.ToLowerInvariant(), Contains.Substring("whisper"));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]

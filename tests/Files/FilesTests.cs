@@ -38,7 +38,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ListFiles()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -128,7 +128,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     [TestCaseSource(nameof(s_fileSourceKindSource))]
     public async Task UploadFile(FileSourceKind fileSourceKind)
     {
@@ -190,7 +190,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void UploadFileCanParseServiceError()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -205,7 +205,6 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task DeleteFile(bool useFileInfoOverload)
@@ -235,7 +234,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void DeleteFileCanParseServiceError()
     {
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -244,7 +243,7 @@ public class FilesTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -283,7 +282,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void GetFileCanParseServiceError()
     {
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -292,7 +291,7 @@ public class FilesTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task DownloadContent()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -326,7 +325,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void DownloadFileCanParseServiceError()
     {
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
@@ -335,13 +334,13 @@ public class FilesTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void SerializeFileCollection()
     {
         // TODO: Add this test.
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task NonAsciiFilename()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -355,7 +354,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task UserDataPurpose()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901

@@ -25,7 +25,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         UsingFilePath,
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -50,7 +49,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioTimestampGranularities.Default)]
     [TestCase(AudioTimestampGranularities.Word)]
     [TestCase(AudioTimestampGranularities.Segment)]
@@ -121,7 +119,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]
@@ -184,7 +181,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(TestModel.Audio_Gpt_4o_Mini_Transcribe)]
     [TestCase(TestModel.Audio_Whisper)]
     public async Task TranscriptionUsageWorks(string model)
@@ -214,7 +210,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task IncludesWork()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
@@ -232,7 +228,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StreamingIncludesWork()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
@@ -266,7 +262,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(streamedDeltaLogProbs, Has.Count.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task BadTranscriptionRequest()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
@@ -293,7 +289,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(caughtException.Message?.ToLower(), Contains.Substring("invalid language"));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -338,7 +333,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         inputStream?.Dispose();
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
@@ -364,7 +358,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task DiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -404,7 +397,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task DiarizedTranscriptionWithKnownSpeakersWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
@@ -446,7 +439,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(foundKnownSpeaker, Is.True, "Expected at least one segment attributed to the known speaker 'agent'.");
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task DiarizedTranscriptionHasUsage()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
@@ -474,7 +467,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task DiarizedTranscriptionSegmentsAreOrdered()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
@@ -500,7 +493,6 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingDiarizedTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -558,7 +550,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         inputStream?.Dispose();
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task TranscriptionWithAutoChunkingStrategyWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);
@@ -586,7 +578,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task TranscriptionWithCustomChunkingStrategyWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Transcribe_Diarize);

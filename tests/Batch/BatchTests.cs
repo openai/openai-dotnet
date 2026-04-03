@@ -26,7 +26,7 @@ public class BatchTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 65;
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ListBatchesProtocol()
     {
         BatchClient client = GetProxiedOpenAIClient<BatchClient>();
@@ -54,7 +54,7 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ListBatchesAsync_WithOptions_PageSizeLimitAndItems()
     {
         BatchClient client = GetProxiedOpenAIClient<BatchClient>();
@@ -70,7 +70,7 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ListBatchesAsync_WithOptions_AfterIdStartsFromNextPage()
     {
         BatchClient client = GetProxiedOpenAIClient<BatchClient>();
@@ -93,7 +93,7 @@ public class BatchTests : OpenAIRecordedTestBase
         await AssertNoOverlapWithFirstPageAsync(client, secondOptions, firstPageIds);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void ListBatchesAsync_HonorsCancellationToken()
     {
         BatchClient client = GetProxiedOpenAIClient<BatchClient>();
@@ -107,7 +107,7 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.ThrowsAsync<TaskCanceledException>(async () => await enumerator.MoveNextAsync().AsTask());
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CreateGetAndCancelBatchProtocol()
     {
         using MemoryStream testFileStream = new();
@@ -166,7 +166,6 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.That(status, Is.EqualTo("validating"));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task CanRehydrateBatchOperation(bool useBatchId)

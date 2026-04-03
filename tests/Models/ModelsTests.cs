@@ -16,7 +16,7 @@ public class ModelsTests : OpenAIRecordedTestBase
     {
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ListModels()
     {
         OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
@@ -36,7 +36,7 @@ public class ModelsTests : OpenAIRecordedTestBase
         Console.WriteLine($"Total model count: {allModels.Count}");
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetModelInfo()
     {
         OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
@@ -52,7 +52,7 @@ public class ModelsTests : OpenAIRecordedTestBase
         Assert.That(model.OwnedBy.ToLowerInvariant(), Does.Contain("system"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void GetModelCanParseServiceError()
     {
         OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
@@ -63,7 +63,7 @@ public class ModelsTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void DeleteModelCanParseServiceError()
     {
         OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
@@ -77,7 +77,7 @@ public class ModelsTests : OpenAIRecordedTestBase
         Assert.That((ex.Status == 403 || ex.Status == 404), Is.True);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void SerializeModelCollection()
     {
         // TODO: Add this test.

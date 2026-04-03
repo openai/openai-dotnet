@@ -89,7 +89,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         fileClient.DeleteFile(validationFile.Id);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MinimalRequiredParams()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -105,7 +105,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         Assert.That(ft.HasCompleted);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task AllParameters()
     {
         // This test does not check for Integrations because it requires a valid API key
@@ -148,7 +148,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         Assert.That(ft.ValidationFileId, Is.EqualTo(validationFile.Id));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     [Explicit("This test requires wandb.ai account and api key integration.")]
     public void WandBIntegrations()
     {
@@ -164,7 +164,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         job.CancelAndUpdate();
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void ExceptionThrownOnInvalidFileName()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -173,7 +173,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         );
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void ExceptionThrownOnInvalidModelName()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -182,7 +182,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         );
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void ExceptionThrownOnInvalidValidationIdAsync()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -196,7 +196,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         });
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public void GetJobs()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -223,7 +223,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         Assert.That(counter, Is.LessThanOrEqualTo(10));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetJobsWithAfter()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -243,7 +243,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     /// First one is that the job is created
     /// Second one is "validating training file"
     /// If this test starts failing because of the wrong count, please first check if the above is still true
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetJobEvents()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
@@ -270,7 +270,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetCheckpoints()
     {
         FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();

@@ -71,7 +71,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StreamingResponses()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(); // "computer-use-alpha");
@@ -99,7 +99,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(string.Concat(deltaTextSegments), Is.EqualTo(finalResponseText));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task StreamingResponsesWithReasoningSummary()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -159,7 +159,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(inPart, Is.False, "Ended while still inside a reasoning summary part.");
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase("gpt-4o-mini")]
     [TestCase("computer-use-preview")]
     public async Task ResponsesHelloWorldWithTool(string model)
@@ -209,7 +208,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.Count, Is.EqualTo(1));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ResponsesWithReasoning()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -238,7 +237,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ReasoningWithStoreDisabled()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -267,7 +266,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response2.GetOutputText(), Is.Not.Null.Or.Empty);
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase("computer-use-preview-2025-03-11")]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
@@ -290,7 +288,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanDeleteResponse()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -311,7 +309,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.ThrowsAsync<ClientResultException>(RetrieveThatResponseAsync);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanOptOutOfStorage()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -327,7 +325,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(expectedException.Message, Does.Contain("not found"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ResponseUsingConversations()
     {
         ConversationClient conversationClient = GetProxiedOpenAIClient<ConversationClient>();
@@ -384,7 +382,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(GetContentText(secondLastItem), Is.EqualTo("tell me another"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ResponseServiceTierWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -400,7 +398,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.ServiceTier, Is.EqualTo(ResponseServiceTier.Default));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task OutputTextMethod()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -428,7 +426,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.GetOutputText(), Is.Null);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MessageHistoryWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -446,7 +444,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
 #if NET10_0_OR_GREATER
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task ImageInputWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -471,7 +469,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 #endif
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FileInputFromIdWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -500,7 +498,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FileInputFromBinaryWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -520,7 +518,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response?.GetOutputText(), Does.Contain("pizza"));
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase(ResponsesTestInstructionMethod.InstructionsProperty)]
     [TestCase(ResponsesTestInstructionMethod.SystemMessage)]
     [TestCase(ResponsesTestInstructionMethod.DeveloperMessage)]
@@ -596,7 +593,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task TwoTurnCrossModel()
     {
         ResponsesClient client1 = GetProxiedOpenAIClient<ResponsesClient>();
@@ -609,7 +606,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
     }
 
-    [OpenAI.Tests.RecordedTest]
     [TestCase("gpt-4o-mini")]
     [TestCase("computer-use-preview", Ignore = "Not yet supported with computer-use-preview")]
     public async Task StructuredOutputs(string modelName)
@@ -657,7 +653,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         });
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FunctionCallWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -703,7 +699,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         { }
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FunctionCallStreamingWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -753,7 +749,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MaxTokens()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -772,7 +768,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(message?.Status, Is.EqualTo(MessageStatus.Incomplete));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task FunctionToolChoiceWorks()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -798,7 +794,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanStreamBackgroundResponses()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -865,7 +861,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(completedResponse?.OutputItems?.FirstOrDefault(), Is.Not.Null);
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanCancelBackgroundResponses()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -887,7 +883,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(cancelledResponse.Status, Is.EqualTo(ResponseStatus.Cancelled));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task GetResponseNoOptions()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -899,7 +895,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(createdResponse.Id, Is.EqualTo(retrievedResponse.Id));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanGetInputTokenCounts()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -923,7 +919,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(root.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task CanCompactConversation()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -989,7 +985,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(usageElement.GetProperty("total_tokens").GetInt32(), Is.GreaterThan(0));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task SingleResponseInstruction()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -1012,7 +1008,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(instructionItem.Content[0].Text, Is.EqualTo(instructionsText));
     }
 
-    [OpenAI.Tests.RecordedTest]
+    [Test]
     public async Task MultipleResponseInstructions()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
