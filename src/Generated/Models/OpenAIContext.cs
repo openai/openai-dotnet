@@ -864,6 +864,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(VectorStoreModificationOptions))]
     [ModelReaderWriterBuildable(typeof(WebSearchAction))]
     [ModelReaderWriterBuildable(typeof(WebSearchActionSource))]
+    [ModelReaderWriterBuildable(typeof(WebSearchActionUriSource))]
     [ModelReaderWriterBuildable(typeof(WebSearchCallResponseItem))]
     [ModelReaderWriterBuildable(typeof(WebSearchFindInPageAction))]
     [ModelReaderWriterBuildable(typeof(WebSearchOpenPageAction))]
@@ -873,7 +874,6 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(WebSearchToolApproximateLocation))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolFilters))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolLocation))]
-    [ModelReaderWriterBuildable(typeof(WebSearchUriActionSource))]
     [ModelReaderWriterBuildable(typeof(WeightsAndBiasesIntegration))]
     public partial class OpenAIContext : ModelReaderWriterContext
     {

@@ -4,8 +4,61 @@
 
 ### Features Added
 
+- OpenAI.Audio:
+  - Added support for audio transcriptions with speaker diarization.
+    - Added the `Diarized` value to the `AudioTranscriptionFormat` extensible enum.
+    - Added `KnownSpeakerNames` and `KnownSpeakerReferenceUris` properties to `AudioTranscriptionOptions`.
+    - Added `TranscribeAudioDiarized` and `TranscribeAudioDiarizedAsync` methods to the `AudioClient`.
+    - Added the following derived types of `StreamingAudioTranscriptionUpdate`:
+      - `StreamingAudioTranscriptionTextSegmentUpdate`
+  - Added support for streaming speech generation.
+    - Added `GenerateSpeeechStreaming` and `GenerateSpeechStreamingAsync` methods to the `AudioClient`.
+    - Added the `StreamingSpeechUpdate` type with the following derived types:
+      - `StreamingSpeechAudioDeltaUpdate`
+      - `StreamingSpeechAudioDoneUpdate`
+  - Added support for managing custom voices and voice consents.
+    - Added the following protocol methods to the `AudioClient`:
+      - `CreateVoice` and `CreateVoiceAsync`
+      - `CreateVoiceConsent` and `CreateVoiceConsentAsync`
+      - `DeleteVoiceConsent` and `DeleteVoiceConsentAsync`
+      - `GetVoiceConsent` and `GetVoiceConsentAsync`
+      - `GetVoiceConsents` and `GetVoiceConsentsAsync`
+      - `UpdateVoiceConsent` and `UpdateVoiceConsentAsync`
+  - Added support for controlling how input audio is cut into chunks for transcription requests.
+    - Added the `ChunkingStrategy` property to `AudioTranscriptionOptions`.
+  - Added support for viewing the usage statistics of transcription requests.
+    - Added the `Usage` property to `AudioTranscription`.
+    - Added the `AudioTranscriptionUsage` type with the following derived types:
+      - `AudioTranscriptionTokenUsage`
+      - `AudioTranscriptionDurationUsage`
+  - Added support for viewing the usage statistics of streaming speech generation requests.
+    - Added the `SpeechTokenUsage` type.
 - OpenAI.Responses:
-  - Added `Action` property to `ImageGenerationTool` and `ImageGenerationToolAction` enum with values `Generate`, `Edit`, and `Auto`. The `CreateImageGenerationTool` factory method defaults the action to `Auto`.
+  - Added support for allowing the model to create, update, and delete files in codebases using structured diffs via the Apply Patch tool.
+    - Added the following derived types of `ResponseTool`:
+      - `ApplyPatchTool`
+    - Added the following derived types of `ResponseItem`:
+      - `ApplyPatchCallItem`
+      - `ApplyPatchCallOutputItem`
+    - Added the `ApplyPatchOperation` type with the following derived types:
+      - `ApplyPatchCreateFileOperation`
+      - `ApplyPatchDeleteFileOperation`
+      - `ApplyPatchUpdateFileOperation`
+  - Added support for viewing the specific action that the model takes as part of a web search.
+    - Added the `Action` property to `WebSearchCallResponseItem`.
+    - Added the `WebSearchAction` type with the following derived types:
+      - `WebSearchFindInPageAction`
+      - `WebSearchOpenPageAction`
+      - `WebSearchSearchAction`
+    - Added the `WebSearchCallActionSources` value to the `IncludedResponseProperty` extensible enum.
+    - Added the `WebSearchActionSource` type with the following derived types:
+      - `WebSearchActionUriSource`
+  - Added support for controlling whether the Image Generation tool generates a new image or edits an existing image.
+    - Added the `Action` property to `ImageGenerationTool`.
+    - Added the `ImageGenerationToolAction` extensible enum with values `Generate`, `Edit`, and `Auto`.
+- OpenAI.VectorStores:
+  - Added support for adding descriptions to Vector Stores.
+    - Added the `Description` property to `VectorStoreCreationOptions`.
 
 ### Bugs Fixed
 
@@ -15,6 +68,23 @@
 ### Other Changes
 
 - Added `ConfigurationSchema.json` to the NuGet package via the MSBuild `JsonSchemaSegment` feature, enabling automatic JSON IntelliSense and validation for `appsettings.json` when configuring OpenAI clients. Provides per-client model suggestions and OpenAI-specific options, composing with System.ClientModel's base credential and pipeline definitions.
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.Containers:
+  - Renamed the `Bytes` property of `ContainerFileResource` to `SizeInBytes` and changed its type from `int` to `long?`.
+- OpenAI.Conversations:
+  - Renamed the `MessageOutputTextLogprobs` value of the `IncludedConversationItemProperty` extensible enum to `MessageOutputTextLogProbabilities`.
+  - Changed the type of the `limit` parameter in the `GetConversationItems` and `GetConversationItemsAsync` protocol methods from `long?` to `int?`.
+- OpenAI.Files:
+  - Changed the type of the `limit` parameter in the `GetFiles` and `GetFilesAsync` protocol methods from `long?` to `int?`.
+- OpenAI.Responses:
+  - Changed the type of the `InputImageUri` property of `ResponseContentPart` from `Uri` to `string`.
+  - Changed the type of the `ImageUri` property of `ImageGenerationToolInputImageMask` from `Uri` to `string`.
+- OpenAI.VectorStores:
+  - Renamed the `Size` property of `VectorStoreFile` to `UsageInBytes` and changes its type from `int` to `long?`.
+- OpenAI.Videos:
+  - Changed the type of the `limit` parameter in the `GetVideo` and `GetVideosAsync` protocol methods from `long?` to `int?`.
 
 ## 2.9.1 (2026-03-02)
 

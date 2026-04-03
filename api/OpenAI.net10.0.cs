@@ -6840,6 +6840,11 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
+    public class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>, IPersistableModel<WebSearchActionUriSource> {
+        public WebSearchActionUriSource(Uri uri);
+        public Uri Uri { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
         public WebSearchCallResponseItem();
         public WebSearchAction Action { get; set; }
@@ -6924,11 +6929,6 @@ namespace OpenAI.Responses {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
-    }
-    [Experimental("OPENAI001")]
-    public class WebSearchUriActionSource : WebSearchActionSource, IJsonModel<WebSearchUriActionSource>, IPersistableModel<WebSearchUriActionSource> {
-        public WebSearchUriActionSource(Uri uri);
-        public Uri Uri { get; set; }
     }
 }
 namespace OpenAI.VectorStores {

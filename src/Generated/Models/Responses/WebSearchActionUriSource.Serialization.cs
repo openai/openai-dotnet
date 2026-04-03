@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class WebSearchUriActionSource : WebSearchActionSource, IJsonModel<WebSearchUriActionSource>
+    public partial class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>
     {
-        internal WebSearchUriActionSource() : this(InternalWebSearchActionSearchSourcesType.Url, default, null)
+        internal WebSearchActionUriSource() : this(InternalWebSearchActionSearchSourcesType.Url, default, null)
         {
         }
 
         protected override WebSearchActionSource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchUriActionSource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchActionUriSource>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchUriActionSource(document.RootElement, data, options);
+                        return DeserializeWebSearchActionUriSource(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(WebSearchUriActionSource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchUriActionSource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchActionUriSource>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(WebSearchUriActionSource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<WebSearchUriActionSource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<WebSearchActionUriSource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        WebSearchUriActionSource IPersistableModel<WebSearchUriActionSource>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchUriActionSource)PersistableModelCreateCore(data, options);
+        WebSearchActionUriSource IPersistableModel<WebSearchActionUriSource>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchActionUriSource)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<WebSearchUriActionSource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<WebSearchActionUriSource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<WebSearchUriActionSource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<WebSearchActionUriSource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +66,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchUriActionSource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchActionUriSource>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(WebSearchUriActionSource)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,20 +83,20 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        WebSearchUriActionSource IJsonModel<WebSearchUriActionSource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchUriActionSource)JsonModelCreateCore(ref reader, options);
+        WebSearchActionUriSource IJsonModel<WebSearchActionUriSource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchActionUriSource)JsonModelCreateCore(ref reader, options);
 
         protected override WebSearchActionSource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchUriActionSource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchActionUriSource>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(WebSearchUriActionSource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(WebSearchActionUriSource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchUriActionSource(document.RootElement, null, options);
+            return DeserializeWebSearchActionUriSource(document.RootElement, null, options);
         }
 
-        internal static WebSearchUriActionSource DeserializeWebSearchUriActionSource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static WebSearchActionUriSource DeserializeWebSearchActionUriSource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -121,7 +121,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchUriActionSource(kind, patch, uri);
+            return new WebSearchActionUriSource(kind, patch, uri);
         }
     }
 }
