@@ -67,6 +67,7 @@ public partial class ResponseContentPart
             Detail = imageDetailLevel,
         };
     }
+    
     public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, ResponseImageDetailLevel? imageDetailLevel = null)
     {
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
