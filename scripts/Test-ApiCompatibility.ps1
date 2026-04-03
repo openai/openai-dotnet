@@ -175,6 +175,7 @@ $experimentalNamespaces = @(
     "OpenAI.Graders",
     "OpenAI.Realtime",
     "OpenAI.Responses",
+    "OpenAI.Skills",
     "OpenAI.VectorStores"
 )
 

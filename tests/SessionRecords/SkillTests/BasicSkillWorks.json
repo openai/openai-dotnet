@@ -1,0 +1,276 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/skills",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "638",
+        "Content-Type": "multipart/form-data; boundary=\"TvSnEhTXqFT9mam==tqJnMBEZAhJFORd8XOQK9hDkNVFfReUhPVqNhe2fmNFyUMPqrFH1I\"",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": [
+        "--TvSnEhTXqFT9mam==tqJnMBEZAhJFORd8XOQK9hDkNVFfReUhPVqNhe2fmNFyUMPqrFH1I\r\n",
+        "Content-Type: text/markdown\r\n",
+        "Content-Disposition: form-data; name=\"files[]\"; filename=\"basic_math/SKILL.md\"; filename*=utf-8''basic_math%2fSKILL.md\r\n",
+        "\r\n",
+        "---\r\n",
+        "name: basic-math\r\n",
+        "description: Add or multiply numbers.\r\n",
+        "---\r\n",
+        "\r\n",
+        "Use this skill when you need a quick sum or product of numbers.\r\n",
+        "\r\n",
+        "## Addition\r\n",
+        "\r\n",
+        "To add two numbers, compute `a + b`.\r\n",
+        "\r\n",
+        "Example: `add(3, 5)` returns `8`.\r\n",
+        "\r\n",
+        "## Multiplication\r\n",
+        "\r\n",
+        "To multiply two numbers, compute `a * b`.\r\n",
+        "\r\n",
+        "Example: `multiply(4, 7)` returns `28`.\r\n",
+        "\r\n",
+        "--TvSnEhTXqFT9mam==tqJnMBEZAhJFORd8XOQK9hDkNVFfReUhPVqNhe2fmNFyUMPqrFH1I--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e6b531cda5b346b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "237",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skill_69d0379952288190bb7830b30b7174cc0c225d7cc62c8ba3",
+        "object": "skill",
+        "created_at": 1775253401,
+        "default_version": "1",
+        "description": "Add or multiply numbers.",
+        "latest_version": "1",
+        "name": "basic-math"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d0379952288190bb7830b30b7174cc0c225d7cc62c8ba3",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e6b531ebfbf346b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "237",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skill_69d0379952288190bb7830b30b7174cc0c225d7cc62c8ba3",
+        "object": "skill",
+        "created_at": 1775253401,
+        "default_version": "1",
+        "description": "Add or multiply numbers.",
+        "latest_version": "1",
+        "name": "basic-math"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/skills",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e6b53222938346b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3227",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "skill_69d0373526788193849a62a049ddf0d9000afb7117fdb66e",
+            "object": "skill",
+            "created_at": 1775253301,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "1",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d0373346808190978826621ff7f162017cf74ce24f9dbb",
+            "object": "skill",
+            "created_at": 1775253299,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "1",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d02809779c81909fc03027885b290c0686531de29876bb",
+            "object": "skill",
+            "created_at": 1775249417,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "1",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d028085e1c81909cd2d03532d4fc2b0f226091c87a45c7",
+            "object": "skill",
+            "created_at": 1775249416,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "1",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d026e9b2b48190b4816335d3eb92ab05303a726ae39dce",
+            "object": "skill",
+            "created_at": 1775249129,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "2",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d024b0c1c881908fb6ee4b01f8c5c00510993bf6e77ad4",
+            "object": "skill",
+            "created_at": 1775248560,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "1",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d024afd84c81909010166647ccb3630338d7a767a271e0",
+            "object": "skill",
+            "created_at": 1775248559,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "1",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d02331a868819099fddfe4f302d20e079e9bd53a9a4c0f",
+            "object": "skill",
+            "created_at": 1775248177,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "2",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69d01e961514819099bccb2348ac4a6c0457e83f1d803f07",
+            "object": "skill",
+            "created_at": 1775246998,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "2",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69cff7af2e4c8190aaef533cefe481cc052000a2885eaac4",
+            "object": "skill",
+            "created_at": 1775237039,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "2",
+            "name": "basic-math"
+          },
+          {
+            "id": "skill_69cff7ab819c8190a38c8788eb005542074a8175a03e3f09",
+            "object": "skill",
+            "created_at": 1775237035,
+            "default_version": "1",
+            "description": "Add or multiply numbers.",
+            "latest_version": "2",
+            "name": "basic-math"
+          }
+        ],
+        "first_id": "skill_69d0373526788193849a62a049ddf0d9000afb7117fdb66e",
+        "has_more": false,
+        "last_id": "skill_69cff7ab819c8190a38c8788eb005542074a8175a03e3f09"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d0379952288190bb7830b30b7174cc0c225d7cc62c8ba3",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e6b53260bd7346b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "116",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skill_69d0379952288190bb7830b30b7174cc0c225d7cc62c8ba3",
+        "object": "skill.deleted",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}
