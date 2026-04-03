@@ -34,7 +34,7 @@ public readonly partial struct AudioTranscriptionFormat
     [CodeGenMember("Vtt")]
     public static AudioTranscriptionFormat Vtt { get; } = new AudioTranscriptionFormat(VttValue);
 
-    // CUSTOM:git
+    // CUSTOM:
     // - Renamed.
     // - Made experimental.
     /// <summary> JSON containing transcription text with diarization metadata, such as speakers and segments. </summary>
