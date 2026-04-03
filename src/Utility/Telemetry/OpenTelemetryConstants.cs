@@ -2,8 +2,12 @@
 
 internal class OpenTelemetryConstants
 {
-    // follow OpenTelemetry GenAI semantic conventions:
-    // https://github.com/open-telemetry/semantic-conventions/tree/v1.27.0/docs/gen-ai
+    // OpenTelemetry GenAI semantic conventions.
+
+    // Default (v1.27.0): https://github.com/open-telemetry/semantic-conventions/tree/v1.27.0/docs/gen-ai
+
+    // Set OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental to use the latest conventions
+    // (https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai).
 
     public const string ErrorTypeKey = "error.type";
     public const string ServerAddressKey = "server.address";
@@ -23,8 +27,12 @@ internal class OpenTelemetryConstants
     public const string GenAiResponseFinishReasonKey = "gen_ai.response.finish_reasons";
     public const string GenAiResponseModelKey = "gen_ai.response.model";
 
+    // v1.27.0: gen_ai.system
     public const string GenAiSystemKey = "gen_ai.system";
     public const string GenAiSystemValue = "openai";
+
+    // Latest (replaces gen_ai.system): gen_ai.provider.name
+    public const string GenAiProviderNameKey = "gen_ai.provider.name";
 
     public const string GenAiTokenTypeKey = "gen_ai.token.type";
 

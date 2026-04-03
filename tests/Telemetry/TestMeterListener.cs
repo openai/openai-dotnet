@@ -60,9 +60,19 @@ internal class TestMeterListener : IDisposable
         _listener.Dispose();
     }
 
-    public static void ValidateChatMetricTags(TestMeasurement measurement, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatMetricTags(TestMeasurement measurement, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443, bool useLatestSemconv = false)
     {
-        Assert.That(measurement.tags["gen_ai.system"], Is.EqualTo("openai"));
+        if (useLatestSemconv)
+        {
+            Assert.That(measurement.tags["gen_ai.provider.name"], Is.EqualTo("openai"));
+            Assert.That(measurement.tags.ContainsKey("gen_ai.system"), Is.False);
+        }
+        else
+        {
+            Assert.That(measurement.tags["gen_ai.system"], Is.EqualTo("openai"));
+            Assert.That(measurement.tags.ContainsKey("gen_ai.provider.name"), Is.False);
+        }
+
         Assert.That(measurement.tags["gen_ai.operation.name"], Is.EqualTo("chat"));
         Assert.That(measurement.tags["server.address"], Is.EqualTo(host));
         Assert.That(measurement.tags["gen_ai.request.model"], Is.EqualTo(requestModel));
@@ -75,9 +85,9 @@ internal class TestMeterListener : IDisposable
         }
     }
 
-    public static void ValidateChatMetricTags(TestMeasurement measurement, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatMetricTags(TestMeasurement measurement, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443, bool useLatestSemconv = false)
     {
-        ValidateChatMetricTags(measurement, (ChatCompletion)null, requestModel, host, port);
+        ValidateChatMetricTags(measurement, (ChatCompletion)null, requestModel, host, port, useLatestSemconv);
         Assert.That(measurement.tags.ContainsKey("error.type"));
         Assert.That(measurement.tags["error.type"], Is.EqualTo(ex.GetType().FullName));
     }
