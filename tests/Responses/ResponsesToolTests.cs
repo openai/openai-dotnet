@@ -1006,18 +1006,15 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         string imagePath = Path.Combine("Assets", "images_empty_room.png");
         string imageMediaType = "image/png";
-        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath));
-        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
+        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath), imageMediaType);
 
         string maskPath = Path.Combine("Assets", "images_empty_room_with_mask.png");
         string maskMediaType = "image/png";
-        BinaryData maskBytes = BinaryData.FromBytes(File.ReadAllBytes(maskPath));
-        Uri maskDataUri = new($"data:{maskMediaType};base64,{Convert.ToBase64String(maskBytes.ToArray())}");
-
+        BinaryData maskBytes = BinaryData.FromBytes(File.ReadAllBytes(maskPath), maskMediaType);
 
         List<ResponseItem> inputItems = [
             ResponseItem.CreateUserMessageItem("Edit this image by adding a big cat with big round eyes and large cat ears, sitting in an empty room and looking at the camera."),
-            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageDataUri)])
+            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageBytes)])
         ];
 
         CreateResponseOptions options = new(TestModel.Responses, inputItems)
@@ -1029,7 +1026,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     size: ImageGenerationToolSize.W1024xH1024,
                     quality: ImageGenerationToolQuality.Low,
-                    inputImageMask: new(maskDataUri))
+                    inputImageMask: new(maskBytes))
             }
         };
 

@@ -231,11 +231,10 @@ public partial class ResponsesSmokeTests
         }
 
         string imageMediaType = "image/png";
-        BinaryData imageBytes = BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data"));
-        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
+        BinaryData imageBytes = BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data"), imageMediaType);
 
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
-            imageDataUri,
+            imageBytes,
             ResponseImageDetailLevel.Low);
 
         AssertExpectedImagePart(imagePart);

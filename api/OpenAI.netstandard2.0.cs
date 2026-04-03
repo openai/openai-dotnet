@@ -4928,10 +4928,11 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
+        public ImageGenerationToolInputImageMask(BinaryData imageBytes);
         public ImageGenerationToolInputImageMask(string fileId);
         public ImageGenerationToolInputImageMask(Uri imageUri);
-        public string FileId { get; }
-        public Uri ImageUri { get; }
+        public string FileId { get; set; }
+        public string ImageUri { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -5230,7 +5231,7 @@ namespace OpenAI.Responses {
         public Uri InputFileUri { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
-        public Uri InputImageUri { get; }
+        public string InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
@@ -5241,6 +5242,7 @@ namespace OpenAI.Responses {
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
         public static ResponseContentPart CreateInputFilePart(string fileId);
         public static ResponseContentPart CreateInputFilePart(Uri fileUri);
+        public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputTextPart(string text);

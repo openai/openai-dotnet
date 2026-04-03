@@ -2,7 +2,6 @@
 
 #nullable disable
 
-using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -21,7 +20,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationToolInputImageMask(Uri imageUri, string fileId, in JsonPatch patch)
+        internal ImageGenerationToolInputImageMask(string imageUri, string fileId, in JsonPatch patch)
         {
             ImageUri = imageUri;
             FileId = fileId;
@@ -33,5 +32,9 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        public string ImageUri { get; set; }
+
+        public string FileId { get; set; }
     }
 }
