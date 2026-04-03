@@ -19,6 +19,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
 @@clientName(Responses.compactConversation, "CompactResponse");
 
+@@clientName(Includable.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
+@@clientName(Includable.`message.input_image.image_url`, "MessageInputImageUri");
+@@clientName(Includable.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");
+
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);
@@ -64,6 +68,12 @@ using TypeSpec.HttpClient.CSharp;
 
 @@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
+
+@@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
+
+// NOTE: Contrary to other tools, the "status" property of `ApplyPatchToolCallOutputItemResource`
+// is set by the client instead of being set by the server, and it is also required. The "status"
+// property is used to indicate if the client successfully applied the patch or not.
 
 // ------------ Tools ------------
 
@@ -244,7 +254,6 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ComputerToolCallItemResource);
 @@dynamicModel(ComputerToolCallOutputItemParam);
 @@dynamicModel(ComputerToolCallOutputItemResource);
-@@dynamicModel(WebSearchToolCallItemParam);
 @@dynamicModel(WebSearchToolCallItemResource);
 @@dynamicModel(FunctionToolCallItemParam);
 @@dynamicModel(FunctionToolCallItemResource);

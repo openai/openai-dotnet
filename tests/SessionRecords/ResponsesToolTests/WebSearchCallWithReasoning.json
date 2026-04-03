@@ -1,0 +1,199 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "383",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-5.1",
+        "reasoning": {
+          "effort": "high"
+        },
+        "tools": [
+          {
+            "type": "web_search"
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Open the following page and tell me what it says about sources: https://developers.openai.com/api/docs/guides/tools-web-search"
+              }
+            ]
+          }
+        ],
+        "include": [
+          "web_search_call.action.sources"
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e345c0bcee6ebc2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3768",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39995779",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "6ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0ae4c5fac2e4a09c0069c76c3a41fc819099cdcf43e3589b20",
+        "object": "response",
+        "created_at": 1774677050,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1774677057,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5.1-2025-11-13",
+        "output": [
+          {
+            "id": "rs_0ae4c5fac2e4a09c0069c76c3ac6488190910b8a280da7d95a",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "ws_0ae4c5fac2e4a09c0069c76c3b4c508190a9c9d9a13c14ad76",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "open_page",
+              "url": "https://developers.openai.com/api/docs/guides/tools-web-search"
+            }
+          },
+          {
+            "id": "rs_0ae4c5fac2e4a09c0069c76c3c000c8190a84cfa772aa79adf",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "ws_0ae4c5fac2e4a09c0069c76c3c41e08190abca42618f195c8c",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "find_in_page",
+              "pattern": "Sources",
+              "url": "https://developers.openai.com/api/docs/guides/tools-web-search"
+            }
+          },
+          {
+            "id": "rs_0ae4c5fac2e4a09c0069c76c3d32948190bc2edba9e60958a6",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_0ae4c5fac2e4a09c0069c76c404de08190adfcc7f6d5c8df9f",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 679,
+                    "start_index": 590,
+                    "title": "Web search | OpenAI API",
+                    "url": "https://developers.openai.com/api/docs/guides/tools-web-search"
+                  }
+                ],
+                "logprobs": [],
+                "text": "On that page, the **“Sources”** section explains that:\n\n- You can use the **`sources` field** to see **all URLs** retrieved during a web search.  \n- This is different from **inline citations**, which show only the **most relevant** references; `sources` returns the **complete list of URLs** the model consulted, so there are often **more sources than citations**.  \n- It also includes **real-time third‑party feeds**, which are labeled as `oai-sports`, `oai-weather`, or `oai-finance`.  \n- The `sources` field is available for both the **`web_search`** and **`web_search_preview`** tools. ([developers.openai.com](https://developers.openai.com/api/docs/guides/tools-web-search))"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "high",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search",
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 12724,
+          "input_tokens_details": {
+            "cached_tokens": 4352
+          },
+          "output_tokens": 698,
+          "output_tokens_details": {
+            "reasoning_tokens": 532
+          },
+          "total_tokens": 13422
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

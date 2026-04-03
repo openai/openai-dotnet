@@ -872,6 +872,48 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task ImageGenToolWithAction()
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        ImageGenerationTool imageGenTool = ResponseTool.CreateImageGenerationTool(
+            model: "gpt-image-1",
+            quality: ImageGenerationToolQuality.High,
+            size: ImageGenerationToolSize.W1024xH1024,
+            outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+            moderationLevel: ImageGenerationToolModerationLevel.Auto,
+            background: ImageGenerationToolBackground.Transparent,
+            action: ImageGenerationToolAction.Generate);
+
+        CreateResponseOptions options = new(
+            TestModel.Responses,
+            [ResponseItem.CreateUserMessageItem("Generate an image of a golden retriever playing fetch in a sunny park")])
+        {
+            Tools = { imageGenTool }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
+        ImageGenerationTool responseTool = (ImageGenerationTool)response.Tools.First();
+        // The action is not populated in the Tool response. It is, however, in the ImageGenerationCallResponseItem
+        // Assert.That(responseTool.Action, Is.EqualTo(ImageGenerationToolAction.Generate));
+
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
+        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
+        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.Action, Is.EqualTo(ImageGenerationToolAction.Generate));
+        Assert.That(imageGenResponse.Background, Is.EqualTo(ImageGenToolCallBackground.Transparent));
+        Assert.That(imageGenResponse.Quality, Is.EqualTo(ImageGenToolCallQuality.High));
+        Assert.That(imageGenResponse.Size, Is.EqualTo(ImageGenToolCallSize.W1024x1024));
+        Assert.That(imageGenResponse.RevisedPrompt, Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -1126,54 +1168,143 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task WebSearchCall()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
-        ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+        ];
+
+        CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
+        {
+            Tools =
             {
-                Tools =
+                new WebSearchTool()
                 {
-                    ResponseTool.CreateWebSearchTool()
-                },
-                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
-            });
+                    UserLocation = new WebSearchToolApproximateLocation() { City = "Redmond", Region = "Washington", Country = "US" },
+                    SearchContextSize = WebSearchToolContextSize.Low
+                }
+            },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
+        };
 
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+        ResponseResult response = await client.CreateResponseAsync(createResponseOptions);
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
 
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        List<WebSearchCallResponseItem> webSearchCalls = response.OutputItems.OfType<WebSearchCallResponseItem>().ToList();
+        Assert.That(webSearchCalls, Has.Count.GreaterThan(0));
+        Assert.That(webSearchCalls.All(call => call.Action != null), Is.True);
+
+        List<WebSearchCallResponseItem> searchWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchSearchAction).ToList();
+        Assert.That(searchWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in searchWebSearchCalls)
+        {
+            WebSearchSearchAction searchAction = (WebSearchSearchAction)call.Action;
+            Assert.That(searchAction.Queries, Has.Count.GreaterThan(0));
+            Assert.That(searchAction.Sources, Has.Count.GreaterThan(0));
+        }
+
+        MessageResponseItem message = response.OutputItems.Last() as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+    }
 
+    [RecordedTest]
+    public async Task WebSearchCallWithReasoning()
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Open the following page and tell me what it says about sources: https://developers.openai.com/api/docs/guides/tools-web-search")
+        ];
+
+        // NOTE: The "open page" and "find in page" actions are only support by reasoning models.
+        CreateResponseOptions createResponseOptions = new("gpt-5.1", inputItems)
+        {
+            Tools = { new WebSearchTool() },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            ReasoningOptions = new() { ReasoningEffortLevel = ResponseReasoningEffortLevel.High },
+            IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(createResponseOptions);
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+
+        List<WebSearchCallResponseItem> webSearchCalls = response.OutputItems.OfType<WebSearchCallResponseItem>().ToList();
+        Assert.That(webSearchCalls, Has.Count.GreaterThan(0));
+        Assert.That(webSearchCalls.All(call => call.Action != null), Is.True);
+
+        List<WebSearchCallResponseItem> openPageWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchOpenPageAction).ToList();
+        Assert.That(openPageWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in openPageWebSearchCalls)
+        {
+            WebSearchOpenPageAction openPageAction = (WebSearchOpenPageAction)call.Action;
+            Assert.That(openPageAction.Uri.AbsoluteUri, Is.Not.Null.Or.Empty);
+        }
+
+        List<WebSearchCallResponseItem> findInPageWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchFindInPageAction).ToList();
+        Assert.That(findInPageWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in findInPageWebSearchCalls)
+        {
+            WebSearchFindInPageAction findInPageAction = (WebSearchFindInPageAction)call.Action;
+            Assert.That(findInPageAction.Uri.AbsoluteUri, Is.Not.Null.Or.Empty);
+            Assert.That(findInPageAction.Pattern, Is.Not.Null.Or.Empty);
+        }
+
+        MessageResponseItem message = response.OutputItems.Last() as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
     }
 
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
-        ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
-            {
-                Tools =
-                {
-                    ResponseTool.CreateWebSearchPreviewTool()
-                },
-                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
-            });
 
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+        ];
 
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
+        {
+            Tools = { new WebSearchPreviewTool() },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(createResponseOptions);
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+
+        List<WebSearchCallResponseItem> webSearchCalls = response.OutputItems.OfType<WebSearchCallResponseItem>().ToList();
+        Assert.That(webSearchCalls, Has.Count.GreaterThan(0));
+        Assert.That(webSearchCalls.All(call => call.Action != null), Is.True);
+
+        List<WebSearchCallResponseItem> searchWebSearchCalls = webSearchCalls.Where(call => call.Action is WebSearchSearchAction).ToList();
+        Assert.That(searchWebSearchCalls, Has.Count.GreaterThan(0));
+        foreach (WebSearchCallResponseItem call in searchWebSearchCalls)
+        {
+            WebSearchSearchAction searchAction = (WebSearchSearchAction)call.Action;
+            Assert.That(searchAction.Queries, Has.Count.GreaterThan(0));
+            Assert.That(searchAction.Sources, Has.Count.GreaterThan(0));
+        }
+
+        MessageResponseItem message = response.OutputItems.Last() as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
     }
 
     [RecordedTest]
@@ -1181,16 +1312,22 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        const string message = "Searching the internet, what's the weather like in San Francisco?";
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+        ];
 
-        CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem(message)])
+        CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
         {
             Tools =
             {
-                ResponseTool.CreateWebSearchTool(
-                    userLocation: WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
-                    searchContextSize: WebSearchToolContextSize.Low)
+                new WebSearchTool()
+                {
+                    UserLocation = new WebSearchToolApproximateLocation() { City = "Redmond", Region = "Washington", Country = "US" },
+                    SearchContextSize = WebSearchToolContextSize.Low
+                }
             },
+            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
             StreamingEnabled = true,
         };
 
@@ -1200,8 +1337,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         int completedCount = 0;
         bool gotFinishedSearchItem = false;
 
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(createResponseOptions))
         {
             if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
             {
@@ -1243,6 +1379,144 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(inProgressCount, Is.EqualTo(1));
         Assert.That(completedCount, Is.EqualTo(1));
         Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
+    [TestCase("CreateFile")]
+    [TestCase("UpdateFile")]
+    [TestCase("DeleteFile")]
+    public async Task ApplyPatchToolWorks(string testCase)
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        string instructions = "You are a patch assistant. When the user requests file edits, respond by calling the apply_patch tool with the smallest valid set of operations.";
+
+        string prompt = testCase switch
+        {
+            "CreateFile" =>
+                """
+                The user has the following files:
+                <BEGIN_FILES>
+                ===== src/app.py
+                print("hello")
+                <END_FILES>
+
+                Create a new file named NOTES.md with exactly these two lines:
+                review tests
+                update docs
+
+                Do not modify any existing files.
+                """,
+            "UpdateFile" =>
+                """
+                The user has the following files:
+                < BEGIN_FILES >
+                ===== lib / fib.py
+                def fib(n):
+                    if n <= 1:
+                        return n
+                    return fib(n - 1) + fib(n - 2)
+                < END_FILES >
+
+                Rename fib() to fibonacci() in lib / fib.py only.
+                """,
+            "DeleteFile" =>
+                """
+                The user has the following files:
+                < BEGIN_FILES >
+                ===== obsolete.txt
+                This file is obsolete and can be removed.
+                ===== src / app.py
+                print("hello")
+                < END_FILES >
+
+                Delete obsolete.txt and do not modify any other files.
+                """,
+            _ => string.Empty
+        };
+
+        Assert.That(prompt, Is.Not.Null.Or.Empty);
+
+        IList<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateDeveloperMessageItem(instructions),
+            ResponseItem.CreateUserMessageItem(prompt),
+        ];
+
+        CreateResponseOptions responseOptions = new("gpt-5.1", inputItems)
+        {
+            Tools = { ResponseTool.CreateApplyPatchTool() },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(responseOptions);
+        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ApplyPatchTool>());
+
+        List<ApplyPatchCallItem> applyPatchCalls = response.OutputItems.OfType<ApplyPatchCallItem>().ToList();
+        Assert.That(applyPatchCalls, Has.Count.GreaterThan(0));
+        Assert.That(applyPatchCalls.All(item => !string.IsNullOrEmpty(item.CallId)), Is.True);
+        Assert.That(applyPatchCalls.All(item => item.Status.HasValue), Is.True);
+
+        switch (testCase)
+        {
+            case "CreateFile":
+                {
+                    ApplyPatchCreateFileOperation createFileOperation = applyPatchCalls
+                        .Select(item => item.Operation)
+                        .OfType<ApplyPatchCreateFileOperation>()
+                        .FirstOrDefault();
+                    Assert.That(createFileOperation, Is.Not.Null);
+                    Assert.That(createFileOperation.FilePath, Does.EndWith("NOTES.md").IgnoreCase);
+                    Assert.That(createFileOperation.Diff, Does.Contain("review tests"));
+                    Assert.That(createFileOperation.Diff, Does.Contain("update docs"));
+                    break;
+                }
+            case "UpdateFile":
+                {
+                    ApplyPatchUpdateFileOperation updateFileOperation = applyPatchCalls
+                        .Select(item => item.Operation)
+                        .OfType<ApplyPatchUpdateFileOperation>()
+                        .FirstOrDefault();
+                    Assert.That(updateFileOperation, Is.Not.Null);
+                    Assert.That(updateFileOperation.FilePath, Does.EndWith("lib/fib.py").IgnoreCase);
+                    Assert.That(updateFileOperation.Diff, Does.Contain("return fib(n - 1) + fib(n - 2)"));
+                    Assert.That(updateFileOperation.Diff, Does.Contain("return fibonacci(n - 1) + fibonacci(n - 2)"));
+                    break;
+                }
+            case "DeleteFile":
+                {
+                    ApplyPatchDeleteFileOperation deleteFileOperation = applyPatchCalls
+                        .Select(item => item.Operation)
+                        .OfType<ApplyPatchDeleteFileOperation>()
+                        .FirstOrDefault();
+                    Assert.That(deleteFileOperation, Is.Not.Null);
+                    Assert.That(deleteFileOperation.FilePath, Does.EndWith("obsolete.txt").IgnoreCase);
+                    break;
+                }
+            default:
+                {
+                    Assert.Fail();
+                    break;
+                }
+        }
+
+        responseOptions.PreviousResponseId = response.Id;
+        responseOptions.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        responseOptions.InputItems.Clear();
+
+        foreach (ApplyPatchCallItem applyPatchCall in applyPatchCalls)
+        {
+            responseOptions.InputItems.Add(new ApplyPatchCallOutputItem(applyPatchCall.CallId, ApplyPatchCallOutputStatus.Completed));
+        }
+
+        ResponseResult followUp = await client.CreateResponseAsync(responseOptions);
+        MessageResponseItem assistantMessage = followUp.OutputItems.OfType<MessageResponseItem>().LastOrDefault();
+        Assert.That(assistantMessage, Is.Not.Null);
+        Assert.That(assistantMessage.Status, Is.EqualTo(MessageStatus.Completed));
+        Assert.That(assistantMessage.Content, Has.Count.GreaterThan(0));
+        Assert.That(assistantMessage.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(assistantMessage.Content[0].Text, Is.Not.Null.And.Not.Empty);
     }
 
     private List<string> FileIdsToDelete = [];

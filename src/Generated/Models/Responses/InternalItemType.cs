@@ -28,6 +28,8 @@ namespace OpenAI.Responses
         private const string McpApprovalResponseValue = "mcp_approval_response";
         private const string McpCallValue = "mcp_call";
         private const string OAuthConsentRequestValue = "oauth_consent_request";
+        private const string ApplyPatchCallValue = "apply_patch_call";
+        private const string ApplyPatchCallOutputValue = "apply_patch_call_output";
 
         public InternalItemType(string value)
         {
@@ -69,6 +71,9 @@ namespace OpenAI.Responses
         internal static InternalItemType McpCall { get; } = new InternalItemType(McpCallValue);
 
         internal static InternalItemType OAuthConsentRequest { get; } = new InternalItemType(OAuthConsentRequestValue);
+        internal static InternalItemType ApplyPatchCall { get; } = new InternalItemType(ApplyPatchCallValue);
+
+        internal static InternalItemType ApplyPatchCallOutput { get; } = new InternalItemType(ApplyPatchCallOutputValue);
 
         public static bool operator ==(InternalItemType left, InternalItemType right) => left.Equals(right);
 
