@@ -52,7 +52,7 @@ public class RecordedTestAttribute : TestAttribute, IWrapSetUpTearDown
                 TestResult originalResult = context.CurrentResult;
 
                 if (resultMessage?.Contains(typeof(Microsoft.ClientModel.TestFramework.TestRecordingMismatchException).FullName!) ?? false
-                    && !Microsoft.ClientModel.TestFramework.TestEnvironment.GlobalDisableAutoRecording)
+                    && !IsAutoRecordingDisabled())
                 {
                     context.CurrentResult = context.CurrentTest.MakeTestResult();
                     SetRecordMode((context.TestObject as Microsoft.ClientModel.TestFramework.RecordedTestBase)!, Microsoft.ClientModel.TestFramework.RecordedTestMode.Record);
@@ -94,6 +94,15 @@ public class RecordedTestAttribute : TestAttribute, IWrapSetUpTearDown
             }
 
             return context.CurrentResult;
+        }
+
+        private static bool IsAutoRecordingDisabled()
+        {
+            string switchValue =
+                TestContext.Parameters["DisableAutoRecording"]
+                ?? Environment.GetEnvironmentVariable("CLIENTMODEL_DISABLE_AUTO_RECORDING");
+
+            return bool.TryParse(switchValue, out bool disabled) && disabled;
         }
 
         private TestResult HandleTestTimeout(TestExecutionContext context, TestResult originalResult)
