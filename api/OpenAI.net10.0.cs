@@ -1106,6 +1106,7 @@ namespace OpenAI.Audio {
     }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
         public AudioTranscriptionFormat(string value);
+        [Experimental("OPENAI001")]
         public static AudioTranscriptionFormat Diarized { get; }
         public static AudioTranscriptionFormat Simple { get; }
         public static AudioTranscriptionFormat Srt { get; }

@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio;
 
@@ -33,8 +34,11 @@ public readonly partial struct AudioTranscriptionFormat
     [CodeGenMember("Vtt")]
     public static AudioTranscriptionFormat Vtt { get; } = new AudioTranscriptionFormat(VttValue);
 
-    // CUSTOM: Added custom doc comments.
+    // CUSTOM:git
+    // - Renamed.
+    // - Made experimental.
     /// <summary> JSON containing transcription text with diarization metadata, such as speakers and segments. </summary>
+    [Experimental("OPENAI001")]
     [CodeGenMember("DiarizedJson")]
     public static AudioTranscriptionFormat Diarized { get; } = new AudioTranscriptionFormat(DiarizedJsonValue);
 }

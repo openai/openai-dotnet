@@ -1,17 +1,20 @@
 # Release History
 
-## Unreleased
+## 2.10.0 (2026-04-03)
 
 ### Features Added
 
 - OpenAI.Responses:
   - Added `Action` property to `ImageGenerationTool` and `ImageGenerationToolAction` enum with values `Generate`, `Edit`, and `Auto`. The `CreateImageGenerationTool` factory method defaults the action to `Auto`.
-- Added `ConfigurationSchema.json` to the NuGet package via the MSBuild `JsonSchemaSegment` feature, enabling automatic JSON IntelliSense and validation for `appsettings.json` when configuring OpenAI clients. Provides per-client model suggestions and OpenAI-specific options, composing with System.ClientModel's base credential and pipeline definitions.
 
 ### Bugs Fixed
 
 - OpenAI.Embeddings:
   - Fixed an issue where base64-encoded embedding values containing JSON escape sequences (e.g., `\/` or `\u002F` for `/`) failed to decode, causing a `FormatException`. Per RFC 8259 §7, these are valid JSON representations that the OpenAI API may produce.
+
+### Other Changes
+
+- Added `ConfigurationSchema.json` to the NuGet package via the MSBuild `JsonSchemaSegment` feature, enabling automatic JSON IntelliSense and validation for `appsettings.json` when configuring OpenAI clients. Provides per-client model suggestions and OpenAI-specific options, composing with System.ClientModel's base credential and pipeline definitions.
 
 ## 2.9.1 (2026-03-02)
 
