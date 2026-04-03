@@ -84,7 +84,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         return (CreateContainerBody)constructor.Invoke(new object[] { name });
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanEnumerateContainers()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -130,7 +130,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Found {count} containers, including our test container");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanEnumerateContainerFiles()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -169,7 +169,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         // Note: A new container may have no files, so count could be 0 - this is expected
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanEnumerateContainersWithDefaultOptions()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -209,7 +209,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Found {count} containers with default options, including our test container");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanEnumerateContainerFilesWithDefaultOptions()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -241,7 +241,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Found {count} files in test container {_testContainerId} with default options");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanEnumerateContainersWithCancellation()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -286,7 +286,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Enumerated {count} containers with cancellation");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanEnumerateContainerFilesWithCancellation()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -331,7 +331,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Enumerated {count} files with cancellation token");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ContainerCollectionOptionsCanBeConfigured()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -382,7 +382,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Ascending: {ascendingCount}, Descending: {descendingCount}");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ContainerFileCollectionOptionsCanBeConfigured()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -435,7 +435,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Files - Ascending: {ascendingCount}, Descending: {descendingCount}");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanGetContainer()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -454,7 +454,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Retrieved container: {container.Id} with status {container.Status}");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanGetContainerWithCancellation()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -476,7 +476,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Retrieved container with cancellation: {container.Id}");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanCreateAndDeleteContainerFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -534,7 +534,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanCreateGetAndDeleteContainerFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -598,7 +598,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanGetContainerFileWithCancellation()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -658,7 +658,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CanDeleteContainerFileWithCancellation()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -699,7 +699,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public void CreateContainerFileValidatesParameters()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -726,7 +726,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine("Parameter validation tests passed");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public void GetContainerFileValidatesParameters()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -753,7 +753,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public void DeleteContainerFileValidatesParameters()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
@@ -771,7 +771,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine("Parameter validation tests passed for DeleteContainerFile methods");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public void GetContainerValidatesParameters()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();

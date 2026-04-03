@@ -19,7 +19,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsCollectionPage()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -60,7 +60,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(page2.HasMore, Is.False);
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -97,7 +97,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(lastId, Is.Not.Null);
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithPaginationNoOptions()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -128,7 +128,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(lastId, Is.Not.Null);
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -180,7 +180,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -221,7 +221,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(0));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -270,7 +270,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(asc[0].Id, Is.Not.EqualTo(desc[0].Id));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -296,7 +296,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -322,7 +322,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
@@ -359,7 +359,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         }
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();

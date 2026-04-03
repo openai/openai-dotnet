@@ -24,7 +24,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     {
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ConstraintsWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -49,7 +49,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task NoParameterToolWorks()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -76,7 +76,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("green"));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ParametersWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -106,7 +106,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     }
 
 #pragma warning disable CS0618
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task FunctionsWork()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -134,7 +134,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     }
 #pragma warning restore CS0618
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ParallelToolCalls()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -174,7 +174,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("sunny"));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ConsecutiveToolCalls()
     {
         ChatClient client = GetProxiedOpenAIClient<ChatClient>();
@@ -216,7 +216,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Contains.Substring("bored"));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     [TestCase(SchemaPresence.WithoutSchema, StrictnessPresence.Unspecified)]
     [TestCase(SchemaPresence.WithoutSchema, StrictnessPresence.NotStrict)]
     [TestCase(SchemaPresence.WithoutSchema, StrictnessPresence.Strict, FailureExpectation.FailureExpected)]

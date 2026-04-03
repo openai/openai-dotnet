@@ -15,7 +15,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     {
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ClassifyTextWithSingleString()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
@@ -29,7 +29,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.Score, Is.GreaterThan(0.2));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ClassifyTextWithMultipleStrings()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
@@ -55,7 +55,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderations[1].Violence.Score, Is.GreaterThan(0.2));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ClassifyInputsWithSingleImage()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
@@ -73,7 +73,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Image));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ClassifyInputsWithMultipleTexts()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
@@ -92,7 +92,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Text));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ClassifyInputsWithTextAndImage()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
@@ -111,7 +111,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Text | ModerationApplicableInputKinds.Image));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task ClassifyInputsWithMultipleTextsAndSingleImage()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();

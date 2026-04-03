@@ -18,7 +18,7 @@ public partial class VoiceTests : OpenAIRecordedTestBase
     }
     
     [Ignore("Voice API requires organization-level access that is not yet available.")]
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task CreateVoiceConsentAndVoiceWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>();

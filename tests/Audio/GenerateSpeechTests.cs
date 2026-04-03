@@ -15,7 +15,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
     {
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task BasicTextToSpeechWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_TTS);
@@ -26,7 +26,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
         await ValidateGeneratedAudio(audio, "hello");
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     [TestCase(null)]
     [TestCase("mp3")]
     [TestCase("opus")]
@@ -83,7 +83,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));
     }
 
-    [RecordedTest]
+    [OpenAI.Tests.RecordedTest]
     public async Task StreamingSpeechWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_TTS);
