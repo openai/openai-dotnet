@@ -15,6 +15,7 @@ import "./client/moderations.client.tsp";
 import "./client/realtime.client.tsp";
 import "./client/responses.client.tsp";
 import "./client/runs.client.tsp";
+import "./client/skills.client.tsp";
 import "./client/threads.client.tsp";
 import "./client/vector-stores.client.tsp";
 import "./client/videos.client.tsp";

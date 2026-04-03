@@ -128,3 +128,15 @@ model CreateContainerFileBody {
   /** The File object (not file name) to be uploaded. */
   file?: HttpPart<bytes>;
 }
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+@discriminator("type")
+model ContainerSkill {
+  type: ContainerSkillType;
+}
+
+union ContainerSkillType {
+  string,
+  "skill_reference",
+  "inline",
+}

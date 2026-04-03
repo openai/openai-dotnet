@@ -32,6 +32,7 @@ namespace OpenAI {
         public virtual OpenAIModelClient GetOpenAIModelClient();
         public virtual RealtimeClient GetRealtimeClient();
         public virtual ResponsesClient GetResponsesClient();
+        public virtual SkillClient GetSkillClient();
         public virtual VectorStoreClient GetVectorStoreClient();
         public virtual VideoClient GetVideoClient();
     }
@@ -6046,6 +6047,50 @@ namespace OpenAI.Responses {
     public class WebSearchUriActionSource : WebSearchActionSource, IJsonModel<WebSearchUriActionSource>, IPersistableModel<WebSearchUriActionSource> {
         public WebSearchUriActionSource(Uri uri);
         public Uri Uri { get; set; }
+    }
+}
+namespace OpenAI.Skills {
+    public class SkillClient {
+        protected SkillClient();
+        public SkillClient(SkillClientSettings settings);
+        public SkillClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public SkillClient(ApiKeyCredential credential);
+        public SkillClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public SkillClient(AuthenticationPolicy authenticationPolicy);
+        protected internal SkillClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public SkillClient(string apiKey);
+        public Uri Endpoint { get; }
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateSkillJson(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillJsonAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CreateSkillMultipart(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillMultipartAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateSkillVersionJson(string skillId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillVersionJsonAsync(string skillId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CreateSkillVersionMultipart(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillVersionMultipartAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteSkill(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteSkillAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult DeleteSkillVersion(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteSkillVersionAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult GetSkill(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult GetSkillContent(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillContentAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult GetSkills(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillsAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual ClientResult GetSkillVersion(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillVersionAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult GetSkillVersionContent(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillVersionContentAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult GetSkillVersions(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillVersionsAsync(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual ClientResult UpdateSkillDefaultVersion(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> UpdateSkillDefaultVersionAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+    }
+    public sealed class SkillClientSettings : ClientSettings {
+        public OpenAIClientOptions Options { get; set; }
+        protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
 namespace OpenAI.VectorStores {
