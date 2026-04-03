@@ -12,7 +12,7 @@
     - Added the following derived types of `StreamingAudioTranscriptionUpdate`:
       - `StreamingAudioTranscriptionTextSegmentUpdate`
   - Added support for streaming speech generation.
-    - Added `GenerateSpeeechStreaming` and `GenerateSpeechStreamingAsync` methods to the `AudioClient`.
+    - Added `GenerateSpeechStreaming` and `GenerateSpeechStreamingAsync` methods to the `AudioClient`.
     - Added the `StreamingSpeechUpdate` type with the following derived types:
       - `StreamingSpeechAudioDeltaUpdate`
       - `StreamingSpeechAudioDoneUpdate`
