@@ -26,6 +26,13 @@ using OpenAI.Videos;
 
 namespace OpenAI
 {
+    [ModelReaderWriterBuildable(typeof(ApplyPatchCallItem))]
+    [ModelReaderWriterBuildable(typeof(ApplyPatchCallOutputItem))]
+    [ModelReaderWriterBuildable(typeof(ApplyPatchCreateFileOperation))]
+    [ModelReaderWriterBuildable(typeof(ApplyPatchDeleteFileOperation))]
+    [ModelReaderWriterBuildable(typeof(ApplyPatchOperation))]
+    [ModelReaderWriterBuildable(typeof(ApplyPatchTool))]
+    [ModelReaderWriterBuildable(typeof(ApplyPatchUpdateFileOperation))]
     [ModelReaderWriterBuildable(typeof(Assistant))]
     [ModelReaderWriterBuildable(typeof(AssistantChatMessage))]
     [ModelReaderWriterBuildable(typeof(AssistantCollectionOptions))]
@@ -483,6 +490,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextDeltaEventLogprobs))]
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextDoneEventLogprobs))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownAnnotation))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownApplyPatchOperation))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownChatCompletionRequestMessageContentPart))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownChatMessage))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownChatOutputPrediction))]

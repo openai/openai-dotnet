@@ -1381,6 +1381,144 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
     }
 
+    [RecordedTest]
+    [TestCase("CreateFile")]
+    [TestCase("UpdateFile")]
+    [TestCase("DeleteFile")]
+    public async Task ApplyPatchToolWorks(string testCase)
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        string instructions = "You are a patch assistant. When the user requests file edits, respond by calling the apply_patch tool with the smallest valid set of operations.";
+
+        string prompt = testCase switch
+        {
+            "CreateFile" =>
+                """
+                The user has the following files:
+                <BEGIN_FILES>
+                ===== src/app.py
+                print("hello")
+                <END_FILES>
+
+                Create a new file named NOTES.md with exactly these two lines:
+                review tests
+                update docs
+
+                Do not modify any existing files.
+                """,
+            "UpdateFile" =>
+                """
+                The user has the following files:
+                < BEGIN_FILES >
+                ===== lib / fib.py
+                def fib(n):
+                    if n <= 1:
+                        return n
+                    return fib(n - 1) + fib(n - 2)
+                < END_FILES >
+
+                Rename fib() to fibonacci() in lib / fib.py only.
+                """,
+            "DeleteFile" =>
+                """
+                The user has the following files:
+                < BEGIN_FILES >
+                ===== obsolete.txt
+                This file is obsolete and can be removed.
+                ===== src / app.py
+                print("hello")
+                < END_FILES >
+
+                Delete obsolete.txt and do not modify any other files.
+                """,
+            _ => string.Empty
+        };
+
+        Assert.That(prompt, Is.Not.Null.Or.Empty);
+
+        IList<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateDeveloperMessageItem(instructions),
+            ResponseItem.CreateUserMessageItem(prompt),
+        ];
+
+        CreateResponseOptions responseOptions = new("gpt-5.1", inputItems)
+        {
+            Tools = { ResponseTool.CreateApplyPatchTool() },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(responseOptions);
+        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ApplyPatchTool>());
+
+        List<ApplyPatchCallItem> applyPatchCalls = response.OutputItems.OfType<ApplyPatchCallItem>().ToList();
+        Assert.That(applyPatchCalls, Has.Count.GreaterThan(0));
+        Assert.That(applyPatchCalls.All(item => !string.IsNullOrEmpty(item.CallId)), Is.True);
+        Assert.That(applyPatchCalls.All(item => item.Status.HasValue), Is.True);
+
+        switch (testCase)
+        {
+            case "CreateFile":
+                {
+                    ApplyPatchCreateFileOperation createFileOperation = applyPatchCalls
+                        .Select(item => item.Operation)
+                        .OfType<ApplyPatchCreateFileOperation>()
+                        .FirstOrDefault();
+                    Assert.That(createFileOperation, Is.Not.Null);
+                    Assert.That(createFileOperation.FilePath, Does.EndWith("NOTES.md").IgnoreCase);
+                    Assert.That(createFileOperation.Diff, Does.Contain("review tests"));
+                    Assert.That(createFileOperation.Diff, Does.Contain("update docs"));
+                    break;
+                }
+            case "UpdateFile":
+                {
+                    ApplyPatchUpdateFileOperation updateFileOperation = applyPatchCalls
+                        .Select(item => item.Operation)
+                        .OfType<ApplyPatchUpdateFileOperation>()
+                        .FirstOrDefault();
+                    Assert.That(updateFileOperation, Is.Not.Null);
+                    Assert.That(updateFileOperation.FilePath, Does.EndWith("lib/fib.py").IgnoreCase);
+                    Assert.That(updateFileOperation.Diff, Does.Contain("return fib(n - 1) + fib(n - 2)"));
+                    Assert.That(updateFileOperation.Diff, Does.Contain("return fibonacci(n - 1) + fibonacci(n - 2)"));
+                    break;
+                }
+            case "DeleteFile":
+                {
+                    ApplyPatchDeleteFileOperation deleteFileOperation = applyPatchCalls
+                        .Select(item => item.Operation)
+                        .OfType<ApplyPatchDeleteFileOperation>()
+                        .FirstOrDefault();
+                    Assert.That(deleteFileOperation, Is.Not.Null);
+                    Assert.That(deleteFileOperation.FilePath, Does.EndWith("obsolete.txt").IgnoreCase);
+                    break;
+                }
+            default:
+                {
+                    Assert.Fail();
+                    break;
+                }
+        }
+
+        responseOptions.PreviousResponseId = response.Id;
+        responseOptions.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        responseOptions.InputItems.Clear();
+
+        foreach (ApplyPatchCallItem applyPatchCall in applyPatchCalls)
+        {
+            responseOptions.InputItems.Add(new ApplyPatchCallOutputItem(applyPatchCall.CallId, ApplyPatchCallOutputStatus.Completed));
+        }
+
+        ResponseResult followUp = await client.CreateResponseAsync(responseOptions);
+        MessageResponseItem assistantMessage = followUp.OutputItems.OfType<MessageResponseItem>().LastOrDefault();
+        Assert.That(assistantMessage, Is.Not.Null);
+        Assert.That(assistantMessage.Status, Is.EqualTo(MessageStatus.Completed));
+        Assert.That(assistantMessage.Content, Has.Count.GreaterThan(0));
+        Assert.That(assistantMessage.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(assistantMessage.Content[0].Text, Is.Not.Null.And.Not.Empty);
+    }
+
     private List<string> FileIdsToDelete = [];
     private List<string> VectorStoreIdsToDelete = [];
 
