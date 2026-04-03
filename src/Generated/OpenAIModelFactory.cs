@@ -478,7 +478,7 @@ namespace OpenAI
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default)
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, string agentName = default, ResponseConversationOptions conversationOptions = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
@@ -509,6 +509,7 @@ namespace OpenAI
                 storedOutputEnabled,
                 instructions,
                 streamingEnabled,
+                agentName,
                 conversationOptions,
                 default);
         }

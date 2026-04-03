@@ -210,6 +210,8 @@ namespace OpenAI.Responses
                         return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, data, options);
                     case "response.code_interpreter_call.interpreting":
                         return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, data, options);
+                    case "response.oauth_consent_requested":
+                        return StreamingResponseOAuthConsentRequestedUpdate.DeserializeStreamingResponseOAuthConsentRequestedUpdate(element, data, options);
                 }
             }
             return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, data, options);

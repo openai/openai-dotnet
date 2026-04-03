@@ -153,6 +153,8 @@ namespace OpenAI.Responses
                         return McpToolCallItem.DeserializeMcpToolCallItem(element, data, options);
                     case "item_reference":
                         return ReferenceResponseItem.DeserializeReferenceResponseItem(element, data, options);
+                    case "oauth_consent_request":
+                        return OAuthConsentRequestResponseItem.DeserializeOAuthConsentRequestResponseItem(element, data, options);
                 }
             }
             return InternalUnknownItemResource.DeserializeInternalUnknownItemResource(element, data, options);

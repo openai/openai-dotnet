@@ -273,6 +273,16 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(StreamingEnabled.Value);
             }
+            if (!Patch.Contains("$.agent"u8) && Optional.IsDefined(AgentName))
+            {
+                writer.WritePropertyName("agent"u8);
+                writer.WriteStartObject();
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue("agent_reference");
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(AgentName);
+                writer.WriteEndObject();
+            }
             if (Optional.IsDefined(ConversationOptions) && !Patch.Contains("$.conversation"u8))
             {
                 writer.WritePropertyName("conversation"u8);
@@ -325,6 +335,7 @@ namespace OpenAI.Responses
             bool? storedOutputEnabled = default;
             string instructions = default;
             bool? streamingEnabled = default;
+            string agentName = default;
             ResponseConversationOptions conversationOptions = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -566,6 +577,21 @@ namespace OpenAI.Responses
                     streamingEnabled = prop.Value.GetBoolean();
                     continue;
                 }
+                if (prop.NameEquals("agent"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    foreach (var agentProp in prop.Value.EnumerateObject())
+                    {
+                        if (agentProp.NameEquals("name"u8))
+                        {
+                            agentName = agentProp.Value.GetString();
+                        }
+                    }
+                    continue;
+                }
                 if (prop.NameEquals("conversation"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -601,6 +627,7 @@ namespace OpenAI.Responses
                 storedOutputEnabled,
                 instructions,
                 streamingEnabled,
+                agentName,
                 conversationOptions,
                 patch);
         }

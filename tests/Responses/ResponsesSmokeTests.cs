@@ -66,6 +66,49 @@ public partial class ResponsesSmokeTests
                 Assert.That(potatoMessage.Role, Is.EqualTo(MessageRole.Unknown));
                 Assert.That(potatoMessage.Content, Has.Count.EqualTo(0));
             });
+
+        AssertSerializationRoundTrip<OAuthConsentRequestResponseItem>(
+            @"{""type"":""oauth_consent_request"",""id"":""oauthreq_123"",""created_by"":{},""consent_link"":""https://example.test/consent""}",
+            oauthConsentRequest =>
+            {
+                Assert.That(oauthConsentRequest.Id, Is.EqualTo("oauthreq_123"));
+                Assert.That(oauthConsentRequest.ConsentLink, Is.EqualTo("https://example.test/consent"));
+            });
+    }
+
+    [Test]
+    public void StreamingOAuthConsentRequestedUpdateSerialization()
+    {
+        const string serializedJson = @"{""type"":""response.oauth_consent_requested"",""sequence_number"":7,""output_index"":1,""item_id"":""oauthreq_123""}";
+
+        StreamingResponseUpdate update = ModelReaderWriter.Read<StreamingResponseUpdate>(BinaryData.FromString(serializedJson));
+        Assert.That(update, Is.InstanceOf<StreamingResponseOAuthConsentRequestedUpdate>());
+
+        StreamingResponseOAuthConsentRequestedUpdate typedUpdate = (StreamingResponseOAuthConsentRequestedUpdate)update;
+        Assert.That(typedUpdate.SequenceNumber, Is.EqualTo(7));
+        Assert.That(typedUpdate.OutputIndex, Is.EqualTo(1));
+        Assert.That(typedUpdate.ItemId, Is.EqualTo("oauthreq_123"));
+
+        BinaryData reserialized = ModelReaderWriter.Write(update);
+        Assert.That(reserialized.ToString(), Is.EqualTo(serializedJson));
+    }
+
+    [Test]
+    public void CreateResponseOptionsAgentReferenceSerialization()
+    {
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("hello")])
+        {
+            AgentName = "my-agent",
+        };
+
+        BinaryData serializedOptions = ModelReaderWriter.Write(options);
+        using JsonDocument optionsAsJson = JsonDocument.Parse(serializedOptions);
+
+        Assert.That(optionsAsJson.RootElement.TryGetProperty("agent", out JsonElement agentProperty), Is.True);
+        Assert.That(agentProperty.TryGetProperty("type", out JsonElement typeProperty), Is.True);
+        Assert.That(typeProperty.GetString(), Is.EqualTo("agent_reference"));
+        Assert.That(agentProperty.TryGetProperty("name", out JsonElement nameProperty), Is.True);
+        Assert.That(nameProperty.GetString(), Is.EqualTo("my-agent"));
     }
 
     [Test]
