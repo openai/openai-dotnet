@@ -15,7 +15,7 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
     winget install Microsoft.DotNet.SDK.10
     ```
 
-- Mac OS
+- macOS
 
     ```bash
     # Install .NET 10 SDK Preview
