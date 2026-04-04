@@ -170,17 +170,19 @@ $experimentalNamespaces = @(
     "OpenAI.Assistants",
     "OpenAI.Batch",
     "OpenAI.Containers",
+    "OpenAI.Conversations",
     "OpenAI.Evals",
     "OpenAI.FineTuning",
     "OpenAI.Graders",
     "OpenAI.Realtime",
     "OpenAI.Responses",
-    "OpenAI.VectorStores"
+    "OpenAI.VectorStores",
+    "OpenAI.Videos"
 )
 
 Invoke-APICompat -ProjectPath $projectPath `
     -DirectoryBuildPropsPath $buildPropsPath `
     -ReleasePath $releasePath `
     -PackageName "OpenAI" `
-    -BaselineVersion "2.8.0" `
+    -BaselineVersion "2.9.1" `
     -IgnoredNamespaces $experimentalNamespaces

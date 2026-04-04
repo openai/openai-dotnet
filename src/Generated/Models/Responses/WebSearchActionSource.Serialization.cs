@@ -104,7 +104,7 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "url":
-                        return WebSearchUriActionSource.DeserializeWebSearchUriActionSource(element, data, options);
+                        return WebSearchActionUriSource.DeserializeWebSearchActionUriSource(element, data, options);
                 }
             }
             return InternalUnknownWebSearchActionSearchSourceBase.DeserializeInternalUnknownWebSearchActionSearchSourceBase(element, data, options);

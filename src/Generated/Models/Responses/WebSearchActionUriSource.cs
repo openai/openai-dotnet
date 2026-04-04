@@ -10,9 +10,9 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class WebSearchUriActionSource : WebSearchActionSource
+    public partial class WebSearchActionUriSource : WebSearchActionSource
     {
-        public WebSearchUriActionSource(Uri uri) : base(InternalWebSearchActionSearchSourcesType.Url)
+        public WebSearchActionUriSource(Uri uri) : base(InternalWebSearchActionSearchSourcesType.Url)
         {
             Argument.AssertNotNull(uri, nameof(uri));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchUriActionSource(InternalWebSearchActionSearchSourcesType kind, in JsonPatch patch, Uri uri) : base(kind, patch)
+        internal WebSearchActionUriSource(InternalWebSearchActionSearchSourcesType kind, in JsonPatch patch, Uri uri) : base(kind, patch)
         {
             Uri = uri;
         }

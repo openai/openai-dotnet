@@ -258,7 +258,8 @@ public class ClientSettingsConstructorTests
 
         var settings = config.GetClientSettings<BatchClientSettings>("Section");
 
-        Assert.That(settings.Credential.CredentialSource, Is.EqualTo("ApiKey"));
+        // The value of CredentialSource is automatically normalized to "apikeycredential".
+        Assert.That(settings.Credential.CredentialSource, Is.EqualTo("apikeycredential"));
         Assert.That(settings.Options, Is.Null);
     }
 
