@@ -6,7 +6,7 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
-    internal partial class UnknownResponseStreamEvent : StreamingResponseUpdate
+    public partial class UnknownResponseStreamEvent : StreamingResponseUpdate
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal UnknownResponseStreamEvent(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch) : base(kind != default ? kind : "unknown", sequenceNumber, patch)

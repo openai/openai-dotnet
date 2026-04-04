@@ -5932,6 +5932,7 @@ namespace OpenAI.Responses {
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
+    [PersistableModelProxy(typeof(UnknownResponseStreamEvent))]
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -5952,6 +5953,9 @@ namespace OpenAI.Responses {
         public StreamingResponseWebSearchCallSearchingUpdate();
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
+    }
+    public class UnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
+        public string Kind { get; }
     }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
         public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
