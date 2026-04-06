@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.VectorStores
 {
@@ -85,13 +86,13 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            InternalDotNetCombinedChunkingStrategyParamType kind = default;
+            InternalDotNetCombinedChunkingStrategyParamType2 kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalDotNetCombinedChunkingStrategyParamType(prop.Value.GetString());
+                    kind = new InternalDotNetCombinedChunkingStrategyParamType2(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
