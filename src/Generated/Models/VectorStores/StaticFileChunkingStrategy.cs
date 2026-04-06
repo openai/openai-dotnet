@@ -6,20 +6,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.VectorStores
 {
     [Experimental("OPENAI001")]
     public partial class StaticFileChunkingStrategy : FileChunkingStrategy
     {
-        internal StaticFileChunkingStrategy(InternalStaticChunkingStrategy internalDetails) : base(InternalDotNetCombinedChunkingStrategyParamType.Static)
+        internal StaticFileChunkingStrategy(InternalStaticChunkingStrategy internalDetails) : base(InternalDotNetCombinedChunkingStrategyParamType2.Static)
         {
             Argument.AssertNotNull(internalDetails, nameof(internalDetails));
 
             _internalDetails = internalDetails;
         }
 
-        internal StaticFileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalStaticChunkingStrategy internalDetails) : base(kind, additionalBinaryDataProperties)
+        internal StaticFileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalStaticChunkingStrategy internalDetails) : base(kind, additionalBinaryDataProperties)
         {
             _internalDetails = internalDetails;
         }

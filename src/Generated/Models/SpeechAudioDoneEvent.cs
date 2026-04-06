@@ -5,27 +5,30 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI.Responses;
+using OpenAI.Audio;
 
-namespace OpenAI.VectorStores
+namespace OpenAI
 {
     [Experimental("OPENAI001")]
-    public abstract partial class FileChunkingStrategy
+    public partial class SpeechAudioDoneEvent
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected FileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind)
+        internal SpeechAudioDoneEvent(SpeechTokenUsage usage)
         {
-            Kind = kind;
+            Usage = usage;
         }
 
-        internal FileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal SpeechAudioDoneEvent(string kind, SpeechTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
+            Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalDotNetCombinedChunkingStrategyParamType2 Kind { get; set; }
+        public string Kind { get; } = "speech.audio.done";
+
+        public SpeechTokenUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
