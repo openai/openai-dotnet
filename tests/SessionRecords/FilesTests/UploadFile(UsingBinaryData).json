@@ -7,8 +7,8 @@
         "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "3163138",
-        "Content-Type": "multipart/form-data; boundary=\"VkGPsifI_qMKnFo8wFyhx3cfzYZG=P4kDAhqVnT9r51qMIhCzhEZGZ7tZ81Sc7rNwCL73z\"",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "Content-Type": "multipart/form-data; boundary=\"SvdKxssViTIwcqqzGfwFhuHW1mVOK0AgkAiikfMzAmwKUKoXWP3rXmgc9kqfecdQ2kMGnJ\"",
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.24; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -16,41 +16,40 @@
         "Access-Control-Allow-Origin": "*",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980bd1f71f80d44f-SEA",
+        "CF-RAY": "9cd798e7fdd8a38a-SEA",
         "Connection": "keep-alive",
         "Content-Length": "246",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:50:57 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "20925",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "21033",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "file",
-        "id": "file-XYvrFKJYbrsUYZL5PdNg3Y",
+        "id": "file-QcTwAdVjGKGpqb6r63gxqX",
         "purpose": "vision",
         "filename": "images_dog_and_cat.png",
         "bytes": 3162696,
-        "created_at": 1758145837,
+        "created_at": 1771020013,
         "expires_at": null,
         "status": "processed",
         "status_details": null
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/files/file-XYvrFKJYbrsUYZL5PdNg3Y",
+      "RequestUri": "https://api.openai.com/v1/files/file-QcTwAdVjGKGpqb6r63gxqX",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.24; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -58,26 +57,25 @@
         "Access-Control-Allow-Origin": "*",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980bd27c6f80d44f-SEA",
+        "CF-RAY": "9cd798f28db4a38a-SEA",
         "Connection": "keep-alive",
         "Content-Length": "81",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:50:58 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "214",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "220",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "file",
         "deleted": true,
-        "id": "file-XYvrFKJYbrsUYZL5PdNg3Y"
+        "id": "file-QcTwAdVjGKGpqb6r63gxqX"
       }
     }
   ],
