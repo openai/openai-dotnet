@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -30,6 +31,11 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("ChunkingStrategy")]
     [Experimental("OPENAI001")]
     public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
+
+    // CUSTOM: Changed type from IList<Uri> to IList<string> because data URLs can exceed Uri length limits on older .NET versions.
+    [CodeGenMember("KnownSpeakerReferences")]
+    [Experimental("OPENAI001")]
+    public IList<string> KnownSpeakerReferenceUris { get; }
 
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="AudioTranscriptionOptions"/>. </summary>

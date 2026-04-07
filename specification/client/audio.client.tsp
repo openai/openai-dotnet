@@ -13,10 +13,6 @@ using Azure.ClientGenerator.Core;
 
 @@alternateType(CreateTranscriptionResponseVerboseJson.usage, CreateTranscriptionResponseJsonUsage);
 
-// This is a data URL. Treat it as a string internally to avoid Uri limits on older .NET versions.
-@@alternateType(CreateTranscriptionRequest.known_speaker_references, string[]);
-@@clientName(CreateTranscriptionRequest.known_speaker_references, "KnownSpeakerReferenceUris");
-
 @@clientName(createSpeech, "GenerateSpeech");
 @@clientName(createTranscription, "TranscribeAudio");
 @@clientName(createTranslation, "TranslateAudio");

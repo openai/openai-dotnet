@@ -1002,7 +1002,7 @@ namespace OpenAI.Audio {
         public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
         public AudioTranscriptionIncludes Includes { get; set; }
         public IList<string> KnownSpeakerNames { get; }
-        public IList<Uri> KnownSpeakerReferenceUris { get; }
+        public IList<string> KnownSpeakerReferenceUris { get; }
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
