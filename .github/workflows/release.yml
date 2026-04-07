@@ -53,7 +53,7 @@ jobs:
           /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
           ${{ env.version_suffix_args }}
 
-      - name: Run recorded tests
+      - name: Run playback tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
           --logger "trx;LogFilePrefix=playback"
