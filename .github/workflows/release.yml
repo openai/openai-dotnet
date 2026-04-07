@@ -53,20 +53,12 @@ jobs:
           /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
           ${{ env.version_suffix_args }}
 
-      - name: Run unit tests
-        run: dotnet test
-          --configuration Release
-          --logger "trx;LogFileName=${{ github.workspace }}/artifacts/test-results/smoke.trx"
-          ${{ env.version_suffix_args }}
-          -- NUnit.Where="cat == Smoke and cat != Manual"
-
       - name: Run recorded tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --logger "trx;LogFilePrefix=live"
+          --logger "trx;LogFilePrefix=playback"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.version_suffix_args }}
-          -- NUnit.Where="(cat == Chat or cat == Embeddings or cat == Responses) and cat != MPFD"
         env:
           CLIENTMODEL_TEST_MODE: Playback
           CLIENTMODEL_DISABLE_AUTO_RECORDING: true
