@@ -418,7 +418,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         {
             ResponseFormat = AudioTranscriptionFormat.Diarized,
             KnownSpeakerNames = { "agent" },
-            KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
+            KnownSpeakerReferenceUris = { $"data:audio/wav;base64,{speakerRefBase64}" },
         };
 
         DiarizedAudioTranscription transcription = await client.TranscribeAudioDiarizedAsync(audioFilePath, options);

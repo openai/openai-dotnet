@@ -1144,7 +1144,7 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public IList<string> KnownSpeakerNames { get; }
         [Experimental("OPENAI001")]
-        public IList<Uri> KnownSpeakerReferenceUris { get; }
+        public IList<string> KnownSpeakerReferenceUris { get; }
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }

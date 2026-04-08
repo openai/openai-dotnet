@@ -157,7 +157,7 @@ model KnownSpeakerNames is string[];
 
 /** Optional list of audio samples (as [data URLs](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs)) that contain known speaker references matching `known_speaker_names[]`. Each sample must be between 2 and 10 seconds, and can use any of the same input audio formats supported by `file`. */
 @maxItems(4)
-model KnownSpeakerReferences is string[];
+model KnownSpeakerReferences is url[];
 
 /** Represents a diarized transcription response returned by the model, including the combined transcript and speaker-segment annotations. */
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."

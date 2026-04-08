@@ -23,7 +23,7 @@ public partial class AudioExamples
             ResponseFormat = AudioTranscriptionFormat.Diarized,
             ChunkingStrategy = AudioTranscriptionDefaultChunkingStrategy.Auto,
             KnownSpeakerNames = { "agent" },
-            KnownSpeakerReferenceUris = { new Uri($"data:audio/wav;base64,{speakerRefBase64}") },
+            KnownSpeakerReferenceUris = { $"data:audio/wav;base64,{speakerRefBase64}" },
         };
 
         DiarizedAudioTranscription transcription = client.TranscribeAudioDiarized(audioFilePath, options);
