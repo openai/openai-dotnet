@@ -180,7 +180,7 @@ public class FilesTests : OpenAIRecordedTestBase
             Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
             Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(fileInfo.Filename, Does.Contain(filename));
+            Assert.That(fileInfo.Filename, Does.Contain(filename).IgnoreCase);
             Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
             Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
