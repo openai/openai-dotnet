@@ -21,6 +21,9 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(GetSkillVersion, "Skills");
 @@clientLocation(GetSkillVersionContent, "Skills");
 
+// Rename operation for consistency with other APIs
+@@clientName(GetSkillVersionContent, "DownloadSkillVersionContent");
+
 // Do not generate convenience methods - protocol only
 @@convenientAPI(ListSkills, false);
 @@convenientAPI(CreateSkillMultipart, false);

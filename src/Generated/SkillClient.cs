@@ -220,21 +220,21 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetSkillVersionContent(string skillId, string version, RequestOptions options = null)
+        public virtual ClientResult DownloadSkillVersionContent(string skillId, string version, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNullOrEmpty(version, nameof(version));
 
-            using PipelineMessage message = CreateGetSkillVersionContentRequest(skillId, version, options);
+            using PipelineMessage message = CreateDownloadSkillVersionContentRequest(skillId, version, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetSkillVersionContentAsync(string skillId, string version, RequestOptions options = null)
+        public virtual async Task<ClientResult> DownloadSkillVersionContentAsync(string skillId, string version, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNullOrEmpty(version, nameof(version));
 
-            using PipelineMessage message = CreateGetSkillVersionContentRequest(skillId, version, options);
+            using PipelineMessage message = CreateDownloadSkillVersionContentRequest(skillId, version, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }

@@ -222,7 +222,7 @@ namespace OpenAI.Skills
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetSkillVersionContentRequest(string skillId, string version, RequestOptions options)
+        internal virtual PipelineMessage CreateDownloadSkillVersionContentRequest(string skillId, string version, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

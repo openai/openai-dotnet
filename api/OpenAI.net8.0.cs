@@ -6738,6 +6738,8 @@ namespace OpenAI.Skills {
         public virtual Task<ClientResult> DeleteSkillAsync(string skillId, RequestOptions options = null);
         public virtual ClientResult DeleteSkillVersion(string skillId, string version, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteSkillVersionAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult DownloadSkillVersionContent(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadSkillVersionContentAsync(string skillId, string version, RequestOptions options = null);
         public virtual ClientResult GetSkill(string skillId, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillAsync(string skillId, RequestOptions options = null);
         public virtual ClientResult GetSkillContent(string skillId, RequestOptions options = null);
@@ -6746,8 +6748,6 @@ namespace OpenAI.Skills {
         public virtual Task<ClientResult> GetSkillsAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual ClientResult GetSkillVersion(string skillId, string version, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillVersionAsync(string skillId, string version, RequestOptions options = null);
-        public virtual ClientResult GetSkillVersionContent(string skillId, string version, RequestOptions options = null);
-        public virtual Task<ClientResult> GetSkillVersionContentAsync(string skillId, string version, RequestOptions options = null);
         public virtual ClientResult GetSkillVersions(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillVersionsAsync(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual ClientResult UpdateSkillDefaultVersion(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
