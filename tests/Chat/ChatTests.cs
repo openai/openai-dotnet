@@ -935,7 +935,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public async Task TearDown()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
@@ -943,7 +943,7 @@ public class ChatTests : OpenAIRecordedTestBase
 
         foreach (string fileId in FileIdsToDelete)
         {
-            _ = fileClient.DeleteFile(fileId, noThrowOptions);
+            _ = await fileClient.DeleteFileAsync(fileId, noThrowOptions);
         }
     }
 
