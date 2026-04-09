@@ -1,4 +1,4 @@
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--
     Code generation is intentionally not importing the root props file, as it
     is isolated tooling and should not share settings with the main projects.
