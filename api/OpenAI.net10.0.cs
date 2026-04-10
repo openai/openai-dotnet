@@ -6726,14 +6726,10 @@ namespace OpenAI.Skills {
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult CreateSkillJson(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateSkillJsonAsync(BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult CreateSkillMultipart(BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateSkillMultipartAsync(BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual ClientResult CreateSkillVersionJson(string skillId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateSkillVersionJsonAsync(string skillId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult CreateSkillVersionMultipart(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateSkillVersionMultipartAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateSkill(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult DeleteSkill(string skillId, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteSkillAsync(string skillId, RequestOptions options = null);
         public virtual ClientResult DeleteSkillVersion(string skillId, string version, RequestOptions options = null);
@@ -6750,8 +6746,8 @@ namespace OpenAI.Skills {
         public virtual Task<ClientResult> GetSkillVersionAsync(string skillId, string version, RequestOptions options = null);
         public virtual ClientResult GetSkillVersions(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillVersionsAsync(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual ClientResult UpdateSkillDefaultVersion(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> UpdateSkillDefaultVersionAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult UpdateSkill(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> UpdateSkillAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
     }
     [Experimental("SCME0002")]
     public sealed class SkillClientSettings : ClientSettings {

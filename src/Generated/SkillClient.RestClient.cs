@@ -40,7 +40,7 @@ namespace OpenAI.Skills
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateCreateSkillMultipartRequest(BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateSkillRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -48,21 +48,6 @@ namespace OpenAI.Skills
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", contentType);
-            request.Headers.Set("Accept", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateCreateSkillJsonRequest(BinaryContent content, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/skills", false);
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
             message.Apply(options);
@@ -98,7 +83,7 @@ namespace OpenAI.Skills
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateUpdateSkillDefaultVersionRequest(string skillId, string contentType, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateUpdateSkillRequest(string skillId, string contentType, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -156,7 +141,7 @@ namespace OpenAI.Skills
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateCreateSkillVersionMultipartRequest(string skillId, BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateCreateSkillVersionRequest(string skillId, BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -166,23 +151,6 @@ namespace OpenAI.Skills
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", contentType);
-            request.Headers.Set("Accept", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateCreateSkillVersionJsonRequest(string skillId, BinaryContent content, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/skills/", false);
-            uri.AppendPath(skillId, true);
-            uri.AppendPath("/versions", false);
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
             message.Apply(options);

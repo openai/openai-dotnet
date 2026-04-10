@@ -34,35 +34,19 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CreateSkillMultipart(BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual ClientResult CreateSkill(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillMultipartRequest(content, contentType, options);
+            using PipelineMessage message = CreateCreateSkillRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CreateSkillMultipartAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual async Task<ClientResult> CreateSkillAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillMultipartRequest(content, contentType, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        public virtual ClientResult CreateSkillJson(BinaryContent content, RequestOptions options = null)
-        {
-            Argument.AssertNotNull(content, nameof(content));
-
-            using PipelineMessage message = CreateCreateSkillJsonRequest(content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
-        }
-
-        public virtual async Task<ClientResult> CreateSkillJsonAsync(BinaryContent content, RequestOptions options = null)
-        {
-            Argument.AssertNotNull(content, nameof(content));
-
-            using PipelineMessage message = CreateCreateSkillJsonRequest(content, options);
+            using PipelineMessage message = CreateCreateSkillRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -98,21 +82,21 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult UpdateSkillDefaultVersion(string skillId, string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult UpdateSkill(string skillId, string contentType, BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateUpdateSkillDefaultVersionRequest(skillId, contentType, content, options);
+            using PipelineMessage message = CreateUpdateSkillRequest(skillId, contentType, content, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> UpdateSkillDefaultVersionAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual async Task<ClientResult> UpdateSkillAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateUpdateSkillDefaultVersionRequest(skillId, contentType, content, options);
+            using PipelineMessage message = CreateUpdateSkillRequest(skillId, contentType, content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -148,39 +132,21 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CreateSkillVersionMultipart(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual ClientResult CreateSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillVersionMultipartRequest(skillId, content, contentType, options);
+            using PipelineMessage message = CreateCreateSkillVersionRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CreateSkillVersionMultipartAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual async Task<ClientResult> CreateSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillVersionMultipartRequest(skillId, content, contentType, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        public virtual ClientResult CreateSkillVersionJson(string skillId, BinaryContent content, RequestOptions options = null)
-        {
-            Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
-            Argument.AssertNotNull(content, nameof(content));
-
-            using PipelineMessage message = CreateCreateSkillVersionJsonRequest(skillId, content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
-        }
-
-        public virtual async Task<ClientResult> CreateSkillVersionJsonAsync(string skillId, BinaryContent content, RequestOptions options = null)
-        {
-            Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
-            Argument.AssertNotNull(content, nameof(content));
-
-            using PipelineMessage message = CreateCreateSkillVersionJsonRequest(skillId, content, options);
+            using PipelineMessage message = CreateCreateSkillVersionRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

@@ -22,7 +22,14 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(GetSkillVersionContent, "Skills");
 
 // Rename operation for consistency with other APIs
+@@clientName(CreateSkillMultipart, "CreateSkill");
+@@clientName(UpdateSkillDefaultVersion, "UpdateSkill");
+@@clientName(CreateSkillVersionMultipart, "CreateSkillVersion");
 @@clientName(GetSkillVersionContent, "DownloadSkillVersionContent");
+
+// Remove JSON variants from C# generation (only multipart is usable)
+@@scope(CreateSkillJson, "!csharp");
+@@scope(CreateSkillVersionJson, "!csharp");
 
 // Do not generate convenience methods - protocol only
 @@convenientAPI(ListSkills, false);
