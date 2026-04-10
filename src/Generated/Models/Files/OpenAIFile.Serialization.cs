@@ -116,7 +116,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("purpose") != true)
             {
                 writer.WritePropertyName("purpose"u8);
-                writer.WriteStringValue(Purpose.ToSerialString());
+                writer.WriteStringValue(Purpose.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -176,7 +176,7 @@ namespace OpenAI.Files
             DateTimeOffset? expiresAt = default;
             string filename = default;
             string @object = default;
-            UploadFilePurpose purpose = default;
+            InternalUploadFilePurpose purpose = default;
             FileStatus status = default;
             string statusDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -223,7 +223,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("purpose"u8))
                 {
-                    purpose = prop.Value.GetString().ToUploadFilePurpose();
+                    purpose = new InternalUploadFilePurpose(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))

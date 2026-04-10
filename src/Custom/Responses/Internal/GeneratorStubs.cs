@@ -129,3 +129,8 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownWebSearchActionSearchSourceBase")] internal partial class InternalUnknownWebSearchActionSearchSourceBase { }
 [CodeGenType("ApplyPatchOperationType")] internal readonly partial struct InternalApplyPatchOperationType { }
 [CodeGenType("UnknownApplyPatchOperation")] internal partial class InternalUnknownApplyPatchOperation { }
+[CodeGenType("CreateResponseReasoningSummary")] internal readonly partial struct InternalCreateResponseReasoningSummary { }
+[CodeGenType("CreateResponseReasoningGenerateSummary")] internal readonly partial struct InternalCreateResponseReasoningGenerateSummary { }
+[CodeGenType("FileSearchToolCallItemParamResult")] internal partial class InternalFileSearchToolCallItemParamResult { }
+[CodeGenType("FileSearchToolFiltersType")] internal readonly partial struct InternalFileSearchToolFiltersType { }
+[CodeGenType("FileSearchToolFiltersType1")] internal readonly partial struct InternalFileSearchToolFiltersType1 { }

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -12,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, CreateImageSize1 size, CreateImageQuality1 quality, CreateImageBackground1 background, CreateImageOutputFormat1 outputFormat, InternalImagesUsage usage)
+        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageSize1 size, InternalCreateImageQuality1 quality, InternalCreateImageBackground1 background, InternalCreateImageOutputFormat1 outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -23,7 +22,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, CreateImageSize1 size, CreateImageQuality1 quality, CreateImageBackground1 background, CreateImageOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageSize1 size, InternalCreateImageQuality1 quality, InternalCreateImageBackground1 background, InternalCreateImageOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -42,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        public CreateImageSize1 Size { get; }
+        internal InternalCreateImageSize1 Size { get; }
 
-        public CreateImageQuality1 Quality { get; }
+        internal InternalCreateImageQuality1 Quality { get; }
 
-        public CreateImageBackground1 Background { get; }
+        internal InternalCreateImageBackground1 Background { get; }
 
-        public CreateImageOutputFormat1 OutputFormat { get; }
+        internal InternalCreateImageOutputFormat1 OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
 

@@ -18,14 +18,14 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalCompoundFilter(FileSearchToolFiltersType1 kind, IEnumerable<BinaryData> filters)
+        internal InternalCompoundFilter(InternalFileSearchToolFiltersType1 kind, IEnumerable<BinaryData> filters)
         {
             Kind = kind;
             Filters = filters.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCompoundFilter(FileSearchToolFiltersType1 kind, IList<BinaryData> filters, in JsonPatch patch)
+        internal InternalCompoundFilter(InternalFileSearchToolFiltersType1 kind, IList<BinaryData> filters, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Kind = kind;
@@ -39,7 +39,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public FileSearchToolFiltersType1 Kind { get; set; }
+        internal InternalFileSearchToolFiltersType1 Kind { get; set; }
 
         public IList<BinaryData> Filters { get; }
     }

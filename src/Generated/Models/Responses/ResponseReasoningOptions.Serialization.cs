@@ -81,7 +81,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(GenerateSummary) && !Patch.Contains("$.generate_summary"u8))
             {
                 writer.WritePropertyName("generate_summary"u8);
-                writer.WriteStringValue(GenerateSummary.Value.ToSerialString());
+                writer.WriteStringValue(GenerateSummary.Value.ToString());
             }
 
             Patch.WriteTo(writer);
@@ -109,7 +109,7 @@ namespace OpenAI.Responses
             }
             ResponseReasoningEffortLevel? reasoningEffortLevel = default;
             ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity = default;
-            CreateResponseReasoningGenerateSummary? generateSummary = default;
+            InternalCreateResponseReasoningGenerateSummary? generateSummary = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -142,7 +142,7 @@ namespace OpenAI.Responses
                         generateSummary = null;
                         continue;
                     }
-                    generateSummary = prop.Value.GetString().ToCreateResponseReasoningGenerateSummary();
+                    generateSummary = new InternalCreateResponseReasoningGenerateSummary(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

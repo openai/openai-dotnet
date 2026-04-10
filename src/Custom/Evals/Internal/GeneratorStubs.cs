@@ -121,3 +121,5 @@ namespace OpenAI.Evals;
 [CodeGenType("EvalGraderPythonParams")] internal partial class InternalEvalGraderPythonParams {}
 [CodeGenType("EvalGraderScoreModelParams")] internal partial class InternalEvalGraderScoreModelParams {}
 [CodeGenType("EvalResponsesRunDataSourceParamsSamplingParamsText")] internal partial class InternalEvalResponsesRunDataSourceParamsSamplingParamsText {}
+[CodeGenType("CreateEvalItem1")] internal partial class InternalCreateEvalItem1 {}
+[CodeGenType("EvalJsonlRunDataSourceParamsSourceContent")] internal partial class InternalEvalJsonlRunDataSourceParamsSourceContent {}

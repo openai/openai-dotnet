@@ -93,6 +93,15 @@ internal partial class InternalCreateThreadAndRunRequest
     public ToolConstraint ToolChoice { get; set; }
 }
 
+[CodeGenType("CreateThreadAndRunRequestTruncationStrategyType")]
+internal readonly partial struct InternalCreateThreadAndRunRequestTruncationStrategyType { }
+
+[CodeGenType("CreateThreadAndRunRequestToolChoiceType")]
+internal readonly partial struct InternalCreateThreadAndRunRequestToolChoiceType { }
+
+[CodeGenType("CreateThreadAndRunRequestToolChoiceFunction")]
+internal partial class InternalCreateThreadAndRunRequestToolChoiceFunction { }
+
 [CodeGenType("MessageContentImageUrlObjectImageUrl")]
 internal partial class InternalMessageContentImageUrlObjectImageUrl
 {
