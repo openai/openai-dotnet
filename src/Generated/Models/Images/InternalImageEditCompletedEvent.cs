@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -11,7 +12,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage)
+        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -22,7 +23,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,15 +42,15 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        internal InternalImageEditCompletedEventSize Size { get; }
+        public OpenAI. Size { get; }
 
-        internal InternalImageEditCompletedEventQuality Quality { get; }
+        public OpenAI. Quality { get; }
 
-        internal InternalImageEditCompletedEventBackground Background { get; }
+        public OpenAI. Background { get; }
 
-        internal InternalImageEditCompletedEventOutputFormat OutputFormat { get; }
+        public OpenAI. OutputFormat { get; }
 
-        internal InternalImagesUsage Usage { get; }
+        internal OpenAI.Images.InternalImagesUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

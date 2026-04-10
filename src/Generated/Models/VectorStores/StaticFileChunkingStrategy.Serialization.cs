@@ -7,12 +7,13 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.VectorStores
 {
     public partial class StaticFileChunkingStrategy : FileChunkingStrategy, IJsonModel<StaticFileChunkingStrategy>
     {
-        internal StaticFileChunkingStrategy() : this(InternalDotNetCombinedChunkingStrategyParamType.Static, null, null)
+        internal StaticFileChunkingStrategy() : this(InternalDotNetCombinedChunkingStrategyParamType2.Static, null, null)
         {
         }
 
@@ -90,14 +91,14 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            InternalDotNetCombinedChunkingStrategyParamType kind = default;
+            InternalDotNetCombinedChunkingStrategyParamType2 kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalStaticChunkingStrategy internalDetails = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalDotNetCombinedChunkingStrategyParamType(prop.Value.GetString());
+                    kind = new InternalDotNetCombinedChunkingStrategyParamType2(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("static"u8))

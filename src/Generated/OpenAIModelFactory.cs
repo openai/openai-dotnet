@@ -966,6 +966,21 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static SpeechAudioDeltaEvent SpeechAudioDeltaEvent(BinaryData audio = default)
+        {
+            return new SpeechAudioDeltaEvent("speech.audio.delta", audio, additionalBinaryDataProperties: null);
+        }
+
+        public static SpeechAudioDoneEvent SpeechAudioDoneEvent(SpeechTokenUsage usage = default)
+        {
+            return new SpeechAudioDoneEvent("speech.audio.done", usage, additionalBinaryDataProperties: null);
+        }
+
+        public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
+        {
+            return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTranscriptionInputTokenUsageDetails AudioTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
             return new AudioTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
@@ -1013,6 +1028,18 @@ namespace OpenAI
                 averageLogProbability,
                 compressionRatio,
                 noSpeechProbability,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static TranscriptTextSegmentEvent TranscriptTextSegmentEvent(string id = default, TimeSpan start = default, TimeSpan end = default, string text = default, string speaker = default)
+        {
+            return new TranscriptTextSegmentEvent(
+                "transcript.text.segment",
+                id,
+                start,
+                end,
+                text,
+                speaker,
                 additionalBinaryDataProperties: null);
         }
 
@@ -1285,11 +1312,6 @@ namespace OpenAI
         public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default)
         {
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
-        }
-
-        public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
-        {
-            return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice()

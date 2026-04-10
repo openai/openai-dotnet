@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -11,7 +12,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageGenCompletedEventSize size, InternalImageGenCompletedEventQuality quality, InternalImageGenCompletedEventBackground background, InternalImageGenCompletedEventOutputFormat outputFormat, InternalImagesUsage usage)
+        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -22,7 +23,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageGenCompletedEventSize size, InternalImageGenCompletedEventQuality quality, InternalImageGenCompletedEventBackground background, InternalImageGenCompletedEventOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, OpenAI. size, OpenAI. quality, OpenAI. background, OpenAI. outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,15 +42,15 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        internal InternalImageGenCompletedEventSize Size { get; }
+        public OpenAI. Size { get; }
 
-        internal InternalImageGenCompletedEventQuality Quality { get; }
+        public OpenAI. Quality { get; }
 
-        internal InternalImageGenCompletedEventBackground Background { get; }
+        public OpenAI. Background { get; }
 
-        internal InternalImageGenCompletedEventOutputFormat OutputFormat { get; }
+        public OpenAI. OutputFormat { get; }
 
-        internal InternalImagesUsage Usage { get; }
+        internal OpenAI.Images.InternalImagesUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

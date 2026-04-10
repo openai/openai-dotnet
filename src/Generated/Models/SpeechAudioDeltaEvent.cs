@@ -5,27 +5,29 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI.Responses;
 
-namespace OpenAI.VectorStores
+namespace OpenAI
 {
     [Experimental("OPENAI001")]
-    public abstract partial class FileChunkingStrategy
+    public partial class SpeechAudioDeltaEvent
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected FileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind)
+        internal SpeechAudioDeltaEvent(BinaryData audio)
         {
-            Kind = kind;
+            Audio = audio;
         }
 
-        internal FileChunkingStrategy(InternalDotNetCombinedChunkingStrategyParamType2 kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal SpeechAudioDeltaEvent(string kind, BinaryData audio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
+            Audio = audio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalDotNetCombinedChunkingStrategyParamType2 Kind { get; set; }
+        public string Kind { get; } = "speech.audio.delta";
+
+        public BinaryData Audio { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

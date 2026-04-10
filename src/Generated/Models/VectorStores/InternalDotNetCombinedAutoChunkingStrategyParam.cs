@@ -4,16 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Responses;
 
 namespace OpenAI.VectorStores
 {
     internal partial class InternalDotNetCombinedAutoChunkingStrategyParam : FileChunkingStrategy
     {
-        public InternalDotNetCombinedAutoChunkingStrategyParam() : this(InternalDotNetCombinedChunkingStrategyParamType.Auto, null)
+        public InternalDotNetCombinedAutoChunkingStrategyParam() : this(InternalDotNetCombinedChunkingStrategyParamType2.Auto, null)
         {
         }
 
-        internal InternalDotNetCombinedAutoChunkingStrategyParam(InternalDotNetCombinedChunkingStrategyParamType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
+        internal InternalDotNetCombinedAutoChunkingStrategyParam(InternalDotNetCombinedChunkingStrategyParamType2 kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
     }
