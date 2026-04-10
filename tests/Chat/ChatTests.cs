@@ -937,6 +937,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [OneTimeTearDown]
     public async Task OneTimeTearDown()
     {
+        // Skip resource cleanup in Playback mode; no live resources were created.
         if (Mode == RecordedTestMode.Playback)
         {
             return;

@@ -38,8 +38,8 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [OneTimeTearDown]
     protected async Task OneTimeTearDown()
     {
-        // Skip cleanup if playback or if there is no API key (e.g., if we are not running live tests).
-        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
         {
             return;
         }
