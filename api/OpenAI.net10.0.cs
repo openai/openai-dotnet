@@ -45,6 +45,8 @@ namespace OpenAI {
         [Experimental("OPENAI001")]
         public virtual ResponsesClient GetResponsesClient();
         [Experimental("OPENAI001")]
+        public virtual SkillClient GetSkillClient();
+        [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
         [Experimental("OPENAI001")]
         public virtual VideoClient GetVideoClient();
@@ -89,6 +91,7 @@ namespace OpenAI {
         public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
         public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
@@ -96,6 +99,7 @@ namespace OpenAI {
         public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
@@ -1952,6 +1956,23 @@ namespace OpenAI.Chat {
         Audio = 2
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct ChatSearchContextSize : IEquatable<ChatSearchContextSize> {
+        public ChatSearchContextSize(string value);
+        public static ChatSearchContextSize High { get; }
+        public static ChatSearchContextSize Low { get; }
+        public static ChatSearchContextSize Medium { get; }
+        public readonly bool Equals(ChatSearchContextSize other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatSearchContextSize left, ChatSearchContextSize right);
+        public static implicit operator ChatSearchContextSize(string value);
+        public static implicit operator ChatSearchContextSize?(string value);
+        public static bool operator !=(ChatSearchContextSize left, ChatSearchContextSize right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public readonly partial struct ChatServiceTier : IEquatable<ChatServiceTier> {
         public ChatServiceTier(string value);
         public static ChatServiceTier Auto { get; }
@@ -2044,6 +2065,7 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+        public ChatSearchContextSize? SearchContextSize { get; set; }
     }
     [Experimental("OPENAI001")]
     public class DeveloperChatMessage : ChatMessage, IJsonModel<DeveloperChatMessage>, IPersistableModel<DeveloperChatMessage> {
@@ -5573,14 +5595,14 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
-        public ImageGenerationCallResponseItem(ImageGenerationToolAction action, ImageGenToolCallBackground background, BinaryData imageResultBytes);
-        public ImageGenerationToolAction Action { get; set; }
-        public ImageGenToolCallBackground Background { get; set; }
+        public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
+        public ImageGenerationToolAction? Action { get; set; }
+        public ImageGenerationToolBackground? Background { get; set; }
         public BinaryData ImageResultBytes { get; set; }
-        public ImageGenToolCallOutputFormat? OutputFormat { get; set; }
-        public ImageGenToolCallQuality? Quality { get; set; }
+        public ImageGenerationToolOutputFileFormat? OutputFormat { get; set; }
+        public ImageGenerationToolQuality? Quality { get; set; }
         public string RevisedPrompt { get; set; }
-        public ImageGenToolCallSize? Size { get; set; }
+        public ImageGenerationToolSize? Size { get; set; }
         public ImageGenerationCallStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -5732,82 +5754,6 @@ namespace OpenAI.Responses {
         public override readonly int GetHashCode();
         public static bool operator ==(ImageGenerationToolSize left, ImageGenerationToolSize right);
         public static bool operator !=(ImageGenerationToolSize left, ImageGenerationToolSize right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct ImageGenToolCallBackground : IEquatable<ImageGenToolCallBackground> {
-        public ImageGenToolCallBackground(string value);
-        public static ImageGenToolCallBackground Auto { get; }
-        public static ImageGenToolCallBackground Opaque { get; }
-        public static ImageGenToolCallBackground Transparent { get; }
-        public readonly bool Equals(ImageGenToolCallBackground other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ImageGenToolCallBackground left, ImageGenToolCallBackground right);
-        public static implicit operator ImageGenToolCallBackground(string value);
-        public static implicit operator ImageGenToolCallBackground?(string value);
-        public static bool operator !=(ImageGenToolCallBackground left, ImageGenToolCallBackground right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct ImageGenToolCallOutputFormat : IEquatable<ImageGenToolCallOutputFormat> {
-        public ImageGenToolCallOutputFormat(string value);
-        public static ImageGenToolCallOutputFormat Jpeg { get; }
-        public static ImageGenToolCallOutputFormat Png { get; }
-        public static ImageGenToolCallOutputFormat Webp { get; }
-        public readonly bool Equals(ImageGenToolCallOutputFormat other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ImageGenToolCallOutputFormat left, ImageGenToolCallOutputFormat right);
-        public static implicit operator ImageGenToolCallOutputFormat(string value);
-        public static implicit operator ImageGenToolCallOutputFormat?(string value);
-        public static bool operator !=(ImageGenToolCallOutputFormat left, ImageGenToolCallOutputFormat right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct ImageGenToolCallQuality : IEquatable<ImageGenToolCallQuality> {
-        public ImageGenToolCallQuality(string value);
-        public static ImageGenToolCallQuality Auto { get; }
-        public static ImageGenToolCallQuality Hd { get; }
-        public static ImageGenToolCallQuality High { get; }
-        public static ImageGenToolCallQuality Low { get; }
-        public static ImageGenToolCallQuality Medium { get; }
-        public static ImageGenToolCallQuality Standard { get; }
-        public readonly bool Equals(ImageGenToolCallQuality other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ImageGenToolCallQuality left, ImageGenToolCallQuality right);
-        public static implicit operator ImageGenToolCallQuality(string value);
-        public static implicit operator ImageGenToolCallQuality?(string value);
-        public static bool operator !=(ImageGenToolCallQuality left, ImageGenToolCallQuality right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct ImageGenToolCallSize : IEquatable<ImageGenToolCallSize> {
-        public ImageGenToolCallSize(string value);
-        public static ImageGenToolCallSize Auto { get; }
-        public static ImageGenToolCallSize W1024x1024 { get; }
-        public static ImageGenToolCallSize W1024x1536 { get; }
-        public static ImageGenToolCallSize W1024x1792 { get; }
-        public static ImageGenToolCallSize W1536x1024 { get; }
-        public static ImageGenToolCallSize W1792x1024 { get; }
-        public static ImageGenToolCallSize W256x256 { get; }
-        public static ImageGenToolCallSize W512x512 { get; }
-        public readonly bool Equals(ImageGenToolCallSize other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ImageGenToolCallSize left, ImageGenToolCallSize right);
-        public static implicit operator ImageGenToolCallSize(string value);
-        public static implicit operator ImageGenToolCallSize?(string value);
-        public static bool operator !=(ImageGenToolCallSize left, ImageGenToolCallSize right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
@@ -6929,6 +6875,50 @@ namespace OpenAI.Responses {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
+    }
+}
+namespace OpenAI.Skills {
+    [Experimental("OPENAI001")]
+    public class SkillClient {
+        protected SkillClient();
+        [Experimental("SCME0002")]
+        public SkillClient(SkillClientSettings settings);
+        public SkillClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public SkillClient(ApiKeyCredential credential);
+        public SkillClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public SkillClient(AuthenticationPolicy authenticationPolicy);
+        protected internal SkillClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public SkillClient(string apiKey);
+        [Experimental("OPENAI001")]
+        public Uri Endpoint { get; }
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateSkill(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteSkill(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteSkillAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult DeleteSkillVersion(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteSkillVersionAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult DownloadSkillVersionContent(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadSkillVersionContentAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult GetSkill(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult GetSkillContent(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillContentAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult GetSkills(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillsAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual ClientResult GetSkillVersion(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillVersionAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult GetSkillVersions(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetSkillVersionsAsync(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual ClientResult UpdateSkill(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> UpdateSkillAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+    }
+    [Experimental("SCME0002")]
+    public sealed class SkillClientSettings : ClientSettings {
+        public OpenAIClientOptions Options { get; set; }
+        protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
 namespace OpenAI.VectorStores {

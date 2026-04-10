@@ -36,10 +36,10 @@ public class AssistantsTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    protected void Cleanup()
+    protected async Task OneTimeTearDown()
     {
-        // Skip cleanup if playback or if there is no API key (e.g., if we are not running live tests).
-        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
         {
             return;
         }
@@ -53,23 +53,23 @@ public class AssistantsTests : OpenAIRecordedTestBase
         };
         foreach (ThreadMessage message in _messagesToDelete)
         {
-            Console.WriteLine($"Cleanup: {message.Id} -> {client.DeleteMessage(message.ThreadId, message.Id, requestOptions)?.GetRawResponse().Status}");
+            Console.WriteLine($"Cleanup: {message.Id} -> {(await client.DeleteMessageAsync(message.ThreadId, message.Id, requestOptions))?.GetRawResponse().Status}");
         }
         foreach (Assistant assistant in _assistantsToDelete)
         {
-            Console.WriteLine($"Cleanup: {assistant.Id} -> {client.DeleteAssistant(assistant.Id, requestOptions)?.GetRawResponse().Status}");
+            Console.WriteLine($"Cleanup: {assistant.Id} -> {(await client.DeleteAssistantAsync(assistant.Id, requestOptions))?.GetRawResponse().Status}");
         }
         foreach (AssistantThread thread in _threadsToDelete)
         {
-            Console.WriteLine($"Cleanup: {thread.Id} -> {client.DeleteThread(thread.Id, requestOptions)?.GetRawResponse().Status}");
+            Console.WriteLine($"Cleanup: {thread.Id} -> {(await client.DeleteThreadAsync(thread.Id, requestOptions))?.GetRawResponse().Status}");
         }
         foreach (OpenAIFile file in _filesToDelete)
         {
-            Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse().Status}");
+            Console.WriteLine($"Cleanup: {file.Id} -> {(await fileClient.DeleteFileAsync(file.Id, requestOptions))?.GetRawResponse().Status}");
         }
         foreach (string vectorStoreId in _vectorStoreIdsToDelete)
         {
-            Console.WriteLine($"Cleanup: {vectorStoreId} => {vectorStoreClient.DeleteVectorStore(vectorStoreId, requestOptions)?.GetRawResponse().Status}");
+            Console.WriteLine($"Cleanup: {vectorStoreId} => {(await vectorStoreClient.DeleteVectorStoreAsync(vectorStoreId, requestOptions))?.GetRawResponse().Status}");
         }
         _messagesToDelete.Clear();
         _assistantsToDelete.Clear();

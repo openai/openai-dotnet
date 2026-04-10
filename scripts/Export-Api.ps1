@@ -145,6 +145,7 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
         "Moderations",
         "Realtime",
         "Responses",
+        "Skills",
         "VectorStores",
         "Videos"
     ) | ForEach-Object { $content = $content -creplace "$_\.", "" }

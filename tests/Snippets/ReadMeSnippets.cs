@@ -50,7 +50,7 @@ public class ReadMeSnippets
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public void OneTimeTearDown()
     {
         Environment.SetEnvironmentVariable("OPENAI_API_KEY", _originalApiKey);
         Environment.SetEnvironmentVariable("AZURE_OPENAI_ENDPOINT", _originalAzureOpenAIEndpoint);

@@ -20,6 +20,7 @@ using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
 using OpenAI.VectorStores;
+using OpenAI.Skills;
 using OpenAI.Videos;
 using System;
 using System.ClientModel;
@@ -389,6 +390,12 @@ public class ClientSettingsConstructorTests
     }
 
     [Test]
+    public void SkillClient_NullSettings_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => new SkillClient((SkillClientSettings)null));
+    }
+
+    [Test]
     public void RealtimeClient_NullSettings_Throws()
     {
         Assert.Throws<ArgumentNullException>(() => new RealtimeClient((RealtimeClientSettings)null));
@@ -594,6 +601,17 @@ public class ClientSettingsConstructorTests
         var settings = CreateNonModelSettings<VideoClientSettings>();
 
         var client = new VideoClient(settings);
+
+        Assert.That(client, Is.Not.Null);
+        Assert.That(client.Endpoint, Is.Not.Null);
+    }
+
+    [Test]
+    public void SkillClient_ValidSettings_ConstructsSuccessfully()
+    {
+        var settings = CreateNonModelSettings<SkillClientSettings>();
+
+        var client = new SkillClient(settings);
 
         Assert.That(client, Is.Not.Null);
         Assert.That(client.Endpoint, Is.Not.Null);

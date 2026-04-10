@@ -51,28 +51,31 @@ public class ContainerTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public async Task TearDown()
+    public async Task OneTimeTearDown()
     {
-        // Skip teardown if there is no API key or no container was created
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")) || string.IsNullOrEmpty(_testContainerId))
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
         {
             return;
         }
 
-        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
+        if (!string.IsNullOrEmpty(_testContainerId))
+        {
+            ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
-        try
-        {
-            await client.DeleteContainerAsync(_testContainerId);
-            Console.WriteLine($"Deleted test container: {_testContainerId}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to delete test container {_testContainerId}: {ex.Message}");
-        }
-        finally
-        {
-            _testContainerId = null;
+            try
+            {
+                await client.DeleteContainerAsync(_testContainerId);
+                Console.WriteLine($"Deleted test container: {_testContainerId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to delete test container {_testContainerId}: {ex.Message}");
+            }
+            finally
+            {
+                _testContainerId = null;
+            }
         }
     }
 

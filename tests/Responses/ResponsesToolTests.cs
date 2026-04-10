@@ -907,9 +907,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
         Assert.That(imageGenResponse.Action, Is.EqualTo(ImageGenerationToolAction.Generate));
-        Assert.That(imageGenResponse.Background, Is.EqualTo(ImageGenToolCallBackground.Transparent));
-        Assert.That(imageGenResponse.Quality, Is.EqualTo(ImageGenToolCallQuality.High));
-        Assert.That(imageGenResponse.Size, Is.EqualTo(ImageGenToolCallSize.W1024x1024));
+        Assert.That(imageGenResponse.Background, Is.EqualTo(ImageGenerationToolBackground.Transparent));
+        Assert.That(imageGenResponse.Quality, Is.EqualTo(ImageGenerationToolQuality.High));
+        Assert.That(imageGenResponse.Size, Is.EqualTo(ImageGenerationToolSize.W1024xH1024));
         Assert.That(imageGenResponse.RevisedPrompt, Is.Not.Null.And.Not.Empty);
     }
 

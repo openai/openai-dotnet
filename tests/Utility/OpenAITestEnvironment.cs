@@ -23,6 +23,7 @@ using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
+using OpenAI.Skills;
 using OpenAI.VectorStores;
 
 namespace OpenAI.Tests;
@@ -155,6 +156,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(OpenAIClient) => new OpenAIClient(credential, options),
             nameof(RealtimeClient) => new RealtimeClient(credential, CreateRealtimeClientOptions(options)),
             nameof(ResponsesClient) => new ResponsesClient(credential, options),
+            nameof(SkillClient) => new SkillClient(credential, options),
             _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
         };
 

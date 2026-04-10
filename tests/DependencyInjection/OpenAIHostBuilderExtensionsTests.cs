@@ -208,6 +208,18 @@ public class OpenAIHostBuilderExtensionsTests
     }
 
     [Test]
+    public void AddSkillClient_NullBuilder_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((IHostApplicationBuilder)null).AddSkillClient("OpenAI:Skill"));
+    }
+
+    [Test]
+    public void AddKeyedSkillClient_NullBuilder_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => ((IHostApplicationBuilder)null).AddKeyedSkillClient("key", "OpenAI:Skill"));
+    }
+
+    [Test]
     public void AddContainerClient_NullBuilder_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => ((IHostApplicationBuilder)null).AddContainerClient("OpenAI:Container"));
@@ -770,6 +782,32 @@ public class OpenAIHostBuilderExtensionsTests
         });
 
         var result = _mockBuilder.Object.AddKeyedVideoClient("videoKey", "OpenAI:Video");
+
+        Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    public void AddSkillClient_RegistersSuccessfully()
+    {
+        SetupConfiguration(new Dictionary<string, string>
+        {
+            ["OpenAI:Skill:ApiKey"] = "test-key"
+        });
+
+        var result = _mockBuilder.Object.AddSkillClient("OpenAI:Skill");
+
+        Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    public void AddKeyedSkillClient_RegistersSuccessfully()
+    {
+        SetupConfiguration(new Dictionary<string, string>
+        {
+            ["OpenAI:Skill:ApiKey"] = "test-key"
+        });
+
+        var result = _mockBuilder.Object.AddKeyedSkillClient("skillKey", "OpenAI:Skill");
 
         Assert.That(result, Is.Not.Null);
     }

@@ -15,6 +15,7 @@ using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
+using OpenAI.Skills;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
 using System;
@@ -53,6 +54,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedRealtimeClient")]
 [CodeGenSuppress("_cachedResponsesClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
+[CodeGenSuppress("_cachedSkillClient")]
 [CodeGenSuppress("_cachedVideoClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
 [CodeGenSuppress("_cachedInternalAssistantRunClient")]
@@ -75,6 +77,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetModerationClient")]
 [CodeGenSuppress("GetRealtimeClient")]
 [CodeGenSuppress("GetResponsesClient")]
+[CodeGenSuppress("GetSkillClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
 [CodeGenSuppress("GetVideoClient")]
 [CodeGenSuppress("GetInternalAssistantMessageClient")]
@@ -355,6 +358,14 @@ public partial class OpenAIClient
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="SkillClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual SkillClient GetSkillClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VideoClient"/> that reuses the client configuration details provided to

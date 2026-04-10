@@ -7,7 +7,6 @@ using System.ClientModel.Primitives;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -104,7 +103,7 @@ namespace OpenAI.Chat
                 return null;
             }
             InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 userLocation = default;
-            InternalWebSearchContextSize? searchContextSize = default;
+            ChatSearchContextSize? searchContextSize = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -126,7 +125,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    searchContextSize = new InternalWebSearchContextSize(prop.Value.GetString());
+                    searchContextSize = new ChatSearchContextSize(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

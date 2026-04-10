@@ -935,15 +935,21 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public async Task OneTimeTearDown()
     {
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
+        {
+            return;
+        }
+
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
 
         foreach (string fileId in FileIdsToDelete)
         {
-            _ = fileClient.DeleteFile(fileId, noThrowOptions);
+            _ = await fileClient.DeleteFileAsync(fileId, noThrowOptions);
         }
     }
 

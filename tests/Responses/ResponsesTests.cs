@@ -31,14 +31,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    protected void Cleanup()
+    protected async Task OneTimeTearDown()
     {
-        Console.WriteLine("[Teardown]");
-
-        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
-        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
         {
-            Console.WriteLine("[WARNING] Can't clean up");
             return;
         }
 
@@ -49,13 +46,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         foreach (string fileId in FileIdsToDelete)
         {
             Console.WriteLine($"[File cleanup] {fileId}");
-            fileClient.DeleteFile(fileId, noThrowOptions);
+            await fileClient.DeleteFileAsync(fileId, noThrowOptions);
         }
 
         foreach (string vectorStoreId in VectorStoreIdsToDelete)
         {
             Console.WriteLine($"[Vector store cleanup] {vectorStoreId}");
-            vectorStoreClient.DeleteVectorStore(vectorStoreId, noThrowOptions);
+            await vectorStoreClient.DeleteVectorStoreAsync(vectorStoreId, noThrowOptions);
         }
     }
 

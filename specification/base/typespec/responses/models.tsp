@@ -634,7 +634,7 @@ model WebSearchPreviewTool extends Tool {
   @doc("""
     High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
     """)
-  search_context_size?: SearchContextSize;
+  search_context_size?: WebSearchContextSize;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type base for tools
@@ -647,13 +647,7 @@ model WebSearchTool extends Tool {
   user_location?: Location | null;
 
   /** High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default. */
-  search_context_size?: SearchContextSize;
-}
-
-enum SearchContextSize {
-  low,
-  medium,
-  high,
+  search_context_size?: WebSearchContextSize;
 }
 
 model WebSearchToolFilters {
@@ -1956,6 +1950,64 @@ model CodeInterpreterToolAuto extends CodeInterpreterContainerConfiguration {
   file_ids?: string[];
 }
 
+// Shared image generation enums used across ImageGenTool and ImageGenToolCallItemResource
+
+/** The quality of a generated image. */
+union ImageGenerationQuality {
+  string,
+  /** Automatically select the best quality for the model. */
+  Auto: "auto",
+
+  /** Low quality. */
+  Low: "low",
+
+  /** Medium quality. */
+  Medium: "medium",
+
+  /** High quality. */
+  High: "high",
+}
+
+/** The size of a generated image. */
+union ImageGenerationSize {
+  string,
+  /** Automatically select the best size for the model. */
+  Auto: "auto",
+
+  /** A square image with 1024 pixels of both width and height. */
+  W1024xH1024: "1024x1024",
+
+  /** An image 1024 pixels wide by 1536 pixels high. */
+  W1024xH1536: "1024x1536",
+
+  /** An image 1536 pixels wide by 1024 pixels high. */
+  W1536xH1024: "1536x1024",
+}
+
+/** The output format for a generated image. */
+enum ImageGenerationOutputFormat {
+  /** PNG format. */
+  png,
+
+  /** WebP format. */
+  webp,
+
+  /** JPEG format. */
+  jpeg,
+}
+
+/** The background type for a generated image. */
+enum ImageGenerationBackground {
+  /** Transparent background. */
+  transparent,
+
+  /** Opaque background. */
+  opaque,
+
+  /** Automatically select the best background for the image. */
+  auto,
+}
+
 // Tool customization (apply_discriminator): Apply discriminated type base for tools
 @doc("""
   A tool that generates images using a model like `gpt-image-1`.
@@ -1975,19 +2027,19 @@ model ImageGenTool extends Tool {
     The quality of the generated image. One of `low`, `medium`, `high`,
     or `auto`. Default: `auto`.
     """)
-  quality?: "low" | "medium" | "high" | "auto" = "auto";
+  quality?: ImageGenerationQuality = ImageGenerationQuality.Auto;
 
   @doc("""
     The size of the generated image. One of `1024x1024`, `1024x1536`,
     `1536x1024`, or `auto`. Default: `auto`.
     """)
-  size?: "1024x1024" | "1024x1536" | "1536x1024" | "auto" = "auto";
+  size?: ImageGenerationSize = ImageGenerationSize.Auto;
 
   @doc("""
     The output format of the generated image. One of `png`, `webp`, or
     `jpeg`. Default: `png`.
     """)
-  output_format?: "png" | "webp" | "jpeg" = "png";
+  output_format?: ImageGenerationOutputFormat = ImageGenerationOutputFormat.png;
 
   /** Compression level for the output image. Default: 100. */
   @minValue(0)
@@ -2003,7 +2055,7 @@ model ImageGenTool extends Tool {
     Background type for the generated image. One of `transparent`,
     `opaque`, or `auto`. Default: `auto`.
     """)
-  background?: "transparent" | "opaque" | "auto" = "auto";
+  background?: ImageGenerationBackground = ImageGenerationBackground.auto;
 
   @doc("""
     Control how much effort the model will exert to match the style and features,

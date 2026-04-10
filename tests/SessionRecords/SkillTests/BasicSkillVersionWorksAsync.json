@@ -1,0 +1,205 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/skills",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "625",
+        "Content-Type": "multipart/form-data; boundary=\"wVuH3TXOVgNTcy1bA6KGRnWlVmoTxQnxV7FoCvb8AdoWNurac6AAQF73D8=ypFny_Zy79M\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": [
+        "--wVuH3TXOVgNTcy1bA6KGRnWlVmoTxQnxV7FoCvb8AdoWNurac6AAQF73D8=ypFny_Zy79M\r\n",
+        "Content-Type: text/markdown\r\n",
+        "Content-Disposition: form-data; name=\"files[]\"; filename=\"basic_math/SKILL.md\"; filename*=utf-8''basic_math%2fSKILL.md\r\n",
+        "\r\n",
+        "---\r\n",
+        "name: basic-math\r\n",
+        "description: Add or multiply numbers.\r\n",
+        "---\r\n",
+        "\r\n",
+        "Use this skill when you need a quick sum or product of numbers.\n",
+        "\n",
+        "## Addition\n",
+        "\n",
+        "To add two numbers, compute `a + b`.\n",
+        "\n",
+        "Example: `add(3, 5)` returns `8`.\n",
+        "\n",
+        "## Multiplication\n",
+        "\n",
+        "To multiply two numbers, compute `a * b`.\n",
+        "\n",
+        "Example: `multiply(4, 7)` returns `28`.\n",
+        "\r\n",
+        "--wVuH3TXOVgNTcy1bA6KGRnWlVmoTxQnxV7FoCvb8AdoWNurac6AAQF73D8=ypFny_Zy79M--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ea45177ae8a75b8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "237",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce",
+        "object": "skill",
+        "created_at": 1775851022,
+        "default_version": "1",
+        "description": "Add or multiply numbers.",
+        "latest_version": "1",
+        "name": "basic-math"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce/versions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "625",
+        "Content-Type": "multipart/form-data; boundary=\"CTgIxwn6VZbYqzDifQZPAaMuXma88ot2vufkjF3YciCZmLgEbjaUbIxDWvV1wu9NT3xmC5\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": [
+        "--CTgIxwn6VZbYqzDifQZPAaMuXma88ot2vufkjF3YciCZmLgEbjaUbIxDWvV1wu9NT3xmC5\r\n",
+        "Content-Type: text/markdown\r\n",
+        "Content-Disposition: form-data; name=\"files[]\"; filename=\"basic_math/SKILL.md\"; filename*=utf-8''basic_math%2fSKILL.md\r\n",
+        "\r\n",
+        "---\r\n",
+        "name: basic-math\r\n",
+        "description: Add or multiply numbers.\r\n",
+        "---\r\n",
+        "\r\n",
+        "Use this skill when you need a quick sum or product of numbers.\n",
+        "\n",
+        "## Addition\n",
+        "\n",
+        "To add two numbers, compute `a + b`.\n",
+        "\n",
+        "Example: `add(3, 5)` returns `8`.\n",
+        "\n",
+        "## Multiplication\n",
+        "\n",
+        "To multiply two numbers, compute `a * b`.\n",
+        "\n",
+        "Example: `multiply(4, 7)` returns `28`.\n",
+        "\r\n",
+        "--CTgIxwn6VZbYqzDifQZPAaMuXma88ot2vufkjF3YciCZmLgEbjaUbIxDWvV1wu9NT3xmC5--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ea45179e89975b8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "287",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skillver_69d9560e950881938f7cd17f7cf21bc80d13bd4e6d1c08ce",
+        "object": "skill.version",
+        "created_at": 1775851022,
+        "description": "Add or multiply numbers.",
+        "name": "basic-math",
+        "skill_id": "skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce",
+        "version": "2"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ea4517b9a4a75b8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "237",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce",
+        "object": "skill",
+        "created_at": 1775851022,
+        "default_version": "1",
+        "description": "Add or multiply numbers.",
+        "latest_version": "2",
+        "name": "basic-math"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ea4517c8b7075b8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "116",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "skill_69d9560e4cb48193b0001ebad82a9e960d13bd4e6d1c08ce",
+        "object": "skill.deleted",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

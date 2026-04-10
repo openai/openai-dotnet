@@ -15,6 +15,7 @@ using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
+using OpenAI.Skills;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
 using System;
@@ -429,6 +430,31 @@ public static class OpenAIHostBuilderExtensions
         }
 
         return builder.AddKeyedClient<ResponsesClient, ResponsesClientSettings>(serviceKey, sectionName);
+    }
+
+    public static IClientBuilder AddSkillClient(
+        this IHostApplicationBuilder builder,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddClient<SkillClient, SkillClientSettings>(sectionName);
+    }
+
+    public static IClientBuilder AddKeyedSkillClient(
+        this IHostApplicationBuilder builder,
+        string serviceKey,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddKeyedClient<SkillClient, SkillClientSettings>(serviceKey, sectionName);
     }
 
     public static IClientBuilder AddVectorStoreClient(

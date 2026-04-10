@@ -11,15 +11,13 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationCallResponseItem : ResponseItem
     {
-        public ImageGenerationCallResponseItem(ImageGenerationToolAction action, ImageGenToolCallBackground background, BinaryData imageResultBytes) : base(InternalItemType.ImageGenerationCall)
+        public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(InternalItemType.ImageGenerationCall)
         {
-            Action = action;
-            Background = background;
             ImageResultBytes = imageResultBytes;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, ImageGenerationToolAction action, ImageGenToolCallBackground background, ImageGenToolCallOutputFormat? outputFormat, ImageGenToolCallQuality? quality, ImageGenToolCallSize? size, string revisedPrompt, BinaryData imageResultBytes) : base(kind, id, patch)
+        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, ImageGenerationToolAction? action, ImageGenerationToolBackground? background, ImageGenerationToolOutputFileFormat? outputFormat, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, string revisedPrompt, BinaryData imageResultBytes) : base(kind, id, patch)
         {
             Status = status;
             Action = action;
@@ -32,15 +30,15 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public ImageGenerationToolAction Action { get; set; }
+        public ImageGenerationToolAction? Action { get; set; }
 
-        public ImageGenToolCallBackground Background { get; set; }
+        public ImageGenerationToolBackground? Background { get; set; }
 
-        public ImageGenToolCallOutputFormat? OutputFormat { get; set; }
+        public ImageGenerationToolOutputFileFormat? OutputFormat { get; set; }
 
-        public ImageGenToolCallQuality? Quality { get; set; }
+        public ImageGenerationToolQuality? Quality { get; set; }
 
-        public ImageGenToolCallSize? Size { get; set; }
+        public ImageGenerationToolSize? Size { get; set; }
 
         public string RevisedPrompt { get; set; }
 
