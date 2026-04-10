@@ -27,14 +27,19 @@ public class FilesTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public async Task OneTimeTearDown()
     {
+        if (Mode == RecordedTestMode.Playback)
+        {
+            return;
+        }
+
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
         foreach (string fileId in FileIdsForCleanup)
         {
-            _ = client.DeleteFile(fileId, noThrowOptions);
+            _ = await client.DeleteFileAsync(fileId, noThrowOptions);
         }
     }
 

@@ -79,14 +79,14 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public async Task OneTimeTearDown()
     {
         if (Mode == RecordedTestMode.Playback)
         {
             return;
         }
-        fileClient.DeleteFile(sampleFile.Id);
-        fileClient.DeleteFile(validationFile.Id);
+        await fileClient.DeleteFileAsync(sampleFile.Id);
+        await fileClient.DeleteFileAsync(validationFile.Id);
     }
 
     [RecordedTest]

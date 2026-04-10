@@ -31,7 +31,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    protected void Cleanup()
+    protected async Task OneTimeTearDown()
     {
         Console.WriteLine("[Teardown]");
 
@@ -49,13 +49,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         foreach (string fileId in FileIdsToDelete)
         {
             Console.WriteLine($"[File cleanup] {fileId}");
-            fileClient.DeleteFile(fileId, noThrowOptions);
+            await fileClient.DeleteFileAsync(fileId, noThrowOptions);
         }
 
         foreach (string vectorStoreId in VectorStoreIdsToDelete)
         {
             Console.WriteLine($"[Vector store cleanup] {vectorStoreId}");
-            vectorStoreClient.DeleteVectorStore(vectorStoreId, noThrowOptions);
+            await vectorStoreClient.DeleteVectorStoreAsync(vectorStoreId, noThrowOptions);
         }
     }
 

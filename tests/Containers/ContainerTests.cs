@@ -51,10 +51,12 @@ public class ContainerTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public async Task TearDown()
+    public async Task OneTimeTearDown()
     {
         // Skip teardown if there is no API key or no container was created
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")) || string.IsNullOrEmpty(_testContainerId))
+        if (Mode == RecordedTestMode.Playback
+            || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY"))
+            || string.IsNullOrEmpty(_testContainerId))
         {
             return;
         }
