@@ -3,19 +3,40 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI
 {
     public partial class OpenAIClient
     {
         private readonly Uri _endpoint;
-        private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
 
         protected OpenAIClient()
+        {
+        }
+
+        internal OpenAIClient(AuthenticationPolicy authenticationPolicy, Uri endpoint, OpenAIClientOptions options)
+        {
+            Argument.AssertNotNull(endpoint, nameof(endpoint));
+
+            options ??= new OpenAIClientOptions();
+
+            _endpoint = endpoint;
+            if (authenticationPolicy != null)
+            {
+                Pipeline = ClientPipeline.Create(options, Array.Empty<PipelinePolicy>(), new PipelinePolicy[] { new UserAgentPolicy(typeof(OpenAIClient).Assembly), authenticationPolicy }, Array.Empty<PipelinePolicy>());
+            }
+            else
+            {
+                Pipeline = ClientPipeline.Create(options, Array.Empty<PipelinePolicy>(), new PipelinePolicy[] { new UserAgentPolicy(typeof(OpenAIClient).Assembly) }, Array.Empty<PipelinePolicy>());
+            }
+        }
+
+        [Experimental("SCME0002")]
+        public OpenAIClient(OpenAIClientSettings settings) : this(AuthenticationPolicy.Create(settings), settings?.Endpoint, settings?.Options)
         {
         }
 

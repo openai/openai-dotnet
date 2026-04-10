@@ -75,7 +75,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (!Patch.Contains("$.key"u8))
             {
@@ -118,7 +118,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalComparisonFilterType kind = default;
+            FileSearchToolFiltersType kind = default;
             string key = default;
             BinaryData value = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -128,7 +128,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalComparisonFilterType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToFileSearchToolFiltersType();
                     continue;
                 }
                 if (prop.NameEquals("key"u8))

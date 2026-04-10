@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -15,7 +16,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value)
+        public InternalComparisonFilter(FileSearchToolFiltersType kind, string key, BinaryData value)
         {
             Kind = kind;
             Key = key;
@@ -23,7 +24,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value, in JsonPatch patch)
+        internal InternalComparisonFilter(FileSearchToolFiltersType kind, string key, BinaryData value, in JsonPatch patch)
         {
             Kind = kind;
             Key = key;
@@ -37,7 +38,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalComparisonFilterType Kind { get; set; }
+        public FileSearchToolFiltersType Kind { get; set; }
 
         public string Key { get; set; }
 

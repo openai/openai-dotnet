@@ -163,7 +163,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             FileSearchCallStatus? status = default;
             IList<string> queries = default;
-            IList<FileSearchCallResult> results = default;
+            IList<FileSearchToolCallItemParamResult> results = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -204,10 +204,10 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<FileSearchCallResult> array = new List<FileSearchCallResult>();
+                    List<FileSearchToolCallItemParamResult> array = new List<FileSearchToolCallItemParamResult>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(FileSearchCallResult.DeserializeFileSearchCallResult(item, item.GetUtf8Bytes(), options));
+                        array.Add(FileSearchToolCallItemParamResult.DeserializeFileSearchToolCallItemParamResult(item, item.GetUtf8Bytes(), options));
                     }
                     results = array;
                     continue;
@@ -220,7 +220,7 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 queries,
-                results ?? new ChangeTrackingList<FileSearchCallResult>());
+                results ?? new ChangeTrackingList<FileSearchToolCallItemParamResult>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

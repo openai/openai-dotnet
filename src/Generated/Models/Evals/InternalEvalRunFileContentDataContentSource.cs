@@ -11,17 +11,17 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalRunFileContentDataContentSource : InternalEvalRunDataContentSource
     {
-        internal InternalEvalRunFileContentDataContentSource(IEnumerable<InternalEvalRunFileContentDataContentSourceContent> content) : base(InternalEvalRunDataContentSourceType.FileContent)
+        public InternalEvalRunFileContentDataContentSource(IEnumerable<EvalJsonlRunDataSourceParamsSourceContent> content) : base(InternalEvalRunDataContentSourceType.FileContent)
         {
             Content = content.ToList();
         }
 
-        internal InternalEvalRunFileContentDataContentSource(InternalEvalRunDataContentSourceType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalEvalRunFileContentDataContentSourceContent> content) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalRunFileContentDataContentSource(InternalEvalRunDataContentSourceType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<EvalJsonlRunDataSourceParamsSourceContent> content) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Content = content ?? new ChangeTrackingList<InternalEvalRunFileContentDataContentSourceContent>();
+            Content = content ?? new ChangeTrackingList<EvalJsonlRunDataSourceParamsSourceContent>();
         }
 
-        internal IList<InternalEvalRunFileContentDataContentSourceContent> Content { get; }
+        public IList<EvalJsonlRunDataSourceParamsSourceContent> Content { get; }
     }
 }

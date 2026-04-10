@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -13,14 +14,19 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunTruncationStrategy(InternalTruncationObjectType kind, int? lastMessages, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        public RunTruncationStrategy(CreateThreadAndRunRequestTruncationStrategyType kind)
+        {
+            Kind = kind;
+        }
+
+        internal RunTruncationStrategy(CreateThreadAndRunRequestTruncationStrategyType kind, int? lastMessages, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             LastMessages = lastMessages;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalTruncationObjectType Kind { get; set; }
+        public CreateThreadAndRunRequestTruncationStrategyType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

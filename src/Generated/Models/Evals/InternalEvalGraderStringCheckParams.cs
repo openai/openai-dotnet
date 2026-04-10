@@ -4,13 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
     internal partial class InternalEvalGraderStringCheckParams : InternalEvalGraderParams
     {
-        public InternalEvalGraderStringCheckParams(string name, string input, string reference, GraderStringCheckOperation operation) : base(GraderType.StringCheck)
+        public InternalEvalGraderStringCheckParams(string name, string input, string reference, FineTuneReinforcementMethodGraderOperation operation) : base(GraderType.StringCheck)
         {
             Name = name;
             Input = input;
@@ -18,7 +19,7 @@ namespace OpenAI.Evals
             Operation = operation;
         }
 
-        internal InternalEvalGraderStringCheckParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, GraderStringCheckOperation operation) : base(kind, additionalBinaryDataProperties)
+        internal InternalEvalGraderStringCheckParams(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, FineTuneReinforcementMethodGraderOperation operation) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Input = input;
@@ -32,6 +33,6 @@ namespace OpenAI.Evals
 
         public string Reference { get; }
 
-        public GraderStringCheckOperation Operation { get; }
+        public FineTuneReinforcementMethodGraderOperation Operation { get; }
     }
 }
