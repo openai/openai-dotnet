@@ -3,7 +3,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("ImageGenToolOutputFormat")]
+[CodeGenType("ImageGenerationOutputFormat")]
 public readonly partial struct ImageGenerationToolOutputFileFormat
 {
 }

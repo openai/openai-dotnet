@@ -1,4 +1,4 @@
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Custom Properties -->
   <PropertyGroup>
@@ -47,7 +47,7 @@
 
   <!-- Versioning -->
   <PropertyGroup>
-    <VersionPrefix>2.9.1</VersionPrefix>
+    <VersionPrefix>2.10.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <InformationalVersion>$(Version)</InformationalVersion>
   </PropertyGroup>

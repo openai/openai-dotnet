@@ -1110,6 +1110,7 @@ namespace OpenAI.Audio {
     }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
         public AudioTranscriptionFormat(string value);
+        [Experimental("OPENAI001")]
         public static AudioTranscriptionFormat Diarized { get; }
         public static AudioTranscriptionFormat Simple { get; }
         public static AudioTranscriptionFormat Srt { get; }
@@ -1147,7 +1148,7 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public IList<string> KnownSpeakerNames { get; }
         [Experimental("OPENAI001")]
-        public IList<Uri> KnownSpeakerReferenceUris { get; }
+        public IList<string> KnownSpeakerReferenceUris { get; }
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
@@ -1955,6 +1956,23 @@ namespace OpenAI.Chat {
         Audio = 2
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct ChatSearchContextSize : IEquatable<ChatSearchContextSize> {
+        public ChatSearchContextSize(string value);
+        public static ChatSearchContextSize High { get; }
+        public static ChatSearchContextSize Low { get; }
+        public static ChatSearchContextSize Medium { get; }
+        public readonly bool Equals(ChatSearchContextSize other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatSearchContextSize left, ChatSearchContextSize right);
+        public static implicit operator ChatSearchContextSize(string value);
+        public static implicit operator ChatSearchContextSize?(string value);
+        public static bool operator !=(ChatSearchContextSize left, ChatSearchContextSize right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public readonly partial struct ChatServiceTier : IEquatable<ChatServiceTier> {
         public ChatServiceTier(string value);
         public static ChatServiceTier Auto { get; }
@@ -2047,6 +2065,7 @@ namespace OpenAI.Chat {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+        public ChatSearchContextSize? SearchContextSize { get; set; }
     }
     [Experimental("OPENAI001")]
     public class DeveloperChatMessage : ChatMessage, IJsonModel<DeveloperChatMessage>, IPersistableModel<DeveloperChatMessage> {
@@ -2354,7 +2373,7 @@ namespace OpenAI.Conversations {
         public static IncludedConversationItemProperty ComputerCallOutputImageUri { get; }
         public static IncludedConversationItemProperty FileSearchCallResults { get; }
         public static IncludedConversationItemProperty MessageInputImageUri { get; }
-        public static IncludedConversationItemProperty MessageOutputTextLogprobs { get; }
+        public static IncludedConversationItemProperty MessageOutputTextLogProbabilities { get; }
         public static IncludedConversationItemProperty ReasoningEncryptedContent { get; }
         public static IncludedConversationItemProperty WebSearchCallActionSources { get; }
         public static IncludedConversationItemProperty WebSearchCallResults { get; }
@@ -5126,6 +5145,82 @@ namespace OpenAI.Realtime {
 }
 namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
+    public class ApplyPatchCallItem : ResponseItem, IJsonModel<ApplyPatchCallItem>, IPersistableModel<ApplyPatchCallItem> {
+        public ApplyPatchCallItem(string callId, ApplyPatchOperation operation);
+        public string CallId { get; set; }
+        public string CreatedBy { get; set; }
+        public ApplyPatchOperation Operation { get; set; }
+        public ApplyPatchCallStatus? Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>, IPersistableModel<ApplyPatchCallOutputItem> {
+        public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status);
+        public string CallId { get; set; }
+        public string CreatedBy { get; set; }
+        public string Output { get; set; }
+        public ApplyPatchCallOutputStatus Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ApplyPatchCallOutputStatus : IEquatable<ApplyPatchCallOutputStatus> {
+        public ApplyPatchCallOutputStatus(string value);
+        public static ApplyPatchCallOutputStatus Completed { get; }
+        public static ApplyPatchCallOutputStatus Failed { get; }
+        public readonly bool Equals(ApplyPatchCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ApplyPatchCallOutputStatus left, ApplyPatchCallOutputStatus right);
+        public static implicit operator ApplyPatchCallOutputStatus(string value);
+        public static implicit operator ApplyPatchCallOutputStatus?(string value);
+        public static bool operator !=(ApplyPatchCallOutputStatus left, ApplyPatchCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ApplyPatchCallStatus : IEquatable<ApplyPatchCallStatus> {
+        public ApplyPatchCallStatus(string value);
+        public static ApplyPatchCallStatus Completed { get; }
+        public static ApplyPatchCallStatus InProgress { get; }
+        public readonly bool Equals(ApplyPatchCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ApplyPatchCallStatus left, ApplyPatchCallStatus right);
+        public static implicit operator ApplyPatchCallStatus(string value);
+        public static implicit operator ApplyPatchCallStatus?(string value);
+        public static bool operator !=(ApplyPatchCallStatus left, ApplyPatchCallStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ApplyPatchCreateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchCreateFileOperation>, IPersistableModel<ApplyPatchCreateFileOperation> {
+        public ApplyPatchCreateFileOperation(string filePath, string diff);
+        public string Diff { get; set; }
+        public string FilePath { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ApplyPatchDeleteFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchDeleteFileOperation>, IPersistableModel<ApplyPatchDeleteFileOperation> {
+        public ApplyPatchDeleteFileOperation(string filePath);
+        public string FilePath { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ApplyPatchOperation : IJsonModel<ApplyPatchOperation>, IPersistableModel<ApplyPatchOperation> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ApplyPatchTool : ResponseTool, IJsonModel<ApplyPatchTool>, IPersistableModel<ApplyPatchTool> {
+        public ApplyPatchTool();
+    }
+    [Experimental("OPENAI001")]
+    public class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>, IPersistableModel<ApplyPatchUpdateFileOperation> {
+        public ApplyPatchUpdateFileOperation(string filePath, string diff);
+        public string Diff { get; set; }
+        public string FilePath { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
         public AutomaticCodeInterpreterToolContainerConfiguration();
         public IList<string> FileIds { get; }
@@ -5501,7 +5596,13 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
         public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
+        public ImageGenerationToolAction? Action { get; set; }
+        public ImageGenerationToolBackground? Background { get; set; }
         public BinaryData ImageResultBytes { get; set; }
+        public ImageGenerationToolOutputFileFormat? OutputFormat { get; set; }
+        public ImageGenerationToolQuality? Quality { get; set; }
+        public string RevisedPrompt { get; set; }
+        public ImageGenerationToolSize? Size { get; set; }
         public ImageGenerationCallStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -5514,6 +5615,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
         public ImageGenerationTool();
+        public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
         public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
@@ -5524,6 +5626,23 @@ namespace OpenAI.Responses {
         public int? PartialImageCount { get; set; }
         public ImageGenerationToolQuality? Quality { get; set; }
         public ImageGenerationToolSize? Size { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolAction : IEquatable<ImageGenerationToolAction> {
+        public ImageGenerationToolAction(string value);
+        public static ImageGenerationToolAction Auto { get; }
+        public static ImageGenerationToolAction Edit { get; }
+        public static ImageGenerationToolAction Generate { get; }
+        public readonly bool Equals(ImageGenerationToolAction other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolAction left, ImageGenerationToolAction right);
+        public static implicit operator ImageGenerationToolAction(string value);
+        public static implicit operator ImageGenerationToolAction?(string value);
+        public static bool operator !=(ImageGenerationToolAction left, ImageGenerationToolAction right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ImageGenerationToolBackground : IEquatable<ImageGenerationToolBackground> {
@@ -5560,10 +5679,11 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
+        public ImageGenerationToolInputImageMask(BinaryData imageBytes);
         public ImageGenerationToolInputImageMask(string fileId);
         public ImageGenerationToolInputImageMask(Uri imageUri);
-        public string FileId { get; }
-        public Uri ImageUri { get; }
+        public string FileId { get; set; }
+        public string ImageUri { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -5643,7 +5763,10 @@ namespace OpenAI.Responses {
         public static IncludedResponseProperty ComputerCallOutputImageUri { get; }
         public static IncludedResponseProperty FileSearchCallResults { get; }
         public static IncludedResponseProperty MessageInputImageUri { get; }
+        public static IncludedResponseProperty MessageOutputTextLogProbabilities { get; }
         public static IncludedResponseProperty ReasoningEncryptedContent { get; }
+        public static IncludedResponseProperty WebSearchCallActionSources { get; }
+        public static IncludedResponseProperty WebSearchCallResults { get; }
         public readonly bool Equals(IncludedResponseProperty other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -5815,7 +5938,7 @@ namespace OpenAI.Responses {
         public Uri InputFileUri { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
-        public Uri InputImageUri { get; }
+        public string InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
@@ -5827,6 +5950,7 @@ namespace OpenAI.Responses {
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
         public static ResponseContentPart CreateInputFilePart(string fileId);
         public static ResponseContentPart CreateInputFilePart(Uri fileUri);
+        public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputTextPart(string text);
@@ -5960,6 +6084,8 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+        public static ApplyPatchCallItem CreateApplyPatchCallItem(string callId, ApplyPatchOperation operation);
+        public static ApplyPatchCallOutputItem CreateApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status);
         public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
         [Experimental("OPENAICUA001")]
@@ -6265,12 +6391,13 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+        public static ApplyPatchTool CreateApplyPatchTool();
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         [Experimental("OPENAICUA001")]
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
-        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
+        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
@@ -6645,8 +6772,28 @@ namespace OpenAI.Responses {
         public Uri Uri { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class WebSearchAction : IJsonModel<WebSearchAction>, IPersistableModel<WebSearchAction> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionSource : IJsonModel<WebSearchActionSource>, IPersistableModel<WebSearchActionSource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>, IPersistableModel<WebSearchActionUriSource> {
+        public WebSearchActionUriSource(Uri uri);
+        public Uri Uri { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
         public WebSearchCallResponseItem();
+        public WebSearchAction Action { get; set; }
         public WebSearchCallStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -6657,10 +6804,29 @@ namespace OpenAI.Responses {
         Failed = 3
     }
     [Experimental("OPENAI001")]
+    public class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>, IPersistableModel<WebSearchFindInPageAction> {
+        public WebSearchFindInPageAction(Uri uri, string pattern);
+        public string Pattern { get; set; }
+        public Uri Uri { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchOpenPageAction : WebSearchAction, IJsonModel<WebSearchOpenPageAction>, IPersistableModel<WebSearchOpenPageAction> {
+        public WebSearchOpenPageAction();
+        public Uri Uri { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class WebSearchPreviewTool : ResponseTool, IJsonModel<WebSearchPreviewTool>, IPersistableModel<WebSearchPreviewTool> {
         public WebSearchPreviewTool();
         public WebSearchToolContextSize? SearchContextSize { get; set; }
         public WebSearchToolLocation UserLocation { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchSearchAction : WebSearchAction, IJsonModel<WebSearchSearchAction>, IPersistableModel<WebSearchSearchAction> {
+        public WebSearchSearchAction();
+        public IList<string> Queries { get; }
+        [Obsolete("This property is obsolete. Use the Queries property instead.")]
+        public string Query { get; set; }
+        public IList<WebSearchActionSource> Sources { get; }
     }
     [Experimental("OPENAI001")]
     public class WebSearchTool : ResponseTool, IJsonModel<WebSearchTool>, IPersistableModel<WebSearchTool> {

@@ -10,7 +10,6 @@ namespace OpenAI.Internal;
 [CodeGenType("ResponseFormatText")] internal partial class InternalResponseFormatText { }
 [CodeGenType("UnknownResponseFormat")] internal partial class InternalUnknownResponseFormat { }
 [CodeGenType("WebSearchLocation")] internal partial class InternalWebSearchLocation { }
-[CodeGenType("WebSearchContextSize")] internal readonly partial struct InternalWebSearchContextSize { }
 [CodeGenType("LogProbProperties")] internal partial class InternalLogProbProperties { }
 [CodeGenType("ModelIdsShared")] internal readonly partial struct InternalModelIdsShared { }
 [CodeGenType("VoiceIdsShared")] internal readonly partial struct InternalVoiceIdsShared { }

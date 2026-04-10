@@ -154,14 +154,14 @@ namespace OpenAI.Audio
             {
                 writer.WritePropertyName("known_speaker_references"u8);
                 writer.WriteStartArray();
-                foreach (Uri item in KnownSpeakerReferenceUris)
+                foreach (string item in KnownSpeakerReferenceUris)
                 {
                     if (item == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item.AbsoluteUri);
+                    writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
             }
@@ -218,7 +218,7 @@ namespace OpenAI.Audio
             bool? stream = default;
             AudioTranscriptionChunkingStrategy chunkingStrategy = default;
             IList<string> knownSpeakerNames = default;
-            IList<Uri> knownSpeakerReferenceUris = default;
+            IList<string> knownSpeakerReferenceUris = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -342,7 +342,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    List<Uri> array = new List<Uri>();
+                    List<string> array = new List<string>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
                         if (item.ValueKind == JsonValueKind.Null)
@@ -351,7 +351,7 @@ namespace OpenAI.Audio
                         }
                         else
                         {
-                            array.Add(string.IsNullOrEmpty(item.GetString()) ? null : new Uri(item.GetString(), UriKind.RelativeOrAbsolute));
+                            array.Add(item.GetString());
                         }
                     }
                     knownSpeakerReferenceUris = array;
@@ -372,7 +372,7 @@ namespace OpenAI.Audio
                 stream,
                 chunkingStrategy,
                 knownSpeakerNames ?? new ChangeTrackingList<string>(),
-                knownSpeakerReferenceUris ?? new ChangeTrackingList<Uri>(),
+                knownSpeakerReferenceUris ?? new ChangeTrackingList<string>(),
                 additionalBinaryDataProperties);
         }
     }

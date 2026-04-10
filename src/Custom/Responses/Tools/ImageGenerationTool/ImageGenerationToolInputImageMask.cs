@@ -12,7 +12,15 @@ public partial class ImageGenerationToolInputImageMask
     {
         Argument.AssertNotNull(imageUri, nameof(imageUri));
 
-        ImageUri = imageUri;
+        ImageUri = imageUri.AbsoluteUri;
+    }
+
+    public ImageGenerationToolInputImageMask(BinaryData imageBytes)
+    {
+        Argument.AssertNotNull(imageBytes, nameof(imageBytes));
+        Argument.AssertNotNullOrEmpty(imageBytes.MediaType, nameof(imageBytes.MediaType));
+
+        ImageUri = DataEncodingHelpers.CreateDataUri(imageBytes, imageBytes.MediaType);
     }
 
     public ImageGenerationToolInputImageMask(string fileId)
@@ -21,14 +29,4 @@ public partial class ImageGenerationToolInputImageMask
 
         FileId = fileId;
     }
-
-    // CUSTOM:
-    // - Renamed.
-    // - Removed setter.
-    [CodeGenMember("ImageUrl")]
-    public Uri ImageUri { get; }
-
-    // CUSTOM: Removed setter.
-    [CodeGenMember("FileId")]
-    public string FileId { get; }
 }

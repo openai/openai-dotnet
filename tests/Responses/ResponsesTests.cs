@@ -445,7 +445,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response, Is.Not.Null);
     }
 
-#if NET10_0_OR_GREATER
     [RecordedTest]
     public async Task ImageInputWorks()
     {
@@ -453,8 +452,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         string imagePath = Path.Join("Assets", "images_dog_and_cat.png");
         string imageMediaType = "image/png";
-        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath));
-        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
+        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath), imageMediaType);
 
         ResponseResult response = await client.CreateResponseAsync(
             TestModel.Responses,
@@ -462,14 +460,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseItem.CreateUserMessageItem(
                     [
                         ResponseContentPart.CreateInputTextPart("Please describe this picture for me"),
-                        ResponseContentPart.CreateInputImagePart(imageDataUri, ResponseImageDetailLevel.Low),
+                        ResponseContentPart.CreateInputImagePart(imageBytes, ResponseImageDetailLevel.Low),
                     ]),
             ]);
 
         Console.WriteLine(response.GetOutputText());
         Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
-#endif
 
     [RecordedTest]
     public async Task FileInputFromIdWorks()

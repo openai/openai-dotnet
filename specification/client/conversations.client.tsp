@@ -28,3 +28,7 @@ using TypeSpec.HttpClient.CSharp;
 
 // Rename method
 @@clientName(listConversationItems, "GetConversationItems");
+
+@@clientName(IncludeEnum.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
+@@clientName(IncludeEnum.`message.input_image.image_url`, "MessageInputImageUri");
+@@clientName(IncludeEnum.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");

@@ -17,12 +17,30 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, BinaryData imageResultBytes) : base(kind, id, patch)
+        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ImageGenerationCallStatus? status, ImageGenerationToolAction? action, ImageGenerationToolBackground? background, ImageGenerationToolOutputFileFormat? outputFormat, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, string revisedPrompt, BinaryData imageResultBytes) : base(kind, id, patch)
         {
             Status = status;
+            Action = action;
+            Background = background;
+            OutputFormat = outputFormat;
+            Quality = quality;
+            Size = size;
+            RevisedPrompt = revisedPrompt;
             ImageResultBytes = imageResultBytes;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public ImageGenerationToolAction? Action { get; set; }
+
+        public ImageGenerationToolBackground? Background { get; set; }
+
+        public ImageGenerationToolOutputFileFormat? OutputFormat { get; set; }
+
+        public ImageGenerationToolQuality? Quality { get; set; }
+
+        public ImageGenerationToolSize? Size { get; set; }
+
+        public string RevisedPrompt { get; set; }
 
         public BinaryData ImageResultBytes { get; set; }
     }

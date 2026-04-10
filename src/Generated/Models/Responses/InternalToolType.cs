@@ -19,6 +19,7 @@ namespace OpenAI.Responses
         private const string CodeInterpreterValue = "code_interpreter";
         private const string ImageGenerationValue = "image_generation";
         private const string LocalShellValue = "local_shell";
+        private const string ApplyPatchValue = "apply_patch";
 
         public InternalToolType(string value)
         {
@@ -42,6 +43,8 @@ namespace OpenAI.Responses
         internal static InternalToolType ImageGeneration { get; } = new InternalToolType(ImageGenerationValue);
 
         internal static InternalToolType LocalShell { get; } = new InternalToolType(LocalShellValue);
+
+        internal static InternalToolType ApplyPatch { get; } = new InternalToolType(ApplyPatchValue);
 
         public static bool operator ==(InternalToolType left, InternalToolType right) => left.Equals(right);
 

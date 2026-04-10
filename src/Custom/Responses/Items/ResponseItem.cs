@@ -102,6 +102,16 @@ public partial class ResponseItem
         return new FunctionCallOutputResponseItem(callId, functionOutput);
     }
 
+    public static ApplyPatchCallItem CreateApplyPatchCallItem(string callId, ApplyPatchOperation operation)
+    {
+        return new ApplyPatchCallItem(callId, operation);
+    }
+
+    public static ApplyPatchCallOutputItem CreateApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status)
+    {
+        return new ApplyPatchCallOutputItem(callId, status);
+    }
+
     public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts)
     {
         return new ReasoningResponseItem(summaryParts);

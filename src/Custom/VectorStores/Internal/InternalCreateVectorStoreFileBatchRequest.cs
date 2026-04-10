@@ -9,16 +9,12 @@ namespace OpenAI.VectorStores;
 [CodeGenType("CreateVectorStoreFileBatchRequest")]
 internal partial class InternalCreateVectorStoreFileBatchRequest
 {
-    public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
+    public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds) : this(fileIds.ToList(), null, null, null, null)
     {
-        FileIds = fileIds.ToList();
-        Attributes = new ChangeTrackingDictionary<string, BinaryData>();
     }
 
-    public InternalCreateVectorStoreFileBatchRequest(IEnumerable<InternalCreateVectorStoreFileRequest> files)
+    public InternalCreateVectorStoreFileBatchRequest(IEnumerable<InternalCreateVectorStoreFileRequest> files) : this(null, files.ToList(), null, null, null)
     {
-        Files = files.ToList();
-        Attributes = new ChangeTrackingDictionary<string, BinaryData>();
     }
 
     public static implicit operator BinaryContent(InternalCreateVectorStoreFileBatchRequest internalCreateVectorStoreFileBatchRequest)

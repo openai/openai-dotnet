@@ -6,7 +6,6 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -21,7 +20,7 @@ namespace OpenAI.Chat
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatWebSearchOptions(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 userLocation, InternalWebSearchContextSize? searchContextSize, in JsonPatch patch)
+        internal ChatWebSearchOptions(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 userLocation, ChatSearchContextSize? searchContextSize, in JsonPatch patch)
         {
             UserLocation = userLocation;
             SearchContextSize = searchContextSize;
@@ -34,5 +33,7 @@ namespace OpenAI.Chat
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        public ChatSearchContextSize? SearchContextSize { get; set; }
     }
 }

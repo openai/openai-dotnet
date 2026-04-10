@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>
     {
-        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, default, default, null)
+        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, default, default, default, default, default, default, default, null, null)
         {
         }
 
@@ -74,10 +74,41 @@ namespace OpenAI.Responses
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             // Plugin customization: remove options.Format != "W" check
-            if (!Patch.Contains("$.status"u8))
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
+            }
+            if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
+            {
+                writer.WritePropertyName("action"u8);
+                writer.WriteStringValue(Action.Value.ToString());
+            }
+            if (Optional.IsDefined(Background) && !Patch.Contains("$.background"u8))
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.Value.ToString());
+            }
+            if (Optional.IsDefined(OutputFormat) && !Patch.Contains("$.output_format"u8))
+            {
+                writer.WritePropertyName("output_format"u8);
+                writer.WriteStringValue(OutputFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(Quality) && !Patch.Contains("$.quality"u8))
+            {
+                writer.WritePropertyName("quality"u8);
+                writer.WriteStringValue(Quality.Value.ToString());
+            }
+            if (Optional.IsDefined(Size) && !Patch.Contains("$.size"u8))
+            {
+                writer.WritePropertyName("size"u8);
+                writer.WriteStringValue(Size.Value.ToString());
+            }
+            if (Optional.IsDefined(RevisedPrompt) && !Patch.Contains("$.revised_prompt"u8))
+            {
+                writer.WritePropertyName("revised_prompt"u8);
+                writer.WriteStringValue(RevisedPrompt);
             }
             if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
@@ -118,6 +149,12 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             ImageGenerationCallStatus? status = default;
+            ImageGenerationToolAction? action = default;
+            ImageGenerationToolBackground? background = default;
+            ImageGenerationToolOutputFileFormat? outputFormat = default;
+            ImageGenerationToolQuality? quality = default;
+            ImageGenerationToolSize? size = default;
+            string revisedPrompt = default;
             BinaryData imageResultBytes = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -136,6 +173,59 @@ namespace OpenAI.Responses
                     status = prop.Value.GetString().ToImageGenerationCallStatus();
                     continue;
                 }
+                if (prop.NameEquals("action"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    action = new ImageGenerationToolAction(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    background = new ImageGenerationToolBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("output_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputFormat = null;
+                        continue;
+                    }
+                    outputFormat = new ImageGenerationToolOutputFileFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("quality"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        quality = null;
+                        continue;
+                    }
+                    quality = new ImageGenerationToolQuality(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("size"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        size = null;
+                        continue;
+                    }
+                    size = new ImageGenerationToolSize(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("revised_prompt"u8))
+                {
+                    revisedPrompt = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("result"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -148,7 +238,18 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ImageGenerationCallResponseItem(kind, id, patch, status, imageResultBytes);
+            return new ImageGenerationCallResponseItem(
+                kind,
+                id,
+                patch,
+                status,
+                action,
+                background,
+                outputFormat,
+                quality,
+                size,
+                revisedPrompt,
+                imageResultBytes);
         }
     }
 }

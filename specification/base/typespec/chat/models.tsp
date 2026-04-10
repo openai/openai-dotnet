@@ -130,6 +130,11 @@ alias ChatCompletionMessageListData = {
   id: string;
 };
 
+union SearchContextSize {
+  string,
+  WebSearchContextSize,
+};
+
 model CreateChatCompletionRequest {
   ...ModelResponsePropertiesForRequest;
 
@@ -189,7 +194,7 @@ model CreateChatCompletionRequest {
       approximate: WebSearchLocation;
     } | null;
 
-    search_context_size?: WebSearchContextSize = "medium";
+    search_context_size?: SearchContextSize = "medium";
   };
 
   // Tool customization: apply a named union type

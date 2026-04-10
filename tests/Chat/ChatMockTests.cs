@@ -5,6 +5,7 @@ using OpenAI.Chat;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -206,10 +207,97 @@ public class ChatMockTests : ClientTestBase
         Assert.That(async () => await enumerator.MoveNextAsync(), Throws.InstanceOf<OperationCanceledException>());
     }
 
+    [SyncOnly]
+    [Test]
+    public void StreamingChatCanBeCancelled()
+    {
+        MockPipelineResponse response = CreateStreamingChatResponse();
+        OpenAIClientOptions options = GetClientOptionsWithMockResponse(response);
+        ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, options));
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
+
+        using CancellationTokenSource cancellationTokenSource = new();
+        CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages, cancellationToken: cancellationTokenSource.Token);
+        using IEnumerator<StreamingChatCompletionUpdate> enumerator = streamingResult.GetEnumerator();
+
+        Assert.That(enumerator.MoveNext(), Is.True);
+        StreamingChatCompletionUpdate firstUpdate = enumerator.Current;
+
+        Assert.That(firstUpdate, Is.Not.Null);
+        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
+
+        cancellationTokenSource.Cancel();
+
+        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.True);
+        Assert.That(cancellationTokenSource.Token.IsCancellationRequested, Is.True);
+        Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
+    }
+
+    [AsyncOnly]
+    [Test]
+    public async Task StreamingChatCanBeCancelledAsync()
+    {
+        MockPipelineResponse response = CreateStreamingChatResponse();
+        OpenAIClientOptions options = GetClientOptionsWithMockResponse(response);
+        ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, options));
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
+
+        using CancellationTokenSource cancellationTokenSource = new();
+        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages, cancellationToken: cancellationTokenSource.Token);
+        await using IAsyncEnumerator<StreamingChatCompletionUpdate> enumerator = streamingResult.GetAsyncEnumerator();
+
+        Assert.That(await enumerator.MoveNextAsync(), Is.True);
+        StreamingChatCompletionUpdate firstUpdate = enumerator.Current;
+
+        Assert.That(firstUpdate, Is.Not.Null);
+        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
+
+        cancellationTokenSource.Cancel();
+
+        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.True);
+        Assert.That(cancellationTokenSource.Token.IsCancellationRequested, Is.True);
+        Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingClosesNetworkStream()
+    {
+        MockPipelineResponse response = CreateStreamingChatResponse();
+        OpenAIClientOptions options = GetClientOptionsWithMockResponse(response);
+        ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, options));
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
+
+        int updateCount = 0;
+        TimeSpan? firstTokenReceiptTime = null;
+        TimeSpan? latestTokenReceiptTime = null;
+        Stopwatch stopwatch = Stopwatch.StartNew();
+        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
+
+        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
+        Assert.That(response.IsDisposed, Is.False);
+
+        await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
+        {
+            firstTokenReceiptTime ??= stopwatch.Elapsed;
+            latestTokenReceiptTime = stopwatch.Elapsed;
+            updateCount++;
+
+            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
+        }
+
+        stopwatch.Stop();
+
+        Assert.That(response.IsDisposed);
+    }
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
+        return GetClientOptionsWithMockResponse(response);
+    }
 
+    private OpenAIClientOptions GetClientOptionsWithMockResponse(MockPipelineResponse response)
+    {
         return new OpenAIClientOptions()
         {
             Transport = new MockPipelineTransport(_ => response)
@@ -218,4 +306,13 @@ public class ChatMockTests : ClientTestBase
             }
         };
     }
+
+    private static MockPipelineResponse CreateStreamingChatResponse()
+        => new MockPipelineResponse(200).WithContent("""
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
+
+            data: [DONE]
+            """);
 }

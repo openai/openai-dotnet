@@ -466,7 +466,7 @@ namespace OpenAI
             return new WebSearchToolFilters(allowedDomains.ToList(), default);
         }
 
-        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(Uri imageUri = default, string fileId = default)
+        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUri = default, string fileId = default)
         {
             return new ImageGenerationToolInputImageMask(imageUri, fileId, default);
         }

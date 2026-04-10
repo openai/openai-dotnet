@@ -13,7 +13,7 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranscriptionOptions(BinaryData @file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<InternalTranscriptionInclude> internalInclude, IList<BinaryData> internalTimestampGranularities, bool? stream, AudioTranscriptionChunkingStrategy chunkingStrategy, IList<string> knownSpeakerNames, IList<Uri> knownSpeakerReferenceUris, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionOptions(BinaryData @file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<InternalTranscriptionInclude> internalInclude, IList<BinaryData> internalTimestampGranularities, bool? stream, AudioTranscriptionChunkingStrategy chunkingStrategy, IList<string> knownSpeakerNames, IList<string> knownSpeakerReferenceUris, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             File = @file;
@@ -27,7 +27,7 @@ namespace OpenAI.Audio
             Stream = stream;
             ChunkingStrategy = chunkingStrategy;
             KnownSpeakerNames = knownSpeakerNames ?? new ChangeTrackingList<string>();
-            KnownSpeakerReferenceUris = knownSpeakerReferenceUris ?? new ChangeTrackingList<Uri>();
+            KnownSpeakerReferenceUris = knownSpeakerReferenceUris ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

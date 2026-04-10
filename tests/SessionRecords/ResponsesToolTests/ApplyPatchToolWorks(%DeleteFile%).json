@@ -1,0 +1,271 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "614",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-5.1",
+        "tools": [
+          {
+            "type": "apply_patch"
+          }
+        ],
+        "tool_choice": "required",
+        "input": [
+          {
+            "type": "message",
+            "role": "developer",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "You are a patch assistant. When the user requests file edits, respond by calling the apply_patch tool with the smallest valid set of operations."
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "The user has the following files:\n< BEGIN_FILES >\n===== obsolete.txt\nThis file is obsolete and can be removed.\n===== src / app.py\nprint(\"hello\")\n< END_FILES >\n\nDelete obsolete.txt and do not modify any other files."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e645c2ac8951ef1-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1542",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0b338fdb6d3c79c90069cf1a53f15481978f445b49473b6cc0",
+        "object": "response",
+        "created_at": 1775180371,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1775180373,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5.1-2025-11-13",
+        "output": [
+          {
+            "id": "apc_0b338fdb6d3c79c90069cf1a5516c48197af1a43f4f14fad3e",
+            "type": "apply_patch_call",
+            "status": "completed",
+            "call_id": "call_vIvY5liKHNOEwKd2kZkJ06Ow",
+            "operation": {
+              "type": "delete_file",
+              "path": "obsolete.txt"
+            }
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "none",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "required",
+        "tools": [
+          {
+            "type": "apply_patch"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 710,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 33,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 743
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "262",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "previous_response_id": "resp_0b338fdb6d3c79c90069cf1a53f15481978f445b49473b6cc0",
+        "model": "gpt-5.1",
+        "tools": [
+          {
+            "type": "apply_patch"
+          }
+        ],
+        "tool_choice": "auto",
+        "input": [
+          {
+            "type": "apply_patch_call_output",
+            "call_id": "call_vIvY5liKHNOEwKd2kZkJ06Ow",
+            "status": "completed"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9e645c36ac7b1ef1-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1692",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0b338fdb6d3c79c90069cf1a5597b881979aeb9993fca66a65",
+        "object": "response",
+        "created_at": 1775180373,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1775180374,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5.1-2025-11-13",
+        "output": [
+          {
+            "id": "msg_0b338fdb6d3c79c90069cf1a5687d88197a89abc3ff6c1e230",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "I’ve deleted `obsolete.txt` and left all other files unchanged."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": "resp_0b338fdb6d3c79c90069cf1a53f15481978f445b49473b6cc0",
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "none",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "apply_patch"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 780,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 18,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 798
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

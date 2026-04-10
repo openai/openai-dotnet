@@ -28,7 +28,7 @@ public partial class ResponseContentPart
     // CUSTOM: Exposed input image properties.
     public string InputImageFileId => (this as InternalItemContentInputImage)?.FileId;
     public ResponseImageDetailLevel? InputImageDetailLevel => (this as InternalItemContentInputImage)?.Detail;
-    public Uri InputImageUri => (this as InternalItemContentInputImage)?.ImageUrl;
+    public string InputImageUri => (this as InternalItemContentInputImage)?.ImageUri;
 
     // CUSTOM: Exposed input file properties.
     public string InputFileId => (this as InternalItemContentInputFile)?.FileId;
@@ -59,9 +59,23 @@ public partial class ResponseContentPart
 
     public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = default)
     {
+        Argument.AssertNotNull(imageUri, nameof(imageUri));
+
         return new InternalItemContentInputImage()
         {
-            ImageUrl = imageUri,
+            ImageUri = imageUri.AbsoluteUri,
+            Detail = imageDetailLevel,
+        };
+    }
+    
+    public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, ResponseImageDetailLevel? imageDetailLevel = null)
+    {
+        Argument.AssertNotNull(imageBytes, nameof(imageBytes));
+        Argument.AssertNotNullOrEmpty(imageBytes.MediaType, nameof(imageBytes.MediaType));
+
+        return new InternalItemContentInputImage()
+        {
+            ImageUri = DataEncodingHelpers.CreateDataUri(imageBytes, imageBytes.MediaType),
             Detail = imageDetailLevel,
         };
     }

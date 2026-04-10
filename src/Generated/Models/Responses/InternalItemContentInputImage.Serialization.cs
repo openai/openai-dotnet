@@ -69,10 +69,10 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
+            if (Optional.IsDefined(ImageUri) && !Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUrl.AbsoluteUri);
+                writer.WriteStringValue(ImageUri);
             }
             if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
@@ -112,7 +112,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            Uri imageUrl = default;
+            string imageUri = default;
             string fileId = default;
             ResponseImageDetailLevel? detail = default;
             foreach (var prop in element.EnumerateObject())
@@ -126,10 +126,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        imageUrl = null;
+                        imageUri = null;
                         continue;
                     }
-                    imageUrl = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
+                    imageUri = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -153,7 +153,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentInputImage(internalType, patch, imageUrl, fileId, detail);
+            return new InternalItemContentInputImage(internalType, patch, imageUri, fileId, detail);
         }
     }
 }
