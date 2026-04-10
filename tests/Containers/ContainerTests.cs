@@ -72,9 +72,11 @@ public class ContainerTests : OpenAIRecordedTestBase
             {
                 Console.WriteLine($"Failed to delete test container {_testContainerId}: {ex.Message}");
             }
+            finally
+            {
+                _testContainerId = null;
+            }
         }
-
-        _testContainerId = null;
     }
 
     private static CreateContainerBody CreateContainerBodyFromName(string name)
