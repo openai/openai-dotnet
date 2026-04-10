@@ -6,12 +6,12 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "638",
-        "Content-Type": "multipart/form-data; boundary=\"fUPy_E1RsvHauJBli=AuMAa0jBdMkbKbXhwyxhWKqFxqHHS=MOwFsXVYC4Ai8JJn_TPJXR\"",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "Content-Length": "625",
+        "Content-Type": "multipart/form-data; boundary=\"GJQZxLizAynpDaMnK7oNoBWl9jOr1BLYu9yoVWwifx6puWuFpX1Pegbs6acSehXkv33I6U\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": [
-        "--fUPy_E1RsvHauJBli=AuMAa0jBdMkbKbXhwyxhWKqFxqHHS=MOwFsXVYC4Ai8JJn_TPJXR\r\n",
+        "--GJQZxLizAynpDaMnK7oNoBWl9jOr1BLYu9yoVWwifx6puWuFpX1Pegbs6acSehXkv33I6U\r\n",
         "Content-Type: text/markdown\r\n",
         "Content-Disposition: form-data; name=\"files[]\"; filename=\"basic_math/SKILL.md\"; filename*=utf-8''basic_math%2fSKILL.md\r\n",
         "\r\n",
@@ -20,27 +20,27 @@
         "description: Add or multiply numbers.\r\n",
         "---\r\n",
         "\r\n",
-        "Use this skill when you need a quick sum or product of numbers.\r\n",
+        "Use this skill when you need a quick sum or product of numbers.\n",
+        "\n",
+        "## Addition\n",
+        "\n",
+        "To add two numbers, compute `a + b`.\n",
+        "\n",
+        "Example: `add(3, 5)` returns `8`.\n",
+        "\n",
+        "## Multiplication\n",
+        "\n",
+        "To multiply two numbers, compute `a * b`.\n",
+        "\n",
+        "Example: `multiply(4, 7)` returns `28`.\n",
         "\r\n",
-        "## Addition\r\n",
-        "\r\n",
-        "To add two numbers, compute `a + b`.\r\n",
-        "\r\n",
-        "Example: `add(3, 5)` returns `8`.\r\n",
-        "\r\n",
-        "## Multiplication\r\n",
-        "\r\n",
-        "To multiply two numbers, compute `a * b`.\r\n",
-        "\r\n",
-        "Example: `multiply(4, 7)` returns `28`.\r\n",
-        "\r\n",
-        "--fUPy_E1RsvHauJBli=AuMAa0jBdMkbKbXhwyxhWKqFxqHHS=MOwFsXVYC4Ai8JJn_TPJXR--\r\n"
+        "--GJQZxLizAynpDaMnK7oNoBWl9jOr1BLYu9yoVWwifx6puWuFpX1Pegbs6acSehXkv33I6U--\r\n"
       ],
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b53313de6346b-SEA",
+        "CF-RAY": "9ea451803ed775b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",
@@ -55,9 +55,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skill_69d0379c9a588193b5b70fca1354e77c06f1273d81bcd6d3",
+        "id": "skill_69d9560f9290819093841ca20c1da40b04a778b02d656a76",
         "object": "skill",
-        "created_at": 1775253404,
+        "created_at": 1775851023,
         "default_version": "1",
         "description": "Add or multiply numbers.",
         "latest_version": "1",
@@ -65,19 +65,19 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/skills/skill_69d0379c9a588193b5b70fca1354e77c06f1273d81bcd6d3",
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560f9290819093841ca20c1da40b04a778b02d656a76",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b53337c54346b-SEA",
+        "CF-RAY": "9ea45181e82475b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",
@@ -92,9 +92,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skill_69d0379c9a588193b5b70fca1354e77c06f1273d81bcd6d3",
+        "id": "skill_69d9560f9290819093841ca20c1da40b04a778b02d656a76",
         "object": "skill",
-        "created_at": 1775253404,
+        "created_at": 1775851023,
         "default_version": "1",
         "description": "Add or multiply numbers.",
         "latest_version": "1",
@@ -107,14 +107,14 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b5335eb30346b-SEA",
+        "CF-RAY": "9ea45182a8ec75b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "3227",
         "Content-Type": "application/json",
@@ -237,19 +237,19 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/skills/skill_69d0379c9a588193b5b70fca1354e77c06f1273d81bcd6d3",
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560f9290819093841ca20c1da40b04a778b02d656a76",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b53393bea346b-SEA",
+        "CF-RAY": "9ea45185ab9175b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "116",
         "Content-Type": "application/json",
@@ -264,7 +264,7 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skill_69d0379c9a588193b5b70fca1354e77c06f1273d81bcd6d3",
+        "id": "skill_69d9560f9290819093841ca20c1da40b04a778b02d656a76",
         "object": "skill.deleted",
         "deleted": true
       }

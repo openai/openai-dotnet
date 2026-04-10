@@ -6,12 +6,12 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "638",
-        "Content-Type": "multipart/form-data; boundary=\"wuvZ7xG7TcjjSUvoq0l66aLOmtn8HgV1xQwI7h8YjZpgfT=N6crBNZWG2wiig2fusrhqA1\"",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "Content-Length": "625",
+        "Content-Type": "multipart/form-data; boundary=\"PXCYjvORMIe6wPs4Pc1ezwKhdan6uQbfHhC175=czLK4t90Zrxe5dIATm4rvgUOUisrQxi\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": [
-        "--wuvZ7xG7TcjjSUvoq0l66aLOmtn8HgV1xQwI7h8YjZpgfT=N6crBNZWG2wiig2fusrhqA1\r\n",
+        "--PXCYjvORMIe6wPs4Pc1ezwKhdan6uQbfHhC175=czLK4t90Zrxe5dIATm4rvgUOUisrQxi\r\n",
         "Content-Type: text/markdown\r\n",
         "Content-Disposition: form-data; name=\"files[]\"; filename=\"basic_math/SKILL.md\"; filename*=utf-8''basic_math%2fSKILL.md\r\n",
         "\r\n",
@@ -20,27 +20,27 @@
         "description: Add or multiply numbers.\r\n",
         "---\r\n",
         "\r\n",
-        "Use this skill when you need a quick sum or product of numbers.\r\n",
+        "Use this skill when you need a quick sum or product of numbers.\n",
+        "\n",
+        "## Addition\n",
+        "\n",
+        "To add two numbers, compute `a + b`.\n",
+        "\n",
+        "Example: `add(3, 5)` returns `8`.\n",
+        "\n",
+        "## Multiplication\n",
+        "\n",
+        "To multiply two numbers, compute `a * b`.\n",
+        "\n",
+        "Example: `multiply(4, 7)` returns `28`.\n",
         "\r\n",
-        "## Addition\r\n",
-        "\r\n",
-        "To add two numbers, compute `a + b`.\r\n",
-        "\r\n",
-        "Example: `add(3, 5)` returns `8`.\r\n",
-        "\r\n",
-        "## Multiplication\r\n",
-        "\r\n",
-        "To multiply two numbers, compute `a * b`.\r\n",
-        "\r\n",
-        "Example: `multiply(4, 7)` returns `28`.\r\n",
-        "\r\n",
-        "--wuvZ7xG7TcjjSUvoq0l66aLOmtn8HgV1xQwI7h8YjZpgfT=N6crBNZWG2wiig2fusrhqA1--\r\n"
+        "--PXCYjvORMIe6wPs4Pc1ezwKhdan6uQbfHhC175=czLK4t90Zrxe5dIATm4rvgUOUisrQxi--\r\n"
       ],
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b5314e962346b-SEA",
+        "CF-RAY": "9ea4516089d575b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",
@@ -56,9 +56,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9",
+        "id": "skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737",
         "object": "skill",
-        "created_at": 1775253399,
+        "created_at": 1775851019,
         "default_version": "1",
         "description": "Add or multiply numbers.",
         "latest_version": "1",
@@ -66,17 +66,17 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/skills/skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9/versions",
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737/versions",
       "RequestMethod": "POST",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "638",
-        "Content-Type": "multipart/form-data; boundary=\"MXNYQbfoVPipJuI_2gnTOzd0pYgyo56K=zTlr=YJYntbZlV7ZdynoRYYToHFJ2uZMn_W4M\"",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "Content-Length": "625",
+        "Content-Type": "multipart/form-data; boundary=\"xU4Mel50wEG8UGzfn2MmB5ZU0l_9pllOT4XZcVNF=JDMQjOfIGXGQZJuDHxgj8FwculEgc\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": [
-        "--MXNYQbfoVPipJuI_2gnTOzd0pYgyo56K=zTlr=YJYntbZlV7ZdynoRYYToHFJ2uZMn_W4M\r\n",
+        "--xU4Mel50wEG8UGzfn2MmB5ZU0l_9pllOT4XZcVNF=JDMQjOfIGXGQZJuDHxgj8FwculEgc\r\n",
         "Content-Type: text/markdown\r\n",
         "Content-Disposition: form-data; name=\"files[]\"; filename=\"basic_math/SKILL.md\"; filename*=utf-8''basic_math%2fSKILL.md\r\n",
         "\r\n",
@@ -85,27 +85,27 @@
         "description: Add or multiply numbers.\r\n",
         "---\r\n",
         "\r\n",
-        "Use this skill when you need a quick sum or product of numbers.\r\n",
+        "Use this skill when you need a quick sum or product of numbers.\n",
+        "\n",
+        "## Addition\n",
+        "\n",
+        "To add two numbers, compute `a + b`.\n",
+        "\n",
+        "Example: `add(3, 5)` returns `8`.\n",
+        "\n",
+        "## Multiplication\n",
+        "\n",
+        "To multiply two numbers, compute `a * b`.\n",
+        "\n",
+        "Example: `multiply(4, 7)` returns `28`.\n",
         "\r\n",
-        "## Addition\r\n",
-        "\r\n",
-        "To add two numbers, compute `a + b`.\r\n",
-        "\r\n",
-        "Example: `add(3, 5)` returns `8`.\r\n",
-        "\r\n",
-        "## Multiplication\r\n",
-        "\r\n",
-        "To multiply two numbers, compute `a * b`.\r\n",
-        "\r\n",
-        "Example: `multiply(4, 7)` returns `28`.\r\n",
-        "\r\n",
-        "--MXNYQbfoVPipJuI_2gnTOzd0pYgyo56K=zTlr=YJYntbZlV7ZdynoRYYToHFJ2uZMn_W4M--\r\n"
+        "--xU4Mel50wEG8UGzfn2MmB5ZU0l_9pllOT4XZcVNF=JDMQjOfIGXGQZJuDHxgj8FwculEgc--\r\n"
       ],
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b53169e8d346b-SEA",
+        "CF-RAY": "9ea4516979b075b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "287",
         "Content-Type": "application/json",
@@ -120,29 +120,29 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skillver_69d0379855c8819081299acfba49bb3d0341b426ce8840b9",
+        "id": "skillver_69d9560bfc0481909fba74616323652800a8e3c7cc545737",
         "object": "skill.version",
-        "created_at": 1775253400,
+        "created_at": 1775851019,
         "description": "Add or multiply numbers.",
         "name": "basic-math",
-        "skill_id": "skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9",
+        "skill_id": "skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737",
         "version": "2"
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/skills/skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9",
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b5318ce25346b-SEA",
+        "CF-RAY": "9ea4516b6bd675b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",
@@ -157,9 +157,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9",
+        "id": "skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737",
         "object": "skill",
-        "created_at": 1775253399,
+        "created_at": 1775851019,
         "default_version": "1",
         "description": "Add or multiply numbers.",
         "latest_version": "2",
@@ -167,19 +167,19 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/skills/skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9",
+      "RequestUri": "https://api.openai.com/v1/skills/skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9e6b531998a2346b-SEA",
+        "CF-RAY": "9ea4516c2c8275b8-SEA",
         "Connection": "keep-alive",
         "Content-Length": "116",
         "Content-Type": "application/json",
@@ -194,7 +194,7 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "skill_69d03797ff5081908a9b39ea32b8a8480341b426ce8840b9",
+        "id": "skill_69d9560b9da481908f544ee921f17bdd00a8e3c7cc545737",
         "object": "skill.deleted",
         "deleted": true
       }
