@@ -40,7 +40,7 @@ public static partial class OpenAIFilesModelFactory
             createdAt: createdAt,
             expiresAt: expiresAt,
             filename: filename,
-            purpose: purpose,
+            purpose: new InternalUploadFilePurpose(purpose.ToSerialString()),
             @object: "file",
             sizeInBytesLong: sizeInBytesLong ?? sizeInBytes,
             status: status,

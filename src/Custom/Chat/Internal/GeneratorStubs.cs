@@ -1,5 +1,8 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Text.Json;
 
 namespace OpenAI.Chat;
 
@@ -13,7 +16,25 @@ internal readonly partial struct InternalChatCompletionMessageToolCallChunkType 
 internal partial class InternalChatCompletionNamedToolChoice { }
 
 [CodeGenType("ChatCompletionNamedToolChoiceFunction")]
-internal partial class InternalChatCompletionNamedToolChoiceFunction { }
+internal partial class InternalChatCompletionNamedToolChoiceFunction
+{
+    public InternalChatCompletionNamedToolChoiceFunction(string name) => Name = name;
+    public string Name { get; set; }
+
+    internal static InternalChatCompletionNamedToolChoiceFunction DeserializeInternalChatCompletionNamedToolChoiceFunction(JsonElement element, ReadOnlyMemory<byte> data, ModelReaderWriterOptions options)
+    {
+        string name = null;
+        foreach (var property in element.EnumerateObject())
+        {
+            if (property.NameEquals("name"u8))
+            {
+                name = property.Value.GetString();
+                continue;
+            }
+        }
+        return new InternalChatCompletionNamedToolChoiceFunction(name);
+    }
+}
 
 [CodeGenType("ChatCompletionNamedToolChoiceType")]
 internal readonly partial struct InternalChatCompletionNamedToolChoiceType { }

@@ -2232,7 +2232,6 @@ namespace OpenAI.Files {
         public DateTimeOffset? ExpiresAt { get; }
         public string Filename { get; }
         public string Id { get; }
-        public FilePurpose Purpose { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int? SizeInBytes { get; }
         public long? SizeInBytesLong { get; }
@@ -2637,28 +2636,11 @@ namespace OpenAI.Graders {
         public BinaryData SamplingParams { get; set; }
     }
     public class GraderStringCheck : Grader, IJsonModel<GraderStringCheck>, IPersistableModel<GraderStringCheck> {
-        public GraderStringCheck(string name, string input, string reference, GraderStringCheckOperation operation);
         public string Input { get; set; }
         public string Name { get; set; }
-        public GraderStringCheckOperation Operation { get; set; }
         public string Reference { get; set; }
     }
-    public readonly partial struct GraderStringCheckOperation : IEquatable<GraderStringCheckOperation> {
-        public GraderStringCheckOperation(string value);
-        public static GraderStringCheckOperation Eq { get; }
-        public static GraderStringCheckOperation Ilike { get; }
-        public static GraderStringCheckOperation Like { get; }
-        public static GraderStringCheckOperation Ne { get; }
-        public readonly bool Equals(GraderStringCheckOperation other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(GraderStringCheckOperation left, GraderStringCheckOperation right);
-        public static implicit operator GraderStringCheckOperation(string value);
-        public static implicit operator GraderStringCheckOperation?(string value);
-        public static bool operator !=(GraderStringCheckOperation left, GraderStringCheckOperation right);
-        public override readonly string ToString();
+    public readonly partial struct GraderStringCheckOperation {
     }
     public class GraderTextSimilarity : Grader, IJsonModel<GraderTextSimilarity>, IPersistableModel<GraderTextSimilarity> {
         public GraderTextSimilarity(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric);
@@ -4761,18 +4743,9 @@ namespace OpenAI.Responses {
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
         public FileSearchCallResponseItem(IEnumerable<string> queries);
         public IList<string> Queries { get; }
-        public IList<FileSearchCallResult> Results { get; set; }
         public FileSearchCallStatus? Status { get; set; }
     }
-    public class FileSearchCallResult : IJsonModel<FileSearchCallResult>, IPersistableModel<FileSearchCallResult> {
-        public IDictionary<string, BinaryData> Attributes { get; }
-        public string FileId { get; set; }
-        public string Filename { get; set; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        public float? Score { get; set; }
-        public string Text { get; set; }
+    public class FileSearchCallResult {
     }
     public enum FileSearchCallStatus {
         InProgress = 0,

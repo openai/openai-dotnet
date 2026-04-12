@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Assistants;
 
@@ -180,10 +181,41 @@ internal partial class InternalRunStepDetailsToolCallsFileSearchObject { }
 internal partial class InternalRunStepDetailsToolCallsFunctionObject { }
 
 [CodeGenType("TruncationObjectType")]
-internal readonly partial struct InternalTruncationObjectType { }
+internal readonly partial struct InternalTruncationObjectType : IEquatable<InternalTruncationObjectType>
+{
+    private readonly string _value;
+
+    public InternalTruncationObjectType(string value) => _value = value;
+
+    internal static InternalTruncationObjectType Auto { get; } = new("auto");
+    internal static InternalTruncationObjectType LastMessages { get; } = new("last_messages");
+
+    public static bool operator ==(InternalTruncationObjectType left, InternalTruncationObjectType right) => left.Equals(right);
+    public static bool operator !=(InternalTruncationObjectType left, InternalTruncationObjectType right) => !left.Equals(right);
+    public static implicit operator InternalTruncationObjectType(string value) => new(value);
+    public static implicit operator InternalTruncationObjectType?(string value) => value == null ? null : new InternalTruncationObjectType(value);
+    public override bool Equals(object obj) => obj is InternalTruncationObjectType other && Equals(other);
+    public bool Equals(InternalTruncationObjectType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
+}
 
 [CodeGenType("AssistantsNamedToolChoiceType")]
-internal readonly partial struct InternalAssistantsNamedToolChoiceType { }
+internal readonly partial struct InternalAssistantsNamedToolChoiceType : IEquatable<InternalAssistantsNamedToolChoiceType>
+{
+    private readonly string _value;
+
+    public InternalAssistantsNamedToolChoiceType(string value) => _value = value;
+
+    public static bool operator ==(InternalAssistantsNamedToolChoiceType left, InternalAssistantsNamedToolChoiceType right) => left.Equals(right);
+    public static bool operator !=(InternalAssistantsNamedToolChoiceType left, InternalAssistantsNamedToolChoiceType right) => !left.Equals(right);
+    public static implicit operator InternalAssistantsNamedToolChoiceType(string value) => new(value);
+    public static implicit operator InternalAssistantsNamedToolChoiceType?(string value) => value == null ? null : new InternalAssistantsNamedToolChoiceType(value);
+    public override bool Equals(object obj) => obj is InternalAssistantsNamedToolChoiceType other && Equals(other);
+    public bool Equals(InternalAssistantsNamedToolChoiceType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
+}
 
 [CodeGenType("RunStepDeltaStepDetailsToolCallsCodeObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeObject { }
@@ -233,7 +265,11 @@ internal partial class InternalRunStepDeltaStepDetails { }
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction { }
 
 [CodeGenType("AssistantsNamedToolChoiceFunction")]
-internal partial class InternalAssistantsNamedToolChoiceFunction { }
+internal partial class InternalAssistantsNamedToolChoiceFunction
+{
+    public InternalAssistantsNamedToolChoiceFunction(string name) => Name = name;
+    public string Name { get; set; }
+}
 
 [CodeGenType("AssistantObjectObject")]
 internal readonly partial struct InternalAssistantObjectObject { }

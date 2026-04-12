@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Configuration;
 
 namespace OpenAI
 {
@@ -19,28 +18,5 @@ namespace OpenAI
         public AuthenticationPolicy AuthenticationPolicy { get; set; }
 
         public OpenAIClientOptions Options { get; set; }
-
-        protected override void BindCore(IConfigurationSection section)
-        {
-            if (Uri.TryCreate(section["Endpoint"], UriKind.Absolute, out Uri endpoint))
-            {
-                Endpoint = endpoint;
-            }
-            string apiKey = section["ApiKey"];
-            if (!string.IsNullOrEmpty(apiKey))
-            {
-                ApiKey = apiKey;
-            }
-            IConfigurationSection authenticationPolicySection = section.GetSection("AuthenticationPolicy");
-            if (authenticationPolicySection.Exists())
-            {
-                AuthenticationPolicy = new System.ClientModel.Primitives.AuthenticationPolicy(authenticationPolicySection);
-            }
-            IConfigurationSection optionsSection = section.GetSection("Options");
-            if (optionsSection.Exists())
-            {
-                Options = new OpenAIClientOptions(optionsSection);
-            }
-        }
     }
 }
