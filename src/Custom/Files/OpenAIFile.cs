@@ -20,6 +20,22 @@ public partial class OpenAIFile
     [CodeGenMember("Bytes")]
     public long? SizeInBytesLong { get; }
 
+    // CUSTOM: Renamed from Purpose to InternalPurpose and made internal.
+    // The generated property is internal InternalUploadFilePurpose; we expose a public FilePurpose instead.
+    [CodeGenMember("Purpose")]
+    internal InternalUploadFilePurpose InternalPurpose { get; }
+
+    /// <summary> The intended purpose of the uploaded file. </summary>
+    public FilePurpose Purpose
+    {
+        get
+        {
+            string value = InternalPurpose.ToString();
+            if (value is null) return default;
+            return value.ToFilePurpose();
+        }
+    }
+
     /// <summary>
     /// <para>
     /// <b>Please use <see cref="SizeInBytesLong"/> instead of this property.</b>

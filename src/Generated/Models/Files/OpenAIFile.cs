@@ -12,17 +12,17 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, InternalUploadFilePurpose purpose, FileStatus status)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, InternalUploadFilePurpose internalPurpose, FileStatus status)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
             CreatedAt = createdAt;
             Filename = filename;
-            Purpose = purpose;
+            InternalPurpose = internalPurpose;
             Status = status;
         }
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, InternalUploadFilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, InternalUploadFilePurpose internalPurpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
@@ -30,7 +30,7 @@ namespace OpenAI.Files
             ExpiresAt = expiresAt;
             Filename = filename;
             Object = @object;
-            Purpose = purpose;
+            InternalPurpose = internalPurpose;
             Status = status;
             StatusDetails = statusDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -44,8 +44,6 @@ namespace OpenAI.Files
         public DateTimeOffset? ExpiresAt { get; }
 
         public string Filename { get; }
-
-        internal InternalUploadFilePurpose Purpose { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
