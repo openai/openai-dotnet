@@ -60,7 +60,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
         else
         {
             string type = default;
-            InternalChatCompletionNamedToolChoiceFunction function = default;
+            InternalCreateChatCompletionRequestToolChoiceFunction function = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -74,7 +74,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
                 }
                 if (property.NameEquals("function"u8))
                 {
-                    function = InternalChatCompletionNamedToolChoiceFunction.DeserializeInternalChatCompletionNamedToolChoiceFunction(property.Value, property.Value.GetUtf8Bytes(), options);
+                    function = InternalCreateChatCompletionRequestToolChoiceFunction.DeserializeInternalCreateChatCompletionRequestToolChoiceFunction(property.Value, property.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (true)
@@ -86,7 +86,7 @@ public partial class ChatToolChoice : IJsonModel<ChatToolChoice>
                 predefined: false,
                 predefinedValue: null,
                 type: FunctionType,
-                function: new InternalChatCompletionNamedToolChoiceFunction(function.Name),
+                function: new InternalCreateChatCompletionRequestToolChoiceFunction(function.Name),
                 patch: patch);
         }
     }

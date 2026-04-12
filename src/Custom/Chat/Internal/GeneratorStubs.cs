@@ -15,27 +15,6 @@ internal readonly partial struct InternalChatCompletionMessageToolCallChunkType 
 [CodeGenType("ChatCompletionNamedToolChoice")]
 internal partial class InternalChatCompletionNamedToolChoice { }
 
-[CodeGenType("ChatCompletionNamedToolChoiceFunction")]
-internal partial class InternalChatCompletionNamedToolChoiceFunction
-{
-    public InternalChatCompletionNamedToolChoiceFunction(string name) => Name = name;
-    public string Name { get; set; }
-
-    internal static InternalChatCompletionNamedToolChoiceFunction DeserializeInternalChatCompletionNamedToolChoiceFunction(JsonElement element, ReadOnlyMemory<byte> data, ModelReaderWriterOptions options)
-    {
-        string name = null;
-        foreach (var property in element.EnumerateObject())
-        {
-            if (property.NameEquals("name"u8))
-            {
-                name = property.Value.GetString();
-                continue;
-            }
-        }
-        return new InternalChatCompletionNamedToolChoiceFunction(name);
-    }
-}
-
 [CodeGenType("ChatCompletionNamedToolChoiceType")]
 internal readonly partial struct InternalChatCompletionNamedToolChoiceType { }
 
