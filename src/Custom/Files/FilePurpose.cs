@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Files;
 
-[CodeGenType("OpenAIFilePurpose")]
+[CodeGenType("UploadFilePurpose")]
 public enum FilePurpose
 {
     Assistants,

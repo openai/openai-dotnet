@@ -2555,6 +2555,7 @@ namespace OpenAI.Files {
         public DateTimeOffset? ExpiresAt { get; }
         public string Filename { get; }
         public string Id { get; }
+        public FilePurpose Purpose { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int? SizeInBytes { get; }
         [Experimental("OPENAI001")]

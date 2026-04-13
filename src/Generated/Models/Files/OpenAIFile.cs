@@ -12,17 +12,17 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, InternalUploadFilePurpose internalPurpose, FileStatus status)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
             CreatedAt = createdAt;
             Filename = filename;
-            InternalPurpose = internalPurpose;
+            Purpose = purpose;
             Status = status;
         }
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, InternalUploadFilePurpose internalPurpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
@@ -30,7 +30,7 @@ namespace OpenAI.Files
             ExpiresAt = expiresAt;
             Filename = filename;
             Object = @object;
-            InternalPurpose = internalPurpose;
+            Purpose = purpose;
             Status = status;
             StatusDetails = statusDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -44,6 +44,8 @@ namespace OpenAI.Files
         public DateTimeOffset? ExpiresAt { get; }
 
         public string Filename { get; }
+
+        public FilePurpose Purpose { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
