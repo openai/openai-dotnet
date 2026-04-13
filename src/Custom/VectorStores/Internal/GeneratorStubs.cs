@@ -24,11 +24,11 @@ namespace OpenAI.VectorStores;
 [CodeGenType("UnknownDotNetCombinedChunkingStrategyParam")] internal partial class InternalUnknownDotNetCombinedChunkingStrategyParam { }
 [CodeGenType("DotNetCombinedOtherChunkingStrategyParam")] internal partial class InternalDotNetCombinedOtherChunkingStrategyParam { }
 [CodeGenType("UnknownChunkingStrategyResponse")] internal partial class InternalUnknownChunkingStrategyResponseParam { }
-[CodeGenType("VectorStoresVectorStoreFileAttributes")] internal partial class InternalVectorStoreFileAttributes { }
-[CodeGenType("VectorStoresComparisonFilter")] internal partial class InternalVectorStoresComparisonFilter { }
-[CodeGenType("VectorStoresComparisonFilterType")] internal readonly partial struct InternalVectorStoresComparisonFilterType {}
-[CodeGenType("VectorStoresCompoundFilter")] internal partial class InternalVectorStoresCompoundFilter { }
-[CodeGenType("VectorStoresCompoundFilterType")] internal readonly partial struct InternalVectorStoresCompoundFilterType {}
+[CodeGenType("VectorStoreFileAttributes")] internal partial class InternalVectorStoreFileAttributes { }
+[CodeGenType("VectorStoreComparisonFilter")] internal partial class InternalVectorStoreComparisonFilter { }
+[CodeGenType("VectorStoreComparisonFilterType")] internal readonly partial struct InternalVectorStoreComparisonFilterType {}
+[CodeGenType("VectorStoreCompoundFilter")] internal partial class InternalVectorStoreCompoundFilter { }
+[CodeGenType("VectorStoreCompoundFilterType")] internal readonly partial struct InternalVectorStoreCompoundFilterType {}
 [CodeGenType("VectorStoreSearchRequestRankingOptionsRanker")] internal readonly partial struct InternalVectorStoreSearchRequestRankingOptionsRanker {}
 [CodeGenType("UpdateVectorStoreFileAttributesRequest")] internal partial class InternalUpdateVectorStoreFileAttributesRequest
 {

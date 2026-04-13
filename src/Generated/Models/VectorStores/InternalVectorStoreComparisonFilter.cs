@@ -7,18 +7,18 @@ using System.Collections.Generic;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoresComparisonFilter
+    internal partial class InternalVectorStoreComparisonFilter
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalVectorStoresComparisonFilter(InternalVectorStoresComparisonFilterType kind, string key, BinaryData value)
+        internal InternalVectorStoreComparisonFilter(InternalVectorStoreComparisonFilterType kind, string key, BinaryData value)
         {
             Kind = kind;
             Key = key;
             Value = value;
         }
 
-        internal InternalVectorStoresComparisonFilter(InternalVectorStoresComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalVectorStoreComparisonFilter(InternalVectorStoreComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Key = key;
@@ -26,7 +26,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalVectorStoresComparisonFilterType Kind { get; }
+        internal InternalVectorStoreComparisonFilterType Kind { get; }
 
         public string Key { get; }
 

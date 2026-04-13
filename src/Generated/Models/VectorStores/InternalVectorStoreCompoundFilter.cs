@@ -9,17 +9,17 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoresCompoundFilter
+    internal partial class InternalVectorStoreCompoundFilter
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalVectorStoresCompoundFilter(InternalVectorStoresCompoundFilterType kind, IEnumerable<BinaryData> filters)
+        internal InternalVectorStoreCompoundFilter(InternalVectorStoreCompoundFilterType kind, IEnumerable<BinaryData> filters)
         {
             Kind = kind;
             Filters = filters.ToList();
         }
 
-        internal InternalVectorStoresCompoundFilter(InternalVectorStoresCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalVectorStoreCompoundFilter(InternalVectorStoreCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Kind = kind;
@@ -27,7 +27,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalVectorStoresCompoundFilterType Kind { get; }
+        internal InternalVectorStoreCompoundFilterType Kind { get; }
 
         public IList<BinaryData> Filters { get; }
 

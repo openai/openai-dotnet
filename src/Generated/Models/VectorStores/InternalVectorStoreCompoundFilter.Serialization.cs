@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoresCompoundFilter : IJsonModel<InternalVectorStoresCompoundFilter>
+    internal partial class InternalVectorStoreCompoundFilter : IJsonModel<InternalVectorStoreCompoundFilter>
     {
-        internal InternalVectorStoresCompoundFilter() : this(default, null, null)
+        internal InternalVectorStoreCompoundFilter() : this(default, null, null)
         {
         }
 
-        protected virtual InternalVectorStoresCompoundFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual InternalVectorStoreCompoundFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalVectorStoresCompoundFilter(document.RootElement, options);
+                        return DeserializeInternalVectorStoreCompoundFilter(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoresCompoundFilter)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalVectorStoreCompoundFilter)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoresCompoundFilter)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalVectorStoreCompoundFilter)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalVectorStoresCompoundFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<InternalVectorStoreCompoundFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalVectorStoresCompoundFilter IPersistableModel<InternalVectorStoresCompoundFilter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalVectorStoreCompoundFilter IPersistableModel<InternalVectorStoreCompoundFilter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalVectorStoresCompoundFilter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<InternalVectorStoreCompoundFilter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalVectorStoresCompoundFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<InternalVectorStoreCompoundFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,10 +58,10 @@ namespace OpenAI.VectorStores
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalVectorStoresCompoundFilter)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalVectorStoreCompoundFilter)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
@@ -112,33 +112,33 @@ namespace OpenAI.VectorStores
             }
         }
 
-        InternalVectorStoresCompoundFilter IJsonModel<InternalVectorStoresCompoundFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalVectorStoreCompoundFilter IJsonModel<InternalVectorStoreCompoundFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalVectorStoresCompoundFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual InternalVectorStoreCompoundFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreCompoundFilter>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalVectorStoresCompoundFilter)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalVectorStoreCompoundFilter)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalVectorStoresCompoundFilter(document.RootElement, options);
+            return DeserializeInternalVectorStoreCompoundFilter(document.RootElement, options);
         }
 
-        internal static InternalVectorStoresCompoundFilter DeserializeInternalVectorStoresCompoundFilter(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalVectorStoreCompoundFilter DeserializeInternalVectorStoreCompoundFilter(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalVectorStoresCompoundFilterType kind = default;
+            InternalVectorStoreCompoundFilterType kind = default;
             IList<BinaryData> filters = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalVectorStoresCompoundFilterType(prop.Value.GetString());
+                    kind = new InternalVectorStoreCompoundFilterType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("filters"u8))
@@ -161,7 +161,7 @@ namespace OpenAI.VectorStores
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalVectorStoresCompoundFilter(kind, filters, additionalBinaryDataProperties);
+            return new InternalVectorStoreCompoundFilter(kind, filters, additionalBinaryDataProperties);
         }
     }
 }

@@ -3,7 +3,7 @@ import "../common/models.tsp";
 using TypeSpec.OpenAPI;
 namespace OpenAI;
 /** A filter used to compare a specified attribute key to a given value using a defined comparison operation. */
-model VectorStoresComparisonFilter {
+model VectorStoreComparisonFilter {
   @doc("""
     Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`.
     - `eq`: equals
@@ -25,19 +25,19 @@ model VectorStoresComparisonFilter {
 @doc("""
   Combine multiple filters using `and` or `or`.
   """)
-model VectorStoresCompoundFilter {
+model VectorStoreCompoundFilter {
   @doc("""
     Type of operation: `and` or `or`.
     """)
   type: "and" | "or";
 
   @doc("""
-    Array of filters to combine. Items can be `VectorStoresComparisonFilter` or `VectorStoresCompoundFilter`.
+    Array of filters to combine. Items can be `VectorStoreComparisonFilter` or `VectorStoreCompoundFilter`.
     """)
-  filters: (VectorStoresComparisonFilter | VectorStoresCompoundFilter)[];
+  filters: (VectorStoreComparisonFilter | VectorStoreCompoundFilter)[];
 }
 
-alias VectorStoresVectorStoreFileAttributes = Record<unknown>;
+alias VectorStoreFileAttributes = Record<unknown>;
 /** The default strategy. This strategy currently uses a `max_chunk_size_tokens` of `800` and `chunk_overlap_tokens` of `400`. */
 @summary("Auto Chunking Strategy")
 model AutoChunkingStrategyRequestParam extends ChunkingStrategyRequestParam {
@@ -92,7 +92,7 @@ model CreateVectorStoreFileBatchRequest {
   chunking_strategy?: ChunkingStrategyRequestParam;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  attributes?: VectorStoresVectorStoreFileAttributes | null;
+  attributes?: VectorStoreFileAttributes | null;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -106,7 +106,7 @@ model CreateVectorStoreFileRequest {
   chunking_strategy?: ChunkingStrategyRequestParam;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  attributes?: VectorStoresVectorStoreFileAttributes | null;
+  attributes?: VectorStoreFileAttributes | null;
 }
 
 /** The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy. Only applicable if `file_ids` is non-empty. */
@@ -273,7 +273,7 @@ model VectorStoreFileObject {
   chunking_strategy?: ChunkingStrategyResponse;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  attributes?: VectorStoresVectorStoreFileAttributes | null;
+  attributes?: VectorStoreFileAttributes | null;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -449,7 +449,7 @@ model VectorStoreObjectFileCounts {
 model UpdateVectorStoreFileAttributesRequest {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  attributes: VectorStoresVectorStoreFileAttributes | null;
+  attributes: VectorStoreFileAttributes | null;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -592,7 +592,7 @@ model VectorStoreSearchRequest {
   /** A filter to apply based on file attributes. */
   #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
-  filters?: VectorStoresComparisonFilter | VectorStoresCompoundFilter;
+  filters?: VectorStoreComparisonFilter | VectorStoreCompoundFilter;
 
   /** Ranking options for search. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -644,7 +644,7 @@ model VectorStoreSearchResultItem {
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  attributes: VectorStoresVectorStoreFileAttributes | null;
+  attributes: VectorStoreFileAttributes | null;
 
   /** Content chunks from the file. */
   content: VectorStoreSearchResultContentObject[];

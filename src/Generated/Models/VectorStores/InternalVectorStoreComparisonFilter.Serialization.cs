@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoresComparisonFilter : IJsonModel<InternalVectorStoresComparisonFilter>
+    internal partial class InternalVectorStoreComparisonFilter : IJsonModel<InternalVectorStoreComparisonFilter>
     {
-        internal InternalVectorStoresComparisonFilter()
+        internal InternalVectorStoreComparisonFilter()
         {
         }
 
-        protected virtual InternalVectorStoresComparisonFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual InternalVectorStoreComparisonFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalVectorStoresComparisonFilter(document.RootElement, options);
+                        return DeserializeInternalVectorStoreComparisonFilter(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoresComparisonFilter)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalVectorStoreComparisonFilter)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoresComparisonFilter)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalVectorStoreComparisonFilter)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalVectorStoresComparisonFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<InternalVectorStoreComparisonFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalVectorStoresComparisonFilter IPersistableModel<InternalVectorStoresComparisonFilter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalVectorStoreComparisonFilter IPersistableModel<InternalVectorStoreComparisonFilter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalVectorStoresComparisonFilter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<InternalVectorStoreComparisonFilter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalVectorStoresComparisonFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<InternalVectorStoreComparisonFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,10 +58,10 @@ namespace OpenAI.VectorStores
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalVectorStoresComparisonFilter)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalVectorStoreComparisonFilter)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
@@ -107,26 +107,26 @@ namespace OpenAI.VectorStores
             }
         }
 
-        InternalVectorStoresComparisonFilter IJsonModel<InternalVectorStoresComparisonFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalVectorStoreComparisonFilter IJsonModel<InternalVectorStoreComparisonFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalVectorStoresComparisonFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual InternalVectorStoreComparisonFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoresComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreComparisonFilter>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalVectorStoresComparisonFilter)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalVectorStoreComparisonFilter)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalVectorStoresComparisonFilter(document.RootElement, options);
+            return DeserializeInternalVectorStoreComparisonFilter(document.RootElement, options);
         }
 
-        internal static InternalVectorStoresComparisonFilter DeserializeInternalVectorStoresComparisonFilter(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalVectorStoreComparisonFilter DeserializeInternalVectorStoreComparisonFilter(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalVectorStoresComparisonFilterType kind = default;
+            InternalVectorStoreComparisonFilterType kind = default;
             string key = default;
             BinaryData value = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -134,7 +134,7 @@ namespace OpenAI.VectorStores
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalVectorStoresComparisonFilterType(prop.Value.GetString());
+                    kind = new InternalVectorStoreComparisonFilterType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("key"u8))
@@ -150,7 +150,7 @@ namespace OpenAI.VectorStores
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalVectorStoresComparisonFilter(kind, key, value, additionalBinaryDataProperties);
+            return new InternalVectorStoreComparisonFilter(kind, key, value, additionalBinaryDataProperties);
         }
     }
 }
