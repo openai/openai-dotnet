@@ -3,7 +3,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 [CodeGenType("CodeInterpreterContainerConfigurationType")] internal readonly partial struct InternalCodeInterpreterContainerConfigurationType {}
-[CodeGenType("ComparisonFilter")] internal partial class InternalComparisonFilter {}
+[CodeGenType("ResponsesComparisonFilter")] internal partial class InternalComparisonFilter {}
 [CodeGenType("ComparisonFilterEquals")] internal partial class InternalComparisonFilterEquals {}
 [CodeGenType("ComparisonFilterGreaterThan")] internal partial class InternalComparisonFilterGreaterThan {}
 [CodeGenType("ComparisonFilterGreaterThanOrEquals")] internal partial class InternalComparisonFilterGreaterThanOrEquals {}
@@ -11,7 +11,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ComparisonFilterLessThanOrEquals")] internal partial class InternalComparisonFilterLessThanOrEquals {}
 [CodeGenType("ComparisonFilterNotEquals")] internal partial class InternalComparisonFilterNotEquals {}
 [CodeGenType("ResponsesComparisonFilterType")] internal readonly partial struct InternalComparisonFilterType {}
-[CodeGenType("CompoundFilter")] internal partial class InternalCompoundFilter {}
+[CodeGenType("ResponsesCompoundFilter")] internal partial class InternalCompoundFilter {}
 [CodeGenType("CompoundFilterAnd")] internal partial class InternalCompoundFilterAnd {}
 [CodeGenType("CompoundFilterOr")] internal partial class InternalCompoundFilterOr {}
 [CodeGenType("ResponsesCompoundFilterType")] internal readonly partial struct InternalCompoundFilterType {}

@@ -18,8 +18,6 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
 @@clientName(Responses.compactConversation, "CompactResponse");
-@@clientName(ResponsesComparisonFilter, "ComparisonFilter");
-@@clientName(ResponsesCompoundFilter, "CompoundFilter");
 
 @@clientName(Includable.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
 @@clientName(Includable.`message.input_image.image_url`, "MessageInputImageUri");
