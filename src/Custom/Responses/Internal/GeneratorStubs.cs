@@ -10,11 +10,11 @@ namespace OpenAI.Responses;
 [CodeGenType("ComparisonFilterLessThan")] internal partial class InternalComparisonFilterLessThan {}
 [CodeGenType("ComparisonFilterLessThanOrEquals")] internal partial class InternalComparisonFilterLessThanOrEquals {}
 [CodeGenType("ComparisonFilterNotEquals")] internal partial class InternalComparisonFilterNotEquals {}
-[CodeGenType("ComparisonFilterType")] internal readonly partial struct InternalComparisonFilterType {}
+[CodeGenType("ResponsesComparisonFilterType")] internal readonly partial struct InternalComparisonFilterType {}
 [CodeGenType("CompoundFilter")] internal partial class InternalCompoundFilter {}
 [CodeGenType("CompoundFilterAnd")] internal partial class InternalCompoundFilterAnd {}
 [CodeGenType("CompoundFilterOr")] internal partial class InternalCompoundFilterOr {}
-[CodeGenType("CompoundFilterType")] internal readonly partial struct InternalCompoundFilterType {}
+[CodeGenType("ResponsesCompoundFilterType")] internal readonly partial struct InternalCompoundFilterType {}
 [CodeGenType("ComputerActionClick")] internal partial class InternalComputerActionClick {}
 [CodeGenType("ComputerActionDoubleClick")] internal partial class InternalComputerActionDoubleClick {}
 [CodeGenType("ComputerActionDrag")] internal partial class InternalComputerActionDrag {}
