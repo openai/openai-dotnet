@@ -5,12 +5,48 @@
 
 import "../common";
 import "./custom.tsp";
-import "../specialized-types/models.tsp";
 
 using Http;
 using TypeSpec.OpenAPI;
 
 namespace OpenAI;
+
+/** A filter used to compare a specified attribute key to a given value using a defined comparison operation. */
+model ResponsesComparisonFilter {
+  @doc("""
+    Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`.
+    - `eq`: equals
+    - `ne`: not equal
+    - `gt`: greater than
+    - `gte`: greater than or equal
+    - `lt`: less than
+    - `lte`: less than or equal
+    """)
+  type: "eq" | "ne" | "gt" | "gte" | "lt" | "lte" = "eq";
+
+  /** The key to compare against the value. */
+  key: string;
+
+  /** The value to compare against the attribute key; supports string, number, or boolean types. */
+  value: string | float32 | boolean;
+}
+
+@doc("""
+  Combine multiple filters using `and` or `or`.
+  """)
+model ResponsesCompoundFilter {
+  @doc("""
+    Type of operation: `and` or `or`.
+    """)
+  type: "and" | "or";
+
+  @doc("""
+    Array of filters to combine. Items can be `ResponsesComparisonFilter` or `ResponsesCompoundFilter`.
+    """)
+  filters: (ResponsesComparisonFilter | ResponsesCompoundFilter)[];
+}
+
+alias ResponsesVectorStoreFileAttributes = Record<unknown>;
 
 // Tool generated type. Extracts from FileSearchToolCallItemBase.results
 alias FileSearchToolCallItemBaseResult = {
@@ -23,7 +59,7 @@ alias FileSearchToolCallItemBaseResult = {
   /** The name of the file. */
   filename?: string;
 
-  attributes?: VectorStoreFileAttributes;
+  attributes?: ResponsesVectorStoreFileAttributes;
 
   /** The relevance score of the file - a value between 0 and 1. */
   score?: float32;
@@ -1233,8 +1269,8 @@ model RankingOptions {
 }
 
 union Filters {
-  ComparisonFilter,
-  CompoundFilter,
+  ResponsesComparisonFilter,
+  ResponsesCompoundFilter,
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type base, rename for clarity

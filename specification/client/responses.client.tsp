@@ -18,6 +18,8 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
 @@clientName(Responses.compactConversation, "CompactResponse");
+@@clientName(ResponsesComparisonFilter, "ComparisonFilter");
+@@clientName(ResponsesCompoundFilter, "CompoundFilter");
 
 @@clientName(Includable.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
 @@clientName(Includable.`message.input_image.image_url`, "MessageInputImageUri");
@@ -298,9 +300,9 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ResponsesDeveloperMessageItemResource);
 @@dynamicModel(ResponsesAssistantMessageItemResource);
 @@dynamicModel(ImplicitUserMessage);
-// base/typespec/specialized-types/models.tsp models
-@@dynamicModel(ComparisonFilter);
-@@dynamicModel(CompoundFilter);
+// base/typespec/responses/models.tsp localized filter models
+@@dynamicModel(ResponsesComparisonFilter);
+@@dynamicModel(ResponsesCompoundFilter);
 // client/models/responses.models.tsp models
 @@dynamicModel(DotNetItemReferenceItemResource);
 @@dynamicModel(DotNetResponseItemCollectionOrder);
