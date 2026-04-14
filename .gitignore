@@ -74,6 +74,9 @@ ipch/
 **/.vscode/*
 !.vscode/cspell.json
 
+# C# Dev Kit language server caches
+*.lscache
+
 # Code analysis
 *.CodeAnalysisLog.xml
 
