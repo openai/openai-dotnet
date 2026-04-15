@@ -6,6 +6,7 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -20,7 +21,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, InternalReasoningGenerateSummary? generateSummary, in JsonPatch patch)
+        internal ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, CreateResponseReasoningGenerateSummary? generateSummary, in JsonPatch patch)
         {
             ReasoningEffortLevel = reasoningEffortLevel;
             ReasoningSummaryVerbosity = reasoningSummaryVerbosity;
@@ -34,6 +35,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalReasoningGenerateSummary? GenerateSummary { get; set; }
+        public CreateResponseReasoningGenerateSummary? GenerateSummary { get; set; }
     }
 }

@@ -176,7 +176,7 @@ namespace OpenAI.Files
             DateTimeOffset? expiresAt = default;
             string filename = default;
             string @object = default;
-            FilePurpose purpose = default;
+            UploadFilePurpose purpose = default;
             FileStatus status = default;
             string statusDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -223,7 +223,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("purpose"u8))
                 {
-                    purpose = prop.Value.GetString().ToFilePurpose();
+                    purpose = prop.Value.GetString().ToUploadFilePurpose();
                     continue;
                 }
                 if (prop.NameEquals("status"u8))

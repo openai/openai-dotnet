@@ -81,22 +81,22 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.ToString());
+                writer.WriteStringValue(Size.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
                 writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.ToString());
+                writer.WriteStringValue(Quality.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
-                writer.WriteStringValue(Background.ToString());
+                writer.WriteStringValue(Background.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFormat.ToString());
+                writer.WriteStringValue(OutputFormat.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
@@ -147,10 +147,10 @@ namespace OpenAI.Images
             string kind = default;
             BinaryData b64Json = default;
             DateTimeOffset createdAt = default;
-            InternalImageEditCompletedEventSize size = default;
-            InternalImageEditCompletedEventQuality quality = default;
-            InternalImageEditCompletedEventBackground background = default;
-            InternalImageEditCompletedEventOutputFormat outputFormat = default;
+            CreateImageEditSize1 size = default;
+            CreateImageEditQuality1 quality = default;
+            CreateImageEditBackground1 background = default;
+            CreateImageEditOutputFormat1 outputFormat = default;
             InternalImagesUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -172,22 +172,22 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("size"u8))
                 {
-                    size = new InternalImageEditCompletedEventSize(prop.Value.GetString());
+                    size = prop.Value.GetString().ToCreateImageEditSize1();
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
                 {
-                    quality = new InternalImageEditCompletedEventQuality(prop.Value.GetString());
+                    quality = prop.Value.GetString().ToCreateImageEditQuality1();
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
                 {
-                    background = new InternalImageEditCompletedEventBackground(prop.Value.GetString());
+                    background = prop.Value.GetString().ToCreateImageEditBackground1();
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
                 {
-                    outputFormat = new InternalImageEditCompletedEventOutputFormat(prop.Value.GetString());
+                    outputFormat = prop.Value.GetString().ToCreateImageEditOutputFormat1();
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))

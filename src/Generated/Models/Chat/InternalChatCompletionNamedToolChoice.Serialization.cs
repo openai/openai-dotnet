@@ -107,7 +107,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string kind = default;
-            InternalChatCompletionNamedToolChoiceFunction function = default;
+            CreateChatCompletionRequestToolChoiceFunction function = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -120,7 +120,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("function"u8))
                 {
-                    function = InternalChatCompletionNamedToolChoiceFunction.DeserializeInternalChatCompletionNamedToolChoiceFunction(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    function = CreateChatCompletionRequestToolChoiceFunction.DeserializeCreateChatCompletionRequestToolChoiceFunction(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
