@@ -40,4 +40,10 @@
   <ItemGroup Condition="'$(IsGeneratorProject)' == 'true' or $(MSBuildProjectName.EndsWith('Plugin'))">
     <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260306.4" />
   </ItemGroup>
+
+  <!-- Transitive Dependency Overrides: https://github.com/advisories/GHSA-g4vj-cjjj-v7hg -->
+  <ItemGroup>
+    <PackageVersion Include="NuGet.Packaging" Version="6.14.3" />
+    <PackageVersion Include="NuGet.Protocol" Version="6.14.3" />
+  </ItemGroup>
 </Project>
