@@ -9,15 +9,6 @@ namespace OpenAI.Realtime;
 [CodeGenType("Realtime")]
 public partial class RealtimeClient
 {
-    private const string DefaultEndpoint = "https://api.openai.com/v1";
-
-    private static class KnownHeaderNames
-    {
-        public const string OpenAIOrganization = "OpenAI-Organization";
-        public const string OpenAIProject = "OpenAI-Project";
-        public const string UserAgent = "User-Agent";
-    }
-
     public event EventHandler<BinaryData> OnSendingCommand;
     public event EventHandler<BinaryData> OnReceivingCommand;
 
@@ -49,7 +40,7 @@ public partial class RealtimeClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
         _keyCredential = credential;
     }
@@ -74,8 +65,8 @@ public partial class RealtimeClient
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new RealtimeClientOptions();
 
-        Pipeline = CreatePipeline(authenticationPolicy, options);
-        _endpoint = GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
@@ -93,7 +84,7 @@ public partial class RealtimeClient
         options ??= new RealtimeClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
@@ -109,14 +100,9 @@ public partial class RealtimeClient
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
 
-    private static Uri GetEndpoint(RealtimeClientOptions options = null)
-    {
-        return options?.Endpoint ?? new(DefaultEndpoint);
-    }
-
     private static Uri GetWebSocketEndpoint(RealtimeClientOptions options = null)
     {
-        UriBuilder uriBuilder = new(options?.Endpoint ?? new(DefaultEndpoint));
+        UriBuilder uriBuilder = new(OpenAIClientUtilities.GetEndpoint(options?.Endpoint));
         uriBuilder.Scheme = uriBuilder.Scheme.ToLowerInvariant() switch
         {
             "http" => "ws",
@@ -130,37 +116,6 @@ public partial class RealtimeClient
         }
 
         return uriBuilder.Uri;
-    }
-
-    private static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, RealtimeClientOptions options)
-    {
-        return ClientPipeline.Create(
-            options: options,
-            perCallPolicies: [CreateAddCustomHeadersPolicy(options)],
-            perTryPolicies: [authenticationPolicy],
-            beforeTransportPolicies: []);
-    }
-
-    private static PipelinePolicy CreateAddCustomHeadersPolicy(RealtimeClientOptions options = null)
-    {
-        TelemetryDetails telemetryDetails = new(typeof(RealtimeClientOptions).Assembly, options?.UserAgentApplicationId);
-        return new GenericActionPipelinePolicy((message) =>
-        {
-            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.UserAgent, out string _) == false)
-            {
-                message.Request.Headers.Set(KnownHeaderNames.UserAgent, telemetryDetails.ToString());
-            }
-
-            if (!string.IsNullOrEmpty(options?.OrganizationId))
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIOrganization, options.OrganizationId);
-            }
-
-            if (!string.IsNullOrEmpty(options?.ProjectId))
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIProject, options.ProjectId);
-            }
-        });
     }
 
     internal void RaiseOnSendingCommand<T>(T session, BinaryData data)

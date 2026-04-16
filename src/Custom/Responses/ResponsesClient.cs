@@ -24,17 +24,6 @@ namespace OpenAI.Responses;
 
 public partial class ResponsesClient
 {
-    private const string DefaultEndpoint = "https://api.openai.com/v1";
-    private const string AuthorizationHeader = "Authorization";
-    private const string AuthorizationApiKeyPrefix = "Bearer";
-
-    private static class KnownHeaderNames
-    {
-        public const string OpenAIOrganization = "OpenAI-Organization";
-        public const string OpenAIProject = "OpenAI-Project";
-        public const string UserAgent = "User-Agent";
-    }
-
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
@@ -60,7 +49,7 @@ public partial class ResponsesClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options) : this(CreateApiKeyAuthenticationPolicy(credential), options)
+    public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -82,8 +71,8 @@ public partial class ResponsesClient
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new ResponsesClientOptions();
 
-        Pipeline = CreatePipeline(authenticationPolicy, options);
-        _endpoint = GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -100,7 +89,7 @@ public partial class ResponsesClient
         options ??= new ResponsesClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     [Experimental("SCME0002")]
@@ -632,46 +621,4 @@ public partial class ResponsesClient
     }
 
     #endregion
-
-    private static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
-    {
-        Argument.AssertNotNull(credential, nameof(credential));
-        return ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix);
-    }
-
-    private static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options)
-    {
-        return ClientPipeline.Create(
-            options: options,
-            perCallPolicies: [CreateAddCustomHeadersPolicy(options)],
-            perTryPolicies: [authenticationPolicy],
-            beforeTransportPolicies: []);
-    }
-
-    private static Uri GetEndpoint(ResponsesClientOptions options = null)
-    {
-        return options?.Endpoint ?? new(DefaultEndpoint);
-    }
-
-    private static PipelinePolicy CreateAddCustomHeadersPolicy(ResponsesClientOptions options = null)
-    {
-        TelemetryDetails telemetryDetails = new(typeof(ResponsesClientOptions).Assembly, options?.UserAgentApplicationId);
-        return new GenericActionPipelinePolicy((message) =>
-        {
-            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.UserAgent, out string _) == false)
-            {
-                message.Request.Headers.Set(KnownHeaderNames.UserAgent, telemetryDetails.ToString());
-            }
-
-            if (!string.IsNullOrEmpty(options?.OrganizationId))
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIOrganization, options.OrganizationId);
-            }
-
-            if (!string.IsNullOrEmpty(options?.ProjectId))
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIProject, options.ProjectId);
-            }
-        });
-    }
 }
