@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using System;
 using System.ClientModel.Primitives;
 
@@ -70,22 +71,35 @@ public class RealtimeClientOptions : ClientPipelineOptions
         }
     }
 
-    /// <summary>
-    /// Creates a new <see cref="RealtimeClientOptions"/> from the specified <see cref="OpenAIClientOptions"/>.
-    /// </summary>
-    internal static RealtimeClientOptions FromClientOptions(OpenAIClientOptions options)
+    public RealtimeClientOptions()
     {
-        if (options is null)
+    }
+
+    /// <summary>
+    /// Internal constructor for binding from a configuration section.
+    /// Used by ClientSettings classes to bind nested "Options" section.
+    /// </summary>
+    internal RealtimeClientOptions(IConfigurationSection section)
+    {
+        if (Uri.TryCreate(section[nameof(Endpoint)], UriKind.Absolute, out Uri endpoint))
         {
-            return new RealtimeClientOptions();
+            Endpoint = endpoint;
         }
 
-        return new RealtimeClientOptions
+        if (section[nameof(OrganizationId)] is string organizationId)
         {
-            Endpoint = options.Endpoint,
-            OrganizationId = options.OrganizationId,
-            ProjectId = options.ProjectId,
-            UserAgentApplicationId = options.UserAgentApplicationId,
-        };
+            OrganizationId = organizationId;
+        }
+
+        if (section[nameof(ProjectId)] is string projectId)
+        {
+            ProjectId = projectId;
+        }
+
+        if (section[nameof(UserAgentApplicationId)] is string userAgentApplicationId)
+        {
+            UserAgentApplicationId = userAgentApplicationId;
+        }
     }
+
 }

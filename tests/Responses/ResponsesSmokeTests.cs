@@ -3,6 +3,7 @@ using OpenAI.Responses;
 using System;
 using System.ClientModel.Primitives;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -632,6 +633,35 @@ public partial class ResponsesSmokeTests
         Assert.That(customProperty, Is.Not.Null);
         Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
+    }
+
+    // Guard against silent regressions: if a new public settable property is added to
+    // ClientPipelineOptions, the test helper OpenAITestEnvironment.CopyPipelineOptions
+    // must be updated to propagate it so recorded/playback tests continue to work. This
+    // test locks in the known set so a new property addition forces explicit review.
+    [Test]
+    public void ClientPipelineOptionsPropertiesAreKnown()
+    {
+        string[] expected =
+        {
+            nameof(ClientPipelineOptions.RetryPolicy),
+            nameof(ClientPipelineOptions.MessageLoggingPolicy),
+            nameof(ClientPipelineOptions.Transport),
+            nameof(ClientPipelineOptions.NetworkTimeout),
+            nameof(ClientPipelineOptions.ClientLoggingOptions),
+            nameof(ClientPipelineOptions.EnableDistributedTracing),
+        };
+
+        string[] actual = typeof(ClientPipelineOptions)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Where(p => p.GetSetMethod(nonPublic: false) is not null)
+            .Select(p => p.Name)
+            .OrderBy(n => n)
+            .ToArray();
+
+        Assert.That(actual, Is.EquivalentTo(expected),
+            "ClientPipelineOptions public settable properties changed. Audit " +
+            "OpenAITestEnvironment.CopyPipelineOptions and update this expected list.");
     }
 
 }

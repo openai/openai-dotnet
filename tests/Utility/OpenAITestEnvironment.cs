@@ -167,21 +167,46 @@ public class OpenAITestEnvironment : TestEnvironment
 
     public override Task WaitForEnvironmentAsync() => Task.CompletedTask;
 
-    private static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options) => new()
+    private static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options)
     {
-        Endpoint = options?.Endpoint,
-        OrganizationId = options?.OrganizationId,
-        ProjectId = options?.ProjectId,
-        UserAgentApplicationId = options?.UserAgentApplicationId,
-    };
+        var result = new RealtimeClientOptions
+        {
+            Endpoint = options?.Endpoint,
+            OrganizationId = options?.OrganizationId,
+            ProjectId = options?.ProjectId,
+            UserAgentApplicationId = options?.UserAgentApplicationId,
+        };
+        CopyPipelineOptions(options, result);
+        return result;
+    }
 
-    private static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options) => new()
+    private static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options)
     {
-        Endpoint = options?.Endpoint,
-        OrganizationId = options?.OrganizationId,
-        ProjectId = options?.ProjectId,
-        UserAgentApplicationId = options?.UserAgentApplicationId,
-    };
+        var result = new ResponsesClientOptions
+        {
+            Endpoint = options?.Endpoint,
+            OrganizationId = options?.OrganizationId,
+            ProjectId = options?.ProjectId,
+            UserAgentApplicationId = options?.UserAgentApplicationId,
+        };
+        CopyPipelineOptions(options, result);
+        return result;
+    }
+
+    private static void CopyPipelineOptions(ClientPipelineOptions source, ClientPipelineOptions destination)
+    {
+        if (source is null || destination is null)
+        {
+            return;
+        }
+
+        destination.Transport = source.Transport;
+        destination.RetryPolicy = source.RetryPolicy;
+        destination.MessageLoggingPolicy = source.MessageLoggingPolicy;
+        destination.NetworkTimeout = source.NetworkTimeout;
+        destination.ClientLoggingOptions = source.ClientLoggingOptions;
+        destination.EnableDistributedTracing = source.EnableDistributedTracing;
+    }
 
     private static bool TryReadEnvFile(string filePath,
                                        Dictionary<string, string> environment)

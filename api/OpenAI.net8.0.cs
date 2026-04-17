@@ -3777,7 +3777,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("SCME0002")]
     public sealed class RealtimeClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public RealtimeClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI002")]

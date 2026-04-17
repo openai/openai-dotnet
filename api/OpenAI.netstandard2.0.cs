@@ -3292,7 +3292,7 @@ namespace OpenAI.Realtime {
         public int? Seconds { get; set; }
     }
     public sealed class RealtimeClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public RealtimeClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class RealtimeConversation : IJsonModel<RealtimeConversation>, IPersistableModel<RealtimeConversation> {

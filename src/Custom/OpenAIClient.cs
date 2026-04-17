@@ -324,7 +324,13 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns></returns>
     [Experimental("OPENAI002")]
-    public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, RealtimeClientOptions.FromClientOptions(_options));
+    public virtual RealtimeClient GetRealtimeClient() => new(Pipeline, new RealtimeClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to

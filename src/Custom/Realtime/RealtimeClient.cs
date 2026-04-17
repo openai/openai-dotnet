@@ -90,7 +90,7 @@ public partial class RealtimeClient
 
     [Experimental("SCME0002")]
     public RealtimeClient(RealtimeClientSettings settings)
-        : this(AuthenticationPolicy.Create(settings), RealtimeClientOptions.FromClientOptions(settings?.Options))
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
     {
     }
 
