@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI;
 
@@ -82,7 +83,8 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
     /// Internal constructor for binding from a configuration section.
     /// Used by ClientSettings classes to bind nested "Options" section.
     /// </summary>
-    internal OpenAIClientOptions(IConfigurationSection section)
+    [Experimental("SCME0002")]
+    internal OpenAIClientOptions(IConfigurationSection section) : base(section)
     {
         if (Uri.TryCreate(section[nameof(Endpoint)], UriKind.Absolute, out Uri endpoint))
         {

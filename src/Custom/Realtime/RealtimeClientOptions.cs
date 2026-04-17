@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;
 
@@ -79,7 +80,8 @@ public class RealtimeClientOptions : ClientPipelineOptions
     /// Internal constructor for binding from a configuration section.
     /// Used by ClientSettings classes to bind nested "Options" section.
     /// </summary>
-    internal RealtimeClientOptions(IConfigurationSection section)
+    [Experimental("SCME0002")]
+    internal RealtimeClientOptions(IConfigurationSection section) : base(section)
     {
         if (Uri.TryCreate(section[nameof(Endpoint)], UriKind.Absolute, out Uri endpoint))
         {
