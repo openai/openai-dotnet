@@ -155,7 +155,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(VectorStoreClient) => new VectorStoreClient(credential, options),
             nameof(OpenAIClient) => new OpenAIClient(credential, options),
             nameof(RealtimeClient) => new RealtimeClient(credential, CreateRealtimeClientOptions(options)),
-            nameof(ResponsesClient) => new ResponsesClient(credential, options),
+            nameof(ResponsesClient) => new ResponsesClient(credential, CreateResponsesClientOptions(options)),
             nameof(SkillClient) => new SkillClient(credential, options),
             _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
         };
@@ -173,6 +173,20 @@ public class OpenAITestEnvironment : TestEnvironment
         OrganizationId = options?.OrganizationId,
         ProjectId = options?.ProjectId,
         UserAgentApplicationId = options?.UserAgentApplicationId,
+    };
+
+    private static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options) => new()
+    {
+        Endpoint = options?.Endpoint,
+        OrganizationId = options?.OrganizationId,
+        ProjectId = options?.ProjectId,
+        UserAgentApplicationId = options?.UserAgentApplicationId,
+        Transport = options?.Transport,
+        RetryPolicy = options?.RetryPolicy,
+        MessageLoggingPolicy = options?.MessageLoggingPolicy,
+        NetworkTimeout = options?.NetworkTimeout,
+        ClientLoggingOptions = options?.ClientLoggingOptions,
+        EnableDistributedTracing = options?.EnableDistributedTracing,
     };
 
     private static bool TryReadEnvFile(string filePath,
