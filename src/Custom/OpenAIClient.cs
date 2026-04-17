@@ -86,15 +86,6 @@ namespace OpenAI;
 [CodeGenSuppress("GetInternalUploadsClient")]
 public partial class OpenAIClient
 {
-    private const string OpenAIV1Endpoint = "https://api.openai.com/v1";
-
-    private static class KnownHeaderNames
-    {
-        public const string OpenAIOrganization = "OpenAI-Organization";
-        public const string OpenAIProject = "OpenAI-Project";
-        public const string UserAgent = "User-Agent";
-    }
-
     private readonly OpenAIClientOptions _options;
 
     // CUSTOM: Added as a convenience.
@@ -122,7 +113,7 @@ public partial class OpenAIClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
         _keyCredential = credential;
     }
@@ -147,8 +138,8 @@ public partial class OpenAIClient
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _options = options;
     }
 
@@ -163,7 +154,7 @@ public partial class OpenAIClient
         options ??= new OpenAIClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _options = options;
     }
 
@@ -345,7 +336,13 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="ResponsesClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual ResponsesClient GetResponsesClient() => new(Pipeline, _options);
+    public virtual ResponsesClient GetResponsesClient() => new(Pipeline, new ResponsesClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
@@ -376,44 +373,11 @@ public partial class OpenAIClient
     public virtual VideoClient GetVideoClient() => new(Pipeline, _options);
 
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
-    {
-        Argument.AssertNotNull(credential, nameof(credential));
-        return ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix);
-    }
+        => OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential);
 
     internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
-    {
-        return ClientPipeline.Create(
-            options: options,
-            perCallPolicies: [CreateAddCustomHeadersPolicy(options)],
-            perTryPolicies: [authenticationPolicy],
-            beforeTransportPolicies: []);
-    }
+        => OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options?.UserAgentApplicationId, options?.OrganizationId, options?.ProjectId);
 
     internal static Uri GetEndpoint(OpenAIClientOptions options = null)
-    {
-        return options?.Endpoint ?? new(OpenAIV1Endpoint);
-    }
-
-    private static PipelinePolicy CreateAddCustomHeadersPolicy(OpenAIClientOptions options = null)
-    {
-        TelemetryDetails telemetryDetails = new(typeof(OpenAIClientOptions).Assembly, options?.UserAgentApplicationId);
-        return new GenericActionPipelinePolicy((message) =>
-        {
-            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.UserAgent, out string _) == false)
-            {
-                message.Request.Headers.Set(KnownHeaderNames.UserAgent, telemetryDetails.ToString());
-            }
-
-            if (!string.IsNullOrEmpty(options?.OrganizationId))
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIOrganization, options.OrganizationId);
-            }
-
-            if (!string.IsNullOrEmpty(options?.ProjectId))
-            {
-                message.Request.Headers.Set(KnownHeaderNames.OpenAIProject, options.ProjectId);
-            }
-        });
-    }
+        => OpenAIClientUtilities.GetEndpoint(options?.Endpoint);
 }
