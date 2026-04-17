@@ -1,3 +1,4 @@
+using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
@@ -119,32 +120,45 @@ public class RealtimeClientOptionsSmokeTests
         Assert.That(client.Endpoint, Is.EqualTo(new Uri("https://custom.openai.com/v1")));
     }
 
-    // Guard against silent regressions: if a new public settable property is added to
-    // ClientPipelineOptions, the test helper OpenAITestEnvironment.CopyPipelineOptions
-    // must be updated to propagate it so recorded/playback tests continue to work. This
-    // test locks in the known set so a new property addition forces explicit review.
+    // Verifies that OpenAITestEnvironment.CreateRealtimeClientOptions propagates every
+    // public settable property from ClientPipelineOptions. If a new property is added to
+    // ClientPipelineOptions, SampleValueFor will throw and force an update to
+    // OpenAITestEnvironment.CopyPipelineOptions.
     [Test]
-    public void ClientPipelineOptionsPropertiesAreKnown()
+    public void CreateRealtimeClientOptionsCopiesAllPipelineProperties()
     {
-        string[] expected =
-        {
-            nameof(ClientPipelineOptions.RetryPolicy),
-            nameof(ClientPipelineOptions.MessageLoggingPolicy),
-            nameof(ClientPipelineOptions.Transport),
-            nameof(ClientPipelineOptions.NetworkTimeout),
-            nameof(ClientPipelineOptions.ClientLoggingOptions),
-            nameof(ClientPipelineOptions.EnableDistributedTracing),
-        };
-
-        string[] actual = typeof(ClientPipelineOptions)
+        PropertyInfo[] properties = typeof(ClientPipelineOptions)
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(p => p.GetSetMethod(nonPublic: false) is not null)
-            .Select(p => p.Name)
-            .OrderBy(n => n)
             .ToArray();
 
-        Assert.That(actual, Is.EquivalentTo(expected),
-            "ClientPipelineOptions public settable properties changed. Audit " +
-            "OpenAITestEnvironment.CopyPipelineOptions and update this expected list.");
+        OpenAIClientOptions source = new();
+        foreach (PropertyInfo property in properties)
+        {
+            property.SetValue(source, SampleValueFor(property));
+        }
+
+        RealtimeClientOptions result = OpenAITestEnvironment.CreateRealtimeClientOptions(source);
+
+        foreach (PropertyInfo property in properties)
+        {
+            Assert.That(
+                property.GetValue(result),
+                Is.EqualTo(property.GetValue(source)),
+                $"ClientPipelineOptions.{property.Name} was not copied. Update OpenAITestEnvironment.CopyPipelineOptions.");
+        }
+
+        static object SampleValueFor(PropertyInfo property) => property.Name switch
+        {
+            nameof(ClientPipelineOptions.RetryPolicy) => ClientRetryPolicy.Default,
+            nameof(ClientPipelineOptions.MessageLoggingPolicy) => MessageLoggingPolicy.Default,
+            nameof(ClientPipelineOptions.Transport) => new MockPipelineTransport(_ => new MockPipelineResponse(200)),
+            nameof(ClientPipelineOptions.NetworkTimeout) => TimeSpan.FromSeconds(42),
+            nameof(ClientPipelineOptions.ClientLoggingOptions) => new ClientLoggingOptions(),
+            nameof(ClientPipelineOptions.EnableDistributedTracing) => true,
+            _ => throw new InvalidOperationException(
+                $"No sample value defined for ClientPipelineOptions.{property.Name}. " +
+                "Add one here and update OpenAITestEnvironment.CopyPipelineOptions."),
+        };
     }
 }

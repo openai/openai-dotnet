@@ -167,7 +167,7 @@ public class OpenAITestEnvironment : TestEnvironment
 
     public override Task WaitForEnvironmentAsync() => Task.CompletedTask;
 
-    private static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options)
+    internal static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options)
     {
         var result = new RealtimeClientOptions
         {
@@ -180,7 +180,7 @@ public class OpenAITestEnvironment : TestEnvironment
         return result;
     }
 
-    private static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options)
+    internal static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options)
     {
         var result = new ResponsesClientOptions
         {
