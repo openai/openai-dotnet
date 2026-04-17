@@ -5466,10 +5466,13 @@ namespace OpenAI.Responses {
     public class ResponsesClient {
         protected ResponsesClient();
         public ResponsesClient(ResponsesClientSettings settings);
+        public ResponsesClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options);
         public ResponsesClient(ApiKeyCredential credential);
+        public ResponsesClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ResponsesClient(AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options);
         public ResponsesClient(AuthenticationPolicy authenticationPolicy);
+        protected internal ResponsesClient(ClientPipeline pipeline, OpenAIClientOptions options);
         protected internal ResponsesClient(ClientPipeline pipeline, ResponsesClientOptions options);
         public ResponsesClient(string apiKey);
         public virtual Uri Endpoint { get; }

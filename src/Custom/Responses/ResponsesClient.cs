@@ -49,6 +49,14 @@ public partial class ResponsesClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public ResponsesClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+    }
+
+    /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
@@ -66,6 +74,19 @@ public partial class ResponsesClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    public ResponsesClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new OpenAIClientOptions();
+
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
     public ResponsesClient(AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
@@ -79,6 +100,19 @@ public partial class ResponsesClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    protected internal ResponsesClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new OpenAIClientOptions();
+
+        Pipeline = pipeline;
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+    }
+
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
