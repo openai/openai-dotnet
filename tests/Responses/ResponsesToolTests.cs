@@ -44,7 +44,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -97,7 +97,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
@@ -211,7 +211,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -252,7 +252,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response1 = await client.CreateResponseAsync(options);
         Assert.That(response1.OutputItems, Has.Count.GreaterThan(0));
@@ -297,7 +297,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -338,7 +338,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -372,7 +372,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
@@ -429,7 +429,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
         {
@@ -494,7 +494,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
         CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
@@ -524,7 +524,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithEmptyFileIds()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")])
@@ -556,7 +556,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
         ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>();
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create a container first using the Containers API
         CreateContainerBody containerBody = new("test-container-for-code-interpreter");
@@ -611,7 +611,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create some test files to upload
         string csvContent = "name,age,city\nAlice,30,New York\nBob,25,Los Angeles\nCharlie,35,Chicago";
@@ -672,7 +672,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolStreaming()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
@@ -707,7 +707,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create test CSV data
         string csvContent = "x,y\n1,2\n2,4\n3,6\n4,8\n5,10";
@@ -771,7 +771,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
         ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
         CreateResponseOptions responseOptions = new(
             "computer-use-preview-2025-03-11",
@@ -835,7 +835,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolWorks()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         CreateResponseOptions options = new(
             TestModel.Responses,
@@ -874,7 +874,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolWithAction()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ImageGenerationTool imageGenTool = ResponseTool.CreateImageGenerationTool(
             model: "gpt-image-1",
@@ -916,7 +916,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         const string message = "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
 
@@ -1002,7 +1002,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
+        ResponsesClient client = GetProxiedResponsesClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
         string imagePath = Path.Combine("Assets", "images_empty_room.png");
         string imageMediaType = "image/png";
@@ -1051,7 +1051,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
+        ResponsesClient client = GetProxiedResponsesClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
         Uri imageUri = new("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room.png?raw=true");
         Uri maskUri = new("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room_with_mask.png?raw=true");
@@ -1095,7 +1095,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [Category("MPFD")]
     public async Task ImageGenToolInputMaskWithFileId()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
+        ResponsesClient client = GetProxiedResponsesClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
@@ -1164,7 +1164,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCall()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems =
         [
@@ -1213,7 +1213,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallWithReasoning()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems =
         [
@@ -1265,7 +1265,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems =
         [
@@ -1307,7 +1307,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallStreaming()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems =
         [
@@ -1384,7 +1384,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [TestCase("DeleteFile")]
     public async Task ApplyPatchToolWorks(string testCase)
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         string instructions = "You are a patch assistant. When the user requests file edits, respond by calling the apply_patch tool with the smallest valid set of operations.";
 

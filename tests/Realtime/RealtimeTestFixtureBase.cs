@@ -53,10 +53,10 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
         RealtimeClient client = Mode switch
         {
             // Create a direct client without proxy for live WebSocket tests
-            RecordedTestMode.Live => TestEnvironment.GetTestClient<RealtimeClient>(TestModel.Realtime),
+            RecordedTestMode.Live => TestEnvironment.GetTestRealtimeClient(),
 
             // Use proxied client for playback mode (recordings)
-            _ => GetProxiedOpenAIClient<RealtimeClient>(TestModel.Realtime)
+            _ => GetProxiedRealtimeClient()
         };
 
         client.OnSendingCommand += (_, data) => PrintMessageData(data, "> ");

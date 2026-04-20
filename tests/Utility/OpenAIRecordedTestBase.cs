@@ -1,6 +1,8 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
+using OpenAI.Realtime;
+using OpenAI.Responses;
 
 namespace OpenAI.Tests.Utility
 {
@@ -34,6 +36,28 @@ namespace OpenAI.Tests.Utility
             OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
             T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
+
+            return proxiedClient;
+        }
+
+        internal ResponsesClient GetProxiedResponsesClient(ResponsesClientOptions options = default)
+        {
+            options ??= new ResponsesClientOptions();
+
+            ResponsesClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            ResponsesClient client = TestEnvironment.GetTestResponsesClient(instrumentedOptions);
+            ResponsesClient proxiedClient = CreateProxyFromClient<ResponsesClient>(client, null);
+
+            return proxiedClient;
+        }
+
+        internal RealtimeClient GetProxiedRealtimeClient(RealtimeClientOptions options = default)
+        {
+            options ??= new RealtimeClientOptions();
+
+            RealtimeClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            RealtimeClient client = TestEnvironment.GetTestRealtimeClient(instrumentedOptions);
+            RealtimeClient proxiedClient = CreateProxyFromClient<RealtimeClient>(client, null);
 
             return proxiedClient;
         }

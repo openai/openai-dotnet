@@ -1,10 +1,8 @@
-﻿using Microsoft.ClientModel.TestFramework.Mocks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
 using System.ClientModel.Primitives;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -634,48 +632,6 @@ public partial class ResponsesSmokeTests
         Assert.That(customProperty, Is.Not.Null);
         Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
-    }
-
-    // Verifies that OpenAITestEnvironment.CreateResponsesClientOptions propagates every
-    // public settable property from ClientPipelineOptions. If a new property is added to
-    // ClientPipelineOptions, SampleValueFor will throw and force an update to
-    // OpenAITestEnvironment.CopyPipelineOptions.
-    [Test]
-    public void CreateResponsesClientOptionsCopiesAllPipelineProperties()
-    {
-        PropertyInfo[] properties = typeof(ClientPipelineOptions)
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.GetSetMethod(nonPublic: false) is not null)
-            .ToArray();
-
-        OpenAIClientOptions source = new();
-        foreach (PropertyInfo property in properties)
-        {
-            property.SetValue(source, SampleValueFor(property));
-        }
-
-        ResponsesClientOptions result = OpenAITestEnvironment.CreateResponsesClientOptions(source);
-
-        foreach (PropertyInfo property in properties)
-        {
-            Assert.That(
-                property.GetValue(result),
-                Is.EqualTo(property.GetValue(source)),
-                $"ClientPipelineOptions.{property.Name} was not copied. Update OpenAITestEnvironment.CopyPipelineOptions.");
-        }
-
-        static object SampleValueFor(PropertyInfo property) => property.Name switch
-        {
-            nameof(ClientPipelineOptions.RetryPolicy) => ClientRetryPolicy.Default,
-            nameof(ClientPipelineOptions.MessageLoggingPolicy) => MessageLoggingPolicy.Default,
-            nameof(ClientPipelineOptions.Transport) => new MockPipelineTransport(_ => new MockPipelineResponse(200)),
-            nameof(ClientPipelineOptions.NetworkTimeout) => TimeSpan.FromSeconds(42),
-            nameof(ClientPipelineOptions.ClientLoggingOptions) => new ClientLoggingOptions(),
-            nameof(ClientPipelineOptions.EnableDistributedTracing) => true,
-            _ => throw new InvalidOperationException(
-                $"No sample value defined for ClientPipelineOptions.{property.Name}. " +
-                "Add one here and update OpenAITestEnvironment.CopyPipelineOptions."),
-        };
     }
 
 }

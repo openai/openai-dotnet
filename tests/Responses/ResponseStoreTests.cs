@@ -22,7 +22,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsCollectionPage()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
@@ -63,7 +63,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
@@ -100,7 +100,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithPaginationNoOptions()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
@@ -131,7 +131,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
@@ -183,7 +183,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Ensure multiple input items exist to paginate
         List<ResponseItem> inputItems = new()
@@ -224,7 +224,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         // Create inputs in a defined sequence
         List<ResponseItem> inputItems = new()
@@ -273,7 +273,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             TestModel.Responses,
@@ -299,7 +299,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             TestModel.Responses,
@@ -325,7 +325,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             TestModel.Responses,
@@ -362,7 +362,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
-        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             TestModel.Responses,

@@ -154,8 +154,6 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(ModerationClient) => new ModerationClient(modelName ?? TestModel.Moderations, credential, options),
             nameof(VectorStoreClient) => new VectorStoreClient(credential, options),
             nameof(OpenAIClient) => new OpenAIClient(credential, options),
-            nameof(RealtimeClient) => new RealtimeClient(credential, CreateRealtimeClientOptions(options)),
-            nameof(ResponsesClient) => new ResponsesClient(credential, CreateResponsesClientOptions(options)),
             nameof(SkillClient) => new SkillClient(credential, options),
             _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
         };
@@ -163,50 +161,21 @@ public class OpenAITestEnvironment : TestEnvironment
         return (T)clientObject;
     }
 
+    public RealtimeClient GetTestRealtimeClient(RealtimeClientOptions options = default)
+    {
+        options ??= new();
+        return new RealtimeClient(ApiKeyCredential, options);
+    }
+
+    public ResponsesClient GetTestResponsesClient(ResponsesClientOptions options = default)
+    {
+        options ??= new();
+        return new ResponsesClient(ApiKeyCredential, options);
+    }
+
     public override Dictionary<string, string> ParseEnvironmentFile() =>  EnvironmentFile;
 
     public override Task WaitForEnvironmentAsync() => Task.CompletedTask;
-
-    internal static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options)
-    {
-        var result = new RealtimeClientOptions
-        {
-            Endpoint = options?.Endpoint,
-            OrganizationId = options?.OrganizationId,
-            ProjectId = options?.ProjectId,
-            UserAgentApplicationId = options?.UserAgentApplicationId,
-        };
-        CopyPipelineOptions(options, result);
-        return result;
-    }
-
-    internal static ResponsesClientOptions CreateResponsesClientOptions(OpenAIClientOptions options)
-    {
-        var result = new ResponsesClientOptions
-        {
-            Endpoint = options?.Endpoint,
-            OrganizationId = options?.OrganizationId,
-            ProjectId = options?.ProjectId,
-            UserAgentApplicationId = options?.UserAgentApplicationId,
-        };
-        CopyPipelineOptions(options, result);
-        return result;
-    }
-
-    private static void CopyPipelineOptions(ClientPipelineOptions source, ClientPipelineOptions destination)
-    {
-        if (source is null || destination is null)
-        {
-            return;
-        }
-
-        destination.Transport = source.Transport;
-        destination.RetryPolicy = source.RetryPolicy;
-        destination.MessageLoggingPolicy = source.MessageLoggingPolicy;
-        destination.NetworkTimeout = source.NetworkTimeout;
-        destination.ClientLoggingOptions = source.ClientLoggingOptions;
-        destination.EnableDistributedTracing = source.EnableDistributedTracing;
-    }
 
     private static bool TryReadEnvFile(string filePath,
                                        Dictionary<string, string> environment)
