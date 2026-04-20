@@ -5,8 +5,8 @@ $packageName = "OpenAI"
 
 Write-Host "Creating test app..."
 
-$tempFolderPath = Join-Path $repoRootPath "\TempAotCompatibility"
-New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+$tempFolderPath = Join-Path $repoRootPath "TempAotCompatibility"
+New-Item -ItemType Directory -Path $tempFolderPath -Force | Out-Null
 Push-Location $tempFolderPath
 
 $tempCsprojFilePath = Join-Path $tempFolderPath "AotCompatibility.csproj"
@@ -77,7 +77,7 @@ try {
 
         if (Test-Path $expectedWarningsFilePath -PathType Leaf) {
             # Read the contents of the file and store each line in an array
-            $expectedWarnings = Get-Content -Path $expectedWarningsFullPath
+            $expectedWarnings = Get-Content -Path $expectedWarningsFilePath
             $expectedWarningCount = $expectedWarnings.Count
 
             ### Comparing expected warnings to the publish output ###

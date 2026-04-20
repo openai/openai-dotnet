@@ -200,8 +200,17 @@ try {
     # Build OpenAI plugin
     Write-Log "Building OpenAI plugin"
     Push-Location "codegen"
-    npm run clean && npm run build
-    if ($LASTEXITCODE -ne 0) {
+    try {
+        & npm run clean
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm run clean failed with exit code $LASTEXITCODE"
+        }
+
+        & npm run build
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm run build failed with exit code $LASTEXITCODE"
+        }
+    } catch {
         Write-Warning-Log "OpenAI plugin build failed, but continuing..."
     }
     Pop-Location
