@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (Patch.Contains("$.filters"u8))
             {
@@ -137,7 +137,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalCompoundFilterType kind = default;
+            FileSearchToolFiltersType1 kind = default;
             IList<BinaryData> filters = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -146,7 +146,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalCompoundFilterType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToFileSearchToolFiltersType1();
                     continue;
                 }
                 if (prop.NameEquals("filters"u8))

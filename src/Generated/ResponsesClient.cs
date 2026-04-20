@@ -126,35 +126,35 @@ namespace OpenAI.Responses
             return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
         }
 
-        public virtual ClientResult GetInputTokenCount(string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult GetInputTokenCount(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateGetInputTokenCountRequest(contentType, content, options);
+            using PipelineMessage message = CreateGetInputTokenCountRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetInputTokenCountAsync(string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetInputTokenCountAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateGetInputTokenCountRequest(contentType, content, options);
+            using PipelineMessage message = CreateGetInputTokenCountRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CompactResponse(string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult CompactResponse(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCompactResponseRequest(contentType, content, options);
+            using PipelineMessage message = CreateCompactResponseRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CompactResponseAsync(string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual async Task<ClientResult> CompactResponseAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCompactResponseRequest(contentType, content, options);
+            using PipelineMessage message = CreateCompactResponseRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }

@@ -13,13 +13,13 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalVectorStoreCompoundFilter(InternalVectorStoreCompoundFilterType kind, IEnumerable<BinaryData> filters)
+        public InternalVectorStoreCompoundFilter(VectorStoreSearchRequestFiltersType1 kind, IEnumerable<BinaryData> filters)
         {
             Kind = kind;
             Filters = filters.ToList();
         }
 
-        internal InternalVectorStoreCompoundFilter(InternalVectorStoreCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalVectorStoreCompoundFilter(VectorStoreSearchRequestFiltersType1 kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Kind = kind;
@@ -27,7 +27,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalVectorStoreCompoundFilterType Kind { get; }
+        public VectorStoreSearchRequestFiltersType1 Kind { get; }
 
         public IList<BinaryData> Filters { get; }
 

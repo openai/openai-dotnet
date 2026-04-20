@@ -83,7 +83,7 @@ namespace OpenAI.Evals
             if (_additionalBinaryDataProperties?.ContainsKey("operation") != true)
             {
                 writer.WritePropertyName("operation"u8);
-                writer.WriteStringValue(Operation.ToString());
+                writer.WriteStringValue(Operation.ToSerialString());
             }
         }
 
@@ -111,7 +111,7 @@ namespace OpenAI.Evals
             string name = default;
             string input = default;
             string reference = default;
-            GraderStringCheckOperation operation = default;
+            FineTuneReinforcementMethodGraderOperation operation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -136,7 +136,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("operation"u8))
                 {
-                    operation = new GraderStringCheckOperation(prop.Value.GetString());
+                    operation = prop.Value.GetString().ToFineTuneReinforcementMethodGraderOperation();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

@@ -66,7 +66,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (Optional.IsDefined(LastMessages) && _additionalBinaryDataProperties?.ContainsKey("last_messages") != true)
             {
@@ -114,14 +114,14 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            InternalTruncationObjectType kind = default;
+            CreateThreadAndRunRequestTruncationStrategyType kind = default;
             int? lastMessages = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalTruncationObjectType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToCreateThreadAndRunRequestTruncationStrategyType();
                     continue;
                 }
                 if (prop.NameEquals("last_messages"u8))

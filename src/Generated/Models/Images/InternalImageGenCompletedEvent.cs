@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -11,7 +12,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageGenCompletedEventSize size, InternalImageGenCompletedEventQuality quality, InternalImageGenCompletedEventBackground background, InternalImageGenCompletedEventOutputFormat outputFormat, InternalImagesUsage usage)
+        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, CreateImageSize1 size, CreateImageQuality1 quality, CreateImageBackground1 background, CreateImageOutputFormat1 outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -22,7 +23,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageGenCompletedEventSize size, InternalImageGenCompletedEventQuality quality, InternalImageGenCompletedEventBackground background, InternalImageGenCompletedEventOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, CreateImageSize1 size, CreateImageQuality1 quality, CreateImageBackground1 background, CreateImageOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,13 +42,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        internal InternalImageGenCompletedEventSize Size { get; }
+        public CreateImageSize1 Size { get; }
 
-        internal InternalImageGenCompletedEventQuality Quality { get; }
+        public CreateImageQuality1 Quality { get; }
 
-        internal InternalImageGenCompletedEventBackground Background { get; }
+        public CreateImageBackground1 Background { get; }
 
-        internal InternalImageGenCompletedEventOutputFormat OutputFormat { get; }
+        public CreateImageOutputFormat1 OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
 

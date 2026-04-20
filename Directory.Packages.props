@@ -38,7 +38,7 @@
 
   <!-- Generator-Only Dependencies -->
   <ItemGroup Condition="'$(IsGeneratorProject)' == 'true' or $(MSBuildProjectName.EndsWith('Plugin'))">
-    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260306.4" />
+    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260417.10" />
   </ItemGroup>
 
   <!-- Transitive Dependency Overrides: https://github.com/advisories/GHSA-g4vj-cjjj-v7hg -->

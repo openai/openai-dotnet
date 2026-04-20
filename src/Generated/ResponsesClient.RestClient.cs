@@ -124,7 +124,7 @@ namespace OpenAI.Responses
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetInputTokenCountRequest(string contentType, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateGetInputTokenCountRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -139,7 +139,7 @@ namespace OpenAI.Responses
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateCompactResponseRequest(string contentType, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCompactResponseRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

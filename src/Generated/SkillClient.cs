@@ -82,21 +82,21 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult UpdateSkill(string skillId, string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult UpdateSkill(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateUpdateSkillRequest(skillId, contentType, content, options);
+            using PipelineMessage message = CreateUpdateSkillRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> UpdateSkillAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null)
+        public virtual async Task<ClientResult> UpdateSkillAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateUpdateSkillRequest(skillId, contentType, content, options);
+            using PipelineMessage message = CreateUpdateSkillRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

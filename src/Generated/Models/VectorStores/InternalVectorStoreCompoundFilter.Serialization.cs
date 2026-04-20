@@ -66,7 +66,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("filters") != true)
             {
@@ -131,14 +131,14 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            InternalVectorStoreCompoundFilterType kind = default;
+            VectorStoreSearchRequestFiltersType1 kind = default;
             IList<BinaryData> filters = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalVectorStoreCompoundFilterType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToVectorStoreSearchRequestFiltersType1();
                     continue;
                 }
                 if (prop.NameEquals("filters"u8))
