@@ -134,8 +134,6 @@ function Invoke-APICompat {
             $null
         }
 
-        Write-Output $ignoredRegex
-
         $warningsFound = 0
 
         foreach ($line in $($output -split "`r`n")) {
