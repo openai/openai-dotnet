@@ -6,7 +6,6 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -15,13 +14,13 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalChatCompletionNamedToolChoice(CreateChatCompletionRequestToolChoiceFunction function)
+        internal InternalChatCompletionNamedToolChoice(InternalCreateChatCompletionRequestToolChoiceFunction function)
         {
             Function = function;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatCompletionNamedToolChoice(string kind, CreateChatCompletionRequestToolChoiceFunction function, in JsonPatch patch)
+        internal InternalChatCompletionNamedToolChoice(string kind, InternalCreateChatCompletionRequestToolChoiceFunction function, in JsonPatch patch)
         {
             Kind = kind;
             Function = function;
@@ -37,6 +36,6 @@ namespace OpenAI.Chat
 
         internal string Kind { get; } = "function";
 
-        public CreateChatCompletionRequestToolChoiceFunction Function { get; }
+        internal InternalCreateChatCompletionRequestToolChoiceFunction Function { get; }
     }
 }

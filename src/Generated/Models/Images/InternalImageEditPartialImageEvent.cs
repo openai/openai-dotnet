@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -12,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageEditPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, CreateImageEditSize size, CreateImageEditQuality quality, CreateImageEditBackground background, CreateImageEditOutputFormat outputFormat, int partialImageIndex)
+        internal InternalImageEditPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageEditSize size, InternalCreateImageEditQuality quality, InternalCreateImageEditBackground background, InternalCreateImageEditOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -23,7 +22,7 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageEditPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, CreateImageEditSize size, CreateImageEditQuality quality, CreateImageEditBackground background, CreateImageEditOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageEditPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageEditSize size, InternalCreateImageEditQuality quality, InternalCreateImageEditBackground background, InternalCreateImageEditOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -42,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        public CreateImageEditSize Size { get; }
+        internal InternalCreateImageEditSize Size { get; }
 
-        public CreateImageEditQuality Quality { get; }
+        internal InternalCreateImageEditQuality Quality { get; }
 
-        public CreateImageEditBackground Background { get; }
+        internal InternalCreateImageEditBackground Background { get; }
 
-        public CreateImageEditOutputFormat OutputFormat { get; }
+        internal InternalCreateImageEditOutputFormat OutputFormat { get; }
 
         public int PartialImageIndex { get; }
 

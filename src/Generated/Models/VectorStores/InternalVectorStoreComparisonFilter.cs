@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.VectorStores
 {
@@ -12,14 +11,14 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalVectorStoreComparisonFilter(VectorStoreSearchRequestFiltersType kind, string key, BinaryData value)
+        internal InternalVectorStoreComparisonFilter(InternalVectorStoreSearchRequestFiltersType kind, string key, BinaryData value)
         {
             Kind = kind;
             Key = key;
             Value = value;
         }
 
-        internal InternalVectorStoreComparisonFilter(VectorStoreSearchRequestFiltersType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalVectorStoreComparisonFilter(InternalVectorStoreSearchRequestFiltersType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Key = key;
@@ -27,7 +26,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public VectorStoreSearchRequestFiltersType Kind { get; }
+        internal InternalVectorStoreSearchRequestFiltersType Kind { get; }
 
         public string Key { get; }
 

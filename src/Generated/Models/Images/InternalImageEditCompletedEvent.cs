@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -12,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, CreateImageEditSize1 size, CreateImageEditQuality1 quality, CreateImageEditBackground1 background, CreateImageEditOutputFormat1 outputFormat, InternalImagesUsage usage)
+        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageEditSize1 size, InternalCreateImageEditQuality1 quality, InternalCreateImageEditBackground1 background, InternalCreateImageEditOutputFormat1 outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -23,7 +22,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, CreateImageEditSize1 size, CreateImageEditQuality1 quality, CreateImageEditBackground1 background, CreateImageEditOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageEditSize1 size, InternalCreateImageEditQuality1 quality, InternalCreateImageEditBackground1 background, InternalCreateImageEditOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -42,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedAt { get; }
 
-        public CreateImageEditSize1 Size { get; }
+        internal InternalCreateImageEditSize1 Size { get; }
 
-        public CreateImageEditQuality1 Quality { get; }
+        internal InternalCreateImageEditQuality1 Quality { get; }
 
-        public CreateImageEditBackground1 Background { get; }
+        internal InternalCreateImageEditBackground1 Background { get; }
 
-        public CreateImageEditOutputFormat1 OutputFormat { get; }
+        internal InternalCreateImageEditOutputFormat1 OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
 

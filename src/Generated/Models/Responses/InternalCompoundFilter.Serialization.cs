@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Assistants;
 
 namespace OpenAI.Responses
 {
@@ -76,7 +77,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
+                writer.WriteStringValue(Kind.ToString());
             }
             if (Patch.Contains("$.filters"u8))
             {
@@ -137,7 +138,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            FileSearchToolFiltersType1 kind = default;
+            InternalFileSearchToolFiltersType1 kind = default;
             IList<BinaryData> filters = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -146,7 +147,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToFileSearchToolFiltersType1();
+                    kind = new InternalFileSearchToolFiltersType1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("filters"u8))

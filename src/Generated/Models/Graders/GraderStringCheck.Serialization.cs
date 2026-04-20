@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.FineTuning;
 
 namespace OpenAI.Graders
 {
@@ -82,7 +83,7 @@ namespace OpenAI.Graders
             if (_additionalBinaryDataProperties?.ContainsKey("operation") != true)
             {
                 writer.WritePropertyName("operation"u8);
-                writer.WriteStringValue(Operation.ToSerialString());
+                writer.WriteStringValue(Operation.ToString());
             }
         }
 
@@ -110,7 +111,7 @@ namespace OpenAI.Graders
             string name = default;
             string input = default;
             string reference = default;
-            FineTuneReinforcementMethodGraderOperation operation = default;
+            InternalFineTuneReinforcementMethodGraderOperation operation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -135,7 +136,7 @@ namespace OpenAI.Graders
                 }
                 if (prop.NameEquals("operation"u8))
                 {
-                    operation = prop.Value.GetString().ToFineTuneReinforcementMethodGraderOperation();
+                    operation = new InternalFineTuneReinforcementMethodGraderOperation(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

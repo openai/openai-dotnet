@@ -68,7 +68,7 @@ namespace OpenAI.Evals
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
-                foreach (EvalJsonlRunDataSourceParamsSourceContent item in Content)
+                foreach (InternalEvalJsonlRunDataSourceParamsSourceContent item in Content)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -97,7 +97,7 @@ namespace OpenAI.Evals
             }
             InternalEvalRunDataContentSourceType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            IList<EvalJsonlRunDataSourceParamsSourceContent> content = default;
+            IList<InternalEvalJsonlRunDataSourceParamsSourceContent> content = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -107,10 +107,10 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("content"u8))
                 {
-                    List<EvalJsonlRunDataSourceParamsSourceContent> array = new List<EvalJsonlRunDataSourceParamsSourceContent>();
+                    List<InternalEvalJsonlRunDataSourceParamsSourceContent> array = new List<InternalEvalJsonlRunDataSourceParamsSourceContent>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(EvalJsonlRunDataSourceParamsSourceContent.DeserializeEvalJsonlRunDataSourceParamsSourceContent(item, options));
+                        array.Add(InternalEvalJsonlRunDataSourceParamsSourceContent.DeserializeInternalEvalJsonlRunDataSourceParamsSourceContent(item, options));
                     }
                     content = array;
                     continue;

@@ -50,3 +50,23 @@ namespace OpenAI.Images;
 [CodeGenType("ImageEditCompletedEventOutputFormat")] internal readonly partial struct InternalImageEditCompletedEventOutputFormat { }
 [CodeGenType("ImageEditCompletedEventQuality")] internal readonly partial struct InternalImageEditCompletedEventQuality { }
 [CodeGenType("ImageEditCompletedEventSize")] internal readonly partial struct InternalImageEditCompletedEventSize { }
+
+// Image edit (new image edit operation types).
+[CodeGenType("CreateImageEditSize")] internal readonly partial struct InternalCreateImageEditSize {}
+[CodeGenType("CreateImageEditQuality")] internal readonly partial struct InternalCreateImageEditQuality {}
+[CodeGenType("CreateImageEditBackground")] internal readonly partial struct InternalCreateImageEditBackground {}
+[CodeGenType("CreateImageEditOutputFormat")] internal readonly partial struct InternalCreateImageEditOutputFormat {}
+[CodeGenType("CreateImageEditSize1")] internal readonly partial struct InternalCreateImageEditSize1 {}
+[CodeGenType("CreateImageEditQuality1")] internal readonly partial struct InternalCreateImageEditQuality1 {}
+[CodeGenType("CreateImageEditBackground1")] internal readonly partial struct InternalCreateImageEditBackground1 {}
+[CodeGenType("CreateImageEditOutputFormat1")] internal readonly partial struct InternalCreateImageEditOutputFormat1 {}
+
+// Image generation (new image generation operation types).
+[CodeGenType("CreateImageSize")] internal readonly partial struct InternalCreateImageSize {}
+[CodeGenType("CreateImageQuality")] internal readonly partial struct InternalCreateImageQuality {}
+[CodeGenType("CreateImageBackground")] internal readonly partial struct InternalCreateImageBackground {}
+[CodeGenType("CreateImageOutputFormat")] internal readonly partial struct InternalCreateImageOutputFormat {}
+[CodeGenType("CreateImageSize1")] internal readonly partial struct InternalCreateImageSize1 {}
+[CodeGenType("CreateImageQuality1")] internal readonly partial struct InternalCreateImageQuality1 {}
+[CodeGenType("CreateImageBackground1")] internal readonly partial struct InternalCreateImageBackground1 {}
+[CodeGenType("CreateImageOutputFormat1")] internal readonly partial struct InternalCreateImageOutputFormat1 {}

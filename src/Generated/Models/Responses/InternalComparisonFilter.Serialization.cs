@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Assistants;
 
 namespace OpenAI.Responses
 {
@@ -75,7 +76,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
+                writer.WriteStringValue(Kind.ToString());
             }
             if (!Patch.Contains("$.key"u8))
             {
@@ -118,7 +119,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            FileSearchToolFiltersType kind = default;
+            InternalFileSearchToolFiltersType kind = default;
             string key = default;
             BinaryData value = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -128,7 +129,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToFileSearchToolFiltersType();
+                    kind = new InternalFileSearchToolFiltersType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("key"u8))

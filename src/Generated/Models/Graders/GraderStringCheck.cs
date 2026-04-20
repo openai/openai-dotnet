@@ -6,13 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
+using OpenAI.FineTuning;
 
 namespace OpenAI.Graders
 {
     [Experimental("OPENAI001")]
     public partial class GraderStringCheck : Grader
     {
-        public GraderStringCheck(string name, string input, string reference, FineTuneReinforcementMethodGraderOperation operation) : base(GraderType.StringCheck)
+        internal GraderStringCheck(string name, string input, string reference, InternalFineTuneReinforcementMethodGraderOperation operation) : base(GraderType.StringCheck)
         {
             Argument.AssertNotNull(name, nameof(name));
             Argument.AssertNotNull(input, nameof(input));
@@ -24,7 +25,7 @@ namespace OpenAI.Graders
             Operation = operation;
         }
 
-        internal GraderStringCheck(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, FineTuneReinforcementMethodGraderOperation operation) : base(kind, additionalBinaryDataProperties)
+        internal GraderStringCheck(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string input, string reference, InternalFineTuneReinforcementMethodGraderOperation operation) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Input = input;
@@ -38,6 +39,6 @@ namespace OpenAI.Graders
 
         public string Reference { get; set; }
 
-        public FineTuneReinforcementMethodGraderOperation Operation { get; set; }
+        internal InternalFineTuneReinforcementMethodGraderOperation Operation { get; set; }
     }
 }
