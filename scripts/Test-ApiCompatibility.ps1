@@ -130,9 +130,6 @@ function Invoke-APICompat {
         $ignoredRegex = if ($IgnoredNamespaces) {
             ($IgnoredNamespaces | ForEach-Object { [regex]::Escape($_) }) -join "|"
         }
-        else {
-            $null
-        }
 
         $warningsFound = 0
 
