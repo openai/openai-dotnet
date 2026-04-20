@@ -6274,8 +6274,8 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseResult> CancelResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseResult>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult CompactResponse(string contentType, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> CompactResponseAsync(string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CompactResponse(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CompactResponseAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> CreateResponse(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
@@ -6294,8 +6294,8 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetInputTokenCount(string contentType, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> GetInputTokenCountAsync(string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult GetInputTokenCount(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> GetInputTokenCountAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual ClientResult<ResponseResult> GetResponse(string responseId, CancellationToken cancellationToken = default);
@@ -6918,8 +6918,8 @@ namespace OpenAI.Skills {
         public virtual Task<ClientResult> GetSkillVersionAsync(string skillId, string version, RequestOptions options = null);
         public virtual ClientResult GetSkillVersions(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillVersionsAsync(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual ClientResult UpdateSkill(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> UpdateSkillAsync(string skillId, string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult UpdateSkill(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> UpdateSkillAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
     }
     [Experimental("SCME0002")]
     public sealed class SkillClientSettings : ClientSettings {

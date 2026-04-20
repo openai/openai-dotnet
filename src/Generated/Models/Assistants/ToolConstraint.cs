@@ -13,12 +13,12 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ToolConstraint(InternalAssistantsNamedToolChoiceType? kind)
+        internal ToolConstraint(InternalCreateThreadAndRunRequestToolChoiceType? kind)
         {
             Kind = kind;
         }
 
-        internal ToolConstraint(InternalAssistantsNamedToolChoiceType? kind, InternalAssistantsNamedToolChoiceFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ToolConstraint(InternalCreateThreadAndRunRequestToolChoiceType? kind, InternalCreateThreadAndRunRequestToolChoiceFunction function, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             Function = function;

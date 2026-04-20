@@ -32,7 +32,7 @@ public partial class ChatToolChoice
     private readonly bool _predefined;
     private readonly string _predefinedValue;
     private readonly string _type;
-    private readonly InternalChatCompletionNamedToolChoiceFunction _function;
+    private readonly InternalCreateChatCompletionRequestToolChoiceFunction _function;
 
     private const string AutoValue = "auto";
     private const string NoneValue = "none";
@@ -45,7 +45,7 @@ public partial class ChatToolChoice
 
     // CUSTOM: Added to support deserialization.
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-    internal ChatToolChoice(bool predefined, string predefinedValue, string type, InternalChatCompletionNamedToolChoiceFunction function, in JsonPatch patch)
+    internal ChatToolChoice(bool predefined, string predefinedValue, string type, InternalCreateChatCompletionRequestToolChoiceFunction function, in JsonPatch patch)
     {
         _predefined = predefined;
         _predefinedValue = predefinedValue;
@@ -109,7 +109,7 @@ public partial class ChatToolChoice
             predefined: false,
             predefinedValue: null,
             type: FunctionType,
-            function: new InternalChatCompletionNamedToolChoiceFunction(functionName),
+            function: new InternalCreateChatCompletionRequestToolChoiceFunction(functionName),
             patch: default);
     }
 }

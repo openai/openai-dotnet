@@ -12,17 +12,18 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalFileSearchToolCallItemParamResult
+    [Experimental("OPENAI001")]
+    public partial class FileSearchCallResult
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalFileSearchToolCallItemParamResult() : this(null, null, null, null, default, default)
+        public FileSearchCallResult() : this(null, null, null, null, default, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalFileSearchToolCallItemParamResult(string fileId, string text, string filename, IDictionary<string, BinaryData> attributes, float? score, in JsonPatch patch)
+        internal FileSearchCallResult(string fileId, string text, string filename, IDictionary<string, BinaryData> attributes, float? score, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             FileId = fileId;

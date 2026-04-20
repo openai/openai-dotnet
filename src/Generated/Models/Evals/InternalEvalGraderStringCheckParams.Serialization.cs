@@ -7,7 +7,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.FineTuning;
 using OpenAI.Graders;
 
 namespace OpenAI.Evals
@@ -112,7 +111,7 @@ namespace OpenAI.Evals
             string name = default;
             string input = default;
             string reference = default;
-            InternalFineTuneReinforcementMethodGraderOperation operation = default;
+            GraderStringCheckOperation operation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -137,7 +136,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("operation"u8))
                 {
-                    operation = new InternalFineTuneReinforcementMethodGraderOperation(prop.Value.GetString());
+                    operation = new GraderStringCheckOperation(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

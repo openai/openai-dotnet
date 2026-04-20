@@ -2,7 +2,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Graders;
 
-[CodeGenType("GraderStringCheckOperation")] public readonly partial struct GraderStringCheckOperation { }
+[CodeGenType("FineTuneReinforcementMethodGraderOperation")] public readonly partial struct GraderStringCheckOperation { }
 [CodeGenType("GraderType")] public readonly partial struct GraderType { }
 [CodeGenType("GraderTextSimilarityEvaluationMetric")] public readonly partial struct GraderTextSimilarityEvaluationMetric { }
 [CodeGenType("GraderStringCheck")] public partial class GraderStringCheck { }

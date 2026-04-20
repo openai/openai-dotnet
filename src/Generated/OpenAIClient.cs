@@ -36,7 +36,7 @@ namespace OpenAI
         }
 
         [Experimental("SCME0002")]
-        public OpenAIClient(OpenAIClientSettings settings) : this(AuthenticationPolicy.Create(settings), settings?.Endpoint, settings?.Options)
+        internal OpenAIClient(InternalOpenAIClientSettings settings) : this(AuthenticationPolicy.Create(settings), settings?.Endpoint, settings?.Options)
         {
         }
 

@@ -315,6 +315,17 @@ namespace OpenAI
             return new HyperparametersForDPO(beta, batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties: null);
         }
 
+        public static GraderStringCheck GraderStringCheck(string name = default, string input = default, string reference = default, GraderStringCheckOperation operation = default)
+        {
+            return new GraderStringCheck(
+                GraderType.StringCheck,
+                additionalBinaryDataProperties: null,
+                name,
+                input,
+                reference,
+                operation);
+        }
+
         public static Grader Grader(string kind = default)
         {
             return new UnknownGrader(new GraderType(kind), additionalBinaryDataProperties: null);
@@ -543,6 +554,19 @@ namespace OpenAI
         public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = default, int index = default)
         {
             return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, default, fileId, index);
+        }
+
+        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
+        {
+            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
+
+            return new FileSearchCallResult(
+                fileId,
+                text,
+                filename,
+                attributes,
+                score,
+                default);
         }
 
         public static ComputerCallAction ComputerCallAction(string kind = default)

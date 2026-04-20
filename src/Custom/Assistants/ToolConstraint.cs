@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace OpenAI.Assistants;
 
 [CodeGenType("AssistantsNamedToolChoice")]
-[CodeGenVisibility(nameof(ToolConstraint), CodeGenVisibility.Internal, typeof(InternalAssistantsNamedToolChoiceType))]
+[CodeGenVisibility(nameof(ToolConstraint), CodeGenVisibility.Internal, typeof(InternalCreateThreadAndRunRequestToolChoiceType))]
 public partial class ToolConstraint
 {
     private readonly string _plainTextValue;
@@ -13,12 +13,12 @@ public partial class ToolConstraint
 
     // CUSTOM: Discriminator made nullable to facilitate combination with literal variants
     [CodeGenMember("Type")]
-    internal InternalAssistantsNamedToolChoiceType? Kind { get; set; }
+    internal InternalCreateThreadAndRunRequestToolChoiceType? Kind { get; set; }
 
     // CUSTOM: Made internal.
     /// <summary> Gets or sets the function. </summary>
     [CodeGenMember("Function")]
-    internal InternalAssistantsNamedToolChoiceFunction Function { get; set; }
+    internal InternalCreateThreadAndRunRequestToolChoiceFunction Function { get; set; }
 
     public static ToolConstraint None { get; } = new("none");
     public static ToolConstraint Auto { get; } = new("auto");

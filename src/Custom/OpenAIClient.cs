@@ -87,6 +87,7 @@ namespace OpenAI;
 public partial class OpenAIClient
 {
     private readonly OpenAIClientOptions _options;
+    private readonly ApiKeyCredential _keyCredential;
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>

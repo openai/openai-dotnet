@@ -154,7 +154,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<string> queries = default;
-            IList<InternalFileSearchToolCallItemParamResult> results = default;
+            IList<FileSearchCallResult> results = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -185,17 +185,17 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<InternalFileSearchToolCallItemParamResult> array = new List<InternalFileSearchToolCallItemParamResult>();
+                    List<FileSearchCallResult> array = new List<FileSearchCallResult>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalFileSearchToolCallItemParamResult.DeserializeInternalFileSearchToolCallItemParamResult(item, item.GetUtf8Bytes(), options));
+                        array.Add(FileSearchCallResult.DeserializeFileSearchCallResult(item, item.GetUtf8Bytes(), options));
                     }
                     results = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFileSearchToolCallItemParam(kind, patch, queries, results ?? new ChangeTrackingList<InternalFileSearchToolCallItemParamResult>());
+            return new InternalFileSearchToolCallItemParam(kind, patch, queries, results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

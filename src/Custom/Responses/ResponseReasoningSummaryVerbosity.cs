@@ -5,7 +5,7 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[CodeGenType("ReasoningSummary")]
+[CodeGenType("CreateResponseReasoningSummary")]
 public readonly partial struct ResponseReasoningSummaryVerbosity
 {
 }

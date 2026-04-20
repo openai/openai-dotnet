@@ -18,22 +18,22 @@ namespace OpenAI.Responses
             Argument.AssertNotNull(queries, nameof(queries));
 
             Queries = queries.ToList();
-            Results = new ChangeTrackingList<InternalFileSearchToolCallItemParamResult>();
+            Results = new ChangeTrackingList<FileSearchCallResult>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FileSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<InternalFileSearchToolCallItemParamResult> results) : base(kind, id, patch)
+        internal FileSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             Queries = queries ?? new ChangeTrackingList<string>();
-            Results = results ?? new ChangeTrackingList<InternalFileSearchToolCallItemParamResult>();
+            Results = results ?? new ChangeTrackingList<FileSearchCallResult>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> Queries { get; }
 
-        internal IList<InternalFileSearchToolCallItemParamResult> Results { get; set; }
+        public IList<FileSearchCallResult> Results { get; set; }
     }
 }
