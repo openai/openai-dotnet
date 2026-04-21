@@ -211,7 +211,7 @@ try {
             throw "npm run build failed with exit code $LASTEXITCODE"
         }
     } catch {
-        Write-Warning-Log "OpenAI plugin build failed, but continuing..."
+        Write-Warning-Log "OpenAI plugin build failed, but continuing: $_"
     }
     Pop-Location
     
