@@ -52,14 +52,14 @@ function Write-Log {
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): $Message" -ForegroundColor Green
 }
 
-function Write-Warning-Log {
+function Write-WarningLog {
     param([string]$Message)
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): WARNING: $Message" -ForegroundColor Yellow
     # Set the global warning flag to track that warnings occurred
     $script:WarningsEncountered = $true
 }
 
-function Write-Error-Log {
+function Write-ErrorLog {
     param([string]$Message)
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): ERROR: $Message" -ForegroundColor Red
 }
@@ -79,7 +79,7 @@ function Get-PackageDependencies {
         
         # Check if there was an error
         if ($LASTEXITCODE -ne 0) {
-            Write-Warning-Log "Failed to get dependencies for $PackageName version $PackageVersion. Error: $npmViewOutput"
+            Write-WarningLog "Failed to get dependencies for $PackageName version $PackageVersion. Error: $npmViewOutput"
             return $null
         }
         
@@ -89,7 +89,7 @@ function Get-PackageDependencies {
         return $dependencies
     }
     catch {
-        Write-Warning-Log "Error fetching dependencies for $PackageName version $PackageVersion $_"
+        Write-WarningLog "Error fetching dependencies for $PackageName version $PackageVersion $_"
         return $null
     }
 }
@@ -156,14 +156,14 @@ try {
                     $openAiPackageJson.dependencies.$dependency = $dependencyVersion
                     Write-Log "Updated $dependency to version $dependencyVersion"
                 } else {
-                    Write-Warning-Log "Dependency $dependency not found in package.json"
+                    Write-WarningLog "Dependency $dependency not found in package.json"
                 }
             } else {
-                Write-Warning-Log "Dependency $dependency not found in @typespec/http-client-csharp version $PackageVersion"
+                Write-WarningLog "Dependency $dependency not found in @typespec/http-client-csharp version $PackageVersion"
             }
         }
     } else {
-        Write-Warning-Log "Could not fetch dependencies for @typespec/http-client-csharp version $PackageVersion"
+        Write-WarningLog "Could not fetch dependencies for @typespec/http-client-csharp version $PackageVersion"
     }
     
 
@@ -181,7 +181,7 @@ try {
         Set-Content -Path $directoryPackagesPropsPath -Value $directoryPackagesProps -NoNewline
         Write-Log "Updated Directory.Packages.props: $directoryPackagesPropsPath"
     } else {
-        Write-Warning-Log "Directory.Packages.props not found at: $directoryPackagesPropsPath"
+        Write-WarningLog "Directory.Packages.props not found at: $directoryPackagesPropsPath"
     }
     
     # Delete previous package-lock.json
@@ -211,7 +211,7 @@ try {
             throw "npm run build failed with exit code $LASTEXITCODE"
         }
     } catch {
-        Write-Warning-Log "OpenAI plugin build failed, but continuing: $_"
+        Write-WarningLog "OpenAI plugin build failed, but continuing: $_"
     }
     Pop-Location
     
@@ -221,7 +221,7 @@ try {
     try {
         pwsh scripts/Invoke-CodeGen.ps1
     } catch {
-        Write-Warning-Log "OpenAI code generation failed: $_"
+        Write-WarningLog "OpenAI code generation failed: $_"
     }
     Pop-Location
 
@@ -234,7 +234,7 @@ try {
             throw "Build failed with exit code $LASTEXITCODE"
         }
     } catch {
-        Write-Warning-Log "Building the library failed: $_"
+        Write-WarningLog "Building the library failed: $_"
     }
     Pop-Location
     
@@ -323,12 +323,12 @@ If there are any issues with the generated code, please review the [TypeSpec rel
     # If warnings were encountered, make the script exit with non-zero code
     # This will mark the GitHub Action step as failed but still create the PR
     if ($WarningsEncountered) {
-        Write-Warning-Log "Warnings were encountered during execution. PR was created but marking step as failed."
+        Write-WarningLog "Warnings were encountered during execution. PR was created but marking step as failed."
         exit 1
     }
     
 } catch {
-    Write-Error-Log "Error creating PR: $_"
+    Write-ErrorLog "Error creating PR: $_"
     exit 1
 } finally {
     Pop-Location
