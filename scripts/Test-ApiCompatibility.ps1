@@ -161,9 +161,17 @@ function Invoke-APICompat {
         }
     }
     finally {
-        Remove-Item -Path $tempFolderPath -Recurse -Force
-        Remove-Item -Path $currentNuGetPackagePath -Force
-        Remove-Item -Path $currentNuGetSymbolsPath -Force
+        if ($tempFolderPath -and (Test-Path $tempFolderPath)) {
+            Remove-Item -Path $tempFolderPath -Recurse -Force
+        }
+
+        if ($currentNuGetPackagePath -and (Test-Path $currentNuGetPackagePath)) {
+            Remove-Item -Path $currentNuGetPackagePath -Force
+        }
+
+        if ($currentNuGetSymbolsPath -and (Test-Path $currentNuGetSymbolsPath)) {
+            Remove-Item -Path $currentNuGetSymbolsPath -Force
+        }
     }
 }
 
