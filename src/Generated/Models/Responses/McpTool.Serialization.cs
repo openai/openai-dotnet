@@ -238,12 +238,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("allowed_tools"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        allowedTools = null;
-                        continue;
-                    }
-                    allowedTools = McpToolFilter.DeserializeMcpToolFilter(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    DeserializeAllowedToolsValue(prop, ref allowedTools, options);
                     continue;
                 }
                 if (prop.NameEquals("require_approval"u8))
