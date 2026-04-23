@@ -520,6 +520,60 @@ public partial class ResponsesSmokeTests
     [Test]
     [TestCase(true)]
     [TestCase(false)]
+    public void DeserializeMCPAllowedTools(bool useShorthandInput)
+    {
+        const string toolName = "roll";
+
+        BinaryData data = BinaryData.FromString(useShorthandInput
+            ? $$"""
+            {
+                "type": "mcp",
+                "server_label": "dmcp",
+                "server_url": "https://dmcp-server.deno.dev/sse",
+                "allowed_tools": ["{{toolName}}"]
+            }
+            """
+            : $$"""
+            {
+                "type": "mcp",
+                "server_label": "dmcp",
+                "server_url": "https://dmcp-server.deno.dev/sse",
+                "allowed_tools": {
+                    "tool_names": ["{{toolName}}"],
+                    "read_only": true
+                }
+            }
+            """);
+
+        McpTool tool = ModelReaderWriter.Read<McpTool>(data);
+
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Is.EquivalentTo(new[] { toolName }));
+        Assert.That(tool.AllowedTools.IsReadOnly, Is.EqualTo(useShorthandInput ? null : true));
+
+        BinaryData serializedTool = ModelReaderWriter.Write(tool);
+        using JsonDocument toolAsJson = JsonDocument.Parse(serializedTool);
+
+        Assert.That(toolAsJson.RootElement.TryGetProperty("allowed_tools", out JsonElement allowedToolsProperty), Is.True);
+        Assert.That(allowedToolsProperty.ValueKind, Is.EqualTo(JsonValueKind.Object));
+        Assert.That(allowedToolsProperty.TryGetProperty("tool_names", out JsonElement toolNamesProperty), Is.True);
+        Assert.That(toolNamesProperty.ValueKind, Is.EqualTo(JsonValueKind.Array));
+        Assert.That(toolNamesProperty.EnumerateArray().Select(item => item.GetString()), Is.EqualTo(new[] { toolName }));
+
+        if (useShorthandInput)
+        {
+            Assert.That(allowedToolsProperty.TryGetProperty("read_only", out _), Is.False);
+        }
+        else
+        {
+            Assert.That(allowedToolsProperty.TryGetProperty("read_only", out JsonElement readOnlyProperty), Is.True);
+            Assert.That(readOnlyProperty.GetBoolean(), Is.True);
+        }
+    }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
     public void SerializeCodeInterpreterToolContainerAsString(bool fromRawJson)
     {
         CodeInterpreterToolContainer container;

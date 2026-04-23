@@ -9,6 +9,7 @@ namespace OpenAI.Responses;
 //   even though the server URI and the connector ID are specified as optional, in practice, one of
 //   the two must be provided.
 [CodeGenType("MCPTool")]
+[CodeGenSerialization(nameof(AllowedTools), DeserializationValueHook = nameof(DeserializeAllowedToolsValue))]
 [CodeGenSuppress("McpTool", typeof(string))]
 public partial class McpTool
 {
