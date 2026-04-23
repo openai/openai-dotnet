@@ -16,7 +16,7 @@ public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
     [CodeGenMember("Object")]
     private string Object { get; } = "list";
 
-    // CUSTOM: Internalizing pending stanardized pagination representation for the list operation.
+    // CUSTOM: Internalizing pending standardized pagination representation for the list operation.
     [CodeGenMember("FirstId")]
     internal string FirstId { get; }
 
