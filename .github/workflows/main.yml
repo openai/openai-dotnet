@@ -1,4 +1,4 @@
-# This worflow is triggered on push to main, pull request, or by manual invocation.
+# This workflow is triggered on push to main, pull request, or by manual invocation.
 # It builds and unit tests the codebase.
 name: Build and Unit Test
 
