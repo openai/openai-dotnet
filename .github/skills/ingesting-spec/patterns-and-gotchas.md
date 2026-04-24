@@ -167,4 +167,4 @@ Expect test updates after spec ingestion:
 
 ## 10. API Export After Ingestion
 
-Always run `./scripts/Export-Api.ps1` after successful code generation to update the API surface files (`api/OpenAI.net8.0.cs`, etc.). These files are used for API compatibility checks and should be committed as part of the PR.
+Always run `./scripts/Export-Api.ps1` after successful code generation to update the API surface files in `api/unreleased/` (`api/unreleased/OpenAI.net8.0.cs`, etc.). These files are used for API compatibility checks and should be committed as part of the PR.

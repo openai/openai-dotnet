@@ -5,7 +5,7 @@
 .DESCRIPTION
     This script invokes the MSBuild GenerateApi target to produce C# source files
     representing the public API contract of the OpenAI library. The output files
-    are placed in the 'api' folder at the repository root.
+    are placed in the 'api/unreleased' folder at the repository root.
 
 .EXAMPLE
     .\Export-Api.ps1
@@ -13,7 +13,7 @@
     ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
 
 .NOTES
-    Outputs are written to api/OpenAI.<TargetFramework>.cs
+    Outputs are written to api/unreleased/OpenAI.<TargetFramework>.cs
 #>
 
 [CmdletBinding()]
@@ -27,7 +27,7 @@ $configuration = "Release"
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
 $projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
-$outputDirectory = Join-Path $repoRootPath "api"
+$outputDirectory = Join-Path $repoRootPath "api" "unreleased"
 
 # Get ClientTargetFrameworks from Directory.Build.props
 $propsPath = Join-Path $repoRootPath "Directory.Build.props"

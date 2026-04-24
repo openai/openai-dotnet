@@ -1,6 +1,8 @@
 # API Listings
 
-The `.cs` files in this directory are **auto-generated** and must not be modified manually.
+The current `.cs` files under `api/unreleased/` are **auto-generated** and must not be modified manually.
+
+The `api/` root also contains checked-in metadata such as `ga-apis.yaml` and versioned API baselines.
 
 To regenerate them, run:
 

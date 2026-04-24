@@ -35,7 +35,7 @@
 
   <!-- GenAPI Properties -->
   <PropertyGroup>
-    <GenAPIOutputDirectory>$(RepositoryRoot)api\</GenAPIOutputDirectory>
+     <GenAPIOutputDirectory>$(RepositoryRoot)api\unreleased\</GenAPIOutputDirectory>
   </PropertyGroup>
 
   <!-- Import GenAPI Task package when exporting API -->
@@ -50,7 +50,7 @@
       dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
     
     Outputs to:
-      api/OpenAI.<TargetFramework>.cs
+      api/unreleased/OpenAI.<TargetFramework>.cs
   -->
   
   <!-- Outer build target: Dispatches to inner builds for each target framework -->
