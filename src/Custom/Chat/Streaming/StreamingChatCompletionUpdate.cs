@@ -61,7 +61,7 @@ public partial class StreamingChatCompletionUpdate
     ///             <see cref="ChatFinishReason.ToolCalls"/> if the model called a tool
     ///         </item>
     ///         <item>
-    ///             <see cref="ChatFinishReason.FunctionCall"/> (obsolte) if the model called a function
+    ///             <see cref="ChatFinishReason.FunctionCall"/> (obsolete) if the model called a function
     ///         </item>
     ///     </list>
     /// </summary>
