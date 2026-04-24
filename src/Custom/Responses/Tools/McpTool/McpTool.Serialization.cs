@@ -8,6 +8,7 @@ namespace OpenAI.Responses;
 [CodeGenSerialization(nameof(AllowedTools), DeserializationValueHook = nameof(DeserializeAllowedToolsValue))]
 public partial class McpTool : IJsonModel<McpTool>
 {
+    // CUSTOM: Accepts the MCP shorthand allowed_tools array form and normalizes it into McpToolFilter.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void DeserializeAllowedToolsValue(JsonProperty property, ref McpToolFilter allowedTools, ModelReaderWriterOptions options = null)
     {
