@@ -26,7 +26,6 @@ import "./client/models/batch.models.tsp";
 import "./client/models/chat.models.tsp";
 import "./client/models/conversations.models.tsp";
 import "./client/models/realtime.models.tsp";
-import "./client/models/responses.models.tsp";
 import "./client/models/vector-stores.models.tsp";
 import "./client/models/videos.models.tsp";
 

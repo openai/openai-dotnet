@@ -1328,6 +1328,34 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static GetResponseOptions GetResponseOptions(string responseId = default, int? startingAfter = default, bool? includeObfuscation = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? streamingEnabled = default)
+        {
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
+
+            return new GetResponseOptions(
+                responseId,
+                startingAfter,
+                includeObfuscation,
+                includedProperties.ToList(),
+                streamingEnabled,
+                default);
+        }
+
+        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = default, McpToolFilter toolsNeverRequiringApproval = default)
+        {
+            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
+        }
+
+        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
+        {
+            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
+        }
+
+        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
+        {
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
+        }
+
         public static RealtimeMcpToolDefinition RealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
             return new RealtimeMcpToolDefinition(name, description, inputSchema, annotations, default);
@@ -1519,34 +1547,6 @@ namespace OpenAI
         public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
         {
             return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
-        }
-
-        public static GetResponseOptions GetResponseOptions(string responseId = default, int? startingAfter = default, bool? includeObfuscation = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? streamingEnabled = default)
-        {
-            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
-
-            return new GetResponseOptions(
-                responseId,
-                startingAfter,
-                includeObfuscation,
-                includedProperties.ToList(),
-                streamingEnabled,
-                default);
-        }
-
-        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = default, McpToolFilter toolsNeverRequiringApproval = default)
-        {
-            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
-        }
-
-        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
-        {
-            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
-        }
-
-        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
-        {
-            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

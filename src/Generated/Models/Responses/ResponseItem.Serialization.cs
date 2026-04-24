@@ -119,6 +119,8 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
+                    case "mcp_approval_response":
+                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, data, options);
                     case "message":
                         return MessageResponseItem.DeserializeMessageResponseItem(element, data, options);
                     case "computer_call_output":
@@ -127,8 +129,6 @@ namespace OpenAI.Responses
                         return FunctionCallResponseItem.DeserializeFunctionCallResponseItem(element, data, options);
                     case "function_call_output":
                         return FunctionCallOutputResponseItem.DeserializeFunctionCallOutputResponseItem(element, data, options);
-                    case "mcp_approval_response":
-                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, data, options);
                     case "file_search_call":
                         return FileSearchCallResponseItem.DeserializeFileSearchCallResponseItem(element, data, options);
                     case "computer_call":
