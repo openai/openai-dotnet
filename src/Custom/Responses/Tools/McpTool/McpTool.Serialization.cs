@@ -1,9 +1,11 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.ClientModel.Primitives;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace OpenAI.Responses;
 
+[CodeGenSerialization(nameof(AllowedTools), DeserializationValueHook = nameof(DeserializeAllowedToolsValue))]
 public partial class McpTool : IJsonModel<McpTool>
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
