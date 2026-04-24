@@ -763,8 +763,8 @@ model FileSearchToolCallItemResource extends ItemResource {
   type: ItemType.file_search_call;
 
   @doc("""
-    The status of the file search tool call. One of `in_progress`, 
-    `searching`, `incomplete` or `failed`,
+    The status of the file search tool call. One of `in_progress`,
+    `searching`, `completed`, `incomplete`, or `failed`.
     """)
   status: "in_progress" | "searching" | "completed" | "incomplete" | "failed";
 
