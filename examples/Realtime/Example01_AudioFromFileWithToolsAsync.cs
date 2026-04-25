@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -209,9 +210,16 @@ public partial class RealtimeExamples
                         {
                             hasToolCalls = true;
 
-                            Console.WriteLine($">> Calling {functionCallItem.FunctionName} function...");
+                            Console.WriteLine($">> Calling {functionCallItem.FunctionName} function with arguments...");
 
-                            string output = GetCurrentWeather(location: "San Francisco, CA");
+                            using JsonDocument argumentsJson = JsonDocument.Parse(functionCallItem.FunctionArguments);
+                            string location = argumentsJson.RootElement.GetProperty("location").GetString()
+                                ?? throw new InvalidOperationException("Tool call is missing a location.");
+                            string unit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unitElement)
+                                ? unitElement.GetString() ?? "celsius"
+                                : "celsius";
+
+                            string output = GetCurrentWeather(location: location, unit: unit);
 
                             RealtimeItem functionCallOutputItem = RealtimeItem.CreateFunctionCallOutputItem(
                                 callId: functionCallItem.CallId,
