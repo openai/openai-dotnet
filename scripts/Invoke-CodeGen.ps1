@@ -319,7 +319,7 @@ try {
     Write-ElapsedTime "npm run build complete"
 
     Set-Location $specificationFolderPath
-    Invoke-ScriptWithLogging { npx tsp compile . --stats --trace @typespec/http-client-csharp }
+    Invoke-ScriptWithLogging { npx tsp compile . --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI" --stats --trace @typespec/http-client-csharp }
 
     Write-ElapsedTime "tsp compile complete"
 

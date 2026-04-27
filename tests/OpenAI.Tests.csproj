@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\OpenAI.csproj" />
+    <ProjectReference Include="..\src\OpenAI\OpenAI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
