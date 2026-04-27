@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "properties": {
+    "Clients": {
+      "type": "object",
+      "properties": {
+        "OpenAIClient": {
+          "type": "object",
+          "description": "Configuration for OpenAIClient.",
+          "properties": {
+            "Endpoint": {
+              "type": "string",
+              "format": "uri",
+              "description": "Gets or sets the Endpoint."
+            },
+            "ApiKey": {
+              "type": "string"
+            },
+            "AuthenticationPolicy": {
+              "type": "object"
+            },
+            "Credential": {
+              "$ref": "#/definitions/credential"
+            },
+            "Options": {
+              "$ref": "#/definitions/openAIClientOptions"
+            }
+          }
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "description": "Configuration for a named client instance."
+      }
+    }
+  },
+  "definitions": {
+    "openAIClientOptions": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/options"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "Endpoint": {
+              "type": "string",
+              "format": "uri"
+            },
+            "OrganizationId": {
+              "type": "string"
+            },
+            "ProjectId": {
+              "type": "string"
+            },
+            "UserAgentApplicationId": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>The official .NET library for the OpenAI service API.</Description>
-    <AssemblyTitle>OpenAI Responses client library for .NET</AssemblyTitle>
+    <AssemblyTitle>OpenAI client library for .NET</AssemblyTitle>
 
     <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
-    <DefineConstants>$(DefineConstants);OPENAI_RESPONSES</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -34,3 +33,4 @@
     </InternalsVisibleTo>
     <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' == 'Unsigned'" />
   </ItemGroup>
+</Project>

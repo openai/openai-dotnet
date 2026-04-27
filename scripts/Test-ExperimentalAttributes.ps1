@@ -35,7 +35,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
+$projectPath = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
 $yamlPath = Join-Path $repoRootPath "api" "ga-apis.yaml"
 
 # Auto-detect target framework: pick the highest TFM that is compatible with the
