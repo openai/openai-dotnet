@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -209,9 +210,17 @@ public partial class RealtimeExamples
                         {
                             hasToolCalls = true;
 
-                            Console.WriteLine($">> Calling {functionCallItem.FunctionName} function...");
+                            using JsonDocument argumentsJson = JsonDocument.Parse(functionCallItem.FunctionArguments.ToString());
+                            string location = argumentsJson.RootElement.TryGetProperty("location", out JsonElement locationElement)
+                                ? locationElement.GetString() ?? "San Francisco, CA"
+                                : "San Francisco, CA";
+                            string unit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unitElement)
+                                ? unitElement.GetString() ?? "celsius"
+                                : "celsius";
 
-                            string output = GetCurrentWeather(location: "San Francisco, CA");
+                            Console.WriteLine($">> Calling {functionCallItem.FunctionName} function for {location}...");
+
+                            string output = GetCurrentWeather(location: location, unit: unit);
 
                             RealtimeItem functionCallOutputItem = RealtimeItem.CreateFunctionCallOutputItem(
                                 callId: functionCallItem.CallId,
