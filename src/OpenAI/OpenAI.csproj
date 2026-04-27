@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>The official .NET library for the OpenAI service API.</Description>
     <AssemblyTitle>OpenAI client library for .NET</AssemblyTitle>
@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
-    <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
-    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
+    <Compile Include="..\Utility\**\*.cs" LinkBase="Utility" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OpenAI.Responses\src\OpenAI.Responses.csproj" />
+    <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
