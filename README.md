@@ -51,6 +51,37 @@ dotnet add package OpenAI
 
 Note that the code examples included below were written using [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
 
+### Working with experimental APIs
+
+Some namespaces in this SDK map to preview or rapidly evolving platform features and are marked with `[Experimental]`. When you call them, the compiler raises an `OPENAI00x` warning so you can decide whether to opt in.
+
+The warning codes currently used in this repository are:
+
+| Warning code | Applies to |
+| --- | --- |
+| `OPENAI001` | Preview API surfaces such as `AssistantClient`, `ResponsesClient`, `FineTuningClient`, `ConversationClient`, `VectorStoreClient`, `EvaluationClient`, and other related preview helpers and models. |
+| `OPENAI002` | Realtime APIs such as `RealtimeClient`, `RealtimeSessionClient`, and related realtime types. |
+
+You can opt in locally around a sample or call site:
+
+```csharp
+#pragma warning disable OPENAI001
+#pragma warning disable OPENAI002
+// experimental usage here
+#pragma warning restore OPENAI002
+#pragma warning restore OPENAI001
+```
+
+If your project treats warnings as errors, suppress the specific warning code in your project file or `Directory.Build.props`:
+
+```xml
+<PropertyGroup>
+  <NoWarn>$(NoWarn);OPENAI001;OPENAI002</NoWarn>
+</PropertyGroup>
+```
+
+Prefer suppressing the narrowest warning code you need so stable API usage still surfaces new experimental warnings during upgrades.
+
 ## Using the client library
 
 The full API of this library can be found in the [OpenAI.netstandard2.0.cs](https://github.com/openai/openai-dotnet/blob/main/api/OpenAI.netstandard2.0.cs) file, and there are many [code examples](https://github.com/openai/openai-dotnet/tree/main/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
@@ -978,7 +1009,7 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
 
 var client = new ResponsesClient(
     new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
-    new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+    new ResponsesClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
 var response = await client.CreateResponseAsync("gpt-5-mini", "Hello world!");
