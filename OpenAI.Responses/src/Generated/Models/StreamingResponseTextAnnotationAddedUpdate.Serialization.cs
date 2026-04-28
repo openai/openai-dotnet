@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationAddedUpdate>
     {
-        public StreamingResponseTextAnnotationAddedUpdate() : this(InternalResponseStreamEventType.ResponseOutputTextAnnotationAdded, default, default, null, default, default, default, null)
+        public StreamingResponseTextAnnotationAddedUpdate() : this(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, default, default, null, default, default, default, null)
         {
         }
 
@@ -128,7 +128,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponseStreamEventType kind = default;
+            StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -142,7 +142,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalResponseStreamEventType(prop.Value.GetString());
+                    kind = new StreamingResponseUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("sequence_number"u8))

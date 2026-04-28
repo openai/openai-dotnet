@@ -9,9 +9,9 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    internal partial class UnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>
+    internal partial class InternalUnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>
     {
-        internal UnknownResponseStreamEvent() : this(default, default, default)
+        internal InternalUnknownResponseStreamEvent() : this(default, default, default)
         {
         }
 
@@ -90,13 +90,13 @@ namespace OpenAI.Responses
             return DeserializeStreamingResponseUpdate(document.RootElement, null, options);
         }
 
-        internal static UnknownResponseStreamEvent DeserializeUnknownResponseStreamEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalUnknownResponseStreamEvent DeserializeInternalUnknownResponseStreamEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalResponseStreamEventType kind = default;
+            StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -105,7 +105,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalResponseStreamEventType(prop.Value.GetString());
+                    kind = new StreamingResponseUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("sequence_number"u8))
@@ -115,7 +115,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new UnknownResponseStreamEvent(kind, sequenceNumber, patch);
+            return new InternalUnknownResponseStreamEvent(kind, sequenceNumber, patch);
         }
     }
 }

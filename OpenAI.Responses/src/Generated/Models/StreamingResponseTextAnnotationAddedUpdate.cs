@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseTextAnnotationAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, int annotationIndex, BinaryData annotation) : base(InternalResponseStreamEventType.ResponseOutputTextAnnotationAdded, sequenceNumber)
+        internal StreamingResponseTextAnnotationAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, int annotationIndex, BinaryData annotation) : base(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseTextAnnotationAddedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, int annotationIndex, BinaryData annotation) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseTextAnnotationAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, int annotationIndex, BinaryData annotation) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

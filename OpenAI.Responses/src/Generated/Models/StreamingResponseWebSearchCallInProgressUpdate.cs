@@ -10,14 +10,14 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseWebSearchCallInProgressUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseWebSearchCallInProgressUpdate(int sequenceNumber, int outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseWebSearchCallInProgress, sequenceNumber)
+        internal StreamingResponseWebSearchCallInProgressUpdate(int sequenceNumber, int outputIndex, string itemId) : base(StreamingResponseUpdateKind.ResponseWebSearchCallInProgress, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseWebSearchCallInProgressUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseWebSearchCallInProgressUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;

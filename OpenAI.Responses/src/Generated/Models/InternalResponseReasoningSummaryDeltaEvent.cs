@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponseReasoningSummaryDeltaEvent : StreamingResponseUpdate
     {
-        internal InternalResponseReasoningSummaryDeltaEvent(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, BinaryData delta) : base(InternalResponseStreamEventType.ResponseReasoningSummaryDelta, sequenceNumber)
+        internal InternalResponseReasoningSummaryDeltaEvent(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, BinaryData delta) : base(StreamingResponseUpdateKind.ResponseReasoningSummaryDelta, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponseReasoningSummaryDeltaEvent(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int summaryIndex, BinaryData delta) : base(kind, sequenceNumber, patch)
+        internal InternalResponseReasoningSummaryDeltaEvent(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int summaryIndex, BinaryData delta) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

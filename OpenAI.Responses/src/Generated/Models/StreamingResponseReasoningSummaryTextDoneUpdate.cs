@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseReasoningSummaryTextDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseReasoningSummaryTextDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, string text) : base(InternalResponseStreamEventType.ResponseReasoningSummaryTextDone, sequenceNumber)
+        internal StreamingResponseReasoningSummaryTextDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int summaryIndex, string text) : base(StreamingResponseUpdateKind.ResponseReasoningSummaryTextDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseReasoningSummaryTextDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int summaryIndex, string text) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseReasoningSummaryTextDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int summaryIndex, string text) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

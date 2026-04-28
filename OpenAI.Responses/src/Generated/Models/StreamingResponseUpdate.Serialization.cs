@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(UnknownResponseStreamEvent))]
+    [PersistableModelProxy(typeof(InternalUnknownResponseStreamEvent))]
     public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
     {
         internal StreamingResponseUpdate()
@@ -211,7 +211,7 @@ namespace OpenAI.Responses
                         return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, data, options);
                 }
             }
-            return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, data, options);
+            return InternalUnknownResponseStreamEvent.DeserializeInternalUnknownResponseStreamEvent(element, data, options);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseRefusalDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseRefusalDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string refusal) : base(InternalResponseStreamEventType.ResponseRefusalDone, sequenceNumber)
+        internal StreamingResponseRefusalDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string refusal) : base(StreamingResponseUpdateKind.ResponseRefusalDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseRefusalDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, string refusal) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseRefusalDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, string refusal) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
