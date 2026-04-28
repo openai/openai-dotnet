@@ -43,7 +43,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponsesMessageItemParam")] internal partial class InternalResponsesMessageItemParam {}
 [CodeGenType("ResponsesMessageRole")] internal readonly partial struct InternalResponsesMessageRole {}
 [CodeGenType("ResponsesSystemMessageItemParam")] internal partial class InternalResponsesSystemMessageItemParam {}
-[CodeGenType("ResponseStreamEventType")] internal readonly partial struct InternalResponseStreamEventType {}
 [CodeGenType("ResponsesUserMessageItemParam")] internal partial class InternalResponsesUserMessageItemParam {}
 [CodeGenType("ResponseTextFormatConfigurationJsonObject")] internal partial class InternalResponsesTextFormatJsonObject {}
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}
@@ -66,7 +65,7 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownReasoningItemSummaryPart")] internal partial class InternalUnknownReasoningItemSummaryPart {}
 [CodeGenType("UnknownResponsesMessageItemParam")] internal partial class InternalUnknownResponsesMessageItemResourceItemParam {}
 [CodeGenType("UnknownResponsesMessageItemResource")] internal partial class InternalUnknownResponsesMessageItemResource {}
-[CodeGenType("UnknownResponseStreamEvent")] internal partial class UnknownResponseStreamEvent {}
+[CodeGenType("UnknownResponseStreamEvent")] internal partial class InternalUnknownResponseStreamEvent {}
 [CodeGenType("UnknownResponseTextFormatConfiguration")] internal partial class InternalUnknownResponseTextFormatConfiguration {}
 [CodeGenType("UnknownTool")] internal partial class InternalUnknownTool {}
 [CodeGenType("UnknownToolChoiceObject")] internal partial class InternalUnknownToolChoiceObject {}

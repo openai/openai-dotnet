@@ -7,4 +7,10 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("StreamingResponseUpdate", typeof(System.ClientModel.ClientResult))]
 public partial class StreamingResponseUpdate
 {
+    // CUSTOM:
+    // - Renamed.
+    // - Made public.
+    // - Removed setter.
+    [CodeGenMember("Type")]
+    public StreamingResponseUpdateKind Kind { get; }
 }

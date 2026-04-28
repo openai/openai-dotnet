@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseContentPartAddedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseContentPartAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(InternalResponseStreamEventType.ResponseContentPartAdded, sequenceNumber)
+        internal StreamingResponseContentPartAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(StreamingResponseUpdateKind.ResponseContentPartAdded, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseContentPartAddedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseContentPartAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

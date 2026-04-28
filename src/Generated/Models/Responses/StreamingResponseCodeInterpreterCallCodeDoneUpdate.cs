@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCodeInterpreterCallCodeDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate(int sequenceNumber, int outputIndex, string itemId, string code) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDone, sequenceNumber)
+        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate(int sequenceNumber, int outputIndex, string itemId, string code) : base(StreamingResponseUpdateKind.ResponseCodeInterpreterCallCodeDone, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string code) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string code) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
