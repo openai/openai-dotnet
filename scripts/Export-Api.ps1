@@ -26,7 +26,7 @@ $configuration = "Release"
 
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
+$projectPath = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
 $outputDirectory = Join-Path $repoRootPath "api"
 
 # Get ClientTargetFrameworks from Directory.Build.props

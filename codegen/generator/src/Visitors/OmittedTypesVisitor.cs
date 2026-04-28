@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator;
 using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Providers;
@@ -12,6 +13,8 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class OmittedTypesVisitor : ScmLibraryVisitor
 {
+    private const string MainPackageName = "OpenAI";
+
     private static IReadOnlyList<string> TypeNamesToOmit =
         [
             "ChatMessageContent",
@@ -20,8 +23,25 @@ public class OmittedTypesVisitor : ScmLibraryVisitor
             "FineTuneChatCompletionRequestAssistantMessageRole",
         ];
 
+    // Types the emitter generates once per package but that should only live
+    // in the main OpenAI package. Split packages (e.g. OpenAI.Responses) reuse
+    // the OpenAI package's copy via shared <Compile Include> in their .csproj.
+    private static IReadOnlyList<string> SharedTypeNamesToOmit =
+        [
+            "OpenAIClient",
+            "OpenAIClientOptions",
+            "OpenAIClientSettings",
+        ];
+
     protected override TypeProvider? VisitType(TypeProvider type)
     {
+        // For split packages, suppress types that are owned by the main OpenAI package.
+        if (CodeModelGenerator.Instance.Configuration.PackageName != MainPackageName
+            && SharedTypeNamesToOmit.Contains(type.Name))
+        {
+            return null;
+        }
+
         // Strip buildable attributes for omitted types from OpenAIContext
         if (type.Name == "OpenAIContext")
         {

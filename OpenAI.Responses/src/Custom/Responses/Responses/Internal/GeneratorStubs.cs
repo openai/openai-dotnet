@@ -3,9 +3,11 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 [CodeGenType("CodeInterpreterContainerConfigurationType")] internal readonly partial struct InternalCodeInterpreterContainerConfigurationType {}
+[CodeGenType("CreateResponseRequestAccept")] internal readonly partial struct InternalCreateResponseRequestAccept {}
 [CodeGenType("ResponsesComparisonFilter")] internal partial class InternalComparisonFilter {}
 [CodeGenType("ResponsesComparisonFilterType")] internal readonly partial struct InternalComparisonFilterType {}
 [CodeGenType("ResponsesCompoundFilter")] internal partial class InternalCompoundFilter {}
+[CodeGenType("FileSearchToolFiltersType")] internal readonly partial struct InternalFileSearchToolFiltersType {}
 [CodeGenType("ResponsesCompoundFilterType")] internal readonly partial struct InternalCompoundFilterType {}
 [CodeGenType("ComputerActionClick")] internal partial class InternalComputerActionClick {}
 [CodeGenType("ComputerActionDoubleClick")] internal partial class InternalComputerActionDoubleClick {}

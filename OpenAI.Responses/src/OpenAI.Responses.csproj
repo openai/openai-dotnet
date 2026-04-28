@@ -40,6 +40,15 @@
     <Compile Include="..\..\OpenAI\src\Utility\CodeGen\*.cs" />
     <!-- <Compile Include="..\..\OpenAI\src\Utility\Telemetry\*.cs" /> -->
     <Compile Include="..\..\OpenAI\src\Generated\Internal\*.cs" />
+    <!-- Exclude locally generated CodeGen attributes that duplicate the ones included from OpenAI above (same namespace) -->
+    <Compile Remove="Generated\Internal\CodeGenMemberAttribute.cs" />
+    <Compile Remove="Generated\Internal\CodeGenSerializationAttribute.cs" />
+    <Compile Remove="Generated\Internal\CodeGenSuppressAttribute.cs" />
+    <Compile Remove="Generated\Internal\CodeGenTypeAttribute.cs" />
+    <!-- Exclude OpenAI's ClientPipelineExtensions; Responses has its own custom version with matching ProcessMessage extensions -->
+    <Compile Remove="..\..\OpenAI\src\Generated\Internal\ClientPipelineExtensions.cs" />
+    <!-- Include TelemetryDetails needed by OpenAIClientUtilities -->
+    <Compile Include="..\..\OpenAI\src\Custom\Internal\TelemetryDetails.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">

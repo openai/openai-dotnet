@@ -230,12 +230,6 @@ internal static partial class ClientPipelineExtensions
                     message = error.Message;
                 }
             }
-            else if (typeof(TClient) == typeof(Responses.ResponsesClient))
-            {
-                var errorResponse = Responses.InternalResponseErrorResponse.DeserializeInternalResponseErrorResponse(rootElement, null, null);
-                code = errorResponse.Error.Code.ToString();
-                message = errorResponse.Error.Message;
-            }
             else
             {
                 return TryCreateErrorMessageFromResponse(response);

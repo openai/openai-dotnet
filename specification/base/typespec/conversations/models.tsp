@@ -1,5 +1,4 @@
 import "@typespec/openapi";
-import "../responses/models.tsp";
 using TypeSpec.OpenAPI;
 namespace OpenAI;
 
@@ -35,6 +34,34 @@ model Conversation {
   ...ConversationResource;
 }
 
+union ConversationItemType {
+  message: "message",
+  file_search_call: "file_search_call",
+  function_call: "function_call",
+  function_call_output: "function_call_output",
+  computer_call: "computer_call",
+  computer_call_output: "computer_call_output",
+  web_search_call: "web_search_call",
+  reasoning: "reasoning",
+  item_reference: "item_reference",
+  image_generation_call: "image_generation_call",
+  code_interpreter_call: "code_interpreter_call",
+  local_shell_call: "local_shell_call",
+  local_shell_call_output: "local_shell_call_output",
+  mcp_list_tools: "mcp_list_tools",
+  mcp_approval_request: "mcp_approval_request",
+  mcp_approval_response: "mcp_approval_response",
+  mcp_call: "mcp_call",
+  apply_patch_call: "apply_patch_call",
+  apply_patch_call_output: "apply_patch_call_output",
+}
+
+@discriminator("type")
+model ConversationItemResource {
+  type: ConversationItemType;
+  id: string;
+}
+
 /** A list of Conversation items. */
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @summary("The conversation item list")
@@ -46,7 +73,7 @@ model ConversationItemList {
   object: "list";
 
   /** A list of conversation items. */
-  @pageItems data: ItemResource[];
+  @pageItems data: ConversationItemResource[];
 
   /** Whether there are more items available. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -92,7 +119,7 @@ model CreateConversationBody {
   metadata?: Record<string> | null;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  items?: ItemResource[] | null;
+  items?: ConversationItemResource[] | null;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -107,7 +134,7 @@ model UpdateConversationBody {
 model CreateConversationItemsParametersBody {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @maxItems(20)
-  items: ItemResource[];
+  items: ConversationItemResource[];
 }
 
 /**Specify additional output data to include in the model response. Currently supported values are:

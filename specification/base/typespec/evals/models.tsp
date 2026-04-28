@@ -4,7 +4,6 @@
  */
 
 import "../chat";
-import "../responses";
 import "./custom.tsp";
 
 using Http;
@@ -195,6 +194,32 @@ model EvalJsonlRunDataSourceParams extends EvalRunDataSourceParams {
   source: EvalRunFileContentDataContentSource | EvalRunFileIdDataContentSource;
 }
 
+@doc("""
+  An object specifying the format that the model must output.
+  
+  Configuring `{ "type": "json_schema" }` enables Structured Outputs,
+  which ensures the model will match your supplied JSON schema. Learn more in the
+  [Structured Outputs guide](/docs/guides/structured-outputs).
+  
+  The default format is `{ "type": "text" }` with no additional options.
+  
+  **Not recommended for gpt-4o and newer models:**
+  
+  Setting to `{ "type": "json_object" }` enables the older JSON mode, which
+  ensures the message the model generates is valid JSON. Using `json_schema`
+  is preferred for models that support it.
+  """)
+union EvalTextFormatConfigurationType {
+  string,
+  text: "text",
+  json_schema: "json_schema",
+  json_object: "json_object",
+}
+@discriminator("type")
+model EvalTextFormatConfiguration {
+  type: EvalTextFormatConfigurationType;
+}
+
 // Tool customization (apply_discriminator): Apply discriminated type
 /** A CompletionsRunDataSource object describing a model sampling configuration. */
 model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
@@ -215,7 +240,7 @@ model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
     @doc("""
       A list of chat messages forming the prompt or context. May include variable references to the `item` namespace, ie {{item.name}}.
       """)
-    template: (EasyInputMessage | EvalItem)[];
+    template: (unknown | EvalItem)[];
   } | {
     @doc("""
       The type of input messages. Always `item_reference`.
@@ -254,7 +279,7 @@ model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
       ensures the message the model generates is valid JSON. Using `json_schema`
       is preferred for models that support it.
       """)
-    response_format?: ResponseTextFormatConfiguration;
+    response_format?: EvalTextFormatConfiguration;
 
     /** A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported. */
     tools?: ChatCompletionTool[];
@@ -268,6 +293,26 @@ model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
     Determines what populates the `item` namespace in this run's data source.
     """)
   source: EvalRunFileContentDataContentSource | EvalRunFileIdDataContentSource | EvalRunStoredCompletionsDataContentSource;
+}
+
+// Tool customization: Establish a discriminated type base for tools
+/** A tool that can be used to generate a response. */
+union EvalToolType {
+  string,
+  file_search: "file_search",
+  function: "function",
+  computer_use_preview: "computer_use_preview",
+  web_search: "web_search",
+  web_search_preview: "web_search_preview",
+  mcp: "mcp",
+  code_interpreter: "code_interpreter",
+  image_generation: "image_generation",
+  local_shell: "local_shell",
+  apply_patch: "apply_patch",
+}
+@discriminator("type")
+model EvalTool {
+  type: EvalToolType;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type
@@ -336,7 +381,7 @@ model EvalResponsesRunDataSourceParams extends EvalRunDataSourceParams {
         enabling the model to call your own code. Learn more about
         [function calling](/docs/guides/function-calling).
       """)
-    tools?: Tool[];
+    tools?: EvalTool[];
 
     /**
      * Configuration options for a text response from the model. Can be plain
@@ -346,7 +391,7 @@ model EvalResponsesRunDataSourceParams extends EvalRunDataSourceParams {
      */
     text?: {
       // Tool customization: Employ discriminated type base
-      format?: ResponseTextFormatConfiguration;
+      format?: EvalTextFormatConfiguration;
     };
   };
 

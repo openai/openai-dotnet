@@ -5,7 +5,6 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Responses
 {

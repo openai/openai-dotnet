@@ -112,3 +112,9 @@ namespace OpenAI.Evals;
 [CodeGenType("EvalResponsesRunDataSourceParamsSamplingParamsText")] internal partial class InternalEvalResponsesRunDataSourceParamsSamplingParamsText {}
 [CodeGenType("CreateEvalItem1")] internal partial class InternalCreateEvalItem1 {}
 [CodeGenType("EvalJsonlRunDataSourceParamsSourceContent")] internal partial class InternalEvalJsonlRunDataSourceParamsSourceContent {}
+[CodeGenType("EvalTextFormatConfigurationType")] internal readonly partial struct InternalEvalTextFormatConfigurationType {}
+[CodeGenType("EvalToolType")] internal readonly partial struct InternalEvalToolType {}
+[CodeGenType("EvalTool")] internal partial class InternalEvalTool {}
+[CodeGenType("EvalTextFormatConfiguration")] internal partial class InternalEvalTextFormatConfiguration {}
+[CodeGenType("UnknownEvalTool")] internal partial class InternalUnknownEvalTool {}
+[CodeGenType("UnknownEvalTextFormatConfiguration")] internal partial class InternalUnknownEvalTextFormatConfiguration {}
