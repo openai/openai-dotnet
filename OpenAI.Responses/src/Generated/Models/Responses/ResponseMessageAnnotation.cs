@@ -33,6 +33,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal ResponseMessageAnnotationKind Kind { get; set; }
+        public ResponseMessageAnnotationKind Kind { get; }
     }
 }

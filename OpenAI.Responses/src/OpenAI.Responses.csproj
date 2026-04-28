@@ -37,7 +37,13 @@
 
   <ItemGroup>
     <Compile Include="..\..\OpenAI\src\Utility\*.cs" />
-    <Compile Include="..\..\OpenAI\src\Utility\CodeGen\*.cs" />
+    <!-- NOTE: Do NOT include OpenAI/src/Utility/CodeGen/*.cs via cross-project link.
+         The TypeSpec generator's custom-code Roslyn compilation only scans this
+         project's directory tree to resolve attributes such as
+         [CodeGenVisibility]. Files linked from another project are invisible to
+         that scan, which causes the attribute to be silently ignored. Keep a
+         copy of CodeGenVisibilityAttribute.cs under this project at
+         src/Utility/CodeGen/ instead. -->
     <!-- <Compile Include="..\..\OpenAI\src\Utility\Telemetry\*.cs" /> -->
     <Compile Include="..\..\OpenAI\src\Generated\Internal\*.cs" />
     <!-- Exclude locally generated CodeGen attributes that duplicate the ones included from OpenAI above (same namespace) -->
