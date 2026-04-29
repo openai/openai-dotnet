@@ -134,11 +134,19 @@ AudioClient whisperClient = client.GetAudioClient("whisper-1");
 
 ## How to use dependency injection
 
-The OpenAI clients are **thread-safe** and can be safely registered as **singletons** in ASP.NET Core's Dependency Injection container. This maximizes resource efficiency and HTTP connection reuse.
+The OpenAI clients are **thread-safe** and can be safely registered as **singletons** in ASP.NET Core's Dependency Injection container. This maximizes resource efficiency and HTTP connection reuse. In your *Program.cs* file, register the `ChatClient` as follows:
 
-Register the `ChatClient` as a singleton in your `Program.cs`:
+### OpenAI v2.10.0 and later
 
-```C# Snippet:ReadMe_DependencyInjection_Register
+```C# Snippet:ReadMe_DependencyInjection_Register_New
+builder.AddClient<ChatClient, ChatClientSettings>("Clients:ChatClient");
+```
+
+> For a complete ASP.NET Core sample project, see [v2.10.0+ sample](examples/aspnet-core/v2.10.0/README.md).
+
+### OpenAI v2.9.1 or earlier
+
+```C# Snippet:ReadMe_DependencyInjection_Register_Legacy
 builder.Services.AddSingleton<ChatClient>(serviceProvider =>
 {
     var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
@@ -147,6 +155,8 @@ builder.Services.AddSingleton<ChatClient>(serviceProvider =>
     return new ChatClient(model, apiKey);
 });
 ```
+
+> For a complete ASP.NET Core sample project, see [v2.9.1 sample](examples/aspnet-core/v2.9.1/README.md).
 
 Then inject and use the client in your controllers or services:
 

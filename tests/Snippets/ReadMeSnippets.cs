@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -128,14 +129,14 @@ public class ReadMeSnippets
     [Test]
     public void DependencyInjection_Register()
     {
-        var builderMock = new Mock<ApplicationBuilder>();
+        var builderMock = new Mock<IHostApplicationBuilder>();
         var builder = builderMock.Object;
 
         builderMock
             .SetupGet(b => b.Services)
             .Returns(new ServiceCollection());
 
-        #region Snippet:ReadMe_DependencyInjection_Register
+        #region Snippet:ReadMe_DependencyInjection_Register_Legacy
         builder.Services.AddSingleton<ChatClient>(serviceProvider =>
         {
             var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
@@ -144,6 +145,12 @@ public class ReadMeSnippets
             return new ChatClient(model, apiKey);
         });
         #endregion
+
+#pragma warning disable SCME0002 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        #region Snippet:ReadMe_DependencyInjection_Register_New
+        builder.AddClient<ChatClient, ChatClientSettings>("Clients:ChatClient");
+        #endregion
+#pragma warning restore SCME0002 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     }
 
     [Test]
