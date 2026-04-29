@@ -6006,7 +6006,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseError : IJsonModel<ResponseError>, IPersistableModel<ResponseError> {
         public ResponseErrorCode Code { get; }
+        public string Kind { get; }
         public string Message { get; }
+        public string Param { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
