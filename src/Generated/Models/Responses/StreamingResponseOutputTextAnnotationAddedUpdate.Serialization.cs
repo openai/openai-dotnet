@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationAddedUpdate>
+    public partial class StreamingResponseOutputTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextAnnotationAddedUpdate>
     {
-        public StreamingResponseTextAnnotationAddedUpdate() : this(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, default, default, null, default, default, default, null)
+        public StreamingResponseOutputTextAnnotationAddedUpdate() : this(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, default, default, null, default, default, default, null)
         {
         }
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingResponseTextAnnotationAddedUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseOutputTextAnnotationAddedUpdate(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseOutputTextAnnotationAddedUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseOutputTextAnnotationAddedUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        StreamingResponseTextAnnotationAddedUpdate IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseTextAnnotationAddedUpdate)PersistableModelCreateCore(data, options);
+        StreamingResponseOutputTextAnnotationAddedUpdate IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseOutputTextAnnotationAddedUpdate)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<StreamingResponseTextAnnotationAddedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseOutputTextAnnotationAddedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +66,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseOutputTextAnnotationAddedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -96,34 +96,27 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.annotation"u8))
             {
                 writer.WritePropertyName("annotation"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Annotation);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Annotation))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(Annotation, options);
             }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        StreamingResponseTextAnnotationAddedUpdate IJsonModel<StreamingResponseTextAnnotationAddedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseTextAnnotationAddedUpdate)JsonModelCreateCore(ref reader, options);
+        StreamingResponseOutputTextAnnotationAddedUpdate IJsonModel<StreamingResponseOutputTextAnnotationAddedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseOutputTextAnnotationAddedUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(StreamingResponseTextAnnotationAddedUpdate)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseOutputTextAnnotationAddedUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseTextAnnotationAddedUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseOutputTextAnnotationAddedUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseTextAnnotationAddedUpdate DeserializeStreamingResponseTextAnnotationAddedUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseOutputTextAnnotationAddedUpdate DeserializeStreamingResponseOutputTextAnnotationAddedUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -138,7 +131,7 @@ namespace OpenAI.Responses
             int outputIndex = default;
             int contentIndex = default;
             int annotationIndex = default;
-            BinaryData annotation = default;
+            ResponseMessageAnnotation annotation = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -173,12 +166,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("annotation"u8))
                 {
-                    annotation = BinaryData.FromString(prop.Value.GetRawText());
+                    annotation = ResponseMessageAnnotation.DeserializeResponseMessageAnnotation(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingResponseTextAnnotationAddedUpdate(
+            return new StreamingResponseOutputTextAnnotationAddedUpdate(
                 kind,
                 sequenceNumber,
                 patch,
@@ -188,5 +181,33 @@ namespace OpenAI.Responses
                 annotationIndex,
                 annotation);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("annotation"u8))
+            {
+                return Annotation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("annotation"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("annotation"u8))
+            {
+                Annotation.Patch.Set([.. "$"u8, .. local.Slice("annotation"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

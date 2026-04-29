@@ -6564,6 +6564,7 @@ namespace OpenAI.Responses {
     public class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate> {
         public StreamingResponseFunctionCallArgumentsDoneUpdate();
         public BinaryData FunctionArguments { get; set; }
+        public string FunctionName { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
@@ -6666,6 +6667,14 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class StreamingResponseOutputTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextAnnotationAddedUpdate>, IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate> {
+        public ResponseMessageAnnotation Annotation { get; }
+        public int AnnotationIndex { get; }
+        public int ContentIndex { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+    }
+    [Experimental("OPENAI001")]
     public class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDeltaUpdate>, IPersistableModel<StreamingResponseOutputTextDeltaUpdate> {
         public StreamingResponseOutputTextDeltaUpdate();
         public int ContentIndex { get; set; }
@@ -6751,21 +6760,80 @@ namespace OpenAI.Responses {
         public string Refusal { get; set; }
     }
     [Experimental("OPENAI001")]
-    public class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationAddedUpdate>, IPersistableModel<StreamingResponseTextAnnotationAddedUpdate> {
-        public StreamingResponseTextAnnotationAddedUpdate();
-        public BinaryData Annotation { get; set; }
-        public int AnnotationIndex { get; set; }
-        public int ContentIndex { get; set; }
-        public string ItemId { get; set; }
-        public int OutputIndex { get; set; }
-    }
-    [Experimental("OPENAI001")]
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
+        public StreamingResponseUpdateKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public int SequenceNumber { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct StreamingResponseUpdateKind : IEquatable<StreamingResponseUpdateKind> {
+        public StreamingResponseUpdateKind(string value);
+        public static StreamingResponseUpdateKind Error { get; }
+        public static StreamingResponseUpdateKind ResponseAudioDelta { get; }
+        public static StreamingResponseUpdateKind ResponseAudioDone { get; }
+        public static StreamingResponseUpdateKind ResponseAudioTranscriptDelta { get; }
+        public static StreamingResponseUpdateKind ResponseAudioTranscriptDone { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallCodeDelta { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallCodeDone { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallInterpreting { get; }
+        public static StreamingResponseUpdateKind ResponseCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseContentPartAdded { get; }
+        public static StreamingResponseUpdateKind ResponseContentPartDone { get; }
+        public static StreamingResponseUpdateKind ResponseCreated { get; }
+        public static StreamingResponseUpdateKind ResponseCustomToolCallInputDelta { get; }
+        public static StreamingResponseUpdateKind ResponseCustomToolCallInputDone { get; }
+        public static StreamingResponseUpdateKind ResponseFailed { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallSearching { get; }
+        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDelta { get; }
+        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDone { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallGenerating { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallPartialImage { get; }
+        public static StreamingResponseUpdateKind ResponseIncomplete { get; }
+        public static StreamingResponseUpdateKind ResponseInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallArgumentsDelta { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallArgumentsDone { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallFailed { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseMcpListToolsCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseMcpListToolsFailed { get; }
+        public static StreamingResponseUpdateKind ResponseMcpListToolsInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseOutputItemAdded { get; }
+        public static StreamingResponseUpdateKind ResponseOutputItemDone { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextAnnotationAdded { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseQueued { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryPartAdded { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryPartDone { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseRefusalDelta { get; }
+        public static StreamingResponseUpdateKind ResponseRefusalDone { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallSearching { get; }
+        public readonly bool Equals(StreamingResponseUpdateKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
+        public static implicit operator StreamingResponseUpdateKind(string value);
+        public static implicit operator StreamingResponseUpdateKind?(string value);
+        public static bool operator !=(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseWebSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallCompletedUpdate>, IPersistableModel<StreamingResponseWebSearchCallCompletedUpdate> {

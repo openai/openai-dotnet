@@ -37,15 +37,16 @@ namespace OpenAI.Responses
         private const string ResponseIncompleteValue = "response.incomplete";
         private const string ResponseOutputItemAddedValue = "response.output_item.added";
         private const string ResponseOutputItemDoneValue = "response.output_item.done";
-        private const string ResponseRefusalDeltaValue = "response.refusal.delta";
-        private const string ResponseRefusalDoneValue = "response.refusal.done";
-        private const string ResponseOutputTextAnnotationAddedValue = "response.output_text.annotation.added";
-        private const string ResponseOutputTextDeltaValue = "response.output_text.delta";
-        private const string ResponseOutputTextDoneValue = "response.output_text.done";
         private const string ResponseReasoningSummaryPartAddedValue = "response.reasoning_summary_part.added";
         private const string ResponseReasoningSummaryPartDoneValue = "response.reasoning_summary_part.done";
         private const string ResponseReasoningSummaryTextDeltaValue = "response.reasoning_summary_text.delta";
         private const string ResponseReasoningSummaryTextDoneValue = "response.reasoning_summary_text.done";
+        private const string ResponseReasoningTextDeltaValue = "response.reasoning_text.delta";
+        private const string ResponseReasoningTextDoneValue = "response.reasoning_text.done";
+        private const string ResponseRefusalDeltaValue = "response.refusal.delta";
+        private const string ResponseRefusalDoneValue = "response.refusal.done";
+        private const string ResponseOutputTextDeltaValue = "response.output_text.delta";
+        private const string ResponseOutputTextDoneValue = "response.output_text.done";
         private const string ResponseWebSearchCallCompletedValue = "response.web_search_call.completed";
         private const string ResponseWebSearchCallInProgressValue = "response.web_search_call.in_progress";
         private const string ResponseWebSearchCallSearchingValue = "response.web_search_call.searching";
@@ -61,13 +62,10 @@ namespace OpenAI.Responses
         private const string ResponseMcpListToolsCompletedValue = "response.mcp_list_tools.completed";
         private const string ResponseMcpListToolsFailedValue = "response.mcp_list_tools.failed";
         private const string ResponseMcpListToolsInProgressValue = "response.mcp_list_tools.in_progress";
+        private const string ResponseOutputTextAnnotationAddedValue = "response.output_text.annotation.added";
         private const string ResponseQueuedValue = "response.queued";
-        private const string ResponseReasoningDeltaValue = "response.reasoning.delta";
-        private const string ResponseReasoningDoneValue = "response.reasoning.done";
-        private const string ResponseReasoningSummaryDeltaValue = "response.reasoning_summary.delta";
-        private const string ResponseReasoningSummaryDoneValue = "response.reasoning_summary.done";
-        private const string ResponseReasoningTextDeltaValue = "response.reasoning_text.delta";
-        private const string ResponseReasoningTextDoneValue = "response.reasoning_text.done";
+        private const string ResponseCustomToolCallInputDeltaValue = "response.custom_tool_call_input.delta";
+        private const string ResponseCustomToolCallInputDoneValue = "response.custom_tool_call_input.done";
 
         public StreamingResponseUpdateKind(string value)
         {
@@ -124,16 +122,6 @@ namespace OpenAI.Responses
 
         public static StreamingResponseUpdateKind ResponseOutputItemDone { get; } = new StreamingResponseUpdateKind(ResponseOutputItemDoneValue);
 
-        public static StreamingResponseUpdateKind ResponseRefusalDelta { get; } = new StreamingResponseUpdateKind(ResponseRefusalDeltaValue);
-
-        public static StreamingResponseUpdateKind ResponseRefusalDone { get; } = new StreamingResponseUpdateKind(ResponseRefusalDoneValue);
-
-        public static StreamingResponseUpdateKind ResponseOutputTextAnnotationAdded { get; } = new StreamingResponseUpdateKind(ResponseOutputTextAnnotationAddedValue);
-
-        public static StreamingResponseUpdateKind ResponseOutputTextDelta { get; } = new StreamingResponseUpdateKind(ResponseOutputTextDeltaValue);
-
-        public static StreamingResponseUpdateKind ResponseOutputTextDone { get; } = new StreamingResponseUpdateKind(ResponseOutputTextDoneValue);
-
         public static StreamingResponseUpdateKind ResponseReasoningSummaryPartAdded { get; } = new StreamingResponseUpdateKind(ResponseReasoningSummaryPartAddedValue);
 
         public static StreamingResponseUpdateKind ResponseReasoningSummaryPartDone { get; } = new StreamingResponseUpdateKind(ResponseReasoningSummaryPartDoneValue);
@@ -141,6 +129,18 @@ namespace OpenAI.Responses
         public static StreamingResponseUpdateKind ResponseReasoningSummaryTextDelta { get; } = new StreamingResponseUpdateKind(ResponseReasoningSummaryTextDeltaValue);
 
         public static StreamingResponseUpdateKind ResponseReasoningSummaryTextDone { get; } = new StreamingResponseUpdateKind(ResponseReasoningSummaryTextDoneValue);
+
+        public static StreamingResponseUpdateKind ResponseReasoningTextDelta { get; } = new StreamingResponseUpdateKind(ResponseReasoningTextDeltaValue);
+
+        public static StreamingResponseUpdateKind ResponseReasoningTextDone { get; } = new StreamingResponseUpdateKind(ResponseReasoningTextDoneValue);
+
+        public static StreamingResponseUpdateKind ResponseRefusalDelta { get; } = new StreamingResponseUpdateKind(ResponseRefusalDeltaValue);
+
+        public static StreamingResponseUpdateKind ResponseRefusalDone { get; } = new StreamingResponseUpdateKind(ResponseRefusalDoneValue);
+
+        public static StreamingResponseUpdateKind ResponseOutputTextDelta { get; } = new StreamingResponseUpdateKind(ResponseOutputTextDeltaValue);
+
+        public static StreamingResponseUpdateKind ResponseOutputTextDone { get; } = new StreamingResponseUpdateKind(ResponseOutputTextDoneValue);
 
         public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; } = new StreamingResponseUpdateKind(ResponseWebSearchCallCompletedValue);
 
@@ -172,19 +172,13 @@ namespace OpenAI.Responses
 
         public static StreamingResponseUpdateKind ResponseMcpListToolsInProgress { get; } = new StreamingResponseUpdateKind(ResponseMcpListToolsInProgressValue);
 
+        public static StreamingResponseUpdateKind ResponseOutputTextAnnotationAdded { get; } = new StreamingResponseUpdateKind(ResponseOutputTextAnnotationAddedValue);
+
         public static StreamingResponseUpdateKind ResponseQueued { get; } = new StreamingResponseUpdateKind(ResponseQueuedValue);
 
-        public static StreamingResponseUpdateKind ResponseReasoningDelta { get; } = new StreamingResponseUpdateKind(ResponseReasoningDeltaValue);
+        public static StreamingResponseUpdateKind ResponseCustomToolCallInputDelta { get; } = new StreamingResponseUpdateKind(ResponseCustomToolCallInputDeltaValue);
 
-        public static StreamingResponseUpdateKind ResponseReasoningDone { get; } = new StreamingResponseUpdateKind(ResponseReasoningDoneValue);
-
-        public static StreamingResponseUpdateKind ResponseReasoningSummaryDelta { get; } = new StreamingResponseUpdateKind(ResponseReasoningSummaryDeltaValue);
-
-        public static StreamingResponseUpdateKind ResponseReasoningSummaryDone { get; } = new StreamingResponseUpdateKind(ResponseReasoningSummaryDoneValue);
-
-        public static StreamingResponseUpdateKind ResponseReasoningTextDelta { get; } = new StreamingResponseUpdateKind(ResponseReasoningTextDeltaValue);
-
-        public static StreamingResponseUpdateKind ResponseReasoningTextDone { get; } = new StreamingResponseUpdateKind(ResponseReasoningTextDoneValue);
+        public static StreamingResponseUpdateKind ResponseCustomToolCallInputDone { get; } = new StreamingResponseUpdateKind(ResponseCustomToolCallInputDoneValue);
 
         public static bool operator ==(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right) => left.Equals(right);
 

@@ -3,7 +3,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("ResponseMCPCallInProgressEvent")]
+[CodeGenType("ResponseMcpCallInProgressEvent")]
 public partial class StreamingResponseMcpCallInProgressUpdate
 {
 }

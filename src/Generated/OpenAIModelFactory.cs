@@ -661,7 +661,44 @@ namespace OpenAI
 
         public static StreamingResponseUpdate StreamingResponseUpdate(string kind = default, int sequenceNumber = default)
         {
-            return new UnknownResponseStreamEvent(new StreamingResponseUpdateKind(kind), sequenceNumber, default);
+            return new InternalUnknownResponseStreamEvent(new StreamingResponseUpdateKind(kind), sequenceNumber, default);
+        }
+
+        public static StreamingResponseCodeInterpreterCallCodeDeltaUpdate StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string delta = default)
+        {
+            return new StreamingResponseCodeInterpreterCallCodeDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                delta);
+        }
+
+        public static StreamingResponseCodeInterpreterCallCodeDoneUpdate StreamingResponseCodeInterpreterCallCodeDoneUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string code = default)
+        {
+            return new StreamingResponseCodeInterpreterCallCodeDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                code);
+        }
+
+        public static StreamingResponseCodeInterpreterCallCompletedUpdate StreamingResponseCodeInterpreterCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseCodeInterpreterCallCompletedUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseCodeInterpreterCallInProgressUpdate StreamingResponseCodeInterpreterCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseCodeInterpreterCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseCodeInterpreterCallInterpretingUpdate StreamingResponseCodeInterpreterCallInterpretingUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseCodeInterpreterCallInterpretingUpdate(default, sequenceNumber, default, outputIndex, itemId);
         }
 
         public static StreamingResponseCompletedUpdate StreamingResponseCompletedUpdate(int sequenceNumber = default, ResponseResult response = default)
@@ -735,13 +772,14 @@ namespace OpenAI
                 delta);
         }
 
-        public static StreamingResponseFunctionCallArgumentsDoneUpdate StreamingResponseFunctionCallArgumentsDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, BinaryData functionArguments = default)
+        public static StreamingResponseFunctionCallArgumentsDoneUpdate StreamingResponseFunctionCallArgumentsDoneUpdate(int sequenceNumber = default, string itemId = default, string functionName = default, int outputIndex = default, BinaryData functionArguments = default)
         {
             return new StreamingResponseFunctionCallArgumentsDoneUpdate(
                 default,
                 sequenceNumber,
                 default,
                 itemId,
+                functionName,
                 outputIndex,
                 functionArguments);
         }
@@ -769,54 +807,6 @@ namespace OpenAI
         public static StreamingResponseOutputItemDoneUpdate StreamingResponseOutputItemDoneUpdate(int sequenceNumber = default, int outputIndex = default, ResponseItem item = default)
         {
             return new StreamingResponseOutputItemDoneUpdate(default, sequenceNumber, default, outputIndex, item);
-        }
-
-        public static StreamingResponseRefusalDeltaUpdate StreamingResponseRefusalDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
-        {
-            return new StreamingResponseRefusalDeltaUpdate(
-                default,
-                sequenceNumber,
-                default,
-                itemId,
-                outputIndex,
-                contentIndex,
-                delta);
-        }
-
-        public static StreamingResponseRefusalDoneUpdate StreamingResponseRefusalDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string refusal = default)
-        {
-            return new StreamingResponseRefusalDoneUpdate(
-                default,
-                sequenceNumber,
-                default,
-                itemId,
-                outputIndex,
-                contentIndex,
-                refusal);
-        }
-
-        public static StreamingResponseOutputTextDeltaUpdate StreamingResponseOutputTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
-        {
-            return new StreamingResponseOutputTextDeltaUpdate(
-                default,
-                sequenceNumber,
-                default,
-                itemId,
-                outputIndex,
-                contentIndex,
-                delta);
-        }
-
-        public static StreamingResponseOutputTextDoneUpdate StreamingResponseOutputTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
-        {
-            return new StreamingResponseOutputTextDoneUpdate(
-                default,
-                sequenceNumber,
-                default,
-                itemId,
-                outputIndex,
-                contentIndex,
-                text);
         }
 
         public static StreamingResponseReasoningSummaryPartAddedUpdate StreamingResponseReasoningSummaryPartAddedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int summaryIndex = default, ReasoningSummaryPart part = default)
@@ -882,6 +872,54 @@ namespace OpenAI
         public static StreamingResponseReasoningTextDoneUpdate StreamingResponseReasoningTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
         {
             return new StreamingResponseReasoningTextDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                text);
+        }
+
+        public static StreamingResponseRefusalDeltaUpdate StreamingResponseRefusalDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
+        {
+            return new StreamingResponseRefusalDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                delta);
+        }
+
+        public static StreamingResponseRefusalDoneUpdate StreamingResponseRefusalDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string refusal = default)
+        {
+            return new StreamingResponseRefusalDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                refusal);
+        }
+
+        public static StreamingResponseOutputTextDeltaUpdate StreamingResponseOutputTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
+        {
+            return new StreamingResponseOutputTextDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                delta);
+        }
+
+        public static StreamingResponseOutputTextDoneUpdate StreamingResponseOutputTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
+        {
+            return new StreamingResponseOutputTextDoneUpdate(
                 default,
                 sequenceNumber,
                 default,
@@ -985,9 +1023,9 @@ namespace OpenAI
             return new StreamingResponseMcpListToolsInProgressUpdate(default, sequenceNumber, default, itemId, outputIndex);
         }
 
-        public static StreamingResponseTextAnnotationAddedUpdate StreamingResponseTextAnnotationAddedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, int annotationIndex = default, BinaryData annotation = default)
+        public static StreamingResponseOutputTextAnnotationAddedUpdate StreamingResponseOutputTextAnnotationAddedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, int annotationIndex = default, ResponseMessageAnnotation annotation = default)
         {
-            return new StreamingResponseTextAnnotationAddedUpdate(
+            return new StreamingResponseOutputTextAnnotationAddedUpdate(
                 default,
                 sequenceNumber,
                 default,
@@ -1001,43 +1039,6 @@ namespace OpenAI
         public static StreamingResponseQueuedUpdate StreamingResponseQueuedUpdate(int sequenceNumber = default, ResponseResult response = default)
         {
             return new StreamingResponseQueuedUpdate(default, sequenceNumber, default, response);
-        }
-
-        public static StreamingResponseCodeInterpreterCallCodeDeltaUpdate StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string delta = default)
-        {
-            return new StreamingResponseCodeInterpreterCallCodeDeltaUpdate(
-                default,
-                sequenceNumber,
-                default,
-                outputIndex,
-                itemId,
-                delta);
-        }
-
-        public static StreamingResponseCodeInterpreterCallCodeDoneUpdate StreamingResponseCodeInterpreterCallCodeDoneUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string code = default)
-        {
-            return new StreamingResponseCodeInterpreterCallCodeDoneUpdate(
-                default,
-                sequenceNumber,
-                default,
-                outputIndex,
-                itemId,
-                code);
-        }
-
-        public static StreamingResponseCodeInterpreterCallCompletedUpdate StreamingResponseCodeInterpreterCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
-        {
-            return new StreamingResponseCodeInterpreterCallCompletedUpdate(default, sequenceNumber, default, outputIndex, itemId);
-        }
-
-        public static StreamingResponseCodeInterpreterCallInProgressUpdate StreamingResponseCodeInterpreterCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
-        {
-            return new StreamingResponseCodeInterpreterCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
-        }
-
-        public static StreamingResponseCodeInterpreterCallInterpretingUpdate StreamingResponseCodeInterpreterCallInterpretingUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
-        {
-            return new StreamingResponseCodeInterpreterCallInterpretingUpdate(default, sequenceNumber, default, outputIndex, itemId);
         }
 
         public static ResponseDeletionResult ResponseDeletionResult(string responseId = default, bool deleted = default)

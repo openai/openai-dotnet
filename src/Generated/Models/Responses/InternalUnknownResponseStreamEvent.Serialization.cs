@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class UnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>
+    internal partial class InternalUnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>
     {
-        internal UnknownResponseStreamEvent() : this(default, default, default)
+        internal InternalUnknownResponseStreamEvent() : this(default, default, default)
         {
         }
 
@@ -91,7 +91,7 @@ namespace OpenAI.Responses
             return DeserializeStreamingResponseUpdate(document.RootElement, null, options);
         }
 
-        internal static UnknownResponseStreamEvent DeserializeUnknownResponseStreamEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalUnknownResponseStreamEvent DeserializeInternalUnknownResponseStreamEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -116,7 +116,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new UnknownResponseStreamEvent(kind, sequenceNumber, patch);
+            return new InternalUnknownResponseStreamEvent(kind, sequenceNumber, patch);
         }
     }
 }

@@ -91,10 +91,6 @@ namespace OpenAI.Responses;
 [CodeGenType("MCPCallItemParam")] internal partial class InternalMCPCallItemParam {}
 [CodeGenType("LocalShellToolCallItemResource")] internal partial class InternalLocalShellToolCallItemResource {}
 [CodeGenType("LocalShellToolCallOutputItemResource")] internal partial class InternalLocalShellToolCallOutputItemResource {}
-[CodeGenType("ResponseReasoningDeltaEvent")] internal partial class InternalResponseReasoningDeltaEvent {}
-[CodeGenType("ResponseReasoningDoneEvent")] internal partial class InternalResponseReasoningDoneEvent {}
-[CodeGenType("ResponseReasoningSummaryDeltaEvent")] internal partial class InternalResponseReasoningSummaryDeltaEvent {}
-[CodeGenType("ResponseReasoningSummaryDoneEvent")] internal partial class InternalResponseReasoningSummaryDoneEvent {}
 [CodeGenType("UnknownCodeInterpreterToolOutput")] internal partial class InternalUnknownCodeInterpreterToolOutput {}
 [CodeGenType("UnknownCodeInterpreterContainerConfiguration")] internal partial class InternalUnknownCodeInterpreterContainerConfiguration {}
 [CodeGenType("GetInputTokenCountsRequestContentType")] internal readonly partial struct InternalGetInputTokenCountsRequestContentType {}

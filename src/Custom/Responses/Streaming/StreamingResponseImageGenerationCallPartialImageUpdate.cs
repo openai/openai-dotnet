@@ -3,7 +3,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("ResponseImageGenCallPartialImageEvent")]
+[CodeGenType("ResponseImageGenerationCallPartialImageEvent")]
 public partial class StreamingResponseImageGenerationCallPartialImageUpdate
 {
 }
