@@ -325,13 +325,27 @@ $(if ($ActionRunUrl) { "`n- [Action Run]($ActionRunUrl)" })
 If there are any issues with the generated code, please review the [TypeSpec release notes](https://github.com/microsoft/typespec/releases) for breaking changes or new features that may require manual adjustments.
 "@
     
-    # Ensure the label exists (create it if missing)
-    gh label create "typespec-generator-update" --description "PR created by the Update TypeSpec Generator Version workflow" --color "1d76db" 2>&1 | Out-Null
+    # Ensure the label exists (create it if missing) — best-effort, do not fail the script if this errors
+    try {
+        gh label create "typespec-generator-update" --description "PR created by the Update TypeSpec Generator Version workflow" --color "1d76db" 2>&1 | Out-Null
+    } catch {
+        Write-WarningLog "Could not create 'typespec-generator-update' label (may already exist or insufficient permissions). Continuing."
+    }
 
-    $prUrl = gh pr create --title $prTitle --body $prBody --base $BaseBranch --head $PRBranch --label "typespec-generator-update" 2>&1
+    $prUrl = gh pr create --title $prTitle --body $prBody --base $BaseBranch --head $PRBranch 2>&1
     
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to create PR using gh CLI: $prUrl"
+    }
+
+    # Apply the label to the PR — best-effort, do not fail the script if this errors
+    try {
+        gh pr edit $prUrl --add-label "typespec-generator-update" 2>&1 | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            Write-WarningLog "Could not apply 'typespec-generator-update' label to PR (insufficient permissions). Continuing."
+        }
+    } catch {
+        Write-WarningLog "Could not apply 'typespec-generator-update' label to PR. Continuing."
     }
     
     Write-Log "Successfully created PR: $prUrl"
