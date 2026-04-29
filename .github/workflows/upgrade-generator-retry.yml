@@ -35,7 +35,7 @@ jobs:
           BRANCH="${{ github.event.check_suite.head_branch }}"
 
           # Get the PR number for this branch
-          PR_NUMBER=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          PR_NUMBER=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number // empty' 2>/dev/null || echo "")
           if [ -z "$PR_NUMBER" ]; then
             echo "No PR found for branch $BRANCH. Skipping."
             echo "should-retry=false" >> $GITHUB_OUTPUT
