@@ -50,6 +50,22 @@ Consider enabling [HTTP client instrumentation](https://www.nuget.org/packages/O
 calls made by your application including those done by the OpenAI SDK.
 Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/net/getting-started/) for more details.
 
+### Semantic convention version
+
+By default, the instrumentation emits telemetry following [OpenTelemetry GenAI Semantic Conventions v1.27.0](https://github.com/open-telemetry/semantic-conventions/tree/v1.27.0/docs/gen-ai).
+
+To opt in to the latest experimental GenAI semantic conventions, set the `OTEL_SEMCONV_STABILITY_OPT_IN` environment variable to include `gen_ai_latest_experimental` (comma-separated if combined with other values):
+
+```
+OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental
+```
+
+When this opt-in is enabled, the instrumentation emits attributes following the latest conventions. Notable changes include:
+
+- The `gen_ai.system` attribute is replaced by `gen_ai.provider.name`.
+
+The default behavior (without the opt-in) remains unchanged and continues to emit v1.27.0 conventions.
+
 ### Available sources and meters
 
 The following sources and meters are available:
