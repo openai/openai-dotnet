@@ -146,11 +146,9 @@ public class ReadMeSnippets
         });
         #endregion
 
-#pragma warning disable SCME0002 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
         #region Snippet:ReadMe_DependencyInjection_Register_New
-        builder.AddClient<ChatClient, ChatClientSettings>("Clients:ChatClient");
+        builder.AddChatClient("Clients:ChatClient");
         #endregion
-#pragma warning restore SCME0002 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     }
 
     [Test]

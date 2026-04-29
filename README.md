@@ -139,7 +139,7 @@ The OpenAI clients are **thread-safe** and can be safely registered as **singlet
 ### OpenAI v2.10.0 and later
 
 ```C# Snippet:ReadMe_DependencyInjection_Register_New
-builder.AddClient<ChatClient, ChatClientSettings>("Clients:ChatClient");
+builder.AddChatClient("Clients:ChatClient");
 ```
 
 > For a complete ASP.NET Core sample project, see [v2.10.0+ sample](examples/aspnet-core/v2.10.0/README.md).

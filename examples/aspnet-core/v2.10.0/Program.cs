@@ -1,8 +1,8 @@
-using System.ClientModel;
+using OpenAI;
 using OpenAI.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddClient<ResponsesClient, ResponsesClientSettings>("Clients:ResponsesClient");
+builder.AddResponsesClient("Clients:ResponsesClient");
 
 var app = builder.Build();
 app.MapPost("/responses/create",

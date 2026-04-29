@@ -6,7 +6,7 @@ This sample demonstrates the configuration-driven approach available in the Open
 
 ## Features
 
-- **Configuration-driven registration**: `ResponsesClient` is bound from `IConfiguration` via `ResponsesClientSettings` using `builder.AddClient<TClient, TSettings>(...)`
+- **Configuration-driven registration**: `ResponsesClient` is bound from `IConfiguration` via `ResponsesClientSettings` using the `builder.AddResponsesClient(...)` extension method
 - **Strongly-typed settings**: `ResponsesClientSettings` enables validation for client configuration
 - **Thread-Safe**: `ResponsesClient` is thread-safe and registered for the application's lifetime
 - **Configurable Model**: Model selection via configuration (appsettings.json)
@@ -64,10 +64,10 @@ This sample demonstrates the configuration-driven approach available in the Open
 ### Configuration-driven registration
 
 ```csharp
-builder.AddClient<ResponsesClient, ResponsesClientSettings>("Clients:ResponsesClient");
+builder.AddResponsesClient("Clients:ResponsesClient");
 ```
 
-`AddClient<TClient, TSettings>` reads the named configuration section (here `Clients:ResponsesClient`), binds it to `ResponsesClientSettings`, and registers the resulting `ResponsesClient` with the DI container. The credential is resolved from the `Credential` subsection (e.g., `Clients:ResponsesClient:Credential:Key`), so no manual `ApiKeyCredential` plumbing is required.
+`AddResponsesClient` is an `IHostApplicationBuilder` extension provided by the OpenAI library. It reads the named configuration section (here `Clients:ResponsesClient`), binds it to `ResponsesClientSettings`, and registers the resulting `ResponsesClient` with the DI container. The credential is resolved from the `Credential` subsection (e.g., `Clients:ResponsesClient:Credential:Key`), so no manual `ApiKeyCredential` plumbing is required.
 
 `ResponsesClientSettings` is annotated `[Experimental("SCME0002")]`. This warning is suppressed via `<NoWarn>SCME0002</NoWarn>` in the project file.
 
