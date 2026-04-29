@@ -44,8 +44,8 @@ jobs:
           echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
 
           # Check if the label exists
-          HAS_LABEL=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | grep -c "typespec-generator-update" || echo "0")
-          if [ "$HAS_LABEL" = "0" ]; then
+          HAS_LABEL=$(gh pr view "$PR_NUMBER" --json labels --jq 'any(.labels[].name; . == "typespec-generator-update")')
+          if [ "$HAS_LABEL" != "true" ]; then
             echo "PR does not have 'typespec-generator-update' label. Skipping."
             echo "should-retry=false" >> $GITHUB_OUTPUT
             exit 0
