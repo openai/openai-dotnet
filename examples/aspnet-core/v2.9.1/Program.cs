@@ -18,12 +18,6 @@ app.MapPost("/responses/create",
 });
 app.Run();
 
-public class ResponsesRequest(string message)
-{
-    public string Message { get; set; } = message;
-}
+public record ResponsesRequest(string Message);
 
-public class ResponsesResponse(string response)
-{
-    public string Response { get; set; } = response;
-}
+public record ResponsesResponse(string Response);
