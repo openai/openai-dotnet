@@ -24,6 +24,8 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
         "OpenAI.Responses.ResponseOutputTokenUsageDetails",
         "OpenAI.Responses.ResponseResult",
         "OpenAI.Responses.ResponseTokenUsage",
+        "OpenAI.Responses.ResponseTokenLogProbabilityDetails",
+        "OpenAI.Responses.ResponseTokenTopLogProbabilityDetails",
 
         "OpenAI.Responses.StreamingResponseUpdate",
         "OpenAI.Responses.StreamingResponseAudioDeltaUpdate",

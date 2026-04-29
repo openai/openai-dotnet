@@ -3,28 +3,35 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseOutputTextDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string text) : base(StreamingResponseUpdateKind.ResponseOutputTextDone, sequenceNumber)
+        internal StreamingResponseOutputTextDoneUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, string text, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(StreamingResponseUpdateKind.ResponseOutputTextDone, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Text = text;
+            TokenLogProbabilities = tokenLogProbabilities.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseOutputTextDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, string text) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseOutputTextDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, string text, IList<ResponseTokenLogProbabilityDetails> tokenLogProbabilities) : base(kind, sequenceNumber, patch)
         {
+            // Plugin customization: ensure initialization of collections
             ItemId = itemId;
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Text = text;
+            TokenLogProbabilities = tokenLogProbabilities ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -35,5 +42,7 @@ namespace OpenAI.Responses
         public int ContentIndex { get; set; }
 
         public string Text { get; set; }
+
+        public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
 }

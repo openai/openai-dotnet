@@ -2,35 +2,36 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalTopLogProb
+    [Experimental("OPENAI001")]
+    public partial class ResponseTokenTopLogProbabilityDetails
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalTopLogProb(string token, float logprob, IEnumerable<int> bytes)
+        public ResponseTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes)
         {
+            Argument.AssertNotNull(token, nameof(token));
+
             Token = token;
-            Logprob = logprob;
-            Bytes = bytes.ToList();
+            LogProbability = logProbability;
+            Utf8Bytes = utf8Bytes;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalTopLogProb(string token, float logprob, IList<int> bytes, in JsonPatch patch)
+        internal ResponseTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, in JsonPatch patch)
         {
-            // Plugin customization: ensure initialization of collections
             Token = token;
-            Logprob = logprob;
-            Bytes = bytes ?? new ChangeTrackingList<int>();
+            LogProbability = logProbability;
+            Utf8Bytes = utf8Bytes;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -41,9 +42,5 @@ namespace OpenAI.Responses
         public ref JsonPatch Patch => ref _patch;
 
         public string Token { get; set; }
-
-        public float Logprob { get; set; }
-
-        public IList<int> Bytes { get; }
     }
 }

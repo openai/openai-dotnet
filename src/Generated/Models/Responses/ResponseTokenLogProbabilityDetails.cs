@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,27 +13,31 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalLogProb
+    [Experimental("OPENAI001")]
+    public partial class ResponseTokenLogProbabilityDetails
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalLogProb(string token, float logprob, IEnumerable<int> bytes, IEnumerable<InternalTopLogProb> topLogprobs)
+        public ResponseTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IEnumerable<ResponseTokenTopLogProbabilityDetails> topLogProbabilities)
         {
+            Argument.AssertNotNull(token, nameof(token));
+            Argument.AssertNotNull(topLogProbabilities, nameof(topLogProbabilities));
+
             Token = token;
-            Logprob = logprob;
-            Bytes = bytes.ToList();
-            TopLogprobs = topLogprobs.ToList();
+            LogProbability = logProbability;
+            Utf8Bytes = utf8Bytes;
+            TopLogProbabilities = topLogProbabilities.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalLogProb(string token, float logprob, IList<int> bytes, IList<InternalTopLogProb> topLogprobs, in JsonPatch patch)
+        internal ResponseTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IReadOnlyList<ResponseTokenTopLogProbabilityDetails> topLogProbabilities, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Token = token;
-            Logprob = logprob;
-            Bytes = bytes ?? new ChangeTrackingList<int>();
-            TopLogprobs = topLogprobs ?? new ChangeTrackingList<InternalTopLogProb>();
+            LogProbability = logProbability;
+            Utf8Bytes = utf8Bytes;
+            TopLogProbabilities = topLogProbabilities ?? new ChangeTrackingList<ResponseTokenTopLogProbabilityDetails>();
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -44,11 +49,5 @@ namespace OpenAI.Responses
         public ref JsonPatch Patch => ref _patch;
 
         public string Token { get; set; }
-
-        public float Logprob { get; set; }
-
-        public IList<int> Bytes { get; }
-
-        internal IList<InternalTopLogProb> TopLogprobs { get; }
     }
 }
