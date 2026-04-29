@@ -217,20 +217,32 @@ try {
     
     # Regenerate OpenAI SDK code
     Write-Log "Regenerating OpenAI SDK code"
+    $script:CodeGenErrors = ""
     Push-Location "."
     try {
-        pwsh scripts/Invoke-CodeGen.ps1
+        $codegenOutput = pwsh scripts/Invoke-CodeGen.ps1 2>&1
+        $codegenOutput | ForEach-Object { Write-Host $_ }
+        if ($LASTEXITCODE -ne 0) {
+            $script:CodeGenErrors = ($codegenOutput | Where-Object { $_ -match 'error' }) -join "`n"
+            throw "Code generation failed with exit code $LASTEXITCODE"
+        }
     } catch {
         Write-WarningLog "OpenAI code generation failed: $_"
+        if (-not $script:CodeGenErrors) {
+            $script:CodeGenErrors = $_.Exception.Message
+        }
     }
     Pop-Location
 
     # Build the updated library
     Write-Log "Building the library"
+    $script:BuildErrors = ""
     Push-Location "."
     try {
-        & dotnet build src/OpenAI.csproj
+        $buildOutput = & dotnet build src/OpenAI.csproj 2>&1
+        $buildOutput | ForEach-Object { Write-Host $_ }
         if ($LASTEXITCODE -ne 0) {
+            $script:BuildErrors = ($buildOutput | Where-Object { $_ -match ': error ' }) -join "`n"
             throw "Build failed with exit code $LASTEXITCODE"
         }
     } catch {
@@ -313,13 +325,43 @@ $(if ($ActionRunUrl) { "`n- [Action Run]($ActionRunUrl)" })
 If there are any issues with the generated code, please review the [TypeSpec release notes](https://github.com/microsoft/typespec/releases) for breaking changes or new features that may require manual adjustments.
 "@
     
-    $prUrl = gh pr create --title $prTitle --body $prBody --base $BaseBranch --head $PRBranch 2>&1
+    # Ensure the label exists (create it if missing)
+    gh label create "typespec-generator-update" --description "PR created by the Update TypeSpec Generator Version workflow" --color "1d76db" 2>&1 | Out-Null
+
+    $prUrl = gh pr create --title $prTitle --body $prBody --base $BaseBranch --head $PRBranch --label "typespec-generator-update" 2>&1
     
     if ($LASTEXITCODE -ne 0) {
         throw "Failed to create PR using gh CLI: $prUrl"
     }
     
     Write-Log "Successfully created PR: $prUrl"
+
+    # If codegen or build errors occurred, comment on the PR to request Copilot fix them
+    if ($WarningsEncountered -and ($script:CodeGenErrors -or $script:BuildErrors)) {
+        Write-Log "Requesting Copilot to fix errors on PR..."
+        $errorDetails = ""
+        if ($script:CodeGenErrors) {
+            $errorDetails += "### Code Generation Errors`n``````text`n$($script:CodeGenErrors)`n```````n`n"
+        }
+        if ($script:BuildErrors) {
+            $errorDetails += "### Build Errors`n``````text`n$($script:BuildErrors)`n```````n`n"
+        }
+        $copilotComment = @"
+@copilot The generator version update to ``$PackageVersion`` produced errors during code generation and/or build.
+
+Please use the ``fixing-codegen-errors`` skill to diagnose and fix these errors.
+
+$errorDetails
+Refer to ``.github/skills/fixing-codegen-errors/SKILL.md`` for the triage steps and fix instructions.
+"@
+        gh pr comment $prUrl --body $copilotComment 2>&1 | Out-Null
+        if ($LASTEXITCODE -ne 0) {
+            Write-WarningLog "Failed to add Copilot comment to PR, but PR was created successfully."
+        } else {
+            Write-Log "Copilot fix request comment added to PR."
+        }
+    }
+
     # If warnings were encountered, make the script exit with non-zero code
     # This will mark the GitHub Action step as failed but still create the PR
     if ($WarningsEncountered) {

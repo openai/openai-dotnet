@@ -1,0 +1,131 @@
+name: Copilot Auto-Fix for Generator Updates
+
+on:
+  # Trigger when a check suite completes on a generator-update PR branch
+  check_suite:
+    types: [completed]
+
+jobs:
+  retry-copilot-fix:
+    name: Re-trigger Copilot fix on failure
+    runs-on: ubuntu-latest
+    # Only run when:
+    # 1. The check suite failed
+    # 2. The branch is a generator-update branch
+    # 3. The head commit was authored by copilot or github-actions (not a human)
+    if: >
+      github.event.check_suite.conclusion == 'failure' &&
+      startsWith(github.event.check_suite.head_branch, 'typespec/update-http-client-csharp-')
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.check_suite.head_branch }}
+
+      - name: Check retry count and author
+        id: check-retry
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="${{ github.event.check_suite.head_branch }}"
+
+          # Get the PR number for this branch
+          PR_NUMBER=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -z "$PR_NUMBER" ]; then
+            echo "No PR found for branch $BRANCH. Skipping."
+            echo "should-retry=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "pr-number=$PR_NUMBER" >> $GITHUB_OUTPUT
+
+          # Check if the label exists
+          HAS_LABEL=$(gh pr view "$PR_NUMBER" --json labels --jq '.labels[].name' | grep -c "typespec-generator-update" || echo "0")
+          if [ "$HAS_LABEL" = "0" ]; then
+            echo "PR does not have 'typespec-generator-update' label. Skipping."
+            echo "should-retry=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Count existing @copilot comments (including the initial one from Submit-GeneratorUpdatePr.ps1)
+          COPILOT_COMMENTS=$(gh pr view "$PR_NUMBER" --comments --json comments \
+            --jq '[.comments[] | select(.body | contains("@copilot"))] | length')
+          echo "Copilot comment count: $COPILOT_COMMENTS"
+
+          # Limit to 3 total @copilot attempts (1 initial + 2 retries)
+          MAX_ATTEMPTS=3
+          if [ "$COPILOT_COMMENTS" -ge "$MAX_ATTEMPTS" ]; then
+            echo "Max retry attempts ($MAX_ATTEMPTS) reached. Skipping."
+            echo "should-retry=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Only retry if the last commit was from copilot or github-actions (not a human fix)
+          LAST_AUTHOR=$(git log -1 --format='%an')
+          echo "Last commit author: $LAST_AUTHOR"
+          if [[ "$LAST_AUTHOR" != *"copilot"* && "$LAST_AUTHOR" != *"GitHub Action"* && "$LAST_AUTHOR" != *"github-actions"* ]]; then
+            echo "Last commit was by a human ($LAST_AUTHOR). Skipping auto-retry."
+            echo "should-retry=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "should-retry=true" >> $GITHUB_OUTPUT
+          echo "attempt=$((COPILOT_COMMENTS + 1))" >> $GITHUB_OUTPUT
+
+      - name: Get failure details
+        if: steps.check-retry.outputs.should-retry == 'true'
+        id: get-errors
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.check-retry.outputs.pr-number }}"
+
+          # Get failed check runs from this check suite
+          FAILED_CHECKS=$(gh api \
+            "/repos/${{ github.repository }}/check-suites/${{ github.event.check_suite.id }}/check-runs" \
+            --jq '.check_runs[] | select(.conclusion == "failure") | .name' 2>/dev/null || echo "unknown")
+
+          # Get the build log annotations (errors) from failed check runs
+          ERROR_DETAILS=$(gh api \
+            "/repos/${{ github.repository }}/check-suites/${{ github.event.check_suite.id }}/check-runs" \
+            --jq '.check_runs[] | select(.conclusion == "failure") | "### \(.name)\n\(.output.summary // "No summary available")"' 2>/dev/null || echo "")
+
+          if [ -z "$ERROR_DETAILS" ]; then
+            ERROR_DETAILS="CI checks failed but detailed error output was not available. Please check the failed runs: $FAILED_CHECKS"
+          fi
+
+          # Truncate if too long (GitHub comment limit)
+          if [ ${#ERROR_DETAILS} -gt 8000 ]; then
+            ERROR_DETAILS="${ERROR_DETAILS:0:8000}...(truncated)"
+          fi
+
+          # Write to file to preserve multiline content
+          echo "$ERROR_DETAILS" > /tmp/error_details.txt
+          echo "has-errors=true" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR to re-trigger Copilot
+        if: steps.check-retry.outputs.should-retry == 'true' && steps.get-errors.outputs.has-errors == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.check-retry.outputs.pr-number }}"
+          ATTEMPT="${{ steps.check-retry.outputs.attempt }}"
+          ERROR_DETAILS=$(cat /tmp/error_details.txt)
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          COMMENT_BODY="@copilot CI checks are still failing after your previous fix attempt (attempt $ATTEMPT/3).
+
+          Please use the \`fixing-codegen-errors\` skill to diagnose and fix the remaining errors.
+
+          $ERROR_DETAILS
+
+          [Failed CI Run]($RUN_URL)
+
+          Refer to \`.github/skills/fixing-codegen-errors/SKILL.md\` for the triage steps and fix instructions."
+
+          gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY"
+          echo "Posted retry comment (attempt $ATTEMPT) on PR #$PR_NUMBER"
