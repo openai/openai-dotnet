@@ -45,7 +45,7 @@ This sample demonstrates the configuration-driven approach available in the Open
         ```
         curl -X POST "https://localhost:7098/responses/create" \
              -H "Content-Type: application/json" \
-             -d '{\"message\": \"What is the capital of France?\"}'
+             -d "{\"message\": \"What is the capital of France?\"}"
         ```
 
     1. **PowerShell:**
