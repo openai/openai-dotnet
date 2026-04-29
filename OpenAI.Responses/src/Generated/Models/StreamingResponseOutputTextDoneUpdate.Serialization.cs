@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
@@ -11,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDoneUpdate>
     {
-        public StreamingResponseOutputTextDoneUpdate() : this(StreamingResponseUpdateKind.ResponseOutputTextDone, default, default, null, default, default, null)
+        public StreamingResponseOutputTextDoneUpdate() : this(StreamingResponseUpdateKind.ResponseOutputTextDone, default, default, null, default, default, null, null)
         {
         }
 
@@ -92,6 +93,29 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
+            if (Patch.Contains("$.logprobs"u8))
+            {
+                if (!Patch.IsRemoved("$.logprobs"u8))
+                {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.logprobs"u8));
+                }
+            }
+            else
+            {
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < TokenLogProbabilities.Count; i++)
+                {
+                    if (TokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(TokenLogProbabilities[i], options);
+                }
+                Patch.WriteTo(writer, "$.logprobs"u8);
+                writer.WriteEndArray();
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -125,6 +149,7 @@ namespace OpenAI.Responses
             int outputIndex = default;
             int contentIndex = default;
             string text = default;
+            IList<ResponseTokenLogProbabilityDetails> tokenLogProbabilities = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -157,6 +182,16 @@ namespace OpenAI.Responses
                     text = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("logprobs"u8))
+                {
+                    List<ResponseTokenLogProbabilityDetails> array = new List<ResponseTokenLogProbabilityDetails>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseTokenLogProbabilityDetails.DeserializeResponseTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
+                    }
+                    tokenLogProbabilities = array;
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseOutputTextDoneUpdate(
@@ -166,7 +201,48 @@ namespace OpenAI.Responses
                 itemId,
                 outputIndex,
                 contentIndex,
-                text);
+                text,
+                tokenLogProbabilities);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("logprobs"u8))
+            {
+                int propertyLength = "logprobs"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return TokenLogProbabilities[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("logprobs"u8))
+            {
+                int propertyLength = "logprobs"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                TokenLogProbabilities[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

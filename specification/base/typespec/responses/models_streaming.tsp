@@ -521,7 +521,7 @@ model ResponseOutputTextDeltaEvent extends ResponseStreamEvent {
   delta: string;
 
   /** The log probabilities of the tokens in the delta. */
-  // logprobs: ResponseLogProb[];
+  logprobs: LogProb[];
 }
 
 /** Emitted when text content is finalized. */
@@ -542,7 +542,7 @@ model ResponseOutputTextDoneEvent extends ResponseStreamEvent {
   text: string;
 
   /** The log probabilities of the tokens in the delta. */
-  // logprobs: ResponseLogProb[];
+  logprobs: LogProb[];
 }
 
 /** Emitted when a web search call is completed. */

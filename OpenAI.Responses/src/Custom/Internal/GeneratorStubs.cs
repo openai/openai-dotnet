@@ -79,8 +79,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ToolChoiceObjectImageGen")] internal partial class InternalToolChoiceObjectImageGen {}
 [CodeGenType("ToolChoiceObjectCodeInterpreter")] internal partial class InternalToolChoiceObjectCodeInterpreter {}
 [CodeGenType("ToolChoiceObjectMCP")] internal partial class InternalToolChoiceObjectMCP {}
-[CodeGenType("LogProb")] internal partial class InternalLogProb {}
-[CodeGenType("TopLogProb")] internal partial class InternalTopLogProb {}
 [CodeGenType("ImageGenToolCallItemParam")] internal partial class InternalImageGenToolCallItemParam {}
 [CodeGenType("ImageGenToolModel")] internal partial struct InternalImageGenToolModel { }
 [CodeGenType("CodeInterpreterToolCallItemParam")] internal partial class InternalCodeInterpreterToolCallItemParam {}

@@ -1109,6 +1109,27 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
         public ResponseTextFormat TextFormat { get; set; }
     }
+    public class ResponseTokenLogProbabilityDetails : IJsonModel<ResponseTokenLogProbabilityDetails>, IPersistableModel<ResponseTokenLogProbabilityDetails> {
+        public ResponseTokenLogProbabilityDetails();
+        public ResponseTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IEnumerable<ResponseTokenTopLogProbabilityDetails> topLogProbabilities);
+        public float LogProbability { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; set; }
+        public IReadOnlyList<ResponseTokenTopLogProbabilityDetails> TopLogProbabilities { get; }
+        public ReadOnlyMemory<byte>? Utf8Bytes { get; set; }
+    }
+    public class ResponseTokenTopLogProbabilityDetails : IJsonModel<ResponseTokenTopLogProbabilityDetails>, IPersistableModel<ResponseTokenTopLogProbabilityDetails> {
+        public ResponseTokenTopLogProbabilityDetails();
+        public ResponseTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes);
+        public float LogProbability { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; set; }
+        public ReadOnlyMemory<byte>? Utf8Bytes { get; set; }
+    }
     public class ResponseTokenUsage : IJsonModel<ResponseTokenUsage>, IPersistableModel<ResponseTokenUsage> {
         public int InputTokenCount { get; set; }
         public ResponseInputTokenUsageDetails InputTokenDetails { get; set; }
@@ -1353,6 +1374,7 @@ namespace OpenAI.Responses {
         public string Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
+        public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
     public class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDoneUpdate>, IPersistableModel<StreamingResponseOutputTextDoneUpdate> {
         public StreamingResponseOutputTextDoneUpdate();
@@ -1360,6 +1382,7 @@ namespace OpenAI.Responses {
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public string Text { get; set; }
+        public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
     public class StreamingResponseQueuedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseQueuedUpdate>, IPersistableModel<StreamingResponseQueuedUpdate> {
         public StreamingResponseQueuedUpdate();

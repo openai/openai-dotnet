@@ -118,6 +118,9 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(ResponseImageGenerationCallPartialImageEvent.partial_image_b64, "PartialImageBytes");
 
+@@clientName(ResponseOutputTextDeltaEvent.logprobs, "TokenLogProbabilities");
+@@clientName(ResponseOutputTextDoneEvent.logprobs, "TokenLogProbabilities");
+
 // ------------ JsonPatch ------------
 
 // models.tsp

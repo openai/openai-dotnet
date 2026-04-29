@@ -4,52 +4,51 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalTopLogProb : IJsonModel<InternalTopLogProb>
+    public partial class ResponseTokenTopLogProbabilityDetails : IJsonModel<ResponseTokenTopLogProbabilityDetails>
     {
-        internal InternalTopLogProb() : this(null, default, null, default)
+        public ResponseTokenTopLogProbabilityDetails()
         {
         }
 
-        protected virtual InternalTopLogProb PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ResponseTokenTopLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTopLogProb>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseTokenTopLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalTopLogProb(document.RootElement, data, options);
+                        return DeserializeResponseTokenTopLogProbabilityDetails(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalTopLogProb)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseTokenTopLogProbabilityDetails)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTopLogProb>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseTokenTopLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalTopLogProb)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseTokenTopLogProbabilityDetails)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalTopLogProb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ResponseTokenTopLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalTopLogProb IPersistableModel<InternalTopLogProb>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ResponseTokenTopLogProbabilityDetails IPersistableModel<ResponseTokenTopLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalTopLogProb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ResponseTokenTopLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalTopLogProb>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ResponseTokenTopLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +65,10 @@ namespace OpenAI.Responses
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTopLogProb>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseTokenTopLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalTopLogProb)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseTokenTopLogProbabilityDetails)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (!Patch.Contains("$.token"u8))
@@ -80,7 +79,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.logprob"u8))
             {
                 writer.WritePropertyName("logprob"u8);
-                writer.WriteNumberValue(Logprob);
+                writer.WriteNumberValue(LogProbability);
             }
             if (Patch.Contains("$.bytes"u8))
             {
@@ -94,13 +93,13 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("bytes"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Bytes.Count; i++)
+                for (int i = 0; i < Utf8Bytes.Value.Span.Length; i++)
                 {
                     if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.bytes[{i}]")))
                     {
                         continue;
                     }
-                    writer.WriteNumberValue(Bytes[i]);
+                    writer.WriteNumberValue(Utf8Bytes.Value.Span[i]);
                 }
                 Patch.WriteTo(writer, "$.bytes"u8);
                 writer.WriteEndArray();
@@ -110,28 +109,28 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        InternalTopLogProb IJsonModel<InternalTopLogProb>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ResponseTokenTopLogProbabilityDetails IJsonModel<ResponseTokenTopLogProbabilityDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalTopLogProb JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ResponseTokenTopLogProbabilityDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTopLogProb>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseTokenTopLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalTopLogProb)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseTokenTopLogProbabilityDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalTopLogProb(document.RootElement, null, options);
+            return DeserializeResponseTokenTopLogProbabilityDetails(document.RootElement, null, options);
         }
 
-        internal static InternalTopLogProb DeserializeInternalTopLogProb(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseTokenTopLogProbabilityDetails DeserializeResponseTokenTopLogProbabilityDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string token = default;
-            float logprob = default;
-            IList<int> bytes = default;
+            float logProbability = default;
+            ReadOnlyMemory<byte>? utf8Bytes = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -144,22 +143,28 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("logprob"u8))
                 {
-                    logprob = prop.Value.GetSingle();
+                    logProbability = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("bytes"u8))
                 {
-                    List<int> array = new List<int>();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    int index = 0;
+                    byte[] array = new byte[prop.Value.GetArrayLength()];
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetInt32());
+                        array[index] = item.GetByte();
+                        index++;
                     }
-                    bytes = array;
+                    utf8Bytes = new ReadOnlyMemory<byte>(array);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalTopLogProb(token, logprob, bytes, patch);
+            return new ResponseTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, patch);
         }
     }
 }

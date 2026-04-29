@@ -112,6 +112,18 @@ namespace OpenAI.Responses
             return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, default, fileId, index);
         }
 
+        public static ResponseTokenLogProbabilityDetails ResponseTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte>? utf8Bytes = default, IEnumerable<ResponseTokenTopLogProbabilityDetails> topLogProbabilities = default)
+        {
+            topLogProbabilities ??= new ChangeTrackingList<ResponseTokenTopLogProbabilityDetails>();
+
+            return new ResponseTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities.ToList(), default);
+        }
+
+        public static ResponseTokenTopLogProbabilityDetails ResponseTokenTopLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte>? utf8Bytes = default)
+        {
+            return new ResponseTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+        }
+
         public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
@@ -461,8 +473,10 @@ namespace OpenAI.Responses
                 refusal);
         }
 
-        public static StreamingResponseOutputTextDeltaUpdate StreamingResponseOutputTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
+        public static StreamingResponseOutputTextDeltaUpdate StreamingResponseOutputTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities = default)
         {
+            tokenLogProbabilities ??= new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
+
             return new StreamingResponseOutputTextDeltaUpdate(
                 default,
                 sequenceNumber,
@@ -470,11 +484,14 @@ namespace OpenAI.Responses
                 itemId,
                 outputIndex,
                 contentIndex,
-                delta);
+                delta,
+                tokenLogProbabilities.ToList());
         }
 
-        public static StreamingResponseOutputTextDoneUpdate StreamingResponseOutputTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
+        public static StreamingResponseOutputTextDoneUpdate StreamingResponseOutputTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities = default)
         {
+            tokenLogProbabilities ??= new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
+
             return new StreamingResponseOutputTextDoneUpdate(
                 default,
                 sequenceNumber,
@@ -482,7 +499,8 @@ namespace OpenAI.Responses
                 itemId,
                 outputIndex,
                 contentIndex,
-                text);
+                text,
+                tokenLogProbabilities.ToList());
         }
 
         public static StreamingResponseWebSearchCallCompletedUpdate StreamingResponseWebSearchCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
