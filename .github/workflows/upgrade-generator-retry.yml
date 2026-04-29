@@ -114,18 +114,24 @@ jobs:
         run: |
           PR_NUMBER="${{ steps.check-retry.outputs.pr-number }}"
           ATTEMPT="${{ steps.check-retry.outputs.attempt }}"
-          ERROR_DETAILS=$(cat /tmp/error_details.txt)
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          COMMENT_FILE=/tmp/retry_comment.md
 
-          COMMENT_BODY="@copilot CI checks are still failing after your previous fix attempt (attempt $ATTEMPT/3).
+          cat > "$COMMENT_FILE" <<EOF
+          @copilot CI checks are still failing after your previous fix attempt (attempt $ATTEMPT/3).
 
           Please use the \`fixing-codegen-errors\` skill to diagnose and fix the remaining errors.
 
-          $ERROR_DETAILS
+          EOF
+
+          cat /tmp/error_details.txt >> "$COMMENT_FILE"
+
+          cat >> "$COMMENT_FILE" <<EOF
 
           [Failed CI Run]($RUN_URL)
 
-          Refer to \`.github/skills/fixing-codegen-errors/SKILL.md\` for the triage steps and fix instructions."
+          Refer to \`.github/skills/fixing-codegen-errors/SKILL.md\` for the triage steps and fix instructions.
+          EOF
 
-          gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY"
+          gh pr comment "$PR_NUMBER" --body-file "$COMMENT_FILE"
           echo "Posted retry comment (attempt $ATTEMPT) on PR #$PR_NUMBER"
