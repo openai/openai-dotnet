@@ -132,21 +132,7 @@ public class ReadMeSnippets
         var builderMock = new Mock<IHostApplicationBuilder>();
         var builder = builderMock.Object;
 
-        builderMock
-            .SetupGet(b => b.Services)
-            .Returns(new ServiceCollection());
-
-        #region Snippet:ReadMe_DependencyInjection_Register_Legacy
-        builder.Services.AddSingleton<ChatClient>(serviceProvider =>
-        {
-            var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-            var model = "gpt-5.1";
-
-            return new ChatClient(model, apiKey);
-        });
-        #endregion
-
-        #region Snippet:ReadMe_DependencyInjection_Register_New
+        #region Snippet:ReadMe_DependencyInjection_Register
         builder.AddChatClient("Clients:ChatClient");
         #endregion
     }

@@ -136,24 +136,8 @@ AudioClient whisperClient = client.GetAudioClient("whisper-1");
 
 The OpenAI clients are **thread-safe** and can be safely registered as **singletons** in ASP.NET Core's Dependency Injection container. This maximizes resource efficiency and HTTP connection reuse. In your *Program.cs* file, register the `ChatClient` as follows:
 
-### OpenAI v2.10.0 and later
-
-```C# Snippet:ReadMe_DependencyInjection_Register_New
+```C# Snippet:ReadMe_DependencyInjection_Register
 builder.AddChatClient("Clients:ChatClient");
-```
-
-> For a complete ASP.NET Core sample project, see the [dependency injection sample](examples/aspnet-core/README.md).
-
-### OpenAI v2.9.1 or earlier
-
-```C# Snippet:ReadMe_DependencyInjection_Register_Legacy
-builder.Services.AddSingleton<ChatClient>(serviceProvider =>
-{
-    var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-    var model = "gpt-5.1";
-
-    return new ChatClient(model, apiKey);
-});
 ```
 
 Then inject and use the client in your controllers or services:
@@ -178,6 +162,8 @@ public class ChatController : ControllerBase
     }
 }
 ```
+
+> For a complete ASP.NET Core sample project, see the [dependency injection sample](examples/aspnet-core/README.md).
 
 ## How to use chat completions with streaming
 
