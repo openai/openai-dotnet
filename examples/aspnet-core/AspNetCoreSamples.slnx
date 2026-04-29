@@ -1,9 +1,0 @@
-<Solution>
-  <Configurations>
-    <BuildType Name="Debug" />
-    <BuildType Name="Release" />
-    <BuildType Name="Unsigned" />
-  </Configurations>
-  <Project Path="v2.10.0/v2.10.0.csproj" />
-  <Project Path="v2.9.1/v2.9.1.csproj" />
-</Solution>

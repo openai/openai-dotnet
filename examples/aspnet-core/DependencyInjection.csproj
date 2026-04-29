@@ -4,14 +4,15 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ProjectUiSubcaption>and earlier</ProjectUiSubcaption>
-    <UserSecretsId>774426ff-3aeb-413d-b8cc-5c769797df0f</UserSecretsId>
+    <UserSecretsId>1b00d5b5-1aea-4b67-a678-440cbdafa731</UserSecretsId>
     <!-- This sample is meant to be copied/used standalone; opt out of the repo's central package management. -->
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <!-- ResponsesClientSettings (and similar) are evaluation-only APIs in System.ClientModel/OpenAI; opt in for this sample. -->
+    <NoWarn>$(NoWarn);SCME0002</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenAI" Version="2.9.1" />
+    <PackageReference Include="OpenAI" Version="2.10.0" />
   </ItemGroup>
 
 </Project>

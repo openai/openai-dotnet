@@ -142,7 +142,7 @@ The OpenAI clients are **thread-safe** and can be safely registered as **singlet
 builder.AddChatClient("Clients:ChatClient");
 ```
 
-> For a complete ASP.NET Core sample project, see [v2.10.0+ sample](examples/aspnet-core/v2.10.0/README.md).
+> For a complete ASP.NET Core sample project, see the [dependency injection sample](examples/aspnet-core/README.md).
 
 ### OpenAI v2.9.1 or earlier
 
@@ -155,8 +155,6 @@ builder.Services.AddSingleton<ChatClient>(serviceProvider =>
     return new ChatClient(model, apiKey);
 });
 ```
-
-> For a complete ASP.NET Core sample project, see [v2.9.1 sample](examples/aspnet-core/v2.9.1/README.md).
 
 Then inject and use the client in your controllers or services:
 
