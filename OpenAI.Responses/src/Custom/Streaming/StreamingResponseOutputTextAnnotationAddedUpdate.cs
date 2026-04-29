@@ -4,6 +4,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseOutputTextAnnotationAddedEvent")]
-public partial class StreamingResponseTextAnnotationAddedUpdate
+public partial class StreamingResponseOutputTextAnnotationAddedUpdate
 {
 }

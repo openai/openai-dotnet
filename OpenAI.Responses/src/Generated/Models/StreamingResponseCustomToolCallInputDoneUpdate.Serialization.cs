@@ -9,46 +9,46 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseReasoningDoneEvent : StreamingResponseUpdate, IJsonModel<InternalResponseReasoningDoneEvent>
+    internal partial class StreamingResponseCustomToolCallInputDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDoneUpdate>
     {
-        internal InternalResponseReasoningDoneEvent() : this(StreamingResponseUpdateKind.ResponseReasoningDone, default, default, null, default, default, null)
+        public StreamingResponseCustomToolCallInputDoneUpdate() : this(StreamingResponseUpdateKind.ResponseCustomToolCallInputDone, default, default, default, null, null)
         {
         }
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalResponseReasoningDoneEvent(document.RootElement, data, options);
+                        return DeserializeStreamingResponseCustomToolCallInputDoneUpdate(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDoneUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDoneUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalResponseReasoningDoneEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalResponseReasoningDoneEvent IPersistableModel<InternalResponseReasoningDoneEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseReasoningDoneEvent)PersistableModelCreateCore(data, options);
+        StreamingResponseCustomToolCallInputDoneUpdate IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseCustomToolCallInputDoneUpdate)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalResponseReasoningDoneEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalResponseReasoningDoneEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseCustomToolCallInputDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -65,52 +65,47 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.item_id"u8))
-            {
-                writer.WritePropertyName("item_id"u8);
-                writer.WriteStringValue(ItemId);
-            }
             if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.content_index"u8))
+            if (!Patch.Contains("$.item_id"u8))
             {
-                writer.WritePropertyName("content_index"u8);
-                writer.WriteNumberValue(ContentIndex);
+                writer.WritePropertyName("item_id"u8);
+                writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.text"u8))
+            if (!Patch.Contains("$.input"u8))
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
+                writer.WritePropertyName("input"u8);
+                writer.WriteStringValue(Input);
             }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        InternalResponseReasoningDoneEvent IJsonModel<InternalResponseReasoningDoneEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseReasoningDoneEvent)JsonModelCreateCore(ref reader, options);
+        StreamingResponseCustomToolCallInputDoneUpdate IJsonModel<StreamingResponseCustomToolCallInputDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseCustomToolCallInputDoneUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseReasoningDoneEvent)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDoneUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseReasoningDoneEvent(document.RootElement, null, options);
+            return DeserializeStreamingResponseCustomToolCallInputDoneUpdate(document.RootElement, null, options);
         }
 
-        internal static InternalResponseReasoningDoneEvent DeserializeInternalResponseReasoningDoneEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseCustomToolCallInputDoneUpdate DeserializeStreamingResponseCustomToolCallInputDoneUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -121,10 +116,9 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string itemId = default;
             int outputIndex = default;
-            int contentIndex = default;
-            string text = default;
+            string itemId = default;
+            string input = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -137,36 +131,30 @@ namespace OpenAI.Responses
                     sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("item_id"u8))
-                {
-                    itemId = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("output_index"u8))
                 {
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("content_index"u8))
+                if (prop.NameEquals("item_id"u8))
                 {
-                    contentIndex = prop.Value.GetInt32();
+                    itemId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("text"u8))
+                if (prop.NameEquals("input"u8))
                 {
-                    text = prop.Value.GetString();
+                    input = prop.Value.GetString();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseReasoningDoneEvent(
+            return new StreamingResponseCustomToolCallInputDoneUpdate(
                 kind,
                 sequenceNumber,
                 patch,
-                itemId,
                 outputIndex,
-                contentIndex,
-                text);
+                itemId,
+                input);
         }
     }
 }

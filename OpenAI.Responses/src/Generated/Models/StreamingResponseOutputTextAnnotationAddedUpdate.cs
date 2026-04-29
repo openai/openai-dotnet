@@ -2,16 +2,15 @@
 
 #nullable disable
 
-using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate
+    public partial class StreamingResponseOutputTextAnnotationAddedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseTextAnnotationAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, int annotationIndex, BinaryData annotation) : base(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, sequenceNumber)
+        internal StreamingResponseOutputTextAnnotationAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, int annotationIndex, ResponseMessageAnnotation annotation) : base(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
@@ -21,13 +20,14 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseTextAnnotationAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, int annotationIndex, BinaryData annotation) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseOutputTextAnnotationAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, int annotationIndex, ResponseMessageAnnotation annotation) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             AnnotationIndex = annotationIndex;
             Annotation = annotation;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -39,6 +39,6 @@ namespace OpenAI.Responses
 
         public int AnnotationIndex { get; set; }
 
-        public BinaryData Annotation { get; set; }
+        public ResponseMessageAnnotation Annotation { get; set; }
     }
 }

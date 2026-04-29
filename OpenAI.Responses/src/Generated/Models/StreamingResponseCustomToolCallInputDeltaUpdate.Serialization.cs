@@ -9,46 +9,46 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseReasoningSummaryDoneEvent : StreamingResponseUpdate, IJsonModel<InternalResponseReasoningSummaryDoneEvent>
+    internal partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>
     {
-        internal InternalResponseReasoningSummaryDoneEvent() : this(StreamingResponseUpdateKind.ResponseReasoningSummaryDone, default, default, null, default, default, null)
+        public StreamingResponseCustomToolCallInputDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, default, default, default, null, null)
         {
         }
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningSummaryDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalResponseReasoningSummaryDoneEvent(document.RootElement, data, options);
+                        return DeserializeStreamingResponseCustomToolCallInputDeltaUpdate(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryDoneEvent)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDeltaUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningSummaryDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryDoneEvent)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDeltaUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalResponseReasoningSummaryDoneEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalResponseReasoningSummaryDoneEvent IPersistableModel<InternalResponseReasoningSummaryDoneEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseReasoningSummaryDoneEvent)PersistableModelCreateCore(data, options);
+        StreamingResponseCustomToolCallInputDeltaUpdate IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseCustomToolCallInputDeltaUpdate)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalResponseReasoningSummaryDoneEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalResponseReasoningSummaryDoneEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -65,52 +65,47 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningSummaryDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryDoneEvent)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDeltaUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.item_id"u8))
-            {
-                writer.WritePropertyName("item_id"u8);
-                writer.WriteStringValue(ItemId);
-            }
             if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.summary_index"u8))
+            if (!Patch.Contains("$.item_id"u8))
             {
-                writer.WritePropertyName("summary_index"u8);
-                writer.WriteNumberValue(SummaryIndex);
+                writer.WritePropertyName("item_id"u8);
+                writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.text"u8))
+            if (!Patch.Contains("$.delta"u8))
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
+                writer.WritePropertyName("delta"u8);
+                writer.WriteStringValue(Delta);
             }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        InternalResponseReasoningSummaryDoneEvent IJsonModel<InternalResponseReasoningSummaryDoneEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseReasoningSummaryDoneEvent)JsonModelCreateCore(ref reader, options);
+        StreamingResponseCustomToolCallInputDeltaUpdate IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseCustomToolCallInputDeltaUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseReasoningSummaryDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryDoneEvent)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCustomToolCallInputDeltaUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseReasoningSummaryDoneEvent(document.RootElement, null, options);
+            return DeserializeStreamingResponseCustomToolCallInputDeltaUpdate(document.RootElement, null, options);
         }
 
-        internal static InternalResponseReasoningSummaryDoneEvent DeserializeInternalResponseReasoningSummaryDoneEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseCustomToolCallInputDeltaUpdate DeserializeStreamingResponseCustomToolCallInputDeltaUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -121,10 +116,9 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string itemId = default;
             int outputIndex = default;
-            int summaryIndex = default;
-            string text = default;
+            string itemId = default;
+            string delta = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -137,36 +131,30 @@ namespace OpenAI.Responses
                     sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("item_id"u8))
-                {
-                    itemId = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("output_index"u8))
                 {
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("summary_index"u8))
+                if (prop.NameEquals("item_id"u8))
                 {
-                    summaryIndex = prop.Value.GetInt32();
+                    itemId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("text"u8))
+                if (prop.NameEquals("delta"u8))
                 {
-                    text = prop.Value.GetString();
+                    delta = prop.Value.GetString();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseReasoningSummaryDoneEvent(
+            return new StreamingResponseCustomToolCallInputDeltaUpdate(
                 kind,
                 sequenceNumber,
                 patch,
-                itemId,
                 outputIndex,
-                summaryIndex,
-                text);
+                itemId,
+                delta);
         }
     }
 }
