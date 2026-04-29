@@ -27,7 +27,7 @@ public partial class BatchClient
 
         using PipelineMessage message = CreateCreateBatchRequest(content, options);
 
-        PipelineResponse response = await Pipeline.ProcessMessageAsync<BatchClient>(message, options).ConfigureAwait(false);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
@@ -55,7 +55,7 @@ public partial class BatchClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateBatchRequest(content, options);
-        PipelineResponse response = Pipeline.ProcessMessage<BatchClient>(message, options);
+        PipelineResponse response = Pipeline.ProcessMessage(message, options);
 
         using JsonDocument doc = JsonDocument.Parse(response.Content);
         string batchId = doc.RootElement.GetProperty("id"u8).GetString();
