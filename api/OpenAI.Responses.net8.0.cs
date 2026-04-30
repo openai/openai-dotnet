@@ -768,37 +768,6 @@ namespace OpenAI.Responses {
         public static OpenAIResponsesContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
     }
-    public static class OpenAIResponsesModelFactory {
-        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = null, CodeInterpreterToolContainerConfiguration containerConfiguration = null);
-        public static ComputerCallAction ComputerCallAction(string kind = null);
-        public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = null, string code = null, string message = null);
-        public static ContainerFileCitationMessageAnnotation ContainerFileCitationMessageAnnotation(string containerId = null, string fileId = null, int startIndex = 0, int endIndex = 0, string filename = null);
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = null, float? temperature = null, int? topLogProbabilityCount = null, float? topP = null, string endUserId = null, string safetyIdentifier = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, string model = null, ResponseReasoningOptions reasoningOptions = null, bool? backgroundModeEnabled = null, int? maxOutputTokenCount = null, int? maxToolCallCount = null, ResponseTextOptions textOptions = null, IEnumerable<ResponseTool> tools = null, ResponseToolChoice toolChoice = null, ResponseTruncationMode? truncationMode = null, IEnumerable<ResponseItem> inputItems = null, IEnumerable<IncludedResponseProperty> includedProperties = null, bool? parallelToolCallsEnabled = null, bool? storedOutputEnabled = null, string instructions = null, bool? streamingEnabled = null, ResponseConversationOptions conversationOptions = null);
-        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = null, McpToolFilter toolsNeverRequiringApproval = null);
-        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = null, int index = 0, string filename = null);
-        public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = null, int index = 0);
-        public static FileSearchCallResult FileSearchCallResult(string fileId = null, string text = null, string filename = null, IDictionary<string, BinaryData> attributes = null, float? score = null);
-        public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = null, float? scoreThreshold = null);
-        public static GetResponseOptions GetResponseOptions(string responseId = null, int? startingAfter = null, bool? includeObfuscation = null, IEnumerable<IncludedResponseProperty> includedProperties = null, bool? streamingEnabled = null);
-        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUri = null, string fileId = null);
-        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = null, CustomMcpToolCallApprovalPolicy customPolicy = null);
-        public static McpToolDefinition McpToolDefinition(string name = null, string description = null, BinaryData inputSchema = null, BinaryData annotations = null);
-        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = null, bool? isReadOnly = null);
-        public static ResponseConversationOptions ResponseConversationOptions(string conversationId = null);
-        public static ResponseDeletionResult ResponseDeletionResult(string responseId = null, bool deleted = false);
-        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = null);
-        public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = null);
-        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = 0);
-        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = null, string afterId = null, string beforeId = null, int? pageSizeLimit = null, ResponseItemCollectionOrder? order = null);
-        public static ResponseItemCollectionPage ResponseItemCollectionPage(IEnumerable<ResponseItem> data = null, bool hasMore = false, string firstId = null, string lastId = null);
-        public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = null);
-        public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = 0);
-        public static ResponseResult ResponseResult(IDictionary<string, string> metadata = null, float? temperature = null, int? topLogProbabilityCount = null, float? topP = null, string endUserId = null, string safetyIdentifier = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, string model = null, ResponseReasoningOptions reasoningOptions = null, bool? backgroundModeEnabled = null, int? maxOutputTokenCount = null, int? maxToolCallCount = null, ResponseTextOptions textOptions = null, IEnumerable<ResponseTool> tools = null, ResponseToolChoice toolChoice = null, ResponseTruncationMode? truncationMode = null, string id = null, ResponseStatus? status = null, DateTimeOffset createdAt = default, ResponseError error = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, IEnumerable<ResponseItem> instructions = null, ResponseTokenUsage usage = null, bool parallelToolCallsEnabled = false, ResponseConversationOptions conversationOptions = null);
-        public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = null);
-        public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = 0, ResponseInputTokenUsageDetails inputTokenDetails = null, int outputTokenCount = 0, ResponseOutputTokenUsageDetails outputTokenDetails = null, int totalTokenCount = 0);
-        public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = null, int startIndex = 0, int endIndex = 0, string title = null);
-        public static WebSearchToolFilters WebSearchToolFilters(IEnumerable<string> allowedDomains = null);
-    }
     [Experimental("OPENAI001")]
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
