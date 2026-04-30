@@ -86,6 +86,11 @@ namespace OpenAI;
 [CodeGenSuppress("GetInternalUploadsClient")]
 public partial class OpenAIClient
 {
+    // `ResponsesClient` exposes its shared-pipeline constructor as `protected internal`.
+    // `OpenAIClient` is in a different assembly and does not derive from `ResponsesClient`,
+    // so it cannot directly call that constructor. This derived type is the accessibility
+    // bridge that lets the top-level client reuse its existing pipeline when creating a
+    // `ResponsesClient`.
     private sealed class TopLevelResponsesClient : ResponsesClient
     {
         internal TopLevelResponsesClient(ClientPipeline pipeline, ResponsesClientOptions options)
