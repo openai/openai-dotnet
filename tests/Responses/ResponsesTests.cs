@@ -1,8 +1,6 @@
 using Microsoft.ClientModel.TestFramework;
-using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
-using OpenAI.Chat;
 using OpenAI.Conversations;
 using OpenAI.Files;
 using OpenAI.Responses;
