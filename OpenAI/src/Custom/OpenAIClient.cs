@@ -355,8 +355,11 @@ public partial class OpenAIClient
         return new(_authenticationPolicy, new ResponsesClientOptions
         {
             Endpoint = _options.Endpoint,
+            NetworkTimeout = _options.NetworkTimeout,
             OrganizationId = _options.OrganizationId,
             ProjectId = _options.ProjectId,
+            RetryPolicy = _options.RetryPolicy,
+            Transport = _options.Transport,
             UserAgentApplicationId = _options.UserAgentApplicationId,
         });
     }
