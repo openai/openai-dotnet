@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Moq;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Audio;
@@ -23,8 +20,6 @@ using OpenAI.VectorStores;
 using OpenAI.Skills;
 using OpenAI.Videos;
 using System;
-using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
