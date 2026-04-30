@@ -500,7 +500,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-file.txt", "text/plain");
 
-            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
             Assert.That(createResult, Is.Not.Null);
             Assert.That(createResult.GetRawResponse().IsError, Is.False, "File creation should succeed");
@@ -557,7 +557,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-get-file.txt", "text/plain");
 
-            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
             string responseContent = createResult.GetRawResponse().Content.ToString();
             var responseJson = JsonDocument.Parse(responseContent);
@@ -621,7 +621,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-cancel-file.txt", "text/plain");
 
-            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
             string responseContent = createResult.GetRawResponse().Content.ToString();
             var responseJson = JsonDocument.Parse(responseContent);
@@ -681,7 +681,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-delete-cancel-file.txt", "text/plain");
 
-            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
             string responseContent = createResult.GetRawResponse().Content.ToString();
             var responseJson = JsonDocument.Parse(responseContent);
@@ -715,16 +715,16 @@ public class ContainerTests : OpenAIRecordedTestBase
 
         // Test null content
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.CreateContainerFileAsync(_testContainerId, null, "multipart/form-data"));
+            await client.UploadContainerFileAsync(_testContainerId, null, "multipart/form-data"));
 
         // Test null/empty container ID
         var testFormData = new MultiPartFormDataBinaryContent();
         testFormData.Add("test", "file", "test.txt", "text/plain");
 
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.CreateContainerFileAsync(null, testFormData, testFormData.ContentType));
+            await client.UploadContainerFileAsync(null, testFormData, testFormData.ContentType));
         Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.CreateContainerFileAsync("", testFormData, testFormData.ContentType));
+            await client.UploadContainerFileAsync("", testFormData, testFormData.ContentType));
 
         Console.WriteLine("Parameter validation tests passed");
     }
