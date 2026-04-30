@@ -11,7 +11,7 @@ namespace OpenAI.Responses;
 /// See: https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/System.ClientModel/src/docs/ConfigurationAndDependencyInjection.md
 /// </summary>
 [Experimental("SCME0002")]
-public static class OpenAIHostBuilderExtensions
+public static class OpenAIResponsesHostBuilderExtensions
 {
     public static IClientBuilder AddResponsesClient(
         this IHostApplicationBuilder builder,

@@ -2,7 +2,7 @@ using OpenAI;
 using OpenAI.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.AddResponsesClient("Clients:ResponsesClient");
+OpenAIHostBuilderExtensions.AddResponsesClient(builder, "Clients:ResponsesClient");
 
 var app = builder.Build();
 app.MapPost("/responses/create",
