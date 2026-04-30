@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting;
+using OpenAI.Responses;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI.Responses;
+namespace OpenAI;
 
 /// <summary>
 /// Extension methods for adding OpenAI clients with configuration and DI support following System.ClientModel pattern.
