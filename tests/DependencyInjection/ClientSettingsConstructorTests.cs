@@ -20,6 +20,7 @@ using OpenAI.VectorStores;
 using OpenAI.Skills;
 using OpenAI.Videos;
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
