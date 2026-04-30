@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,22 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public partial class ResponsesSmokeTests
 {
+    [Test]
+    public void CanCreateResponsesClientFromTopLevelClient()
+    {
+        Uri fakeUri = new("https://127.0.0.1");
+        ApiKeyCredential fakeCredential = new("sk-not-a-real-credential");
+
+        OpenAIClient topLevelClient = new(fakeCredential, new OpenAIClientOptions()
+        {
+            Endpoint = fakeUri,
+        });
+
+        ResponsesClient responsesClient = topLevelClient.GetResponsesClient();
+
+        Assert.That(responsesClient, Is.Not.Null);
+    }
+
     [Test]
     public void SerializingMessagesWorks()
     {

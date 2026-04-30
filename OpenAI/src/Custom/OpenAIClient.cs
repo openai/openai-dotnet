@@ -14,6 +14,7 @@ using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
+using OpenAI.Responses;
 using OpenAI.Skills;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
@@ -331,6 +332,18 @@ public partial class OpenAIClient
         ProjectId = _options.ProjectId,
         UserAgentApplicationId = _options.UserAgentApplicationId,
     });
+
+    /// <summary>
+    /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method is functionally equivalent to using the <see cref="ResponsesClient"/> constructor directly with
+    /// the same configuration details.
+    /// </remarks>
+    /// <returns> A new <see cref="ResponsesClient"/>. </returns>
+    [Experimental("OPENAI001")]
+    public virtual ResponsesClient GetResponsesClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
