@@ -26,7 +26,7 @@ public partial class ResponsesSmokeTests
     [Test]
     public void CanCreateResponsesClientFromTopLevelClient()
     {
-        Uri fakeUri = new("https://127.0.0.1");
+        Uri fakeUri = new("https://example.invalid");
         ApiKeyCredential fakeCredential = new("sk-not-a-real-credential");
 
         OpenAIClient topLevelClient = new(fakeCredential, new OpenAIClientOptions()
