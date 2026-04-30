@@ -72,7 +72,6 @@
 ### Breaking Changes in Preview APIs
 
 - OpenAI.Containers:
-  - Renamed the `CreateContainerFile` and `CreateContainerFileAsync` protocol methods of `ContainerClient` to `UploadContainerFile` and `UploadContainerFileAsync`.
   - Renamed the `Bytes` property of `ContainerFileResource` to `SizeInBytes` and changed its type from `int` to `long?`.
 - OpenAI.Conversations:
   - Renamed the `MessageOutputTextLogprobs` value of the `IncludedConversationItemProperty` extensible enum to `MessageOutputTextLogProbabilities`.
