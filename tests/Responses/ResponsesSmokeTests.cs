@@ -1,4 +1,6 @@
+using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
+using OpenAI.Tests;
 using OpenAI.Responses;
 using System;
 using System.ClientModel;
@@ -15,14 +17,6 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public partial class ResponsesSmokeTests
 {
-    private sealed class TestOpenAIClient : OpenAIClient
-    {
-        public TestOpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options)
-            : base(pipeline, options)
-        {
-        }
-    }
-
     [Test]
     public void CanCreateResponsesClientFromTopLevelClient()
     {
@@ -40,21 +34,28 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
-    public void CreatingResponsesClientFromPipelineOnlyClientThrows()
+    public void TopLevelClientOptionsPersistence()
     {
-        OpenAIClientOptions options = new();
-        ClientPipeline pipeline = ClientPipeline.Create(
-            options,
-            Array.Empty<PipelinePolicy>(),
-            Array.Empty<PipelinePolicy>(),
-            Array.Empty<PipelinePolicy>());
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(BinaryData.FromString("{}"))));
+        OpenAIClientOptions options = new()
+        {
+            Transport = mockTransport,
+            Endpoint = new Uri("https://example.invalid/custom/responses/endpoint"),
+        };
+        Uri observedEndpoint = null;
+        options.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            observedEndpoint = message?.Request?.Uri;
+        }),
+        PipelinePosition.PerCall);
 
-        OpenAIClient client = new TestOpenAIClient(pipeline, options);
+        OpenAIClient topLevelClient = new(new ApiKeyCredential("mock-credential"), options);
+        ResponsesClient responsesClient = topLevelClient.GetResponsesClient();
+        ClientResult result = responsesClient.CreateResponse(BinaryContent.Create(BinaryData.FromString("{}")));
 
-        Assert.That(
-            () => client.GetResponsesClient(),
-            Throws.InstanceOf<InvalidOperationException>()
-                .With.Message.Contains("custom pipeline"));
+        Assert.That(result, Is.Not.Null);
+        Assert.That(observedEndpoint, Is.Not.Null);
+        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("example.invalid/custom/responses/endpoint"));
     }
 
     [Test]
