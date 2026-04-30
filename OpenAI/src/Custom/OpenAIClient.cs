@@ -354,8 +354,11 @@ public partial class OpenAIClient
     public virtual ResponsesClient GetResponsesClient() => new TopLevelResponsesClient(Pipeline, new ResponsesClientOptions
     {
         Endpoint = _options.Endpoint,
+        NetworkTimeout = _options.NetworkTimeout,
         OrganizationId = _options.OrganizationId,
         ProjectId = _options.ProjectId,
+        RetryPolicy = _options.RetryPolicy,
+        Transport = _options.Transport,
         UserAgentApplicationId = _options.UserAgentApplicationId,
     });
 
