@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using NUnit.Framework;
-using OpenAI.Responses;
+using OpenAI;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -175,13 +175,13 @@ public class OpenAIHostBuilderExtensionsTests
     [Test]
     public void AddResponsesClient_NullBuilder_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => global::OpenAI.OpenAIHostBuilderExtensions.AddResponsesClient(null, "OpenAI:Responses"));
+        Assert.Throws<ArgumentNullException>(() => ((IHostApplicationBuilder)null).AddResponsesClient("OpenAI:Responses"));
     }
 
     [Test]
     public void AddKeyedResponsesClient_NullBuilder_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => global::OpenAI.OpenAIHostBuilderExtensions.AddKeyedResponsesClient(null, "key", "OpenAI:Responses"));
+        Assert.Throws<ArgumentNullException>(() => ((IHostApplicationBuilder)null).AddKeyedResponsesClient("key", "OpenAI:Responses"));
     }
 
     [Test]
@@ -415,7 +415,7 @@ public class OpenAIHostBuilderExtensionsTests
             ["OpenAI:Responses:ApiKey"] = "test-key"
         });
 
-        var result = global::OpenAI.OpenAIHostBuilderExtensions.AddResponsesClient(_mockBuilder.Object, "OpenAI:Responses");
+        var result = _mockBuilder.Object.AddResponsesClient("OpenAI:Responses");
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.InstanceOf<IClientBuilder>());
@@ -743,7 +743,7 @@ public class OpenAIHostBuilderExtensionsTests
             ["OpenAI:Responses:ApiKey"] = "test-key"
         });
 
-        var result = global::OpenAI.OpenAIHostBuilderExtensions.AddKeyedResponsesClient(_mockBuilder.Object, "respKey", "OpenAI:Responses");
+        var result = _mockBuilder.Object.AddKeyedResponsesClient("respKey", "OpenAI:Responses");
 
         Assert.That(result, Is.Not.Null);
     }
