@@ -5,6 +5,13 @@
 //     and re-run scripts/Export-Api.ps1 to regenerate it.
 // </auto-generated>
 //------------------------------------------------------------------------------
+namespace OpenAI {
+    [Experimental("SCME0002")]
+    public static class OpenAIHostBuilderExtensions {
+        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
+}
 namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ApplyPatchCallItem : ResponseItem, IJsonModel<ApplyPatchCallItem>, IPersistableModel<ApplyPatchCallItem> {
@@ -758,11 +765,6 @@ namespace OpenAI.Responses {
         InProgress = 0,
         Completed = 1,
         Incomplete = 2
-    }
-    [Experimental("SCME0002")]
-    public static class OpenAIHostBuilderExtensions {
-        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     public class OpenAIResponsesContext : ModelReaderWriterContext {
         public static OpenAIResponsesContext Default { get; }
