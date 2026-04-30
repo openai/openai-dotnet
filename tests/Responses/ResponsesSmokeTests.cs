@@ -15,6 +15,14 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public partial class ResponsesSmokeTests
 {
+    private sealed class TestOpenAIClient : OpenAIClient
+    {
+        public TestOpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options)
+            : base(pipeline, options)
+        {
+        }
+    }
+
     [Test]
     public void CanCreateResponsesClientFromTopLevelClient()
     {
@@ -29,6 +37,24 @@ public partial class ResponsesSmokeTests
         ResponsesClient responsesClient = topLevelClient.GetResponsesClient();
 
         Assert.That(responsesClient, Is.Not.Null);
+    }
+
+    [Test]
+    public void CreatingResponsesClientFromPipelineOnlyClientThrows()
+    {
+        OpenAIClientOptions options = new();
+        ClientPipeline pipeline = ClientPipeline.Create(
+            options,
+            Array.Empty<PipelinePolicy>(),
+            Array.Empty<PipelinePolicy>(),
+            Array.Empty<PipelinePolicy>());
+
+        OpenAIClient client = new TestOpenAIClient(pipeline, options);
+
+        Assert.That(
+            () => client.GetResponsesClient(),
+            Throws.InstanceOf<InvalidOperationException>()
+                .With.Message.Contains("custom pipeline"));
     }
 
     [Test]
