@@ -87,6 +87,7 @@ namespace OpenAI;
 public partial class OpenAIClient
 {
     private readonly OpenAIClientOptions _options;
+    private readonly AuthenticationPolicy _authenticationPolicy;
     private readonly ApiKeyCredential _keyCredential;
 
     // CUSTOM: Added as a convenience.
@@ -141,6 +142,7 @@ public partial class OpenAIClient
 
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _authenticationPolicy = authenticationPolicy;
         _options = options;
     }
 
@@ -343,7 +345,21 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="ResponsesClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual ResponsesClient GetResponsesClient() => new(Pipeline, _options);
+    public virtual ResponsesClient GetResponsesClient()
+    {
+        if (_authenticationPolicy is null)
+        {
+            throw new InvalidOperationException($"A {nameof(ResponsesClient)} cannot be created from an {nameof(OpenAIClient)} constructed with a custom pipeline.");
+        }
+
+        return new(_authenticationPolicy, new ResponsesClientOptions
+        {
+            Endpoint = _options.Endpoint,
+            OrganizationId = _options.OrganizationId,
+            ProjectId = _options.ProjectId,
+            UserAgentApplicationId = _options.UserAgentApplicationId,
+        });
+    }
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
