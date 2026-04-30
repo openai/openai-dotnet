@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -128,21 +129,11 @@ public class ReadMeSnippets
     [Test]
     public void DependencyInjection_Register()
     {
-        var builderMock = new Mock<ApplicationBuilder>();
+        var builderMock = new Mock<IHostApplicationBuilder>();
         var builder = builderMock.Object;
 
-        builderMock
-            .SetupGet(b => b.Services)
-            .Returns(new ServiceCollection());
-
         #region Snippet:ReadMe_DependencyInjection_Register
-        builder.Services.AddSingleton<ChatClient>(serviceProvider =>
-        {
-            var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-            var model = "gpt-5.1";
-
-            return new ChatClient(model, apiKey);
-        });
+        builder.AddChatClient("Clients:ChatClient");
         #endregion
     }
 

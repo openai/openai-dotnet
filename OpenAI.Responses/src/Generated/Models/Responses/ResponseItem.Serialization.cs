@@ -109,18 +109,22 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "file_search_call":
-                        return FileSearchCallResponseItem.DeserializeFileSearchCallResponseItem(element, data, options);
-                    case "computer_call":
-                        return ComputerCallResponseItem.DeserializeComputerCallResponseItem(element, data, options);
+                    case "mcp_approval_response":
+                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, data, options);
+                    case "message":
+                        return MessageResponseItem.DeserializeMessageResponseItem(element, data, options);
                     case "computer_call_output":
                         return ComputerCallOutputResponseItem.DeserializeComputerCallOutputResponseItem(element, data, options);
-                    case "web_search_call":
-                        return WebSearchCallResponseItem.DeserializeWebSearchCallResponseItem(element, data, options);
                     case "function_call":
                         return FunctionCallResponseItem.DeserializeFunctionCallResponseItem(element, data, options);
                     case "function_call_output":
                         return FunctionCallOutputResponseItem.DeserializeFunctionCallOutputResponseItem(element, data, options);
+                    case "file_search_call":
+                        return FileSearchCallResponseItem.DeserializeFileSearchCallResponseItem(element, data, options);
+                    case "computer_call":
+                        return ComputerCallResponseItem.DeserializeComputerCallResponseItem(element, data, options);
+                    case "web_search_call":
+                        return WebSearchCallResponseItem.DeserializeWebSearchCallResponseItem(element, data, options);
                     case "reasoning":
                         return ReasoningResponseItem.DeserializeReasoningResponseItem(element, data, options);
                     case "image_generation_call":
@@ -135,16 +139,12 @@ namespace OpenAI.Responses
                         return McpToolDefinitionListItem.DeserializeMcpToolDefinitionListItem(element, data, options);
                     case "mcp_approval_request":
                         return McpToolCallApprovalRequestItem.DeserializeMcpToolCallApprovalRequestItem(element, data, options);
-                    case "mcp_approval_response":
-                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, data, options);
                     case "mcp_call":
                         return McpToolCallItem.DeserializeMcpToolCallItem(element, data, options);
                     case "apply_patch_call":
                         return ApplyPatchCallItem.DeserializeApplyPatchCallItem(element, data, options);
                     case "apply_patch_call_output":
                         return ApplyPatchCallOutputItem.DeserializeApplyPatchCallOutputItem(element, data, options);
-                    case "message":
-                        return MessageResponseItem.DeserializeMessageResponseItem(element, data, options);
                     case "item_reference":
                         return ReferenceResponseItem.DeserializeReferenceResponseItem(element, data, options);
                 }

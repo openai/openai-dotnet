@@ -1,125 +1,91 @@
-# OpenAI ASP.NET Core Example
+# OpenAI ASP.NET Core example
 
-This example demonstrates how to use the OpenAI .NET client library with ASP.NET Core's dependency injection container, registering a `ChatClient` as a singleton for optimal performance and resource usage.
+This sample demonstrates the configuration-driven approach available in the OpenAI .NET client library starting with version **2.10.0**, where a `ResponsesClient` is constructed from a strongly-typed `ResponsesClientSettings` instance bound from `IConfiguration`. It calls the OpenAI **Responses API**.
 
 ## Features
 
-- **Singleton Registration**: ChatClient registered as singleton in DI container
-- **Thread-Safe**: Demonstrates concurrent usage for chat completion endpoints
+- **Configuration-driven registration**: `ResponsesClient` is bound from `IConfiguration` via `ResponsesClientSettings` using the `builder.AddResponsesClient(...)` extension method
+- **Strongly-typed settings**: `ResponsesClientSettings` enables validation for client configuration
+- **Thread-Safe**: `ResponsesClient` is thread-safe and registered for the application's lifetime
 - **Configurable Model**: Model selection via configuration (appsettings.json)
 - **Modern ASP.NET Core**: Uses minimal APIs with async/await patterns
 
 ## Prerequisites
 
-- .NET 8.0 or later
-- OpenAI API key
+- .NET 10 SDK or later
+- An OpenAI API key
 
-## Setup
+## Setup and testing
 
-1. **Set your OpenAI API key** using one of these methods:
+1. Store your OpenAI API key using one of the following methods:
 
-   **Environment Variable (Recommended):**
+    1. **Environment variable:**
 
-   ```powershell
-   $env:OPENAI_API_KEY = "your-api-key-here"
+        ```
+        $env:Clients__ResponsesClient__Credential__Key = "<your-API-key-here>"
+        ```
+
+    1. **.NET User Secrets Manager:**
+
+        Run the following command in your project's root directory:
+
+        ```
+        dotnet user-secrets set "Clients:ResponsesClient:Credential:Key" "<your-API-key-here>"
+        ```
+
+1. Install dependencies, build, & run the app:
+
    ```
-
-   **Configuration (appsettings.json):**
-
-   ```json
-   {
-     "OpenAI": {
-       "Model": "gpt-4o-mini",
-       "ApiKey": "your-api-key-here"
-     }
-   }
-   ```
-
-2. **Install dependencies:**
-
-   ```powershell
-   dotnet restore
-   ```
-
-3. **Run the application:**
-
-   ```powershell
    dotnet run
    ```
 
-## API Endpoints
+1. Send a request using one of the following approaches:
+    1. **curl:**
 
-### Chat Completion
+        ```
+        curl -X POST "https://localhost:7098/responses/create" \
+             -H "Content-Type: application/json" \
+             -d "{\"message\": \"What is the capital of France?\"}"
+        ```
 
-- **POST** `/chat/complete`
-- **Request Body:**
+    1. **PowerShell:**
 
-  ```json
-  {
-    "message": "Hello, how are you?"
-  }
-  ```
+        ```powershell
+        Invoke-RestMethod -Uri "https://localhost:7098/responses/create" `
+          -Method POST `
+          -ContentType "application/json" `
+          -Body '{"message": "What is the capital of France?"}'
+        ```
 
-- **Response:**
+## Key implementation details
 
-  ```json
-  {
-    "response": "I'm doing well, thank you for asking! How can I help you today?"
-  }
-  ```
-
-## Testing with PowerShell
-
-**Chat Completion:**
-
-```powershell
-Invoke-RestMethod -Uri "https://localhost:5000/chat/complete" `
-  -Method POST `
-  -ContentType "application/json" `
-  -Body '{"message": "What is the capital of France?"}'
-```
-
-## Key Implementation Details
-
-### Singleton Registration
+### Configuration-driven registration
 
 ```csharp
-builder.Services.AddSingleton<ChatClient>(serviceProvider => new ChatClient(
-    builder.Configuration["OpenAI:Model"],
-    new ApiKeyCredential(builder.Configuration["OpenAI:ApiKey"] 
-        ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY")
-        ?? throw new InvalidOperationException("OpenAI API key not found")))
-);
+builder.AddResponsesClient("Clients:ResponsesClient");
 ```
 
-### Dependency Injection Usage
+`AddResponsesClient` is an `IHostApplicationBuilder` extension provided by the OpenAI library. It reads the named configuration section (here `Clients:ResponsesClient`), binds it to `ResponsesClientSettings`, and registers the resulting `ResponsesClient` with the DI container. The credential is resolved from the `Credential` subsection (e.g., `Clients:ResponsesClient:Credential:Key`), so no manual `ApiKeyCredential` plumbing is required.
+
+`ResponsesClientSettings` is annotated `[Experimental("SCME0002")]`. This warning is suppressed via `<NoWarn>SCME0002</NoWarn>` in the project file.
+
+### Dependency injection usage
 
 ```csharp
-app.MapPost("/chat/complete", async (ChatRequest request, ChatClient client) =>
+app.MapPost("/responses/create",
+    async (ResponsesRequest request, ResponsesClient client, IConfiguration configuration) =>
 {
-    var completion = await client.CompleteChatAsync(request.Message);
-    
-    return new ChatResponse(completion.Value.Content[0].Text);
+    string model = configuration["Clients:ResponsesClient:Model"]
+        ?? throw new InvalidOperationException("Model not configured at Clients:ResponsesClient:Model.");
+    ResponseResult response = await client.CreateResponseAsync(model, request.Message);
+    return new ResponsesResponse(response.GetOutputText());
 });
 ```
 
-## Why Singleton?
+The model is read from *appsettings.json* on each call.
 
-- **Thread-Safe**: `ChatClient` is thread-safe and can handle concurrent requests
-- **Resource Efficient**: Reuses HTTP connections and avoids creating multiple instances
-- **Performance**: Reduces object allocation overhead
-- **Stateless**: Clients don't maintain per-request state
-
-## Swagger UI
-
-When running in development mode, you can access the Swagger UI at:
-
-- `https://localhost:7071/swagger`
-
-This provides an interactive interface to test the API endpoints.
-
-## Additional Resources
+## Additional resources
 
 - [Tutorial: Create a minimal API with ASP.NET Core](https://learn.microsoft.com/aspnet/core/tutorials/min-web-api)
 - [.NET dependency injection](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection)
-- [Logging in C# and .NET](https://learn.microsoft.com/dotnet/core/extensions/logging)
+- [Configuration in ASP.NET Core](https://learn.microsoft.com/aspnet/core/fundamentals/configuration/)
