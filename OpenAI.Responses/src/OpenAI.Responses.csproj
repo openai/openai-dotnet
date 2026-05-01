@@ -53,8 +53,6 @@
     <Compile Remove="Generated\Internal\CodeGenTypeAttribute.cs" />
     <!-- Exclude OpenAI's ClientPipelineExtensions; Responses has its own custom version with matching ProcessMessage extensions -->
     <Compile Remove="..\..\OpenAI\src\Generated\Internal\ClientPipelineExtensions.cs" />
-    <!-- Include TelemetryDetails needed by OpenAIClientUtilities -->
-    <Compile Include="..\..\OpenAI\src\Custom\Internal\TelemetryDetails.cs" Link="Custom\Internal\%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
