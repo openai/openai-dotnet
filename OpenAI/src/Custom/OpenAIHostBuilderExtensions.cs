@@ -393,13 +393,6 @@ public static class OpenAIHostBuilderExtensions
         return builder.AddClient<RealtimeClient, RealtimeClientSettings>(sectionName);
     }
 
-    public static IClientBuilder AddResponsesClient(
-        this IHostApplicationBuilder builder,
-        string sectionName)
-    {
-        return global::OpenAI.Responses.OpenAIResponsesHostBuilderExtensions.AddResponsesClient(builder, sectionName);
-    }
-
     public static IClientBuilder AddKeyedRealtimeClient(
         this IHostApplicationBuilder builder,
         string serviceKey,
@@ -411,14 +404,6 @@ public static class OpenAIHostBuilderExtensions
         }
 
         return builder.AddKeyedClient<RealtimeClient, RealtimeClientSettings>(serviceKey, sectionName);
-    }
-
-    public static IClientBuilder AddKeyedResponsesClient(
-        this IHostApplicationBuilder builder,
-        string serviceKey,
-        string sectionName)
-    {
-        return global::OpenAI.Responses.OpenAIResponsesHostBuilderExtensions.AddKeyedResponsesClient(builder, serviceKey, sectionName);
     }
 
     public static IClientBuilder AddSkillClient(

@@ -1,4 +1,5 @@
 using OpenAI;
+using OpenAI.Responses;
 using ResponsesApiClient = OpenAI.Responses.ResponsesClient;
 using ResponsesApiResult = OpenAI.Responses.ResponseResult;
 
