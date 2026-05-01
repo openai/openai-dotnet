@@ -1068,6 +1068,11 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
+        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default, string afterId = default, string beforeId = default)
+        {
+            return new VectorStoreCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
+        }
+
         public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, default);
@@ -1284,11 +1289,6 @@ namespace OpenAI
         public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
         {
             return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
-        }
-
-        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
-        {
-            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
         public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)

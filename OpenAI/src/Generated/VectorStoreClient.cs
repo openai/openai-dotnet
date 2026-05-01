@@ -23,25 +23,25 @@ namespace OpenAI.VectorStores
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetVectorStores(int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new VectorStoreClientGetVectorStoresCollectionResult(
                 this,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
+        public virtual AsyncCollectionResult GetVectorStoresAsync(int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new VectorStoreClientGetVectorStoresAsyncCollectionResult(
                 this,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 

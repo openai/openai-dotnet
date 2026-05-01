@@ -18,12 +18,16 @@ namespace OpenAILibraryPlugin.Visitors;
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter"];
-    private static readonly Dictionary<string, string> _paramReplacementMap = new()
+    private static readonly HashSet<string> _paginationParamsToReplace = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "after", "afterId", "before", "beforeId", "limit", "pageSizeLimit", "order", "model", "metadata", "filter"
+    };
+    private static readonly Dictionary<string, string> _paramReplacementMap = new(StringComparer.OrdinalIgnoreCase)
     {
         { "after", "AfterId" },
         { "afterId", "AfterId" },
         { "before", "BeforeId" },
+        { "beforeId", "BeforeId" },
         { "limit", "PageSizeLimit" },
         { "pageSizeLimit", "PageSizeLimit" },
         { "order", "Order" },
@@ -31,7 +35,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         { "metadata", "Metadata" },
         { "filter", "Filter" }
     };
-    private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
+    private static readonly Dictionary<string, (string ReturnType, string OptionsType, HashSet<string> ParamsToReplace)> _optionsReplacements = new()
     {
         {
             "GetChatCompletions",

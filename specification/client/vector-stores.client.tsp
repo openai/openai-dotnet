@@ -43,3 +43,7 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(updateVectorStoreFileAttributes, "VectorStores");
 @@clientLocation(retrieveVectorStoreFileContent, "VectorStores");
 @@clientLocation(searchVectorStore, "VectorStores");
+
+@@clientName(VectorStoreCollectionOptions.limit, "PageSizeLimit");
+@@clientName(VectorStoreCollectionOptions.after, "afterId");
+@@clientName(VectorStoreCollectionOptions.before, "BeforeId");
