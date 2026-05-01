@@ -33,7 +33,7 @@
     Runs the compatibility check using default parameters for the OpenAI SDK
 
 .EXAMPLE
-    Invoke-APICompat -ProjectPath "src\MyProject.csproj" -ReleasePath "src\bin\Release" -PackageName "MyPackage" -BaselineVersion "1.0.0"
+    Invoke-APICompat -ProjectPath "OpenAI\src\MyProject.csproj" -ReleasePath "OpenAI\src\bin\Release" -PackageName "MyPackage" -BaselineVersion "1.0.0"
     Runs a compatibility check between the current version and version 1.0.0 of MyPackage
 
 .NOTES
@@ -176,9 +176,9 @@ function Invoke-APICompat {
 }
 
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
-$projectPath = Join-Path $repoRootPath "src\OpenAI.csproj"
+$projectPath = Join-Path $repoRootPath "OpenAI\src\OpenAI.csproj"
 $buildPropsPath = Join-Path $repoRootPath "Directory.Build.props"
-$releasePath = Join-Path $repoRootPath "src\bin\Release"
+$releasePath = Join-Path $repoRootPath "OpenAI\src\bin\Release"
 
 $experimentalNamespaces = @(
     "OpenAI.Assistants",
