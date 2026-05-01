@@ -61,7 +61,7 @@ This sample demonstrates the configuration-driven approach available in the Open
 
 ### Configuration-driven registration
 
-```csharp
+```C# Snippet:Add_Responses_Client
 builder.AddResponsesClient("Clients:ResponsesClient");
 ```
 
@@ -71,7 +71,7 @@ builder.AddResponsesClient("Clients:ResponsesClient");
 
 ### Dependency injection usage
 
-```csharp
+```C# Snippet:Responses_Create_Endpoint
 app.MapPost("/responses/create",
     async (ResponsesRequest request, ResponsesClient client, IConfiguration configuration) =>
 {
