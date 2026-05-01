@@ -43,10 +43,12 @@ model ChatCompletionMessageAudioChunk {
   expires_at?: utcDateTime;
 }
 
-enum ChatToolKind {
-  function,
+union ChatToolKind {
+  string,
+  function: "function",
 }
 
-enum ChatToolCallKind {
-  function,
+union ChatToolCallKind {
+  string,
+  function: "function",
 }

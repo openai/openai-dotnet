@@ -701,17 +701,13 @@ model VectorStoreSearchResultsPage {
   next_page: string | null;
 }
 
-#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum ListVectorStoreFilesFilter {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  in_progress,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  completed,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  failed,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  cancelled,
+union ListVectorStoreFilesFilter {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  failed: "failed",
+  cancelled: "cancelled",
 }
 
 union ChunkingStrategyRequestParamType {
