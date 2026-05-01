@@ -358,13 +358,9 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual ResponsesClient GetResponsesClient() => new TopLevelResponsesClient(Pipeline, new ResponsesClientOptions
     {
+        // The shared-pipeline constructor only consumes the endpoint. Other settings are already
+        // baked into the reused pipeline or only apply when building a new pipeline.
         Endpoint = _options.Endpoint,
-        NetworkTimeout = _options.NetworkTimeout,
-        OrganizationId = _options.OrganizationId,
-        ProjectId = _options.ProjectId,
-        RetryPolicy = _options.RetryPolicy,
-        Transport = _options.Transport,
-        UserAgentApplicationId = _options.UserAgentApplicationId,
     });
 
     /// <summary>
