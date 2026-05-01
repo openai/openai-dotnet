@@ -43,6 +43,8 @@ namespace OpenAI {
         [Experimental("OPENAI002")]
         public virtual RealtimeClient GetRealtimeClient();
         [Experimental("OPENAI001")]
+        public virtual ResponsesClient GetResponsesClient();
+        [Experimental("OPENAI001")]
         public virtual SkillClient GetSkillClient();
         [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
