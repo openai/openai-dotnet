@@ -47,3 +47,13 @@ using Azure.ClientGenerator.Core;
 @@clientName(VectorStoreCollectionOptions.limit, "PageSizeLimit");
 @@clientName(VectorStoreCollectionOptions.after, "afterId");
 @@clientName(VectorStoreCollectionOptions.before, "BeforeId");
+
+@@clientName(VectorStoreFileCollectionOptions.limit, "PageSizeLimit");
+@@clientName(VectorStoreFileCollectionOptions.after, "afterId");
+@@clientName(VectorStoreFileCollectionOptions.before, "BeforeId");
+@@clientName(VectorStoreFileCollectionOptions.filter, "Filter");
+
+@@clientName(VectorStoreFileCollectionOptions.limit, "PageSizeLimit");
+@@clientName(VectorStoreFileCollectionOptions.after, "afterId");
+@@clientName(VectorStoreFileCollectionOptions.before, "BeforeId");
+@@clientName(VectorStoreFileCollectionOptions.filter, "Filter");

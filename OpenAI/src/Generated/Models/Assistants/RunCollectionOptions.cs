@@ -17,22 +17,22 @@ namespace OpenAI.Assistants
         {
         }
 
-        internal RunCollectionOptions(string afterId, string beforeId, int? pageSizeLimit, RunCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunCollectionOptions(int? pageSizeLimit, RunCollectionOrder? order, string afterId, string beforeId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            AfterId = afterId;
-            BeforeId = beforeId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
+            AfterId = afterId;
+            BeforeId = beforeId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string AfterId { get; set; }
-
-        public string BeforeId { get; set; }
 
         public int? PageSizeLimit { get; set; }
 
         public RunCollectionOrder? Order { get; set; }
+
+        public string AfterId { get; set; }
+
+        public string BeforeId { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

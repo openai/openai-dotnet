@@ -233,14 +233,14 @@ namespace OpenAI.Responses
                 default);
         }
 
-        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
+        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default, string afterId = default, string beforeId = default)
         {
             return new ResponseItemCollectionOptions(
                 responseId,
-                afterId,
-                beforeId,
                 pageSizeLimit,
                 order,
+                afterId,
+                beforeId,
                 additionalBinaryDataProperties: null);
         }
 

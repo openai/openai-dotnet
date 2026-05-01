@@ -36,28 +36,7 @@ interface Messages {
     /** The ID of the [thread](/docs/api-reference/threads) the messages belong to. */
     @path thread_id: string,
 
-    /**
-   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-   * default is 20.
-   */
-  @query limit?: int32 = 20,
-  /**
-   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-   * for descending order.
-   */
-  @query order?: AssistantCollectionOrder,
-  /**
-   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
-   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
-   */
-  @query @continuationToken after?: string,
-  /**
-   * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
-   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
-   * subsequent call can include before=obj_foo in order to fetch the previous page of the list.
-   */
-  @query before?: string,
+    ...MessageCollectionOptions,
   ): ListMessagesResponse | MessagesErrorResponse;
 
   @route("{message_id}")

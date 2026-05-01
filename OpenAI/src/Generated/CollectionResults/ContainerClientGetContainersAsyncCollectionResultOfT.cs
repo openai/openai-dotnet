@@ -13,23 +13,23 @@ namespace OpenAI.Containers
     internal partial class ContainerClientGetContainersAsyncCollectionResultOfT : AsyncCollectionResult<ContainerResource>
     {
         private readonly ContainerClient _client;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
+        private readonly string _afterId;
         private readonly RequestOptions _options;
 
-        public ContainerClientGetContainersAsyncCollectionResultOfT(ContainerClient client, int? limit, string order, string after, RequestOptions options)
+        public ContainerClientGetContainersAsyncCollectionResultOfT(ContainerClient client, int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
             _client = client;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
+            _afterId = afterId;
             _options = options;
         }
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetContainersRequest(_limit, _order, _after, _options);
+            PipelineMessage message = _client.CreateGetContainersRequest(_pageSizeLimit, _order, _afterId, _options);
             string nextToken = null;
             while (true)
             {
@@ -44,7 +44,7 @@ namespace OpenAI.Containers
                 {
                     yield break;
                 }
-                message = _client.CreateGetContainersRequest(_limit, _order, nextToken, _options);
+                message = _client.CreateGetContainersRequest(_pageSizeLimit, _order, nextToken, _options);
             }
         }
 

@@ -23,14 +23,14 @@ namespace OpenAI.Containers
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetContainers(int? limit, string order, string after, RequestOptions options)
+        public virtual CollectionResult GetContainers(int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
-            return new ContainerClientGetContainersCollectionResult(this, limit, order, after, options);
+            return new ContainerClientGetContainersCollectionResult(this, pageSizeLimit, order, afterId, options);
         }
 
-        public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, RequestOptions options)
+        public virtual AsyncCollectionResult GetContainersAsync(int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
-            return new ContainerClientGetContainersAsyncCollectionResult(this, limit, order, after, options);
+            return new ContainerClientGetContainersAsyncCollectionResult(this, pageSizeLimit, order, afterId, options);
         }
 
         public virtual CollectionResult<ContainerResource> GetContainers(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -157,29 +157,29 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options)
+        public virtual CollectionResult GetContainerFiles(string containerId, int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
             return new ContainerClientGetContainerFilesCollectionResult(
                 this,
                 containerId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
+                afterId,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetContainerFilesAsync(string containerId, int? limit, string order, string after, RequestOptions options)
+        public virtual AsyncCollectionResult GetContainerFilesAsync(string containerId, int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
             return new ContainerClientGetContainerFilesAsyncCollectionResult(
                 this,
                 containerId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
+                afterId,
                 options);
         }
 

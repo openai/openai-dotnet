@@ -30,7 +30,7 @@ public class BatchTests : OpenAIRecordedTestBase
     public async Task ListBatchesProtocol()
     {
         BatchClient client = GetProxiedOpenAIClient<BatchClient>();
-        AsyncCollectionResult batches = client.GetBatchesAsync(after: null, limit: null, options: null);
+        AsyncCollectionResult batches = client.GetBatchesAsync(afterId: null, pageSizeLimit: null, options: null);
 
         int pageCount = 0;
         await foreach (ClientResult pageResult in batches.GetRawPagesAsync())

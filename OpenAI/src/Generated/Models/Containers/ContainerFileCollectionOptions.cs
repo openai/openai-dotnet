@@ -17,19 +17,19 @@ namespace OpenAI.Containers
         {
         }
 
-        internal ContainerFileCollectionOptions(string afterId, int? pageSizeLimit, ContainerFileCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ContainerFileCollectionOptions(int? pageSizeLimit, ContainerFileCollectionOrder? order, string afterId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            AfterId = afterId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
+            AfterId = afterId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string AfterId { get; set; }
 
         public int? PageSizeLimit { get; set; }
 
         public ContainerFileCollectionOrder? Order { get; set; }
+
+        public string AfterId { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

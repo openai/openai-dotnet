@@ -789,7 +789,7 @@ namespace OpenAI.Responses {
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = null);
         public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = null);
         public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = 0);
-        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = null, string afterId = null, string beforeId = null, int? pageSizeLimit = null, ResponseItemCollectionOrder? order = null);
+        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = null, int? pageSizeLimit = null, ResponseItemCollectionOrder? order = null, string afterId = null, string beforeId = null);
         public static ResponseItemCollectionPage ResponseItemCollectionPage(IEnumerable<ResponseItem> data = null, bool hasMore = false, string firstId = null, string lastId = null);
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = null);
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = 0);

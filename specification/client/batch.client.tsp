@@ -12,3 +12,6 @@ using Azure.ClientGenerator.Core;
 
 @@clientName(Batches.listBatches, "GetBatches");
 @@clientName(Batches.retrieveBatch, "GetBatch");
+
+@@clientName(BatchCollectionOptions.after, "afterId");
+@@clientName(BatchCollectionOptions.limit, "PageSizeLimit");

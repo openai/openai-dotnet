@@ -304,6 +304,10 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(DotNetItemReferenceItemResource);
 @@dynamicModel(DotNetResponseItemCollectionOrder);
 @@dynamicModel(DotNetGetResponseOptions);
+
+@@clientName(DotNetResponseItemCollectionOptions.limit, "PageSizeLimit");
+@@clientName(DotNetResponseItemCollectionOptions.after, "afterId");
+@@clientName(DotNetResponseItemCollectionOptions.before, "BeforeId");
 @@dynamicModel(DotNetGlobalToolCallApprovalPolicy);
 @@dynamicModel(DotNetCustomToolCallApprovalPolicy);
 @@dynamicModel(DotNetToolCallApprovalPolicy);

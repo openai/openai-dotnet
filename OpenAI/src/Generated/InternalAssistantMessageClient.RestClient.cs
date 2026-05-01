@@ -33,28 +33,28 @@ namespace OpenAI.Assistants
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetMessagesRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateGetMessagesRequest(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/messages", false);
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {
                 uri.AppendQuery("order", order, true);
             }
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (before != null)
+            if (beforeId != null)
             {
-                uri.AppendQuery("before", before, true);
+                uri.AppendQuery("before", beforeId, true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;

@@ -20,25 +20,25 @@ namespace OpenAI.Responses
             ResponseId = responseId;
         }
 
-        internal ResponseItemCollectionOptions(string responseId, string afterId, string beforeId, int? pageSizeLimit, ResponseItemCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseItemCollectionOptions(string responseId, int? pageSizeLimit, ResponseItemCollectionOrder? order, string afterId, string beforeId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ResponseId = responseId;
-            AfterId = afterId;
-            BeforeId = beforeId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
+            AfterId = afterId;
+            BeforeId = beforeId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string ResponseId { get; }
 
-        public string AfterId { get; set; }
-
-        public string BeforeId { get; set; }
-
         public int? PageSizeLimit { get; set; }
 
         public ResponseItemCollectionOrder? Order { get; set; }
+
+        public string AfterId { get; set; }
+
+        public string BeforeId { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

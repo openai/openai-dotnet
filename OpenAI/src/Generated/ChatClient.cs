@@ -24,12 +24,12 @@ namespace OpenAI.Chat
         public ClientPipeline Pipeline { get; }
 
         [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        public virtual CollectionResult GetChatCompletions(string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
             return new ChatClientGetChatCompletionsCollectionResult(
                 this,
-                after,
-                limit,
+                afterId,
+                pageSizeLimit,
                 order,
                 metadata,
                 model,
@@ -37,12 +37,12 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        public virtual AsyncCollectionResult GetChatCompletionsAsync(string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
             return new ChatClientGetChatCompletionsAsyncCollectionResult(
                 this,
-                after,
-                limit,
+                afterId,
+                pageSizeLimit,
                 order,
                 metadata,
                 model,
@@ -148,29 +148,29 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options)
+        public virtual CollectionResult GetChatCompletionMessages(string completionId, string afterId, int? pageSizeLimit, string order, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
             return new ChatClientGetChatCompletionMessagesCollectionResult(
                 this,
                 completionId,
-                after,
-                limit,
+                afterId,
+                pageSizeLimit,
                 order,
                 options);
         }
 
         [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options)
+        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string afterId, int? pageSizeLimit, string order, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
             return new ChatClientGetChatCompletionMessagesAsyncCollectionResult(
                 this,
                 completionId,
-                after,
-                limit,
+                afterId,
+                pageSizeLimit,
                 order,
                 options);
         }

@@ -9,3 +9,7 @@ using Azure.ClientGenerator.Core;
 @@visibility(AssistantObject.metadata, Lifecycle.Read);
 
 @@clientName(Assistants.listAssistants, "GetAssistants");
+
+@@clientName(AssistantCollectionOptions.limit, "PageSizeLimit");
+@@clientName(AssistantCollectionOptions.after, "afterId");
+@@clientName(AssistantCollectionOptions.before, "BeforeId");
