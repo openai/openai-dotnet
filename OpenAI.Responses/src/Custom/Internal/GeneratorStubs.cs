@@ -109,3 +109,26 @@ namespace OpenAI.Responses;
 [CodeGenType("ApplyPatchOperationType")] internal readonly partial struct InternalApplyPatchOperationType { }
 [CodeGenType("UnknownApplyPatchOperation")] internal partial class InternalUnknownApplyPatchOperation { }
 [CodeGenType("CreateResponseReasoningGenerateSummary")] internal readonly partial struct InternalCreateResponseReasoningGenerateSummary {}
+[CodeGenType("CompactResource")] internal partial class InternalCompactResource {}
+[CodeGenType("CompactResponseMethodPublicBody")] internal partial class InternalCompactResponseMethodPublicBody {}
+[CodeGenType("ResponseTextParam")] internal partial class InternalResponseTextParam {}
+[CodeGenType("TokenCountsBody")] internal partial class InternalTokenCountsBody {}
+[CodeGenType("TokenCountsResource")] internal partial class InternalTokenCountsResource {}
+[CodeGenType("ModelIdsCompaction")] internal readonly partial struct InternalModelIdsCompaction
+{
+    private readonly string _value;
+    public InternalModelIdsCompaction(string value) => _value = value;
+    public override string ToString() => _value;
+}
+[CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity
+{
+    private readonly string _value;
+    public InternalTokenCountsBodyTextVerbosity(string value) => _value = value;
+    public override string ToString() => _value;
+}
+[CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum
+{
+    private readonly string _value;
+    public InternalTruncationEnum(string value) => _value = value;
+    public override string ToString() => _value;
+}

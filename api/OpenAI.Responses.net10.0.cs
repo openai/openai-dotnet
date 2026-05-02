@@ -427,6 +427,11 @@ namespace OpenAI.Responses {
         public bool? StrictModeEnabled { get; set; }
     }
     [Experimental("OPENAI001")]
+    public enum GetResponseContentType {
+        ApplicationJson = 0,
+        TextEventStream = 1
+    }
+    [Experimental("OPENAI001")]
     public class GetResponseOptions : IJsonModel<GetResponseOptions>, IPersistableModel<GetResponseOptions> {
         public GetResponseOptions(string responseId);
         public IList<IncludedResponseProperty> IncludedProperties { get; set; }
