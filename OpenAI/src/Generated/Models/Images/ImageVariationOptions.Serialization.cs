@@ -70,7 +70,14 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("image") != true)
             {
                 writer.WritePropertyName("image"u8);
-                writer.WriteBase64StringValue(Image.ToArray(), "D");
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Image);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Image))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
             if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
@@ -150,7 +157,7 @@ namespace OpenAI.Images
             {
                 if (prop.NameEquals("image"u8))
                 {
-                    image = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    image = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("model"u8))

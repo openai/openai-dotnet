@@ -1301,5 +1301,238 @@ namespace OpenAI
                 filter,
                 additionalBinaryDataProperties: null);
         }
+
+        public static VoiceConsentListResource VoiceConsentListResource(IEnumerable<VoiceConsentResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<VoiceConsentResource>();
+
+            return new VoiceConsentListResource(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VoiceConsentResource VoiceConsentResource(string id = default, string name = default, string language = default, DateTimeOffset createdAt = default)
+        {
+            return new VoiceConsentResource(
+                "audio.voice_consent",
+                id,
+                name,
+                language,
+                createdAt,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static CreateVoiceConsentRequest CreateVoiceConsentRequest(string name = default, BinaryData recording = default, string language = default)
+        {
+            return new CreateVoiceConsentRequest(name, recording, language, additionalBinaryDataProperties: null);
+        }
+
+        public static VoiceConsentDeletedResource VoiceConsentDeletedResource(string id = default, bool deleted = default)
+        {
+            return new VoiceConsentDeletedResource(id, "audio.voice_consent", deleted, additionalBinaryDataProperties: null);
+        }
+
+        public static UpdateVoiceConsentRequest UpdateVoiceConsentRequest(string name = default)
+        {
+            return new UpdateVoiceConsentRequest(name, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateVoiceRequest CreateVoiceRequest(string name = default, BinaryData audioSample = default, string consent = default)
+        {
+            return new CreateVoiceRequest(name, audioSample, consent, additionalBinaryDataProperties: null);
+        }
+
+        public static VoiceResource VoiceResource(string id = default, string name = default, DateTimeOffset createdAt = default)
+        {
+            return new VoiceResource("audio.voice", id, name, createdAt, additionalBinaryDataProperties: null);
+        }
+
+        public static ConversationItemList ConversationItemList(IEnumerable<ConversationItemResource> data = default, bool hasMore = default, string firstId = default, string lastId = default)
+        {
+            data ??= new ChangeTrackingList<ConversationItemResource>();
+
+            return new ConversationItemList(
+                "list",
+                data.ToList(),
+                hasMore,
+                firstId,
+                lastId,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ConversationItemResource ConversationItemResource(string kind = default, string id = default)
+        {
+            return new UnknownConversationItemResource(kind.ToConversationItemType(), id, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateConversationItemsParametersBody CreateConversationItemsParametersBody(IEnumerable<ConversationItemResource> items = default)
+        {
+            items ??= new ChangeTrackingList<ConversationItemResource>();
+
+            return new CreateConversationItemsParametersBody(items.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static ConversationResource ConversationResource(string id = default, BinaryData metadata = default, int createdAt = default)
+        {
+            return new ConversationResource(id, "conversation", metadata, createdAt, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateConversationBody CreateConversationBody(IDictionary<string, string> metadata = default, IEnumerable<ConversationItemResource> items = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            items ??= new ChangeTrackingList<ConversationItemResource>();
+
+            return new CreateConversationBody(metadata, items.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static DeletedConversationResource DeletedConversationResource(bool deleted = default, string id = default)
+        {
+            return new DeletedConversationResource("conversation.deleted", deleted, id, additionalBinaryDataProperties: null);
+        }
+
+        public static UpdateConversationBody UpdateConversationBody(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new UpdateConversationBody(metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static SkillListResource SkillListResource(IEnumerable<SkillResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<SkillResource>();
+
+            return new SkillListResource(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static SkillResource SkillResource(string id = default, string name = default, string description = default, DateTimeOffset createdAt = default, string defaultVersion = default, string latestVersion = default)
+        {
+            return new SkillResource(
+                id,
+                "skill",
+                name,
+                description,
+                createdAt,
+                defaultVersion,
+                latestVersion,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static CreateSkillBody CreateSkillBody(BinaryData files = default)
+        {
+            return new CreateSkillBody(files, additionalBinaryDataProperties: null);
+        }
+
+        public static DeletedSkillResource DeletedSkillResource(bool deleted = default, string id = default)
+        {
+            return new DeletedSkillResource("skill.deleted", deleted, id, additionalBinaryDataProperties: null);
+        }
+
+        public static SetDefaultSkillVersionBody SetDefaultSkillVersionBody(string defaultVersion = default)
+        {
+            return new SetDefaultSkillVersionBody(defaultVersion, additionalBinaryDataProperties: null);
+        }
+
+        public static SkillVersionListResource SkillVersionListResource(IEnumerable<SkillVersionResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<SkillVersionResource>();
+
+            return new SkillVersionListResource(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static SkillVersionResource SkillVersionResource(string id = default, string skillId = default, string version = default, DateTimeOffset createdAt = default, string name = default, string description = default)
+        {
+            return new SkillVersionResource(
+                "skill.version",
+                id,
+                skillId,
+                version,
+                createdAt,
+                name,
+                description,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static CreateSkillVersionBody CreateSkillVersionBody(BinaryData files = default, bool? @default = default)
+        {
+            return new CreateSkillVersionBody(files, @default, additionalBinaryDataProperties: null);
+        }
+
+        public static DeletedSkillVersionResource DeletedSkillVersionResource(bool deleted = default, string id = default, string version = default)
+        {
+            return new DeletedSkillVersionResource("skill.version.deleted", deleted, id, version, additionalBinaryDataProperties: null);
+        }
+
+        public static VideoListResource VideoListResource(IEnumerable<VideoResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<VideoResource>();
+
+            return new VideoListResource(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VideoResource VideoResource(string id = default, VideoModel model = default, VideoStatus status = default, int progress = default, int createdAt = default, int? completedAt = default, int? expiresAt = default, VideoSize size = default, VideoSeconds seconds = default, string remixedFromVideoId = default, Error2 error = default)
+        {
+            return new VideoResource(
+                id,
+                "video",
+                model,
+                status,
+                progress,
+                createdAt,
+                completedAt,
+                expiresAt,
+                size,
+                seconds,
+                remixedFromVideoId,
+                error,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static Error2 Error2(string code = default, string message = default)
+        {
+            return new Error2(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateVideoBody CreateVideoBody(VideoModel? model = default, string prompt = default, BinaryData inputReference = default, VideoSeconds? seconds = default, VideoSize? size = default)
+        {
+            return new CreateVideoBody(
+                model,
+                prompt,
+                inputReference,
+                seconds,
+                size,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static DeletedVideoResource DeletedVideoResource(bool deleted = default, string id = default)
+        {
+            return new DeletedVideoResource("video.deleted", deleted, id, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateVideoRemixBody CreateVideoRemixBody(string prompt = default)
+        {
+            return new CreateVideoRemixBody(prompt, additionalBinaryDataProperties: null);
+        }
     }
 }
