@@ -277,15 +277,37 @@ If there are **no changes** (codegen and API export produced no modifications to
 exit gracefully without creating a PR — the new generator version may be fully
 backwards-compatible.
 
+If there are changes, check whether any `api/` files were modified:
+
+```bash
+git diff --name-only | grep '^api/'
+```
+
+API surface changes (additions, removals, or modifications in `api/*.cs`) are **expected** when
+the new generator version introduces new types or renames existing ones. They do **not** block
+PR creation. Instead, capture a diff of each changed `api/` file so you can explain the changes
+in the PR description:
+
+```bash
+git diff -- 'api/*.cs'
+```
+
+For each changed `api/` file, note:
+- Which types or members were **added** (e.g., new model introduced by the generator update).
+- Which types or members were **removed** or **renamed** (e.g., type renamed upstream).
+- Which types or members were **modified** (e.g., property type changed).
+
 ### Step 8: Create a pull request
 
-If there are changes, output a `create_pull_request` action targeting the typespec update branch:
+If there are changes, output a `create_pull_request` action targeting the typespec update branch.
+When `api/` files changed, include an **API Changes** section that explains the cause of each
+change based on the diff captured in Step 7:
 
 ```json
 {
   "type": "create_pull_request",
   "title": "fix: codegen fixes for <BRANCH_NAME>",
-  "body": "This PR fixes TypeSpec codegen errors introduced by the TypeSpec generator version update.\n\n**Base branch**: `<BRANCH_NAME>`\n\n## Changes\n\n<concise summary of the files changed and why>\n\n## Verification\n\n- `scripts/Invoke-CodeGen.ps1` ran successfully after fixes.\n- `scripts/Export-Api.ps1` ran successfully.",
+  "body": "This PR fixes TypeSpec codegen errors introduced by the TypeSpec generator version update.\n\n**Base branch**: `<BRANCH_NAME>`\n\n## Changes\n\n<concise summary of the files changed and why>\n\n## API Changes\n\n<If api/ files were modified, list each change and its likely cause, e.g.:\n- `OpenAI.net8.0.cs`: Added `SomeNewType` — new model introduced by the generator update.\n- `OpenAI.net8.0.cs`: Removed `OldType` — type was renamed to `NewType` in the base spec.\nIf no api/ files were modified, write: None.>\n\n## Verification\n\n- `scripts/Invoke-CodeGen.ps1` ran successfully after fixes.\n- `scripts/Export-Api.ps1` ran successfully.",
   "branch": "typespec/fix-codegen-<VERSION>",
   "base": "<BRANCH_NAME>"
 }
