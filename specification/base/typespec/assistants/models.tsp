@@ -1,5 +1,5 @@
 /*
- * This file originated from an OpenAPI .yaml file and may include manual updates.
+ * This file was automatically generated from an OpenAPI .yaml file and may include local manual updates.
  * Review local edits carefully when regenerating or syncing it from upstream sources.
  */
 
