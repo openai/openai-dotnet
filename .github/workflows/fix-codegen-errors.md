@@ -141,13 +141,15 @@ CODEGEN_EXIT=${PIPESTATUS[0]}
 echo "Codegen exit code: $CODEGEN_EXIT"
 ```
 
-- **Exit code 0** → No codegen errors. Skip to Step 6 (Export API).
+- **Exit code 0** → No codegen errors. Continue to the build verification step, then proceed to Step 6 (Export API) only if `dotnet build OpenAI.slnx` succeeds.
 - **Non-zero exit code** → Errors need to be fixed. Continue to Step 5.
 
 ### Step 5: Fix codegen errors iteratively
 
 Read `/tmp/codegen-output.txt`, identify the failing phase, apply the fix, and re-run. Repeat
-until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
+until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**. After codegen succeeds,
+run `dotnet build OpenAI.slnx` before proceeding to Step 6 so the generated code is validated
+on both the "no errors" and "fixed errors" paths.
 
 **Triage by phase:**
 - `npm ci` or `npm run build` failure → **Category 4** (npm/plugin)
