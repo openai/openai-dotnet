@@ -1,6 +1,6 @@
 /*
- * This file was automatically generated from an OpenAPI .yaml file and may include local manual updates.
- * Review local edits carefully when regenerating or syncing it from upstream sources.
+ * This file was automatically generated from an OpenAPI .yaml file and is the canonical location for these definitions.
+ * Review changes carefully when regenerating or syncing it from upstream sources.
  */
 
 import "../vector-stores/models.tsp";
