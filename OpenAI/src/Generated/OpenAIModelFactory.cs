@@ -1068,6 +1068,74 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
+        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
+        {
+            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageCollectionOptions MessageCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, MessageCollectionOrder? order = default)
+        {
+            return new MessageCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static RunCollectionOptions RunCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunCollectionOrder? order = default)
+        {
+            return new RunCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepCollectionOptions RunStepCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunStepCollectionOrder? order = default)
+        {
+            return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
+        {
+            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
+        {
+            return new VectorStoreFileCollectionOptions(
+                afterId,
+                beforeId,
+                pageSizeLimit,
+                order,
+                filter,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        {
+            return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, AudioTranscriptionUsage usage = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            words ??= new ChangeTrackingList<TranscribedWord>();
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new AudioTranscription(
+                language,
+                duration,
+                text,
+                words.ToList(),
+                segments.ToList(),
+                usage,
+                transcriptionTokenLogProbabilities.ToList(),
+                additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
+        {
+            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
+        }
+
+        public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)
+        {
+            return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);
+        }
+
         public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, default);
@@ -1081,6 +1149,19 @@ namespace OpenAI
         public static ChatToolChoice ChatToolChoice()
         {
             return new ChatToolChoice(default);
+        }
+
+        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ChatCompletionCollectionOptions(
+                afterId,
+                pageSizeLimit,
+                order,
+                metadata,
+                model,
+                default);
         }
 
         public static ContainerCollectionOptions ContainerCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
@@ -1107,6 +1188,31 @@ namespace OpenAI
                 parameterName,
                 eventId,
                 default);
+        }
+
+        public static RealtimeTracing RealtimeTracing(RealtimeDefaultTracing? defaultTracing = default, RealtimeCustomTracing customTracing = default)
+        {
+            return new RealtimeTracing(defaultTracing, customTracing, default);
+        }
+
+        public static RealtimeTruncation RealtimeTruncation(RealtimeDefaultTruncation? defaultTruncation = default, RealtimeCustomTruncation customTruncation = default)
+        {
+            return new RealtimeTruncation(defaultTruncation, customTruncation, default);
+        }
+
+        public static RealtimeToolChoice RealtimeToolChoice(RealtimeDefaultToolChoice? defaultToolChoice = default, RealtimeCustomToolChoice customToolChoice = default)
+        {
+            return new RealtimeToolChoice(defaultToolChoice, customToolChoice, default);
+        }
+
+        public static RealtimeMcpToolCallApprovalPolicy RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, RealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
+        {
+            return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
+        }
+
+        public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
+        {
+            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
         }
 
         public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
@@ -1194,112 +1300,6 @@ namespace OpenAI
                 metadata,
                 inputItems.ToList(),
                 default);
-        }
-
-        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
-        {
-            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageCollectionOptions MessageCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, MessageCollectionOrder? order = default)
-        {
-            return new MessageCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static RunCollectionOptions RunCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunCollectionOrder? order = default)
-        {
-            return new RunCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepCollectionOptions RunStepCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunStepCollectionOrder? order = default)
-        {
-            return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
-        {
-            return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, AudioTranscriptionUsage usage = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            words ??= new ChangeTrackingList<TranscribedWord>();
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new AudioTranscription(
-                language,
-                duration,
-                text,
-                words.ToList(),
-                segments.ToList(),
-                usage,
-                transcriptionTokenLogProbabilities.ToList(),
-                additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
-        {
-            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
-        }
-
-        public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)
-        {
-            return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);
-        }
-
-        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ChatCompletionCollectionOptions(
-                afterId,
-                pageSizeLimit,
-                order,
-                metadata,
-                model,
-                default);
-        }
-
-        public static RealtimeTracing RealtimeTracing(RealtimeDefaultTracing? defaultTracing = default, RealtimeCustomTracing customTracing = default)
-        {
-            return new RealtimeTracing(defaultTracing, customTracing, default);
-        }
-
-        public static RealtimeTruncation RealtimeTruncation(RealtimeDefaultTruncation? defaultTruncation = default, RealtimeCustomTruncation customTruncation = default)
-        {
-            return new RealtimeTruncation(defaultTruncation, customTruncation, default);
-        }
-
-        public static RealtimeToolChoice RealtimeToolChoice(RealtimeDefaultToolChoice? defaultToolChoice = default, RealtimeCustomToolChoice customToolChoice = default)
-        {
-            return new RealtimeToolChoice(defaultToolChoice, customToolChoice, default);
-        }
-
-        public static RealtimeMcpToolCallApprovalPolicy RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, RealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
-        {
-            return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
-        }
-
-        public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
-        {
-            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
-        }
-
-        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
-        {
-            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
-        {
-            return new VectorStoreFileCollectionOptions(
-                afterId,
-                beforeId,
-                pageSizeLimit,
-                order,
-                filter,
-                additionalBinaryDataProperties: null);
         }
     }
 }
