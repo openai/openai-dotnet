@@ -249,7 +249,7 @@ After each fix, re-run codegen:
 
 ```bash
 pwsh -NoProfile -File scripts/Invoke-CodeGen.ps1 2>&1 | tee /tmp/codegen-output.txt
-CODEGEN_EXIT=$?
+CODEGEN_EXIT=${PIPESTATUS[0]}
 echo "Codegen exit code: $CODEGEN_EXIT"
 ```
 
@@ -257,7 +257,8 @@ Once codegen succeeds, verify the .NET solution builds cleanly:
 
 ```bash
 dotnet build OpenAI.slnx --configuration Release 2>&1 | tee /tmp/build-output.txt
-echo "Build exit code: $?"
+BUILD_EXIT=${PIPESTATUS[0]}
+echo "Build exit code: $BUILD_EXIT"
 ```
 
 Fix any C# build errors before proceeding.
