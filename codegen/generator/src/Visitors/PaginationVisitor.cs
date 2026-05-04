@@ -24,11 +24,8 @@ public class PaginationVisitor : ScmLibraryVisitor
     };
     private static readonly Dictionary<string, string> _paramReplacementMap = new(StringComparer.OrdinalIgnoreCase)
     {
-        { "after", "AfterId" },
         { "afterId", "AfterId" },
-        { "before", "BeforeId" },
         { "beforeId", "BeforeId" },
-        { "limit", "PageSizeLimit" },
         { "pageSizeLimit", "PageSizeLimit" },
         { "order", "Order" },
         { "model", "Model" },

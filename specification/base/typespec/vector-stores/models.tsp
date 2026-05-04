@@ -25,6 +25,7 @@ model VectorStoreCollectionOptions {
    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
    * default is 20.
    */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   limit?: int32 = 20;
 

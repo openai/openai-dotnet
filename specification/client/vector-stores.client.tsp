@@ -52,8 +52,3 @@ using Azure.ClientGenerator.Core;
 @@clientName(VectorStoreFileCollectionOptions.after, "afterId");
 @@clientName(VectorStoreFileCollectionOptions.before, "BeforeId");
 @@clientName(VectorStoreFileCollectionOptions.filter, "Filter");
-
-@@clientName(VectorStoreFileCollectionOptions.limit, "PageSizeLimit");
-@@clientName(VectorStoreFileCollectionOptions.after, "afterId");
-@@clientName(VectorStoreFileCollectionOptions.before, "BeforeId");
-@@clientName(VectorStoreFileCollectionOptions.filter, "Filter");
