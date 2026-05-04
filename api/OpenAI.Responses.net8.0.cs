@@ -759,6 +759,7 @@ namespace OpenAI.Responses {
         Completed = 1,
         Incomplete = 2
     }
+    [Experimental("OPENAI001")]
     public class OpenAIResponsesContext : ModelReaderWriterContext {
         public static OpenAIResponsesContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
@@ -1185,6 +1186,7 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
     public class ResponsesClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
         public string OrganizationId { get; set; }

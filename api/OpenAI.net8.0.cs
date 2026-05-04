@@ -3750,6 +3750,7 @@ namespace OpenAI.Realtime {
         public string EventId { get; set; }
         public RealtimeSessionOptions SessionOptions { get; }
     }
+    [Experimental("OPENAI002")]
     public class RealtimeClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
         public string OrganizationId { get; set; }
