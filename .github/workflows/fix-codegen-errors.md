@@ -283,10 +283,9 @@ If there are changes, check whether any `api/` files were modified:
 git diff --name-only | grep '^api/'
 ```
 
-API surface changes (additions, removals, or modifications in `api/*.cs`) are **expected** when
-the new generator version introduces new types or renames existing ones. They do **not** block
-PR creation. Instead, capture a diff of each changed `api/` file so you can explain the changes
-in the PR description:
+API surface changes (additions, removals, or modifications in `api/*.cs`) do **not** block PR
+creation — they may or may not be expected depending on the generator update. Capture a diff of
+each changed `api/` file so you can explain the changes in the PR description:
 
 ```bash
 git diff -- 'api/*.cs'
