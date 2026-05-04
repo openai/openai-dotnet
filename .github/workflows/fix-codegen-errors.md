@@ -13,7 +13,7 @@ on:
     inputs:
       branch:
         description: >
-          Typespec update branch to fix (e.g., typespec/update-http-client-csharp-1.0.0-alpha.20250101.1).
+          TypeSpec update branch to fix (e.g., typespec/update-http-client-csharp-1.0.0-alpha.20250101.1).
           Leave empty to auto-detect from the latest open PR with a matching branch name.
         required: false
         type: string
@@ -98,7 +98,7 @@ generator update workflow may have failed and no branch may have been created.
 
 ### Step 2: Identify the target branch
 
-Determine which typespec update branch to work on:
+Determine which TypeSpec update branch to work on:
 
 - **If triggered via `workflow_dispatch` with a `branch` input**: use
   `${{ github.event.inputs.branch }}`.
@@ -210,6 +210,6 @@ If there are changes, output a `create_pull_request` action targeting the typesp
 ```
 
 Where:
-- `<BRANCH_NAME>` is the typespec update branch (e.g., `typespec/update-http-client-csharp-1.0.0-alpha.20250101.1`)
+- `<BRANCH_NAME>` is the TypeSpec update branch (e.g., `typespec/update-http-client-csharp-1.0.0-alpha.20250101.1`)
 - `<VERSION>` is the version suffix extracted from the branch name (e.g., `1.0.0-alpha.20250101.1`)
-- `base` must be set to the typespec update branch so the PR stacks on top of the generator update PR
+- `base` must be set to the TypeSpec update branch so the PR stacks on top of the generator update PR
