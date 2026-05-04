@@ -262,7 +262,7 @@ BUILD_EXIT=${PIPESTATUS[0]}
 echo "Build exit code: $BUILD_EXIT"
 ```
 
-Fix any C# build errors before proceeding.
+IMPORTANT: Fix any C# build errors before proceeding.
 
 ### Step 6: Export the API surface
 
