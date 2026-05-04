@@ -480,7 +480,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task CanCreateAndDeleteContainerFile()
+    public async Task CanUploadAndDeleteContainerFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
@@ -492,7 +492,7 @@ public class ContainerTests : OpenAIRecordedTestBase
                 return;
             }
 
-            // Create a test file using multipart form data
+            // Upload a test file using multipart form data
             string testContent = "This is a test file content for container testing.";
             byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
@@ -500,21 +500,21 @@ public class ContainerTests : OpenAIRecordedTestBase
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-file.txt", "text/plain");
 
-            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult uploadResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-            Assert.That(createResult, Is.Not.Null);
-            Assert.That(createResult.GetRawResponse().IsError, Is.False, "File creation should succeed");
+            Assert.That(uploadResult, Is.Not.Null);
+            Assert.That(uploadResult.GetRawResponse().IsError, Is.False, "File upload should succeed");
 
             // Extract the file ID from the response (this might need adjustment based on the actual response format)
-            string responseContent = createResult.GetRawResponse().Content.ToString();
-            Console.WriteLine($"Create file response: {responseContent}");
+            string responseContent = uploadResult.GetRawResponse().Content.ToString();
+            Console.WriteLine($"Upload file response: {responseContent}");
 
             // Parse the response to get the file ID
             var responseJson = JsonDocument.Parse(responseContent);
             string fileId = responseJson.RootElement.GetProperty("id").GetString();
-            Assert.That(fileId, Is.Not.Null.And.Not.Empty, "File ID should be returned from creation");
+            Assert.That(fileId, Is.Not.Null.And.Not.Empty, "File ID should be returned from upload");
 
-            Console.WriteLine($"Created file with ID: {fileId}");
+            Console.WriteLine($"Uploaded file with ID: {fileId}");
 
             try
             {
@@ -538,7 +538,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task CanCreateGetAndDeleteContainerFile()
+    public async Task CanUploadGetAndDeleteContainerFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
@@ -550,16 +550,16 @@ public class ContainerTests : OpenAIRecordedTestBase
                 return;
             }
 
-            // Create a test file using multipart form data
+            // Upload a test file using multipart form data
             string testContent = "Test file content for get/delete operations.";
             byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-get-file.txt", "text/plain");
 
-            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult uploadResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-            string responseContent = createResult.GetRawResponse().Content.ToString();
+            string responseContent = uploadResult.GetRawResponse().Content.ToString();
             var responseJson = JsonDocument.Parse(responseContent);
             string fileId = responseJson.RootElement.GetProperty("id").GetString();
 
@@ -614,16 +614,16 @@ public class ContainerTests : OpenAIRecordedTestBase
                 return;
             }
 
-            // Create a test file first using multipart form data
+            // Upload a test file first using multipart form data
             string testContent = "Test content for cancellation test.";
             byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-cancel-file.txt", "text/plain");
 
-            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult uploadResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-            string responseContent = createResult.GetRawResponse().Content.ToString();
+            string responseContent = uploadResult.GetRawResponse().Content.ToString();
             var responseJson = JsonDocument.Parse(responseContent);
             string fileId = responseJson.RootElement.GetProperty("id").GetString();
 
@@ -674,16 +674,16 @@ public class ContainerTests : OpenAIRecordedTestBase
                 return;
             }
 
-            // Create a test file first using multipart form data
+            // Upload a test file first using multipart form data
             string testContent = "Test content for deletion with cancellation.";
             byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
             var formData = new MultiPartFormDataBinaryContent();
             formData.Add(contentBytes, "file", "test-delete-cancel-file.txt", "text/plain");
 
-            ClientResult createResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            ClientResult uploadResult = await client.UploadContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-            string responseContent = createResult.GetRawResponse().Content.ToString();
+            string responseContent = uploadResult.GetRawResponse().Content.ToString();
             var responseJson = JsonDocument.Parse(responseContent);
             string fileId = responseJson.RootElement.GetProperty("id").GetString();
 
@@ -703,7 +703,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public void CreateContainerFileValidatesParameters()
+    public void UploadContainerFileValidatesParameters()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
