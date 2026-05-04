@@ -3,7 +3,6 @@
  * Edits made directly to this file will be lost.
  */
 
-import "./custom.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -1339,4 +1338,80 @@ model ChatCompletionMessageCollectionOptions {
    * for descending order.
    */
   @query order?: ChatCompletionMessageCollectionOrder;
+}
+
+union ChatOutputPredictionType {
+  string,
+  static_content: "content",
+}
+
+/**
+ * Base representation of predicted output from a model.
+ */
+@discriminator("type")
+model ChatOutputPrediction {
+  type: ChatOutputPredictionType;
+}
+
+model ChatCompletionFunctionChoice {}
+
+model ChatCompletionToolChoice {}
+
+union ChatCompletionRequestMessageContentPartType {
+  text: "text",
+  file: "file",
+  input_audio: "input_audio",
+  image_url: "image_url",
+  refusal: "refusal",
+}
+
+@discriminator("type")
+model ChatCompletionRequestMessageContentPart {
+  type: ChatCompletionRequestMessageContentPartType;
+}
+
+model ChatCompletionMessageAudioChunk {
+  id?: string;
+  transcript?: string;
+
+  @encode("base64")
+  data?: bytes;
+
+  @encode("unixTimestamp", int32)
+  expires_at?: utcDateTime;
+}
+
+enum ChatToolKind {
+  function,
+}
+
+enum ChatToolCallKind {
+  function,
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetChatResponseFormatText extends DotNetChatResponseFormat {
+  @doc("""
+    The type of response format being defined. Always `text`.
+    """)
+  type: "text";
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetChatResponseFormatJsonSchema extends DotNetChatResponseFormat {
+  type: "json_schema";
+  json_schema: {
+    description?: string;
+    name: string;
+    schema?: unknown;
+    strict?: boolean | null = false;
+  };
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetChatResponseFormatJsonObject extends DotNetChatResponseFormat {
+  ...ResponseFormatJsonObject;
 }

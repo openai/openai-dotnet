@@ -35,8 +35,33 @@ param(
 $ErrorActionPreference = "Stop"
 
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
 $yamlPath = Join-Path $repoRootPath "api" "ga-apis.yaml"
+
+# Discover all area projects to validate. Reads OpenAI.slnx (the canonical
+# project list) and keeps src-side projects, excluding tests/examples so the
+# validator runs against shipping assemblies only. Add new area projects to
+# OpenAI.slnx and they will be picked up automatically.
+$projectPaths = @()
+$slnxPath = Join-Path $repoRootPath "OpenAI.slnx"
+if (Test-Path $slnxPath) {
+    $slnxXml = [xml](Get-Content $slnxPath -Raw)
+    foreach ($project in $slnxXml.Solution.Project) {
+        $relPath = $project.Path
+        if (-not $relPath) { continue }
+        $relPath = $relPath -replace '\\', '/'
+        # Only validate src-side area projects (skip tests/examples).
+        if ($relPath -notlike '*/src/*') { continue }
+        $full = Join-Path $repoRootPath ($relPath -replace '/', [System.IO.Path]::DirectorySeparatorChar)
+        if (Test-Path $full) {
+            $projectPaths += (Resolve-Path $full).Path
+        }
+    }
+}
+if ($projectPaths.Count -eq 0) {
+    # Fallback: scan well-known locations.
+    $fallback = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
+    if (Test-Path $fallback) { $projectPaths += $fallback }
+}
 
 # Auto-detect target framework: pick the highest TFM that is compatible with the
 # current PowerShell/.NET runtime so that the assembly can be loaded for reflection.
@@ -112,7 +137,7 @@ Write-Host ""
 # Step 2: Publish the project to a temp directory so all deps are co-located
 # ---------------------------------------------------------------------------
 
-$publishDir = $null
+$publishDirs = @()
 $violations = @()
 
 $validatorCode = @'
@@ -292,8 +317,24 @@ public class ExperimentalAttributeValidator
             foreach (var type in types)
             {
                 string fullName = type.Namespace + "." + type.Name;
-                if (!stableClassSet.Contains(fullName))
+                bool isStableClass = stableClassSet.Contains(fullName);
+
+                // Class-level check: any public exported type that is not in the
+                // stable set must itself carry [Experimental]. This catches custom
+                // (hand-written) classes -- and generated classes the visitor missed
+                // -- that are unintentionally surfaced as stable public API.
+                if (!isStableClass)
+                {
+                    if (!HasExperimentalAttribute(type))
+                    {
+                        violations.Add("CLASS|" + fullName + "|" + type.Name + "|" + fullName);
+                    }
+                    // When a class isn't in the stable set, member-level checks are
+                    // unnecessary: either the class is properly [Experimental] (so
+                    // its members inherit that diagnostic context) or the class
+                    // itself is already reported above.
                     continue;
+                }
 
                 string typeName = type.Name;
 
@@ -350,30 +391,7 @@ public class ExperimentalAttributeValidator
 '@
 
 try {
-    $publishDir = Join-Path ([System.IO.Path]::GetTempPath()) "openai-experimental-validation-$([System.IO.Path]::GetRandomFileName())"
-
-    Write-Host "Publishing project ($TargetFramework)..." -ForegroundColor Cyan
-
-    & dotnet publish $projectPath -c $Configuration -f $TargetFramework -o $publishDir --nologo -v quiet 2>&1 | Out-Null
-
-    if ($LASTEXITCODE -ne 0) {
-        & dotnet publish $projectPath -c $Configuration -f $TargetFramework -o $publishDir --nologo
-        throw "Build/publish failed with exit code $LASTEXITCODE"
-    }
-
-    $dllPath = Join-Path $publishDir "OpenAI.dll"
-    if (-not (Test-Path $dllPath)) {
-        throw "Expected assembly not found at: $dllPath"
-    }
-
-    Write-Host ""
-
-    # ---------------------------------------------------------------------------
-    # Step 3: Compile and run the reflection-based validator
-    # ---------------------------------------------------------------------------
-
-    Write-Host "Loading assembly and validating..." -ForegroundColor Cyan
-
+    # Compile the validator type once; reused for every assembly below.
     $validatorType = [AppDomain]::CurrentDomain.GetAssemblies() |
         ForEach-Object { $_.GetType('ExperimentalAttributeValidator', $false, $false) } |
         Where-Object { $null -ne $_ } |
@@ -383,24 +401,48 @@ try {
         Add-Type -TypeDefinition $validatorCode -WarningAction SilentlyContinue
     }
 
-    # ---------------------------------------------------------------------------
-    # Step 4: Run validation
-    # ---------------------------------------------------------------------------
+    foreach ($projectPath in $projectPaths) {
+        $projectName = [System.IO.Path]::GetFileNameWithoutExtension($projectPath)
+        $publishDir = Join-Path ([System.IO.Path]::GetTempPath()) "openai-experimental-validation-$projectName-$([System.IO.Path]::GetRandomFileName())"
+        $publishDirs += $publishDir
 
-    $violations = [ExperimentalAttributeValidator]::Validate(
-            $dllPath,
-            [string[]]$stableClasses,
-            [string[]]$stableProperties,
-            [string[]]$stableMethods
-        )
+        Write-Host "Publishing $projectName ($TargetFramework)..." -ForegroundColor Cyan
+
+        & dotnet publish $projectPath -c $Configuration -f $TargetFramework -o $publishDir --nologo -v quiet 2>&1 | Out-Null
+
+        if ($LASTEXITCODE -ne 0) {
+            & dotnet publish $projectPath -c $Configuration -f $TargetFramework -o $publishDir --nologo
+            throw "Build/publish failed for ${projectName} with exit code $LASTEXITCODE"
+        }
+
+        $dllPath = Join-Path $publishDir ($projectName + ".dll")
+        if (-not (Test-Path $dllPath)) {
+            throw "Expected assembly not found at: $dllPath"
+        }
+
+        Write-Host "  Validating $projectName.dll..." -ForegroundColor DarkGray
+
+        $projectViolations = [ExperimentalAttributeValidator]::Validate(
+                $dllPath,
+                [string[]]$stableClasses,
+                [string[]]$stableProperties,
+                [string[]]$stableMethods
+            )
+
+        if ($projectViolations) {
+            $violations += $projectViolations
+        }
+    }
 }
 catch {
     Write-Error $_
     exit 1
 }
 finally {
-    if ($publishDir -and (Test-Path $publishDir)) {
-        Remove-Item -Path $publishDir -Recurse -Force -ErrorAction SilentlyContinue
+    foreach ($dir in $publishDirs) {
+        if ($dir -and (Test-Path $dir)) {
+            Remove-Item -Path $dir -Recurse -Force -ErrorAction SilentlyContinue
+        }
     }
 }
 
@@ -410,13 +452,13 @@ finally {
 
 if ($violations.Count -eq 0) {
     Write-Host ""
-    Write-Host "All public APIs in stable classes are correctly attributed." -ForegroundColor Green
+    Write-Host "All public APIs are correctly attributed." -ForegroundColor Green
     Write-Host ""
     exit 0
 }
 
 Write-Host ""
-Write-Host "Found $($violations.Count) violation(s) - public members in stable classes missing [Experimental] attribute:" -ForegroundColor Red
+Write-Host "Found $($violations.Count) violation(s) - public types/members missing [Experimental] attribute:" -ForegroundColor Red
 Write-Host ""
 
 foreach ($v in $violations) {

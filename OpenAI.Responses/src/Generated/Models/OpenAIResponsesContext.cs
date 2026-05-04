@@ -3,6 +3,7 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
@@ -222,6 +223,7 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(WebSearchToolApproximateLocation))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolFilters))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolLocation))]
+    [Experimental("OPENAI001")]
     public partial class OpenAIResponsesContext : ModelReaderWriterContext
     {
     }

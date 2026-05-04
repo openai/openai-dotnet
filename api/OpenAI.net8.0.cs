@@ -43,6 +43,8 @@ namespace OpenAI {
         [Experimental("OPENAI002")]
         public virtual RealtimeClient GetRealtimeClient();
         [Experimental("OPENAI001")]
+        public virtual ResponsesClient GetResponsesClient();
+        [Experimental("OPENAI001")]
         public virtual SkillClient GetSkillClient();
         [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
@@ -3748,6 +3750,7 @@ namespace OpenAI.Realtime {
         public string EventId { get; set; }
         public RealtimeSessionOptions SessionOptions { get; }
     }
+    [Experimental("OPENAI002")]
     public class RealtimeClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
         public string OrganizationId { get; set; }

@@ -1089,6 +1089,33 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        {
+            return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, AudioTranscriptionUsage usage = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            words ??= new ChangeTrackingList<TranscribedWord>();
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new AudioTranscription(
+                language,
+                duration,
+                text,
+                words.ToList(),
+                segments.ToList(),
+                usage,
+                transcriptionTokenLogProbabilities.ToList(),
+                additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
+        {
+            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
+        }
+
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)
         {
             return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);
@@ -1151,6 +1178,31 @@ namespace OpenAI
                 parameterName,
                 eventId,
                 default);
+        }
+
+        public static RealtimeTracing RealtimeTracing(RealtimeDefaultTracing? defaultTracing = default, RealtimeCustomTracing customTracing = default)
+        {
+            return new RealtimeTracing(defaultTracing, customTracing, default);
+        }
+
+        public static RealtimeTruncation RealtimeTruncation(RealtimeDefaultTruncation? defaultTruncation = default, RealtimeCustomTruncation customTruncation = default)
+        {
+            return new RealtimeTruncation(defaultTruncation, customTruncation, default);
+        }
+
+        public static RealtimeToolChoice RealtimeToolChoice(RealtimeDefaultToolChoice? defaultToolChoice = default, RealtimeCustomToolChoice customToolChoice = default)
+        {
+            return new RealtimeToolChoice(defaultToolChoice, customToolChoice, default);
+        }
+
+        public static RealtimeMcpToolCallApprovalPolicy RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, RealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
+        {
+            return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
+        }
+
+        public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
+        {
+            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
         }
 
         public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
@@ -1248,58 +1300,6 @@ namespace OpenAI
         public static RunStepCollectionOptions RunStepCollectionOptions(int? pageSizeLimit = default, RunStepCollectionOrder? order = default, string afterId = default, string beforeId = default)
         {
             return new RunStepCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
-        {
-            return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, AudioTranscriptionUsage usage = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            words ??= new ChangeTrackingList<TranscribedWord>();
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new AudioTranscription(
-                language,
-                duration,
-                text,
-                words.ToList(),
-                segments.ToList(),
-                usage,
-                transcriptionTokenLogProbabilities.ToList(),
-                additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscriptionChunkingStrategy AudioTranscriptionChunkingStrategy(AudioTranscriptionDefaultChunkingStrategy? defaultChunkingStrategy = default, AudioTranscriptionCustomChunkingStrategy customChunkingStrategy = default)
-        {
-            return new AudioTranscriptionChunkingStrategy(defaultChunkingStrategy, customChunkingStrategy, additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeTracing RealtimeTracing(RealtimeDefaultTracing? defaultTracing = default, RealtimeCustomTracing customTracing = default)
-        {
-            return new RealtimeTracing(defaultTracing, customTracing, default);
-        }
-
-        public static RealtimeTruncation RealtimeTruncation(RealtimeDefaultTruncation? defaultTruncation = default, RealtimeCustomTruncation customTruncation = default)
-        {
-            return new RealtimeTruncation(defaultTruncation, customTruncation, default);
-        }
-
-        public static RealtimeToolChoice RealtimeToolChoice(RealtimeDefaultToolChoice? defaultToolChoice = default, RealtimeCustomToolChoice customToolChoice = default)
-        {
-            return new RealtimeToolChoice(defaultToolChoice, customToolChoice, default);
-        }
-
-        public static RealtimeMcpToolCallApprovalPolicy RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, RealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
-        {
-            return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
-        }
-
-        public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
-        {
-            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
         }
     }
 }

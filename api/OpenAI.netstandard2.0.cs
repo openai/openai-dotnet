@@ -31,6 +31,7 @@ namespace OpenAI {
         public virtual OpenAIFileClient GetOpenAIFileClient();
         public virtual OpenAIModelClient GetOpenAIModelClient();
         public virtual RealtimeClient GetRealtimeClient();
+        public virtual ResponsesClient GetResponsesClient();
         public virtual SkillClient GetSkillClient();
         public virtual VectorStoreClient GetVectorStoreClient();
         public virtual VideoClient GetVideoClient();

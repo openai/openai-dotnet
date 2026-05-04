@@ -3,11 +3,12 @@
  * Edits made directly to this file will be lost.
  */
 
+import "@typespec/http";
 import "@azure-tools/typespec-client-generator-core";
 
-using Azure.ClientGenerator.Core;
 using Http;
 using TypeSpec.OpenAPI;
+using Azure.ClientGenerator.Core;
 
 namespace OpenAI;
 
