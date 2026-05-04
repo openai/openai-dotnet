@@ -32,7 +32,8 @@ permissions:
 
 checkout:
   fetch-depth: 0
-  fetch: ["*"]
+  fetch:
+    - "typespec/update-http-client-csharp-*"
 
 steps:
   - name: Setup .NET SDK
