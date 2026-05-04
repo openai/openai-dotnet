@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Realtime;
 
 /// <summary> The options to configure the <see cref="RealtimeClient"/>. </summary>
+[Experimental("OPENAI002")]
 public class RealtimeClientOptions : ClientPipelineOptions
 {
     private Uri _endpoint;

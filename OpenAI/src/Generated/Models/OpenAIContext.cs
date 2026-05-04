@@ -3,6 +3,7 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
@@ -693,6 +694,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(VectorStoreFileError))]
     [ModelReaderWriterBuildable(typeof(VectorStoreModificationOptions))]
     [ModelReaderWriterBuildable(typeof(WeightsAndBiasesIntegration))]
+    [Experimental("OPENAI001")]
     public partial class OpenAIContext : ModelReaderWriterContext
     {
     }
