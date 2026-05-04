@@ -137,7 +137,7 @@ Run `Invoke-CodeGen.ps1` and capture all output:
 
 ```bash
 pwsh -NoProfile -File scripts/Invoke-CodeGen.ps1 2>&1 | tee /tmp/codegen-output.txt
-CODEGEN_EXIT=$?
+CODEGEN_EXIT=${PIPESTATUS[0]}
 echo "Codegen exit code: $CODEGEN_EXIT"
 ```
 
