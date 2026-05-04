@@ -1206,7 +1206,7 @@ jobs:
       github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion != 'success'
     runs-on: ubuntu-slim
     outputs:
-      activated: ${{ steps.check_membership.outputs.is_team_member == 'true' }}
+      activated: ${{ steps.check_membership.outputs.is_team_member == 'true' || github.actor == 'github-actions[bot]' }}
       matched_command: ''
       setup-trace-id: ${{ steps.setup.outputs.trace-id }}
     steps:
