@@ -20,6 +20,10 @@ on:
 
 timeout-minutes: 30
 
+if: >
+  github.event_name == 'workflow_dispatch' ||
+  github.event.workflow_run.conclusion != 'success'
+
 permissions:
   contents: read
   pull-requests: read
@@ -86,15 +90,21 @@ generator version.
 
 ### Step 1: Check the triggering workflow run outcome
 
-If triggered by a `workflow_run` event, first verify the triggering run succeeded:
+This workflow only runs when the **Update TypeSpec Generator Version** workflow concludes with
+a non-`success` result, which covers two scenarios:
+
+- **Actual failure** — the workflow failed before creating a branch (e.g., npm/git error).
+  Check whether a `typespec/update-http-client-csharp-*` branch was recently created. If none
+  exists, exit gracefully and note that the upstream workflow needs investigation.
+- **Succeeded with issues** — the script created a PR but exited with code 1 due to warnings
+  (PR title is prefixed with `"Succeeded with Issues:"`). Proceed to find and fix codegen errors.
+
+Print the event context for reference:
 
 ```bash
 echo "Triggered by: ${{ github.event_name }}"
 echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
 ```
-
-If the event is `workflow_run` and the conclusion is not `success`, exit gracefully — the
-generator update workflow may have failed and no branch may have been created.
 
 ### Step 2: Identify the target branch
 
@@ -139,28 +149,26 @@ echo "Codegen exit code: $CODEGEN_EXIT"
 Analyze the error output at `/tmp/codegen-output.txt` and fix all errors. Repeat until
 `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
 
-#### Identifying the error root cause
+#### Error Categories
 
-Common TypeSpec codegen error patterns (and how to fix them):
+Use the error message to identify the category and apply the appropriate fix:
 
-- **TypeSpec compiler errors** — in `specification/client/` `.tsp` files. Fix the TypeSpec
-  syntax or add `@@suppress` directives as needed.
-- **Missing `@@clientLocation`** — every operation must have a `@@clientLocation` annotation
-  in the client layer; add it in the relevant `specification/client/<area>/operations.tsp`.
-- **Type union errors** — never use `string | SomeType` unions; use `@discriminator` or a
-  named union model instead.
-- **Deprecated TypeSpec API usage** — update to the new API called out in the error.
-- **C# build errors in generated code** — check `src/Custom/` for stubs (`GeneratorStubs.cs`)
-  that may need updating because a generated type was renamed in the new generator version.
+| Category | Symptoms | Fix |
+|---|---|---|
+| **TypeSpec compiler error** | `error` lines referencing `.tsp` files | Fix syntax or add `@@suppress("<rule-id>", "reason")` in the relevant `specification/client/` file |
+| **Missing `@@clientLocation`** | `error: Operation ... missing clientLocation` | Add `@@clientLocation(<ClientName>)` on the operation in `specification/client/<area>/operations.tsp` |
+| **Type union error** | `error: ... union ... not supported` | Replace inline unions (`string \| SomeType`) with a named `@discriminator` model or a declared union |
+| **Deprecated TypeSpec API** | `warning/error: ... is deprecated` | Update to the replacement API named in the error message |
+| **C# build error in generated code** | `error CS...` after codegen succeeds | Update stubs in `src/Custom/` (e.g., `GeneratorStubs.cs`) to match renamed or restructured generated types |
 
-#### Rules for fixing TypeSpec errors
+#### Rules
 
-- **NEVER modify files in `specification/base/`** — these are exact upstream copies.
-- Fix issues in `specification/client/` files or in `src/Custom/` files.
-- To suppress a known linting warning, add `@@suppress("<rule-id>", "reason")` in
-  `specification/client/` (not in `specification/base/`).
-- Replace type unions with discriminators.
-- After each fix, re-run codegen:
+- **Never modify `specification/base/`** — these are upstream copies. All fixes go in
+  `specification/client/` or `src/Custom/`.
+- Add `@@suppress` directives only in `specification/client/`, not in `specification/base/`.
+- Use discriminators instead of type unions.
+
+After each fix, re-run codegen:
 
 ```bash
 pwsh -NoProfile -File scripts/Invoke-CodeGen.ps1 2>&1 | tee /tmp/codegen-output.txt
