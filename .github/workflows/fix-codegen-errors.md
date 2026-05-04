@@ -220,12 +220,13 @@ TypeSpec SDK.
 
 **Fix:**
 1. Check `codegen/package.json` for version mismatches.
-2. Delete `node_modules` and `package-lock.json`, then reinstall:
+2. Delete `node_modules` only, then reinstall from the existing lockfile:
    ```powershell
-   npm install
+   npm ci
    npm run build -w codegen
    ```
-3. If `codegen/generator/src/` has TypeScript compile errors, fix the TypeScript visitor code.
+3. Do not delete or regenerate `package-lock.json` as part of this workflow fix path.
+4. If `codegen/generator/src/` has TypeScript compile errors, fix the TypeScript visitor code.
 
 #### Category 5 — Post-generation build errors (`dotnet build`)
 
