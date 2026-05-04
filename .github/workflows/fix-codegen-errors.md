@@ -146,27 +146,101 @@ echo "Codegen exit code: $CODEGEN_EXIT"
 
 ### Step 5: Fix codegen errors iteratively
 
-Analyze the error output at `/tmp/codegen-output.txt` and fix all errors. Repeat until
-`Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
+Read `/tmp/codegen-output.txt`, identify the failing phase, apply the fix, and re-run. Repeat
+until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
 
-#### Error Categories
+**Triage by phase:**
+- `npm ci` or `npm run build` failure → **Category 4** (npm/plugin)
+- `tsp compile` error referencing a namespace → **Category 1** (prohibited-namespace)
+- `tsp compile` error for a missing type → **Category 2** (unresolved reference)
+- `tsp compile` error on a decorator → **Category 3** (client TSP)
+- Codegen succeeds but `dotnet build` fails → **Category 5** (post-generation build)
 
-Use the error message to identify the category and apply the appropriate fix:
+> **Ground rule:** Never modify `specification/base/` — these are upstream copies. All fixes go
+> in `specification/client/` or `src/Custom/`.
 
-| Category | Symptoms | Fix |
-|---|---|---|
-| **TypeSpec compiler error** | `error` lines referencing `.tsp` files | Fix syntax or add `@@suppress("<rule-id>", "reason")` in the relevant `specification/client/` file |
-| **Missing `@@clientLocation`** | `error: Operation ... missing clientLocation` | Add `@@clientLocation(<ClientName>)` on the operation in `specification/client/<area>/operations.tsp` |
-| **Type union error** | `error: ... union ... not supported` | Replace inline unions (`string \| SomeType`) with a named `@discriminator` model or a declared union |
-| **Deprecated TypeSpec API** | `warning/error: ... is deprecated` | Update to the replacement API named in the error message |
-| **C# build error in generated code** | `error CS...` after codegen succeeds | Update stubs in `src/Custom/` (e.g., `GeneratorStubs.cs`) to match renamed or restructured generated types |
+#### Category 1 — `prohibited-namespace` errors
 
-#### Rules
+**Symptom:** Compiler error naming a type with `prohibited-namespace`.
 
-- **Never modify `specification/base/`** — these are upstream copies. All fixes go in
-  `specification/client/` or `src/Custom/`.
-- Add `@@suppress` directives only in `specification/client/`, not in `specification/base/`.
-- Use discriminators instead of type unions.
+**Cause:** A TypeSpec type landed in the root `OpenAI` namespace but has no `[CodeGenType]` stub
+to place it in the correct area namespace (e.g., `OpenAI.Audio`).
+
+**Fix:**
+1. Identify the type name from the error message.
+2. Determine visibility: types prefixed with `Internal` are internal; others are public.
+3. Add a stub in the correct file:
+   - Internal → `src/Custom/{Area}/Internal/GeneratorStubs.cs`
+   - Public → `src/Custom/{Area}/GeneratorStubs.cs`
+
+```csharp
+// Internal example
+[CodeGenType("SomeNewInternalType")] internal partial class InternalSomeNewInternalType { }
+
+// Public example
+[CodeGenType("SomeNewPublicType")] public partial class SomeNewPublicType { }
+```
+
+#### Category 2 — Missing type / unresolved reference errors
+
+**Symptom:** `error type-not-found: Type "Foo" is not defined` or similar.
+
+**Cause:** The base spec references a type from `common/` that hasn't been copied locally yet.
+
+**Fix:**
+1. Search locally for the type definition:
+   ```powershell
+   Select-String -Path "specification/base/typespec/common/*.tsp" -Pattern "model Foo|union Foo|enum Foo|alias Foo|scalar Foo"
+   ```
+2. If not found, retrieve it from upstream `microsoft/openai-openapi-pr` →
+   `packages/openai-typespec/src/common/`.
+3. Copy **only the specific type definition** into the local common file — do not copy entire
+   files.
+
+#### Category 3 — Client TSP decorator errors
+
+**Symptom:** Errors referencing `@@clientLocation`, `@@clientName`, `@@visibility`,
+`@@alternateType`, or `@@usage` decorators.
+
+**Cause:** A type or operation was renamed/removed in the new base spec, but the client TSP still
+references the old name.
+
+**Fix:**
+1. Open `specification/client/{area}.client.tsp`.
+2. Find the stale reference named in the error.
+3. Update it to match the new name from the base spec, or remove the `@@clientLocation` line if
+   the operation was removed.
+
+#### Category 4 — npm / build errors (plugin compilation)
+
+**Symptom:** Errors during `npm ci` or `npm run build` in the codegen plugin.
+
+**Cause:** Version incompatibilities after a generator update, or breaking API changes in the
+TypeSpec SDK.
+
+**Fix:**
+1. Check `codegen/package.json` for version mismatches.
+2. Delete `node_modules` and `package-lock.json`, then reinstall:
+   ```powershell
+   npm install
+   npm run build -w codegen
+   ```
+3. If `codegen/generator/src/` has TypeScript compile errors, fix the TypeScript visitor code.
+
+#### Category 5 — Post-generation build errors (`dotnet build`)
+
+**Symptom:** `Invoke-CodeGen.ps1` succeeds but `dotnet build OpenAI.slnx` fails.
+
+**Cause:** Generated C# code references renamed/removed custom types, or numeric type conversions
+need updating.
+
+**Fix:**
+1. Check for renamed types → update `[CodeGenType]` attributes in `GeneratorStubs.cs`.
+2. Check for numeric type issues → update exclusion lists in
+   `codegen/generator/src/Visitors/NumericTypesVisitor.cs`.
+3. Check custom code in `src/Custom/{Area}/` for broken references.
+
+---
 
 After each fix, re-run codegen:
 
