@@ -672,13 +672,13 @@ namespace OpenAI.Responses {
         Completed = 1,
         Incomplete = 2
     }
-    public static class OpenAIHostBuilderExtensions {
-        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-    }
     public class OpenAIResponsesContext : ModelReaderWriterContext {
         public static OpenAIResponsesContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
+    }
+    public static class OpenAIResponsesHostBuilderExtensions {
+        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
