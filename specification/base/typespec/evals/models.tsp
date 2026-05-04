@@ -996,7 +996,7 @@ model EvalGraderResource {
   type: GraderType;
 }
 
-// Customization note: as of 2025-05-21, the origin specification only formally splits input (request) and output
+// Customization note: the origin specification only formally splits input (request) and output
 // (response) models for the [Create]EvalLabelModelGrader component[s]. For compatibility and clarity, this
 // reprojection chooses to split all EvalGrader components into input and output models, sharing details via
 // spread.

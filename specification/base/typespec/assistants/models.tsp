@@ -1,9 +1,9 @@
-import "../vector-stores/models.tsp";
 /*
  * This file originated from an OpenAPI .yaml file and may include manual updates.
  * Review local edits carefully when regenerating or syncing it from upstream sources.
  */
 
+import "../vector-stores/models.tsp";
 import "@typespec/http";
 import "@azure-tools/typespec-client-generator-core";
 
