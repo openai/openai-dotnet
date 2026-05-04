@@ -48,7 +48,7 @@ function Invoke-DotNetBuild {
 
     Write-Output "Building $($ProjectPath)..."
     Write-Output ""
-    & dotnet build $ProjectPath
+    & dotnet build $ProjectPath --configuration Release
     Write-Output ""
 }
 
@@ -60,7 +60,7 @@ function Invoke-DotNetPack {
 
     Write-Output "Packing $($ProjectPath)..."
     Write-Output ""
-    & dotnet pack $ProjectPath
+    & dotnet pack $ProjectPath --configuration Release
     Write-Output ""
 }
 
