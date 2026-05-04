@@ -1,7 +1,7 @@
 import "../vector-stores/models.tsp";
 /*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
+ * This file originated from an OpenAPI .yaml file and may include manual updates.
+ * Review local edits carefully when regenerating or syncing it from upstream sources.
  */
 
 import "@typespec/http";
