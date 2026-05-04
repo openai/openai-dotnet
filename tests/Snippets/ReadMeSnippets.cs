@@ -1300,9 +1300,4 @@ public class ReadMeSnippets
         }
     }
     #endregion
-
-    public class ApplicationBuilder
-    {
-        public virtual IServiceCollection Services { get; }
-    }
 }

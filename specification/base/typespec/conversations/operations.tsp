@@ -217,7 +217,7 @@ parameter for [listing Conversation items above](https://platform.openai.com/doc
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   include?: IncludeEnum[],
-): ItemResource;
+): ConversationItemResource;
 
 /** Create a conversation. */
 #suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."

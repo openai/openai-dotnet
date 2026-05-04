@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Microsoft.TypeSpec.Generator.ClientModel;
-using Microsoft.TypeSpec.Generator.ClientModel.Providers;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Snippets;
@@ -137,12 +136,25 @@ namespace OpenAILibraryPlugin.Visitors
             return base.VisitMethod(methodProvider);
         }
 
+        // Tracks which (Namespace.Name) pairs have already been decorated in the
+        // current emit, so multiple TypeProviders that emit the same partial class
+        // (e.g., a model and its companion serialization partial) don't produce
+        // duplicate [Experimental] attributes.
+        private readonly HashSet<string> _attributedTypes = new(StringComparer.Ordinal);
+
         protected override TypeProvider? VisitType(TypeProvider type)
         {
+            // Decorate any public/protected generated type that isn't in the stable
+            // set. The provider-kind allow-list previously used here (ClientProvider,
+            // ModelProvider, ClientOptionsProvider, EnumProvider) silently skipped
+            // other generated public types -- e.g., the ModelReaderWriterContext
+            // partials such as OpenAIResponsesContext -- leaving them un-attributed.
+            // Visibility plus the stable-list check is sufficient to gate this.
             if ((type.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Public) ||
                     type.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Protected)) &&
                 !_stableClasses.Contains($"{type.Type.Namespace}.{type.Name}") &&
-                (type is ClientProvider or ModelProvider or ClientOptionsProvider or EnumProvider))
+                !type.Attributes.Any(attr => attr.Type.Equals(typeof(ExperimentalAttribute))) &&
+                _attributedTypes.Add($"{type.Type.Namespace}.{type.Name}"))
             {
                 AttributeStatement experimentalAttribute = type.Type.Namespace switch
                 {
