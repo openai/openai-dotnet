@@ -1,9 +1,9 @@
+import "../vector-stores/models.tsp";
 /*
- * This file was automatically generated from an OpenAPI .yaml file and is the canonical location for these definitions.
- * Review changes carefully when regenerating or syncing it from upstream sources.
+ * This file was automatically generated from an OpenAPI .yaml file.
+ * Edits made directly to this file will be lost.
  */
 
-import "../vector-stores/models.tsp";
 import "@typespec/http";
 import "@azure-tools/typespec-client-generator-core";
 
