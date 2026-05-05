@@ -9,9 +9,15 @@ namespace OpenAI.Responses
 {
     internal readonly partial struct InternalTokenCountsBodyTextVerbosity : IEquatable<InternalTokenCountsBodyTextVerbosity>
     {
+        private readonly string _value;
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
+
+        public InternalTokenCountsBodyTextVerbosity(string value)
+        {
+            _value = value;
+        }
 
         internal static InternalTokenCountsBodyTextVerbosity Low { get; } = new InternalTokenCountsBodyTextVerbosity(LowValue);
 
@@ -34,5 +40,7 @@ namespace OpenAI.Responses
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
+        public override string ToString() => _value;
     }
 }

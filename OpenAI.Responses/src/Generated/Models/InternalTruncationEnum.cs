@@ -9,8 +9,14 @@ namespace OpenAI.Responses
 {
     internal readonly partial struct InternalTruncationEnum : IEquatable<InternalTruncationEnum>
     {
+        private readonly string _value;
         private const string AutoValue = "auto";
         private const string DisabledValue = "disabled";
+
+        public InternalTruncationEnum(string value)
+        {
+            _value = value;
+        }
 
         internal static InternalTruncationEnum Auto { get; } = new InternalTruncationEnum(AutoValue);
 
@@ -31,5 +37,7 @@ namespace OpenAI.Responses
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
+        public override string ToString() => _value;
     }
 }

@@ -9,6 +9,7 @@ namespace OpenAI.Responses
 {
     internal readonly partial struct InternalModelIdsCompaction : IEquatable<InternalModelIdsCompaction>
     {
+        private readonly string _value;
         private const string Gpt41Value = "gpt-4.1";
         private const string Gpt41MiniValue = "gpt-4.1-mini";
         private const string Gpt41NanoValue = "gpt-4.1-nano";
@@ -78,6 +79,11 @@ namespace OpenAI.Responses
         private const string Gpt5ProValue = "gpt-5-pro";
         private const string Gpt5Pro20251006Value = "gpt-5-pro-2025-10-06";
         private const string Gpt51CodexMaxValue = "gpt-5.1-codex-max";
+
+        public InternalModelIdsCompaction(string value)
+        {
+            _value = value;
+        }
 
         internal static InternalModelIdsCompaction Gpt41 { get; } = new InternalModelIdsCompaction(Gpt41Value);
 
@@ -232,5 +238,7 @@ namespace OpenAI.Responses
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+
+        public override string ToString() => _value;
     }
 }
