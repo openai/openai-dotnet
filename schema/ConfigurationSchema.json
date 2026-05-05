@@ -161,14 +161,6 @@
             "Options": { "$ref": "#/definitions/openAIClientOptions" }
           }
         },
-        "ResponsesClient": {
-          "type": "object",
-          "description": "Configuration for the OpenAI ResponsesClient.",
-          "properties": {
-            "Credential": { "$ref": "#/definitions/credential" },
-            "Options": { "$ref": "#/definitions/openAIClientOptions" }
-          }
-        },
         "AssistantClient": {
           "type": "object",
           "description": "Configuration for the OpenAI AssistantClient.",
