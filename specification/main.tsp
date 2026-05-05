@@ -13,20 +13,10 @@ import "./client/messages.client.tsp";
 import "./client/models.client.tsp";
 import "./client/moderations.client.tsp";
 import "./client/realtime.client.tsp";
-import "./client/responses.client.tsp";
 import "./client/runs.client.tsp";
 import "./client/skills.client.tsp";
 import "./client/threads.client.tsp";
 import "./client/vector-stores.client.tsp";
 import "./client/videos.client.tsp";
-
-import "./client/models/assistants.models.tsp";
-import "./client/models/audio.models.tsp";
-import "./client/models/batch.models.tsp";
-import "./client/models/chat.models.tsp";
-import "./client/models/conversations.models.tsp";
-import "./client/models/realtime.models.tsp";
-import "./client/models/vector-stores.models.tsp";
-import "./client/models/videos.models.tsp";
 
 import "./base/typespec/main.tsp";

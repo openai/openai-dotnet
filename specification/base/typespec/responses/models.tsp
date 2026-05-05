@@ -28,6 +28,12 @@ union ResponsesReasoningEffort {
   "high",
 }
 
+union ResponsesCompoundFilterType {
+  string,
+  AndValue: "and",
+  OrValue: "or",
+}
+
 /** A filter used to compare a specified attribute key to a given value using a defined comparison operation. */
 model ResponsesComparisonFilter {
   @doc("""
@@ -55,7 +61,7 @@ model ResponsesCompoundFilter {
   @doc("""
     Type of operation: `and` or `or`.
     """)
-  type: "and" | "or";
+  type: ResponsesCompoundFilterType;
 
   @doc("""
     Array of filters to combine. Items can be `ResponsesComparisonFilter` or `ResponsesCompoundFilter`.

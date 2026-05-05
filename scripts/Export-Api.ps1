@@ -1,11 +1,12 @@
 <#
 .SYNOPSIS
-    Generates the public API surface for the OpenAI .NET library using GenAPI.
+    Generates the public API surface for the OpenAI .NET libraries using GenAPI.
 
 .DESCRIPTION
     This script invokes the MSBuild GenerateApi target to produce C# source files
-    representing the public API contract of the OpenAI library. The output files
-    are placed in the 'api' folder at the repository root.
+    representing the public API contract of the OpenAI and OpenAI.Responses
+    libraries. The output files are placed in the 'api' folder at the repository
+    root.
 
 .EXAMPLE
     .\Export-Api.ps1
@@ -13,7 +14,7 @@
     ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
 
 .NOTES
-    Outputs are written to api/OpenAI.<TargetFramework>.cs
+    Outputs are written to api/<LibraryName>.<TargetFramework>.cs
 #>
 
 [CmdletBinding()]
@@ -26,8 +27,20 @@ $configuration = "Release"
 
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
 $outputDirectory = Join-Path $repoRootPath "api"
+
+# Projects to export. Each entry has a project file path and the library name
+# used as the prefix for the generated API files.
+$projects = @(
+    @{
+        Name = "OpenAI"
+        Path = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
+    },
+    @{
+        Name = "OpenAI.Responses"
+        Path = Join-Path $repoRootPath "OpenAI.Responses" "src" "OpenAI.Responses.csproj"
+    }
+)
 
 # Get ClientTargetFrameworks from Directory.Build.props
 $propsPath = Join-Path $repoRootPath "Directory.Build.props"
@@ -53,7 +66,9 @@ Write-Host ""
 if (Test-Path $outputDirectory) {
     Write-Host "Cleaning existing output directory..." -ForegroundColor Cyan
     try {
-        Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" -Force | Remove-Item -Force
+        foreach ($project in $projects) {
+            Get-ChildItem -Path $outputDirectory -Filter "$($project.Name).net*.cs" -Force | Remove-Item -Force
+        }
     }
     catch {
         Write-Warning "Failed to clean some items in output directory: $_"
@@ -63,36 +78,43 @@ if (Test-Path $outputDirectory) {
     Write-Host "Created output directory: $outputDirectory"
 }
 
-# Build the dotnet command arguments
-$buildArgs = @(
-    "build"
-    $projectPath
-    "-t:ExportApi"
-    "-c:$configuration"
-    "-p:ExportingApi=true"
-    "-m"
-)
-
 Write-Host "Output Directory: $outputDirectory"
 Write-Host ""
-Write-Host "Running GenAPI for all target frameworks..." -ForegroundColor Cyan
-Write-Host ""
 
-# Run a single build command - the MSBuild target handles all frameworks
-& dotnet @buildArgs
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "GenAPI failed with exit code $LASTEXITCODE"
-    exit $LASTEXITCODE
-}
+foreach ($project in $projects) {
+    $projectName = $project.Name
+    $projectPath = $project.Path
 
-Write-Host ""
-Write-Host "Cleaning up generated files..." -ForegroundColor Cyan
+    Write-Host "================================================================" -ForegroundColor Cyan
+    Write-Host "Running GenAPI for $projectName..." -ForegroundColor Cyan
+    Write-Host "================================================================" -ForegroundColor Cyan
+    Write-Host ""
 
-# Clean up each generated file
-Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
-    Write-Host "  Cleaning $($_.Name)..."
-    
-    $content = Get-Content $_.FullName -Raw
+    # Build the dotnet command arguments
+    $buildArgs = @(
+        "build"
+        $projectPath
+        "-t:ExportApi"
+        "-c:$configuration"
+        "-p:ExportingApi=true"
+        "-m"
+    )
+
+    # Run a single build command - the MSBuild target handles all frameworks
+    & dotnet @buildArgs
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "GenAPI failed for $projectName with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
+    }
+
+    Write-Host ""
+    Write-Host "Cleaning up generated files for $projectName..." -ForegroundColor Cyan
+
+    # Clean up each generated file for this project
+    Get-ChildItem -Path $outputDirectory -Filter "$projectName.net*.cs" | ForEach-Object {
+        Write-Host "  Cleaning $($_.Name)..."
+
+        $content = Get-Content $_.FullName -Raw
 
     # Replace the generic auto-generated header with one that explicitly names this script.
     $customHeader = @"
@@ -173,15 +195,19 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     $content = $content -creplace " { }", ";"
 
     Set-Content -Path $_.FullName -Value $content -NoNewline
+    }
+
+    Write-Host ""
 }
 
-Write-Host ""
 Write-Host "API generation completed successfully." -ForegroundColor Green
 Write-Host ""
 
 # List generated files
 Write-Host "Generated files:" -ForegroundColor Cyan
-Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
-    Write-Host "  - $($_.Name)"
+foreach ($project in $projects) {
+    Get-ChildItem -Path $outputDirectory -Filter "$($project.Name).net*.cs" | ForEach-Object {
+        Write-Host "  - $($_.Name)"
+    }
 }
 Write-Host ""
