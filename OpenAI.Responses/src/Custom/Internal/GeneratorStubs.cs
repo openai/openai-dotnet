@@ -114,21 +114,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseTextParam")] internal partial class InternalResponseTextParam {}
 [CodeGenType("TokenCountsBody")] internal partial class InternalTokenCountsBody {}
 [CodeGenType("TokenCountsResource")] internal partial class InternalTokenCountsResource {}
-[CodeGenType("ModelIdsCompaction")] internal readonly partial struct InternalModelIdsCompaction
-{
-    private readonly string _value;
-    public InternalModelIdsCompaction(string value) => _value = value;
-    public override string ToString() => _value;
-}
-[CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity
-{
-    private readonly string _value;
-    public InternalTokenCountsBodyTextVerbosity(string value) => _value = value;
-    public override string ToString() => _value;
-}
-[CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum
-{
-    private readonly string _value;
-    public InternalTruncationEnum(string value) => _value = value;
-    public override string ToString() => _value;
-}
+[CodeGenType("ModelIdsCompaction")] internal readonly partial struct InternalModelIdsCompaction {}
+[CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity {}
+[CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum {}
