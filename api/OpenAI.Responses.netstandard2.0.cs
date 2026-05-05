@@ -370,10 +370,6 @@ namespace OpenAI.Responses {
         public BinaryData FunctionParameters { get; set; }
         public bool? StrictModeEnabled { get; set; }
     }
-    public enum GetResponseContentType {
-        ApplicationJson = 0,
-        TextEventStream = 1
-    }
     public class GetResponseOptions : IJsonModel<GetResponseOptions>, IPersistableModel<GetResponseOptions> {
         public GetResponseOptions(string responseId);
         public IList<IncludedResponseProperty> IncludedProperties { get; set; }

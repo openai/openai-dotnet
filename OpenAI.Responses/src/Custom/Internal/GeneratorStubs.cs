@@ -117,3 +117,4 @@ namespace OpenAI.Responses;
 [CodeGenType("ModelIdsCompaction")] internal readonly partial struct InternalModelIdsCompaction {}
 [CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity {}
 [CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum {}
+[CodeGenType("GetResponseContentType")] internal readonly partial struct InternalGetResponseContentType {}
