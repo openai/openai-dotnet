@@ -109,3 +109,12 @@ namespace OpenAI.Responses;
 [CodeGenType("ApplyPatchOperationType")] internal readonly partial struct InternalApplyPatchOperationType { }
 [CodeGenType("UnknownApplyPatchOperation")] internal partial class InternalUnknownApplyPatchOperation { }
 [CodeGenType("CreateResponseReasoningGenerateSummary")] internal readonly partial struct InternalCreateResponseReasoningGenerateSummary {}
+[CodeGenType("CompactResource")] internal partial class InternalCompactResource {}
+[CodeGenType("CompactResponseMethodPublicBody")] internal partial class InternalCompactResponseMethodPublicBody {}
+[CodeGenType("ResponseTextParam")] internal partial class InternalResponseTextParam {}
+[CodeGenType("TokenCountsBody")] internal partial class InternalTokenCountsBody {}
+[CodeGenType("TokenCountsResource")] internal partial class InternalTokenCountsResource {}
+[CodeGenType("ModelIdsCompaction")] internal readonly partial struct InternalModelIdsCompaction {}
+[CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity {}
+[CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum {}
+[CodeGenType("GetResponseContentType")] internal readonly partial struct InternalGetResponseContentType {}

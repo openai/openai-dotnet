@@ -87,7 +87,14 @@ namespace OpenAI.Images
             if (Optional.IsDefined(Mask) && _additionalBinaryDataProperties?.ContainsKey("mask") != true)
             {
                 writer.WritePropertyName("mask"u8);
-                writer.WriteBase64StringValue(Mask.ToArray(), "D");
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Mask);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Mask))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
             if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
@@ -225,7 +232,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    mask = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    mask = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))

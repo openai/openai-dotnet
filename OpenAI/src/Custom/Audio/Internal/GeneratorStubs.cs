@@ -31,3 +31,12 @@ namespace OpenAI.Audio;
 [CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent {}
 [CodeGenType("TranscriptTextDoneEvent")] internal partial class InternalTranscriptTextDoneEvent {}
 [CodeGenType("TranscriptTextSegmentEvent")] internal partial class InternalTranscriptTextSegmentEvent {}
+[CodeGenType("CreateSpeechContentType")] internal readonly partial struct InternalCreateSpeechContentType {}
+[CodeGenType("CreateTranscriptionContentType")] internal readonly partial struct InternalCreateTranscriptionContentType {}
+[CodeGenType("VoiceConsentListResource")] internal partial class InternalVoiceConsentListResource {}
+[CodeGenType("VoiceConsentResource")] internal partial class InternalVoiceConsentResource {}
+[CodeGenType("CreateVoiceConsentRequest")] internal partial class InternalCreateVoiceConsentRequest {}
+[CodeGenType("VoiceConsentDeletedResource")] internal partial class InternalVoiceConsentDeletedResource {}
+[CodeGenType("UpdateVoiceConsentRequest")] internal partial class InternalUpdateVoiceConsentRequest {}
+[CodeGenType("CreateVoiceRequest")] internal partial class InternalCreateVoiceRequest {}
+[CodeGenType("VoiceResource")] internal partial class InternalVoiceResource {}
