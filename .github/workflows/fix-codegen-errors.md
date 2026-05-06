@@ -172,9 +172,17 @@ to place it in the correct area namespace (e.g., `OpenAI.Audio`).
 **Fix:**
 1. Identify the type name from the error message.
 2. Determine visibility: types prefixed with `Internal` are internal; others are public.
-3. Add a stub in the correct file:
-   - Internal → `src/Custom/{Area}/Internal/GeneratorStubs.cs`
-   - Public → `src/Custom/{Area}/GeneratorStubs.cs`
+3. Add a stub in the correct file. The repo has two source roots:
+
+   **For areas in the main OpenAI package** (e.g., `OpenAI.Audio`, `OpenAI.Chat`):
+   - Internal → `OpenAI/src/Custom/{Area}/Internal/GeneratorStubs.cs`
+   - Public → `OpenAI/src/Custom/{Area}/GeneratorStubs.cs`
+
+   **For the Responses package** (`OpenAI.Responses`):
+   - Internal → `OpenAI.Responses/src/Custom/Internal/GeneratorStubs.cs`
+   - Public → `OpenAI.Responses/src/Custom/GeneratorStubs.cs`
+
+   *(Note: the Responses package has no `{Area}` subfolder — stubs live directly under `src/Custom/`.)*
 
 ```csharp
 // Internal example
@@ -188,17 +196,22 @@ to place it in the correct area namespace (e.g., `OpenAI.Audio`).
 
 **Symptom:** `error type-not-found: Type "Foo" is not defined` or similar.
 
-**Cause:** The base spec references a type from `common/` that hasn't been copied locally yet.
+**Cause:** The base spec references a type that doesn't yet exist in the local copy. The
+`specification/base/typespec/common/` directory has been removed; types are now distributed
+across the individual area `.tsp` files.
 
 **Fix:**
-1. Search locally for the type definition:
+1. Search the entire local base spec for the type definition:
    ```powershell
-   Select-String -Path "specification/base/typespec/common/*.tsp" -Pattern "model Foo|union Foo|enum Foo|alias Foo|scalar Foo"
+   Get-ChildItem -Path "specification/base/typespec" -Filter "*.tsp" -Recurse |
+     Select-String -Pattern "model Foo|union Foo|enum Foo|alias Foo|scalar Foo"
    ```
-2. If not found, retrieve it from upstream `microsoft/openai-openapi-pr` →
-   `packages/openai-typespec/src/common/`.
-3. Copy **only the specific type definition** into the local common file — do not copy entire
-   files.
+2. If found locally, the type may not be imported in the right place — check the import chain
+   in `specification/main.tsp` or the relevant area `.tsp` files.
+3. If not found locally, retrieve the definition from the upstream
+   `microsoft/openai-openapi-pr` repository (under `packages/openai-typespec/src/`) and add
+   it to the appropriate area file in `specification/base/typespec/{area}/`. Copy **only the
+   specific type definition** — do not copy entire files.
 
 #### Category 3 — Client TSP decorator errors
 
@@ -242,7 +255,9 @@ need updating.
 1. Check for renamed types → update `[CodeGenType]` attributes in `GeneratorStubs.cs`.
 2. Check for numeric type issues → update exclusion lists in
    `codegen/generator/src/Visitors/NumericTypesVisitor.cs`.
-3. Check custom code in `src/Custom/{Area}/` for broken references.
+3. Check custom code for broken references:
+   - Main OpenAI package (area-scoped): `OpenAI/src/Custom/{Area}/`
+   - Responses package: `OpenAI.Responses/src/Custom/`
 
 ### Step 6: Re-run codegen and repeat until passing
 
