@@ -107,6 +107,14 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
+                    case "response.audio.delta":
+                        return StreamingResponseAudioDeltaUpdate.DeserializeStreamingResponseAudioDeltaUpdate(element, data, options);
+                    case "response.audio.done":
+                        return StreamingResponseAudioDoneUpdate.DeserializeStreamingResponseAudioDoneUpdate(element, data, options);
+                    case "response.audio_transcript.delta":
+                        return StreamingResponseAudioTranscriptDeltaUpdate.DeserializeStreamingResponseAudioTranscriptDeltaUpdate(element, data, options);
+                    case "response.audio_transcript.done":
+                        return StreamingResponseAudioTranscriptDoneUpdate.DeserializeStreamingResponseAudioTranscriptDoneUpdate(element, data, options);
                     case "response.code_interpreter_call_code.delta":
                         return StreamingResponseCodeInterpreterCallCodeDeltaUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDeltaUpdate(element, data, options);
                     case "response.code_interpreter_call_code.done":

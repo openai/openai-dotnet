@@ -75,7 +75,7 @@ model ResponseStreamEvent {
 }
 
 /** Emitted when there is a partial audio response. */
-model ResponseAudioDeltaEvent {
+model ResponseAudioDeltaEvent extends ResponseStreamEvent {
   /** The type of the event. Always `response.audio.delta`. */
   type: ResponseStreamEventType.response_audio_delta;
 
@@ -84,13 +84,13 @@ model ResponseAudioDeltaEvent {
 }
 
 /** Emitted when the audio response is complete. */
-model ResponseAudioDoneEvent {
+model ResponseAudioDoneEvent extends ResponseStreamEvent {
   /** The type of the event. Always `response.audio.done`. */
   type: ResponseStreamEventType.response_audio_done;
 }
 
 /** Emitted when there is a partial transcript of audio. */
-model ResponseAudioTranscriptDeltaEvent {
+model ResponseAudioTranscriptDeltaEvent extends ResponseStreamEvent {
   /** The type of the event. Always `response.audio.transcript.delta`. */
   type: ResponseStreamEventType.response_audio_transcript_delta;
 
@@ -99,7 +99,7 @@ model ResponseAudioTranscriptDeltaEvent {
 }
 
 /** Emitted when the full audio transcript is completed. */
-model ResponseAudioTranscriptDoneEvent {
+model ResponseAudioTranscriptDoneEvent extends ResponseStreamEvent {
   /** The type of the event. Always `response.audio.transcript.done`. */
   type: ResponseStreamEventType.response_audio_transcript_done;
 }
