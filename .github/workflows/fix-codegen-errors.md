@@ -244,9 +244,9 @@ need updating.
    `codegen/generator/src/Visitors/NumericTypesVisitor.cs`.
 3. Check custom code in `src/Custom/{Area}/` for broken references.
 
----
+### Step 6: Re-run codegen and repeat until passing
 
-After each fix, re-run codegen:
+After applying a fix from Step 5, re-run codegen and check the result:
 
 ```bash
 pwsh -NoProfile -File scripts/Invoke-CodeGen.ps1 2>&1 | tee /tmp/codegen-output.txt
@@ -254,7 +254,10 @@ CODEGEN_EXIT=${PIPESTATUS[0]}
 echo "Codegen exit code: $CODEGEN_EXIT"
 ```
 
-Once codegen succeeds, verify the .NET solution builds cleanly:
+- **Exit code non-zero** → Read the new errors from `/tmp/codegen-output.txt`, apply the
+  appropriate fix from Step 5, and re-run codegen again. Repeat this fix → re-run cycle up to
+  **10 iterations total** until codegen exits with code 0.
+- **Exit code 0** → Codegen succeeded. Verify the .NET solution builds cleanly before proceeding:
 
 ```bash
 dotnet build OpenAI.slnx --configuration Release 2>&1 | tee /tmp/build-output.txt
@@ -262,16 +265,17 @@ BUILD_EXIT=${PIPESTATUS[0]}
 echo "Build exit code: $BUILD_EXIT"
 ```
 
-IMPORTANT: Fix any C# build errors before proceeding.
+If the build fails, apply the appropriate fix (Category 5 from Step 5) and re-run codegen and
+build again. Once both codegen and build succeed, proceed to Step 7.
 
-### Step 6: Export the API surface
+### Step 7: Export the API surface
 
 ```bash
 pwsh -NoProfile -File scripts/Export-Api.ps1 2>&1
 echo "Export-Api exit code: $?"
 ```
 
-### Step 7: Check for changes
+### Step 8: Check for changes
 
 ```bash
 git status
@@ -301,11 +305,11 @@ For each changed `api/` file, note:
 - Which types or members were **removed** or **renamed** (e.g., type renamed upstream).
 - Which types or members were **modified** (e.g., property type changed).
 
-### Step 8: Create a pull request
+### Step 9: Create a pull request
 
 If there are changes, output a `create_pull_request` action targeting the typespec update branch.
 When `api/` files changed, include an **API Changes** section that explains the cause of each
-change based on the diff captured in Step 7:
+change based on the diff captured in Step 8:
 
 ```json
 {
