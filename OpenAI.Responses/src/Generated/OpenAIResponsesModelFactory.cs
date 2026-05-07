@@ -184,9 +184,9 @@ namespace OpenAI.Responses
                 default);
         }
 
-        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
+        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default, string @param = default, string kind = default)
         {
-            return new ResponseError(code, message, default);
+            return new ResponseError(code, message, @param, kind, default);
         }
 
         public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = default)

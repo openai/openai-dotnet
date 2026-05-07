@@ -194,7 +194,7 @@ public class CreateBatchOperation : OperationResult
     public virtual async Task<ClientResult> GetBatchAsync(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateGetBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync<CreateBatchOperation>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public class CreateBatchOperation : OperationResult
     public virtual ClientResult GetBatch(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateGetBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage<CreateBatchOperation>(message, options));
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 
     /// <summary>
@@ -218,7 +218,7 @@ public class CreateBatchOperation : OperationResult
     public virtual async Task<ClientResult> CancelAsync(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateCancelBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync<CreateBatchOperation>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -230,6 +230,6 @@ public class CreateBatchOperation : OperationResult
     public virtual ClientResult Cancel(RequestOptions? options)
     {
         using PipelineMessage message = _parentClient.CreateCancelBatchRequest(_batchId, options);
-        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage<CreateBatchOperation>(message, options));
+        return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 }

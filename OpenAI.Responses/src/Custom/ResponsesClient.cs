@@ -525,7 +525,7 @@ public partial class ResponsesClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<ResponsesClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     // CUSTOM: Added protocol method that returns ClientResult.
@@ -534,7 +534,7 @@ public partial class ResponsesClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<ResponsesClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     // CUSTOM: Added protocol model method.

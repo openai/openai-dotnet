@@ -85,7 +85,7 @@ internal class FineTuningJobCollectionResult : CollectionResult<FineTuningJob>
     internal virtual ClientResult GetJobs(string? after, int? limit, RequestOptions? options)
     {
         using PipelineMessage message = _fineTuningClient.GetJobsPipelineMessage(after, limit, options);
-        return ClientResult.FromResponse(_pipeline.ProcessMessage<FineTuningClient>(message, options));
+        return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
 
     protected override IEnumerable<FineTuningJob> GetValuesFromPage(ClientResult page)

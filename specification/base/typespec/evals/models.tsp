@@ -436,6 +436,12 @@ model EvalApiError {
 
   /** The error message. */
   message: string;
+
+  /** The parameter that caused the error, if applicable. */
+  param: string | null;
+
+  /** The type of the error. */
+  type: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type

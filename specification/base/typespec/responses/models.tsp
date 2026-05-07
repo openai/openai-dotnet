@@ -1082,6 +1082,12 @@ model ResponseError {
 
   /** A human-readable description of the error. */
   message: string;
+
+  /** The parameter that caused the error, if applicable. */
+  param: string | null;
+
+  /** The type of the error. */
+  type: string;
 }
 
 /** The error code for the response. */
