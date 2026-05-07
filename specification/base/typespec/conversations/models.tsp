@@ -1,6 +1,9 @@
 import "@typespec/openapi";
-import "../responses/models.tsp";
+import "@typespec/http";
+import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.OpenAPI;
+using TypeSpec.Http;
+using Azure.ClientGenerator.Core;
 namespace OpenAI;
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -35,6 +38,34 @@ model Conversation {
   ...ConversationResource;
 }
 
+union ConversationItemType {
+  message: "message",
+  file_search_call: "file_search_call",
+  function_call: "function_call",
+  function_call_output: "function_call_output",
+  computer_call: "computer_call",
+  computer_call_output: "computer_call_output",
+  web_search_call: "web_search_call",
+  reasoning: "reasoning",
+  item_reference: "item_reference",
+  image_generation_call: "image_generation_call",
+  code_interpreter_call: "code_interpreter_call",
+  local_shell_call: "local_shell_call",
+  local_shell_call_output: "local_shell_call_output",
+  mcp_list_tools: "mcp_list_tools",
+  mcp_approval_request: "mcp_approval_request",
+  mcp_approval_response: "mcp_approval_response",
+  mcp_call: "mcp_call",
+  apply_patch_call: "apply_patch_call",
+  apply_patch_call_output: "apply_patch_call_output",
+}
+
+@discriminator("type")
+model ConversationItemResource {
+  type: ConversationItemType;
+  id: string;
+}
+
 /** A list of Conversation items. */
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @summary("The conversation item list")
@@ -46,7 +77,7 @@ model ConversationItemList {
   object: "list";
 
   /** A list of conversation items. */
-  @pageItems data: ItemResource[];
+  @pageItems data: ConversationItemResource[];
 
   /** Whether there are more items available. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -92,7 +123,7 @@ model CreateConversationBody {
   metadata?: Record<string> | null;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
-  items?: ItemResource[] | null;
+  items?: ConversationItemResource[] | null;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -107,7 +138,7 @@ model UpdateConversationBody {
 model CreateConversationItemsParametersBody {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @maxItems(20)
-  items: ItemResource[];
+  items: ConversationItemResource[];
 }
 
 /**Specify additional output data to include in the model response. Currently supported values are:
@@ -128,4 +159,33 @@ union IncludeEnum {
   `code_interpreter_call.outputs`: "code_interpreter_call.outputs",
   `reasoning.encrypted_content`: "reasoning.encrypted_content",
   `message.output_text.logprobs`: "message.output_text.logprobs",
+}
+
+union ConversationItemCollectionOrder {
+   string,
+   Ascending: "asc",
+   Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model ConversationItemCollectionOptions {
+   /**
+    * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    */
+   @query @continuationToken afterId?: string;
+
+   /**
+    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    * default is 20.
+    */
+   @query pageSizeLimit?: int32 = 20;
+
+   /**
+    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    * for descending order.
+    */
+   @query order?: ConversationItemCollectionOrder;
 }

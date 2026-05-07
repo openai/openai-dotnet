@@ -239,8 +239,6 @@ $specificationFolderPath = Join-Path $repoRootPath "specification"
 $baseSpecificationFolderPath = Join-Path $repoRootPath "specification\base"
 $codegenFolderPath = Join-Path $repoRootPath "codegen"
 
-$scriptStartTime = Get-Date
-
 if ($PSCmdlet.ParameterSetName -eq 'Default') {
     if (-not (Test-Path $baseSpecificationFolderPath)) {
         Write-Error "Base specification path does not exist: $baseSpecificationFolderPath"
@@ -319,7 +317,8 @@ try {
     Write-ElapsedTime "npm run build complete"
 
     Set-Location $specificationFolderPath
-    Invoke-ScriptWithLogging { npx tsp compile . --stats --trace @typespec/http-client-csharp }
+    Invoke-ScriptWithLogging { npx tsp compile . --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI/" --stats --trace @typespec/http-client-csharp }
+    Invoke-ScriptWithLogging { npx tsp compile ./main.responses.tsp --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI.Responses" --options "@open-ai/plugin.package-name=OpenAI.Responses" --stats --trace @typespec/http-client-csharp }
 
     Write-ElapsedTime "tsp compile complete"
 

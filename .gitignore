@@ -14,6 +14,9 @@ developer/
 launch.json
 launchSettings.json
 
+# Re-include launchSettings for sample project so README ports/profiles match `dotnet run`.
+!examples/aspnet-core/Properties/launchSettings.json
+
 # Default Assets restore directory
 .assets
 

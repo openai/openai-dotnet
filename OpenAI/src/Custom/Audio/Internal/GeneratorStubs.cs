@@ -1,0 +1,42 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Audio;
+
+[CodeGenType("CreateSpeechRequestModel")] internal readonly partial struct InternalCreateSpeechRequestModel { }
+[CodeGenType("CreateResponseRequestAccept")] internal readonly partial struct InternalCreateTranscriptionRequestAccept {}
+[CodeGenType("CreateTranscriptionRequestModel")] internal readonly partial struct InternalCreateTranscriptionRequestModel { }
+[CodeGenType("CreateTranscriptionRequestTimestampGranularity")] internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularities { }
+[CodeGenType("CreateTranscriptionResponseJson")] internal partial class InternalCreateTranscriptionResponseJson { }
+[CodeGenType("CreateTranscriptionResponseVerboseJson")] internal partial class InternalCreateTranscriptionResponseVerboseJson { }
+[CodeGenType("DotNetCombinedJsonTranscriptionResponseTask")] internal readonly partial struct InternalDotNetCombinedJsonTranscriptionResponseTask { }
+[CodeGenType("CreateTranslationRequestModel")] internal readonly partial struct InternalCreateTranslationRequestModel { }
+[CodeGenType("CreateTranslationResponseJson")] internal partial class InternalCreateTranslationResponseJson { }
+[CodeGenType("TranscriptionInclude")] internal readonly partial struct InternalTranscriptionInclude { }
+[CodeGenType("UnknownDotNetCreateTranscriptionStreamingResponse")] internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent { }
+[CodeGenType("CreateTranscriptionResponseJsonLogprobs")] internal partial class InternalCreateTranscriptionResponseJsonLogprob { }
+[CodeGenType("CreateSpeechRequestStreamFormat")] internal readonly partial struct InternalCreateSpeechRequestStreamFormat { }
+[CodeGenType("CreateTranscriptionResponseJsonUsageType")] internal readonly partial struct InternalCreateTranscriptionResponseJsonUsageType { }
+[CodeGenType("UnknownCreateTranscriptionResponseJsonUsage")] internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage { }
+[CodeGenType("ChunkingStrategyConfigType")] internal readonly partial struct InternalChunkingStrategyConfigType { }
+[CodeGenType("UnknownChunkingStrategyConfig")] internal partial class InternalUnknownChunkingStrategyConfig { }
+[CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }
+[CodeGenType("DotNetCreateSpeechStreamingResponseType")] internal readonly partial struct InternalDotNetCreateSpeechStreamingResponseType { }
+[CodeGenType("UnknownDotNetCreateSpeechStreamingResponse")] internal partial class InternalUnknownDotNetCreateSpeechStreamingResponse { }
+[CodeGenType("TranscriptTextDeltaEventLogprobs")] internal partial class InternalTranscriptTextDeltaEventLogprobs { }
+[CodeGenType("TranscriptTextDoneEventLogprobs")] internal partial class InternalTranscriptTextDoneEventLogprobs { }
+[CodeGenType("AudioError")] internal partial class InternalAudioError {}
+[CodeGenType("AudioErrorResponse")] internal partial class InternalAudioErrorResponse {}
+[CodeGenType("SpeechAudioDeltaEvent")] internal partial class InternalSpeechAudioDeltaEvent {}
+[CodeGenType("SpeechAudioDoneEvent")] internal partial class InternalSpeechAudioDoneEvent {}
+[CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent {}
+[CodeGenType("TranscriptTextDoneEvent")] internal partial class InternalTranscriptTextDoneEvent {}
+[CodeGenType("TranscriptTextSegmentEvent")] internal partial class InternalTranscriptTextSegmentEvent {}
+[CodeGenType("CreateSpeechContentType")] internal readonly partial struct InternalCreateSpeechContentType {}
+[CodeGenType("CreateTranscriptionContentType")] internal readonly partial struct InternalCreateTranscriptionContentType {}
+[CodeGenType("VoiceConsentListResource")] internal partial class InternalVoiceConsentListResource {}
+[CodeGenType("VoiceConsentResource")] internal partial class InternalVoiceConsentResource {}
+[CodeGenType("CreateVoiceConsentRequest")] internal partial class InternalCreateVoiceConsentRequest {}
+[CodeGenType("VoiceConsentDeletedResource")] internal partial class InternalVoiceConsentDeletedResource {}
+[CodeGenType("UpdateVoiceConsentRequest")] internal partial class InternalUpdateVoiceConsentRequest {}
+[CodeGenType("CreateVoiceRequest")] internal partial class InternalCreateVoiceRequest {}
+[CodeGenType("VoiceResource")] internal partial class InternalVoiceResource {}

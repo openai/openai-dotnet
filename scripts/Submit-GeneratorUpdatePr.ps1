@@ -229,7 +229,7 @@ try {
     Write-Log "Building the library"
     Push-Location "."
     try {
-        & dotnet build src/OpenAI.csproj
+        & dotnet build OpenAI/src/OpenAI.csproj
         if ($LASTEXITCODE -ne 0) {
             throw "Build failed with exit code $LASTEXITCODE"
         }
