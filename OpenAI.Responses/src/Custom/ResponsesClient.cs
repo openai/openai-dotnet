@@ -578,10 +578,10 @@ public partial class ResponsesClient
         return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
-            limit: options.PageSizeLimit,
+            pageSizeLimit: options.PageSizeLimit,
             order: options.Order?.ToString(),
-            after: options.AfterId,
-            before: options.BeforeId,
+            afterId: options.AfterId,
+            beforeId: options.BeforeId,
             cancellationToken.ToRequestOptions());
     }
 
@@ -593,10 +593,10 @@ public partial class ResponsesClient
         return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
-            limit: options.PageSizeLimit,
+            pageSizeLimit: options.PageSizeLimit,
             order: options.Order?.ToString(),
-            after: options.AfterId,
-            before: options.BeforeId,
+            afterId: options.AfterId,
+            beforeId: options.BeforeId,
             cancellationToken.ToRequestOptions());
     }
 

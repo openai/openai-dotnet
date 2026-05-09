@@ -100,16 +100,16 @@ namespace OpenAI.Containers
             {
                 return null;
             }
-            string afterId = default;
             int? pageSizeLimit = default;
             ContainerFileCollectionOrder? order = default;
+            string afterId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties);
+            return new ContainerFileCollectionOptions(pageSizeLimit, order, afterId, additionalBinaryDataProperties);
         }
     }
 }

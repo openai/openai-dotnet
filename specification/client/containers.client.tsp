@@ -10,3 +10,8 @@ using Azure.ClientGenerator.Core;
 
 @@clientName(ContainerFileResource.bytes, "SizeInBytes");
 @@alternateType(ContainerFileResource.bytes, int64 | null);
+
+@@clientName(ContainerCollectionOptions.limit, "PageSizeLimit");
+@@clientName(ContainerCollectionOptions.after, "afterId");
+@@clientName(ContainerFileCollectionOptions.limit, "PageSizeLimit");
+@@clientName(ContainerFileCollectionOptions.after, "afterId");

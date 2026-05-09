@@ -1068,38 +1068,23 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
+        public static AssistantCollectionOptions AssistantCollectionOptions(int? pageSizeLimit = default, AssistantCollectionOrder? order = default, string afterId = default, string beforeId = default)
         {
-            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new AssistantCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
-        public static MessageCollectionOptions MessageCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, MessageCollectionOrder? order = default)
+        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default, string afterId = default, string beforeId = default)
         {
-            return new MessageCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new VectorStoreCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
-        public static RunCollectionOptions RunCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunCollectionOrder? order = default)
-        {
-            return new RunCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepCollectionOptions RunStepCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunStepCollectionOrder? order = default)
-        {
-            return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
-        {
-            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
+        public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, string afterId = default, string beforeId = default, VectorStoreFileStatusFilter? filter = default)
         {
             return new VectorStoreFileCollectionOptions(
-                afterId,
-                beforeId,
                 pageSizeLimit,
                 order,
+                afterId,
+                beforeId,
                 filter,
                 additionalBinaryDataProperties: null);
         }
@@ -1136,6 +1121,19 @@ namespace OpenAI
             return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);
         }
 
+        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ChatCompletionCollectionOptions(
+                afterId,
+                pageSizeLimit,
+                order,
+                metadata,
+                model,
+                default);
+        }
+
         public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, default);
@@ -1151,27 +1149,19 @@ namespace OpenAI
             return new ChatToolChoice(default);
         }
 
-        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
+        public static ContainerCollectionOptions ContainerCollectionOptions(int? pageSizeLimit = default, ContainerCollectionOrder? order = default, string afterId = default)
         {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ChatCompletionCollectionOptions(
-                afterId,
-                pageSizeLimit,
-                order,
-                metadata,
-                model,
-                default);
+            return new ContainerCollectionOptions(pageSizeLimit, order, afterId, additionalBinaryDataProperties: null);
         }
 
-        public static ContainerCollectionOptions ContainerCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
+        public static ContainerFileCollectionOptions ContainerFileCollectionOptions(int? pageSizeLimit = default, ContainerFileCollectionOrder? order = default, string afterId = default)
         {
-            return new ContainerCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new ContainerFileCollectionOptions(pageSizeLimit, order, afterId, additionalBinaryDataProperties: null);
         }
 
-        public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerFileCollectionOrder? order = default)
+        public static MessageCollectionOptions MessageCollectionOptions(int? pageSizeLimit = default, MessageCollectionOrder? order = default, string afterId = default, string beforeId = default)
         {
-            return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new MessageCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
         public static RealtimeMcpToolDefinition RealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
@@ -1300,6 +1290,16 @@ namespace OpenAI
                 metadata,
                 inputItems.ToList(),
                 default);
+        }
+
+        public static RunCollectionOptions RunCollectionOptions(int? pageSizeLimit = default, RunCollectionOrder? order = default, string afterId = default, string beforeId = default)
+        {
+            return new RunCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepCollectionOptions RunStepCollectionOptions(int? pageSizeLimit = default, RunStepCollectionOrder? order = default, string afterId = default, string beforeId = default)
+        {
+            return new RunStepCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
     }
 }

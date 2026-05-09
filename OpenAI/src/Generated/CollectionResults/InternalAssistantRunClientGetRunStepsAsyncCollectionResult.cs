@@ -14,29 +14,29 @@ namespace OpenAI.Assistants
         private readonly InternalAssistantRunClient _client;
         private readonly string _threadId;
         private readonly string _runId;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
-        private readonly string _before;
+        private readonly string _afterId;
+        private readonly string _beforeId;
         private readonly IEnumerable<InternalIncludedRunStepProperty> _include;
         private readonly RequestOptions _options;
 
-        internal InternalAssistantRunClientGetRunStepsAsyncCollectionResult(InternalAssistantRunClient client, string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        internal InternalAssistantRunClientGetRunStepsAsyncCollectionResult(InternalAssistantRunClient client, string threadId, string runId, int? pageSizeLimit, string order, string afterId, string beforeId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             _client = client;
             _threadId = threadId;
             _runId = runId;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
-            _before = before;
+            _afterId = afterId;
+            _beforeId = beforeId;
             _include = include;
             _options = options;
         }
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetRunStepsRequest(_threadId, _runId, _limit, _order, _after, _before, _include, _options);
+            PipelineMessage message = _client.CreateGetRunStepsRequest(_threadId, _runId, _pageSizeLimit, _order, _afterId, _beforeId, _include, _options);
             string nextToken = null;
             while (true)
             {
@@ -51,7 +51,7 @@ namespace OpenAI.Assistants
                 {
                     yield break;
                 }
-                message = _client.CreateGetRunStepsRequest(_threadId, _runId, _limit, _order, nextToken, _before, _include, _options);
+                message = _client.CreateGetRunStepsRequest(_threadId, _runId, _pageSizeLimit, _order, nextToken, _beforeId, _include, _options);
             }
         }
 

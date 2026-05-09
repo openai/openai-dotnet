@@ -16,18 +16,18 @@ namespace OpenAI.Chat
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetChatCompletionsRequest(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        internal virtual PipelineMessage CreateGetChatCompletionsRequest(string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions", false);
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {
@@ -114,20 +114,20 @@ namespace OpenAI.Chat
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetChatCompletionMessagesRequest(string completionId, string after, int? limit, string order, RequestOptions options)
+        internal virtual PipelineMessage CreateGetChatCompletionMessagesRequest(string completionId, string afterId, int? pageSizeLimit, string order, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions/", false);
             uri.AppendPath(completionId, true);
             uri.AppendPath("/messages", false);
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {
