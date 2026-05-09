@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseMcpCallArgumentsDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseMcpCallArgumentsDoneUpdate(int sequenceNumber, int outputIndex, string itemId, BinaryData toolArguments) : base(InternalResponseStreamEventType.ResponseMcpCallArgumentsDone, sequenceNumber)
+        internal StreamingResponseMcpCallArgumentsDoneUpdate(int sequenceNumber, int outputIndex, string itemId, BinaryData toolArguments) : base(StreamingResponseUpdateKind.ResponseMcpCallArgumentsDone, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseMcpCallArgumentsDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, BinaryData toolArguments) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseMcpCallArgumentsDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, BinaryData toolArguments) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;

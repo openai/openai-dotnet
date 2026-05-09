@@ -10,14 +10,14 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseOutputItemDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseOutputItemDoneUpdate(int sequenceNumber, int outputIndex, ResponseItem item) : base(InternalResponseStreamEventType.ResponseOutputItemDone, sequenceNumber)
+        internal StreamingResponseOutputItemDoneUpdate(int sequenceNumber, int outputIndex, ResponseItem item) : base(StreamingResponseUpdateKind.ResponseOutputItemDone, sequenceNumber)
         {
             OutputIndex = outputIndex;
             Item = item;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseOutputItemDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, ResponseItem item) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseOutputItemDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, ResponseItem item) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             Item = item;

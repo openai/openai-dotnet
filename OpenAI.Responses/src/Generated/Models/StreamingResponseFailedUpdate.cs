@@ -10,13 +10,13 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseFailedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseFailedUpdate(int sequenceNumber, ResponseResult response) : base(InternalResponseStreamEventType.ResponseFailed, sequenceNumber)
+        internal StreamingResponseFailedUpdate(int sequenceNumber, ResponseResult response) : base(StreamingResponseUpdateKind.ResponseFailed, sequenceNumber)
         {
             Response = response;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseFailedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, ResponseResult response) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseFailedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, ResponseResult response) : base(kind, sequenceNumber, patch)
         {
             Response = response;
             Patch.SetPropagators(PropagateSet, PropagateGet);

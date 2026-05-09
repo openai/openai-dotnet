@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(UnknownResponseStreamEvent))]
+    [PersistableModelProxy(typeof(InternalUnknownResponseStreamEvent))]
     public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
     {
         internal StreamingResponseUpdate()
@@ -107,6 +107,24 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
+                    case "response.audio.delta":
+                        return StreamingResponseAudioDeltaUpdate.DeserializeStreamingResponseAudioDeltaUpdate(element, data, options);
+                    case "response.audio.done":
+                        return StreamingResponseAudioDoneUpdate.DeserializeStreamingResponseAudioDoneUpdate(element, data, options);
+                    case "response.audio_transcript.delta":
+                        return StreamingResponseAudioTranscriptDeltaUpdate.DeserializeStreamingResponseAudioTranscriptDeltaUpdate(element, data, options);
+                    case "response.audio_transcript.done":
+                        return StreamingResponseAudioTranscriptDoneUpdate.DeserializeStreamingResponseAudioTranscriptDoneUpdate(element, data, options);
+                    case "response.code_interpreter_call_code.delta":
+                        return StreamingResponseCodeInterpreterCallCodeDeltaUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDeltaUpdate(element, data, options);
+                    case "response.code_interpreter_call_code.done":
+                        return StreamingResponseCodeInterpreterCallCodeDoneUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(element, data, options);
+                    case "response.code_interpreter_call.completed":
+                        return StreamingResponseCodeInterpreterCallCompletedUpdate.DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(element, data, options);
+                    case "response.code_interpreter_call.in_progress":
+                        return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, data, options);
+                    case "response.code_interpreter_call.interpreting":
+                        return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, data, options);
                     case "response.completed":
                         return StreamingResponseCompletedUpdate.DeserializeStreamingResponseCompletedUpdate(element, data, options);
                     case "response.content_part.added":
@@ -137,14 +155,6 @@ namespace OpenAI.Responses
                         return StreamingResponseOutputItemAddedUpdate.DeserializeStreamingResponseOutputItemAddedUpdate(element, data, options);
                     case "response.output_item.done":
                         return StreamingResponseOutputItemDoneUpdate.DeserializeStreamingResponseOutputItemDoneUpdate(element, data, options);
-                    case "response.refusal.delta":
-                        return StreamingResponseRefusalDeltaUpdate.DeserializeStreamingResponseRefusalDeltaUpdate(element, data, options);
-                    case "response.refusal.done":
-                        return StreamingResponseRefusalDoneUpdate.DeserializeStreamingResponseRefusalDoneUpdate(element, data, options);
-                    case "response.output_text.delta":
-                        return StreamingResponseOutputTextDeltaUpdate.DeserializeStreamingResponseOutputTextDeltaUpdate(element, data, options);
-                    case "response.output_text.done":
-                        return StreamingResponseOutputTextDoneUpdate.DeserializeStreamingResponseOutputTextDoneUpdate(element, data, options);
                     case "response.reasoning_summary_part.added":
                         return StreamingResponseReasoningSummaryPartAddedUpdate.DeserializeStreamingResponseReasoningSummaryPartAddedUpdate(element, data, options);
                     case "response.reasoning_summary_part.done":
@@ -157,6 +167,14 @@ namespace OpenAI.Responses
                         return StreamingResponseReasoningTextDeltaUpdate.DeserializeStreamingResponseReasoningTextDeltaUpdate(element, data, options);
                     case "response.reasoning_text.done":
                         return StreamingResponseReasoningTextDoneUpdate.DeserializeStreamingResponseReasoningTextDoneUpdate(element, data, options);
+                    case "response.refusal.delta":
+                        return StreamingResponseRefusalDeltaUpdate.DeserializeStreamingResponseRefusalDeltaUpdate(element, data, options);
+                    case "response.refusal.done":
+                        return StreamingResponseRefusalDoneUpdate.DeserializeStreamingResponseRefusalDoneUpdate(element, data, options);
+                    case "response.output_text.delta":
+                        return StreamingResponseOutputTextDeltaUpdate.DeserializeStreamingResponseOutputTextDeltaUpdate(element, data, options);
+                    case "response.output_text.done":
+                        return StreamingResponseOutputTextDoneUpdate.DeserializeStreamingResponseOutputTextDoneUpdate(element, data, options);
                     case "response.web_search_call.completed":
                         return StreamingResponseWebSearchCallCompletedUpdate.DeserializeStreamingResponseWebSearchCallCompletedUpdate(element, data, options);
                     case "response.web_search_call.in_progress":
@@ -188,30 +206,16 @@ namespace OpenAI.Responses
                     case "response.mcp_list_tools.in_progress":
                         return StreamingResponseMcpListToolsInProgressUpdate.DeserializeStreamingResponseMcpListToolsInProgressUpdate(element, data, options);
                     case "response.output_text.annotation.added":
-                        return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, data, options);
+                        return StreamingResponseOutputTextAnnotationAddedUpdate.DeserializeStreamingResponseOutputTextAnnotationAddedUpdate(element, data, options);
                     case "response.queued":
                         return StreamingResponseQueuedUpdate.DeserializeStreamingResponseQueuedUpdate(element, data, options);
-                    case "response.reasoning.delta":
-                        return InternalResponseReasoningDeltaEvent.DeserializeInternalResponseReasoningDeltaEvent(element, data, options);
-                    case "response.reasoning.done":
-                        return InternalResponseReasoningDoneEvent.DeserializeInternalResponseReasoningDoneEvent(element, data, options);
-                    case "response.reasoning_summary.delta":
-                        return InternalResponseReasoningSummaryDeltaEvent.DeserializeInternalResponseReasoningSummaryDeltaEvent(element, data, options);
-                    case "response.reasoning_summary.done":
-                        return InternalResponseReasoningSummaryDoneEvent.DeserializeInternalResponseReasoningSummaryDoneEvent(element, data, options);
-                    case "response.code_interpreter_call_code.delta":
-                        return StreamingResponseCodeInterpreterCallCodeDeltaUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDeltaUpdate(element, data, options);
-                    case "response.code_interpreter_call_code.done":
-                        return StreamingResponseCodeInterpreterCallCodeDoneUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(element, data, options);
-                    case "response.code_interpreter_call.completed":
-                        return StreamingResponseCodeInterpreterCallCompletedUpdate.DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(element, data, options);
-                    case "response.code_interpreter_call.in_progress":
-                        return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, data, options);
-                    case "response.code_interpreter_call.interpreting":
-                        return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, data, options);
+                    case "response.custom_tool_call_input.delta":
+                        return StreamingResponseCustomToolCallInputDeltaUpdate.DeserializeStreamingResponseCustomToolCallInputDeltaUpdate(element, data, options);
+                    case "response.custom_tool_call_input.done":
+                        return StreamingResponseCustomToolCallInputDoneUpdate.DeserializeStreamingResponseCustomToolCallInputDoneUpdate(element, data, options);
                 }
             }
-            return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, data, options);
+            return InternalUnknownResponseStreamEvent.DeserializeInternalUnknownResponseStreamEvent(element, data, options);
         }
     }
 }

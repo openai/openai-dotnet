@@ -3,7 +3,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("ResponseMCPCallArgumentsDeltaEvent")]
+[CodeGenType("ResponseMcpCallArgumentsDeltaEvent")]
 public partial class StreamingResponseMcpCallArgumentsDeltaUpdate
 {
 }

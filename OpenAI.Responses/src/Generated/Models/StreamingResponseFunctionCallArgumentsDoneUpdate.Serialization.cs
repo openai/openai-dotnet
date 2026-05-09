@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>
     {
-        public StreamingResponseFunctionCallArgumentsDoneUpdate() : this(InternalResponseStreamEventType.ResponseFunctionCallArgumentsDone, default, default, null, default, null)
+        public StreamingResponseFunctionCallArgumentsDoneUpdate() : this(StreamingResponseUpdateKind.ResponseFunctionCallArgumentsDone, default, default, null, null, default, null)
         {
         }
 
@@ -77,6 +77,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
+            if (!Patch.Contains("$.name"u8))
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(FunctionName);
+            }
             if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
@@ -111,19 +116,20 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponseStreamEventType kind = default;
+            StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
+            string functionName = default;
             int outputIndex = default;
             BinaryData functionArguments = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalResponseStreamEventType(prop.Value.GetString());
+                    kind = new StreamingResponseUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("sequence_number"u8))
@@ -134,6 +140,11 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("item_id"u8))
                 {
                     itemId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("name"u8))
+                {
+                    functionName = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("output_index"u8))
@@ -153,6 +164,7 @@ namespace OpenAI.Responses
                 sequenceNumber,
                 patch,
                 itemId,
+                functionName,
                 outputIndex,
                 functionArguments);
         }

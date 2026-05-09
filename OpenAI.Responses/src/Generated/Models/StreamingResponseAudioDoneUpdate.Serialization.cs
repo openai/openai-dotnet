@@ -9,46 +9,46 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    internal partial class UnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>
+    internal partial class StreamingResponseAudioDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseAudioDoneUpdate>
     {
-        internal UnknownResponseStreamEvent() : this(default, default, default)
+        public StreamingResponseAudioDoneUpdate() : this(StreamingResponseUpdateKind.ResponseAudioDone, default, default)
         {
         }
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseAudioDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeStreamingResponseUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseAudioDoneUpdate(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseAudioDoneUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseAudioDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIResponsesContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseAudioDoneUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<StreamingResponseUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseAudioDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        StreamingResponseUpdate IPersistableModel<StreamingResponseUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        StreamingResponseAudioDoneUpdate IPersistableModel<StreamingResponseAudioDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseAudioDoneUpdate)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<StreamingResponseUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseAudioDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<StreamingResponseUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseAudioDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -65,10 +65,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseAudioDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseAudioDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -77,26 +77,26 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        StreamingResponseUpdate IJsonModel<StreamingResponseUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        StreamingResponseAudioDoneUpdate IJsonModel<StreamingResponseAudioDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseAudioDoneUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseAudioDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseAudioDoneUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseAudioDoneUpdate(document.RootElement, null, options);
         }
 
-        internal static UnknownResponseStreamEvent DeserializeUnknownResponseStreamEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseAudioDoneUpdate DeserializeStreamingResponseAudioDoneUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalResponseStreamEventType kind = default;
+            StreamingResponseUpdateKind kind = default;
             int sequenceNumber = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -105,7 +105,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalResponseStreamEventType(prop.Value.GetString());
+                    kind = new StreamingResponseUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("sequence_number"u8))
@@ -115,7 +115,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new UnknownResponseStreamEvent(kind, sequenceNumber, patch);
+            return new StreamingResponseAudioDoneUpdate(kind, sequenceNumber, patch);
         }
     }
 }
