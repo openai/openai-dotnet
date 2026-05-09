@@ -39,6 +39,8 @@ public partial class ResponseContentPart
 
     // CUSTOM: Exposed output text properties.
     public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations => (this as InternalItemContentOutputText)?.Annotations?.ToList()?.AsReadOnly();
+    // CUSTOM: Exposed output log probs.
+    public IReadOnlyList<ResponseTokenLogProbabilityDetails> OutputLogProbs => (this as InternalItemContentOutputText)?.LogProbs?.ToList()?.AsReadOnly();
 
     // CUSTOM: Exposed refusal properties.
     public string Refusal => (this as InternalItemContentRefusal)?.InternalRefusal;
