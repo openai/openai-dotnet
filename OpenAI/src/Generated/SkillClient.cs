@@ -34,19 +34,19 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CreateSkill(BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual ClientResult UploadSkill(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillRequest(content, contentType, options);
+            using PipelineMessage message = CreateUploadSkillRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CreateSkillAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual async Task<ClientResult> UploadSkillAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillRequest(content, contentType, options);
+            using PipelineMessage message = CreateUploadSkillRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -100,19 +100,19 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetSkillContent(string skillId, RequestOptions options = null)
+        public virtual ClientResult DownloadSkill(string skillId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
 
-            using PipelineMessage message = CreateGetSkillContentRequest(skillId, options);
+            using PipelineMessage message = CreateDownloadSkillRequest(skillId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetSkillContentAsync(string skillId, RequestOptions options = null)
+        public virtual async Task<ClientResult> DownloadSkillAsync(string skillId, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
 
-            using PipelineMessage message = CreateGetSkillContentRequest(skillId, options);
+            using PipelineMessage message = CreateDownloadSkillRequest(skillId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -132,21 +132,21 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CreateSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual ClientResult UploadSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillVersionRequest(skillId, content, contentType, options);
+            using PipelineMessage message = CreateUploadSkillVersionRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CreateSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual async Task<ClientResult> UploadSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateSkillVersionRequest(skillId, content, contentType, options);
+            using PipelineMessage message = CreateUploadSkillVersionRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -186,21 +186,21 @@ namespace OpenAI.Skills
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult DownloadSkillVersionContent(string skillId, string version, RequestOptions options = null)
+        public virtual ClientResult DownloadSkillVersion(string skillId, string version, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNullOrEmpty(version, nameof(version));
 
-            using PipelineMessage message = CreateDownloadSkillVersionContentRequest(skillId, version, options);
+            using PipelineMessage message = CreateDownloadSkillVersionRequest(skillId, version, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> DownloadSkillVersionContentAsync(string skillId, string version, RequestOptions options = null)
+        public virtual async Task<ClientResult> DownloadSkillVersionAsync(string skillId, string version, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNullOrEmpty(version, nameof(version));
 
-            using PipelineMessage message = CreateDownloadSkillVersionContentRequest(skillId, version, options);
+            using PipelineMessage message = CreateDownloadSkillVersionRequest(skillId, version, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }
