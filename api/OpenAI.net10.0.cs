@@ -2203,8 +2203,6 @@ namespace OpenAI.Containers {
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerBody body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateContainerAsync(BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult CreateContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult DeleteContainer(string containerId, RequestOptions options);
         public virtual ClientResult<DeleteContainerResponse> DeleteContainer(string containerId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options);
@@ -2233,6 +2231,8 @@ namespace OpenAI.Containers {
         public virtual CollectionResult GetContainers(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, RequestOptions options);
+        public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
     [Experimental("SCME0002")]
     public sealed class ContainerClientSettings : ClientSettings {

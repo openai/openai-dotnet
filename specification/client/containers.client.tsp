@@ -5,6 +5,7 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 
 @@clientName(Containers.retrieveContainer, "GetContainer");
+@@clientName(Containers.createContainerFile, "UploadContainerFile");
 @@clientName(Containers.retrieveContainerFile, "GetContainerFile");
 @@clientName(Containers.retrieveContainerFileContent, "DownloadContainerFile");
 
