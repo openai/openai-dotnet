@@ -716,6 +716,7 @@ namespace OpenAI.Responses {
         public string InputImageFileId { get; }
         public string InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
+        public IReadOnlyList<ResponseTokenLogProbabilityDetails> OutputLogProbs { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
