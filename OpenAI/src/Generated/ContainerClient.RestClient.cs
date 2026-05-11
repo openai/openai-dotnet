@@ -83,7 +83,7 @@ namespace OpenAI.Containers
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateCreateContainerFileRequest(string containerId, BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateUploadContainerFileRequest(string containerId, BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
