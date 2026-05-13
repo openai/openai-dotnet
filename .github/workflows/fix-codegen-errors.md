@@ -158,7 +158,7 @@ until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
 - Codegen succeeds but `dotnet build` fails → **Category 5** (post-generation build)
 
 > **Ground rule:** Never modify `specification/base/` — these are upstream copies. All fixes go
-> in `specification/client/` or `src/Custom/`.
+> in `specification/client/`, `OpenAI/src/Custom/`, or `OpenAI.Responses/src/Custom/`.
 
 Detailed fix instructions for each category are in the
 [fixing-codegen-errors skill](/.github/skills/fixing-codegen-errors/SKILL.md):
@@ -241,7 +241,7 @@ For each changed `api/` file, note:
 
 If there are changes, output a `create_pull_request` action targeting the typespec update branch.
 When `api/` files changed, include an **API Changes** section that explains the cause of each
-change based on the diff captured in Step 8:
+change based on the diff captured in Step 9:
 
 ```json
 {
