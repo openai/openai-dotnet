@@ -1,5 +1,7 @@
 using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Providers;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace OpenAILibraryPlugin.Visitors;
 
@@ -12,7 +14,10 @@ public class ResponseContextVisitor : ScmLibraryVisitor
     {
         if (type.Name == "OpenAIResponsesContext" && type.Type.Namespace == "OpenAI.Responses")
         {
-            type.Update(name: "OpenAIContext", namespace: "OpenAI");
+            type.Update(
+                attributes: type.Attributes.Where(attribute => !attribute.Type.Equals(typeof(ExperimentalAttribute))),
+                name: "OpenAIContext",
+                @namespace: "OpenAI");
         }
 
         return type;

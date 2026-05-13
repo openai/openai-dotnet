@@ -3,9 +3,9 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using System.Diagnostics.CodeAnalysis;
+using OpenAI.Responses;
 
-namespace OpenAI.Responses
+namespace OpenAI
 {
     [ModelReaderWriterBuildable(typeof(ApplyPatchCallItem))]
     [ModelReaderWriterBuildable(typeof(ApplyPatchCallOutputItem))]
@@ -230,8 +230,7 @@ namespace OpenAI.Responses
     [ModelReaderWriterBuildable(typeof(WebSearchToolApproximateLocation))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolFilters))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolLocation))]
-    [Experimental("OPENAI001")]
-    public partial class OpenAIResponsesContext : ModelReaderWriterContext
+    public partial class OpenAIContext : ModelReaderWriterContext
     {
     }
 }

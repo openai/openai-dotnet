@@ -320,6 +320,10 @@ try {
     Invoke-ScriptWithLogging { npx tsp compile . --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI/" --stats --trace @typespec/http-client-csharp }
     Invoke-ScriptWithLogging { npx tsp compile ./main.responses.tsp --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI.Responses" --options "@open-ai/plugin.package-name=OpenAI.Responses" --stats --trace @typespec/http-client-csharp }
 
+    $generatedResponsesProjectPath = Join-Path $repoRootPath "OpenAI.Responses" "src" "OpenAI.Responses.csproj"
+    $generatedResponsesSolutionPath = Join-Path $repoRootPath "OpenAI.Responses" "OpenAI.Responses.slnx"
+    Remove-Item -Path $generatedResponsesProjectPath, $generatedResponsesSolutionPath -Force -ErrorAction SilentlyContinue
+
     Write-ElapsedTime "tsp compile complete"
 
     # Validate that all public APIs in stable classes have correct [Experimental] decoration.
