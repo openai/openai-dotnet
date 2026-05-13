@@ -142,15 +142,13 @@ CODEGEN_EXIT=${PIPESTATUS[0]}
 echo "Codegen exit code: $CODEGEN_EXIT"
 ```
 
-- **Exit code 0** → No codegen errors. Continue to the build verification step, then proceed to Step 6 (Export API) only if `dotnet build OpenAI.slnx` succeeds.
+- **Exit code 0** → No codegen errors. Continue to Step 7 (Build verification).
 - **Non-zero exit code** → Errors need to be fixed. Continue to Step 5.
 
 ### Step 5: Fix codegen errors iteratively
 
 Read `/tmp/codegen-output.txt`, identify the failing phase, apply the fix, and re-run. Repeat
-until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**. After codegen succeeds,
-run `dotnet build OpenAI.slnx` before proceeding to Step 6 so the generated code is validated
-on both the "no errors" and "fixed errors" paths.
+until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
 
 **Triage by phase:**
 - `npm ci` or `npm run build` failure → **Category 4** (npm/plugin)
@@ -162,102 +160,16 @@ on both the "no errors" and "fixed errors" paths.
 > **Ground rule:** Never modify `specification/base/` — these are upstream copies. All fixes go
 > in `specification/client/` or `src/Custom/`.
 
-#### Category 1 — `prohibited-namespace` errors
+Detailed fix instructions for each category are in the
+[fixing-codegen-errors skill](/.github/skills/fixing-codegen-errors/SKILL.md):
 
-**Symptom:** Compiler error naming a type with `prohibited-namespace`.
-
-**Cause:** A TypeSpec type landed in the root `OpenAI` namespace but has no `[CodeGenType]` stub
-to place it in the correct area namespace (e.g., `OpenAI.Audio`).
-
-**Fix:**
-1. Identify the type name from the error message.
-2. Determine visibility: types prefixed with `Internal` are internal; others are public.
-3. Add a stub in the correct file. The repo has two source roots:
-
-   **For areas in the main OpenAI package** (e.g., `OpenAI.Audio`, `OpenAI.Chat`):
-   - Internal → `OpenAI/src/Custom/{Area}/Internal/GeneratorStubs.cs`
-   - Public → `OpenAI/src/Custom/{Area}/GeneratorStubs.cs`
-
-   **For the Responses package** (`OpenAI.Responses`):
-   - Internal → `OpenAI.Responses/src/Custom/Internal/GeneratorStubs.cs`
-   - Public → `OpenAI.Responses/src/Custom/GeneratorStubs.cs`
-
-   *(Note: the Responses package has no `{Area}` subfolder — stubs live directly under `src/Custom/`.)*
-
-```csharp
-// Internal example
-[CodeGenType("SomeNewInternalType")] internal partial class InternalSomeNewInternalType { }
-
-// Public example
-[CodeGenType("SomeNewPublicType")] public partial class SomeNewPublicType { }
-```
-
-#### Category 2 — Missing type / unresolved reference errors
-
-**Symptom:** `error type-not-found: Type "Foo" is not defined` or similar.
-
-**Cause:** The base spec references a type that doesn't yet exist in the local copy. The
-`specification/base/typespec/common/` directory has been removed; types are now distributed
-across the individual area `.tsp` files.
-
-**Fix:**
-1. Search the entire local base spec for the type definition:
-   ```powershell
-   Get-ChildItem -Path "specification/base/typespec" -Filter "*.tsp" -Recurse |
-     Select-String -Pattern "model Foo|union Foo|enum Foo|alias Foo|scalar Foo"
-   ```
-2. If found locally, the type may not be imported in the right place — check the import chain
-   in `specification/main.tsp` or the relevant area `.tsp` files.
-3. If not found locally, retrieve the definition from the upstream
-   `microsoft/openai-openapi-pr` repository (under `packages/openai-typespec/src/`) and add
-   it to the appropriate area file in `specification/base/typespec/{area}/`. Copy **only the
-   specific type definition** — do not copy entire files.
-
-#### Category 3 — Client TSP decorator errors
-
-**Symptom:** Errors referencing `@@clientLocation`, `@@clientName`, `@@visibility`,
-`@@alternateType`, or `@@usage` decorators.
-
-**Cause:** A type or operation was renamed/removed in the new base spec, but the client TSP still
-references the old name.
-
-**Fix:**
-1. Open `specification/client/{area}.client.tsp`.
-2. Find the stale reference named in the error.
-3. Update it to match the new name from the base spec, or remove the `@@clientLocation` line if
-   the operation was removed.
-
-#### Category 4 — npm / build errors (plugin compilation)
-
-**Symptom:** Errors during `npm ci` or `npm run build` in the codegen plugin.
-
-**Cause:** Version incompatibilities after a generator update, or breaking API changes in the
-TypeSpec SDK.
-
-**Fix:**
-1. Check `codegen/package.json` for version mismatches.
-2. Delete `node_modules` only, then reinstall from the existing lockfile:
-   ```powershell
-   npm ci
-   npm run build -w codegen
-   ```
-3. Do not delete or regenerate `package-lock.json` as part of this workflow fix path.
-4. If `codegen/generator/src/` has TypeScript compile errors, fix the TypeScript visitor code.
-
-#### Category 5 — Post-generation build errors (`dotnet build`)
-
-**Symptom:** `Invoke-CodeGen.ps1` succeeds but `dotnet build OpenAI.slnx` fails.
-
-**Cause:** Generated C# code references renamed/removed custom types, or numeric type conversions
-need updating.
-
-**Fix:**
-1. Check for renamed types → update `[CodeGenType]` attributes in `GeneratorStubs.cs`.
-2. Check for numeric type issues → update exclusion lists in
-   `codegen/generator/src/Visitors/NumericTypesVisitor.cs`.
-3. Check custom code for broken references:
-   - Main OpenAI package (area-scoped): `OpenAI/src/Custom/{Area}/`
-   - Responses package: `OpenAI.Responses/src/Custom/`
+| Category | Fix guide |
+|----------|-----------|
+| 1 — Prohibited namespace | [prohibited-namespace.md](/.github/skills/fixing-codegen-errors/prohibited-namespace.md) |
+| 2 — Missing type | [missing-type.md](/.github/skills/fixing-codegen-errors/missing-type.md) |
+| 3 — Client TSP decorators | [client-tsp-decorators.md](/.github/skills/fixing-codegen-errors/client-tsp-decorators.md) |
+| 4 — npm/plugin build | [npm-plugin-build.md](/.github/skills/fixing-codegen-errors/npm-plugin-build.md) |
+| 5 — Post-generation build | [post-generation-build.md](/.github/skills/fixing-codegen-errors/post-generation-build.md) |
 
 ### Step 6: Re-run codegen and repeat until passing
 
@@ -272,7 +184,11 @@ echo "Codegen exit code: $CODEGEN_EXIT"
 - **Exit code non-zero** → Read the new errors from `/tmp/codegen-output.txt`, apply the
   appropriate fix from Step 5, and re-run codegen again. Repeat this fix → re-run cycle up to
   **10 iterations total** until codegen exits with code 0.
-- **Exit code 0** → Codegen succeeded. Verify the .NET solution builds cleanly before proceeding:
+- **Exit code 0** → Codegen succeeded. Proceed to Step 7.
+
+### Step 7: Build verification
+
+Verify the .NET solution builds cleanly:
 
 ```bash
 dotnet build OpenAI.slnx --configuration Release 2>&1 | tee /tmp/build-output.txt
@@ -280,17 +196,18 @@ BUILD_EXIT=${PIPESTATUS[0]}
 echo "Build exit code: $BUILD_EXIT"
 ```
 
-If the build fails, apply the appropriate fix (Category 5 from Step 5) and re-run codegen and
-build again. Once both codegen and build succeed, proceed to Step 7.
+If the build fails, apply the appropriate fix
+([Category 5 — post-generation build](/.github/skills/fixing-codegen-errors/post-generation-build.md))
+and re-run codegen (Step 6) and build again. Once both codegen and build succeed, proceed to Step 8.
 
-### Step 7: Export the API surface
+### Step 8: Export the API surface
 
 ```bash
 pwsh -NoProfile -File scripts/Export-Api.ps1 2>&1
 echo "Export-Api exit code: $?"
 ```
 
-### Step 8: Check for changes
+### Step 9: Check for changes
 
 ```bash
 git status
@@ -320,7 +237,7 @@ For each changed `api/` file, note:
 - Which types or members were **removed** or **renamed** (e.g., type renamed upstream).
 - Which types or members were **modified** (e.g., property type changed).
 
-### Step 9: Create a pull request
+### Step 10: Create a pull request
 
 If there are changes, output a `create_pull_request` action targeting the typespec update branch.
 When `api/` files changed, include an **API Changes** section that explains the cause of each
