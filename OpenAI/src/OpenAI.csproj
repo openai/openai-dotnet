@@ -13,7 +13,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\OpenAI.Responses\src\OpenAI.Responses.csproj" />
+    <Compile Include="..\..\OpenAI.Responses\src\Custom\**\*.cs" LinkBase="Responses\Custom" />
+    <Compile Include="..\..\OpenAI.Responses\src\Generated\**\*.cs" LinkBase="Responses\Generated" />
+    <Compile Remove="..\..\OpenAI.Responses\src\Generated\Internal\CodeGenMemberAttribute.cs" />
+    <Compile Remove="..\..\OpenAI.Responses\src\Generated\Internal\CodeGenSerializationAttribute.cs" />
+    <Compile Remove="..\..\OpenAI.Responses\src\Generated\Internal\CodeGenSuppressAttribute.cs" />
+    <Compile Remove="..\..\OpenAI.Responses\src\Generated\Internal\CodeGenTypeAttribute.cs" />
   </ItemGroup>
 
   <ItemGroup>
