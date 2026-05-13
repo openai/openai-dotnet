@@ -15,17 +15,21 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseError(ResponseErrorCode code, string message)
+        internal ResponseError(ResponseErrorCode code, string message, string @param, string kind)
         {
             Code = code;
             Message = message;
+            Param = @param;
+            Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseError(ResponseErrorCode code, string message, in JsonPatch patch)
+        internal ResponseError(ResponseErrorCode code, string message, string @param, string kind, in JsonPatch patch)
         {
             Code = code;
             Message = message;
+            Param = @param;
+            Kind = kind;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,5 +42,9 @@ namespace OpenAI.Responses
         public ResponseErrorCode Code { get; }
 
         public string Message { get; }
+
+        public string Param { get; }
+
+        public string Kind { get; }
     }
 }

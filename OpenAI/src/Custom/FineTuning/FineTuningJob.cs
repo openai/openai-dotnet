@@ -227,7 +227,7 @@ public partial class FineTuningJob : OperationResult
     public virtual ClientResult CancelAndUpdate(CancellationToken cancellationToken = default)
     {
         using PipelineMessage message = _client.CreateCancelFineTuningJobRequest(JobId, cancellationToken.ToRequestOptions());
-        PipelineResponse response = _pipeline.ProcessMessage<FineTuningJob>(message, cancellationToken.ToRequestOptions());
+        PipelineResponse response = _pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
         CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
         return ClientResult.FromResponse(response);
     }
@@ -241,7 +241,7 @@ public partial class FineTuningJob : OperationResult
     public virtual async Task<ClientResult> CancelAndUpdateAsync(CancellationToken cancellationToken = default)
     {
         using PipelineMessage message = _client.CreateCancelFineTuningJobRequest(JobId, cancellationToken.ToRequestOptions());
-        PipelineResponse response = await _pipeline.ProcessMessageAsync<FineTuningJob>(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        PipelineResponse response = await _pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
         return ClientResult.FromResponse(response);
     }

@@ -15,14 +15,14 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected StreamingResponseUpdate(InternalResponseStreamEventType kind, int sequenceNumber)
+        private protected StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber)
         {
             Kind = kind;
             SequenceNumber = sequenceNumber;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch)
+        internal StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch)
         {
             Kind = kind;
             SequenceNumber = sequenceNumber;
@@ -34,8 +34,6 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
-
-        internal InternalResponseStreamEventType Kind { get; set; }
 
         public int SequenceNumber { get; set; }
     }

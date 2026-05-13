@@ -86,7 +86,7 @@ internal class AsyncFineTuningJobCollectionResult : AsyncCollectionResult<FineTu
     internal virtual async Task<ClientResult> GetJobsAsync(string? after, int? limit, RequestOptions? options)
     {
         using PipelineMessage message = _fineTuningClient.GetJobsPipelineMessage(after, limit, options);
-        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync<FineTuningClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await _pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     protected override IAsyncEnumerable<FineTuningJob> GetValuesFromPageAsync(ClientResult page)

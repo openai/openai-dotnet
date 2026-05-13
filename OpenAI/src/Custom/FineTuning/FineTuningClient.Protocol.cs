@@ -46,7 +46,7 @@ public partial class FineTuningClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = PostJobPipelineMessage(content, options);
-        PipelineResponse response = await Pipeline.ProcessMessageAsync<FineTuningClient>(message, options).ConfigureAwait(false);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false);
 
         FineTuningJob job = this.CreateJobFromResponse(response);
         return await job.WaitUntilAsync(waitUntilCompleted, options).ConfigureAwait(false);
@@ -61,7 +61,7 @@ public partial class FineTuningClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = PostJobPipelineMessage(content, options);
-        PipelineResponse response = Pipeline.ProcessMessage<FineTuningClient>(message, options);
+        PipelineResponse response = Pipeline.ProcessMessage(message, options);
 
         FineTuningJob job = this.CreateJobFromResponse(response);
         return job.WaitUntil(waitUntilCompleted, options);
@@ -116,7 +116,7 @@ public partial class FineTuningClient
         Argument.AssertNotNullOrEmpty(JobId, nameof(JobId));
 
         using PipelineMessage message = GetJobPipelineMessage(Pipeline, _endpoint, JobId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<FineTuningClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public partial class FineTuningClient
         Argument.AssertNotNullOrEmpty(JobId, nameof(JobId));
 
         using PipelineMessage message = GetJobPipelineMessage(Pipeline, _endpoint, JobId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<FineTuningClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     internal virtual PipelineMessage PostJobPipelineMessage(BinaryContent content, RequestOptions options)

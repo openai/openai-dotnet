@@ -14,22 +14,22 @@ namespace OpenAI.Responses
         {
             InternalText = internalText;
             Annotations = annotations.ToList();
-            Logprobs = new ChangeTrackingList<InternalLogProb>();
+            Logprobs = new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentOutputText(InternalItemContentType internalType, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<InternalLogProb> logprobs) : base(internalType, patch)
+        internal InternalItemContentOutputText(InternalItemContentType internalType, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<ResponseTokenLogProbabilityDetails> logprobs) : base(internalType, patch)
         {
             // Plugin customization: ensure initialization of collections
             InternalText = internalText;
             Annotations = annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>();
-            Logprobs = logprobs ?? new ChangeTrackingList<InternalLogProb>();
+            Logprobs = logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<ResponseMessageAnnotation> Annotations { get; }
 
-        internal IList<InternalLogProb> Logprobs { get; }
+        public IList<ResponseTokenLogProbabilityDetails> Logprobs { get; }
     }
 }

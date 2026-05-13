@@ -73,6 +73,23 @@ namespace OpenAI.Evals
                 writer.WritePropertyName("message"u8);
                 writer.WriteStringValue(Message);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
+            {
+                if (Optional.IsDefined(Param))
+                {
+                    writer.WritePropertyName("param"u8);
+                    writer.WriteStringValue(Param);
+                }
+                else
+                {
+                    writer.WriteNull("param"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -116,6 +133,8 @@ namespace OpenAI.Evals
             }
             string code = default;
             string message = default;
+            string @param = default;
+            string kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -129,10 +148,25 @@ namespace OpenAI.Evals
                     message = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("param"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        @param = null;
+                        continue;
+                    }
+                    @param = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = prop.Value.GetString();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalEvalApiError(code, message, additionalBinaryDataProperties);
+            return new InternalEvalApiError(code, message, @param, kind, additionalBinaryDataProperties);
         }
     }
 }

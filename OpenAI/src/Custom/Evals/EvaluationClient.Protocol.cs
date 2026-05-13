@@ -34,13 +34,13 @@ public partial class EvaluationClient
     public virtual ClientResult GetEvaluations(int? limit, string orderBy, string order, string after, RequestOptions options)
     {
         using PipelineMessage message = CreateGetEvalsRequest(after, limit, order, orderBy, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> GetEvaluationsAsync(int? limit, string orderBy, string order, string after, RequestOptions options)
     {
         using PipelineMessage message = CreateGetEvalsRequest(after, limit, order, orderBy, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult CreateEvaluation(BinaryContent content, RequestOptions options = null)
@@ -48,7 +48,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateEvalRequest(content, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> CreateEvaluationAsync(BinaryContent content, RequestOptions options = null)
@@ -56,7 +56,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateEvalRequest(content, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult GetEvaluation(string evaluationId, RequestOptions options)
@@ -64,7 +64,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationId, nameof(evaluationId));
 
         using PipelineMessage message = CreateGetEvalRequest(evaluationId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> GetEvaluationAsync(string evaluationId, RequestOptions options)
@@ -72,7 +72,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationId, nameof(evaluationId));
 
         using PipelineMessage message = CreateGetEvalRequest(evaluationId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult UpdateEvaluation(string evaluationId, BinaryContent content, RequestOptions options = null)
@@ -81,7 +81,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateUpdateEvalRequest(evaluationId, content, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> UpdateEvaluationAsync(string evaluationId, BinaryContent content, RequestOptions options = null)
@@ -90,7 +90,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateUpdateEvalRequest(evaluationId, content, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult DeleteEvaluation(string evaluationId, RequestOptions options)
@@ -98,7 +98,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationId, nameof(evaluationId));
 
         using PipelineMessage message = CreateDeleteEvalRequest(evaluationId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> DeleteEvaluationAsync(string evaluationId, RequestOptions options)
@@ -106,7 +106,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationId, nameof(evaluationId));
 
         using PipelineMessage message = CreateDeleteEvalRequest(evaluationId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult GetEvaluationRuns(string evaluationId, int? limit, string order, string after, string evaluationRunStatus, RequestOptions options)
@@ -114,7 +114,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationId, nameof(evaluationId));
 
         using PipelineMessage message = CreateGetEvalRunsRequest(evaluationId, after, limit, order, evaluationRunStatus, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> GetEvaluationRunsAsync(string evaluationId, int? limit,  string order, string after, string evaluationRunStatus, RequestOptions options)
@@ -122,7 +122,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationId, nameof(evaluationId));
 
         using PipelineMessage message = CreateGetEvalRunsRequest(evaluationId, after, limit, order, evaluationRunStatus, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult CreateEvaluationRun(string evaluationId, BinaryContent content, RequestOptions options = null)
@@ -131,7 +131,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateEvalRunRequest(evaluationId, content, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> CreateEvaluationRunAsync(string evaluationId, BinaryContent content, RequestOptions options = null)
@@ -140,7 +140,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(content, nameof(content));
 
         using PipelineMessage message = CreateCreateEvalRunRequest(evaluationId, content, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult GetEvaluationRun(string evaluationId, string evaluationRunId, RequestOptions options)
@@ -149,7 +149,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateGetEvalRunRequest(evaluationId, evaluationRunId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> GetEvaluationRunAsync(string evaluationId, string evaluationRunId, RequestOptions options)
@@ -158,7 +158,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateGetEvalRunRequest(evaluationId, evaluationRunId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult CancelEvaluationRun(string evaluationId, string evaluationRunId, RequestOptions options)
@@ -167,7 +167,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateCancelEvalRunRequest(evaluationId, evaluationRunId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> CancelEvaluationRunAsync(string evaluationId, string evaluationRunId, RequestOptions options)
@@ -176,7 +176,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateCancelEvalRunRequest(evaluationId, evaluationRunId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult DeleteEvaluationRun(string evaluationId, string evaluationRunId, RequestOptions options)
@@ -185,7 +185,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateDeleteEvalRunRequest(evaluationId, evaluationRunId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> DeleteEvaluationRunAsync(string evaluationId, string evaluationRunId, RequestOptions options)
@@ -194,7 +194,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateDeleteEvalRunRequest(evaluationId, evaluationRunId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult GetEvaluationRunOutputItems(string evaluationId, string evaluationRunId, int? limit, string order, string after, string outputItemStatus, RequestOptions options)
@@ -203,7 +203,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateGetEvalRunOutputItemsRequest(evaluationId, evaluationRunId, after, limit, outputItemStatus, order, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> GetEvaluationRunOutputItemsAsync(string evaluationId, string evaluationRunId, int? limit, string order, string after, string outputItemStatus, RequestOptions options)
@@ -212,7 +212,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(evaluationRunId, nameof(evaluationRunId));
 
         using PipelineMessage message = CreateGetEvalRunOutputItemsRequest(evaluationId, evaluationRunId, after, limit, outputItemStatus, order, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult GetEvaluationRunOutputItem(string evaluationId, string evaluationRunId, string outputItemId, RequestOptions options)
@@ -222,7 +222,7 @@ public partial class EvaluationClient
         Argument.AssertNotNull(outputItemId, nameof(outputItemId));
 
         using PipelineMessage message = CreateGetEvalRunOutputItemRequest(evaluationId, evaluationRunId, outputItemId, options);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage<EvaluationClient>(message, options));
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
     public virtual async Task<ClientResult> GetEvaluationRunOutputItemAsync(string evaluationId, string evaluationRunId, string outputItemId, RequestOptions options)
@@ -232,6 +232,6 @@ public partial class EvaluationClient
         Argument.AssertNotNull(outputItemId, nameof(outputItemId));
 
         using PipelineMessage message = CreateGetEvalRunOutputItemRequest(evaluationId, evaluationRunId, outputItemId, options);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<EvaluationClient>(message, options).ConfigureAwait(false));
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 }

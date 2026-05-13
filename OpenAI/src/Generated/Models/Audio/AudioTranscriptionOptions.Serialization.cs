@@ -66,7 +66,14 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
                 writer.WritePropertyName("file"u8);
-                writer.WriteBase64StringValue(File.ToArray(), "D");
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(File);
+#else
+                using (JsonDocument document = JsonDocument.Parse(File))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
             if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
@@ -224,7 +231,7 @@ namespace OpenAI.Audio
             {
                 if (prop.NameEquals("file"u8))
                 {
-                    @file = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    @file = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 if (prop.NameEquals("model"u8))

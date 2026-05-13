@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 /// <summary> The options to configure the <see cref="ResponsesClient"/>. </summary>
+[Experimental("OPENAI001")]
 public class ResponsesClientOptions : ClientPipelineOptions
 {
     private Uri _endpoint;

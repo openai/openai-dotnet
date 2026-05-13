@@ -66,7 +66,14 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
-                writer.WriteBase64StringValue(Data.ToArray(), "D");
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Data);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Data))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -115,7 +122,7 @@ namespace OpenAI.Files
             {
                 if (prop.NameEquals("data"u8))
                 {
-                    data = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    data = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

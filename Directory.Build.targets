@@ -47,7 +47,7 @@
     ExportApi target: Generates the public API surface for the OpenAI libraries.
 
     Usage:
-      dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
+      dotnet build OpenAI/src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
 
     Outputs to:
       api/$(MSBuildProjectName).<TargetFramework>.cs

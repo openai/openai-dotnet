@@ -28,6 +28,8 @@ namespace OpenAI.Images;
 // Streaming image generation.
 [CodeGenType("ImageGenPartialImageEvent")] internal partial class InternalImageGenPartialImageEvent { }
 [CodeGenType("ImageGenCompletedEvent")] internal partial class InternalImageGenCompletedEvent { }
+[CodeGenType("CreateImageEditContentType")] internal readonly partial struct InternalCreateImageEditContentType {}
+[CodeGenType("CreateImageContentType")] internal readonly partial struct InternalCreateImageContentType {}
 [CodeGenType("ImageGenPartialImageEventBackground")] internal readonly partial struct InternalImageGenPartialImageEventBackground { }
 [CodeGenType("ImageGenPartialImageEventOutputFormat")] internal readonly partial struct InternalImageGenPartialImageEventOutputFormat { }
 [CodeGenType("ImageGenPartialImageEventQuality")] internal readonly partial struct InternalImageGenPartialImageEventQuality { }

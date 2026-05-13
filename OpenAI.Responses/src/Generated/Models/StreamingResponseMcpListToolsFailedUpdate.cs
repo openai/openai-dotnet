@@ -10,14 +10,14 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseMcpListToolsFailedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseMcpListToolsFailedUpdate(int sequenceNumber, string itemId, int outputIndex) : base(InternalResponseStreamEventType.ResponseMcpListToolsFailed, sequenceNumber)
+        internal StreamingResponseMcpListToolsFailedUpdate(int sequenceNumber, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseMcpListToolsFailed, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseMcpListToolsFailedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseMcpListToolsFailedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;

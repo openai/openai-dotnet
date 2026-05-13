@@ -139,21 +139,21 @@ namespace OpenAI.Containers
             return ClientResult.FromValue((DeleteContainerResponse)result, result.GetRawResponse());
         }
 
-        public virtual ClientResult CreateContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateContainerFileRequest(containerId, content, contentType, options);
+            using PipelineMessage message = CreateUploadContainerFileRequest(containerId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CreateContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual async Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateContainerFileRequest(containerId, content, contentType, options);
+            using PipelineMessage message = CreateUploadContainerFileRequest(containerId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

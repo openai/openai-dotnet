@@ -13,7 +13,7 @@ namespace OpenAI.Moderations
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateClassifyInputsRequest(content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage<ModerationClient>(message, options));
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
         /// CUSTOM: Legacy. Retained for backward compatibility with previously GA'd API.
@@ -22,7 +22,7 @@ namespace OpenAI.Moderations
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateClassifyInputsRequest(content, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync<ModerationClient>(message, options).ConfigureAwait(false));
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
     }
 }

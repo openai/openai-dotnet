@@ -112,6 +112,18 @@ namespace OpenAI.Responses
             return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, default, fileId, index);
         }
 
+        public static ResponseTokenLogProbabilityDetails ResponseTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte>? utf8Bytes = default, IEnumerable<ResponseTokenTopLogProbabilityDetails> topLogProbabilities = default)
+        {
+            topLogProbabilities ??= new ChangeTrackingList<ResponseTokenTopLogProbabilityDetails>();
+
+            return new ResponseTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities.ToList(), default);
+        }
+
+        public static ResponseTokenTopLogProbabilityDetails ResponseTokenTopLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte>? utf8Bytes = default)
+        {
+            return new ResponseTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+        }
+
         public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
@@ -184,9 +196,9 @@ namespace OpenAI.Responses
                 default);
         }
 
-        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
+        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default, string @param = default, string kind = default)
         {
-            return new ResponseError(code, message, default);
+            return new ResponseError(code, message, @param, kind, default);
         }
 
         public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = default)
@@ -213,6 +225,394 @@ namespace OpenAI.Responses
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)
         {
             return new ResponseOutputTokenUsageDetails(reasoningTokenCount, default);
+        }
+
+        public static StreamingResponseUpdate StreamingResponseUpdate(string kind = default, int sequenceNumber = default)
+        {
+            return new InternalUnknownResponseStreamEvent(new StreamingResponseUpdateKind(kind), sequenceNumber, default);
+        }
+
+        public static StreamingResponseCodeInterpreterCallCodeDeltaUpdate StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string delta = default)
+        {
+            return new StreamingResponseCodeInterpreterCallCodeDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                delta);
+        }
+
+        public static StreamingResponseCodeInterpreterCallCodeDoneUpdate StreamingResponseCodeInterpreterCallCodeDoneUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string code = default)
+        {
+            return new StreamingResponseCodeInterpreterCallCodeDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                code);
+        }
+
+        public static StreamingResponseCodeInterpreterCallCompletedUpdate StreamingResponseCodeInterpreterCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseCodeInterpreterCallCompletedUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseCodeInterpreterCallInProgressUpdate StreamingResponseCodeInterpreterCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseCodeInterpreterCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseCodeInterpreterCallInterpretingUpdate StreamingResponseCodeInterpreterCallInterpretingUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseCodeInterpreterCallInterpretingUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseCompletedUpdate StreamingResponseCompletedUpdate(int sequenceNumber = default, ResponseResult response = default)
+        {
+            return new StreamingResponseCompletedUpdate(default, sequenceNumber, default, response);
+        }
+
+        public static StreamingResponseContentPartAddedUpdate StreamingResponseContentPartAddedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, ResponseContentPart part = default)
+        {
+            return new StreamingResponseContentPartAddedUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                part);
+        }
+
+        public static StreamingResponseContentPartDoneUpdate StreamingResponseContentPartDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, ResponseContentPart part = default)
+        {
+            return new StreamingResponseContentPartDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                part);
+        }
+
+        public static StreamingResponseCreatedUpdate StreamingResponseCreatedUpdate(int sequenceNumber = default, ResponseResult response = default)
+        {
+            return new StreamingResponseCreatedUpdate(default, sequenceNumber, default, response);
+        }
+
+        public static StreamingResponseErrorUpdate StreamingResponseErrorUpdate(int sequenceNumber = default, string code = default, string message = default, string @param = default)
+        {
+            return new StreamingResponseErrorUpdate(
+                default,
+                sequenceNumber,
+                default,
+                code,
+                message,
+                @param);
+        }
+
+        public static StreamingResponseFileSearchCallCompletedUpdate StreamingResponseFileSearchCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseFileSearchCallCompletedUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseFileSearchCallInProgressUpdate StreamingResponseFileSearchCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseFileSearchCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseFileSearchCallSearchingUpdate StreamingResponseFileSearchCallSearchingUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseFileSearchCallSearchingUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseFunctionCallArgumentsDeltaUpdate StreamingResponseFunctionCallArgumentsDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, BinaryData delta = default)
+        {
+            return new StreamingResponseFunctionCallArgumentsDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                delta);
+        }
+
+        public static StreamingResponseFunctionCallArgumentsDoneUpdate StreamingResponseFunctionCallArgumentsDoneUpdate(int sequenceNumber = default, string itemId = default, string functionName = default, int outputIndex = default, BinaryData functionArguments = default)
+        {
+            return new StreamingResponseFunctionCallArgumentsDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                functionName,
+                outputIndex,
+                functionArguments);
+        }
+
+        public static StreamingResponseInProgressUpdate StreamingResponseInProgressUpdate(int sequenceNumber = default, ResponseResult response = default)
+        {
+            return new StreamingResponseInProgressUpdate(default, sequenceNumber, default, response);
+        }
+
+        public static StreamingResponseFailedUpdate StreamingResponseFailedUpdate(int sequenceNumber = default, ResponseResult response = default)
+        {
+            return new StreamingResponseFailedUpdate(default, sequenceNumber, default, response);
+        }
+
+        public static StreamingResponseIncompleteUpdate StreamingResponseIncompleteUpdate(int sequenceNumber = default, ResponseResult response = default)
+        {
+            return new StreamingResponseIncompleteUpdate(default, sequenceNumber, default, response);
+        }
+
+        public static StreamingResponseOutputItemAddedUpdate StreamingResponseOutputItemAddedUpdate(int sequenceNumber = default, int outputIndex = default, ResponseItem item = default)
+        {
+            return new StreamingResponseOutputItemAddedUpdate(default, sequenceNumber, default, outputIndex, item);
+        }
+
+        public static StreamingResponseOutputItemDoneUpdate StreamingResponseOutputItemDoneUpdate(int sequenceNumber = default, int outputIndex = default, ResponseItem item = default)
+        {
+            return new StreamingResponseOutputItemDoneUpdate(default, sequenceNumber, default, outputIndex, item);
+        }
+
+        public static StreamingResponseReasoningSummaryPartAddedUpdate StreamingResponseReasoningSummaryPartAddedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int summaryIndex = default, ReasoningSummaryPart part = default)
+        {
+            return new StreamingResponseReasoningSummaryPartAddedUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                part);
+        }
+
+        public static StreamingResponseReasoningSummaryPartDoneUpdate StreamingResponseReasoningSummaryPartDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int summaryIndex = default, ReasoningSummaryPart part = default)
+        {
+            return new StreamingResponseReasoningSummaryPartDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                part);
+        }
+
+        public static StreamingResponseReasoningSummaryTextDeltaUpdate StreamingResponseReasoningSummaryTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int summaryIndex = default, string delta = default)
+        {
+            return new StreamingResponseReasoningSummaryTextDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                delta);
+        }
+
+        public static StreamingResponseReasoningSummaryTextDoneUpdate StreamingResponseReasoningSummaryTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int summaryIndex = default, string text = default)
+        {
+            return new StreamingResponseReasoningSummaryTextDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                text);
+        }
+
+        public static StreamingResponseReasoningTextDeltaUpdate StreamingResponseReasoningTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
+        {
+            return new StreamingResponseReasoningTextDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                delta);
+        }
+
+        public static StreamingResponseReasoningTextDoneUpdate StreamingResponseReasoningTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
+        {
+            return new StreamingResponseReasoningTextDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                text);
+        }
+
+        public static StreamingResponseRefusalDeltaUpdate StreamingResponseRefusalDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
+        {
+            return new StreamingResponseRefusalDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                delta);
+        }
+
+        public static StreamingResponseRefusalDoneUpdate StreamingResponseRefusalDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string refusal = default)
+        {
+            return new StreamingResponseRefusalDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                refusal);
+        }
+
+        public static StreamingResponseOutputTextDeltaUpdate StreamingResponseOutputTextDeltaUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities = default)
+        {
+            tokenLogProbabilities ??= new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
+
+            return new StreamingResponseOutputTextDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                delta,
+                tokenLogProbabilities.ToList());
+        }
+
+        public static StreamingResponseOutputTextDoneUpdate StreamingResponseOutputTextDoneUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default, IEnumerable<ResponseTokenLogProbabilityDetails> tokenLogProbabilities = default)
+        {
+            tokenLogProbabilities ??= new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
+
+            return new StreamingResponseOutputTextDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                text,
+                tokenLogProbabilities.ToList());
+        }
+
+        public static StreamingResponseWebSearchCallCompletedUpdate StreamingResponseWebSearchCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseWebSearchCallCompletedUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseWebSearchCallInProgressUpdate StreamingResponseWebSearchCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseWebSearchCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseWebSearchCallSearchingUpdate StreamingResponseWebSearchCallSearchingUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseWebSearchCallSearchingUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseImageGenerationCallCompletedUpdate StreamingResponseImageGenerationCallCompletedUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseImageGenerationCallCompletedUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseImageGenerationCallGeneratingUpdate StreamingResponseImageGenerationCallGeneratingUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseImageGenerationCallGeneratingUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseImageGenerationCallInProgressUpdate StreamingResponseImageGenerationCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseImageGenerationCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseImageGenerationCallPartialImageUpdate StreamingResponseImageGenerationCallPartialImageUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, int partialImageIndex = default, BinaryData partialImageBytes = default)
+        {
+            return new StreamingResponseImageGenerationCallPartialImageUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                partialImageIndex,
+                partialImageBytes);
+        }
+
+        public static StreamingResponseMcpCallArgumentsDeltaUpdate StreamingResponseMcpCallArgumentsDeltaUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, BinaryData delta = default)
+        {
+            return new StreamingResponseMcpCallArgumentsDeltaUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                delta);
+        }
+
+        public static StreamingResponseMcpCallArgumentsDoneUpdate StreamingResponseMcpCallArgumentsDoneUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, BinaryData toolArguments = default)
+        {
+            return new StreamingResponseMcpCallArgumentsDoneUpdate(
+                default,
+                sequenceNumber,
+                default,
+                outputIndex,
+                itemId,
+                toolArguments);
+        }
+
+        public static StreamingResponseMcpCallCompletedUpdate StreamingResponseMcpCallCompletedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default)
+        {
+            return new StreamingResponseMcpCallCompletedUpdate(default, sequenceNumber, default, itemId, outputIndex);
+        }
+
+        public static StreamingResponseMcpCallFailedUpdate StreamingResponseMcpCallFailedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default)
+        {
+            return new StreamingResponseMcpCallFailedUpdate(default, sequenceNumber, default, itemId, outputIndex);
+        }
+
+        public static StreamingResponseMcpCallInProgressUpdate StreamingResponseMcpCallInProgressUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default)
+        {
+            return new StreamingResponseMcpCallInProgressUpdate(default, sequenceNumber, default, outputIndex, itemId);
+        }
+
+        public static StreamingResponseMcpListToolsCompletedUpdate StreamingResponseMcpListToolsCompletedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default)
+        {
+            return new StreamingResponseMcpListToolsCompletedUpdate(default, sequenceNumber, default, itemId, outputIndex);
+        }
+
+        public static StreamingResponseMcpListToolsFailedUpdate StreamingResponseMcpListToolsFailedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default)
+        {
+            return new StreamingResponseMcpListToolsFailedUpdate(default, sequenceNumber, default, itemId, outputIndex);
+        }
+
+        public static StreamingResponseMcpListToolsInProgressUpdate StreamingResponseMcpListToolsInProgressUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default)
+        {
+            return new StreamingResponseMcpListToolsInProgressUpdate(default, sequenceNumber, default, itemId, outputIndex);
+        }
+
+        public static StreamingResponseOutputTextAnnotationAddedUpdate StreamingResponseOutputTextAnnotationAddedUpdate(int sequenceNumber = default, string itemId = default, int outputIndex = default, int contentIndex = default, int annotationIndex = default, ResponseMessageAnnotation annotation = default)
+        {
+            return new StreamingResponseOutputTextAnnotationAddedUpdate(
+                default,
+                sequenceNumber,
+                default,
+                itemId,
+                outputIndex,
+                contentIndex,
+                annotationIndex,
+                annotation);
+        }
+
+        public static StreamingResponseQueuedUpdate StreamingResponseQueuedUpdate(int sequenceNumber = default, ResponseResult response = default)
+        {
+            return new StreamingResponseQueuedUpdate(default, sequenceNumber, default, response);
         }
 
         public static ResponseDeletionResult ResponseDeletionResult(string responseId = default, bool deleted = default)

@@ -10,14 +10,14 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseMcpListToolsCompletedUpdate(int sequenceNumber, string itemId, int outputIndex) : base(InternalResponseStreamEventType.ResponseMcpListToolsCompleted, sequenceNumber)
+        internal StreamingResponseMcpListToolsCompletedUpdate(int sequenceNumber, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseMcpListToolsCompleted, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseMcpListToolsCompletedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseMcpListToolsCompletedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
