@@ -23,6 +23,9 @@ on:
     types: [opened, reopened, synchronize]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate-codegen:
     name: Validate code generation
