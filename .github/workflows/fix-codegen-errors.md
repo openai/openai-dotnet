@@ -25,8 +25,8 @@ if: >
   github.event.workflow_run.conclusion != 'success'
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
   actions: read
   issues: read
 
