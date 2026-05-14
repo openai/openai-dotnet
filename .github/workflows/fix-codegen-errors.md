@@ -14,7 +14,7 @@ on:
       branch:
         description: >
           TypeSpec update branch to fix (e.g., typespec/update-http-client-csharp-1.0.0-alpha.20250101.1).
-          Leave empty to auto-detect from the latest open PR with a matching branch name.
+          Leave empty to auto-detect from the latest open PR with a typespec/update-http-client-csharp-* branch name.
         required: false
         type: string
 
@@ -25,8 +25,8 @@ if: >
   github.event.workflow_run.conclusion != 'success'
 
 permissions:
-  contents: read
-  pull-requests: read
+  contents: write
+  pull-requests: write
   actions: read
   issues: read
 
@@ -44,10 +44,79 @@ steps:
     uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
     with:
       node-version: '22.x'
-  - name: Configure git identity
+  - name: Detect target branch and validate trigger
+    id: detect-branch
     run: |
-      git config user.name "github-actions[bot]"
-      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      set -euo pipefail
+
+      echo "=== Trigger context ==="
+      echo "Event: ${{ github.event_name }}"
+      echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
+
+      # --- Resolve target branch ---
+      BRANCH="${{ github.event.inputs.branch }}"
+
+      if [ -n "$BRANCH" ]; then
+        echo "Using branch from workflow_dispatch input: $BRANCH"
+      else
+        echo "Auto-detecting target branch from open PRs..."
+        PR_JSON=$(gh pr list --state open \
+          --json number,headRefName,title,createdAt \
+          --jq '[.[] | select(.headRefName | startswith("typespec/update-http-client-csharp-"))] | sort_by(.createdAt) | reverse | .[0]')
+
+        if [ -z "$PR_JSON" ] || [ "$PR_JSON" = "null" ]; then
+          echo "::error::No open PR found with a typespec/update-http-client-csharp-* branch."
+          exit 1
+        fi
+
+        BRANCH=$(echo "$PR_JSON" | jq -r '.headRefName')
+        PR_TITLE=$(echo "$PR_JSON" | jq -r '.title')
+        PR_NUMBER=$(echo "$PR_JSON" | jq -r '.number')
+        echo "Found PR #${PR_NUMBER}: ${PR_TITLE}"
+        echo "Target branch: $BRANCH"
+
+        # --- Gate: only continue for "Succeeded with Issues" PRs on workflow_run triggers ---
+        if [ "${{ github.event_name }}" = "workflow_run" ]; then
+          if echo "$PR_TITLE" | grep -q "^Succeeded with Issues:"; then
+            echo "PR title indicates codegen issues to fix. Continuing."
+          else
+            echo "::error::PR exists but title does not start with 'Succeeded with Issues:'."
+            echo "This may be an actual failure or the PR was already fixed. Exiting."
+            exit 1
+          fi
+        fi
+      fi
+
+      echo "target-branch=$BRANCH" >> "$GITHUB_OUTPUT"
+      echo "Target branch resolved: $BRANCH"
+  - name: Check out target branch and verify
+    run: |
+      set -euo pipefail
+
+      BRANCH="${{ steps.detect-branch.outputs.target-branch }}"
+
+      if [ -z "$BRANCH" ]; then
+        echo "::error::No target branch resolved from previous step."
+        exit 1
+      fi
+
+      echo "Checking out branch: $BRANCH"
+
+      if ! git checkout "$BRANCH"; then
+        echo "::error::Failed to check out branch '$BRANCH'. It may not exist or was not fetched."
+        exit 1
+      fi
+
+      git log --oneline -3
+      git status
+
+      # Verify the branch contains a version update in codegen/package.json
+      if ! git diff main -- codegen/package.json | grep -q '@typespec/http-client-csharp'; then
+        echo "::warning::No @typespec/http-client-csharp version change detected in codegen/package.json vs main."
+        echo "The branch may not contain the expected generator update. Proceeding anyway."
+      fi
+
+      echo "Branch '$BRANCH' checked out and verified."
 
 tools:
   github:
@@ -89,50 +158,7 @@ generator version.
 
 ## Instructions
 
-### Step 1: Check the triggering workflow run outcome
-
-This workflow only runs when the **Update TypeSpec Generator Version** workflow concludes with
-a non-`success` result, which covers two scenarios:
-
-- **Actual failure** — the workflow failed before creating a branch (e.g., npm/git error).
-  Check whether a `typespec/update-http-client-csharp-*` branch was recently created. If none
-  exists, exit gracefully and note that the upstream workflow needs investigation.
-- **Succeeded with issues** — the script created a PR but exited with code 1 due to warnings
-  (PR title is prefixed with `"Succeeded with Issues:"`). Proceed to find and fix codegen errors.
-
-Print the event context for reference:
-
-```bash
-echo "Triggered by: ${{ github.event_name }}"
-echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
-```
-
-### Step 2: Identify the target branch
-
-Determine which TypeSpec update branch to work on:
-
-- **If triggered via `workflow_dispatch` with a `branch` input**: use
-  `${{ github.event.inputs.branch }}`.
-- **Otherwise**: find the most recently created open PR whose head branch starts with
-  `typespec/update-http-client-csharp-`:
-
-```bash
-gh pr list --state open --json number,headRefName,title,createdAt \
-  --jq '[.[] | select(.headRefName | startswith("typespec/update-http-client-csharp-"))] | sort_by(.createdAt) | reverse | .[0]'
-```
-
-If no such PR is found, exit gracefully with a message that no update branch was found.
-
-### Step 3: Check out the target branch
-
-```bash
-git checkout <BRANCH_NAME>
-git status
-```
-
-Confirm the branch is checked out and contains the version bump in `codegen/package.json`.
-
-### Step 4: Run code generation
+### Step 1: Run code generation
 
 Run `Invoke-CodeGen.ps1` and capture all output:
 
@@ -142,13 +168,13 @@ CODEGEN_EXIT=${PIPESTATUS[0]}
 echo "Codegen exit code: $CODEGEN_EXIT"
 ```
 
-- **Exit code 0** → No codegen errors. Continue to Step 7 (Build verification).
-- **Non-zero exit code** → Errors need to be fixed. Continue to Step 5.
+- **Exit code 0** → No codegen errors. Continue to Step 3 (Build verification).
+- **Non-zero exit code** → Errors need to be fixed. Continue to Step 2.
 
-### Step 5: Fix codegen errors iteratively
+### Step 2: Fix codegen errors iteratively
 
-Read `/tmp/codegen-output.txt`, identify the failing phase, apply the fix, and re-run. Repeat
-until `Invoke-CodeGen.ps1` exits with code 0, up to **10 iterations**.
+Read `/tmp/codegen-output.txt`, identify the failing phase, and apply the appropriate fix.
+
 
 **Triage by phase:**
 - `npm ci` or `npm run build` failure → **Category 4** (npm/plugin)
@@ -171,22 +197,10 @@ Detailed fix instructions for each category are in the
 | 4 — npm/plugin build | [npm-plugin-build.md](/.github/skills/fixing-codegen-errors/npm-plugin-build.md) |
 | 5 — Post-generation build | [post-generation-build.md](/.github/skills/fixing-codegen-errors/post-generation-build.md) |
 
-### Step 6: Re-run codegen and repeat until passing
+> **After applying fixes, always go back to Step 1** to re-run `Invoke-CodeGen.ps1` and
+> verify the fixes worked. Repeat this Step 2 → Step 1 cycle until codegen exits with code 0.
 
-After applying a fix from Step 5, re-run codegen and check the result:
-
-```bash
-pwsh -NoProfile -File scripts/Invoke-CodeGen.ps1 2>&1 | tee /tmp/codegen-output.txt
-CODEGEN_EXIT=${PIPESTATUS[0]}
-echo "Codegen exit code: $CODEGEN_EXIT"
-```
-
-- **Exit code non-zero** → Read the new errors from `/tmp/codegen-output.txt`, apply the
-  appropriate fix from Step 5, and re-run codegen again. Repeat this fix → re-run cycle up to
-  **10 iterations total** until codegen exits with code 0.
-- **Exit code 0** → Codegen succeeded. Proceed to Step 7.
-
-### Step 7: Build verification
+### Step 3: Build verification
 
 Verify the .NET solution builds cleanly:
 
@@ -198,16 +212,24 @@ echo "Build exit code: $BUILD_EXIT"
 
 If the build fails, apply the appropriate fix
 ([Category 5 — post-generation build](/.github/skills/fixing-codegen-errors/post-generation-build.md))
-and re-run codegen (Step 6) and build again. Once both codegen and build succeed, proceed to Step 8.
+and go back to Step 1 to re-run codegen and build again. Once both codegen and build succeed, proceed to Step 4.
 
-### Step 8: Export the API surface
+### Step 4: Export the API surface
 
 ```bash
 pwsh -NoProfile -File scripts/Export-Api.ps1 2>&1
-echo "Export-Api exit code: $?"
+EXPORT_EXIT=$?
+echo "Export-Api exit code: $EXPORT_EXIT"
 ```
 
-### Step 9: Check for changes
+If `Export-Api.ps1` exits with a non-zero code, do not proceed. Report the error and exit by running:
+
+```bash
+echo "::error::Export-Api.ps1 failed with exit code $EXPORT_EXIT"
+exit 1
+```
+
+### Step 5: Check for changes
 
 ```bash
 git status
@@ -237,23 +259,20 @@ For each changed `api/` file, note:
 - Which types or members were **removed** or **renamed** (e.g., type renamed upstream).
 - Which types or members were **modified** (e.g., property type changed).
 
-### Step 10: Create a pull request
+### Step 6: Create a pull request
 
-If there are changes, output a `create_pull_request` action targeting the typespec update branch.
-When `api/` files changed, include an **API Changes** section that explains the cause of each
-change based on the diff captured in Step 9:
+If there are changes, commit them and create a pull request targeting the typespec update branch.
+When `api/` files changed, include an **API Changes** section in the PR body that explains the
+cause of each change based on the diff captured in Step 5.
 
-```json
-{
-  "type": "create_pull_request",
-  "title": "fix: codegen fixes for <BRANCH_NAME>",
-  "body": "This PR fixes TypeSpec codegen errors introduced by the TypeSpec generator version update.\n\n**Base branch**: `<BRANCH_NAME>`\n\n## Changes\n\n<concise summary of the files changed and why>\n\n## API Changes\n\n<If api/ files were modified, list each change and its likely cause, e.g.:\n- `OpenAI.net8.0.cs`: Added `SomeNewType` — new model introduced by the generator update.\n- `OpenAI.net8.0.cs`: Removed `OldType` — type was renamed to `NewType` in the base spec.\nIf no api/ files were modified, write: None.>\n\n## Verification\n\n- `scripts/Invoke-CodeGen.ps1` ran successfully after fixes.\n- `scripts/Export-Api.ps1` ran successfully.",
-  "branch": "typespec/fix-codegen-<VERSION>",
-  "base": "<BRANCH_NAME>"
-}
-```
+Use the target branch from Step 1 (e.g., `typespec/update-http-client-csharp-1.0.0-alpha.20250101.1`)
+as the **base branch** for the PR so it stacks on top of the generator update PR. Extract the
+version suffix from the branch name (e.g., `1.0.0-alpha.20250101.1`) for the PR title.
 
-Where:
-- `<BRANCH_NAME>` is the TypeSpec update branch (e.g., `typespec/update-http-client-csharp-1.0.0-alpha.20250101.1`)
-- `<VERSION>` is the version suffix extracted from the branch name (e.g., `1.0.0-alpha.20250101.1`)
-- `base` must be set to the TypeSpec update branch so the PR stacks on top of the generator update PR
+The PR title must be: `Fix codegen errors for <VERSION>` (e.g.,
+`Fix codegen errors for 1.0.0-alpha.20250101.1`).
+
+Commit all changes to a new branch (e.g., `typespec/fix-codegen-<VERSION>`), push it, and open
+a draft PR with `gh pr create` using `--base <TARGET_BRANCH>` and `--label codegen`. The PR
+must target the typespec update branch (not `main`) so it stacks on top of the generator
+update PR.
