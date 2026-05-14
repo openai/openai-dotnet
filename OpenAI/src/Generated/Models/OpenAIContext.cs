@@ -3,6 +3,7 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
@@ -20,6 +21,7 @@ using OpenAI.LegacyCompletions;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
+using OpenAI.Skills;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
 
@@ -180,6 +182,9 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalContainersError))]
     [ModelReaderWriterBuildable(typeof(InternalContainersErrorResponse))]
     [ModelReaderWriterBuildable(typeof(InternalConversationItemCollectionOptions))]
+    [ModelReaderWriterBuildable(typeof(InternalConversationItemList))]
+    [ModelReaderWriterBuildable(typeof(InternalConversationItemResource))]
+    [ModelReaderWriterBuildable(typeof(InternalConversationResource))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResources))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResourcesCodeInterpreter))]
     [ModelReaderWriterBuildable(typeof(InternalCreateBatchRequest))]
@@ -193,12 +198,16 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalCreateCompletionResponse))]
     [ModelReaderWriterBuildable(typeof(InternalCreateCompletionResponseChoice))]
     [ModelReaderWriterBuildable(typeof(InternalCreateCompletionResponseChoiceLogprobs))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateConversationBody))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateConversationItemsParametersBody))]
     [ModelReaderWriterBuildable(typeof(InternalCreateEvalItem1))]
     [ModelReaderWriterBuildable(typeof(InternalCreateEvalRequest))]
     [ModelReaderWriterBuildable(typeof(InternalCreateEvalRunRequest))]
     [ModelReaderWriterBuildable(typeof(InternalCreateFineTuningCheckpointPermissionRequest))]
     [ModelReaderWriterBuildable(typeof(InternalCreateFineTuningJobRequestWandbIntegrationWandb))]
     [ModelReaderWriterBuildable(typeof(InternalCreateModerationResponseResultCategoryAppliedInputTypes))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateSkillBody))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateSkillVersionBody))]
     [ModelReaderWriterBuildable(typeof(InternalCreateThreadAndRunRequest))]
     [ModelReaderWriterBuildable(typeof(InternalCreateThreadAndRunRequestToolChoiceFunction))]
     [ModelReaderWriterBuildable(typeof(InternalCreateThreadAndRunRequestToolResources))]
@@ -213,6 +222,14 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalCreateUploadRequest))]
     [ModelReaderWriterBuildable(typeof(InternalCreateVectorStoreFileBatchRequest))]
     [ModelReaderWriterBuildable(typeof(InternalCreateVectorStoreFileRequest))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateVideoBody))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateVideoRemixBody))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateVoiceConsentRequest))]
+    [ModelReaderWriterBuildable(typeof(InternalCreateVoiceRequest))]
+    [ModelReaderWriterBuildable(typeof(InternalDeletedConversationResource))]
+    [ModelReaderWriterBuildable(typeof(InternalDeletedSkillResource))]
+    [ModelReaderWriterBuildable(typeof(InternalDeletedSkillVersionResource))]
+    [ModelReaderWriterBuildable(typeof(InternalDeletedVideoResource))]
     [ModelReaderWriterBuildable(typeof(InternalDeleteEvalResponse))]
     [ModelReaderWriterBuildable(typeof(InternalDeleteEvalRunResponse))]
     [ModelReaderWriterBuildable(typeof(InternalDeleteFineTuningCheckpointPermissionResponse))]
@@ -226,6 +243,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalDotNetChatResponseFormatText))]
     [ModelReaderWriterBuildable(typeof(InternalDotNetCombinedAutoChunkingStrategyParam))]
     [ModelReaderWriterBuildable(typeof(InternalDotNetCombinedOtherChunkingStrategyParam))]
+    [ModelReaderWriterBuildable(typeof(InternalError2))]
     [ModelReaderWriterBuildable(typeof(InternalEval))]
     [ModelReaderWriterBuildable(typeof(InternalEvalApiError))]
     [ModelReaderWriterBuildable(typeof(InternalEvalCompletionsRunDataSourceParams))]
@@ -393,6 +411,11 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalRunStepDetailsToolCallsFunctionObjectFunction))]
     [ModelReaderWriterBuildable(typeof(InternalRunStepDetailsToolCallsObject))]
     [ModelReaderWriterBuildable(typeof(InternalRunToolCallObjectFunction))]
+    [ModelReaderWriterBuildable(typeof(InternalSetDefaultSkillVersionBody))]
+    [ModelReaderWriterBuildable(typeof(InternalSkillListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalSkillResource))]
+    [ModelReaderWriterBuildable(typeof(InternalSkillVersionListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalSkillVersionResource))]
     [ModelReaderWriterBuildable(typeof(InternalSpeechAudioDeltaEvent))]
     [ModelReaderWriterBuildable(typeof(InternalSpeechAudioDoneEvent))]
     [ModelReaderWriterBuildable(typeof(InternalStaticChunkingStrategy))]
@@ -419,6 +442,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownChunkingStrategyConfig))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownChunkingStrategyRequestParamProxy))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownChunkingStrategyResponseParam))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownConversationItemResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCreateTranscriptionResponseJsonUsage))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCreateTranscriptionResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetAssistantResponseFormat))]
@@ -448,8 +472,10 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolChoiceBaseGA))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTranscriptionTokenUsageBaseGA))]
     [ModelReaderWriterBuildable(typeof(InternalUpdateChatCompletionRequest))]
+    [ModelReaderWriterBuildable(typeof(InternalUpdateConversationBody))]
     [ModelReaderWriterBuildable(typeof(InternalUpdateEvalRequest))]
     [ModelReaderWriterBuildable(typeof(InternalUpdateVectorStoreFileAttributesRequest))]
+    [ModelReaderWriterBuildable(typeof(InternalUpdateVoiceConsentRequest))]
     [ModelReaderWriterBuildable(typeof(InternalUpload))]
     [ModelReaderWriterBuildable(typeof(InternalUploadPart))]
     [ModelReaderWriterBuildable(typeof(InternalUploadsError))]
@@ -466,6 +492,12 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalVectorStoreSearchResultsPage))]
     [ModelReaderWriterBuildable(typeof(InternalVectorStoresError))]
     [ModelReaderWriterBuildable(typeof(InternalVectorStoresErrorResponse))]
+    [ModelReaderWriterBuildable(typeof(InternalVideoListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalVideoResource))]
+    [ModelReaderWriterBuildable(typeof(InternalVoiceConsentDeletedResource))]
+    [ModelReaderWriterBuildable(typeof(InternalVoiceConsentListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalVoiceConsentResource))]
+    [ModelReaderWriterBuildable(typeof(InternalVoiceResource))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchLocation))]
     [ModelReaderWriterBuildable(typeof(InternaVideoCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(MessageCollectionOptions))]
@@ -693,6 +725,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(VectorStoreFileError))]
     [ModelReaderWriterBuildable(typeof(VectorStoreModificationOptions))]
     [ModelReaderWriterBuildable(typeof(WeightsAndBiasesIntegration))]
+    [Experimental("OPENAI001")]
     public partial class OpenAIContext : ModelReaderWriterContext
     {
     }

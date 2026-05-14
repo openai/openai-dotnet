@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber, int outputIndex, string itemId, string delta) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, sequenceNumber)
+        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber, int outputIndex, string itemId, string delta) : base(StreamingResponseUpdateKind.ResponseCodeInterpreterCallCodeDelta, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string delta) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string delta) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;

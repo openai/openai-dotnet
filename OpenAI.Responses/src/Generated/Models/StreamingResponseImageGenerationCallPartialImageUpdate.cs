@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseImageGenerationCallPartialImageUpdate(int sequenceNumber, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(InternalResponseStreamEventType.ResponseImageGenerationCallPartialImage, sequenceNumber)
+        internal StreamingResponseImageGenerationCallPartialImageUpdate(int sequenceNumber, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(StreamingResponseUpdateKind.ResponseImageGenerationCallPartialImage, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseImageGenerationCallPartialImageUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseImageGenerationCallPartialImageUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;

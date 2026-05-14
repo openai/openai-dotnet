@@ -10,6 +10,9 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+permissions:
+  contents: read
+
 jobs:
   build: # Test, pack and publish the Open AI nuget package as a build artifact
     name: Build

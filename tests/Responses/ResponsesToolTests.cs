@@ -445,6 +445,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         int searchingCount = 0;
         int completedCount = 0;
         bool gotFinishedFileSearchItem = false;
+        int annotationAddedCount = 0;
+        string messageItemId = null;
+        FileCitationMessageAnnotation fileCitationAnnotation = null;
 
         await foreach (StreamingResponseUpdate update
             in client.CreateResponseStreamingAsync(responseOptions))
@@ -473,6 +476,23 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 Assert.That(fileSearchCallCompletedUpdate.OutputIndex, Is.EqualTo(0));
                 completedCount++;
             }
+            else if (update is StreamingResponseOutputTextAnnotationAddedUpdate outputTextAnnotationAddedUpdate)
+            {
+                Assert.That(outputTextAnnotationAddedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                Assert.That(outputTextAnnotationAddedUpdate.OutputIndex, Is.EqualTo(1));
+                Assert.That(outputTextAnnotationAddedUpdate.ContentIndex, Is.EqualTo(0));
+                Assert.That(outputTextAnnotationAddedUpdate.AnnotationIndex, Is.EqualTo(0));
+                Assert.That(outputTextAnnotationAddedUpdate.Annotation, Is.InstanceOf<FileCitationMessageAnnotation>());
+
+                messageItemId ??= outputTextAnnotationAddedUpdate.ItemId;
+                Assert.That(outputTextAnnotationAddedUpdate.ItemId, Is.EqualTo(messageItemId));
+
+                fileCitationAnnotation = (FileCitationMessageAnnotation)outputTextAnnotationAddedUpdate.Annotation;
+                Assert.That(fileCitationAnnotation.FileId, Is.EqualTo(testFile.Id));
+                Assert.That(fileCitationAnnotation.Filename, Is.EqualTo(testFile.Filename));
+                Assert.That(fileCitationAnnotation.Index, Is.GreaterThan(0));
+                annotationAddedCount++;
+            }
             else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
             {
                 if (outputItemDoneUpdate.Item is FileSearchCallResponseItem fileSearchCallItem)
@@ -489,6 +509,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(searchingCount, Is.EqualTo(1));
         Assert.That(completedCount, Is.EqualTo(1));
         Assert.That(fileSearchItemId, Is.Not.Null.And.Not.Empty);
+        Assert.That(annotationAddedCount, Is.GreaterThan(0));
+        Assert.That(messageItemId, Is.Not.Null.And.Not.Empty);
+        Assert.That(fileCitationAnnotation, Is.Not.Null);
     }
 
     [RecordedTest]

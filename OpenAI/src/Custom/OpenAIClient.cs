@@ -14,6 +14,7 @@ using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
+using OpenAI.Responses;
 using OpenAI.Skills;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
@@ -85,6 +86,19 @@ namespace OpenAI;
 [CodeGenSuppress("GetInternalUploadsClient")]
 public partial class OpenAIClient
 {
+    // `ResponsesClient` exposes its shared-pipeline constructor as `protected internal`.
+    // `OpenAIClient` is in a different assembly and does not derive from `ResponsesClient`,
+    // so it cannot directly call that constructor. This derived type is the accessibility
+    // bridge that lets the top-level client reuse its existing pipeline when creating a
+    // `ResponsesClient`.
+    private sealed class TopLevelResponsesClient : ResponsesClient
+    {
+        internal TopLevelResponsesClient(ClientPipeline pipeline, ResponsesClientOptions options)
+            : base(pipeline, options)
+        {
+        }
+    }
+
     private readonly OpenAIClientOptions _options;
     private readonly ApiKeyCredential _keyCredential;
 
@@ -330,6 +344,23 @@ public partial class OpenAIClient
         OrganizationId = _options.OrganizationId,
         ProjectId = _options.ProjectId,
         UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
+
+    /// <summary>
+    /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method is functionally equivalent to using the <see cref="ResponsesClient"/> constructor directly with
+    /// the same configuration details.
+    /// </remarks>
+    /// <returns> A new <see cref="ResponsesClient"/>. </returns>
+    [Experimental("OPENAI001")]
+    public virtual ResponsesClient GetResponsesClient() => new TopLevelResponsesClient(Pipeline, new ResponsesClientOptions
+    {
+        // The shared-pipeline constructor only consumes the endpoint. Other settings are already
+        // baked into the reused pipeline or only apply when building a new pipeline.
+        Endpoint = _options.Endpoint,
     });
 
     /// <summary>

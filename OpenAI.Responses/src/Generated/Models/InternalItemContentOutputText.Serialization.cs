@@ -154,7 +154,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string internalText = default;
             IList<ResponseMessageAnnotation> annotations = default;
-            IList<InternalLogProb> logprobs = default;
+            IList<ResponseTokenLogProbabilityDetails> logprobs = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -183,17 +183,17 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<InternalLogProb> array = new List<InternalLogProb>();
+                    List<ResponseTokenLogProbabilityDetails> array = new List<ResponseTokenLogProbabilityDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalLogProb.DeserializeInternalLogProb(item, item.GetUtf8Bytes(), options));
+                        array.Add(ResponseTokenLogProbabilityDetails.DeserializeResponseTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
                     }
                     logprobs = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputText(internalType, patch, internalText, annotations, logprobs ?? new ChangeTrackingList<InternalLogProb>());
+            return new InternalItemContentOutputText(internalType, patch, internalText, annotations, logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

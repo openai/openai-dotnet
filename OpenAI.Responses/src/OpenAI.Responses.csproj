@@ -36,7 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\OpenAI\src\Utility\*.cs" />
+    <Compile Include="..\..\OpenAI\src\Utility\*.cs" Link="Shared\Utility\%(Filename)%(Extension)" />
     <!-- NOTE: Do NOT include OpenAI/src/Utility/CodeGen/*.cs via cross-project link.
          The TypeSpec generator's custom-code Roslyn compilation only scans this
          project's directory tree to resolve attributes such as
@@ -44,8 +44,7 @@
          that scan, which causes the attribute to be silently ignored. Keep a
          copy of CodeGenVisibilityAttribute.cs under this project at
          src/Utility/CodeGen/ instead. -->
-    <!-- <Compile Include="..\..\OpenAI\src\Utility\Telemetry\*.cs" /> -->
-    <Compile Include="..\..\OpenAI\src\Generated\Internal\*.cs" />
+    <Compile Include="..\..\OpenAI\src\Generated\Internal\*.cs" Link="Shared\Generated\Internal\%(Filename)%(Extension)" />
     <!-- Exclude locally generated CodeGen attributes that duplicate the ones included from OpenAI above (same namespace) -->
     <Compile Remove="Generated\Internal\CodeGenMemberAttribute.cs" />
     <Compile Remove="Generated\Internal\CodeGenSerializationAttribute.cs" />
@@ -53,11 +52,6 @@
     <Compile Remove="Generated\Internal\CodeGenTypeAttribute.cs" />
     <!-- Exclude OpenAI's ClientPipelineExtensions; Responses has its own custom version with matching ProcessMessage extensions -->
     <Compile Remove="..\..\OpenAI\src\Generated\Internal\ClientPipelineExtensions.cs" />
-    <!-- Include TelemetryDetails needed by OpenAIClientUtilities -->
-    <Compile Include="..\..\OpenAI\src\Custom\Internal\TelemetryDetails.cs" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <Compile Include="..\..\OpenAI\src\Utility\Polyfill\*.cs" />
+    <Compile Include="..\..\OpenAI\src\Utility\Polyfill\*.cs" Link="Shared\Utility\Polyfill\%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

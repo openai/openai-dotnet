@@ -7,7 +7,8 @@ on:
     paths:
       - 'codegen/**'
       - 'specification/**'
-      - 'src/**'
+      - 'OpenAI/src/**'
+      - 'OpenAI.Responses/src/**'
       - 'package.json'
       - 'global.json'
       - 'package-lock.json'
@@ -21,6 +22,9 @@ on:
       - 'scripts/Update-Snippets.ps1'
     types: [opened, reopened, synchronize]
   workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   validate-codegen:

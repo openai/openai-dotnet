@@ -1,6 +1,6 @@
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
-$expectedWarningsFilePath = Join-Path -Path $repoRootPath "src\ExpectedWarnings.txt"
-$libraryCsprojFilePath = Join-Path $repoRootPath "src\OpenAI.csproj"
+$expectedWarningsFilePath = Join-Path -Path $repoRootPath "OpenAI\src\ExpectedWarnings.txt"
+$libraryCsprojFilePath = Join-Path $repoRootPath "OpenAI\src\OpenAI.csproj"
 $packageName = "OpenAI"
 
 Write-Host "Creating test app..."

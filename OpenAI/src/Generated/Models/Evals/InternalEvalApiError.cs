@@ -11,22 +11,30 @@ namespace OpenAI.Evals
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalEvalApiError(string code, string message)
+        internal InternalEvalApiError(string code, string message, string @param, string kind)
         {
             Code = code;
             Message = message;
+            Param = @param;
+            Kind = kind;
         }
 
-        internal InternalEvalApiError(string code, string message, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalApiError(string code, string message, string @param, string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Code = code;
             Message = message;
+            Param = @param;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Code { get; }
 
         public string Message { get; }
+
+        public string Param { get; }
+
+        public string Kind { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

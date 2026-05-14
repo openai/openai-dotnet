@@ -71,38 +71,155 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingResponses()
     {
-        ResponsesClient client = GetProxiedResponsesClient(); // "computer-use-alpha");
+        ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         List<string> deltaTextSegments = [];
-        string finalResponseText = null;
+        string doneText = null;
+        string completedResponseText = null;
+
         await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
-            if (update is StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate)
+
+            switch (update)
             {
-                deltaTextSegments.Add(outputTextDeltaUpdate.Delta);
-                Console.Write(outputTextDeltaUpdate.Delta);
-            }
-            else if (update is StreamingResponseCompletedUpdate responseCompletedUpdate)
-            {
-                finalResponseText = responseCompletedUpdate.Response.OutputItems[0] is MessageResponseItem messageItem
-                    ? messageItem.Content[0].Text
-                    : null;
+                case StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate:
+                    {
+                        deltaTextSegments.Add(outputTextDeltaUpdate.Delta);
+                        break;
+                    }
+                case StreamingResponseOutputTextDoneUpdate outputTextDoneUpdate:
+                    {
+                        doneText = outputTextDoneUpdate.Text;
+                        break;
+                    }
+                case StreamingResponseCompletedUpdate responseCompletedUpdate:
+                    {
+                        completedResponseText = responseCompletedUpdate.Response.OutputItems[0] is MessageResponseItem messageItem
+                            ? messageItem.Content[0].Text
+                            : null;
+                        break;
+                    }
             }
         }
+
         Assert.That(deltaTextSegments, Has.Count.GreaterThan(0));
-        Assert.That(finalResponseText, Is.Not.Null.And.Not.Empty);
-        Assert.That(string.Concat(deltaTextSegments), Is.EqualTo(finalResponseText));
+        Assert.That(completedResponseText, Is.Not.Null.And.Not.Empty);
+        Assert.That(completedResponseText, Is.EqualTo(doneText));
+        Assert.That(completedResponseText, Is.EqualTo(string.Concat(deltaTextSegments)));
+    }
+
+    [RecordedTest]
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
+    {
+        const int topLogProbabilityCount = 3;
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        CreateResponseOptions options = new(
+            TestModel.Responses,
+            [ResponseItem.CreateUserMessageItem("What are token log probabilities?")])
+        {
+            StreamingEnabled = true,
+        };
+
+        if (includeLogProbabilities)
+        {
+            options.IncludedProperties.Add(IncludedResponseProperty.MessageOutputTextLogProbabilities);
+            options.TopLogProbabilityCount = topLogProbabilityCount;
+        }
+
+        List<string> deltaTextSegments = [];
+        string doneText = null;
+        string completedResponseText = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            Console.WriteLine(ModelReaderWriter.Write(update));
+
+            switch (update)
+            {
+                case StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate:
+                    {
+                        if (includeLogProbabilities)
+                        {
+                            Assert.That(outputTextDeltaUpdate.TokenLogProbabilities, Is.Not.Null.Or.Empty);
+                            Assert.That(outputTextDeltaUpdate.TokenLogProbabilities, Has.Count.GreaterThan(0));
+
+                            foreach (ResponseTokenLogProbabilityDetails tokenLogProbs in outputTextDeltaUpdate.TokenLogProbabilities)
+                            {
+                                Assert.That(tokenLogProbs.Token, Is.Not.Null.Or.Empty);
+                                Assert.That(tokenLogProbs.TopLogProbabilities, Is.Not.Null.Or.Empty);
+                                Assert.That(tokenLogProbs.TopLogProbabilities, Has.Count.EqualTo(topLogProbabilityCount));
+
+                                foreach (ResponseTokenTopLogProbabilityDetails tokenTopLogProbs in tokenLogProbs.TopLogProbabilities)
+                                {
+                                    Assert.That(tokenTopLogProbs.Token, Is.Not.Null.Or.Empty);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Assert.That(outputTextDeltaUpdate.TokenLogProbabilities, Has.Count.EqualTo(0));
+                        }
+
+                        deltaTextSegments.Add(outputTextDeltaUpdate.Delta);
+                        break;
+                    }
+                case StreamingResponseOutputTextDoneUpdate outputTextDoneUpdate:
+                    {
+                        if (includeLogProbabilities)
+                        {
+                            Assert.That(outputTextDoneUpdate.TokenLogProbabilities, Is.Not.Null.Or.Empty);
+                            Assert.That(outputTextDoneUpdate.TokenLogProbabilities, Has.Count.GreaterThan(0));
+
+                            foreach (ResponseTokenLogProbabilityDetails tokenLogProbs in outputTextDoneUpdate.TokenLogProbabilities)
+                            {
+                                Assert.That(tokenLogProbs.Token, Is.Not.Null.Or.Empty);
+                                Assert.That(tokenLogProbs.TopLogProbabilities, Is.Not.Null.Or.Empty);
+                                Assert.That(tokenLogProbs.TopLogProbabilities, Has.Count.EqualTo(topLogProbabilityCount));
+
+                                foreach (ResponseTokenTopLogProbabilityDetails tokenTopLogProbs in tokenLogProbs.TopLogProbabilities)
+                                {
+                                    Assert.That(tokenTopLogProbs.Token, Is.Not.Null.Or.Empty);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Assert.That(outputTextDoneUpdate.TokenLogProbabilities, Has.Count.EqualTo(0));
+                        }
+
+                        doneText = outputTextDoneUpdate.Text;
+                        break;
+                    }
+                case StreamingResponseCompletedUpdate responseCompletedUpdate:
+                    {
+                        completedResponseText = responseCompletedUpdate.Response.OutputItems[0] is MessageResponseItem messageItem
+                            ? messageItem.Content[0].Text
+                            : null;
+                        break;
+                    }
+            }
+        }
+
+        Assert.That(deltaTextSegments, Has.Count.GreaterThan(0));
+        Assert.That(completedResponseText, Is.Not.Null.And.Not.Empty);
+        Assert.That(completedResponseText, Is.EqualTo(doneText));
+        Assert.That(completedResponseText, Is.EqualTo(string.Concat(deltaTextSegments)));
     }
 
     [RecordedTest]
     public async Task StreamingResponsesWithReasoningSummary()
     {
         ResponsesClient client = GetProxiedResponsesClient();
-        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")];
 
-        CreateResponseOptions options = new("o3-mini", inputItems)
+        CreateResponseOptions options = new(
+            "o3-mini",
+            [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")])
         {
             ReasoningOptions = new()
             {
@@ -113,13 +230,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        var partsAdded = 0;
-        var partsDone = 0;
-        var inPart = false;
+        int partsAdded = 0;
+        int partsDone = 0;
+        bool inPart = false;
 
-        var receivedTextDelta = false;
-        var receivedTextDone = false;
-
+        bool receivedTextDelta = false;
+        bool receivedTextDone = false;
         List<string> reasoningTexts = [];
         string finalOutput = null;
 

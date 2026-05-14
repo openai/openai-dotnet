@@ -759,45 +759,15 @@ namespace OpenAI.Responses {
         Completed = 1,
         Incomplete = 2
     }
-    [Experimental("SCME0002")]
-    public static class OpenAIHostBuilderExtensions {
-        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-    }
+    [Experimental("OPENAI001")]
     public class OpenAIResponsesContext : ModelReaderWriterContext {
         public static OpenAIResponsesContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
     }
-    public static class OpenAIResponsesModelFactory {
-        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = null, CodeInterpreterToolContainerConfiguration containerConfiguration = null);
-        public static ComputerCallAction ComputerCallAction(string kind = null);
-        public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = null, string code = null, string message = null);
-        public static ContainerFileCitationMessageAnnotation ContainerFileCitationMessageAnnotation(string containerId = null, string fileId = null, int startIndex = 0, int endIndex = 0, string filename = null);
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = null, float? temperature = null, int? topLogProbabilityCount = null, float? topP = null, string endUserId = null, string safetyIdentifier = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, string model = null, ResponseReasoningOptions reasoningOptions = null, bool? backgroundModeEnabled = null, int? maxOutputTokenCount = null, int? maxToolCallCount = null, ResponseTextOptions textOptions = null, IEnumerable<ResponseTool> tools = null, ResponseToolChoice toolChoice = null, ResponseTruncationMode? truncationMode = null, IEnumerable<ResponseItem> inputItems = null, IEnumerable<IncludedResponseProperty> includedProperties = null, bool? parallelToolCallsEnabled = null, bool? storedOutputEnabled = null, string instructions = null, bool? streamingEnabled = null, ResponseConversationOptions conversationOptions = null);
-        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = null, McpToolFilter toolsNeverRequiringApproval = null);
-        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = null, int index = 0, string filename = null);
-        public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = null, int index = 0);
-        public static FileSearchCallResult FileSearchCallResult(string fileId = null, string text = null, string filename = null, IDictionary<string, BinaryData> attributes = null, float? score = null);
-        public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = null, float? scoreThreshold = null);
-        public static GetResponseOptions GetResponseOptions(string responseId = null, int? startingAfter = null, bool? includeObfuscation = null, IEnumerable<IncludedResponseProperty> includedProperties = null, bool? streamingEnabled = null);
-        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUri = null, string fileId = null);
-        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = null, CustomMcpToolCallApprovalPolicy customPolicy = null);
-        public static McpToolDefinition McpToolDefinition(string name = null, string description = null, BinaryData inputSchema = null, BinaryData annotations = null);
-        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = null, bool? isReadOnly = null);
-        public static ResponseConversationOptions ResponseConversationOptions(string conversationId = null);
-        public static ResponseDeletionResult ResponseDeletionResult(string responseId = null, bool deleted = false);
-        public static ResponseError ResponseError(ResponseErrorCode code = default, string message = null);
-        public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = null);
-        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = 0);
-        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = null, string afterId = null, string beforeId = null, int? pageSizeLimit = null, ResponseItemCollectionOrder? order = null);
-        public static ResponseItemCollectionPage ResponseItemCollectionPage(IEnumerable<ResponseItem> data = null, bool hasMore = false, string firstId = null, string lastId = null);
-        public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = null);
-        public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = 0);
-        public static ResponseResult ResponseResult(IDictionary<string, string> metadata = null, float? temperature = null, int? topLogProbabilityCount = null, float? topP = null, string endUserId = null, string safetyIdentifier = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, string model = null, ResponseReasoningOptions reasoningOptions = null, bool? backgroundModeEnabled = null, int? maxOutputTokenCount = null, int? maxToolCallCount = null, ResponseTextOptions textOptions = null, IEnumerable<ResponseTool> tools = null, ResponseToolChoice toolChoice = null, ResponseTruncationMode? truncationMode = null, string id = null, ResponseStatus? status = null, DateTimeOffset createdAt = default, ResponseError error = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, IEnumerable<ResponseItem> instructions = null, ResponseTokenUsage usage = null, bool parallelToolCallsEnabled = false, ResponseConversationOptions conversationOptions = null);
-        public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = null);
-        public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = 0, ResponseInputTokenUsageDetails inputTokenDetails = null, int outputTokenCount = 0, ResponseOutputTokenUsageDetails outputTokenDetails = null, int totalTokenCount = 0);
-        public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = null, int startIndex = 0, int endIndex = 0, string title = null);
-        public static WebSearchToolFilters WebSearchToolFilters(IEnumerable<string> allowedDomains = null);
+    [Experimental("SCME0002")]
+    public static class OpenAIResponsesHostBuilderExtensions {
+        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     [Experimental("OPENAI001")]
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
@@ -842,6 +812,7 @@ namespace OpenAI.Responses {
         public string InputImageFileId { get; }
         public string InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
+        public IReadOnlyList<ResponseTokenLogProbabilityDetails> OutputLogProbs { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -892,7 +863,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseError : IJsonModel<ResponseError>, IPersistableModel<ResponseError> {
         public ResponseErrorCode Code { get; }
+        public string Kind { get; }
         public string Message { get; }
+        public string Param { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -1216,6 +1189,7 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
     public class ResponsesClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
         public string OrganizationId { get; set; }
@@ -1279,6 +1253,31 @@ namespace OpenAI.Responses {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public ResponseTextFormat TextFormat { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseTokenLogProbabilityDetails : IJsonModel<ResponseTokenLogProbabilityDetails>, IPersistableModel<ResponseTokenLogProbabilityDetails> {
+        public ResponseTokenLogProbabilityDetails();
+        public ResponseTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes, IEnumerable<ResponseTokenTopLogProbabilityDetails> topLogProbabilities);
+        public float LogProbability { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; set; }
+        public IReadOnlyList<ResponseTokenTopLogProbabilityDetails> TopLogProbabilities { get; }
+        public ReadOnlyMemory<byte>? Utf8Bytes { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseTokenTopLogProbabilityDetails : IJsonModel<ResponseTokenTopLogProbabilityDetails>, IPersistableModel<ResponseTokenTopLogProbabilityDetails> {
+        public ResponseTokenTopLogProbabilityDetails();
+        public ResponseTokenTopLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte>? utf8Bytes);
+        public float LogProbability { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; set; }
+        public ReadOnlyMemory<byte>? Utf8Bytes { get; set; }
     }
     [Experimental("OPENAI001")]
     public class ResponseTokenUsage : IJsonModel<ResponseTokenUsage>, IPersistableModel<ResponseTokenUsage> {
@@ -1449,6 +1448,7 @@ namespace OpenAI.Responses {
     public class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate> {
         public StreamingResponseFunctionCallArgumentsDoneUpdate();
         public BinaryData FunctionArguments { get; set; }
+        public string FunctionName { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
@@ -1551,12 +1551,22 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class StreamingResponseOutputTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextAnnotationAddedUpdate>, IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate> {
+        public StreamingResponseOutputTextAnnotationAddedUpdate();
+        public ResponseMessageAnnotation Annotation { get; set; }
+        public int AnnotationIndex { get; set; }
+        public int ContentIndex { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDeltaUpdate>, IPersistableModel<StreamingResponseOutputTextDeltaUpdate> {
         public StreamingResponseOutputTextDeltaUpdate();
         public int ContentIndex { get; set; }
         public string Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
+        public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDoneUpdate>, IPersistableModel<StreamingResponseOutputTextDoneUpdate> {
@@ -1565,6 +1575,7 @@ namespace OpenAI.Responses {
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public string Text { get; set; }
+        public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseQueuedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseQueuedUpdate>, IPersistableModel<StreamingResponseQueuedUpdate> {
@@ -1636,21 +1647,80 @@ namespace OpenAI.Responses {
         public string Refusal { get; set; }
     }
     [Experimental("OPENAI001")]
-    public class StreamingResponseTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseTextAnnotationAddedUpdate>, IPersistableModel<StreamingResponseTextAnnotationAddedUpdate> {
-        public StreamingResponseTextAnnotationAddedUpdate();
-        public BinaryData Annotation { get; set; }
-        public int AnnotationIndex { get; set; }
-        public int ContentIndex { get; set; }
-        public string ItemId { get; set; }
-        public int OutputIndex { get; set; }
-    }
-    [Experimental("OPENAI001")]
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
+        public StreamingResponseUpdateKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public int SequenceNumber { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct StreamingResponseUpdateKind : IEquatable<StreamingResponseUpdateKind> {
+        public StreamingResponseUpdateKind(string value);
+        public static StreamingResponseUpdateKind Error { get; }
+        public static StreamingResponseUpdateKind ResponseAudioDelta { get; }
+        public static StreamingResponseUpdateKind ResponseAudioDone { get; }
+        public static StreamingResponseUpdateKind ResponseAudioTranscriptDelta { get; }
+        public static StreamingResponseUpdateKind ResponseAudioTranscriptDone { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallCodeDelta { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallCodeDone { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseCodeInterpreterCallInterpreting { get; }
+        public static StreamingResponseUpdateKind ResponseCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseContentPartAdded { get; }
+        public static StreamingResponseUpdateKind ResponseContentPartDone { get; }
+        public static StreamingResponseUpdateKind ResponseCreated { get; }
+        public static StreamingResponseUpdateKind ResponseCustomToolCallInputDelta { get; }
+        public static StreamingResponseUpdateKind ResponseCustomToolCallInputDone { get; }
+        public static StreamingResponseUpdateKind ResponseFailed { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseFileSearchCallSearching { get; }
+        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDelta { get; }
+        public static StreamingResponseUpdateKind ResponseFunctionCallArgumentsDone { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallGenerating { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseImageGenerationCallPartialImage { get; }
+        public static StreamingResponseUpdateKind ResponseIncomplete { get; }
+        public static StreamingResponseUpdateKind ResponseInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallArgumentsDelta { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallArgumentsDone { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallFailed { get; }
+        public static StreamingResponseUpdateKind ResponseMcpCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseMcpListToolsCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseMcpListToolsFailed { get; }
+        public static StreamingResponseUpdateKind ResponseMcpListToolsInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseOutputItemAdded { get; }
+        public static StreamingResponseUpdateKind ResponseOutputItemDone { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextAnnotationAdded { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseOutputTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseQueued { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryPartAdded { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryPartDone { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningSummaryTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningTextDelta { get; }
+        public static StreamingResponseUpdateKind ResponseReasoningTextDone { get; }
+        public static StreamingResponseUpdateKind ResponseRefusalDelta { get; }
+        public static StreamingResponseUpdateKind ResponseRefusalDone { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallInProgress { get; }
+        public static StreamingResponseUpdateKind ResponseWebSearchCallSearching { get; }
+        public readonly bool Equals(StreamingResponseUpdateKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
+        public static implicit operator StreamingResponseUpdateKind(string value);
+        public static implicit operator StreamingResponseUpdateKind?(string value);
+        public static bool operator !=(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseWebSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallCompletedUpdate>, IPersistableModel<StreamingResponseWebSearchCallCompletedUpdate> {

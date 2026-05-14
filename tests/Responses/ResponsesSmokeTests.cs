@@ -1,6 +1,9 @@
-﻿using NUnit.Framework;
+using Microsoft.ClientModel.TestFramework.Mocks;
+using NUnit.Framework;
+using OpenAI.Tests;
 using OpenAI.Responses;
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Linq;
 using System.Text;
@@ -14,6 +17,47 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public partial class ResponsesSmokeTests
 {
+    [Test]
+    public void CanCreateResponsesClientFromTopLevelClient()
+    {
+        Uri fakeUri = new("https://example.invalid");
+        ApiKeyCredential fakeCredential = new("sk-not-a-real-credential");
+
+        OpenAIClient topLevelClient = new(fakeCredential, new OpenAIClientOptions()
+        {
+            Endpoint = fakeUri,
+        });
+
+        ResponsesClient responsesClient = topLevelClient.GetResponsesClient();
+
+        Assert.That(responsesClient, Is.Not.Null);
+    }
+
+    [Test]
+    public void TopLevelClientOptionsPersistence()
+    {
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(BinaryData.FromString("{}"))));
+        OpenAIClientOptions options = new()
+        {
+            Transport = mockTransport,
+            Endpoint = new Uri("https://example.invalid/custom/responses/endpoint"),
+        };
+        Uri observedEndpoint = null;
+        options.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            observedEndpoint = message?.Request?.Uri;
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIClient topLevelClient = new(new ApiKeyCredential("mock-credential"), options);
+        ResponsesClient responsesClient = topLevelClient.GetResponsesClient();
+        ClientResult result = responsesClient.CreateResponse(BinaryContent.Create(BinaryData.FromString("{}")));
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(observedEndpoint, Is.Not.Null);
+        Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("example.invalid/custom/responses/endpoint"));
+    }
+
     [Test]
     public void SerializingMessagesWorks()
     {
