@@ -134,6 +134,7 @@ safe-outputs:
   create-pull-request:
     draft: true
     preserve-branch-name: true
+    max_patch_size: 262144
     allowed-base-branches:
       - "typespec/update-http-client-csharp-*"
     labels: [codegen]
