@@ -147,8 +147,8 @@ namespace OpenAILibraryPlugin.Visitors
             // Decorate any public/protected generated type that isn't in the stable
             // set. The provider-kind allow-list previously used here (ClientProvider,
             // ModelProvider, ClientOptionsProvider, EnumProvider) silently skipped
-            // other generated public types -- e.g., the ModelReaderWriterContext
-            // partials such as OpenAIResponsesContext -- leaving them un-attributed.
+            // other generated public types -- e.g., ModelReaderWriterContext
+            // partials -- leaving them un-attributed.
             // Visibility plus the stable-list check is sufficient to gate this.
             if ((type.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Public) ||
                     type.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Protected)) &&
