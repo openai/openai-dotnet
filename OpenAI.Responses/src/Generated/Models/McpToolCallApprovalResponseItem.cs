@@ -4,6 +4,7 @@
 
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {

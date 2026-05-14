@@ -5,7 +5,7 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenAI.Responses
+namespace OpenAI.Assistants
 {
     internal readonly partial struct InternalFileSearchToolFiltersType : IEquatable<InternalFileSearchToolFiltersType>
     {

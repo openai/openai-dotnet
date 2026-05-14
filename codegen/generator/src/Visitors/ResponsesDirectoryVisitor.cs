@@ -25,6 +25,11 @@ public class ResponsesDirectoryVisitor : ScmLibraryVisitor
                 && !relativePath.StartsWith(Path.Combine(generatedRoot, "Internal"), StringComparison.Ordinal))
             {
                 string generatedRelativePath = Path.GetRelativePath(generatedRoot, relativePath);
+                string responsesModelRoot = Path.Combine("Models", "Responses");
+                if (generatedRelativePath.StartsWith(responsesModelRoot, StringComparison.Ordinal))
+                {
+                    generatedRelativePath = Path.Combine("Models", Path.GetRelativePath(responsesModelRoot, generatedRelativePath));
+                }
                 type.Update(relativeFilePath: Path.Combine("..", "OpenAI.Responses", "src", "Generated", generatedRelativePath));
             }
         }

@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using OpenAI.Assistants;
 
 namespace OpenAI.Responses
 {
