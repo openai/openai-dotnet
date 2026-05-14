@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OpenAI\src\OpenAI.csproj" />
-    <ProjectReference Include="..\OpenAI.Responses\src\OpenAI.Responses.csproj" />
   </ItemGroup>
 
   <ItemGroup>

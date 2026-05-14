@@ -31,6 +31,7 @@ namespace OpenAILibraryPlugin
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());
             AddVisitor(new ModelDirectoryVisitor());
+            AddVisitor(new ResponsesDirectoryVisitor());
             AddVisitor(new PaginationVisitor());
             AddVisitor(new MetadataQueryParamVisitor());
             AddVisitor(new ProtocolModelVisitor());

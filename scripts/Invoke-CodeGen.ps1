@@ -318,7 +318,6 @@ try {
 
     Set-Location $specificationFolderPath
     Invoke-ScriptWithLogging { npx tsp compile . --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI/" --stats --trace @typespec/http-client-csharp }
-    Invoke-ScriptWithLogging { npx tsp compile ./main.responses.tsp --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI.Responses" --options "@open-ai/plugin.package-name=OpenAI.Responses" --stats --trace @typespec/http-client-csharp }
 
     Write-ElapsedTime "tsp compile complete"
 
