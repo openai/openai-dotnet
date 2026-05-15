@@ -22,10 +22,11 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(GetSkillVersionContent, "Skills");
 
 // Rename operation for consistency with other APIs
-@@clientName(CreateSkillMultipart, "CreateSkill");
+@@clientName(CreateSkillMultipart, "UploadSkill");
 @@clientName(UpdateSkillDefaultVersion, "UpdateSkill");
-@@clientName(CreateSkillVersionMultipart, "CreateSkillVersion");
-@@clientName(GetSkillVersionContent, "DownloadSkillVersionContent");
+@@clientName(GetSkillContent, "DownloadSkill");
+@@clientName(CreateSkillVersionMultipart, "UploadSkillVersion");
+@@clientName(GetSkillVersionContent, "DownloadSkillVersion");
 
 // Remove JSON variants from C# generation (only multipart is usable)
 @@scope(CreateSkillJson, "!csharp");

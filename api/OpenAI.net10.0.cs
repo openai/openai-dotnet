@@ -5173,20 +5173,16 @@ namespace OpenAI.Skills {
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult CreateSkill(BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateSkillAsync(BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual ClientResult CreateSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult DeleteSkill(string skillId, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteSkillAsync(string skillId, RequestOptions options = null);
         public virtual ClientResult DeleteSkillVersion(string skillId, string version, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteSkillVersionAsync(string skillId, string version, RequestOptions options = null);
-        public virtual ClientResult DownloadSkillVersionContent(string skillId, string version, RequestOptions options = null);
-        public virtual Task<ClientResult> DownloadSkillVersionContentAsync(string skillId, string version, RequestOptions options = null);
+        public virtual ClientResult DownloadSkill(string skillId, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadSkillAsync(string skillId, RequestOptions options = null);
+        public virtual ClientResult DownloadSkillVersion(string skillId, string version, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadSkillVersionAsync(string skillId, string version, RequestOptions options = null);
         public virtual ClientResult GetSkill(string skillId, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillAsync(string skillId, RequestOptions options = null);
-        public virtual ClientResult GetSkillContent(string skillId, RequestOptions options = null);
-        public virtual Task<ClientResult> GetSkillContentAsync(string skillId, RequestOptions options = null);
         public virtual ClientResult GetSkills(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetSkillsAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual ClientResult GetSkillVersion(string skillId, string version, RequestOptions options = null);
@@ -5195,6 +5191,10 @@ namespace OpenAI.Skills {
         public virtual Task<ClientResult> GetSkillVersionsAsync(string skillId, int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual ClientResult UpdateSkill(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateSkillAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult UploadSkill(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> UploadSkillAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult UploadSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> UploadSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
     }
     [Experimental("SCME0002")]
     public sealed class SkillClientSettings : ClientSettings {

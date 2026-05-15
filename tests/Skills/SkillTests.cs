@@ -28,7 +28,7 @@ public partial class SkillTests : OpenAIRecordedTestBase
         using MultiPartFormDataBinaryContent createContent = new();
         createContent.Add(skillMd, "files[]", "basic_math/SKILL.md", "text/markdown");
 
-        ClientResult createResult = await client.CreateSkillAsync(createContent, createContent.ContentType);
+        ClientResult createResult = await client.UploadSkillAsync(createContent, createContent.ContentType);
 
         BinaryData createResponseData = createResult.GetRawResponse().Content;
         using JsonDocument createJson = JsonDocument.Parse(createResponseData);
@@ -84,7 +84,7 @@ public partial class SkillTests : OpenAIRecordedTestBase
         using MultiPartFormDataBinaryContent createContent = new();
         createContent.Add(skillMd, "files[]", "basic_math/SKILL.md", "text/markdown");
 
-        ClientResult createResult = await client.CreateSkillAsync(createContent, createContent.ContentType);
+        ClientResult createResult = await client.UploadSkillAsync(createContent, createContent.ContentType);
 
         BinaryData createResponseData = createResult.GetRawResponse().Content;
         using JsonDocument createJson = JsonDocument.Parse(createResponseData);
@@ -98,7 +98,7 @@ public partial class SkillTests : OpenAIRecordedTestBase
         using MultiPartFormDataBinaryContent versionContent = new();
         versionContent.Add(skillMd, "files[]", "basic_math/SKILL.md", "text/markdown");
 
-        ClientResult versionResult = await client.CreateSkillVersionAsync(skillId, versionContent, versionContent.ContentType);
+        ClientResult versionResult = await client.UploadSkillVersionAsync(skillId, versionContent, versionContent.ContentType);
 
         BinaryData versionResponseData = versionResult.GetRawResponse().Content;
         using JsonDocument versionJson = JsonDocument.Parse(versionResponseData);
