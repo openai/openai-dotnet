@@ -274,11 +274,10 @@ model RealtimeTranscriptionSessionCreateRequestGAAudioInput_GA {
 
 /** Type of noise reduction. `near_field` is for close-talking microphones such as headphones, `far_field` is for far-field microphones such as laptop or conference room microphones. */
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
-enum RealtimeNoiseReductionType_GA {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  near_field,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  far_field,
+union RealtimeNoiseReductionType_GA {
+  string,
+  near_field: "near_field",
+  far_field: "far_field",
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -453,13 +452,11 @@ more tools.
 `required` means the model must call one or more tools.*/
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 @summary("Tool choice mode")
-enum ToolChoiceOptions_GA {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  none,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  auto,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  required,
+union ToolChoiceOptions_GA {
+  string,
+  none: "none",
+  auto: "auto",
+  required: "required",
 }
 
 union ToolChoiceBaseType_GA {

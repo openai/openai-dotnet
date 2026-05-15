@@ -1174,27 +1174,29 @@ union ImageGenerationSize {
 }
 
 /** The output format for a generated image. */
-enum ImageGenerationOutputFormat {
+union ImageGenerationOutputFormat {
+  string,
   /** PNG format. */
-  png,
+  png: "png",
 
   /** WebP format. */
-  webp,
+  webp: "webp",
 
   /** JPEG format. */
-  jpeg,
+  jpeg: "jpeg",
 }
 
 /** The background type for a generated image. */
-enum ImageGenerationBackground {
+union ImageGenerationBackground {
+  string,
   /** Transparent background. */
-  transparent,
+  transparent: "transparent",
 
   /** Opaque background. */
-  opaque,
+  opaque: "opaque",
 
   /** Automatically select the best background for the image. */
-  auto,
+  auto: "auto",
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type base for tools
@@ -1498,11 +1500,10 @@ union Verbosity {
 
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum TruncationEnum {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  auto,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  disabled,
+union TruncationEnum {
+  string,
+  auto: "auto",
+  disabled: "disabled",
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."

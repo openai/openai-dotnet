@@ -310,12 +310,10 @@ model CreateModerationResponseResultsCategoryAppliedInputTypes {
 }
 
 /** The applied input type(s) for the category. */
-#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
-enum ModerationCategoryInputType {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  text,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  image,
+union ModerationCategoryInputType {
+  string,
+  text: "text",
+  image: "image",
 }
 
 union CreateModerationRequestInputType {
