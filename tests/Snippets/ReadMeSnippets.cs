@@ -138,6 +138,76 @@ public class ReadMeSnippets
     }
 
     [Test]
+    public void DependencyInjection_RegisterResponses()
+    {
+        var builderMock = new Mock<IHostApplicationBuilder>();
+        var builder = builderMock.Object;
+
+        #region Snippet:ReadMe_DependencyInjection_RegisterResponses
+        builder.AddResponsesClient("Clients:ResponsesClient");
+        #endregion
+    }
+
+    [Test]
+    public void ResponsesClient_Basic()
+    {
+        var clientMock = new Mock<ResponsesClient>();
+
+        clientMock
+            .Setup(c => c.CreateResponse(
+                It.IsAny<CreateResponseOptions>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(ClientResult.FromValue(new ResponseResult(), new MockPipelineResponse()));
+
+        #region Snippet:ReadMe_ResponsesClient_Basic
+#if SNIPPET
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+#else
+        ResponsesClient client = clientMock.Object;
+#endif
+
+        CreateResponseOptions options = new() { Model = "gpt-5.1" };
+        options.InputItems.Add(ResponseItem.CreateUserMessageItem("Say 'this is a test.'"));
+
+        ResponseResult response = client.CreateResponse(options);
+        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
+        #endregion
+    }
+
+    [Test]
+    public async Task ResponsesClient_Async()
+    {
+        var clientMock = new Mock<ResponsesClient>();
+
+        clientMock
+            .Setup(c => c.CreateResponseAsync(
+                It.IsAny<CreateResponseOptions>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(ClientResult.FromValue(new ResponseResult(), new MockPipelineResponse()));
+
+        ResponsesClient client = clientMock.Object;
+        CreateResponseOptions options = new() { Model = "gpt-5.1" };
+        options.InputItems.Add(ResponseItem.CreateUserMessageItem("Say 'this is a test.'"));
+
+        #region Snippet:ReadMe_ResponsesClient_Async
+        ResponseResult response = await client.CreateResponseAsync(options);
+        #endregion
+    }
+
+    [Test]
+    public void ResponsesClient_CustomUrl()
+    {
+        #region Snippet:ReadMe_ResponsesClient_CustomUrl
+        ResponsesClient client = new(
+            credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")),
+            options: new ResponsesClientOptions()
+            {
+                Endpoint = new Uri("https://YOUR_BASE_URL")
+            });
+        #endregion
+    }
+
+    [Test]
     public void Streaming_Sync()
     {
         var client = Mock.Of<ChatClient>();
@@ -1297,6 +1367,29 @@ public class ReadMeSnippets
         {
             ChatCompletion completion = await _chatClient.CompleteChatAsync(message);
             return Ok(new { response = completion.Content[0].Text });
+        }
+    }
+    #endregion
+
+    #region Snippet:ReadMe_DependencyInjection_ResponsesController
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ResponsesController : ControllerBase
+    {
+        private readonly ResponsesClient _responsesClient;
+
+        public ResponsesController(ResponsesClient responsesClient)
+        {
+            _responsesClient = responsesClient;
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateResponse([FromBody] string message)
+        {
+            CreateResponseOptions options = new() { Model = "gpt-5.1" };
+            options.InputItems.Add(ResponseItem.CreateUserMessageItem(message));
+            ResponseResult response = await _responsesClient.CreateResponseAsync(options);
+            return Ok(new { response = response.GetOutputText() });
         }
     }
     #endregion
