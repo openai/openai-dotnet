@@ -41,6 +41,25 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 
 To call the OpenAI REST API, you will need an API key. To obtain one, first [create a new OpenAI account](https://platform.openai.com/signup) or [log in](https://platform.openai.com/login). Next, navigate to the [API key page](https://platform.openai.com/account/api-keys) and select "Create new secret key", optionally naming the key. Make sure to save your API key somewhere safe and do not share it with anyone.
 
+### Experimental APIs
+
+Some APIs in this library are marked with `[Experimental]` while the corresponding service surface is still evolving. When you use one of these types or members, the compiler emits a warning code so you can opt in deliberately.
+
+| Warning code | Examples of affected API areas |
+| --- | --- |
+| `OPENAI001` | Assistants, vector stores, batches, evals, realtime client entry points, and other preview client surface area |
+| `OPENAI002` | Realtime session types and session options |
+
+If your project treats warnings as errors, experimental APIs can fail the build until you suppress the relevant warning in the narrowest possible scope:
+
+```csharp
+#pragma warning disable OPENAI001
+AssistantClient assistantClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+#pragma warning restore OPENAI001
+```
+
+Prefer suppressing only the specific warning code around the experimental call site so stable APIs continue surfacing new warnings normally.
+
 ### Install the NuGet package
 
 Add the client library to your .NET project by installing the [NuGet](https://www.nuget.org/) package via your IDE or by running the following command in the .NET CLI:
