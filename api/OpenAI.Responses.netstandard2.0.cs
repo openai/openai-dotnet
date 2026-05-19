@@ -1195,176 +1195,176 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
-        public StreamingResponseCodeInterpreterCallCodeDeltaUpdate();
+        public StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : base(default, default);
         public string Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseCodeInterpreterCallCodeDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate> {
-        public StreamingResponseCodeInterpreterCallCodeDoneUpdate();
+        public StreamingResponseCodeInterpreterCallCodeDoneUpdate() : base(default, default);
         public string Code { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseCodeInterpreterCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCompletedUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCompletedUpdate> {
-        public StreamingResponseCodeInterpreterCallCompletedUpdate();
+        public StreamingResponseCodeInterpreterCallCompletedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseCodeInterpreterCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInProgressUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallInProgressUpdate> {
-        public StreamingResponseCodeInterpreterCallInProgressUpdate();
+        public StreamingResponseCodeInterpreterCallInProgressUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseCodeInterpreterCallInterpretingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInterpretingUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallInterpretingUpdate> {
-        public StreamingResponseCodeInterpreterCallInterpretingUpdate();
+        public StreamingResponseCodeInterpreterCallInterpretingUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCompletedUpdate>, IPersistableModel<StreamingResponseCompletedUpdate> {
-        public StreamingResponseCompletedUpdate();
+        public StreamingResponseCompletedUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
     }
     public class StreamingResponseContentPartAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartAddedUpdate>, IPersistableModel<StreamingResponseContentPartAddedUpdate> {
-        public StreamingResponseContentPartAddedUpdate();
+        public StreamingResponseContentPartAddedUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public ResponseContentPart Part { get; set; }
     }
     public class StreamingResponseContentPartDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartDoneUpdate>, IPersistableModel<StreamingResponseContentPartDoneUpdate> {
-        public StreamingResponseContentPartDoneUpdate();
+        public StreamingResponseContentPartDoneUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public ResponseContentPart Part { get; set; }
     }
     public class StreamingResponseCreatedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCreatedUpdate>, IPersistableModel<StreamingResponseCreatedUpdate> {
-        public StreamingResponseCreatedUpdate();
+        public StreamingResponseCreatedUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
     }
     public class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>, IPersistableModel<StreamingResponseErrorUpdate> {
-        public StreamingResponseErrorUpdate();
+        public StreamingResponseErrorUpdate() : base(default, default);
         public string Code { get; set; }
         public string Message { get; set; }
         public string Param { get; set; }
     }
     public class StreamingResponseFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFailedUpdate>, IPersistableModel<StreamingResponseFailedUpdate> {
-        public StreamingResponseFailedUpdate();
+        public StreamingResponseFailedUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
     }
     public class StreamingResponseFileSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallCompletedUpdate>, IPersistableModel<StreamingResponseFileSearchCallCompletedUpdate> {
-        public StreamingResponseFileSearchCallCompletedUpdate();
+        public StreamingResponseFileSearchCallCompletedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseFileSearchCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallInProgressUpdate>, IPersistableModel<StreamingResponseFileSearchCallInProgressUpdate> {
-        public StreamingResponseFileSearchCallInProgressUpdate();
+        public StreamingResponseFileSearchCallInProgressUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseFileSearchCallSearchingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallSearchingUpdate>, IPersistableModel<StreamingResponseFileSearchCallSearchingUpdate> {
-        public StreamingResponseFileSearchCallSearchingUpdate();
+        public StreamingResponseFileSearchCallSearchingUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate> {
-        public StreamingResponseFunctionCallArgumentsDeltaUpdate();
+        public StreamingResponseFunctionCallArgumentsDeltaUpdate() : base(default, default);
         public BinaryData Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate> {
-        public StreamingResponseFunctionCallArgumentsDoneUpdate();
+        public StreamingResponseFunctionCallArgumentsDoneUpdate() : base(default, default);
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseImageGenerationCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallCompletedUpdate>, IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate> {
-        public StreamingResponseImageGenerationCallCompletedUpdate();
+        public StreamingResponseImageGenerationCallCompletedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseImageGenerationCallGeneratingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>, IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate> {
-        public StreamingResponseImageGenerationCallGeneratingUpdate();
+        public StreamingResponseImageGenerationCallGeneratingUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseImageGenerationCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallInProgressUpdate>, IPersistableModel<StreamingResponseImageGenerationCallInProgressUpdate> {
-        public StreamingResponseImageGenerationCallInProgressUpdate();
+        public StreamingResponseImageGenerationCallInProgressUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>, IPersistableModel<StreamingResponseImageGenerationCallPartialImageUpdate> {
-        public StreamingResponseImageGenerationCallPartialImageUpdate();
+        public StreamingResponseImageGenerationCallPartialImageUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public BinaryData PartialImageBytes { get; set; }
         public int PartialImageIndex { get; set; }
     }
     public class StreamingResponseIncompleteUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseIncompleteUpdate>, IPersistableModel<StreamingResponseIncompleteUpdate> {
-        public StreamingResponseIncompleteUpdate();
+        public StreamingResponseIncompleteUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
     }
     public class StreamingResponseInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseInProgressUpdate>, IPersistableModel<StreamingResponseInProgressUpdate> {
-        public StreamingResponseInProgressUpdate();
+        public StreamingResponseInProgressUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
     }
     public class StreamingResponseMcpCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseMcpCallArgumentsDeltaUpdate> {
-        public StreamingResponseMcpCallArgumentsDeltaUpdate();
+        public StreamingResponseMcpCallArgumentsDeltaUpdate() : base(default, default);
         public BinaryData Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseMcpCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseMcpCallArgumentsDoneUpdate> {
-        public StreamingResponseMcpCallArgumentsDoneUpdate();
+        public StreamingResponseMcpCallArgumentsDoneUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public BinaryData ToolArguments { get; set; }
     }
     public class StreamingResponseMcpCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallCompletedUpdate>, IPersistableModel<StreamingResponseMcpCallCompletedUpdate> {
-        public StreamingResponseMcpCallCompletedUpdate();
+        public StreamingResponseMcpCallCompletedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseMcpCallFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallFailedUpdate>, IPersistableModel<StreamingResponseMcpCallFailedUpdate> {
-        public StreamingResponseMcpCallFailedUpdate();
+        public StreamingResponseMcpCallFailedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseMcpCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallInProgressUpdate>, IPersistableModel<StreamingResponseMcpCallInProgressUpdate> {
-        public StreamingResponseMcpCallInProgressUpdate();
+        public StreamingResponseMcpCallInProgressUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>, IPersistableModel<StreamingResponseMcpListToolsCompletedUpdate> {
-        public StreamingResponseMcpListToolsCompletedUpdate();
+        public StreamingResponseMcpListToolsCompletedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseMcpListToolsFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsFailedUpdate>, IPersistableModel<StreamingResponseMcpListToolsFailedUpdate> {
-        public StreamingResponseMcpListToolsFailedUpdate();
+        public StreamingResponseMcpListToolsFailedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseMcpListToolsInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsInProgressUpdate>, IPersistableModel<StreamingResponseMcpListToolsInProgressUpdate> {
-        public StreamingResponseMcpListToolsInProgressUpdate();
+        public StreamingResponseMcpListToolsInProgressUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseOutputItemAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputItemAddedUpdate>, IPersistableModel<StreamingResponseOutputItemAddedUpdate> {
-        public StreamingResponseOutputItemAddedUpdate();
+        public StreamingResponseOutputItemAddedUpdate() : base(default, default);
         public ResponseItem Item { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseOutputItemDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputItemDoneUpdate>, IPersistableModel<StreamingResponseOutputItemDoneUpdate> {
-        public StreamingResponseOutputItemDoneUpdate();
+        public StreamingResponseOutputItemDoneUpdate() : base(default, default);
         public ResponseItem Item { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseOutputTextAnnotationAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextAnnotationAddedUpdate>, IPersistableModel<StreamingResponseOutputTextAnnotationAddedUpdate> {
-        public StreamingResponseOutputTextAnnotationAddedUpdate();
+        public StreamingResponseOutputTextAnnotationAddedUpdate() : base(default, default);
         public ResponseMessageAnnotation Annotation { get; set; }
         public int AnnotationIndex { get; set; }
         public int ContentIndex { get; set; }
@@ -1372,7 +1372,7 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDeltaUpdate>, IPersistableModel<StreamingResponseOutputTextDeltaUpdate> {
-        public StreamingResponseOutputTextDeltaUpdate();
+        public StreamingResponseOutputTextDeltaUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string Delta { get; set; }
         public string ItemId { get; set; }
@@ -1380,7 +1380,7 @@ namespace OpenAI.Responses {
         public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
     public class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDoneUpdate>, IPersistableModel<StreamingResponseOutputTextDoneUpdate> {
-        public StreamingResponseOutputTextDoneUpdate();
+        public StreamingResponseOutputTextDoneUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
@@ -1388,66 +1388,67 @@ namespace OpenAI.Responses {
         public IList<ResponseTokenLogProbabilityDetails> TokenLogProbabilities { get; }
     }
     public class StreamingResponseQueuedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseQueuedUpdate>, IPersistableModel<StreamingResponseQueuedUpdate> {
-        public StreamingResponseQueuedUpdate();
+        public StreamingResponseQueuedUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
     }
     public class StreamingResponseReasoningSummaryPartAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryPartAddedUpdate>, IPersistableModel<StreamingResponseReasoningSummaryPartAddedUpdate> {
-        public StreamingResponseReasoningSummaryPartAddedUpdate();
+        public StreamingResponseReasoningSummaryPartAddedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public ReasoningSummaryPart Part { get; set; }
         public int SummaryIndex { get; set; }
     }
     public class StreamingResponseReasoningSummaryPartDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryPartDoneUpdate>, IPersistableModel<StreamingResponseReasoningSummaryPartDoneUpdate> {
-        public StreamingResponseReasoningSummaryPartDoneUpdate();
+        public StreamingResponseReasoningSummaryPartDoneUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public ReasoningSummaryPart Part { get; set; }
         public int SummaryIndex { get; set; }
     }
     public class StreamingResponseReasoningSummaryTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryTextDeltaUpdate>, IPersistableModel<StreamingResponseReasoningSummaryTextDeltaUpdate> {
-        public StreamingResponseReasoningSummaryTextDeltaUpdate();
+        public StreamingResponseReasoningSummaryTextDeltaUpdate() : base(default, default);
         public string Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public int SummaryIndex { get; set; }
     }
     public class StreamingResponseReasoningSummaryTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryTextDoneUpdate>, IPersistableModel<StreamingResponseReasoningSummaryTextDoneUpdate> {
-        public StreamingResponseReasoningSummaryTextDoneUpdate();
+        public StreamingResponseReasoningSummaryTextDoneUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public int SummaryIndex { get; set; }
         public string Text { get; set; }
     }
     public class StreamingResponseReasoningTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningTextDeltaUpdate>, IPersistableModel<StreamingResponseReasoningTextDeltaUpdate> {
-        public StreamingResponseReasoningTextDeltaUpdate();
+        public StreamingResponseReasoningTextDeltaUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseReasoningTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningTextDoneUpdate>, IPersistableModel<StreamingResponseReasoningTextDoneUpdate> {
-        public StreamingResponseReasoningTextDoneUpdate();
+        public StreamingResponseReasoningTextDoneUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public string Text { get; set; }
     }
     public class StreamingResponseRefusalDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDeltaUpdate>, IPersistableModel<StreamingResponseRefusalDeltaUpdate> {
-        public StreamingResponseRefusalDeltaUpdate();
+        public StreamingResponseRefusalDeltaUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string Delta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseRefusalDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDoneUpdate>, IPersistableModel<StreamingResponseRefusalDoneUpdate> {
-        public StreamingResponseRefusalDoneUpdate();
+        public StreamingResponseRefusalDoneUpdate() : base(default, default);
         public int ContentIndex { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
         public string Refusal { get; set; }
     }
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
+        protected internal StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber);
         public StreamingResponseUpdateKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1521,17 +1522,17 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class StreamingResponseWebSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallCompletedUpdate>, IPersistableModel<StreamingResponseWebSearchCallCompletedUpdate> {
-        public StreamingResponseWebSearchCallCompletedUpdate();
+        public StreamingResponseWebSearchCallCompletedUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseWebSearchCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallInProgressUpdate>, IPersistableModel<StreamingResponseWebSearchCallInProgressUpdate> {
-        public StreamingResponseWebSearchCallInProgressUpdate();
+        public StreamingResponseWebSearchCallInProgressUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
     public class StreamingResponseWebSearchCallSearchingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallSearchingUpdate>, IPersistableModel<StreamingResponseWebSearchCallSearchingUpdate> {
-        public StreamingResponseWebSearchCallSearchingUpdate();
+        public StreamingResponseWebSearchCallSearchingUpdate() : base(default, default);
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }
