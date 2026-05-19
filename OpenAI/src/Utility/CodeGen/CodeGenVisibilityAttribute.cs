@@ -22,4 +22,5 @@ internal enum CodeGenVisibility
 {
     Internal,
     Public,
+    ProtectedInternal,
 }
