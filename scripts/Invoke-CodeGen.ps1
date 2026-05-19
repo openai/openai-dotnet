@@ -324,13 +324,6 @@ try {
     }
     New-Item -ItemType Directory -Path $responsesCustomMirrorPath -Force | Out-Null
     Copy-Item -Path (Join-Path $responsesCustomFolderPath "*") -Destination $responsesCustomMirrorPath -Recurse -Force
-    $responsesGeneratorStubsMirrorPath = Join-Path $responsesCustomMirrorPath "Internal" "GeneratorStubs.cs"
-    if (Test-Path $responsesGeneratorStubsMirrorPath) {
-        $responsesGeneratorStubs = Get-Content $responsesGeneratorStubsMirrorPath -Raw
-        $responsesGeneratorStubs = $responsesGeneratorStubs -replace '(?m)^\[CodeGenType\("CreateResponseRequestAccept"\)\] internal readonly partial struct InternalCreateResponseRequestAccept \{\}\r?\n', ''
-        $responsesGeneratorStubs = $responsesGeneratorStubs -replace '(?m)^\[CodeGenType\("FileSearchToolFiltersType"\)\] internal readonly partial struct InternalFileSearchToolFiltersType \{\}\r?\n', ''
-        Set-Content -Path $responsesGeneratorStubsMirrorPath -Value $responsesGeneratorStubs -NoNewline
-    }
 
     Set-Location $specificationFolderPath
     Invoke-ScriptWithLogging { npx tsp compile . --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI/" --stats --trace @typespec/http-client-csharp }
@@ -360,6 +353,7 @@ finally {
     if (Test-Path $responsesCustomMirrorPath) {
         Remove-Item -Path $responsesCustomMirrorPath -Recurse -Force
     }
+
     Pop-Location
 }
 

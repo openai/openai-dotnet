@@ -29,7 +29,7 @@ $configuration = "Release"
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
 $outputDirectory = Join-Path $repoRootPath "api"
 
-# Project to export. Each entry has a project file path and the library name
+# Projects to export. Each entry has a project file path and the library name
 # used as the prefix for the generated API files.
 $projects = @(
     @{
