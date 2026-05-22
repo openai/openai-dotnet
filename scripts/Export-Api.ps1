@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-    Generates the public API surface for the OpenAI .NET libraries using GenAPI.
+    Generates the public API surface for the OpenAI .NET library using GenAPI.
 
 .DESCRIPTION
     This script invokes the MSBuild GenerateApi target to produce C# source files
-    representing the public API contract of the OpenAI and OpenAI.Responses
-    libraries. The output files are placed in the 'api' folder at the repository
+    representing the public API contract of the OpenAI library. The output files
+    are placed in the 'api' folder at the repository
     root.
 
 .EXAMPLE
@@ -35,10 +35,6 @@ $projects = @(
     @{
         Name = "OpenAI"
         Path = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
-    },
-    @{
-        Name = "OpenAI.Responses"
-        Path = Join-Path $repoRootPath "OpenAI.Responses" "src" "OpenAI.Responses.csproj"
     }
 )
 

@@ -3,7 +3,6 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Audio;
 
 [CodeGenType("CreateSpeechRequestModel")] internal readonly partial struct InternalCreateSpeechRequestModel { }
-[CodeGenType("CreateResponseRequestAccept")] internal readonly partial struct InternalCreateTranscriptionRequestAccept {}
 [CodeGenType("CreateTranscriptionRequestModel")] internal readonly partial struct InternalCreateTranscriptionRequestModel { }
 [CodeGenType("CreateTranscriptionRequestTimestampGranularity")] internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularities { }
 [CodeGenType("CreateTranscriptionResponseJson")] internal partial class InternalCreateTranscriptionResponseJson { }

@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <!--
-    ExportApi target: Generates the public API surface for the OpenAI libraries.
+      ExportApi target: Generates the public API surface for the OpenAI library.
 
     Usage:
       dotnet build OpenAI/src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
@@ -55,7 +55,7 @@
 
   <!-- Outer build target: Dispatches to inner builds for each target framework -->
   <Target Name="ExportApi"
-          Condition="('$(MSBuildProjectName)' == 'OpenAI' or '$(MSBuildProjectName)' == 'OpenAI.Responses') and '$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
+           Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
     <ItemGroup>
       <_ExportApiTargetFramework Include="$(TargetFrameworks)" />
     </ItemGroup>
@@ -73,7 +73,7 @@
   <!-- Inner build target: Runs for each specific target framework -->
   <Target Name="ExportApiInner"
           DependsOnTargets="Build"
-          Condition="('$(MSBuildProjectName)' == 'OpenAI' or '$(MSBuildProjectName)' == 'OpenAI.Responses') and '$(TargetFramework)' != ''">
+           Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' != ''">
 
     <!-- Run GenAPI task -->
     <GenAPITask Assemblies="$(TargetPath)"

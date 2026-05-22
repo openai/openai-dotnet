@@ -13,7 +13,6 @@ public class ModelDirectoryVisitor : ScmLibraryVisitor
 {
     private static readonly HashSet<string> _excludedNamespaces = new(StringComparer.OrdinalIgnoreCase)
     {
-        "OpenAI.Responses",
     };
 
     protected override TypeProvider VisitType(TypeProvider type)
