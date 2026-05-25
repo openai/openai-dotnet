@@ -74,7 +74,7 @@ public abstract partial class StreamingUpdate
             or StreamingUpdateReason.MessageFailed => MessageStatusUpdate.DeserializeMessageStatusUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.RunStepUpdated => RunStepDetailsUpdate.DeserializeRunStepDetailsUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.MessageUpdated => MessageContentUpdate.DeserializeMessageContentUpdates(e, updateKind, serializationOptions),
-            _ => null,
+            _ => [],
         };
     }
 }
