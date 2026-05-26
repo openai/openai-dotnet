@@ -1,4 +1,7 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Assistants;
+[CodeGenType("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 
 public abstract partial class RunStepCodeInterpreterOutput
 {

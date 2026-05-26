@@ -1,22 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
-using System.ClientModel;
 
 namespace OpenAI.LegacyCompletions;
-
-// CUSTOM: Made internal.
-
-[CodeGenType("CreateCompletionRequest")]
-internal partial class InternalCreateCompletionRequest
-{
-    public static implicit operator BinaryContent(InternalCreateCompletionRequest internalCreateCompletionRequest)
-    {
-        if (internalCreateCompletionRequest == null)
-        {
-            return null;
-        }
-        return BinaryContent.Create(internalCreateCompletionRequest, ModelSerializationExtensions.WireOptions);
-    }
-}
 
 [CodeGenType("CreateCompletionRequestModel")]
 internal readonly partial struct InternalCreateCompletionRequestModel { }
@@ -49,5 +33,7 @@ internal partial class InternalCompletionsCompletionUsageCompletionTokensDetails
 
 [CodeGenType("LegacyChatCompletionStreamOptions")]
 internal partial class InternalLegacyChatCompletionStreamOptions {}
+
 [CodeGenType("CompletionsError")] internal partial class InternalCompletionsError {}
+
 [CodeGenType("CompletionsErrorResponse")] internal partial class InternalCompletionsErrorResponse {}

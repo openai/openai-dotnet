@@ -1,5 +1,4 @@
 using Microsoft.TypeSpec.Generator.Customizations;
-using System.ClientModel;
 
 namespace OpenAI.Chat;
 
@@ -50,19 +49,6 @@ internal partial class InternalChatCompletionRequestMessageContentPartRefusal { 
 
 [CodeGenType("CreateChatCompletionRequestModel")]
 internal readonly partial struct InternalCreateChatCompletionRequestModel { }
-
-[CodeGenType("UpdateChatCompletionRequest")]
-internal partial class InternalUpdateChatCompletionRequest
-{
-    public static implicit operator BinaryContent(InternalUpdateChatCompletionRequest internalUpdateChatCompletionRequest)
-    {
-        if (internalUpdateChatCompletionRequest == null)
-        {
-            return null;
-        }
-        return BinaryContent.Create(internalUpdateChatCompletionRequest, ModelSerializationExtensions.WireOptions);
-    }
-}
 
 [CodeGenType("CreateChatCompletionRequestToolChoice")]
 internal readonly partial struct InternalCreateChatCompletionRequestToolChoice { }
@@ -131,12 +117,21 @@ internal partial class InternalDotNetChatResponseFormatJsonSchemaJsonSchema { }
 internal partial class InternalUnknownChatCompletionRequestMessageContentPart { }
 
 [CodeGenType("ChatCompletionListObject")] internal readonly partial struct InternalChatCompletionListObject {}
+
 [CodeGenType("ChatCompletionDeletedObject")] internal readonly partial struct InternalChatCompletionDeletedObject {}
+
 [CodeGenType("ChatCompletionMessageListObject")] internal readonly partial struct InternalChatCompletionMessageListObject {}
+
 [CodeGenType("ChatCompletionList")] internal partial class InternalChatCompletionList {}
+
 [CodeGenType("ChatCompletionMessageList")] internal partial class InternalChatCompletionMessageList {}
+
 [CodeGenType("ChatModelIds")] internal readonly partial struct InternalChatModelIds { }
+
 [CodeGenType("ChatError")] internal partial class InternalChatError {}
+
 [CodeGenType("ChatErrorResponse")] internal partial class InternalChatErrorResponse {}
+
 [CodeGenType("DotNetChatResponseFormatType")] internal readonly partial struct InternalDotNetChatResponseFormatType {}
+
 [CodeGenType("CreateChatCompletionRequestToolChoiceFunction")] internal partial class InternalCreateChatCompletionRequestToolChoiceFunction {}

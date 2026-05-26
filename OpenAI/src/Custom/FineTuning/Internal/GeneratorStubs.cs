@@ -2,20 +2,11 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.FineTuning;
 
-// CUSTOM: Made internal.
-
 [CodeGenType("FineTuningIntegrationType")]
 internal readonly partial struct InternalFineTuningIntegrationType { }
 
 [CodeGenType("FineTuningIntegrationWandb")]
 internal partial class InternalFineTuningIntegrationWandb { }
-
-[CodeGenType("CreateFineTuningJobRequestWandbIntegrationWandb")]
-internal partial class InternalCreateFineTuningJobRequestWandbIntegrationWandb
-{
-    [CodeGenMember("Project")]
-    public string Project { get; set; }
-}
 
 [CodeGenType("FineTuningJobObject")]
 internal readonly partial struct InternalFineTuningJobObject { }
@@ -56,14 +47,6 @@ internal readonly partial struct InternalListFineTuningJobEventsResponseObject {
 [CodeGenType("CreateFineTuningJobRequestModel")]
 internal readonly partial struct InternalCreateFineTuningJobRequestModel { }
 
-[CodeGenType("FineTuningJobEventLevel")]
-internal enum FineTuningJobEventLevel
-{
-    Info,
-    Warn,
-    Error
-}
-
 [CodeGenType("FineTuneDPOMethod")]
 internal partial class InternalFineTuningJobRequestMethodDpo { }
 
@@ -73,8 +56,6 @@ internal readonly partial struct InternalFineTuneMethodType { }
 [CodeGenType("FineTuneSupervisedMethod")]
 internal partial class InternalFineTuningJobRequestMethodSupervised { }
 
-// TODO: not yet integrated
-
 [CodeGenType("FineTuneChatRequestInput")]
 internal partial class InternalTodoFineTuneChatRequestInput { }
 
@@ -82,16 +63,29 @@ internal partial class InternalTodoFineTuneChatRequestInput { }
 internal readonly partial struct InternalFineTuneChatCompletionRequestAssistantMessageWeight { }
 
 [CodeGenType("CreateFineTuningCheckpointPermissionRequest")] internal partial class InternalCreateFineTuningCheckpointPermissionRequest { }
+
 [CodeGenType("DeleteFineTuningCheckpointPermissionResponse")] internal partial class InternalDeleteFineTuningCheckpointPermissionResponse { }
+
 [CodeGenType("FineTuningCheckpointPermission")] internal partial class InternalFineTuningCheckpointPermission { }
+
 [CodeGenType("ListFineTuningCheckpointPermissionResponse")] internal partial class InternalListFineTuningCheckpointPermissionResponse { }
+
 [CodeGenType("CreateFineTuningJobRequestIntegrationType")] internal readonly partial struct InternalCreateFineTuningJobRequestIntegrationType {}
+
 [CodeGenType("FineTuneReinforcementHyperparametersReasoningEffort")] internal readonly partial struct InternalFineTuneReinforcementHyperparametersReasoningEffort {}
+
 [CodeGenType("FineTuneReinforcementMethod")] internal partial class InternalFineTuneReinforcementMethod {}
+
 [CodeGenType("FineTuningCheckpointPermissionObject")] internal readonly partial struct InternalFineTuningCheckpointPermissionObject {}
+
 [CodeGenType("ListFineTuningCheckpointPermissionResponseObject")] internal readonly partial struct InternalListFineTuningCheckpointPermissionResponseObject {}
+
 [CodeGenType("DeleteFineTuningCheckpointPermissionResponseObject")] internal readonly partial struct InternalDeleteFineTuningCheckpointPermissionResponseObject {}
+
 [CodeGenType("FineTuningErrorResponse")] internal partial class InternalFineTuningErrorResponse {}
+
 [CodeGenType("FineTuningCheckpointCollectionOrder")] internal readonly partial struct InternalFineTuningCheckpointCollectionOrder {}
+
 [CodeGenType("FineTuningCheckpointCollectionOptions")] internal partial class InternalFineTuningCheckpointCollectionOptions {}
+
 [CodeGenType("FineTuneChatRequestInputMessageWeight")] internal readonly partial struct InternalFineTuneChatRequestInputMessageWeight {}

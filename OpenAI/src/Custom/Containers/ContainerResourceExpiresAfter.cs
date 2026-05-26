@@ -1,4 +1,7 @@
-﻿namespace OpenAI.Containers;
+﻿using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Containers;
+[CodeGenType("ContainerResourceExpiresAfter")]
 
 public partial class ContainerResourceExpiresAfter
 {
