@@ -63,7 +63,7 @@ internal static class SerializationVisitorHelpers
 
         if (statement is SuppressionStatement { Inner: not null } suppressionStatement)
         {
-            return GetWritePropertyNameTargetFromStatements(suppressionStatement.Inner);
+            return GetWritePropertyNameTargetFromStatements(suppressionStatement.Inner.SelectMany(bodyStatement => bodyStatement));
         }
 
         if (statement is MethodBodyStatements compoundStatements)

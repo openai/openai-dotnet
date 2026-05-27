@@ -150,13 +150,13 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             public MethodProvider InvokeVisitMethod(MethodProvider method) => base.VisitMethod(method);
         }
 
-        private sealed class TestTypeProvider(string providerName) : TypeProvider
+        private sealed class TestTypeProvider(string name) : TypeProvider
         {
             protected override string BuildNamespace() => "Samples";
 
             protected override string BuildRelativeFilePath() => $"{Name}.cs";
 
-            protected override string BuildName() => providerName;
+            protected override string BuildName() => name;
         }
     }
 }

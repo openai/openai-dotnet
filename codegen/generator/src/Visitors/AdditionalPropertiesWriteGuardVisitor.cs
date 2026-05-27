@@ -76,10 +76,14 @@ public class AdditionalPropertiesWriteGuardVisitor : ScmLibraryVisitor
         if (statement is ExpressionStatement)
         {
             ifStatement.Add(flattenedStatements[++line]);
-            if (line + 2 < flattenedStatements.Count && flattenedStatements[line + 1] is ForEachStatement)
+            int arrayLoopIndex = line + 1;
+            int arrayEndIndex = line + 2;
+
+            if (arrayEndIndex < flattenedStatements.Count && flattenedStatements[arrayLoopIndex] is ForEachStatement)
             {
-                ifStatement.Add(flattenedStatements[++line]);
-                ifStatement.Add(flattenedStatements[++line]);
+                ifStatement.Add(flattenedStatements[arrayLoopIndex]);
+                ifStatement.Add(flattenedStatements[arrayEndIndex]);
+                line = arrayEndIndex;
             }
         }
 
