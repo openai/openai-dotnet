@@ -28,11 +28,14 @@ public class AdditionalPropertiesWriteGuardVisitor : ScmLibraryVisitor
             MethodBodyStatement statement = flattenedStatements[line];
             string? writePropertyNameTarget = SerializationVisitorHelpers.GetWritePropertyNameTargetFromStatement(statement);
 
-            if (statement is IfStatement ifStatement
-                && writePropertyNameTarget is not null
-                && SerializationVisitorHelpers.GetPatchContainsExpression(ifStatement.Condition) is null)
+            if (statement is IfStatement ifStatement)
             {
-                ifStatement.Update(condition: ifStatement.Condition.As<bool>().And(SerializationVisitorHelpers.GetContainsKeyCondition(writePropertyNameTarget)));
+                if (writePropertyNameTarget is not null
+                    && SerializationVisitorHelpers.GetPatchContainsExpression(ifStatement.Condition) is null)
+                {
+                    ifStatement.Update(condition: ifStatement.Condition.As<bool>().And(SerializationVisitorHelpers.GetContainsKeyCondition(writePropertyNameTarget)));
+                }
+
                 updatedStatements.Add(ifStatement);
                 continue;
             }

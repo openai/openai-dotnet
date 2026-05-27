@@ -2,6 +2,7 @@ using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.ClientModel.Providers;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ public class AdditionalRawDataPropertyVisitor : ScmLibraryVisitor
             [
                 .. type.Properties,
                 new PropertyProvider(
-                    "",
+                    $"",
                     MethodSignatureModifiers.Internal,
                     typeof(IDictionary<string, BinaryData>),
                     RawDataPropertyName,
