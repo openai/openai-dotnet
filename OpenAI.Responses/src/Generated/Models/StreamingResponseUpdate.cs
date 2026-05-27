@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber)
+        protected internal StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber)
         {
             Kind = kind;
             SequenceNumber = sequenceNumber;

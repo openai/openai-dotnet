@@ -10,7 +10,7 @@ using System.Linq;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// This visitor updates the public/internal visibility of constructors, methods, and properties on a type:
+/// This visitor updates the visibility of constructors, methods, and properties on a type:
 ///   - Visibility can be customized via the [CodeGenVisibility] attribute, which will always take precedence
 ///   - Default visibility is adjusted based on common patterns
 /// </summary>
@@ -130,6 +130,7 @@ public class VisibilityVisitor : ScmLibraryVisitor
             null => null,
             "0" => MethodSignatureModifiers.Internal,
             "1" => MethodSignatureModifiers.Public,
+            "2" => MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal,
             _ => throw new NotImplementedException(),
         };
 
@@ -170,10 +171,17 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static MethodSignatureModifiers AssignModifier<T>(T target, MethodSignatureModifiers modifier)
     {
+        const MethodSignatureModifiers visibilityMask =
+            MethodSignatureModifiers.Public |
+            MethodSignatureModifiers.Internal |
+            MethodSignatureModifiers.Protected |
+            MethodSignatureModifiers.Private;
+
         MethodSignatureModifiers GetUpdatedModifiers(MethodSignatureModifiers originalModifiers) => modifier switch
         {
-            MethodSignatureModifiers.Public => originalModifiers & ~MethodSignatureModifiers.Internal & ~MethodSignatureModifiers.Private | MethodSignatureModifiers.Public,
-            MethodSignatureModifiers.Internal => originalModifiers & ~MethodSignatureModifiers.Public & ~MethodSignatureModifiers.Private | MethodSignatureModifiers.Internal,
+            MethodSignatureModifiers.Public => originalModifiers & ~visibilityMask | MethodSignatureModifiers.Public,
+            MethodSignatureModifiers.Internal => originalModifiers & ~visibilityMask | MethodSignatureModifiers.Internal,
+            MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal => originalModifiers & ~visibilityMask | MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal,
             _ => throw new NotImplementedException()
         };
 
