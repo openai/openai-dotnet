@@ -62,25 +62,25 @@ namespace OpenAI.Responses
 
         public static ResponseItemKind FunctionCallOutput { get; } = new ResponseItemKind(FunctionCallOutputValue);
 
-        public static ResponseItemKind ToolSearchCall { get; } = new ResponseItemKind(ToolSearchCallValue);
+        internal static ResponseItemKind ToolSearchCall { get; } = new ResponseItemKind(ToolSearchCallValue);
 
-        public static ResponseItemKind ToolSearchOutput { get; } = new ResponseItemKind(ToolSearchOutputValue);
+        internal static ResponseItemKind ToolSearchOutput { get; } = new ResponseItemKind(ToolSearchOutputValue);
 
         public static ResponseItemKind Reasoning { get; } = new ResponseItemKind(ReasoningValue);
 
-        public static ResponseItemKind Compaction { get; } = new ResponseItemKind(CompactionValue);
+        internal static ResponseItemKind Compaction { get; } = new ResponseItemKind(CompactionValue);
 
         public static ResponseItemKind ImageGenerationCall { get; } = new ResponseItemKind(ImageGenerationCallValue);
 
         public static ResponseItemKind CodeInterpreterCall { get; } = new ResponseItemKind(CodeInterpreterCallValue);
 
-        public static ResponseItemKind LocalShellCall { get; } = new ResponseItemKind(LocalShellCallValue);
+        internal static ResponseItemKind LocalShellCall { get; } = new ResponseItemKind(LocalShellCallValue);
 
-        public static ResponseItemKind LocalShellCallOutput { get; } = new ResponseItemKind(LocalShellCallOutputValue);
+        internal static ResponseItemKind LocalShellCallOutput { get; } = new ResponseItemKind(LocalShellCallOutputValue);
 
-        public static ResponseItemKind ShellCall { get; } = new ResponseItemKind(ShellCallValue);
+        internal static ResponseItemKind ShellCall { get; } = new ResponseItemKind(ShellCallValue);
 
-        public static ResponseItemKind ShellCallOutput { get; } = new ResponseItemKind(ShellCallOutputValue);
+        internal static ResponseItemKind ShellCallOutput { get; } = new ResponseItemKind(ShellCallOutputValue);
 
         public static ResponseItemKind ApplyPatchCall { get; } = new ResponseItemKind(ApplyPatchCallValue);
 
@@ -94,11 +94,11 @@ namespace OpenAI.Responses
 
         public static ResponseItemKind McpCall { get; } = new ResponseItemKind(McpCallValue);
 
-        public static ResponseItemKind CustomToolCallOutput { get; } = new ResponseItemKind(CustomToolCallOutputValue);
+        internal static ResponseItemKind CustomToolCallOutput { get; } = new ResponseItemKind(CustomToolCallOutputValue);
 
-        public static ResponseItemKind CustomToolCall { get; } = new ResponseItemKind(CustomToolCallValue);
+        internal static ResponseItemKind CustomToolCall { get; } = new ResponseItemKind(CustomToolCallValue);
 
-        public static ResponseItemKind CompactionTrigger { get; } = new ResponseItemKind(CompactionTriggerValue);
+        internal static ResponseItemKind CompactionTrigger { get; } = new ResponseItemKind(CompactionTriggerValue);
 
         public static ResponseItemKind ItemReference { get; } = new ResponseItemKind(ItemReferenceValue);
 

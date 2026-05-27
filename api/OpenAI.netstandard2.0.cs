@@ -5394,29 +5394,19 @@ namespace OpenAI.Responses {
         public static ResponseItemKind ApplyPatchCall { get; }
         public static ResponseItemKind ApplyPatchCallOutput { get; }
         public static ResponseItemKind CodeInterpreterCall { get; }
-        public static ResponseItemKind Compaction { get; }
-        public static ResponseItemKind CompactionTrigger { get; }
         public static ResponseItemKind ComputerCall { get; }
         public static ResponseItemKind ComputerCallOutput { get; }
-        public static ResponseItemKind CustomToolCall { get; }
-        public static ResponseItemKind CustomToolCallOutput { get; }
         public static ResponseItemKind FileSearchCall { get; }
         public static ResponseItemKind FunctionCall { get; }
         public static ResponseItemKind FunctionCallOutput { get; }
         public static ResponseItemKind ImageGenerationCall { get; }
         public static ResponseItemKind ItemReference { get; }
-        public static ResponseItemKind LocalShellCall { get; }
-        public static ResponseItemKind LocalShellCallOutput { get; }
         public static ResponseItemKind McpApprovalRequest { get; }
         public static ResponseItemKind McpApprovalResponse { get; }
         public static ResponseItemKind McpCall { get; }
         public static ResponseItemKind McpListTools { get; }
         public static ResponseItemKind Message { get; }
         public static ResponseItemKind Reasoning { get; }
-        public static ResponseItemKind ShellCall { get; }
-        public static ResponseItemKind ShellCallOutput { get; }
-        public static ResponseItemKind ToolSearchCall { get; }
-        public static ResponseItemKind ToolSearchOutput { get; }
         public static ResponseItemKind WebSearchCall { get; }
         public readonly bool Equals(ResponseItemKind other);
         [EditorBrowsable(EditorBrowsableState.Never)]
