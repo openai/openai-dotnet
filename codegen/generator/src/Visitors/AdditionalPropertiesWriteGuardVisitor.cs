@@ -76,7 +76,7 @@ public class AdditionalPropertiesWriteGuardVisitor : ScmLibraryVisitor
         if (statement is ExpressionStatement)
         {
             ifStatement.Add(flattenedStatements[++line]);
-            if (line + 1 < flattenedStatements.Count && flattenedStatements[line + 1] is ForEachStatement)
+            if (line + 2 < flattenedStatements.Count && flattenedStatements[line + 1] is ForEachStatement)
             {
                 ifStatement.Add(flattenedStatements[++line]);
                 ifStatement.Add(flattenedStatements[++line]);

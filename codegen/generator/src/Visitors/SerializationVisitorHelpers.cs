@@ -63,24 +63,12 @@ internal static class SerializationVisitorHelpers
 
         if (statement is SuppressionStatement { Inner: not null } suppressionStatement)
         {
-            foreach (MethodBodyStatement innerStatement in suppressionStatement.Inner)
-            {
-                if (GetWritePropertyNameTargetFromStatement(innerStatement) is string innerTarget)
-                {
-                    return innerTarget;
-                }
-            }
+            return GetWritePropertyNameTargetFromStatements(suppressionStatement.Inner);
         }
 
         if (statement is MethodBodyStatements compoundStatements)
         {
-            foreach (MethodBodyStatement innerStatement in compoundStatements.Statements)
-            {
-                if (GetWritePropertyNameTargetFromStatement(innerStatement) is string innerTarget)
-                {
-                    return innerTarget;
-                }
-            }
+            return GetWritePropertyNameTargetFromStatements(compoundStatements.Statements);
         }
         else if (statement is IfStatement ifStatement)
         {
@@ -89,6 +77,19 @@ internal static class SerializationVisitorHelpers
         else if (statement is IfElseStatement ifElseStatement)
         {
             return GetWritePropertyNameTargetFromStatement(ifElseStatement.If);
+        }
+
+        return null;
+    }
+
+    private static string? GetWritePropertyNameTargetFromStatements(IEnumerable<MethodBodyStatement> statements)
+    {
+        foreach (MethodBodyStatement innerStatement in statements)
+        {
+            if (GetWritePropertyNameTargetFromStatement(innerStatement) is string innerTarget)
+            {
+                return innerTarget;
+            }
         }
 
         return null;
