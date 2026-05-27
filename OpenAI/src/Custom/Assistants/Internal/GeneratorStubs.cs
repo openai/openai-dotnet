@@ -96,27 +96,27 @@ namespace OpenAI.Assistants;
 [CodeGenType("RunStepDetailsToolCallsFileSearchRankingOptionsObject")] internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject { }
 [CodeGenType("IncludedRunStepProperty")] internal readonly partial struct InternalIncludedRunStepProperty { }
 [CodeGenType("AssistantSupportedModels")] internal readonly partial struct InternalAssistantSupportedModels { }
-[CodeGenType("AssistantToolDefinitionType")] internal readonly partial struct InternalAssistantToolDefinitionType {}
+[CodeGenType("AssistantToolDefinitionType")] internal readonly partial struct InternalAssistantToolDefinitionType { }
 [CodeGenType("RunStepDetailsType")] internal readonly partial struct InternalRunStepDetailsType { }
 [CodeGenType("RunStepDetailsCodeInterpreterOutputType")] internal readonly partial struct InternalRunStepDetailsCodeInterpreterOutputType { }
 [CodeGenType("MessageContentTextAnnotationType")] internal readonly partial struct InternalMessageContentTextAnnotationType { }
 [CodeGenType("MessageContentType")] internal readonly partial struct InternalMessageContentType { }
 [CodeGenType("UnknownMessageContent")] internal partial class InternalUnknownMessageContent { }
 [CodeGenType("MessageContentTextObjectText1")] internal partial class InternalMessageContentTextObjectText1 { }
-[CodeGenType("RunStepFileSearchRanker")] internal readonly partial struct InternalRunStepFileSearchRanker {}
-[CodeGenType("AssistantsError")] internal partial class InternalAssistantsError {}
-[CodeGenType("AssistantsErrorResponse")] internal partial class InternalAssistantsErrorResponse {}
-[CodeGenType("MessagesError")] internal partial class InternalMessagesError {}
-[CodeGenType("MessagesErrorResponse")] internal partial class InternalMessagesErrorResponse {}
-[CodeGenType("RunsError")] internal partial class InternalRunsError {}
-[CodeGenType("RunsErrorResponse")] internal partial class InternalRunsErrorResponse {}
-[CodeGenType("ThreadsError")] internal partial class InternalThreadsError {}
-[CodeGenType("ThreadsErrorResponse")] internal partial class InternalThreadsErrorResponse {}
-[CodeGenType("AssistantsResponseFormatType")] internal readonly partial struct InternalAssistantsResponseFormatType {}
-[CodeGenType("AssistantsResponseFormat")] internal partial class InternalAssistantsResponseFormat {}
-[CodeGenType("UnknownAssistantsResponseFormat")] internal partial class InternalUnknownAssistantsResponseFormat {}
-[CodeGenType("CreateRunRequestAccept")] internal readonly partial struct InternalCreateRunRequestAccept {}
-[CodeGenType("SubmitToolOutputsToRunRequestAccept")] internal readonly partial struct InternalSubmitToolOutputsToRunRequestAccept {}
+[CodeGenType("RunStepFileSearchRanker")] internal readonly partial struct InternalRunStepFileSearchRanker { }
+[CodeGenType("AssistantsError")] internal partial class InternalAssistantsError { }
+[CodeGenType("AssistantsErrorResponse")] internal partial class InternalAssistantsErrorResponse { }
+[CodeGenType("MessagesError")] internal partial class InternalMessagesError { }
+[CodeGenType("MessagesErrorResponse")] internal partial class InternalMessagesErrorResponse { }
+[CodeGenType("RunsError")] internal partial class InternalRunsError { }
+[CodeGenType("RunsErrorResponse")] internal partial class InternalRunsErrorResponse { }
+[CodeGenType("ThreadsError")] internal partial class InternalThreadsError { }
+[CodeGenType("ThreadsErrorResponse")] internal partial class InternalThreadsErrorResponse { }
+[CodeGenType("AssistantsResponseFormatType")] internal readonly partial struct InternalAssistantsResponseFormatType { }
+[CodeGenType("AssistantsResponseFormat")] internal partial class InternalAssistantsResponseFormat { }
+[CodeGenType("UnknownAssistantsResponseFormat")] internal partial class InternalUnknownAssistantsResponseFormat { }
+[CodeGenType("CreateRunRequestAccept")] internal readonly partial struct InternalCreateRunRequestAccept { }
+[CodeGenType("SubmitToolOutputsToRunRequestAccept")] internal readonly partial struct InternalSubmitToolOutputsToRunRequestAccept { }
 [CodeGenType("CreateThreadAndRunRequestTruncationStrategyType")] internal readonly partial struct InternalCreateThreadAndRunRequestTruncationStrategyType {}
-[CodeGenType("CreateThreadAndRunRequestToolChoiceType")] internal readonly partial struct InternalCreateThreadAndRunRequestToolChoiceType {}
-[CodeGenType("CreateThreadAndRunRequestToolChoiceFunction")] internal partial class InternalCreateThreadAndRunRequestToolChoiceFunction {}
+[CodeGenType("CreateThreadAndRunRequestToolChoiceType")] internal readonly partial struct InternalCreateThreadAndRunRequestToolChoiceType { }
+[CodeGenType("CreateThreadAndRunRequestToolChoiceFunction")] internal partial class InternalCreateThreadAndRunRequestToolChoiceFunction { }

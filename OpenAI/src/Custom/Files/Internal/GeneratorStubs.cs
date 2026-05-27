@@ -12,5 +12,5 @@ namespace OpenAI.Files;
 [CodeGenType("UploadPartObject")] internal readonly partial struct InternalUploadPartObject { }
 [CodeGenType("UploadStatus")] internal readonly partial struct InternalUploadStatus { }
 [CodeGenType("FileExpirationAfter")] internal readonly partial struct InternalFileExpirationAfter { }
-[CodeGenType("UploadsError")] internal partial class InternalUploadsError {}
-[CodeGenType("UploadsErrorResponse")] internal partial class InternalUploadsErrorResponse {}
+[CodeGenType("UploadsError")] internal partial class InternalUploadsError { }
+[CodeGenType("UploadsErrorResponse")] internal partial class InternalUploadsErrorResponse { }
