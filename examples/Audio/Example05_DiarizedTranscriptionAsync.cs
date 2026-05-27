@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OpenAI.Audio;
+using OpenAI._Audio;
 using System;
 using System.IO;
 using System.Threading.Tasks;
