@@ -478,17 +478,23 @@ union ModelIdsResponses {
 /** A tool that can be used to generate a response. */
 union ToolType {
   string,
-  file_search: "file_search",
   function: "function",
+  file_search: "file_search",
+  computer: "computer",
   computer_use_preview: "computer_use_preview",
   web_search: "web_search",
-  web_search_preview: "web_search_preview",
   mcp: "mcp",
   code_interpreter: "code_interpreter",
   image_generation: "image_generation",
   local_shell: "local_shell",
+  shell: "shell",
+  custom: "custom",
+  `namespace`: "namespace",
+  tool_search: "tool_search",
+  web_search_preview: "web_search_preview",
   apply_patch: "apply_patch",
 }
+
 @discriminator("type")
 model Tool {
   type: ToolType;

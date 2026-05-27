@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchTool : ResponseTool
     {
-        public WebSearchTool() : this(InternalToolType.WebSearch, default, null, null, default)
+        public WebSearchTool() : this(ResponseToolKind.WebSearch, default, null, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchTool(InternalToolType kind, in JsonPatch patch, WebSearchToolFilters filters, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, patch)
+        internal WebSearchTool(ResponseToolKind kind, in JsonPatch patch, WebSearchToolFilters filters, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, patch)
         {
             Filters = filters;
             UserLocation = userLocation;

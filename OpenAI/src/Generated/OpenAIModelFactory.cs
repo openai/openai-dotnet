@@ -630,9 +630,53 @@ namespace OpenAI
             return new ResponseTextOptions(textFormat, default);
         }
 
+        public static ResponseTool ResponseTool(string kind = default)
+        {
+            return new InternalUnknownTool(new ResponseToolKind(kind), default);
+        }
+
+        public static FunctionTool FunctionTool(string functionName = default, string functionDescription = default, BinaryData functionParameters = default, bool? strictModeEnabled = default)
+        {
+            return new FunctionTool(
+                ResponseToolKind.Function,
+                default,
+                functionName,
+                functionDescription,
+                functionParameters,
+                strictModeEnabled);
+        }
+
+        public static FileSearchTool FileSearchTool(IEnumerable<string> vectorStoreIds = default, int? maxResultCount = default, FileSearchToolRankingOptions rankingOptions = default, BinaryData filters = default)
+        {
+            vectorStoreIds ??= new ChangeTrackingList<string>();
+
+            return new FileSearchTool(
+                ResponseToolKind.FileSearch,
+                default,
+                vectorStoreIds.ToList(),
+                maxResultCount,
+                rankingOptions,
+                filters);
+        }
+
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
         {
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, default);
+        }
+
+        public static ComputerTool ComputerTool(ComputerToolEnvironment environment = default, int displayWidth = default, int displayHeight = default)
+        {
+            return new ComputerTool(ResponseToolKind.ComputerUsePreview, default, environment, displayWidth, displayHeight);
+        }
+
+        public static WebSearchPreviewTool WebSearchPreviewTool(WebSearchToolLocation userLocation = default, WebSearchToolContextSize? searchContextSize = default)
+        {
+            return new WebSearchPreviewTool(ResponseToolKind.WebSearchPreview, default, userLocation, searchContextSize);
+        }
+
+        public static WebSearchTool WebSearchTool(WebSearchToolFilters filters = default, WebSearchToolLocation userLocation = default, WebSearchToolContextSize? searchContextSize = default)
+        {
+            return new WebSearchTool(ResponseToolKind.WebSearch, default, filters, userLocation, searchContextSize);
         }
 
         public static WebSearchToolFilters WebSearchToolFilters(IEnumerable<string> allowedDomains = default)
@@ -642,9 +686,49 @@ namespace OpenAI
             return new WebSearchToolFilters(allowedDomains.ToList(), default);
         }
 
+        public static CodeInterpreterTool CodeInterpreterTool(CodeInterpreterToolContainer container = default)
+        {
+            return new CodeInterpreterTool(ResponseToolKind.CodeInterpreter, default, container);
+        }
+
+        public static ImageGenerationTool ImageGenerationTool(string model = default, ImageGenerationToolQuality? quality = default, ImageGenerationToolSize? size = default, ImageGenerationToolOutputFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, ImageGenerationToolModerationLevel? moderationLevel = default, ImageGenerationToolBackground? background = default, ImageGenerationToolInputFidelity? inputFidelity = default, ImageGenerationToolInputImageMask inputImageMask = default, int? partialImageCount = default, ImageGenerationToolAction? action = default)
+        {
+            return new ImageGenerationTool(
+                ResponseToolKind.ImageGeneration,
+                default,
+                model,
+                quality,
+                size,
+                outputFileFormat,
+                outputCompressionFactor,
+                moderationLevel,
+                background,
+                inputFidelity,
+                inputImageMask,
+                partialImageCount,
+                action);
+        }
+
         public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUri = default, string fileId = default)
         {
             return new ImageGenerationToolInputImageMask(imageUri, fileId, default);
+        }
+
+        public static McpTool McpTool(string serverLabel = default, Uri serverUri = default, McpToolConnectorId? connectorId = default, string authorizationToken = default, string serverDescription = default, IDictionary<string, string> headers = default, McpToolFilter allowedTools = default, McpToolCallApprovalPolicy toolCallApprovalPolicy = default)
+        {
+            headers ??= new ChangeTrackingDictionary<string, string>();
+
+            return new McpTool(
+                ResponseToolKind.Mcp,
+                default,
+                serverLabel,
+                serverUri,
+                connectorId,
+                authorizationToken,
+                serverDescription,
+                headers,
+                allowedTools,
+                toolCallApprovalPolicy);
         }
 
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
@@ -652,6 +736,11 @@ namespace OpenAI
             toolNames ??= new ChangeTrackingList<string>();
 
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
+        }
+
+        public static ApplyPatchTool ApplyPatchTool()
+        {
+            return new ApplyPatchTool(ResponseToolKind.ApplyPatch, default);
         }
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)

@@ -8,12 +8,12 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellTool : ResponseTool
     {
-        public InternalLocalShellTool() : this(InternalToolType.LocalShell, default)
+        public InternalLocalShellTool() : this(ResponseToolKind.LocalShell, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalLocalShellTool(InternalToolType kind, in JsonPatch patch) : base(kind, patch)
+        internal InternalLocalShellTool(ResponseToolKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
