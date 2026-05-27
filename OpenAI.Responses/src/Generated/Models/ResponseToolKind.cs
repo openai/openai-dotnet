@@ -13,15 +13,20 @@ namespace OpenAI.Responses
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind>
     {
         private readonly string _value;
-        private const string FileSearchValue = "file_search";
         private const string FunctionValue = "function";
+        private const string FileSearchValue = "file_search";
+        private const string ComputerValue = "computer";
         private const string ComputerUsePreviewValue = "computer_use_preview";
         private const string WebSearchValue = "web_search";
-        private const string WebSearchPreviewValue = "web_search_preview";
         private const string McpValue = "mcp";
         private const string CodeInterpreterValue = "code_interpreter";
         private const string ImageGenerationValue = "image_generation";
         private const string LocalShellValue = "local_shell";
+        private const string ShellValue = "shell";
+        private const string CustomValue = "custom";
+        private const string NamespaceValue = "namespace";
+        private const string ToolSearchValue = "tool_search";
+        private const string WebSearchPreviewValue = "web_search_preview";
         private const string ApplyPatchValue = "apply_patch";
 
         public ResponseToolKind(string value)
@@ -31,15 +36,15 @@ namespace OpenAI.Responses
             _value = value;
         }
 
+        public static ResponseToolKind Function { get; } = new ResponseToolKind(FunctionValue);
+
         public static ResponseToolKind FileSearch { get; } = new ResponseToolKind(FileSearchValue);
 
-        public static ResponseToolKind Function { get; } = new ResponseToolKind(FunctionValue);
+        public static ResponseToolKind Computer { get; } = new ResponseToolKind(ComputerValue);
 
         public static ResponseToolKind ComputerUsePreview { get; } = new ResponseToolKind(ComputerUsePreviewValue);
 
         public static ResponseToolKind WebSearch { get; } = new ResponseToolKind(WebSearchValue);
-
-        public static ResponseToolKind WebSearchPreview { get; } = new ResponseToolKind(WebSearchPreviewValue);
 
         public static ResponseToolKind Mcp { get; } = new ResponseToolKind(McpValue);
 
@@ -48,6 +53,16 @@ namespace OpenAI.Responses
         public static ResponseToolKind ImageGeneration { get; } = new ResponseToolKind(ImageGenerationValue);
 
         public static ResponseToolKind LocalShell { get; } = new ResponseToolKind(LocalShellValue);
+
+        public static ResponseToolKind Shell { get; } = new ResponseToolKind(ShellValue);
+
+        public static ResponseToolKind Custom { get; } = new ResponseToolKind(CustomValue);
+
+        public static ResponseToolKind Namespace { get; } = new ResponseToolKind(NamespaceValue);
+
+        public static ResponseToolKind ToolSearch { get; } = new ResponseToolKind(ToolSearchValue);
+
+        public static ResponseToolKind WebSearchPreview { get; } = new ResponseToolKind(WebSearchPreviewValue);
 
         public static ResponseToolKind ApplyPatch { get; } = new ResponseToolKind(ApplyPatchValue);
 
