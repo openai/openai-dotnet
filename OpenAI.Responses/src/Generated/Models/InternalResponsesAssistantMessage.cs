@@ -17,7 +17,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponsesAssistantMessage(InternalItemType kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)
+        internal InternalResponsesAssistantMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)
         {
             // Plugin customization: ensure initialization of collections
             InternalContent = internalContent ?? new ChangeTrackingList<ResponseContentPart>();

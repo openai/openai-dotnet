@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FunctionCallOutputResponseItem : ResponseItem
     {
-        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(InternalItemType.FunctionCallOutput)
+        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(ResponseItemKind.FunctionCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(functionOutput, nameof(functionOutput));
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FunctionCallOutputResponseItem(InternalItemType kind, string id, in JsonPatch patch, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, patch)
+        internal FunctionCallOutputResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, patch)
         {
             Status = status;
             CallId = callId;

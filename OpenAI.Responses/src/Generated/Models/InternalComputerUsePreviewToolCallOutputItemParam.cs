@@ -10,7 +10,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerUsePreviewToolCallOutputItemParam : InternalItemParam
     {
-        public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(InternalItemType.ComputerCallOutput)
+        public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(ResponseItemKind.ComputerCallOutput)
         {
             CallId = callId;
             AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalComputerUsePreviewToolCallOutputItemParam(InternalItemType kind, in JsonPatch patch, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, patch)
+        internal InternalComputerUsePreviewToolCallOutputItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;

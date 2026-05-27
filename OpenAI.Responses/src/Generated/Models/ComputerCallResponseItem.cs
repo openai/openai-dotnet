@@ -13,7 +13,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAICUA001")]
     public partial class ComputerCallResponseItem : ResponseItem
     {
-        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(InternalItemType.ComputerCall)
+        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(ResponseItemKind.ComputerCall)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(action, nameof(action));
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, ComputerCallStatus? status, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, id, patch)
+        internal ComputerCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ComputerCallStatus? status, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;

@@ -8,7 +8,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPApprovalRequestItemParam : InternalItemParam
     {
-        public InternalMCPApprovalRequestItemParam(string serverLabel, string name, string arguments) : base(InternalItemType.McpApprovalRequest)
+        public InternalMCPApprovalRequestItemParam(string serverLabel, string name, string arguments) : base(ResponseItemKind.McpApprovalRequest)
         {
             ServerLabel = serverLabel;
             Name = name;
@@ -16,7 +16,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalMCPApprovalRequestItemParam(InternalItemType kind, in JsonPatch patch, string serverLabel, string name, string arguments) : base(kind, patch)
+        internal InternalMCPApprovalRequestItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, string name, string arguments) : base(kind, patch)
         {
             ServerLabel = serverLabel;
             Name = name;

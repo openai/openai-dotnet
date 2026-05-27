@@ -14,7 +14,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolDefinitionListItem : ResponseItem
     {
-        public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(InternalItemType.McpListTools)
+        public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(ResponseItemKind.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
             Argument.AssertNotNull(toolDefinitions, nameof(toolDefinitions));
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpToolDefinitionListItem(InternalItemType kind, string id, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, patch)
+        internal McpToolDefinitionListItem(ResponseItemKind kind, string id, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;

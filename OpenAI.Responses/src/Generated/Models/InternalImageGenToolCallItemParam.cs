@@ -9,13 +9,13 @@ namespace OpenAI.Responses
 {
     internal partial class InternalImageGenToolCallItemParam : InternalItemParam
     {
-        public InternalImageGenToolCallItemParam(BinaryData result) : base(InternalItemType.ImageGenerationCall)
+        public InternalImageGenToolCallItemParam(BinaryData result) : base(ResponseItemKind.ImageGenerationCall)
         {
             Result = result;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalImageGenToolCallItemParam(InternalItemType kind, in JsonPatch patch, BinaryData result) : base(kind, patch)
+        internal InternalImageGenToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, BinaryData result) : base(kind, patch)
         {
             Result = result;
         }

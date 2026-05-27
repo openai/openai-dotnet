@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     public partial class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>
     {
-        internal MessageResponseItem() : this(InternalItemType.Message, null, default, default, default)
+        internal MessageResponseItem() : this(ResponseItemKind.Message, null, default, default, default)
         {
         }
 

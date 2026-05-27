@@ -11,14 +11,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPListToolsItemParam : InternalItemParam
     {
-        public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(InternalItemType.McpListTools)
+        public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(ResponseItemKind.McpListTools)
         {
             ServerLabel = serverLabel;
             Tools = tools.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalMCPListToolsItemParam(InternalItemType kind, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, patch)
+        internal InternalMCPListToolsItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;

@@ -5161,7 +5161,7 @@ namespace OpenAI.Realtime {
 namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ApplyPatchCallItem : ResponseItem, IJsonModel<ApplyPatchCallItem>, IPersistableModel<ApplyPatchCallItem> {
-        public ApplyPatchCallItem(string callId, ApplyPatchOperation operation);
+        public ApplyPatchCallItem(string callId, ApplyPatchOperation operation) : base(default);
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
         public ApplyPatchOperation Operation { get; set; }
@@ -5169,7 +5169,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>, IPersistableModel<ApplyPatchCallOutputItem> {
-        public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status);
+        public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status) : base(default);
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
         public string Output { get; set; }
@@ -5259,7 +5259,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>, IPersistableModel<CodeInterpreterCallResponseItem> {
-        public CodeInterpreterCallResponseItem(string code);
+        public CodeInterpreterCallResponseItem(string code) : base(default);
         public string Code { get; set; }
         public string ContainerId { get; set; }
         public IList<CodeInterpreterCallOutput> Outputs { get; }
@@ -5356,7 +5356,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAICUA001")]
     public class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>, IPersistableModel<ComputerCallOutputResponseItem> {
-        public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output);
+        public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output) : base(default);
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
         public string CallId { get; set; }
         public ComputerCallOutput Output { get; set; }
@@ -5370,7 +5370,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAICUA001")]
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
-        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
+        public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(default);
         public ComputerCallAction Action { get; set; }
         public string CallId { get; set; }
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
@@ -5486,7 +5486,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
-        public FileSearchCallResponseItem(IEnumerable<string> queries);
+        public FileSearchCallResponseItem(IEnumerable<string> queries) : base(default);
         public IList<string> Queries { get; }
         public IList<FileSearchCallResult> Results { get; set; }
         public FileSearchCallStatus? Status { get; set; }
@@ -5546,7 +5546,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
-        public FunctionCallOutputResponseItem(string callId, string functionOutput);
+        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(default);
         public string CallId { get; set; }
         public string FunctionOutput { get; set; }
         public FunctionCallOutputStatus? Status { get; set; }
@@ -5559,7 +5559,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
-        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments);
+        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments) : base(default);
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
@@ -5610,7 +5610,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
-        public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
+        public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(default);
         public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
         public BinaryData ImageResultBytes { get; set; }
@@ -5821,21 +5821,21 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpToolCallApprovalRequestItem : ResponseItem, IJsonModel<McpToolCallApprovalRequestItem>, IPersistableModel<McpToolCallApprovalRequestItem> {
-        public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
+        public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(default);
         public string ServerLabel { get; set; }
         public BinaryData ToolArguments { get; set; }
         public string ToolName { get; set; }
     }
     [Experimental("OPENAI001")]
     public class McpToolCallApprovalResponseItem : ResponseItem, IJsonModel<McpToolCallApprovalResponseItem>, IPersistableModel<McpToolCallApprovalResponseItem> {
-        public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved);
+        public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(default);
         public string ApprovalRequestId { get; set; }
         public bool Approved { get; set; }
         public string Reason { get; set; }
     }
     [Experimental("OPENAI001")]
     public class McpToolCallItem : ResponseItem, IJsonModel<McpToolCallItem>, IPersistableModel<McpToolCallItem> {
-        public McpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public McpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(default);
         public BinaryData Error { get; set; }
         public string ServerLabel { get; set; }
         public BinaryData ToolArguments { get; set; }
@@ -5878,7 +5878,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>, IPersistableModel<McpToolDefinitionListItem> {
-        public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
+        public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(default);
         public BinaryData Error { get; set; }
         public string ServerLabel { get; set; }
         public IList<McpToolDefinition> ToolDefinitions { get; }
@@ -5919,8 +5919,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
-        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
-        public ReasoningResponseItem(string summaryText);
+        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(default);
+        public ReasoningResponseItem(string summaryText) : base(default);
         public string EncryptedContent { get; set; }
         public ReasoningStatus? Status { get; set; }
         public IList<ReasoningSummaryPart> SummaryParts { get; }
@@ -5947,7 +5947,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ReferenceResponseItem : ResponseItem, IJsonModel<ReferenceResponseItem>, IPersistableModel<ReferenceResponseItem> {
-        public ReferenceResponseItem(string id);
+        public ReferenceResponseItem(string id) : base(default);
     }
     [Experimental("OPENAI001")]
     public class ResponseContentPart : IJsonModel<ResponseContentPart>, IPersistableModel<ResponseContentPart> {
@@ -6102,7 +6102,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseItem : IJsonModel<ResponseItem>, IPersistableModel<ResponseItem> {
+        protected internal ResponseItem(ResponseItemKind kind);
         public string Id { get; set; }
+        public ResponseItemKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -6171,6 +6173,47 @@ namespace OpenAI.Responses {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static explicit operator ResponseItemCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseItemKind : IEquatable<ResponseItemKind> {
+        public ResponseItemKind(string value);
+        public static ResponseItemKind ApplyPatchCall { get; }
+        public static ResponseItemKind ApplyPatchCallOutput { get; }
+        public static ResponseItemKind CodeInterpreterCall { get; }
+        public static ResponseItemKind Compaction { get; }
+        public static ResponseItemKind CompactionTrigger { get; }
+        public static ResponseItemKind ComputerCall { get; }
+        public static ResponseItemKind ComputerCallOutput { get; }
+        public static ResponseItemKind CustomToolCall { get; }
+        public static ResponseItemKind CustomToolCallOutput { get; }
+        public static ResponseItemKind FileSearchCall { get; }
+        public static ResponseItemKind FunctionCall { get; }
+        public static ResponseItemKind FunctionCallOutput { get; }
+        public static ResponseItemKind ImageGenerationCall { get; }
+        public static ResponseItemKind ItemReference { get; }
+        public static ResponseItemKind LocalShellCall { get; }
+        public static ResponseItemKind LocalShellCallOutput { get; }
+        public static ResponseItemKind McpApprovalRequest { get; }
+        public static ResponseItemKind McpApprovalResponse { get; }
+        public static ResponseItemKind McpCall { get; }
+        public static ResponseItemKind McpListTools { get; }
+        public static ResponseItemKind Message { get; }
+        public static ResponseItemKind Reasoning { get; }
+        public static ResponseItemKind ShellCall { get; }
+        public static ResponseItemKind ShellCallOutput { get; }
+        public static ResponseItemKind ToolSearchCall { get; }
+        public static ResponseItemKind ToolSearchOutput { get; }
+        public static ResponseItemKind WebSearchCall { get; }
+        public readonly bool Equals(ResponseItemKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseItemKind left, ResponseItemKind right);
+        public static implicit operator ResponseItemKind(string value);
+        public static implicit operator ResponseItemKind?(string value);
+        public static bool operator !=(ResponseItemKind left, ResponseItemKind right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
@@ -6918,7 +6961,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
-        public WebSearchCallResponseItem();
+        public WebSearchCallResponseItem() : base(default);
         public WebSearchAction Action { get; set; }
         public WebSearchCallStatus? Status { get; set; }
     }

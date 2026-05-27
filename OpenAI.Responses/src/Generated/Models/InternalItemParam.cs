@@ -14,13 +14,13 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected InternalItemParam(InternalItemType kind)
+        private protected InternalItemParam(ResponseItemKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemParam(InternalItemType kind, in JsonPatch patch)
+        internal InternalItemParam(ResponseItemKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -32,6 +32,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalItemType Kind { get; set; }
+        internal ResponseItemKind Kind { get; set; }
     }
 }
