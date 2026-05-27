@@ -248,7 +248,7 @@ model CreateTranscriptionResponseDiarizedJson {
   segments: TranscriptionDiarizedSegment[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: CreateTranscriptionResponseJsonUsage;
+  usage?: OpenAI.Audio.CreateTranscriptionResponseJsonUsage;
 }
 
 /** A segment of diarized transcript text with speaker metadata. */
@@ -281,6 +281,8 @@ model TranscriptionDiarizedSegment {
 }
 
 /** Token usage statistics for the request. */
+namespace OpenAI.Audio;
+
 @discriminator("type")
 model CreateTranscriptionResponseJsonUsage {
   type: CreateTranscriptionResponseJsonUsageType;
@@ -341,6 +343,8 @@ model TranscriptTextUsageDuration extends CreateTranscriptionResponseJsonUsage {
   seconds: duration;
 }
 
+namespace OpenAI;
+
 /** Represents a transcription response returned by model, based on the provided input. */
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @extension(
@@ -374,7 +378,7 @@ model CreateTranscriptionResponseJson {
   logprobs?: CreateTranscriptionResponseJsonLogprobs[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: CreateTranscriptionResponseJsonUsage;
+  usage?: OpenAI.Audio.CreateTranscriptionResponseJsonUsage;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -447,7 +451,7 @@ model CreateTranscriptionResponseVerboseJson {
   segments?: TranscriptionSegment[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: TranscriptTextUsageDuration;
+  usage?: OpenAI.Audio.TranscriptTextUsageDuration;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -717,7 +721,7 @@ model TranscriptTextDoneEvent {
   logprobs?: TranscriptTextDoneEventLogprobs[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: TranscriptTextUsageTokens;
+  usage?: OpenAI.Audio.TranscriptTextUsageTokens;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -827,11 +831,15 @@ union TranscriptionInclude {
   logprobs: "logprobs",
 }
 
+namespace OpenAI.Audio;
+
 union CreateTranscriptionResponseJsonUsageType {
   string,
   "tokens",
   "duration",
 }
+
+namespace OpenAI;
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model CreateVoiceConsentRequest {
