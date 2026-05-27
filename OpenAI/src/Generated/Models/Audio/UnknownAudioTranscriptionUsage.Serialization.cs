@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionUsage>
+    internal partial class UnknownAudioTranscriptionUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionUsage>
     {
-        internal InternalUnknownCreateTranscriptionResponseJsonUsage() : this(default, null)
+        internal UnknownAudioTranscriptionUsage() : this(default, null)
         {
         }
 
@@ -79,7 +79,7 @@ namespace OpenAI.Audio
             return DeserializeAudioTranscriptionUsage(document.RootElement, options);
         }
 
-        internal static InternalUnknownCreateTranscriptionResponseJsonUsage DeserializeInternalUnknownCreateTranscriptionResponseJsonUsage(JsonElement element, ModelReaderWriterOptions options)
+        internal static UnknownAudioTranscriptionUsage DeserializeUnknownAudioTranscriptionUsage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -97,7 +97,7 @@ namespace OpenAI.Audio
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUnknownCreateTranscriptionResponseJsonUsage(kind, additionalBinaryDataProperties);
+            return new UnknownAudioTranscriptionUsage(kind, additionalBinaryDataProperties);
         }
     }
 }

@@ -15,7 +15,6 @@ namespace OpenAI.Audio;
 [CodeGenType("CreateTranscriptionResponseJsonLogprobs")] internal partial class InternalCreateTranscriptionResponseJsonLogprob { }
 [CodeGenType("CreateSpeechRequestStreamFormat")] internal readonly partial struct InternalCreateSpeechRequestStreamFormat { }
 [CodeGenType("CreateTranscriptionResponseJsonUsageType")] internal readonly partial struct InternalCreateTranscriptionResponseJsonUsageType { }
-[CodeGenType("UnknownCreateTranscriptionResponseJsonUsage")] internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage { }
 [CodeGenType("ChunkingStrategyConfigType")] internal readonly partial struct InternalChunkingStrategyConfigType { }
 [CodeGenType("UnknownChunkingStrategyConfig")] internal partial class InternalUnknownChunkingStrategyConfig { }
 [CodeGenType("DotNetCreateTranscriptionStreamingResponseType")] internal readonly partial struct InternalCreateTranscriptionStreamingResponseType { }

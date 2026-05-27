@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    [PersistableModelProxy(typeof(InternalUnknownCreateTranscriptionResponseJsonUsage))]
+    [PersistableModelProxy(typeof(UnknownAudioTranscriptionUsage))]
     public partial class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>
     {
         internal AudioTranscriptionUsage()
@@ -119,7 +119,7 @@ namespace OpenAI.Audio
                         return AudioTranscriptionDurationUsage.DeserializeAudioTranscriptionDurationUsage(element, options);
                 }
             }
-            return InternalUnknownCreateTranscriptionResponseJsonUsage.DeserializeInternalUnknownCreateTranscriptionResponseJsonUsage(element, options);
+            return UnknownAudioTranscriptionUsage.DeserializeUnknownAudioTranscriptionUsage(element, options);
         }
     }
 }
