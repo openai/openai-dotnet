@@ -2,10 +2,6 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Assistants;
 
-/*
- * This file stubs and performs minimal customization to generated internal types for the OpenAI.Assistants namespace.
- */
-
 [CodeGenType("SubmitToolOutputsRunRequest")]
 internal partial class InternalSubmitToolOutputsRunRequest { }
 
@@ -18,32 +14,11 @@ internal partial class InternalMessageContentTextAnnotationsFileCitationObject {
 [CodeGenType("MessageContentTextAnnotationsFilePathObject")]
 internal partial class InternalMessageContentTextAnnotationsFilePathObject { }
 
-[CodeGenType("MessageDeltaContentImageFileObjectImageFile")]
-internal partial class InternalMessageDeltaContentImageFileObjectImageFile
-{
-    [CodeGenMember("Detail")]
-    internal string Detail { get; set; }
-}
-
-[CodeGenType("MessageDeltaContentImageUrlObjectImageUrl")]
-internal partial class InternalMessageDeltaContentImageUrlObjectImageUrl
-{
-    [CodeGenMember("Detail")]
-    internal string Detail { get; }
-}
-
 [CodeGenType("MessageDeltaContentImageFileObject")]
 internal partial class InternalMessageDeltaContentImageFileObject { }
 
 [CodeGenType("MessageDeltaContentImageUrlObject")]
 internal partial class InternalMessageDeltaContentImageUrlObject { }
-
-[CodeGenType("MessageDeltaObjectDelta")]
-internal partial class InternalMessageDeltaObjectDelta
-{
-    [CodeGenMember("Role")]
-    internal MessageRole? Role { get; }
-}
 
 [CodeGenType("MessageDeltaContentTextObject")]
 internal partial class InternalMessageDeltaContentTextObject { }
@@ -59,9 +34,6 @@ internal partial class InternalMessageDeltaTextContentAnnotation { }
 
 [CodeGenType("MessageDeltaContentTextAnnotationsFileCitationObjectFileCitation")]
 internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation { }
-
-[CodeGenType("RunStepDeltaObject")]
-internal partial class InternalRunStepDelta { private readonly object Object; }
 
 [CodeGenType("RunStepDeltaObjectDelta")]
 internal partial class InternalRunStepDeltaObjectDelta { }
@@ -84,29 +56,6 @@ internal readonly partial struct InternalDeleteThreadResponseObject { }
 [CodeGenType("DeleteMessageResponseObject")]
 internal readonly partial struct InternalDeleteMessageResponseObject { }
 
-[CodeGenType("CreateThreadAndRunRequest")]
-internal partial class InternalCreateThreadAndRunRequest
-{
-    public string Model { get; set; }
-    public ToolResources ToolResources { get; set; }
-    public AssistantResponseFormat ResponseFormat { get; set; }
-    public ToolConstraint ToolChoice { get; set; }
-}
-
-[CodeGenType("MessageContentImageUrlObjectImageUrl")]
-internal partial class InternalMessageContentImageUrlObjectImageUrl
-{
-    [CodeGenMember("Detail")]
-    internal string Detail { get; }
-}
-
-[CodeGenType("MessageContentImageFileObjectImageFile")]
-internal partial class InternalMessageContentItemFileObjectImageFile
-{
-    [CodeGenMember("Detail")]
-    internal string Detail { get; set; }
-}
-
 [CodeGenType("MessageContentRefusalObjectType")]
 internal readonly partial struct InternalMessageContentRefusalObjectType { }
 
@@ -127,12 +76,6 @@ internal partial class InternalMessageContentTextAnnotationsFileCitationObjectFi
 
 [CodeGenType("MessageContentTextAnnotationsFilePathObjectFilePath")]
 internal partial class InternalMessageContentTextAnnotationsFilePathObjectFilePath { }
-
-[CodeGenType("RunObjectRequiredAction1")]
-internal partial class InternalRunRequiredAction { private readonly object Type; }
-
-[CodeGenType("RunObjectRequiredActionSubmitToolOutputs")]
-internal partial class InternalRunObjectRequiredActionSubmitToolOutputs { private readonly object Type; }
 
 [CodeGenType("RunToolCallObjectFunction")]
 internal partial class InternalRunToolCallObjectFunction { }
@@ -176,25 +119,11 @@ internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeObject { }
 [CodeGenType("RunStepDeltaStepDetailsToolCallsCodeOutputImageObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject { }
 
-[CodeGenType("RunStepDeltaStepDetailsToolCallsCodeOutputLogsObject")]
-internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject
-{
-    [CodeGenMember("Logs")]
-    public string InternalLogs { get; set; }
-}
-
 [CodeGenType("RunStepDeltaStepDetailsMessageCreationObject")]
 internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject { }
 
 [CodeGenType("RunStepDeltaStepDetailsToolCallsObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsObject { }
-
-[CodeGenType("RunStepDeltaStepDetailsToolCallsFileSearchObject")]
-internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject
-{
-    [CodeGenMember("FileSearch")]
-    public InternalRunStepDetailsToolCallsFileSearchObjectFileSearch FileSearch { get; set; }
-}
 
 [CodeGenType("RunStepDeltaStepDetailsToolCallsFunctionObject")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFunctionObject { }
