@@ -7,7 +7,7 @@ namespace OpenAILibraryPlugin.Visitors;
 
 internal static class OptionalDefinedSerializationConfiguration
 {
-    private static readonly WritePropertyNameConditionInfo s_readonlyStatusCondition = new("Status", "status", isCollection: false);
+    private static readonly WritePropertyNameConditionInfo s_statusCondition = new("Status", "status", isCollection: false);
     private static readonly Dictionary<string, IReadOnlyList<WritePropertyNameConditionInfo>> s_conditionsByTypeName = new()
     {
         ["ChatCompletionOptions"] =
@@ -19,17 +19,17 @@ internal static class OptionalDefinedSerializationConfiguration
         [
             new("Id", "id", isCollection: false),
         ],
-        ["ApplyPatchCallItem"] = [s_readonlyStatusCondition],
-        ["CodeInterpreterCallResponseItem"] = [s_readonlyStatusCondition],
-        ["ComputerCallResponseItem"] = [s_readonlyStatusCondition],
-        ["ComputerCallOutputResponseItem"] = [s_readonlyStatusCondition],
-        ["FileSearchCallResponseItem"] = [s_readonlyStatusCondition],
-        ["FunctionCallResponseItem"] = [s_readonlyStatusCondition],
-        ["FunctionCallOutputResponseItem"] = [s_readonlyStatusCondition],
-        ["ImageGenerationCallResponseItem"] = [s_readonlyStatusCondition],
-        ["MessageResponseItem"] = [s_readonlyStatusCondition],
-        ["ReasoningResponseItem"] = [s_readonlyStatusCondition],
-        ["WebSearchCallResponseItem"] = [s_readonlyStatusCondition],
+        ["ApplyPatchCallItem"] = [s_statusCondition],
+        ["CodeInterpreterCallResponseItem"] = [s_statusCondition],
+        ["ComputerCallResponseItem"] = [s_statusCondition],
+        ["ComputerCallOutputResponseItem"] = [s_statusCondition],
+        ["FileSearchCallResponseItem"] = [s_statusCondition],
+        ["FunctionCallResponseItem"] = [s_statusCondition],
+        ["FunctionCallOutputResponseItem"] = [s_statusCondition],
+        ["ImageGenerationCallResponseItem"] = [s_statusCondition],
+        ["MessageResponseItem"] = [s_statusCondition],
+        ["ReasoningResponseItem"] = [s_statusCondition],
+        ["WebSearchCallResponseItem"] = [s_statusCondition],
     };
 
     internal static SingleLineCommentStatement OptionalDefinedCheckComment { get; }

@@ -61,9 +61,15 @@ internal static class SerializationVisitorHelpers
             return stringLiteralExpression.Literal?.ToString();
         }
 
-        if (statement is SuppressionStatement suppressionStatement)
+        if (statement is SuppressionStatement { Inner: not null } suppressionStatement)
         {
-            return GetWritePropertyNameTargetFromStatement(suppressionStatement.Inner);
+            foreach (MethodBodyStatement innerStatement in suppressionStatement.Inner)
+            {
+                if (GetWritePropertyNameTargetFromStatement(innerStatement) is string innerTarget)
+                {
+                    return innerTarget;
+                }
+            }
         }
 
         if (statement is MethodBodyStatements compoundStatements)
