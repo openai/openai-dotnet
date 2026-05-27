@@ -2,4 +2,8 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Graders;
 
-[CodeGenType("ValidateGraderRequest")] public partial class ValidateGraderRequest { }
+// CUSTOM: Renamed.
+[CodeGenType("ValidateGraderRequest")]
+public partial class ValidateGraderRequest
+{
+}

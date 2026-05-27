@@ -2,4 +2,8 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Graders;
 
-[CodeGenType("RunGraderRequest")] public partial class RunGraderRequest { }
+// CUSTOM: Renamed.
+[CodeGenType("RunGraderRequest")]
+public partial class RunGraderRequest
+{
+}

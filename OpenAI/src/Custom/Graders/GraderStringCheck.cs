@@ -2,4 +2,8 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Graders;
 
-[CodeGenType("GraderStringCheck")] public partial class GraderStringCheck { }
+// CUSTOM: Renamed.
+[CodeGenType("GraderStringCheck")]
+public partial class GraderStringCheck
+{
+}

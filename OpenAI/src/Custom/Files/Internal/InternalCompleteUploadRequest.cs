@@ -3,7 +3,9 @@ using System.ClientModel;
 
 namespace OpenAI.Files;
 
-[CodeGenType("CompleteUploadRequest")] internal partial class InternalCompleteUploadRequest
+// CUSTOM: Renamed.
+[CodeGenType("CompleteUploadRequest")]
+internal partial class InternalCompleteUploadRequest
 {
     public static implicit operator BinaryContent(InternalCompleteUploadRequest internalCompleteUploadRequest)
     {

@@ -3,6 +3,7 @@ using System.ClientModel;
 
 namespace OpenAI.Containers;
 
+// CUSTOM: Renamed.
 [CodeGenType("CreateContainerBody")]
 public partial class CreateContainerBody
 { 

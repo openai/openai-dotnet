@@ -2,4 +2,8 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Containers;
 
-[CodeGenType("ContainerFileResource")] public partial class ContainerFileResource { }
+// CUSTOM: Renamed.
+[CodeGenType("ContainerFileResource")]
+public partial class ContainerFileResource
+{
+}

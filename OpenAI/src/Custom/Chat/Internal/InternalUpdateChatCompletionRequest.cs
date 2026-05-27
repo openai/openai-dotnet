@@ -3,6 +3,7 @@ using System.ClientModel;
 
 namespace OpenAI.Chat;
 
+// CUSTOM: Renamed.
 [CodeGenType("UpdateChatCompletionRequest")]
 internal partial class InternalUpdateChatCompletionRequest
 {

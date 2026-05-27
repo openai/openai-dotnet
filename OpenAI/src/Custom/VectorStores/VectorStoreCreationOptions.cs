@@ -3,6 +3,7 @@ using System.ClientModel;
 
 namespace OpenAI.VectorStores;
 
+// CUSTOM: Renamed.
 [CodeGenType("CreateVectorStoreRequest")]
 public partial class VectorStoreCreationOptions
 {

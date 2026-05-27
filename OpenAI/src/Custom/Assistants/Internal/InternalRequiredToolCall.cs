@@ -11,4 +11,6 @@ namespace OpenAI.Assistants;
 /// <item> <see cref="InternalRequiredFunctionToolCall"/> </item> 
 /// </list>
 /// </remarks>
-internal abstract partial class InternalRequiredToolCall : RequiredAction { }
+internal abstract partial class InternalRequiredToolCall : RequiredAction
+{
+}

@@ -5,6 +5,7 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Files;
 
+// CUSTOM: Renamed.
 [CodeGenType("Uploads")]
 [CodeGenSuppress("InternalUploadsClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 internal partial class InternalUploadsClient

@@ -1,8 +1,9 @@
 ﻿using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Containers;
-[CodeGenType("CreateContainerBodyExpiresAfter")]
 
+// CUSTOM: Renamed.
+[CodeGenType("CreateContainerBodyExpiresAfter")]
 public partial class CreateContainerBodyExpiresAfter
 {
     // CUSTOM: Make public property for back compatibility.

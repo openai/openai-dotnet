@@ -2,4 +2,8 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Graders;
 
-[CodeGenType("GraderMulti")] public partial class GraderMulti { }
+// CUSTOM: Renamed.
+[CodeGenType("GraderMulti")]
+public partial class GraderMulti
+{
+}
