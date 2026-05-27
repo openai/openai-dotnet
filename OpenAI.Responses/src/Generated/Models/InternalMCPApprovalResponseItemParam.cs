@@ -8,14 +8,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPApprovalResponseItemParam : InternalItemParam
     {
-        public InternalMCPApprovalResponseItemParam(string approvalRequestId, bool approve) : base(InternalItemType.McpApprovalResponse)
+        public InternalMCPApprovalResponseItemParam(string approvalRequestId, bool approve) : base(ResponseItemKind.McpApprovalResponse)
         {
             ApprovalRequestId = approvalRequestId;
             Approve = approve;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalMCPApprovalResponseItemParam(InternalItemType kind, in JsonPatch patch, string approvalRequestId, bool approve, string reason) : base(kind, patch)
+        internal InternalMCPApprovalResponseItemParam(ResponseItemKind kind, in JsonPatch patch, string approvalRequestId, bool approve, string reason) : base(kind, patch)
         {
             ApprovalRequestId = approvalRequestId;
             Approve = approve;

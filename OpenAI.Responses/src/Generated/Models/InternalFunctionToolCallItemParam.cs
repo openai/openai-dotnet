@@ -8,7 +8,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFunctionToolCallItemParam : InternalItemParam
     {
-        public InternalFunctionToolCallItemParam(string callId, string name, string arguments) : base(InternalItemType.FunctionCall)
+        public InternalFunctionToolCallItemParam(string callId, string name, string arguments) : base(ResponseItemKind.FunctionCall)
         {
             CallId = callId;
             Name = name;
@@ -16,7 +16,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalFunctionToolCallItemParam(InternalItemType kind, in JsonPatch patch, string callId, string name, string arguments) : base(kind, patch)
+        internal InternalFunctionToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, string name, string arguments) : base(kind, patch)
         {
             CallId = callId;
             Name = name;

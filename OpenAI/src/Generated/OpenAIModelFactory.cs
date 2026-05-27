@@ -786,6 +786,201 @@ namespace OpenAI
             return new ResponseIncompleteStatusDetails(reason, default);
         }
 
+        public static ResponseItem ResponseItem(string kind = default, string id = default)
+        {
+            return new InternalUnknownItemResource(new ResponseItemKind(kind), id, default);
+        }
+
+        public static McpToolCallApprovalResponseItem McpToolCallApprovalResponseItem(string id = default, string approvalRequestId = default, bool approved = default, string reason = default)
+        {
+            return new McpToolCallApprovalResponseItem(
+                ResponseItemKind.McpApprovalResponse,
+                id,
+                default,
+                approvalRequestId,
+                approved,
+                reason);
+        }
+
+        public static ComputerCallOutputResponseItem ComputerCallOutputResponseItem(string id = default, ComputerCallOutputStatus? status = default, string callId = default, IEnumerable<ComputerCallSafetyCheck> acknowledgedSafetyChecks = default, ComputerCallOutput output = default)
+        {
+            acknowledgedSafetyChecks ??= new ChangeTrackingList<ComputerCallSafetyCheck>();
+
+            return new ComputerCallOutputResponseItem(
+                ResponseItemKind.ComputerCallOutput,
+                id,
+                default,
+                status,
+                callId,
+                acknowledgedSafetyChecks.ToList(),
+                output);
+        }
+
+        public static FunctionCallResponseItem FunctionCallResponseItem(string id = default, FunctionCallStatus? status = default, string callId = default, string functionName = default, BinaryData functionArguments = default)
+        {
+            return new FunctionCallResponseItem(
+                ResponseItemKind.FunctionCall,
+                id,
+                default,
+                status,
+                callId,
+                functionName,
+                functionArguments);
+        }
+
+        public static FunctionCallOutputResponseItem FunctionCallOutputResponseItem(string id = default, FunctionCallOutputStatus? status = default, string callId = default, string functionOutput = default)
+        {
+            return new FunctionCallOutputResponseItem(
+                ResponseItemKind.FunctionCallOutput,
+                id,
+                default,
+                status,
+                callId,
+                functionOutput);
+        }
+
+        public static FileSearchCallResponseItem FileSearchCallResponseItem(string id = default, FileSearchCallStatus? status = default, IEnumerable<string> queries = default, IEnumerable<FileSearchCallResult> results = default)
+        {
+            queries ??= new ChangeTrackingList<string>();
+            results ??= new ChangeTrackingList<FileSearchCallResult>();
+
+            return new FileSearchCallResponseItem(
+                ResponseItemKind.FileSearchCall,
+                id,
+                default,
+                status,
+                queries.ToList(),
+                results.ToList());
+        }
+
+        public static ComputerCallResponseItem ComputerCallResponseItem(string id = default, ComputerCallStatus? status = default, string callId = default, ComputerCallAction action = default, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks = default)
+        {
+            pendingSafetyChecks ??= new ChangeTrackingList<ComputerCallSafetyCheck>();
+
+            return new ComputerCallResponseItem(
+                ResponseItemKind.ComputerCall,
+                id,
+                default,
+                status,
+                callId,
+                action,
+                pendingSafetyChecks.ToList());
+        }
+
+        public static WebSearchCallResponseItem WebSearchCallResponseItem(string id = default, WebSearchCallStatus? status = default, WebSearchAction action = default)
+        {
+            return new WebSearchCallResponseItem(ResponseItemKind.WebSearchCall, id, default, status, action);
+        }
+
+        public static ReasoningResponseItem ReasoningResponseItem(string id = default, ReasoningStatus? status = default, string encryptedContent = default, IEnumerable<ReasoningSummaryPart> summaryParts = default)
+        {
+            summaryParts ??= new ChangeTrackingList<ReasoningSummaryPart>();
+
+            return new ReasoningResponseItem(
+                ResponseItemKind.Reasoning,
+                id,
+                default,
+                status,
+                encryptedContent,
+                summaryParts.ToList());
+        }
+
+        public static ImageGenerationCallResponseItem ImageGenerationCallResponseItem(string id = default, ImageGenerationCallStatus? status = default, ImageGenerationToolAction? action = default, ImageGenerationToolBackground? background = default, ImageGenerationToolOutputFileFormat? outputFormat = default, ImageGenerationToolQuality? quality = default, ImageGenerationToolSize? size = default, string revisedPrompt = default, BinaryData imageResultBytes = default)
+        {
+            return new ImageGenerationCallResponseItem(
+                ResponseItemKind.ImageGenerationCall,
+                id,
+                default,
+                status,
+                action,
+                background,
+                outputFormat,
+                quality,
+                size,
+                revisedPrompt,
+                imageResultBytes);
+        }
+
+        public static CodeInterpreterCallResponseItem CodeInterpreterCallResponseItem(string id = default, CodeInterpreterCallStatus? status = default, string containerId = default, string code = default, IEnumerable<CodeInterpreterCallOutput> outputs = default)
+        {
+            outputs ??= new ChangeTrackingList<CodeInterpreterCallOutput>();
+
+            return new CodeInterpreterCallResponseItem(
+                ResponseItemKind.CodeInterpreterCall,
+                id,
+                default,
+                status,
+                containerId,
+                code,
+                outputs.ToList());
+        }
+
+        public static McpToolDefinitionListItem McpToolDefinitionListItem(string id = default, string serverLabel = default, IEnumerable<McpToolDefinition> toolDefinitions = default, BinaryData error = default)
+        {
+            toolDefinitions ??= new ChangeTrackingList<McpToolDefinition>();
+
+            return new McpToolDefinitionListItem(
+                ResponseItemKind.McpListTools,
+                id,
+                default,
+                serverLabel,
+                toolDefinitions.ToList(),
+                error);
+        }
+
+        public static McpToolCallApprovalRequestItem McpToolCallApprovalRequestItem(string id = default, string serverLabel = default, string toolName = default, BinaryData toolArguments = default)
+        {
+            return new McpToolCallApprovalRequestItem(
+                ResponseItemKind.McpApprovalRequest,
+                id,
+                default,
+                serverLabel,
+                toolName,
+                toolArguments);
+        }
+
+        public static McpToolCallItem McpToolCallItem(string id = default, string serverLabel = default, string toolName = default, BinaryData toolArguments = default, string toolOutput = default, BinaryData error = default)
+        {
+            return new McpToolCallItem(
+                ResponseItemKind.McpCall,
+                id,
+                default,
+                serverLabel,
+                toolName,
+                toolArguments,
+                toolOutput,
+                error);
+        }
+
+        public static ApplyPatchCallItem ApplyPatchCallItem(string id = default, string callId = default, ApplyPatchCallStatus? status = default, ApplyPatchOperation operation = default, string createdBy = default)
+        {
+            return new ApplyPatchCallItem(
+                ResponseItemKind.ApplyPatchCall,
+                id,
+                default,
+                callId,
+                status,
+                operation,
+                createdBy);
+        }
+
+        public static ApplyPatchCallOutputItem ApplyPatchCallOutputItem(string id = default, string callId = default, ApplyPatchCallOutputStatus status = default, string output = default, string createdBy = default)
+        {
+            return new ApplyPatchCallOutputItem(
+                ResponseItemKind.ApplyPatchCallOutput,
+                id,
+                default,
+                callId,
+                status,
+                output,
+                createdBy);
+        }
+
+        public static ReferenceResponseItem ReferenceResponseItem(string id = default)
+        {
+            return new ReferenceResponseItem(ResponseItemKind.ItemReference, id, default);
+        }
+
         public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, ResponseInputTokenUsageDetails inputTokenDetails = default, int outputTokenCount = default, ResponseOutputTokenUsageDetails outputTokenDetails = default, int totalTokenCount = default)
         {
             return new ResponseTokenUsage(

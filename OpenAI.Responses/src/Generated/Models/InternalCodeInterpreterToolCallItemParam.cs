@@ -10,14 +10,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCodeInterpreterToolCallItemParam : InternalItemParam
     {
-        public InternalCodeInterpreterToolCallItemParam(string code) : base(InternalItemType.CodeInterpreterCall)
+        public InternalCodeInterpreterToolCallItemParam(string code) : base(ResponseItemKind.CodeInterpreterCall)
         {
             Code = code;
             Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCodeInterpreterToolCallItemParam(InternalItemType kind, in JsonPatch patch, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, patch)
+        internal InternalCodeInterpreterToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ContainerId = containerId;
