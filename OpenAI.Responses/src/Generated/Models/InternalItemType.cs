@@ -12,23 +12,31 @@ namespace OpenAI.Responses
         private readonly string _value;
         private const string MessageValue = "message";
         private const string FileSearchCallValue = "file_search_call";
-        private const string FunctionCallValue = "function_call";
-        private const string FunctionCallOutputValue = "function_call_output";
         private const string ComputerCallValue = "computer_call";
         private const string ComputerCallOutputValue = "computer_call_output";
         private const string WebSearchCallValue = "web_search_call";
+        private const string FunctionCallValue = "function_call";
+        private const string FunctionCallOutputValue = "function_call_output";
+        private const string ToolSearchCallValue = "tool_search_call";
+        private const string ToolSearchOutputValue = "tool_search_output";
         private const string ReasoningValue = "reasoning";
-        private const string ItemReferenceValue = "item_reference";
+        private const string CompactionValue = "compaction";
         private const string ImageGenerationCallValue = "image_generation_call";
         private const string CodeInterpreterCallValue = "code_interpreter_call";
         private const string LocalShellCallValue = "local_shell_call";
         private const string LocalShellCallOutputValue = "local_shell_call_output";
+        private const string ShellCallValue = "shell_call";
+        private const string ShellCallOutputValue = "shell_call_output";
+        private const string ApplyPatchCallValue = "apply_patch_call";
+        private const string ApplyPatchCallOutputValue = "apply_patch_call_output";
         private const string McpListToolsValue = "mcp_list_tools";
         private const string McpApprovalRequestValue = "mcp_approval_request";
         private const string McpApprovalResponseValue = "mcp_approval_response";
         private const string McpCallValue = "mcp_call";
-        private const string ApplyPatchCallValue = "apply_patch_call";
-        private const string ApplyPatchCallOutputValue = "apply_patch_call_output";
+        private const string CustomToolCallOutputValue = "custom_tool_call_output";
+        private const string CustomToolCallValue = "custom_tool_call";
+        private const string CompactionTriggerValue = "compaction_trigger";
+        private const string ItemReferenceValue = "item_reference";
 
         public InternalItemType(string value)
         {
@@ -39,19 +47,23 @@ namespace OpenAI.Responses
 
         internal static InternalItemType FileSearchCall { get; } = new InternalItemType(FileSearchCallValue);
 
-        internal static InternalItemType FunctionCall { get; } = new InternalItemType(FunctionCallValue);
-
-        internal static InternalItemType FunctionCallOutput { get; } = new InternalItemType(FunctionCallOutputValue);
-
         internal static InternalItemType ComputerCall { get; } = new InternalItemType(ComputerCallValue);
 
         internal static InternalItemType ComputerCallOutput { get; } = new InternalItemType(ComputerCallOutputValue);
 
         internal static InternalItemType WebSearchCall { get; } = new InternalItemType(WebSearchCallValue);
 
+        internal static InternalItemType FunctionCall { get; } = new InternalItemType(FunctionCallValue);
+
+        internal static InternalItemType FunctionCallOutput { get; } = new InternalItemType(FunctionCallOutputValue);
+
+        internal static InternalItemType ToolSearchCall { get; } = new InternalItemType(ToolSearchCallValue);
+
+        internal static InternalItemType ToolSearchOutput { get; } = new InternalItemType(ToolSearchOutputValue);
+
         internal static InternalItemType Reasoning { get; } = new InternalItemType(ReasoningValue);
 
-        internal static InternalItemType ItemReference { get; } = new InternalItemType(ItemReferenceValue);
+        internal static InternalItemType Compaction { get; } = new InternalItemType(CompactionValue);
 
         internal static InternalItemType ImageGenerationCall { get; } = new InternalItemType(ImageGenerationCallValue);
 
@@ -61,6 +73,14 @@ namespace OpenAI.Responses
 
         internal static InternalItemType LocalShellCallOutput { get; } = new InternalItemType(LocalShellCallOutputValue);
 
+        internal static InternalItemType ShellCall { get; } = new InternalItemType(ShellCallValue);
+
+        internal static InternalItemType ShellCallOutput { get; } = new InternalItemType(ShellCallOutputValue);
+
+        internal static InternalItemType ApplyPatchCall { get; } = new InternalItemType(ApplyPatchCallValue);
+
+        internal static InternalItemType ApplyPatchCallOutput { get; } = new InternalItemType(ApplyPatchCallOutputValue);
+
         internal static InternalItemType McpListTools { get; } = new InternalItemType(McpListToolsValue);
 
         internal static InternalItemType McpApprovalRequest { get; } = new InternalItemType(McpApprovalRequestValue);
@@ -69,9 +89,13 @@ namespace OpenAI.Responses
 
         internal static InternalItemType McpCall { get; } = new InternalItemType(McpCallValue);
 
-        internal static InternalItemType ApplyPatchCall { get; } = new InternalItemType(ApplyPatchCallValue);
+        internal static InternalItemType CustomToolCallOutput { get; } = new InternalItemType(CustomToolCallOutputValue);
 
-        internal static InternalItemType ApplyPatchCallOutput { get; } = new InternalItemType(ApplyPatchCallOutputValue);
+        internal static InternalItemType CustomToolCall { get; } = new InternalItemType(CustomToolCallValue);
+
+        internal static InternalItemType CompactionTrigger { get; } = new InternalItemType(CompactionTriggerValue);
+
+        internal static InternalItemType ItemReference { get; } = new InternalItemType(ItemReferenceValue);
 
         public static bool operator ==(InternalItemType left, InternalItemType right) => left.Equals(right);
 
