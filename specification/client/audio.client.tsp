@@ -13,6 +13,24 @@ using Azure.ClientGenerator.Core;
 
 @@alternateType(CreateTranscriptionResponseVerboseJson.usage, CreateTranscriptionResponseJsonUsage);
 
+@@clientNamespace(CreateTranscriptionResponseJsonUsage, "OpenAI.Audio", "csharp");
+@@clientName(CreateTranscriptionResponseJsonUsage, "AudioTranscriptionUsage", "csharp");
+
+@@clientNamespace(TranscriptTextUsageTokens, "OpenAI.Audio", "csharp");
+@@clientName(TranscriptTextUsageTokens, "AudioTranscriptionTokenUsage", "csharp");
+@@clientName(TranscriptTextUsageTokens.input_tokens, "InputTokenCount", "csharp");
+@@clientName(TranscriptTextUsageTokens.output_tokens, "OutputTokenCount", "csharp");
+@@clientName(TranscriptTextUsageTokens.total_tokens, "TotalTokenCount", "csharp");
+
+@@clientNamespace(TranscriptTextUsageTokensInputTokenDetails, "OpenAI.Audio", "csharp");
+@@clientName(TranscriptTextUsageTokensInputTokenDetails, "AudioTranscriptionInputTokenUsageDetails", "csharp");
+@@clientName(TranscriptTextUsageTokensInputTokenDetails.text_tokens, "TextTokenCount", "csharp");
+@@clientName(TranscriptTextUsageTokensInputTokenDetails.audio_tokens, "AudioTokenCount", "csharp");
+
+@@clientNamespace(TranscriptTextUsageDuration, "OpenAI.Audio", "csharp");
+@@clientName(TranscriptTextUsageDuration, "AudioTranscriptionDurationUsage", "csharp");
+@@clientName(TranscriptTextUsageDuration.seconds, "Duration", "csharp");
+
 @@clientName(createSpeech, "GenerateSpeech");
 @@clientName(createTranscription, "TranscribeAudio");
 @@clientName(createTranslation, "TranslateAudio");
