@@ -1,6 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 
-namespace OpenAI.Responses
+namespace OpenAI.Responses;
 
 // CUSTOM:
 // - Renamed.
