@@ -1063,7 +1063,7 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
         [Experimental("OPENAI001")]
-        public AudioTranscriptionUsage Usage { get; }
+        public _AudioTranscriptionUsage Usage { get; }
         public IReadOnlyList<TranscribedWord> Words { get; }
         [Experimental("OPENAI001")]
         public static explicit operator AudioTranscription(ClientResult result);
@@ -1102,10 +1102,6 @@ namespace OpenAI.Audio {
         public static bool operator !=(AudioTranscriptionDefaultChunkingStrategy left, AudioTranscriptionDefaultChunkingStrategy right);
         public override readonly string ToString();
     }
-    [Experimental("OPENAI001")]
-    public class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>, IPersistableModel<AudioTranscriptionDurationUsage> {
-        public TimeSpan Duration { get; }
-    }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
         public AudioTranscriptionFormat(string value);
         [Experimental("OPENAI001")]
@@ -1133,11 +1129,6 @@ namespace OpenAI.Audio {
         Default = 0,
         Logprobs = 1
     }
-    [Experimental("OPENAI001")]
-    public class AudioTranscriptionInputTokenUsageDetails : IJsonModel<AudioTranscriptionInputTokenUsageDetails>, IPersistableModel<AudioTranscriptionInputTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
-        public int? TextTokenCount { get; }
-    }
     public class AudioTranscriptionOptions : IJsonModel<AudioTranscriptionOptions>, IPersistableModel<AudioTranscriptionOptions> {
         [Experimental("OPENAI001")]
         public AudioTranscriptionChunkingStrategy ChunkingStrategy { get; set; }
@@ -1152,16 +1143,6 @@ namespace OpenAI.Audio {
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
         public float? Temperature { get; set; }
         public AudioTimestampGranularities TimestampGranularities { get; set; }
-    }
-    [Experimental("OPENAI001")]
-    public class AudioTranscriptionTokenUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionTokenUsage>, IPersistableModel<AudioTranscriptionTokenUsage> {
-        public int InputTokenCount { get; }
-        public AudioTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
-        public int OutputTokenCount { get; }
-        public int TotalTokenCount { get; }
-    }
-    [Experimental("OPENAI001")]
-    public abstract class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>, IPersistableModel<AudioTranscriptionUsage> {
     }
     public class AudioTranslation : IJsonModel<AudioTranslation>, IPersistableModel<AudioTranslation> {
         public TimeSpan? Duration { get; }
@@ -1200,7 +1181,7 @@ namespace OpenAI.Audio {
         public TimeSpan Duration { get; }
         public IReadOnlyList<DiarizedTranscriptionSegment> Segments { get; }
         public string Text { get; }
-        public AudioTranscriptionUsage Usage { get; }
+        public _AudioTranscriptionUsage Usage { get; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IPersistableModel<DiarizedTranscriptionSegment>, IJsonModel<object>, IPersistableModel<object> {
@@ -1289,7 +1270,7 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDoneUpdate> {
         public string Text { get; }
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
-        public AudioTranscriptionTokenUsage Usage { get; }
+        public _AudioTranscriptionTokenUsage Usage { get; }
     }
     [Experimental("OPENAI001")]
     public class StreamingAudioTranscriptionTextSegmentUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextSegmentUpdate>, IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate> {
@@ -7374,5 +7355,26 @@ namespace OpenAI.Videos {
     public sealed class VideoClientSettings : ClientSettings {
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
+    }
+}
+namespace OpenAI._Audio {
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>, IPersistableModel<AudioTranscriptionDurationUsage> {
+        public TimeSpan Duration { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionInputTokenUsageDetails : IJsonModel<AudioTranscriptionInputTokenUsageDetails>, IPersistableModel<AudioTranscriptionInputTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        public int? TextTokenCount { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class AudioTranscriptionTokenUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionTokenUsage>, IPersistableModel<AudioTranscriptionTokenUsage> {
+        public int InputTokenCount { get; }
+        public AudioTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
+        public int OutputTokenCount { get; }
+        public int TotalTokenCount { get; }
+    }
+    [Experimental("OPENAI001")]
+    public abstract class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>, IPersistableModel<AudioTranscriptionUsage> {
     }
 }
