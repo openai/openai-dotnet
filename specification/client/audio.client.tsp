@@ -2,7 +2,6 @@ import "../base/typespec/audio/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using OpenAI;
-using OpenAI.Audio;
 using Azure.ClientGenerator.Core;
 
 @@visibility(CreateTranscriptionResponseVerboseJson.words, Lifecycle.Read);
@@ -12,21 +11,21 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(CreateTranscriptionResponseDiarizedJson.segments, Lifecycle.Read);
 
-@@alternateType(CreateTranscriptionResponseVerboseJson.usage, CreateTranscriptionResponseJsonUsage);
+@@alternateType(CreateTranscriptionResponseVerboseJson.usage, Audio.CreateTranscriptionResponseJsonUsage);
 
-@@clientName(CreateTranscriptionResponseJsonUsage, "AudioTranscriptionUsage", "csharp");
+@@clientName(Audio.CreateTranscriptionResponseJsonUsage, "AudioTranscriptionUsage", "csharp");
 
-@@clientName(TranscriptTextUsageTokens, "AudioTranscriptionTokenUsage", "csharp");
-@@clientName(TranscriptTextUsageTokens.input_tokens, "InputTokenCount", "csharp");
-@@clientName(TranscriptTextUsageTokens.output_tokens, "OutputTokenCount", "csharp");
-@@clientName(TranscriptTextUsageTokens.total_tokens, "TotalTokenCount", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokens, "AudioTranscriptionTokenUsage", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokens.input_tokens, "InputTokenCount", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokens.output_tokens, "OutputTokenCount", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokens.total_tokens, "TotalTokenCount", "csharp");
 
-@@clientName(TranscriptTextUsageTokensInputTokenDetails, "AudioTranscriptionInputTokenUsageDetails", "csharp");
-@@clientName(TranscriptTextUsageTokensInputTokenDetails.text_tokens, "TextTokenCount", "csharp");
-@@clientName(TranscriptTextUsageTokensInputTokenDetails.audio_tokens, "AudioTokenCount", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokensInputTokenDetails, "AudioTranscriptionInputTokenUsageDetails", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokensInputTokenDetails.text_tokens, "TextTokenCount", "csharp");
+@@clientName(Audio.TranscriptTextUsageTokensInputTokenDetails.audio_tokens, "AudioTokenCount", "csharp");
 
-@@clientName(TranscriptTextUsageDuration, "AudioTranscriptionDurationUsage", "csharp");
-@@clientName(TranscriptTextUsageDuration.seconds, "Duration", "csharp");
+@@clientName(Audio.TranscriptTextUsageDuration, "AudioTranscriptionDurationUsage", "csharp");
+@@clientName(Audio.TranscriptTextUsageDuration.seconds, "Duration", "csharp");
 
 @@clientName(createSpeech, "GenerateSpeech");
 @@clientName(createTranscription, "TranscribeAudio");

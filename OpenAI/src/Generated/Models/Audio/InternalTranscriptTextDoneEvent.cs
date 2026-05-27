@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using OpenAI;
+using OpenAI._Audio;
 
 namespace OpenAI.Audio
 {

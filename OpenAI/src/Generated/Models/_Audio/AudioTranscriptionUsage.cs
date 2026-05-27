@@ -5,28 +5,27 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI.Audio;
 
-namespace OpenAI.Audio
+namespace OpenAI._Audio
 {
     [Experimental("OPENAI001")]
-    public partial class AudioTranscriptionInputTokenUsageDetails
+    public abstract partial class AudioTranscriptionUsage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranscriptionInputTokenUsageDetails()
+        private protected AudioTranscriptionUsage(InternalCreateTranscriptionResponseJsonUsageType kind)
         {
+            Kind = kind;
         }
 
-        internal AudioTranscriptionInputTokenUsageDetails(int? textTokenCount, int? audioTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            TextTokenCount = textTokenCount;
-            AudioTokenCount = audioTokenCount;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public int? TextTokenCount { get; }
-
-        public int? AudioTokenCount { get; }
+        internal InternalCreateTranscriptionResponseJsonUsageType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

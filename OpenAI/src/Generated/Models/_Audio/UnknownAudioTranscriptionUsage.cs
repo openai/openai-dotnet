@@ -4,8 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI.Audio;
 
-namespace OpenAI.Audio
+namespace OpenAI._Audio
 {
     internal partial class UnknownAudioTranscriptionUsage : AudioTranscriptionUsage
     {

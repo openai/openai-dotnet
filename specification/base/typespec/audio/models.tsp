@@ -248,7 +248,7 @@ model CreateTranscriptionResponseDiarizedJson {
   segments: TranscriptionDiarizedSegment[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: OpenAI.Audio.CreateTranscriptionResponseJsonUsage;
+  usage?: Audio.CreateTranscriptionResponseJsonUsage;
 }
 
 /** A segment of diarized transcript text with speaker metadata. */
@@ -281,69 +281,67 @@ model TranscriptionDiarizedSegment {
 }
 
 /** Token usage statistics for the request. */
-namespace OpenAI.Audio;
+namespace Audio {
+  @discriminator("type")
+  model CreateTranscriptionResponseJsonUsage {
+    type: CreateTranscriptionResponseJsonUsageType;
+  }
 
-@discriminator("type")
-model CreateTranscriptionResponseJsonUsage {
-  type: CreateTranscriptionResponseJsonUsageType;
-}
+  /** Usage statistics for models billed by token usage. */
+  @summary("TranscriptTextUsageTokens")
+  model TranscriptTextUsageTokens extends CreateTranscriptionResponseJsonUsage {
+    /** The type of the usage object. Always `tokens` for this variant. */
+    #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+    @extension("x-stainless-const", true)
+    type: "tokens";
 
-/** Usage statistics for models billed by token usage. */
-@summary("TranscriptTextUsageTokens")
-model TranscriptTextUsageTokens extends CreateTranscriptionResponseJsonUsage {
-  /** The type of the usage object. Always `tokens` for this variant. */
-  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @extension("x-stainless-const", true)
-  type: "tokens";
+    /** Number of input tokens billed for this request. */
+    #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+    input_tokens: integer;
 
-  /** Number of input tokens billed for this request. */
-  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  input_tokens: integer;
+    /** Details about the input tokens billed for this request. */
+    #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+    input_token_details?: TranscriptTextUsageTokensInputTokenDetails;
 
-  /** Details about the input tokens billed for this request. */
-  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  input_token_details?: TranscriptTextUsageTokensInputTokenDetails;
+    /** Number of output tokens generated. */
+    #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+    output_tokens: integer;
 
-  /** Number of output tokens generated. */
-  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  output_tokens: integer;
+    /** Total number of tokens used (input + output). */
+    #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+    total_tokens: integer;
+  }
 
-  /** Total number of tokens used (input + output). */
-  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  total_tokens: integer;
-}
-
-#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model TranscriptTextUsageTokensInputTokenDetails {
-  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  text_tokens?: integer;
-  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  audio_tokens?: integer;
+  model TranscriptTextUsageTokensInputTokenDetails {
+    #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+    text_tokens?: integer;
+    #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+    #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+    audio_tokens?: integer;
+  }
+
+  /** Usage statistics for models billed by audio input duration. */
+  @summary("TranscriptTextUsageDuration")
+  model TranscriptTextUsageDuration extends CreateTranscriptionResponseJsonUsage {
+    /** The type of the usage object. Always `duration` for this variant. */
+    #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+    @extension("x-stainless-const", true)
+    type: "duration";
+
+    /** Duration of the input audio in seconds. */
+    #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+    @encode("seconds", int64)
+    @extension("x-ms-duration", "seconds")
+    seconds: duration;
+  }
 }
-
-/** Usage statistics for models billed by audio input duration. */
-@summary("TranscriptTextUsageDuration")
-model TranscriptTextUsageDuration extends CreateTranscriptionResponseJsonUsage {
-  /** The type of the usage object. Always `duration` for this variant. */
-  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @extension("x-stainless-const", true)
-  type: "duration";
-
-  /** Duration of the input audio in seconds. */
-  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
-  @extension("x-ms-duration", "seconds")
-  seconds: duration;
-}
-
-namespace OpenAI;
 
 /** Represents a transcription response returned by model, based on the provided input. */
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
@@ -378,7 +376,7 @@ model CreateTranscriptionResponseJson {
   logprobs?: CreateTranscriptionResponseJsonLogprobs[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: OpenAI.Audio.CreateTranscriptionResponseJsonUsage;
+  usage?: Audio.CreateTranscriptionResponseJsonUsage;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -451,7 +449,7 @@ model CreateTranscriptionResponseVerboseJson {
   segments?: TranscriptionSegment[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: OpenAI.Audio.TranscriptTextUsageDuration;
+  usage?: Audio.TranscriptTextUsageDuration;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -721,7 +719,7 @@ model TranscriptTextDoneEvent {
   logprobs?: TranscriptTextDoneEventLogprobs[];
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  usage?: OpenAI.Audio.TranscriptTextUsageTokens;
+  usage?: Audio.TranscriptTextUsageTokens;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -831,15 +829,13 @@ union TranscriptionInclude {
   logprobs: "logprobs",
 }
 
-namespace OpenAI.Audio;
-
-union CreateTranscriptionResponseJsonUsageType {
-  string,
-  "tokens",
-  "duration",
+namespace Audio {
+  union CreateTranscriptionResponseJsonUsageType {
+    string,
+    "tokens",
+    "duration",
+  }
 }
-
-namespace OpenAI;
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model CreateVoiceConsentRequest {

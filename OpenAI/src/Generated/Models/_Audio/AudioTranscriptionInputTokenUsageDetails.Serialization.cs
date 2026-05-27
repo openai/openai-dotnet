@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.Audio
+namespace OpenAI._Audio
 {
     public partial class AudioTranscriptionInputTokenUsageDetails : IJsonModel<AudioTranscriptionInputTokenUsageDetails>
     {

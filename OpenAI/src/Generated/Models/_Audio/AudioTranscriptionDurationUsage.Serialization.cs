@@ -7,8 +7,9 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Audio;
 
-namespace OpenAI.Audio
+namespace OpenAI._Audio
 {
     public partial class AudioTranscriptionDurationUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionDurationUsage>
     {

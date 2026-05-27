@@ -25,6 +25,7 @@ using OpenAI.Responses;
 using OpenAI.Skills;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
+using OpenAI._Audio;
 
 namespace OpenAI
 {
