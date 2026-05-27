@@ -25,7 +25,12 @@ namespace OpenAILibraryPlugin
             AddVisitor(new PageOrderRemovalVisitor(this));
             AddVisitor(new OmittedTypesVisitor());
             AddVisitor(new InvariantFormatAdditionalPropertiesVisitor());
-            AddVisitor(new OpenAILibraryVisitor());
+            AddVisitor(new AdditionalRawDataPropertyVisitor());
+            AddVisitor(new AdditionalPropertiesFieldMutabilityVisitor());
+            AddVisitor(new ModelSerializationSentinelVisitor());
+            AddVisitor(new AdditionalPropertiesWriteGuardVisitor());
+            AddVisitor(new OptionalDefinedPropertySerializationVisitor());
+            AddVisitor(new AdditionalPropertiesSentinelSkipVisitor());
             AddVisitor(new VirtualMessageCreationVisitor());
             AddVisitor(new ProhibitedNamespaceVisitor());
             AddVisitor(new ModelSerializationVisitor());
