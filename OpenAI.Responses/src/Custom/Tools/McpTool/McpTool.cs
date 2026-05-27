@@ -13,7 +13,7 @@ namespace OpenAI.Responses;
 public partial class McpTool
 {
     // CUSTOM: Added a constructor that takes the server URI in addition to the server label.
-    public McpTool(string serverLabel, Uri serverUri) : base(InternalToolType.Mcp)
+    public McpTool(string serverLabel, Uri serverUri) : base(ResponseToolKind.Mcp)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
         Argument.AssertNotNull(serverUri, nameof(serverUri));
@@ -24,7 +24,7 @@ public partial class McpTool
     }
 
     // CUSTOM: Added a constructor that takes the connector ID in addition to the server label.
-    public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(InternalToolType.Mcp)
+    public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(ResponseToolKind.Mcp)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 

@@ -5227,7 +5227,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ApplyPatchTool : ResponseTool, IJsonModel<ApplyPatchTool>, IPersistableModel<ApplyPatchTool> {
-        public ApplyPatchTool();
+        public ApplyPatchTool() : base(default);
     }
     [Experimental("OPENAI001")]
     public class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>, IPersistableModel<ApplyPatchUpdateFileOperation> {
@@ -5275,7 +5275,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
-        public CodeInterpreterTool(CodeInterpreterToolContainer container);
+        public CodeInterpreterTool(CodeInterpreterToolContainer container) : base(default);
         public CodeInterpreterToolContainer Container { get; }
     }
     [Experimental("OPENAI001")]
@@ -5395,7 +5395,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ComputerTool : ResponseTool, IJsonModel<ComputerTool>, IPersistableModel<ComputerTool> {
-        public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(default);
         public int DisplayHeight { get; set; }
         public int DisplayWidth { get; set; }
         public ComputerToolEnvironment Environment { get; set; }
@@ -5513,7 +5513,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>, IPersistableModel<FileSearchTool> {
-        public FileSearchTool(IEnumerable<string> vectorStoreIds);
+        public FileSearchTool(IEnumerable<string> vectorStoreIds) : base(default);
         public BinaryData Filters { get; set; }
         public int? MaxResultCount { get; set; }
         public FileSearchToolRankingOptions RankingOptions { get; set; }
@@ -5573,7 +5573,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FunctionTool : ResponseTool, IJsonModel<FunctionTool>, IPersistableModel<FunctionTool> {
-        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled);
+        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(default);
         public string FunctionDescription { get; set; }
         public string FunctionName { get; set; }
         public BinaryData FunctionParameters { get; set; }
@@ -5629,7 +5629,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
-        public ImageGenerationTool();
+        public ImageGenerationTool() : base(default);
         public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
         public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
@@ -5795,8 +5795,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
-        public McpTool(string serverLabel, McpToolConnectorId connectorId);
-        public McpTool(string serverLabel, Uri serverUri);
+        public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(default);
+        public McpTool(string serverLabel, Uri serverUri) : base(default);
         public McpToolFilter AllowedTools { get; set; }
         public string AuthorizationToken { get; set; }
         public McpToolConnectorId? ConnectorId { get; set; }
@@ -6441,6 +6441,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
+        protected internal ResponseTool(ResponseToolKind kind);
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -6480,6 +6481,29 @@ namespace OpenAI.Responses {
         FileSearch = 5,
         WebSearch = 6,
         Computer = 7
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
+        public ResponseToolKind(string value);
+        public static ResponseToolKind ApplyPatch { get; }
+        public static ResponseToolKind CodeInterpreter { get; }
+        public static ResponseToolKind ComputerUsePreview { get; }
+        public static ResponseToolKind FileSearch { get; }
+        public static ResponseToolKind Function { get; }
+        public static ResponseToolKind ImageGeneration { get; }
+        public static ResponseToolKind Mcp { get; }
+        public static ResponseToolKind WebSearch { get; }
+        public static ResponseToolKind WebSearchPreview { get; }
+        public readonly bool Equals(ResponseToolKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseToolKind left, ResponseToolKind right);
+        public static implicit operator ResponseToolKind(string value);
+        public static implicit operator ResponseToolKind?(string value);
+        public static bool operator !=(ResponseToolKind left, ResponseToolKind right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseTruncationMode : IEquatable<ResponseTruncationMode> {
@@ -6942,7 +6966,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class WebSearchPreviewTool : ResponseTool, IJsonModel<WebSearchPreviewTool>, IPersistableModel<WebSearchPreviewTool> {
-        public WebSearchPreviewTool();
+        public WebSearchPreviewTool() : base(default);
         public WebSearchToolContextSize? SearchContextSize { get; set; }
         public WebSearchToolLocation UserLocation { get; set; }
     }
@@ -6956,7 +6980,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class WebSearchTool : ResponseTool, IJsonModel<WebSearchTool>, IPersistableModel<WebSearchTool> {
-        public WebSearchTool();
+        public WebSearchTool() : base(default);
         public WebSearchToolFilters Filters { get; set; }
         public WebSearchToolContextSize? SearchContextSize { get; set; }
         public WebSearchToolLocation UserLocation { get; set; }

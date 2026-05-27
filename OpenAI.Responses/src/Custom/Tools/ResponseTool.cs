@@ -17,7 +17,7 @@ public partial class ResponseTool
         Argument.AssertNotNull(functionName, nameof(functionName));
 
         return new FunctionTool(
-            kind: InternalToolType.Function,
+            kind: ResponseToolKind.Function,
             patch: default,
             functionName: functionName,
             functionDescription: functionDescription,
@@ -30,7 +30,7 @@ public partial class ResponseTool
     public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight)
     {
         return new ComputerTool(
-            kind: InternalToolType.ComputerUsePreview,
+            kind: ResponseToolKind.ComputerUsePreview,
             patch: default,
             environment: environment,
             displayWidth: displayWidth,
@@ -43,7 +43,7 @@ public partial class ResponseTool
         Argument.AssertNotNull(vectorStoreIds, nameof(vectorStoreIds));
 
         return new FileSearchTool(
-            kind: InternalToolType.FileSearch,
+            kind: ResponseToolKind.FileSearch,
             patch: default,
             vectorStoreIds: vectorStoreIds.ToList(),
             maxResultCount: maxResultCount,
@@ -55,7 +55,7 @@ public partial class ResponseTool
     public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null)
     {
         return new WebSearchTool(
-            kind: InternalToolType.WebSearch,
+            kind: ResponseToolKind.WebSearch,
             patch: default,
             userLocation: userLocation,
             searchContextSize: searchContextSize,
@@ -66,7 +66,7 @@ public partial class ResponseTool
     public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null)
     {
         return new WebSearchPreviewTool(
-            kind: InternalToolType.WebSearchPreview,
+            kind: ResponseToolKind.WebSearchPreview,
             patch: default,
             userLocation: userLocation,
             searchContextSize: searchContextSize);
@@ -85,7 +85,7 @@ public partial class ResponseTool
         Argument.AssertNotNull(serverUri, nameof(serverUri));
 
         return new McpTool(
-            kind: InternalToolType.Mcp,
+            kind: ResponseToolKind.Mcp,
             patch: default,
             serverLabel: serverLabel,
             serverUri: serverUri,
@@ -103,7 +103,7 @@ public partial class ResponseTool
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 
         return new McpTool(
-            kind: InternalToolType.Mcp,
+            kind: ResponseToolKind.Mcp,
             patch: default,
             serverLabel: serverLabel,
             serverUri: null,
@@ -125,7 +125,7 @@ public partial class ResponseTool
         Argument.AssertNotNull(container, nameof(container));
 
         return new CodeInterpreterTool(
-            kind: InternalToolType.CodeInterpreter,
+            kind: ResponseToolKind.CodeInterpreter,
             patch: default,
             container: container);
     }
@@ -137,7 +137,7 @@ public partial class ResponseTool
     public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null)
     {
         return new ImageGenerationTool(
-            kind: InternalToolType.ImageGeneration,
+            kind: ResponseToolKind.ImageGeneration,
             patch: default,
             model: model,
             quality: quality,
