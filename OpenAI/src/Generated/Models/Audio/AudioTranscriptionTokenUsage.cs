@@ -26,6 +26,12 @@ namespace OpenAI.Audio
             TotalTokenCount = totalTokenCount;
         }
 
+        public int InputTokenCount { get; }
+
         public AudioTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
+
+        public int OutputTokenCount { get; }
+
+        public int TotalTokenCount { get; }
     }
 }

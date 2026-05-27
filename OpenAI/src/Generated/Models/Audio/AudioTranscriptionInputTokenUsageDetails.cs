@@ -24,6 +24,10 @@ namespace OpenAI.Audio
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
+        public int? TextTokenCount { get; }
+
+        public int? AudioTokenCount { get; }
+
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;

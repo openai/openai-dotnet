@@ -1016,7 +1016,7 @@ namespace OpenAI.Audio {
         public int OutputTokenCount { get; }
         public int TotalTokenCount { get; }
     }
-    public class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>, IPersistableModel<AudioTranscriptionUsage> {
+    public abstract class AudioTranscriptionUsage : IJsonModel<AudioTranscriptionUsage>, IPersistableModel<AudioTranscriptionUsage> {
     }
     public class AudioTranslation : IJsonModel<AudioTranslation>, IPersistableModel<AudioTranslation> {
         public TimeSpan? Duration { get; }

@@ -20,5 +20,7 @@ namespace OpenAI.Audio
         {
             Duration = duration;
         }
+
+        public TimeSpan Duration { get; }
     }
 }
