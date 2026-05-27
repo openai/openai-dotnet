@@ -40,7 +40,7 @@ namespace OpenAI.Responses
 
         public static ResponseToolKind FileSearch { get; } = new ResponseToolKind(FileSearchValue);
 
-        public static ResponseToolKind Computer { get; } = new ResponseToolKind(ComputerValue);
+        internal static ResponseToolKind Computer { get; } = new ResponseToolKind(ComputerValue);
 
         public static ResponseToolKind ComputerUsePreview { get; } = new ResponseToolKind(ComputerUsePreviewValue);
 
@@ -52,15 +52,15 @@ namespace OpenAI.Responses
 
         public static ResponseToolKind ImageGeneration { get; } = new ResponseToolKind(ImageGenerationValue);
 
-        public static ResponseToolKind LocalShell { get; } = new ResponseToolKind(LocalShellValue);
+        internal static ResponseToolKind LocalShell { get; } = new ResponseToolKind(LocalShellValue);
 
-        public static ResponseToolKind Shell { get; } = new ResponseToolKind(ShellValue);
+        internal static ResponseToolKind Shell { get; } = new ResponseToolKind(ShellValue);
 
-        public static ResponseToolKind Custom { get; } = new ResponseToolKind(CustomValue);
+        internal static ResponseToolKind Custom { get; } = new ResponseToolKind(CustomValue);
 
-        public static ResponseToolKind Namespace { get; } = new ResponseToolKind(NamespaceValue);
+        internal static ResponseToolKind Namespace { get; } = new ResponseToolKind(NamespaceValue);
 
-        public static ResponseToolKind ToolSearch { get; } = new ResponseToolKind(ToolSearchValue);
+        internal static ResponseToolKind ToolSearch { get; } = new ResponseToolKind(ToolSearchValue);
 
         public static ResponseToolKind WebSearchPreview { get; } = new ResponseToolKind(WebSearchPreviewValue);
 

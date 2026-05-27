@@ -5666,17 +5666,11 @@ namespace OpenAI.Responses {
         public ResponseToolKind(string value);
         public static ResponseToolKind ApplyPatch { get; }
         public static ResponseToolKind CodeInterpreter { get; }
-        public static ResponseToolKind Computer { get; }
         public static ResponseToolKind ComputerUsePreview { get; }
-        public static ResponseToolKind Custom { get; }
         public static ResponseToolKind FileSearch { get; }
         public static ResponseToolKind Function { get; }
         public static ResponseToolKind ImageGeneration { get; }
-        public static ResponseToolKind LocalShell { get; }
         public static ResponseToolKind Mcp { get; }
-        public static ResponseToolKind Namespace { get; }
-        public static ResponseToolKind Shell { get; }
-        public static ResponseToolKind ToolSearch { get; }
         public static ResponseToolKind WebSearch { get; }
         public static ResponseToolKind WebSearchPreview { get; }
         public readonly bool Equals(ResponseToolKind other);
