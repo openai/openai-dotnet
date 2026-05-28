@@ -17,7 +17,7 @@ namespace OpenAI
     {
         private readonly MultipartFormDataContent _multipartContent;
         private static readonly Random _random = new Random();
-        private static readonly char[] _boundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".ToCharArray();
+        private static readonly char[] _boundaryValues = "0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ?abcdefghijklmnopqrstuvwxyz".ToCharArray();
 
         public MultiPartFormDataBinaryContent()
         {
