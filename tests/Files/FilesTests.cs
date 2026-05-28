@@ -1,7 +1,3 @@
-using Microsoft.ClientModel.TestFramework;
-using NUnit.Framework;
-using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -9,6 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
+using OpenAI.Files;
+using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Files;
 
@@ -186,7 +186,7 @@ public class FilesTests : OpenAIRecordedTestBase
             Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
             Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(fileInfo.Filename, Does.Contain(filename).IgnoreCase);
+            Assert.That(fileInfo.Filename, Is.EqualTo(filename).IgnoreCase);
             Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
             Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
