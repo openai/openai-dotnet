@@ -231,6 +231,40 @@ public class FilesMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task UploadFileWithPathUsesFileNameOnly()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
+        {
+            "id": "returned_file_id"
+        }
+        """);
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        await InvokeUploadFileSyncOrAsync(clientOptions, FileSourceKind.UsingFilePath);
+
+        string fileContentDisposition = requestBody
+            .Split(["\r\n", "\n"], StringSplitOptions.None)
+            .Single(line => line.StartsWith("Content-Disposition: form-data; name=file", StringComparison.Ordinal));
+
+        Assert.That(fileContentDisposition, Does.Contain("filename=images_dog_and_cat.png"));
+        Assert.That(fileContentDisposition, Does.Not.Contain("Assets"));
+    }
+
+    [Test]
     public void UploadFileRespectsTheCancellationToken()
     {
         OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
