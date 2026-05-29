@@ -81,7 +81,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio_start_ms"u8))
             {
                 writer.WritePropertyName("audio_start_ms"u8);
-                SerializeAudioStartTimeValue(writer, options);
+                writer.WriteNumberValue(AudioStartTime.TotalMilliseconds);
             }
             if (!Patch.Contains("$.item_id"u8))
             {
