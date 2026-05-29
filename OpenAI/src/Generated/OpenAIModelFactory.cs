@@ -1798,6 +1798,11 @@ namespace OpenAI
             return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
+        public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        {
+            return new RealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+        }
+
         public static RealtimeMcpToolDefinition RealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
             return new RealtimeMcpToolDefinition(name, description, inputSchema, annotations, default);
@@ -1837,11 +1842,6 @@ namespace OpenAI
         public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
         {
             return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
-        }
-
-        public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
-        {
-            return new RealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
         }
 
         public static RealtimeTranscriptionInputTokenUsageDetails RealtimeTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)

@@ -229,6 +229,10 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveLogprobsArray(out value);
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
                 {
                     return false;
@@ -261,6 +265,34 @@ namespace OpenAI.Realtime
                 return true;
             }
             return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveLogprobsArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveLogprobs(), new ModelReaderWriterOptions("J"), OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<RealtimeLogProbabilityDetails> ActiveLogprobs()
+        {
+            if (!Optional.IsCollectionDefined(Logprobs))
+            {
+                yield break;
+            }
+            for (int i = 0; i < Logprobs.Count; i++)
+            {
+                if (!Logprobs[i].Patch.IsRemoved("$"u8))
+                {
+                    yield return Logprobs[i];
+                }
+            }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

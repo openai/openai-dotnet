@@ -255,6 +255,10 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "choices"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveChoicesArray(out value);
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
                 {
                     return false;
@@ -287,6 +291,34 @@ namespace OpenAI.Chat
                 return true;
             }
             return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveChoicesArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveChoices(), new ModelReaderWriterOptions("J"), OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<InternalCreateChatCompletionStreamResponseChoice> ActiveChoices()
+        {
+            if (!Optional.IsCollectionDefined(Choices))
+            {
+                yield break;
+            }
+            for (int i = 0; i < Choices.Count; i++)
+            {
+                if (!Choices[i].Patch.IsRemoved("$"u8))
+                {
+                    yield return Choices[i];
+                }
+            }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

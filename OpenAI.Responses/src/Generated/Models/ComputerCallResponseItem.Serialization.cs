@@ -210,6 +210,10 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "pending_safety_checks"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolvePendingSafetyChecksArray(out value);
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
                 {
                     return false;
@@ -242,6 +246,34 @@ namespace OpenAI.Responses
                 return true;
             }
             return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolvePendingSafetyChecksArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActivePendingSafetyChecks(), new ModelReaderWriterOptions("J"), OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<ComputerCallSafetyCheck> ActivePendingSafetyChecks()
+        {
+            if (!Optional.IsCollectionDefined(PendingSafetyChecks))
+            {
+                yield break;
+            }
+            for (int i = 0; i < PendingSafetyChecks.Count; i++)
+            {
+                if (!PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
+                {
+                    yield return PendingSafetyChecks[i];
+                }
+            }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

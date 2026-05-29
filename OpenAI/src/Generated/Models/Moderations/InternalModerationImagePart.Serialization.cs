@@ -12,7 +12,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationImagePart : ModerationInputPart, IJsonModel<InternalModerationImagePart>
     {
-        internal InternalModerationImagePart() : this(ModerationInputPartKind.Image, null, null)
+        internal InternalModerationImagePart() : this(default, null, null)
         {
         }
 

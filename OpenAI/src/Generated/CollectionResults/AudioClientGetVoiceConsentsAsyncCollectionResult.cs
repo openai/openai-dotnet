@@ -5,6 +5,7 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenAI.Audio
 {
@@ -26,12 +27,17 @@ namespace OpenAI.Audio
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
             PipelineMessage message = _client.CreateGetVoiceConsentsRequest(_after, _limit, _options);
-            yield return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
+            yield return await GetNextResponseAsync(message).ConfigureAwait(false);
         }
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             return null;
+        }
+
+        private async ValueTask<ClientResult> GetNextResponseAsync(PipelineMessage message)
+        {
+            return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
         }
     }
 }

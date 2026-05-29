@@ -169,6 +169,10 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "rate_limits"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveRateLimitDetailsArray(out value);
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
                 {
                     return false;
@@ -196,6 +200,34 @@ namespace OpenAI.Realtime
                 return true;
             }
             return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveRateLimitDetailsArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveRateLimitDetails(), new ModelReaderWriterOptions("J"), OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<RealtimeRateLimitDetails> ActiveRateLimitDetails()
+        {
+            if (!Optional.IsCollectionDefined(RateLimitDetails))
+            {
+                yield break;
+            }
+            for (int i = 0; i < RateLimitDetails.Count; i++)
+            {
+                if (!RateLimitDetails[i].Patch.IsRemoved("$"u8))
+                {
+                    yield return RateLimitDetails[i];
+                }
+            }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

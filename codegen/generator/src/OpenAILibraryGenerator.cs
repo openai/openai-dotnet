@@ -36,6 +36,8 @@ namespace OpenAILibraryPlugin
             AddVisitor(new MetadataQueryParamVisitor());
             AddVisitor(new ProtocolModelVisitor());
 			AddVisitor(new ItemsPropertyVisitor());
+            // CUSTOM: Workaround to add OpenAIContext.Default arg to ModelReaderWriter.Write for AOT trimming
+            AddVisitor(new ModelReaderWriterContextVisitor());
         }
     }
 }
