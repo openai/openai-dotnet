@@ -14,7 +14,7 @@ namespace OpenAI.Responses
     public partial class McpTool : ResponseTool
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpTool(InternalToolType kind, in JsonPatch patch, string serverLabel, Uri serverUri, McpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
+        internal McpTool(ResponseToolKind kind, in JsonPatch patch, string serverLabel, Uri serverUri, McpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;

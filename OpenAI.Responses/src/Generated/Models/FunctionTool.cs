@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FunctionTool : ResponseTool
     {
-        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(InternalToolType.Function)
+        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(ResponseToolKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
 
@@ -22,7 +22,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FunctionTool(InternalToolType kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters, bool? strictModeEnabled) : base(kind, patch)
+        internal FunctionTool(ResponseToolKind kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters, bool? strictModeEnabled) : base(kind, patch)
         {
             FunctionName = functionName;
             FunctionDescription = functionDescription;

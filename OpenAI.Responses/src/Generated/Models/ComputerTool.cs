@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ComputerTool : ResponseTool
     {
-        public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(InternalToolType.ComputerUsePreview)
+        public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(ResponseToolKind.ComputerUsePreview)
         {
             Environment = environment;
             DisplayWidth = displayWidth;
@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ComputerTool(InternalToolType kind, in JsonPatch patch, ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(kind, patch)
+        internal ComputerTool(ResponseToolKind kind, in JsonPatch patch, ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(kind, patch)
         {
             Environment = environment;
             DisplayWidth = displayWidth;

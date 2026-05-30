@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ApplyPatchTool : ResponseTool
     {
-        public ApplyPatchTool() : this(InternalToolType.ApplyPatch, default)
+        public ApplyPatchTool() : this(ResponseToolKind.ApplyPatch, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchTool(InternalToolType kind, in JsonPatch patch) : base(kind, patch)
+        internal ApplyPatchTool(ResponseToolKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

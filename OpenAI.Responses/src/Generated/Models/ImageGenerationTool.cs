@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
-        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default, default)
+        public ImageGenerationTool() : this(ResponseToolKind.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount, ImageGenerationToolAction? action) : base(kind, patch)
+        internal ImageGenerationTool(ResponseToolKind kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount, ImageGenerationToolAction? action) : base(kind, patch)
         {
             Model = model;
             Quality = quality;

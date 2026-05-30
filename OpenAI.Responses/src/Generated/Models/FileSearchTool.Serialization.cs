@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>
     {
-        internal FileSearchTool() : this(InternalToolType.FileSearch, default, null, default, null, null)
+        internal FileSearchTool() : this(ResponseToolKind.FileSearch, default, null, default, null, null)
         {
         }
 
@@ -148,7 +148,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalToolType kind = default;
+            ResponseToolKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -160,7 +160,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalToolType(prop.Value.GetString());
+                    kind = new ResponseToolKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("vector_store_ids"u8))
