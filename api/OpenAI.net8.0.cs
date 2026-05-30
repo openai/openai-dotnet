@@ -62,45 +62,6 @@ namespace OpenAI {
         public static OpenAIContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
     }
-    [Experimental("SCME0002")]
-    public static class OpenAIHostBuilderExtensions {
-        public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddKeyedAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-    }
 }
 namespace OpenAI.Assistants {
     [Experimental("OPENAI001")]
@@ -493,6 +454,11 @@ namespace OpenAI.Assistants {
     }
     [Experimental("OPENAI001")]
     public class MessageStatusUpdate : StreamingUpdate<ThreadMessage> {
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIAssistantsHostBuilderExtensions {
+        public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
     }
     [Experimental("OPENAI001")]
     public abstract class RequiredAction {
@@ -1258,6 +1224,11 @@ namespace OpenAI.Audio {
         public static bool operator !=(GeneratedSpeechVoice left, GeneratedSpeechVoice right);
         public override readonly string ToString();
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIAudioHostBuilderExtensions {
+        public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+    }
     public static class OpenAIAudioModelFactory {
         [Experimental("OPENAI001")]
         public static AudioTranscription AudioTranscription(string language = null, TimeSpan? duration = null, string text = null, IEnumerable<TranscribedWord> words = null, IEnumerable<TranscribedSegment> segments = null, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = null);
@@ -1400,6 +1371,11 @@ namespace OpenAI.Batch {
         public static Task<CreateBatchOperation> RehydrateAsync(BatchClient client, string batchId, CancellationToken cancellationToken = default);
         public override ClientResult UpdateStatus(RequestOptions? options = null);
         public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIBatchHostBuilderExtensions {
+        public static IClientBuilder AddBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
     }
 }
 namespace OpenAI.Chat {
@@ -2077,6 +2053,11 @@ namespace OpenAI.Chat {
         public FunctionChatMessage(string functionName, string content);
         public string FunctionName { get; }
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIChatHostBuilderExtensions {
+        public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+    }
     public static class OpenAIChatModelFactory {
         [Experimental("OPENAI001")]
         public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, ChatServiceTier? serviceTier = null, string systemFingerprint = null, ChatTokenUsage usage = null, ChatOutputAudio outputAudio = null, IEnumerable<ChatMessageAnnotation> messageAnnotations = null);
@@ -2342,6 +2323,11 @@ namespace OpenAI.Containers {
         public string Object { get; }
         public static explicit operator DeleteContainerResponse(ClientResult result);
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIContainersHostBuilderExtensions {
+        public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+    }
 }
 namespace OpenAI.Conversations {
     [Experimental("OPENAI001")]
@@ -2401,6 +2387,11 @@ namespace OpenAI.Conversations {
         public static implicit operator IncludedConversationItemProperty?(string value);
         public static bool operator !=(IncludedConversationItemProperty left, IncludedConversationItemProperty right);
         public override readonly string ToString();
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIConversationsHostBuilderExtensions {
+        public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
     }
 }
 namespace OpenAI.Embeddings {
@@ -2470,6 +2461,11 @@ namespace OpenAI.Embeddings {
         [Experimental("OPENAI001")]
         public static explicit operator OpenAIEmbeddingCollection(ClientResult result);
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIEmbeddingsHostBuilderExtensions {
+        public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+    }
     public static class OpenAIEmbeddingsModelFactory {
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = 0, int totalTokenCount = 0);
         public static OpenAIEmbedding OpenAIEmbedding(int index = 0, IEnumerable<float> vector = null);
@@ -2520,6 +2516,11 @@ namespace OpenAI.Evals {
     public sealed class EvaluationClientSettings : ClientSettings {
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIEvalsHostBuilderExtensions {
+        public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
     }
 }
 namespace OpenAI.Files {
@@ -2655,6 +2656,11 @@ namespace OpenAI.Files {
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {
         [Experimental("OPENAI001")]
         public static explicit operator OpenAIFileCollection(ClientResult result);
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIFilesHostBuilderExtensions {
+        public static IClientBuilder AddKeyedOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     public static class OpenAIFilesModelFactory {
         public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = false);
@@ -2957,6 +2963,11 @@ namespace OpenAI.FineTuning {
     [Experimental("OPENAI001")]
     public class MethodHyperparameters {
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIFineTuningHostBuilderExtensions {
+        public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+    }
     [Experimental("OPENAI001")]
     public class WeightsAndBiasesIntegration : FineTuningIntegration, IJsonModel<WeightsAndBiasesIntegration>, IPersistableModel<WeightsAndBiasesIntegration> {
         public WeightsAndBiasesIntegration(string projectName);
@@ -3109,6 +3120,11 @@ namespace OpenAI.Graders {
         public static implicit operator GraderType?(string value);
         public static bool operator !=(GraderType left, GraderType right);
         public override readonly string ToString();
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIGradersHostBuilderExtensions {
+        public static IClientBuilder AddGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
     }
     [Experimental("OPENAI001")]
     public class RunGraderRequest : IJsonModel<RunGraderRequest>, IPersistableModel<RunGraderRequest> {
@@ -3437,6 +3453,11 @@ namespace OpenAI.Images {
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIImagesHostBuilderExtensions {
+        public static IClientBuilder AddImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+    }
     public static class OpenAIImagesModelFactory {
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
         [Experimental("OPENAI001")]
@@ -3499,6 +3520,11 @@ namespace OpenAI.Models {
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {
         [Experimental("OPENAI001")]
         public static explicit operator OpenAIModelCollection(ClientResult result);
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIModelsHostBuilderExtensions {
+        public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     public static class OpenAIModelsModelFactory {
         public static ModelDeletionResult ModelDeletionResult(string modelId = null, bool deleted = false);
@@ -3594,6 +3620,11 @@ namespace OpenAI.Moderations {
         [Experimental("OPENAI001")]
         public static explicit operator ModerationResultCollection(ClientResult result);
     }
+    [Experimental("SCME0002")]
+    public static class OpenAIModerationsHostBuilderExtensions {
+        public static IClientBuilder AddKeyedModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
     public static class OpenAIModerationsModelFactory {
         public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
         [Experimental("OPENAI001")]
@@ -3624,6 +3655,11 @@ namespace OpenAI.Realtime {
         public RealtimeSession Session { get; }
         public string Value { get; }
         public static explicit operator CreateClientSecretResult(ClientResult result);
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIRealtimeHostBuilderExtensions {
+        public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     [Experimental("OPENAI002")]
     public class RealtimeAudioFormat : IJsonModel<RealtimeAudioFormat>, IPersistableModel<RealtimeAudioFormat> {
@@ -7061,6 +7097,11 @@ namespace OpenAI.Responses {
     }
 }
 namespace OpenAI.Skills {
+    [Experimental("SCME0002")]
+    public static class OpenAISkillsHostBuilderExtensions {
+        public static IClientBuilder AddKeyedSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
     [Experimental("OPENAI001")]
     public class SkillClient {
         protected SkillClient();
@@ -7116,6 +7157,11 @@ namespace OpenAI.VectorStores {
         public string FileId { get; }
         public bool Removed { get; }
         public static explicit operator FileFromStoreRemovalResult(ClientResult result);
+    }
+    [Experimental("SCME0002")]
+    public static class OpenAIVectorStoresHostBuilderExtensions {
+        public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     [Experimental("OPENAI001")]
     public class StaticFileChunkingStrategy : FileChunkingStrategy, IJsonModel<StaticFileChunkingStrategy>, IPersistableModel<StaticFileChunkingStrategy> {
@@ -7400,6 +7446,11 @@ namespace OpenAI.VectorStores {
     }
 }
 namespace OpenAI.Videos {
+    [Experimental("SCME0002")]
+    public static class OpenAIVideosHostBuilderExtensions {
+        public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
     [Experimental("OPENAI001")]
     public class VideoClient {
         protected VideoClient();
