@@ -13,7 +13,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileSearchCallResponseItem : ResponseItem
     {
-        public FileSearchCallResponseItem(IEnumerable<string> queries) : base(InternalItemType.FileSearchCall)
+        public FileSearchCallResponseItem(IEnumerable<string> queries) : base(ResponseItemKind.FileSearchCall)
         {
             Argument.AssertNotNull(queries, nameof(queries));
 
@@ -22,7 +22,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FileSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, patch)
+        internal FileSearchCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;

@@ -15,7 +15,7 @@ namespace OpenAI.Responses;
 public partial class McpToolCallApprovalRequestItem
 {
     // CUSTOM: Added a constructor that takes the item ID.
-    public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(InternalItemType.McpApprovalRequest)
+    public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(ResponseItemKind.McpApprovalRequest)
     {
         Argument.AssertNotNull(id, nameof(id));
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));

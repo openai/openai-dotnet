@@ -11,7 +11,7 @@ namespace OpenAI.Responses;
 public partial class ReferenceResponseItem
 {
     // CUSTOM: Added a constructor that takes the item ID.
-    public ReferenceResponseItem(string id) : base(InternalItemType.ItemReference)
+    public ReferenceResponseItem(string id) : base(ResponseItemKind.ItemReference)
     {
         Argument.AssertNotNull(id, nameof(id));
 

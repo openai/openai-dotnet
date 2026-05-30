@@ -10,12 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReferenceResponseItem : ResponseItem
     {
-        internal ReferenceResponseItem() : this(InternalItemType.ItemReference, null, default)
+        internal ReferenceResponseItem() : this(ResponseItemKind.ItemReference, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ReferenceResponseItem(InternalItemType kind, string id, in JsonPatch patch) : base(kind, id, patch)
+        internal ReferenceResponseItem(ResponseItemKind kind, string id, in JsonPatch patch) : base(kind, id, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolCallApprovalResponseItem : ResponseItem
     {
-        public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(InternalItemType.McpApprovalResponse)
+        public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(ResponseItemKind.McpApprovalResponse)
         {
             Argument.AssertNotNull(approvalRequestId, nameof(approvalRequestId));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpToolCallApprovalResponseItem(InternalItemType kind, string id, in JsonPatch patch, string approvalRequestId, bool approved, string reason) : base(kind, id, patch)
+        internal McpToolCallApprovalResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, string approvalRequestId, bool approved, string reason) : base(kind, id, patch)
         {
             ApprovalRequestId = approvalRequestId;
             Approved = approved;

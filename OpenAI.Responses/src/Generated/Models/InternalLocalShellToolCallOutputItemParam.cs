@@ -8,13 +8,13 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallOutputItemParam : InternalItemParam
     {
-        public InternalLocalShellToolCallOutputItemParam(string output) : base(InternalItemType.LocalShellCallOutput)
+        public InternalLocalShellToolCallOutputItemParam(string output) : base(ResponseItemKind.LocalShellCallOutput)
         {
             Output = output;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalLocalShellToolCallOutputItemParam(InternalItemType kind, in JsonPatch patch, string output) : base(kind, patch)
+        internal InternalLocalShellToolCallOutputItemParam(ResponseItemKind kind, in JsonPatch patch, string output) : base(kind, patch)
         {
             Output = output;
         }

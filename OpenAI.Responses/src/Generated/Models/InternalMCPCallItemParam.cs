@@ -8,7 +8,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPCallItemParam : InternalItemParam
     {
-        public InternalMCPCallItemParam(string serverLabel, string name, string arguments) : base(InternalItemType.McpCall)
+        public InternalMCPCallItemParam(string serverLabel, string name, string arguments) : base(ResponseItemKind.McpCall)
         {
             ServerLabel = serverLabel;
             Name = name;
@@ -16,7 +16,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalMCPCallItemParam(InternalItemType kind, in JsonPatch patch, string serverLabel, string name, string arguments, string output, string error) : base(kind, patch)
+        internal InternalMCPCallItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, string name, string arguments, string output, string error) : base(kind, patch)
         {
             ServerLabel = serverLabel;
             Name = name;

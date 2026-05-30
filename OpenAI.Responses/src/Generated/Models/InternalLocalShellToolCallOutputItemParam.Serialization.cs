@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallOutputItemParam : InternalItemParam, IJsonModel<InternalLocalShellToolCallOutputItemParam>
     {
-        internal InternalLocalShellToolCallOutputItemParam() : this(InternalItemType.LocalShellCallOutput, default, null)
+        internal InternalLocalShellToolCallOutputItemParam() : this(ResponseItemKind.LocalShellCallOutput, default, null)
         {
         }
 
@@ -102,7 +102,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalItemType kind = default;
+            ResponseItemKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -111,7 +111,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalItemType(prop.Value.GetString());
+                    kind = new ResponseItemKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output"u8))

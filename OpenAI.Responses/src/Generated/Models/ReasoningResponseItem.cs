@@ -13,7 +13,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReasoningResponseItem : ResponseItem
     {
-        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(InternalItemType.Reasoning)
+        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(ResponseItemKind.Reasoning)
         {
             Argument.AssertNotNull(summaryParts, nameof(summaryParts));
 
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ReasoningResponseItem(InternalItemType kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, patch)
+        internal ReasoningResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;

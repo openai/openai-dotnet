@@ -9,6 +9,8 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [CodeGenType("ItemResource")]
+[CodeGenVisibility(nameof(ResponseItem), CodeGenVisibility.ProtectedInternal, typeof(ResponseItemKind))]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class ResponseItem
 {
     // CUSTOM: Added setter because this is required in output scenarios and optional in input scenarios.

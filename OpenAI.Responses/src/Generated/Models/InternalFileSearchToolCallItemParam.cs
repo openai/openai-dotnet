@@ -11,14 +11,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFileSearchToolCallItemParam : InternalItemParam
     {
-        public InternalFileSearchToolCallItemParam(IEnumerable<string> queries) : base(InternalItemType.FileSearchCall)
+        public InternalFileSearchToolCallItemParam(IEnumerable<string> queries) : base(ResponseItemKind.FileSearchCall)
         {
             Queries = queries.ToList();
             Results = new ChangeTrackingList<FileSearchCallResult>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalFileSearchToolCallItemParam(InternalItemType kind, in JsonPatch patch, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, patch)
+        internal InternalFileSearchToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Queries = queries ?? new ChangeTrackingList<string>();
