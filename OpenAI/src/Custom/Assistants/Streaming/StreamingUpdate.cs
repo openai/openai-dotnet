@@ -1,7 +1,9 @@
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.ServerSentEvents;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Assistants;
@@ -74,8 +76,44 @@ public abstract partial class StreamingUpdate
             or StreamingUpdateReason.MessageFailed => MessageStatusUpdate.DeserializeMessageStatusUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.RunStepUpdated => RunStepDetailsUpdate.DeserializeRunStepDetailsUpdates(e, updateKind, serializationOptions),
             StreamingUpdateReason.MessageUpdated => MessageContentUpdate.DeserializeMessageContentUpdates(e, updateKind, serializationOptions),
-            _ => null,
+            StreamingUpdateReason.Error => throw CreateExceptionFromErrorEvent(e),
+            _ => [],
         };
+    }
+
+    // The service can emit an "error" event mid-stream (for example, when an account is out of quota or the server
+    // fails while generating). Unlike other unmodeled events, which are benign and yield no updates, the error event
+    // carries a service failure that callers must observe. Surface it through the SDK's standard error exception so
+    // that a streaming failure is reported the same way as a non-streaming one rather than looking like a clean,
+    // truncated stream.
+    private static ClientResultException CreateExceptionFromErrorEvent(JsonElement data)
+    {
+        if (data.TryGetProperty("error", out JsonElement errorElement))
+        {
+            string code = errorElement.TryGetProperty("code", out JsonElement c) && c.ValueKind == JsonValueKind.String ? c.GetString() : null;
+            string message = errorElement.TryGetProperty("message", out JsonElement m) && m.ValueKind == JsonValueKind.String ? m.GetString() : null;
+            string param = errorElement.TryGetProperty("param", out JsonElement p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null;
+            string kind = errorElement.TryGetProperty("type", out JsonElement t) && t.ValueKind == JsonValueKind.String ? t.GetString() : null;
+
+            return new ClientResultException(FormatErrorMessage(code, message, param, kind));
+        }
+
+        return new ClientResultException(data.GetRawText());
+    }
+
+    private static string FormatErrorMessage(string code, string message, string param, string kind)
+    {
+        StringBuilder messageBuilder = new();
+        messageBuilder.Append("Streaming error (").Append(kind).Append(": ").Append(code).AppendLine(")");
+
+        if (!string.IsNullOrEmpty(param))
+        {
+            messageBuilder.Append("Parameter: ").AppendLine(param);
+        }
+
+        messageBuilder.AppendLine();
+        messageBuilder.Append(message);
+        return messageBuilder.ToString();
     }
 }
 

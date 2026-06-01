@@ -1,5 +1,12 @@
 # Release History
 
+## (Unreleased)
+
+### Bugs Fixed
+
+- OpenAI.Assistants:
+  - Fixed a `NullReferenceException` when an Assistants streaming response delivered an unmodeled `error` event. The SSE `error` frame is now surfaced as a `ClientResultException` so the failure is observable, while the unknown-event path stays covered.
+
 ## 2.10.0 (2026-04-03)
 
 ### Features Added
