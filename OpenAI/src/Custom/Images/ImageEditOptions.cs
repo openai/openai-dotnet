@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
@@ -89,6 +90,29 @@ public partial class ImageEditOptions
 
         content.Add(image, "image", imageFilename);
 
+        AddOptionsToContent(content, mask, maskFilename);
+
+        return content;
+    }
+
+    internal MultiPartFormDataBinaryContent ToMultipartContent(IReadOnlyList<Stream> images, IReadOnlyList<string> imageFilenames, Stream mask, string maskFilename)
+    {
+        MultiPartFormDataBinaryContent content = new();
+
+        // The image edit endpoint expects each image to be sent under the "image[]" field
+        // name when more than one image is provided, as shown in the platform documentation.
+        for (int i = 0; i < images.Count; i++)
+        {
+            content.Add(images[i], "image[]", imageFilenames[i]);
+        }
+
+        AddOptionsToContent(content, mask, maskFilename);
+
+        return content;
+    }
+
+    private void AddOptionsToContent(MultiPartFormDataBinaryContent content, Stream mask, string maskFilename)
+    {
         content.Add(Prompt, "prompt");
 
         if (Background is not null)
@@ -155,7 +179,5 @@ public partial class ImageEditOptions
         {
             content.Add(Stream.Value, "stream");
         }
-
-        return content;
     }
 }
