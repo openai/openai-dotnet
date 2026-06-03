@@ -12,7 +12,8 @@ references the old name.
 
 ## Fix
 
-1. Open `specification/client/{area}.client.tsp`.
+1. Open the client customization TSP file for the affected area (see
+   [file-locations.md](../ingesting-spec/file-locations.md) for the path pattern).
 2. Find the stale reference named in the error.
 3. Update it to match the new name from the base spec, or remove the `@@clientLocation` line if
    the operation was removed.

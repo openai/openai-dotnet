@@ -10,8 +10,10 @@ description: Guide for fixing TypeSpec codegen errors in the openai-dotnet repos
 After running `scripts/Invoke-CodeGen.ps1`, various categories of errors can occur. This skill
 covers diagnosing and fixing each category.
 
-> **Ground rule:** Never modify `specification/base/` — these are upstream copies. All fixes go
-> in `specification/client/` or `OpenAI/src/Custom/` (or `OpenAI.Responses/src/Custom/`).
+> **Ground rule:** Never modify the base spec directory — these are upstream copies. All fixes go
+> in the client customization layer or custom C# code directories.
+>
+> See [file-locations.md](../ingesting-spec/file-locations.md) for the canonical list of all paths.
 
 ## Error Categories
 
