@@ -56,7 +56,7 @@ public partial class HyperparameterBetaFactor : IEquatable<int>, IEquatable<stri
 
     void IJsonModel<HyperparameterBetaFactor>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        throw new NotImplementedException();
+        SerializeHyperparameterBeta(this, writer, options);
     }
 
     HyperparameterBetaFactor IJsonModel<HyperparameterBetaFactor>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
