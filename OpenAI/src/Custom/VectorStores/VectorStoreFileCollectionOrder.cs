@@ -7,3 +7,4 @@ namespace OpenAI.VectorStores;
 public readonly partial struct VectorStoreFileCollectionOrder
 {
 }
+}
