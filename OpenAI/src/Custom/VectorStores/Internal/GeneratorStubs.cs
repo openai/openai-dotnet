@@ -1,5 +1,4 @@
 using Microsoft.TypeSpec.Generator.Customizations;
-using System.ClientModel;
 
 namespace OpenAI.VectorStores;
 
@@ -10,7 +9,7 @@ namespace OpenAI.VectorStores;
 [CodeGenType("VectorStoreFileBatchObjectFileCounts")] internal partial class InternalVectorStoreFileBatchObjectFileCounts { }
 [CodeGenType("StaticChunkingStrategy")] internal partial class InternalStaticChunkingStrategy { }
 [CodeGenType("ChunkingStrategyRequestParam")] internal partial class InternalChunkingStrategyRequestParam { }
-[CodeGenType("ChunkingStrategyRequestParamType")] internal readonly partial struct InternalChunkingStrategyRequestParamType {}
+[CodeGenType("ChunkingStrategyRequestParamType")] internal readonly partial struct InternalChunkingStrategyRequestParamType { }
 [CodeGenType("AutoChunkingStrategyRequestParam")] internal partial class InternalAutoChunkingStrategyRequestParam { }
 [CodeGenType("StaticChunkingStrategyRequestParam")] internal partial class InternalStaticChunkingStrategyRequestParam { }
 [CodeGenType("UnknownChunkingStrategyRequestParam")] internal partial class InternalUnknownChunkingStrategyRequestParamProxy { }
@@ -26,30 +25,19 @@ namespace OpenAI.VectorStores;
 [CodeGenType("UnknownChunkingStrategyResponse")] internal partial class InternalUnknownChunkingStrategyResponseParam { }
 [CodeGenType("VectorStoreFileAttributes")] internal partial class InternalVectorStoreFileAttributes { }
 [CodeGenType("VectorStoreComparisonFilter")] internal partial class InternalVectorStoreComparisonFilter { }
-[CodeGenType("VectorStoreComparisonFilterType")] internal readonly partial struct InternalVectorStoreComparisonFilterType {}
+[CodeGenType("VectorStoreComparisonFilterType")] internal readonly partial struct InternalVectorStoreComparisonFilterType { }
 [CodeGenType("VectorStoreCompoundFilter")] internal partial class InternalVectorStoreCompoundFilter { }
-[CodeGenType("VectorStoreCompoundFilterType")] internal readonly partial struct InternalVectorStoreCompoundFilterType {}
-[CodeGenType("VectorStoreSearchRequestRankingOptionsRanker")] internal readonly partial struct InternalVectorStoreSearchRequestRankingOptionsRanker {}
-[CodeGenType("UpdateVectorStoreFileAttributesRequest")] internal partial class InternalUpdateVectorStoreFileAttributesRequest
-{
-    public static implicit operator BinaryContent(InternalUpdateVectorStoreFileAttributesRequest internalUpdateVectorStoreFileAttributesRequest)
-    {
-        if (internalUpdateVectorStoreFileAttributesRequest == null)
-        {
-            return null;
-        }
-        return BinaryContent.Create(internalUpdateVectorStoreFileAttributesRequest, ModelSerializationExtensions.WireOptions);
-    }
-}
-[CodeGenType("VectorStoreFileContentResponse")] internal partial class InternalVectorStoreFileContentResponse {}
-[CodeGenType("VectorStoreFileContentResponseData")] internal partial class InternalVectorStoreFileContentResponseDatum {}
-[CodeGenType("VectorStoreSearchRequestRankingOptions")] internal partial class InternalVectorStoreSearchRequestRankingOptions {}
-[CodeGenType("VectorStoreSearchRequest")] internal partial class InternalVectorStoreSearchRequest {}
-[CodeGenType("VectorStoreSearchResultsPage")] internal partial class InternalVectorStoreSearchResultsPage {}
-[CodeGenType("VectorStoreSearchResultItem")] internal partial class InternalVectorStoreSearchResultItem {}
-[CodeGenType("VectorStoreSearchResultContentObject")] internal partial class InternalVectorStoreSearchResultContentObject {}
+[CodeGenType("VectorStoreCompoundFilterType")] internal readonly partial struct InternalVectorStoreCompoundFilterType { }
+[CodeGenType("VectorStoreSearchRequestRankingOptionsRanker")] internal readonly partial struct InternalVectorStoreSearchRequestRankingOptionsRanker { }
+[CodeGenType("VectorStoreFileContentResponse")] internal partial class InternalVectorStoreFileContentResponse { }
+[CodeGenType("VectorStoreFileContentResponseData")] internal partial class InternalVectorStoreFileContentResponseDatum { }
+[CodeGenType("VectorStoreSearchRequestRankingOptions")] internal partial class InternalVectorStoreSearchRequestRankingOptions { }
+[CodeGenType("VectorStoreSearchRequest")] internal partial class InternalVectorStoreSearchRequest { }
+[CodeGenType("VectorStoreSearchResultsPage")] internal partial class InternalVectorStoreSearchResultsPage { }
+[CodeGenType("VectorStoreSearchResultItem")] internal partial class InternalVectorStoreSearchResultItem { }
+[CodeGenType("VectorStoreSearchResultContentObject")] internal partial class InternalVectorStoreSearchResultContentObject { }
 [CodeGenType("Metadata")] internal partial class InternalMetadata { }
-[CodeGenType("VectorStoresError")] internal partial class InternalVectorStoresError {}
-[CodeGenType("VectorStoresErrorResponse")] internal partial class InternalVectorStoresErrorResponse {}
-[CodeGenType("VectorStoreSearchRequestFiltersType")] internal readonly partial struct InternalVectorStoreSearchRequestFiltersType {}
-[CodeGenType("VectorStoreSearchRequestFiltersType1")] internal readonly partial struct InternalVectorStoreSearchRequestFiltersType1 {}
+[CodeGenType("VectorStoresError")] internal partial class InternalVectorStoresError { }
+[CodeGenType("VectorStoresErrorResponse")] internal partial class InternalVectorStoresErrorResponse { }
+[CodeGenType("VectorStoreSearchRequestFiltersType")] internal readonly partial struct InternalVectorStoreSearchRequestFiltersType { }
+[CodeGenType("VectorStoreSearchRequestFiltersType1")] internal readonly partial struct InternalVectorStoreSearchRequestFiltersType1 { }

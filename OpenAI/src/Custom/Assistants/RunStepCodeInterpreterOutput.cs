@@ -1,5 +1,9 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Assistants;
 
+// CUSTOM: Renamed.
+[CodeGenType("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public abstract partial class RunStepCodeInterpreterOutput
 {
     /// <inheritdoc cref="InternalRunStepDetailsToolCallsCodeOutputImageObject.FileId"/>

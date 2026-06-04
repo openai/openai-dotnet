@@ -3,6 +3,7 @@ using System.IO;
 
 namespace OpenAI.Files;
 
+// CUSTOM: Renamed.
 [CodeGenType("CreateFileRequest")]
 [CodeGenSuppress("InternalFileUploadOptions", typeof(Stream), typeof(FileUploadPurpose))]
 internal partial class InternalFileUploadOptions
