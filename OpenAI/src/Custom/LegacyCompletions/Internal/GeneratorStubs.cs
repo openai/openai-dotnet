@@ -7,7 +7,7 @@ namespace OpenAI.LegacyCompletions;
 [CodeGenType("CreateCompletionResponseChoice")] internal partial class InternalCreateCompletionResponseChoice { }
 [CodeGenType("CreateCompletionResponseChoiceFinishReason")] internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason { }
 [CodeGenType("CreateCompletionResponseChoiceLogprobs1")] internal partial class InternalCreateCompletionResponseChoiceLogprobs { }
-[CodeGenType("CreateCompletionResponseObject")]internal readonly partial struct InternalCreateCompletionResponseObject { }
+[CodeGenType("CreateCompletionResponseObject")] internal readonly partial struct InternalCreateCompletionResponseObject { }
 [CodeGenType("CompletionsCompletionUsage")] internal partial class InternalCompletionsCompletionUsage { }
 [CodeGenType("CompletionsCompletionUsageCompletionTokensDetails")] internal partial class InternalCompletionsCompletionUsageCompletionTokensDetails { }
 [CodeGenType("CompletionsCompletionUsagePromptTokensDetails")] internal partial class InternalCompletionsCompletionUsagePromptTokensDetails { }
