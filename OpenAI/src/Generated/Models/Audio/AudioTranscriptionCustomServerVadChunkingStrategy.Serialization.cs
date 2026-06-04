@@ -63,12 +63,12 @@ namespace OpenAI.Audio
             if (Optional.IsDefined(PrefixPadding) && _additionalBinaryDataProperties?.ContainsKey("prefix_padding_ms") != true)
             {
                 writer.WritePropertyName("prefix_padding_ms"u8);
-                writer.WriteNumberValue(PrefixPadding.Value.TotalMilliseconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(PrefixPadding.Value.TotalMilliseconds)));
             }
             if (Optional.IsDefined(SilenceDuration) && _additionalBinaryDataProperties?.ContainsKey("silence_duration_ms") != true)
             {
                 writer.WritePropertyName("silence_duration_ms"u8);
-                writer.WriteNumberValue(SilenceDuration.Value.TotalMilliseconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(SilenceDuration.Value.TotalMilliseconds)));
             }
             if (Optional.IsDefined(DetectionThreshold) && _additionalBinaryDataProperties?.ContainsKey("threshold") != true)
             {
@@ -114,7 +114,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    prefixPadding = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    prefixPadding = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("silence_duration_ms"u8))
@@ -123,7 +123,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    silenceDuration = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    silenceDuration = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("threshold"u8))

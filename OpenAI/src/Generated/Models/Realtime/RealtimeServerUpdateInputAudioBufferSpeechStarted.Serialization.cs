@@ -81,7 +81,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio_start_ms"u8))
             {
                 writer.WritePropertyName("audio_start_ms"u8);
-                writer.WriteNumberValue(AudioStartTime.TotalMilliseconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(AudioStartTime.TotalMilliseconds)));
             }
             if (!Patch.Contains("$.item_id"u8))
             {
@@ -133,7 +133,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("audio_start_ms"u8))
                 {
-                    audioStartTime = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    audioStartTime = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("item_id"u8))

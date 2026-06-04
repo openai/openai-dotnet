@@ -96,7 +96,7 @@ namespace OpenAI.Videos
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "image/webp, text/plain, video/mp4");
+            request.Headers.Set("Accept", "text/plain, video/mp4, image/webp");
             message.Apply(options);
             return message;
         }

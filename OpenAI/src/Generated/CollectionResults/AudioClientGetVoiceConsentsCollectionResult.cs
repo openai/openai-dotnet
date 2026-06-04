@@ -26,12 +26,17 @@ namespace OpenAI.Audio
         public override IEnumerable<ClientResult> GetRawPages()
         {
             PipelineMessage message = _client.CreateGetVoiceConsentsRequest(_after, _limit, _options);
-            yield return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
+            yield return GetNextResponse(message);
         }
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             return null;
+        }
+
+        private ClientResult GetNextResponse(PipelineMessage message)
+        {
+            return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
     }
 }
