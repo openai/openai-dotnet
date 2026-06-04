@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Buffers;
 using System.ClientModel;
 using System.Diagnostics;
-using System.IO;
 using System.Text.Json;
 
 #nullable enable
@@ -19,8 +19,8 @@ internal class CreateBatchOperationToken : ContinuationToken
 
     public override BinaryData ToBytes()
     {
-        using MemoryStream stream = new();
-        using Utf8JsonWriter writer = new(stream);
+        using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
+        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
         writer.WriteStartObject();
 
         writer.WriteString("batchId", BatchId);

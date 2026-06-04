@@ -139,6 +139,8 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     [RecordedTest]
     public async Task ChatWithBasicAudioOutput()
     {
@@ -151,7 +153,7 @@ public class ChatTests : OpenAIRecordedTestBase
         };
 
         StringBuilder transcriptBuilder = new();
-        using MemoryStream outputAudioStream = new();
+        using Stream outputAudioStream = Manager.GetStream();
         string streamedAudioId = null;
         ChatTokenUsage streamedUsage = null;
         DateTimeOffset? streamedExpiresAt = null;
@@ -241,7 +243,7 @@ public class ChatTests : OpenAIRecordedTestBase
         DateTimeOffset? streamedExpiresAt = null;
         StringBuilder streamedTranscriptBuilder = new();
         ChatTokenUsage streamedUsage = null;
-        using MemoryStream outputAudioStream = new();
+        using Stream outputAudioStream = Manager.GetStream();
         await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(messages, options))
         {
             Assert.That(update.ContentUpdate, Has.Count.EqualTo(0));

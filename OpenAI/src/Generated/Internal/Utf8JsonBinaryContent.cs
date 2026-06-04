@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System.Buffers;
 using System.ClientModel;
 using System.IO;
 using System.Text.Json;
@@ -12,14 +13,14 @@ namespace OpenAI
 {
     internal partial class Utf8JsonBinaryContent : BinaryContent
     {
-        private readonly MemoryStream _stream;
+        private readonly Microsoft.IO.RecyclableMemoryStream _stream;
         private readonly BinaryContent _content;
 
         public Utf8JsonBinaryContent()
         {
-            _stream = new MemoryStream();
+            _stream = MemoryStreamManager.Manager.GetStream();
             _content = Create(_stream);
-            JsonWriter = new Utf8JsonWriter(_stream);
+            JsonWriter = new Utf8JsonWriter(_stream as IBufferWriter<byte>);
         }
 
         public Utf8JsonWriter JsonWriter { get; }

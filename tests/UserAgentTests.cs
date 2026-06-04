@@ -16,6 +16,8 @@ public class UserAgentTests
     [Test]
     public void UserAgentWithApplicationIdWorks() => UserAgentStringWorks(useApplicationId: true);
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     private void UserAgentStringWorks(bool useApplicationId)
     {
         string userAgent = null;
@@ -33,7 +35,7 @@ public class UserAgentTests
         ChatClient client = TestEnvironment.GetTestClient<ChatClient>(options: options);
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
 
-        using BinaryContent emptyContent = BinaryContent.Create(new MemoryStream());
+        using BinaryContent emptyContent = BinaryContent.Create(Manager.GetStream());
         _ = client.CompleteChat(emptyContent, noThrowOptions);
 
         Assert.That(userAgent, Is.Not.Null.Or.Empty);

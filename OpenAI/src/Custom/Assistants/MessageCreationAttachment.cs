@@ -2,6 +2,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
+using Microsoft.IO;
 
 namespace OpenAI.Assistants;
 
@@ -9,6 +10,7 @@ namespace OpenAI.Assistants;
 [CodeGenSerialization(nameof(Tools), "tools", SerializationValueHook = nameof(SerializeTools), DeserializationValueHook = nameof(DeserializeTools))]
 public partial class MessageCreationAttachment
 {
+
     /// <summary>
     /// The tools to which the attachment applies to.
     /// </summary>
@@ -35,8 +37,8 @@ public partial class MessageCreationAttachment
         writer.WriteStartArray();
         foreach (ToolDefinition tool in Tools)
         {
-            using var ms = new System.IO.MemoryStream();
-            using (var tempWriter = new Utf8JsonWriter(ms))
+            using Microsoft.IO.RecyclableMemoryStream ms = OpenAI.MemoryStreamManager.Manager.GetStream();
+            using (var tempWriter = new Utf8JsonWriter(ms as System.IO.Stream))
             {
                 tempWriter.WriteObjectValue(tool, options);
                 tempWriter.Flush();

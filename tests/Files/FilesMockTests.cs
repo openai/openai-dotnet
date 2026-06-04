@@ -230,6 +230,8 @@ public class FilesMockTests : ClientTestBase
         Assert.Throws<OverflowException>(() => _ = fileInfo.SizeInBytes);
     }
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     [Test]
     public async Task UploadFileWithPathUsesFileNameOnly()
     {
@@ -244,7 +246,7 @@ public class FilesMockTests : ClientTestBase
         {
             Transport = new MockPipelineTransport(message =>
             {
-                using MemoryStream stream = new();
+                using Microsoft.IO.RecyclableMemoryStream stream = Manager.GetStream();
                 message.Request.Content.WriteTo(stream);
                 requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
                 return response;
@@ -268,7 +270,7 @@ public class FilesMockTests : ClientTestBase
     public void UploadFileRespectsTheCancellationToken()
     {
         OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
-        using var stream = new MemoryStream(Array.Empty<byte>());
+        using Microsoft.IO.RecyclableMemoryStream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 

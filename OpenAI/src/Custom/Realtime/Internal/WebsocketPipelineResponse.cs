@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.IO;
 
 namespace OpenAI.Realtime;
 
@@ -25,10 +26,10 @@ internal class WebsocketPipelineResponse : PipelineResponse
 
     public override Stream ContentStream
     {
-        get => _contentStream ??= new MemoryStream();
+        get => _contentStream ??= MemoryStreamManager.Manager.GetStream();
         set => throw new NotImplementedException();
     }
-    private MemoryStream _contentStream;
+    private Microsoft.IO.RecyclableMemoryStream _contentStream;
 
     public override BinaryData Content => _content ??= new(_contentStream.ToArray());
     private BinaryData _content;
