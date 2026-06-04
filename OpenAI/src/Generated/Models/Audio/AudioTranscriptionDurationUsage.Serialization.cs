@@ -67,7 +67,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("seconds") != true)
             {
                 writer.WritePropertyName("seconds"u8);
-                writer.WriteNumberValue(Duration.TotalSeconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(Duration.TotalSeconds)));
             }
         }
 
@@ -102,7 +102,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("seconds"u8))
                 {
-                    duration = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    duration = TimeSpan.FromSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

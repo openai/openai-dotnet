@@ -36,7 +36,7 @@ namespace OpenAI.Assistants
             string nextToken = null;
             while (true)
             {
-                ClientResult result = ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
+                ClientResult result = GetNextResponse(message);
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
@@ -67,6 +67,11 @@ namespace OpenAI.Assistants
         protected override IEnumerable<ThreadRun> GetValuesFromPage(ClientResult page)
         {
             return ((InternalListRunsResponse)page).Data;
+        }
+
+        private ClientResult GetNextResponse(PipelineMessage message)
+        {
+            return ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
         }
     }
 }

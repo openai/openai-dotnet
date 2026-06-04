@@ -76,12 +76,12 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Start.TotalSeconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(Start.TotalSeconds)));
             }
             if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(End.TotalSeconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(End.TotalSeconds)));
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -155,12 +155,12 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("start"u8))
                 {
-                    start = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    start = TimeSpan.FromSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("end"u8))
                 {
-                    end = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    end = TimeSpan.FromSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

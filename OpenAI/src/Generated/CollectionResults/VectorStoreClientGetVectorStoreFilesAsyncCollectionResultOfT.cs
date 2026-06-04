@@ -39,7 +39,7 @@ namespace OpenAI.VectorStores
             string nextToken = null;
             while (true)
             {
-                ClientResult result = ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
+                ClientResult result = await GetNextResponseAsync(message).ConfigureAwait(false);
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
@@ -74,6 +74,11 @@ namespace OpenAI.VectorStores
                 yield return item;
                 await Task.Yield();
             }
+        }
+
+        private async ValueTask<ClientResult> GetNextResponseAsync(PipelineMessage message)
+        {
+            return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
         }
     }
 }

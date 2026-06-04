@@ -84,7 +84,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
             {
                 writer.WritePropertyName("duration"u8);
-                writer.WriteNumberValue(Duration.Value.TotalSeconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(Duration.Value.TotalSeconds)));
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -158,7 +158,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("duration"u8))
                 {
-                    duration = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    duration = TimeSpan.FromSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

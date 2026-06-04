@@ -77,12 +77,12 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(PrefixPadding) && !Patch.Contains("$.prefix_padding_ms"u8))
             {
                 writer.WritePropertyName("prefix_padding_ms"u8);
-                writer.WriteNumberValue(PrefixPadding.Value.TotalMilliseconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(PrefixPadding.Value.TotalMilliseconds)));
             }
             if (Optional.IsDefined(SilenceDuration) && !Patch.Contains("$.silence_duration_ms"u8))
             {
                 writer.WritePropertyName("silence_duration_ms"u8);
-                writer.WriteNumberValue(SilenceDuration.Value.TotalMilliseconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(SilenceDuration.Value.TotalMilliseconds)));
             }
             if (Optional.IsDefined(CreateResponseEnabled) && !Patch.Contains("$.create_response"u8))
             {
@@ -97,7 +97,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(IdleTimeout) && !Patch.Contains("$.idle_timeout_ms"u8))
             {
                 writer.WritePropertyName("idle_timeout_ms"u8);
-                writer.WriteNumberValue(IdleTimeout.Value.TotalMilliseconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(IdleTimeout.Value.TotalMilliseconds)));
             }
 
             Patch.WriteTo(writer);
@@ -155,7 +155,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    prefixPadding = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    prefixPadding = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("silence_duration_ms"u8))
@@ -164,7 +164,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    silenceDuration = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    silenceDuration = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("create_response"u8))
@@ -192,7 +192,7 @@ namespace OpenAI.Realtime
                         idleTimeout = null;
                         continue;
                     }
-                    idleTimeout = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    idleTimeout = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

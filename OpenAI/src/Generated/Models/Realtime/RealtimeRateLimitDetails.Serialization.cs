@@ -86,7 +86,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(TimeUntilReset) && !Patch.Contains("$.reset_seconds"u8))
             {
                 writer.WritePropertyName("reset_seconds"u8);
-                writer.WriteNumberValue(TimeUntilReset.Value.TotalSeconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(TimeUntilReset.Value.TotalSeconds)));
             }
 
             Patch.WriteTo(writer);
@@ -154,7 +154,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    timeUntilReset = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    timeUntilReset = TimeSpan.FromSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

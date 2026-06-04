@@ -45,7 +45,7 @@ namespace OpenAI.Responses
 
         BinaryData IPersistableModel<MessageResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        MessageResponseItem IPersistableModel<MessageResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalUnknownResponsesMessageItemResource)PersistableModelCreateCore(data, options);
+        MessageResponseItem IPersistableModel<MessageResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (MessageResponseItem)PersistableModelCreateCore(data, options);
 
         string IPersistableModel<MessageResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,7 +78,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        MessageResponseItem IJsonModel<MessageResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalUnknownResponsesMessageItemResource)JsonModelCreateCore(ref reader, options);
+        MessageResponseItem IJsonModel<MessageResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (MessageResponseItem)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
