@@ -13,5 +13,5 @@ public partial class RealtimeClientCommandConversationItemTruncate
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SerializeAudioEndTimeValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => writer.WriteNumberValue((long)(AudioEndTime.Ticks / TimeSpan.TicksPerMillisecond));
+        => writer.WriteNumberValue((long)Math.Truncate(AudioEndTime.TotalMilliseconds));
 }
