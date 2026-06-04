@@ -91,7 +91,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio_end_ms"u8))
             {
                 writer.WritePropertyName("audio_end_ms"u8);
-                writer.WriteNumberValue(Convert.ToInt64(Math.Round(AudioEndTime.TotalMilliseconds)));
+                SerializeAudioEndTimeValue(writer, options);
             }
 
             Patch.WriteTo(writer);
