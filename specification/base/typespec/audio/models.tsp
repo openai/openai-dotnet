@@ -237,7 +237,7 @@ model CreateTranscriptionResponseDiarizedJson {
 
   /** Duration of the input audio in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   duration: duration;
 
@@ -263,13 +263,13 @@ model TranscriptionDiarizedSegment {
 
   /** Start timestamp of the segment in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   start: duration;
 
   /** End timestamp of the segment in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   end: duration;
 
@@ -336,7 +336,7 @@ model TranscriptTextUsageDuration extends CreateTranscriptionResponseJsonUsage {
 
   /** Duration of the input audio in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   seconds: duration;
 }
@@ -433,7 +433,7 @@ model CreateTranscriptionResponseVerboseJson {
 
   /** The duration of the input audio. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   duration: duration;
 
@@ -457,13 +457,13 @@ model TranscriptionWord {
 
   /** Start time of the word in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   start: duration;
 
   /** End time of the word in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   end: duration;
 }
@@ -480,13 +480,13 @@ model TranscriptionSegment {
 
   /** Start time of the segment in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   start: duration;
 
   /** End time of the segment in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   end: duration;
 
@@ -550,7 +550,7 @@ model CreateTranslationResponseVerboseJson {
 
   /** The duration of the input audio. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   duration: duration;
 
@@ -762,13 +762,13 @@ model TranscriptTextSegmentEvent {
 
   /** Start timestamp of the segment in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   start: duration;
 
   /** End timestamp of the segment in seconds. */
   #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
-  @encode("seconds", int64)
+  @encode("seconds", float64)
   @extension("x-ms-duration", "seconds")
   end: duration;
 
