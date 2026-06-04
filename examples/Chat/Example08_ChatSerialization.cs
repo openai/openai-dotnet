@@ -30,7 +30,7 @@ public partial class ChatExamples
     public static BinaryData SerializeMessages(IEnumerable<ChatMessage> messages)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartArray();
 

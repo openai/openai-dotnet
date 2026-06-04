@@ -20,7 +20,7 @@ namespace OpenAI
         {
             _stream = MemoryStreamManager.Manager.GetStream();
             _content = Create(_stream);
-            JsonWriter = new Utf8JsonWriter(_stream as IBufferWriter<byte>);
+            JsonWriter = new Utf8JsonWriter(_stream as System.IO.Stream);
         }
 
         public Utf8JsonWriter JsonWriter { get; }

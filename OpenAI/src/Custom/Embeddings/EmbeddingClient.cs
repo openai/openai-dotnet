@@ -256,7 +256,7 @@ public partial class EmbeddingClient
     private void CreateEmbeddingGenerationOptions(string input, ref EmbeddingGenerationOptions options)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStringValue(input);
         writer.Flush();
@@ -269,7 +269,7 @@ public partial class EmbeddingClient
     private void CreateEmbeddingGenerationOptions(IEnumerable<string> inputs, ref EmbeddingGenerationOptions options)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartArray();
 
@@ -289,7 +289,7 @@ public partial class EmbeddingClient
     private void CreateEmbeddingGenerationOptions(IEnumerable<ReadOnlyMemory<int>> inputs, ref EmbeddingGenerationOptions options)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartArray();
 

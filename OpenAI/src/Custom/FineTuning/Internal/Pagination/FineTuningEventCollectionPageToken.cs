@@ -30,7 +30,7 @@ internal class FineTuningEventCollectionPageToken : ContinuationToken
     public override BinaryData ToBytes()
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartObject();
         writer.WriteString("jobId", JobId);

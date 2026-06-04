@@ -240,7 +240,7 @@ public partial class ModerationClient
     private void CreateModerationOptions(string input, ref ModerationOptions options)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStringValue(input);
         writer.Flush();
@@ -252,7 +252,7 @@ public partial class ModerationClient
     private void CreateModerationOptions(IEnumerable<string> inputs, ref ModerationOptions options)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartArray();
 
@@ -271,7 +271,7 @@ public partial class ModerationClient
     private void CreateModerationOptions(IEnumerable<ModerationInputPart> inputParts, ref ModerationOptions options)
     {
         using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
-        using Utf8JsonWriter writer = new(stream as IBufferWriter<byte>);
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartArray();
         foreach (ModerationInputPart part in inputParts)
