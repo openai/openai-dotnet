@@ -4,6 +4,6 @@ namespace OpenAI.VectorStores;
 
 // CUSTOM: Renamed.
 [CodeGenType("VectorStoreFileCollectionOrder")]
-public partial struct VectorStoreFileCollectionOrder
+public readonly partial struct VectorStoreFileCollectionOrder
 {
 }
