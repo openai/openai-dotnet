@@ -23,6 +23,8 @@ namespace OpenAI
         Duration_Milliseconds_Double = 14,
         Time_ISO8601 = 15,
         Bytes_Base64Url = 16,
-        Bytes_Base64 = 17
+        Bytes_Base64 = 17,
+        Duration_Seconds_Int64 = 18,
+        Duration_Milliseconds_Int64 = 19
     }
 }

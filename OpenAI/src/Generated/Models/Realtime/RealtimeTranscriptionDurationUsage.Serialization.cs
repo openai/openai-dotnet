@@ -76,7 +76,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.seconds"u8))
             {
                 writer.WritePropertyName("seconds"u8);
-                writer.WriteNumberValue(Duration.TotalSeconds);
+                writer.WriteNumberValue(Convert.ToInt64(Math.Round(Duration.TotalSeconds)));
             }
 
             Patch.WriteTo(writer);
@@ -116,7 +116,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("seconds"u8))
                 {
-                    duration = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    duration = TimeSpan.FromSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

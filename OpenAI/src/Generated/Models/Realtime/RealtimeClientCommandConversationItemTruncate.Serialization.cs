@@ -149,7 +149,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("audio_end_ms"u8))
                 {
-                    audioEndTime = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    audioEndTime = TimeSpan.FromMilliseconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
