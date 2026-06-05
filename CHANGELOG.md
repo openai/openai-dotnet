@@ -30,7 +30,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
       - `UploadSkillVersion` and `UploadSkillVersionAsync`
       - `GetSkillVersion` and `GetSkillVersionAsync`
       - `GetSkillVersions` and `GetSkillVersionsAsync`
-      - `DownloadSkill` and `DownloadSkillVersionAsync`
+      - `DownloadSkillVersion` and `DownloadSkillVersionAsync`
       - `DeleteSkillVersion` and `DeleteSkillVersionAsync`
 - OpenAI.Responses:
   - Added support for retrieving the log probabilities of output tokens.
