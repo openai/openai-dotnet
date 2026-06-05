@@ -142,7 +142,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatWithBasicAudioOutput()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-audio-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-audio-1.5");
         List<ChatMessage> messages = ["Say the exact word 'hello' and nothing else."];
         ChatCompletionOptions options = new()
         {
@@ -192,7 +192,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatWithAudio()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-audio-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-audio-1.5");
 
         string helloWorldAudioPath = Path.Join("Assets", "audio_hello_world.mp3");
         BinaryData helloWorldAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(helloWorldAudioPath));

@@ -974,7 +974,7 @@ namespace OpenAI
                 summaryParts.ToList());
         }
 
-        public static ImageGenerationCallResponseItem ImageGenerationCallResponseItem(string id = default, ImageGenerationCallStatus? status = default, ImageGenerationToolAction? action = default, ImageGenerationToolBackground? background = default, ImageGenerationToolOutputFileFormat? outputFormat = default, ImageGenerationToolQuality? quality = default, ImageGenerationToolSize? size = default, string revisedPrompt = default, BinaryData imageResultBytes = default)
+        public static ImageGenerationCallResponseItem ImageGenerationCallResponseItem(string id = default, ImageGenerationCallStatus? status = default, ImageGenerationToolAction? action = default, ImageGenerationToolBackground? background = default, ImageGenerationToolOutputFileFormat? outputFileFormat = default, ImageGenerationToolQuality? quality = default, ImageGenerationToolSize? size = default, string revisedPrompt = default, BinaryData imageResultBytes = default)
         {
             return new ImageGenerationCallResponseItem(
                 ResponseItemKind.ImageGenerationCall,
@@ -983,7 +983,7 @@ namespace OpenAI
                 status,
                 action,
                 background,
-                outputFormat,
+                outputFileFormat,
                 quality,
                 size,
                 revisedPrompt,

@@ -1,11 +1,96 @@
 # Release History
 
-## (Unreleased)
+## 2.11.0 (2026-06-05)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- [@Rohan5commit](https://github.com/Rohan5commit)
+- [@kiwigitops](https://github.com/kiwigitops)
+- [@yucheng-fu](https://github.com/yucheng-fu)
+- [@arpitjain099](https://github.com/arpitjain099)
+- [@adityasingh2400](https://github.com/adityasingh2400)
+
+### Features Added
+
+- OpenAI.Chat:
+  - Added support for specifying high-level guidance regarding the context window size to use during a web search.
+    - Added the `ChatWebSearchContextSize` extensible enum.
+    - Added the `SearchContextSize` property to `ChatWebSearchOptions`.
+- OpenAI.Skills:
+  - Added support for managing reusable, versioned agent skills.
+    - Introduced the new `SkillClient` with the following methods:
+      - `UploadSkill` and `UploadSkillAsync`
+      - `UpdateSkill` and `UpdateSkillAsync`
+      - `GetSkill` and `GetSkillAsync`
+      - `GetSkills` and `GetSkillsAsync`
+      - `DownloadSkill` and `DownloadSkillAsync`
+      - `DeleteSkill` and `DeleteSkillAsync`
+      - `UploadSkillVersion` and `UploadSkillVersionAsync`
+      - `GetSkillVersion` and `GetSkillVersionAsync`
+      - `GetSkillVersions` and `GetSkillVersionsAsync`
+      - `DownloadSkillVersion` and `DownloadSkillVersionAsync`
+      - `DeleteSkillVersion` and `DeleteSkillVersionAsync`
+- OpenAI.Responses:
+  - Added support for retrieving the log probabilities of output tokens.
+    - Added the `ResponseTokenLogProbabilityDetails` type.
+    - Added the `ResponseTokenTopLogProbabilityDetails` type.
+    - Added the `OutputTextTokenLogProbabilities` property to `ResponseContentPart`.
+    - Added the `TokenLogProbabilities` property to `StreamingResponseOutputTextDeltaUpdate`.
+    - Added the `TokenLogProbabilities` property to `StreamingResponseOutputTextDoneUpdate`.
+  - Added support for retrieving the function name in applicable function call argument streaming events.
+    - Added `FunctionName` property to `StreamingResponseFunctionCallArgumentsDoneUpdate`.
+  - Added extensibility to the `ResponseItem` class hierarchy.
+    - Added the `ResponseItemKind` extensible enum.
+    - Added the `Kind` property to `ResponseItem`.
+    - Added a protected constructor to `ResponseItem` that takes a `ResponseItemKind` parameter.
+  - Added extensibility to the `ResponseTool` class hierarchy.
+    - Added the `ResponseToolKind` extensible Enum.
+    - Added the `Kind` property to `ResponseTool`.
+    - Added a protected constructor to `ResponseTool` that takes a `ResponseToolKind` parameter.
+  - Added extensibility to the `StreamingResponseUpdate` class hierarchy.
+    - Added the `StreamingResponseUpdateKind` extensible enum.
+    - Added the `Kind` property to `StreamingResponseUpdate`.
+    - Added a protected constructor to `StreamingResponseUpdate` that takes a `StreamingResponseUpdateKind` parameter.
 
 ### Bugs Fixed
 
 - OpenAI.Assistants:
-  - Fixed a `NullReferenceException` when an Assistants streaming response delivered an unmodeled `error` event. The SSE `error` frame is now surfaced as a `ClientResultException` so the failure is observable, while the unknown-event path stays covered.
+  - Fixed a `NullReferenceException` when a streaming response delivered an unmodeled `error` event. The SSE `error` frame is now surfaced as a `ClientResultException` so the failure is observable, while the unknown-event path stays covered.
+- OpenAI.Files:
+  - Fixed an issue where the `UploadFile` and `UploadFileAsync` method overloads in `OpenAIFileClient` that take a `filePath` were incorrectly using the entire path as the filename.
+- OpenAI.Realtime:
+  - Fixed an issue where the `AudioEndTime` property of `RealtimeClientCommandConversationItemTruncate` was incorrectly serialized as a float instead of an integer.
+
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Audio:
+  - Changed the type of the `KnownSpeakerReferenceUris` property of `AudioTranscriptionOptions` from `IList<Uri>` to `IList<string>`.
+- OpenAI.Containers:
+  - Renamed the `CreateContainerFile` and `CreateContainerFileAsync` methods of `ContainerClient` to `UploadContainerFile` and `UploadContainerFileAsync`.
+  - Changed the type of the `Order` property of `ContainerFileCollectionOptions` from `ContainerCollectionOrder?` to `ContainerFileCollectionOrder?`.
+- OpenAI.Realtime:
+  - Changed the type of the `Options` property of `RealtimeClientSettings` from `OpenAIClientOptions` to `RealtimeClientOptions`.
+- OpenAI.Responses:
+  - Moved the `AddResponsesClient` and `AddKeyedResponsesClient` `IHostApplicationBuilder` extension methods under the `OpenAI.Responses` namespace.
+  - Removed the `action` and `background` parameters from the constructor of `ImageGenerationCallResponseItem`.
+  - Removed the `ImageGenToolCallBackground` type in favor of `ImageGenerationToolBackground`.
+  - Removed the `ImageGenToolCallOutputFormat` type in favor of `ImageGenerationToolOutputFileFormat`.
+  - Removed the `ImageGenToolCallQuality` type in favor of `ImageGenerationToolQuality`.
+  - Removed the `ImageGenToolCallSize` type in favor of `ImageGenerationToolSize`.
+  - Changed the type of the `Action` property of `ImageGenerationCallResponseItem` from `ImageGenerationToolAction` to `ImageGenerationToolAction?`.
+  - Changed the type of the `Background` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallBackground` to `ImageGenerationToolBackground?`.
+  - Changed the type of the `OutputFormat` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallOutputFormat` to `ImageGenerationToolOutputFileFormat?`.
+  - Changed the type of the `Quality` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallQuality` to `ImageGenerationToolQuality?`.
+  - Changed the type of the `Size` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallSize` to `ImageGenerationToolSize?`.
+  - Renamed the `OutputFormat` property of `ImageGenerationCallResponseItem` to `OutputFileFormat`.
+  - Changed the type of the `Options` property of `ResponsesClientSettings` from `OpenAIClientOptions` to `ResponsesClientOptions`.
+  - Changed the type of the `options` parameters in the constructors of `ResponsesClient` from `OpenAIClientOptions` to `ResponsesClientOptions`.
+  - Reordered the parameters of the following methods of the `ResponsesClient` for consistency:
+    - `CompactResponse` and `CompactResponseAsync`
+    - `GetInputTokenCount` and `GetInputTokenCountAsync`
+  - Renamed `StreamingResponseTextAnnotationAddedUpdate` to `StreamingResponseOutputTextAnnotationAddedUpdate`.
 
 ## 2.10.0 (2026-04-03)
 

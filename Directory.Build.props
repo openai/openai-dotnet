@@ -47,7 +47,7 @@
 
   <!-- Versioning -->
   <PropertyGroup>
-    <VersionPrefix>2.10.0</VersionPrefix>
+    <VersionPrefix>2.11.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <InformationalVersion>$(Version)</InformationalVersion>
   </PropertyGroup>
