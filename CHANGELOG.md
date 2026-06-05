@@ -2,6 +2,16 @@
 
 ## 2.11.0 (2026-06-05)
 
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- [@Rohan5commit](https://github.com/Rohan5commit)
+- [@kiwigitops](https://github.com/kiwigitops)
+- [@yucheng-fu](https://github.com/yucheng-fu)
+- [@arpitjain099](https://github.com/arpitjain099)
+- [@adityasingh2400](https://github.com/adityasingh2400)
+
 ### Features Added
 
 - OpenAI.Chat:
