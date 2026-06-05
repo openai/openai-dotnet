@@ -1693,22 +1693,6 @@ namespace OpenAI.Chat {
         Text = 1,
         Audio = 2
     }
-    public readonly partial struct ChatSearchContextSize : IEquatable<ChatSearchContextSize> {
-        public ChatSearchContextSize(string value);
-        public static ChatSearchContextSize High { get; }
-        public static ChatSearchContextSize Low { get; }
-        public static ChatSearchContextSize Medium { get; }
-        public readonly bool Equals(ChatSearchContextSize other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ChatSearchContextSize left, ChatSearchContextSize right);
-        public static implicit operator ChatSearchContextSize(string value);
-        public static implicit operator ChatSearchContextSize?(string value);
-        public static bool operator !=(ChatSearchContextSize left, ChatSearchContextSize right);
-        public override readonly string ToString();
-    }
     public readonly partial struct ChatServiceTier : IEquatable<ChatServiceTier> {
         public ChatServiceTier(string value);
         public static ChatServiceTier Auto { get; }
@@ -1789,11 +1773,27 @@ namespace OpenAI.Chat {
     public enum ChatToolKind {
         Function = 0
     }
+    public readonly partial struct ChatWebSearchContextSize : IEquatable<ChatWebSearchContextSize> {
+        public ChatWebSearchContextSize(string value);
+        public static ChatWebSearchContextSize High { get; }
+        public static ChatWebSearchContextSize Low { get; }
+        public static ChatWebSearchContextSize Medium { get; }
+        public readonly bool Equals(ChatWebSearchContextSize other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatWebSearchContextSize left, ChatWebSearchContextSize right);
+        public static implicit operator ChatWebSearchContextSize(string value);
+        public static implicit operator ChatWebSearchContextSize?(string value);
+        public static bool operator !=(ChatWebSearchContextSize left, ChatWebSearchContextSize right);
+        public override readonly string ToString();
+    }
     public class ChatWebSearchOptions : IJsonModel<ChatWebSearchOptions>, IPersistableModel<ChatWebSearchOptions> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public ChatSearchContextSize? SearchContextSize { get; set; }
+        public ChatWebSearchContextSize? SearchContextSize { get; set; }
     }
     public class DeveloperChatMessage : ChatMessage, IJsonModel<DeveloperChatMessage>, IPersistableModel<DeveloperChatMessage> {
         public DeveloperChatMessage(params ChatMessageContentPart[] contentParts);
@@ -4887,7 +4887,7 @@ namespace OpenAI.Responses {
         public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
         public BinaryData ImageResultBytes { get; set; }
-        public ImageGenerationToolOutputFileFormat? OutputFormat { get; set; }
+        public ImageGenerationToolOutputFileFormat? OutputFileFormat { get; set; }
         public ImageGenerationToolQuality? Quality { get; set; }
         public string RevisedPrompt { get; set; }
         public ImageGenerationToolSize? Size { get; set; }
@@ -5198,8 +5198,8 @@ namespace OpenAI.Responses {
         public string InputImageFileId { get; }
         public string InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
-        public IReadOnlyList<ResponseTokenLogProbabilityDetails> OutputLogProbs { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
+        public IReadOnlyList<ResponseTokenLogProbabilityDetails> OutputTextTokenLogProbabilities { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -5659,6 +5659,7 @@ namespace OpenAI.Responses {
     }
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
         protected internal ResponseTool(ResponseToolKind kind);
+        public ResponseToolKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }

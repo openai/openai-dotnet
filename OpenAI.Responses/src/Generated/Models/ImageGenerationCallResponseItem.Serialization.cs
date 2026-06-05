@@ -90,10 +90,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
-            if (Optional.IsDefined(OutputFormat) && !Patch.Contains("$.output_format"u8))
+            if (Optional.IsDefined(OutputFileFormat) && !Patch.Contains("$.output_format"u8))
             {
                 writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFormat.Value.ToString());
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
             if (Optional.IsDefined(Quality) && !Patch.Contains("$.quality"u8))
             {
@@ -151,7 +151,7 @@ namespace OpenAI.Responses
             ImageGenerationCallStatus? status = default;
             ImageGenerationToolAction? action = default;
             ImageGenerationToolBackground? background = default;
-            ImageGenerationToolOutputFileFormat? outputFormat = default;
+            ImageGenerationToolOutputFileFormat? outputFileFormat = default;
             ImageGenerationToolQuality? quality = default;
             ImageGenerationToolSize? size = default;
             string revisedPrompt = default;
@@ -195,10 +195,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        outputFormat = null;
+                        outputFileFormat = null;
                         continue;
                     }
-                    outputFormat = new ImageGenerationToolOutputFileFormat(prop.Value.GetString());
+                    outputFileFormat = new ImageGenerationToolOutputFileFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
@@ -245,7 +245,7 @@ namespace OpenAI.Responses
                 status,
                 action,
                 background,
-                outputFormat,
+                outputFileFormat,
                 quality,
                 size,
                 revisedPrompt,

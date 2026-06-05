@@ -1,6 +1,68 @@
 # Release History
 
-## (Unreleased)
+## 2.11.0 (2026-06-05)
+
+### WIP
+
+- OpenAI.Audio:
+  - Changed the type of `KnownSpeakerReferenceUris` property of `AudioTranscriptionOptions` from `IList<Uri>` to `IList<string>`.
+- OpenAI.Chat:
+  - Added the `ChatWebSearchContextSize` extensible enum.
+  - Added the `SearchContextSize` property to `ChatWebSearchOptions`.
+- OpenAI.Containers:
+  - Renamed the `CreateContainerFile` and `CreateContainerFileAsync` methods of `ContainerClient` to `UploadContainerFile` and `UploadContainerFileAsync`.
+  - Changed the type of the `Order` property of `ContainerFileCollectionOptions` from `ContainerCollectionOrder?` to `ContainerFileCollectionOrder?`.
+- OpenAI.Realtime:
+  - Changed the type of the `Options` property of `RealtimeClientSettings` from `OpenAIClientOptions` to `RealtimeClientOptions`.
+- OpenAI.Responses:
+  - Moved the `AddResponsesClient` and `AddKeyedResponsesClient` `IHostApplicationBuilder` extension methods under the `OpenAI.Responses` namespace.
+  - Removed the `action` and `background` parameters from the constructor of `ImageGenerationCallResponseItem`.
+  - Removed `ImageGenToolCallBackground` in favor of `ImageGenerationToolBackground`
+  - Removed `ImageGenToolCallOutputFormat` in favor of `ImageGenerationToolOutputFileFormat`
+  - Removed `ImageGenToolCallQuality` in favor of `ImageGenerationToolQuality`
+  - Removed `ImageGenToolCallSize` in favor of `ImageGenerationToolSize`
+  - Changed the type of the `Action` property of `ImageGenerationCallResponseItem` from `ImageGenerationToolAction` to `ImageGenerationToolAction?`
+  - Changed the type of the `Background` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallBackground` to   `ImageGenerationToolBackground?`.
+  - Changed the type of the `OutputFormat` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallOutputFormat` to   `ImageGenerationToolOutputFileFormat?`.
+  - Changed the type of the `Quality` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallQuality` to `ImageGenerationToolQuality?`.
+  - Changed the type of the `Size` property of `ImageGenerationCallResponseItem` from `ImageGenToolCallSize` to `ImageGenerationToolSize?`.
+  - Renamed the `OutputFormat` property of `ImageGenerationCallResponseItem` to `OutputFileFormat`.
+  - Added the `OutputTextTokenLogProbabilities` property to `ResponseContentPart`.
+  - Added the `Kind` and `Param` properties to `ResponseError`.
+  - Added the `ResponsesClientOptions` type.
+  - Changed the type of the `Options` property of `ResponsesClientSettings` from `OpenAIClientOptions` to `ResponsesClientOptions`.
+  - Changed the type of the `options` parameters in the constructors of `ResponsesClient` from `OpenAIClientOptions` to `ResponsesClientOptions`
+  - Reordered the parameters of the following methods of the `ResponsesClient` for consistency:
+    - `CompactResponse` and `CompactResponseAsync`
+    - `GetInputTokenCount` and `GetInputTokenCountAsync`
+  - Added the `ResponseTokenLogProbabilityDetails` type
+  - Added the `ResponseTokenTopLogProbabilityDetails` type
+  - Added the `TokenLogProbabilities` property to `StreamingResponseOutputTextDeltaUpdate`.
+  - Added the `TokenLogProbabilities` property to `StreamingResponseOutputTextDoneUpdate`.
+  - Added `FunctionName` property to `StreamingResponseFunctionCallArgumentsDoneUpdate`
+  - Renamed `StreamingResponseTextAnnotationAddedUpdate` to `StreamingResponseOutputTextAnnotationAddedUpdate`
+  - Added `ResponseItemKind` extensible enum.
+  - Added `Kind` property to `ResponseItem`.
+  - Added a protected constructor to `ResponseItem` that takes a `ResponseItemKind` parameter.
+  - Added `ResponseToolKind` extensible Enum.
+  - Added `Kind` property to `ResponseTool`.
+  - Added a protected constructor to `ResponseTool` that takes a `ResponseToolKind` parameter.
+  - Added `StreamingResponseUpdateKind` extensible enum.
+  - Added `Kind` property to `StreamingResponseUpdate`.
+  - Added a protected constructor to `StreamingResponseUpdate` that takes a `StreamingResponseUpdateKind` parameter.
+- OpenAI.Skills:
+  - Added `SkillClient` with the following methods:
+    - `UploadSkill` and UploadSkillAsync`
+    - `UpdateSkill` and UpdateSkillAsync`
+    - `GetSkill` and GetSkillAsync`
+    - `GetSkills` and GetSkillsAsync`
+    - `DownloadSkill` and DownloadSkillAsync`
+    - `DeleteSkill` and DeleteSkillAsync`
+    - `UploadSkillVersion` and UploadSkillVersionAsync`
+    - `GetSkillVersion` and GetSkillVersionAsync`
+    - `GetSkillVersions` and GetSkillVersionsAsync`
+    - `DownloadSkill` and DownloadSkillVersionAsync`
+    - `DeleteSkillVersion` and DeleteSkillVersionAsync`
 
 ### Bugs Fixed
 
