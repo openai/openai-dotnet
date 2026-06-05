@@ -104,7 +104,7 @@ model RealtimeServerEventRateLimitsUpdatedRateLimits_GA {
 
   remaining?: integer;
 
-  @encode(DurationKnownEncoding.seconds, integer)
+  @encode(DurationKnownEncoding.seconds, float64)
   reset_seconds?: duration;
 }
 
