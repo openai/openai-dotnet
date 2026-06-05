@@ -75,6 +75,12 @@ using TypeSpec.HttpClient.CSharp;
 // is set by the client instead of being set by the server, and it is also required. The "status"
 // property is used to indicate if the client successfully applied the patch or not.
 
+// Shell call items: status is server-set. We follow the same pattern as Apply patch —
+// custom code makes the property nullable + settable (see `Custom/Items/ShellTool/*`) and
+// the JSON serializer then emits the field only when it is defined.
+@@clientName(ShellAction.commands, "CommandParts");
+@@clientName(ShellAction.timeout_ms, "Timeout");
+
 // This is a data URL. Treat it as a string internally to avoid Uri limits.
 @@alternateType(ItemContentInputImage.image_url, string | null); 
 @@clientName(ItemContentInputImage.image_url, "ImageUri");
@@ -228,6 +234,29 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(LocalShellToolCallItemResource);
 @@dynamicModel(LocalShellToolCallOutputItemParam);
 @@dynamicModel(LocalShellToolCallOutputItemResource);
+@@dynamicModel(ShellTool);
+@@dynamicModel(ShellToolEnvironment);
+@@dynamicModel(ShellToolContainerAutoEnvironment);
+@@dynamicModel(ShellToolContainerReferenceEnvironment);
+@@dynamicModel(ShellToolLocalEnvironment);
+@@dynamicModel(ShellToolContainerNetworkPolicy);
+@@dynamicModel(ShellToolDisabledContainerNetworkPolicy);
+@@dynamicModel(ShellToolAllowlistContainerNetworkPolicy);
+@@dynamicModel(ShellToolDomainSecret);
+@@dynamicModel(ShellToolSkill);
+@@dynamicModel(ShellToolSkillReference);
+@@dynamicModel(ShellToolInlineSkill);
+@@dynamicModel(ShellToolInlineSkillSource);
+@@dynamicModel(ShellToolLocalSkill);
+@@dynamicModel(ShellAction);
+@@dynamicModel(ShellToolCallItemParam);
+@@dynamicModel(ShellToolCallItemResource);
+@@dynamicModel(ShellToolCallOutputItemParam);
+@@dynamicModel(ShellToolCallOutputItemResource);
+@@dynamicModel(ShellCallOutputContent);
+@@dynamicModel(ShellCallOutcome);
+@@dynamicModel(ShellCallExitOutcome);
+@@dynamicModel(ShellCallTimeoutOutcome);
 @@dynamicModel(MCPListToolsItemParam);
 @@dynamicModel(MCPListToolsItemResource);
 @@dynamicModel(MCPApprovalRequestItemParam);

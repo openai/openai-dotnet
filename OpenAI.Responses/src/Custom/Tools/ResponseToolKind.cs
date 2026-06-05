@@ -8,7 +8,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ToolType")]
 [CodeGenVisibility("Computer", CodeGenVisibility.Internal)]
 [CodeGenVisibility("LocalShell", CodeGenVisibility.Internal)]
-[CodeGenVisibility("Shell", CodeGenVisibility.Internal)]
 [CodeGenVisibility("Custom", CodeGenVisibility.Internal)]
 [CodeGenVisibility("Namespace", CodeGenVisibility.Internal)]
 [CodeGenVisibility("ToolSearch", CodeGenVisibility.Internal)]
