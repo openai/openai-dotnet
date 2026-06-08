@@ -1,5 +1,12 @@
 # Release History
 
+## (Unreleased)
+
+### Bugs Fixed
+
+- OpenAI.Chat:
+  - Fixed `ChatMessageContentPart.CreateImagePart(Uri)` incorrectly serializing `image_url.url` via `Uri.ToString()`, which would de-escape percent-encoded characters (e.g., `%20` → space) and break downstream image fetches. The serialized URL now uses `Uri.AbsoluteUri` to preserve percent-encoding.
+
 ## 2.11.0 (2026-06-05)
 
 ### Acknowledgments

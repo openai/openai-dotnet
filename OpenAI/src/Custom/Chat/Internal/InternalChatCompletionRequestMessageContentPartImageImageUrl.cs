@@ -36,7 +36,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     {
         Argument.AssertNotNull(uri, nameof(uri));
         _imageUri = uri;
-        _internalUrl = uri.ToString();
+        _internalUrl = uri.AbsoluteUri;
     }
 
     public InternalChatCompletionRequestMessageContentPartImageImageUrl(BinaryData imageBytes, string imageBytesMediaType, ChatImageDetailLevel? detailLevel = default)
