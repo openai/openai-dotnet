@@ -1,6 +1,6 @@
 # This workflow is triggered on push to main, pull request, or by manual invocation.
 # It builds and runs playback tests on the codebase.
-name: Build and Playback Test
+name: Build and run playback tests
 
 on:
   workflow_dispatch:
