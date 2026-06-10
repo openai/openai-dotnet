@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Images;
 
+[Ignore("Image variations are only supported by dall-e-2, which has been deprecated as of 2026-05-12.")]
 public partial class ImageVariationsTests : ImageTestFixtureBase
 {
     public ImageVariationsTests(bool isAsync) : base(isAsync)

@@ -17,51 +17,11 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task BasicGenerationWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>();
 
         string prompt = "An isolated stop sign.";
 
         GeneratedImage image = await client.GenerateImageAsync(prompt);
-        Assert.That(image.ImageUri, Is.Not.Null);
-        Assert.That(image.ImageBytes, Is.Null);
-
-        Console.WriteLine(image.ImageUri.AbsoluteUri);
-        await ValidateGeneratedImage(image.ImageUri, ["stop"]);
-    }
-
-    [RecordedTest]
-    public async Task GenerationWithOptionsWorks()
-    {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
-
-        string prompt = "An isolated stop sign.";
-
-        ImageGenerationOptions options = new()
-        {
-            Quality = GeneratedImageQuality.Standard,
-            Style = GeneratedImageStyle.Natural,
-        };
-
-        GeneratedImage image = await client.GenerateImageAsync(prompt, options);
-        Assert.That(image.ImageUri, Is.Not.Null);
-        Assert.That(image.ImageBytes, Is.Null);
-
-        await ValidateGeneratedImage(image.ImageUri, ["stop"]);
-    }
-
-    [RecordedTest]
-    public async Task GenerationWithBytesResponseWorks()
-    {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
-
-        string prompt = "An isolated stop sign.";
-
-        ImageGenerationOptions options = new()
-        {
-            ResponseFormat = GeneratedImageFormat.Bytes
-        };
-
-        GeneratedImage image = await client.GenerateImageAsync(prompt, options);
         Assert.That(image.ImageUri, Is.Null);
         Assert.That(image.ImageBytes, Is.Not.Null);
 
@@ -69,76 +29,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     }
 
     [RecordedTest]
-    public void GenerateImageCanParseServiceError()
-    {
-        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-        string prompt = "An isolated stop sign.";
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageAsync(prompt));
-        Assert.That(ex.Status, Is.EqualTo(401));
-    }
-
-    [RecordedTest]
-    public async Task GenerationOfMultipleImagesWorks()
-    {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
-
-        string prompt = "An isolated stop sign.";
-
-        ImageGenerationOptions options = new()
-        {
-            ResponseFormat = GeneratedImageFormat.Uri,
-            Size = GeneratedImageSize.W256xH256
-        };
-
-        GeneratedImageCollection images = await client.GenerateImagesAsync(prompt, 2, options);
-
-        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-        Assert.That(images.Count, Is.EqualTo(2));
-
-        foreach (GeneratedImage image in images)
-        {
-            Assert.That(image.ImageUri, Is.Not.Null);
-            Assert.That(image.ImageBytes, Is.Null);
-            await ValidateGeneratedImage(image.ImageUri, ["stop"]);
-        }
-    }
-
-    [RecordedTest]
-    public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
-    {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>();
-
-        string prompt = "An isolated stop sign.";
-
-        GeneratedImageCollection images = await client.GenerateImagesAsync(prompt, 2);
-
-        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-        Assert.That(images.Count, Is.EqualTo(2));
-
-        foreach (GeneratedImage image in images)
-        {
-            Assert.That(image.ImageUri, Is.Null);
-            Assert.That(image.ImageBytes, Is.Not.Null);
-            await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
-        }
-    }
-
-    [RecordedTest]
-    public void GenerateImagesCanParseServiceError()
-    {
-        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-        string prompt = "An isolated stop sign.";
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImagesAsync(prompt, 2));
-
-        Assert.That(ex.Status, Is.EqualTo(401));
-    }
-
-    [RecordedTest]
-    public async Task GptImage1Works()
+    public async Task GenerationWithOptionsWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>("gpt-image-1");
 
@@ -170,6 +61,53 @@ public partial class ImagesTests : ImageTestFixtureBase
         {
             Assert.That(image.ImageUri, Is.Null);
             Assert.That(image.ImageBytes, Is.Not.Null);
+            await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
         }
+    }
+
+    [RecordedTest]
+    public void GenerateImageCanParseServiceError()
+    {
+        ImageClient client = CreateProxyFromClient(new ImageClient(TestModel.Images, new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string prompt = "An isolated stop sign.";
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageAsync(prompt));
+        Assert.That(ex.Status, Is.EqualTo(401));
+    }
+
+    [RecordedTest]
+    public async Task GenerationOfMultipleImagesWorks()
+    {
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>();
+
+        string prompt = "An isolated stop sign.";
+
+        ImageGenerationOptions options = new()
+        {
+            Size = GeneratedImageSize.W1024xH1024
+        };
+
+        GeneratedImageCollection images = await client.GenerateImagesAsync(prompt, 2, options);
+
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
+
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
+
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Null);
+            Assert.That(image.ImageBytes, Is.Not.Null);
+            await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
+        }
+    }
+
+    [RecordedTest]
+    public void GenerateImagesCanParseServiceError()
+    {
+        ImageClient client = CreateProxyFromClient(new ImageClient(TestModel.Images, new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string prompt = "An isolated stop sign.";
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImagesAsync(prompt, 2));
+
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 }
