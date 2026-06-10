@@ -131,9 +131,9 @@ public class RealtimeUnitTests
         using JsonDocument doc = JsonDocument.Parse(json);
         JsonElement root = doc.RootElement;
 
-        // Should be 1234 (integer), not 1234.5678
+        // Should be 1235 (integer, rounded), not 1234.5678
         var audioEndMs = root.GetProperty("audio_end_ms");
         Assert.That(audioEndMs.TryGetInt64(out long value), Is.True);
-        Assert.That(value, Is.EqualTo(1234));
+        Assert.That(value, Is.EqualTo(1235));
     }
 }
