@@ -7,14 +7,14 @@ namespace OpenAI.Skills;
 [Experimental("SCME0002")]
 public sealed class SkillClientSettings : ClientSettings
 {
-    public OpenAIClientOptions Options { get; set; }
+    public SkillClientOptions Options { get; set; }
 
     protected override void BindCore(IConfigurationSection section)
     {
         var optionsSection = section.GetSection("Options");
         if (optionsSection.Exists())
         {
-            Options ??= new OpenAIClientOptions(optionsSection);
+            Options ??= new SkillClientOptions(optionsSection);
         }
     }
 }

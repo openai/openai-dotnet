@@ -95,6 +95,47 @@ public partial class OpenAIFileClient
         _internalUploadsClient = new(pipeline, options);
     }
 
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIFileClient(ApiKeyCredential credential, OpenAIFileClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIFileClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new OpenAIFileClientOptions();
+
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
+        _internalUploadsClient = new(Pipeline, sharedOptions);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIFileClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new OpenAIFileClientOptions();
+
+        Pipeline = pipeline;
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
+        _internalUploadsClient = new(pipeline, sharedOptions);
+    }
+
     [Experimental("SCME0002")]
     public OpenAIFileClient(OpenAIFileClientSettings settings)
         : this(AuthenticationPolicy.Create(settings), settings?.Options)
