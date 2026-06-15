@@ -188,7 +188,13 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="AssistantClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual AssistantClient GetAssistantClient() => new(Pipeline, _options);
+    public virtual AssistantClient GetAssistantClient() => new(Pipeline, new AssistantClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="AudioClient"/> that reuses the client configuration details provided to
@@ -211,7 +217,13 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="BatchClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual BatchClient GetBatchClient() => new(Pipeline, _options);
+    public virtual BatchClient GetBatchClient() => new(Pipeline, new BatchClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="ChatClient"/> that reuses the client configuration details provided to
@@ -230,7 +242,13 @@ public partial class OpenAIClient
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
+    public virtual ContainerClient GetContainerClient() => new(Pipeline, new ContainerClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="ConversationClient"/> that reuses the client configuration details provided to
@@ -238,7 +256,13 @@ public partial class OpenAIClient
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual ConversationClient GetConversationClient() => new(Pipeline, _options);
+    public virtual ConversationClient GetConversationClient() => new(Pipeline, new ConversationClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="EmbeddingClient"/> that reuses the client configuration details provided to
@@ -257,7 +281,13 @@ public partial class OpenAIClient
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual EvaluationClient GetEvaluationClient() => new(Pipeline, _options);
+    public virtual EvaluationClient GetEvaluationClient() => new(Pipeline, new EvaluationClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="OpenAIFileClient"/> that reuses the client configuration details provided to
@@ -280,7 +310,13 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="FineTuningClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual FineTuningClient GetFineTuningClient() => new(Pipeline, _options);
+    public virtual FineTuningClient GetFineTuningClient() => new(Pipeline, new FineTuningClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="GraderClient"/> that reuses the client configuration details provided to
@@ -288,7 +324,13 @@ public partial class OpenAIClient
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual GraderClient GetGraderClient() => new(Pipeline, _options);
+    public virtual GraderClient GetGraderClient() => new(Pipeline, new GraderClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="ImageClient"/> that reuses the client configuration details provided to
@@ -373,7 +415,13 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
+    public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, new VectorStoreClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="SkillClient"/> that reuses the client configuration details provided to
@@ -381,7 +429,13 @@ public partial class OpenAIClient
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual SkillClient GetSkillClient() => new(Pipeline, _options);
+    public virtual SkillClient GetSkillClient() => new(Pipeline, new SkillClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     /// <summary>
     /// Gets a new instance of <see cref="VideoClient"/> that reuses the client configuration details provided to
@@ -389,7 +443,13 @@ public partial class OpenAIClient
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual VideoClient GetVideoClient() => new(Pipeline, _options);
+    public virtual VideoClient GetVideoClient() => new(Pipeline, new VideoClientOptions
+    {
+        Endpoint = _options.Endpoint,
+        OrganizationId = _options.OrganizationId,
+        ProjectId = _options.ProjectId,
+        UserAgentApplicationId = _options.UserAgentApplicationId,
+    });
 
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
         => OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential);

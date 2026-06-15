@@ -14,7 +14,7 @@ public partial class GraderClient
     /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public GraderClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public GraderClient(string apiKey) : this(new ApiKeyCredential(apiKey), new GraderClientOptions())
     {
     }
 
@@ -24,7 +24,7 @@ public partial class GraderClient
     /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public GraderClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public GraderClient(ApiKeyCredential credential) : this(credential, new GraderClientOptions())
     {
     }
 
@@ -35,7 +35,7 @@ public partial class GraderClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public GraderClient(ApiKeyCredential credential, GraderClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -43,7 +43,7 @@ public partial class GraderClient
     /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public GraderClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public GraderClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new GraderClientOptions())
     {
     }
 
@@ -52,13 +52,13 @@ public partial class GraderClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public GraderClient(AuthenticationPolicy authenticationPolicy, GraderClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new GraderClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -69,13 +69,13 @@ public partial class GraderClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal GraderClient(ClientPipeline pipeline, GraderClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new GraderClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     [Experimental("SCME0002")]

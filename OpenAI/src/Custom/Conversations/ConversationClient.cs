@@ -18,7 +18,7 @@ public partial class ConversationClient
     /// <summary> Initializes a new instance of <see cref="ConversationClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public ConversationClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public ConversationClient(string apiKey) : this(new ApiKeyCredential(apiKey), new ConversationClientOptions())
     {
     }
 
@@ -28,7 +28,7 @@ public partial class ConversationClient
     /// <summary> Initializes a new instance of <see cref="ConversationClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public ConversationClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public ConversationClient(ApiKeyCredential credential) : this(credential, new ConversationClientOptions())
     {
     }
 
@@ -39,7 +39,7 @@ public partial class ConversationClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public ConversationClient(ApiKeyCredential credential, ConversationClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -47,7 +47,7 @@ public partial class ConversationClient
     /// <summary> Initializes a new instance of <see cref="ConversationClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public ConversationClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public ConversationClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new ConversationClientOptions())
     {
     }
 
@@ -56,13 +56,13 @@ public partial class ConversationClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public ConversationClient(AuthenticationPolicy authenticationPolicy, ConversationClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new ConversationClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -73,13 +73,13 @@ public partial class ConversationClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal ConversationClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal ConversationClient(ClientPipeline pipeline, ConversationClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new ConversationClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     [Experimental("SCME0002")]
