@@ -1,4 +1,5 @@
-﻿using Microsoft.ClientModel.TestFramework;
+﻿using System.ClientModel.Primitives;
+using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
 using OpenAI.Realtime;
@@ -29,11 +30,9 @@ namespace OpenAI.Tests.Utility
             JsonPathSanitizers.Add("$..encrypted_content");
         }
 
-        internal T GetProxiedOpenAIClient<T>(string overrideModel = null, OpenAIClientOptions options = default) where T : class
+        internal T GetProxiedOpenAIClient<T>(string overrideModel = null, ClientPipelineOptions options = default) where T : class
         {
-            options ??= new OpenAIClientOptions();
-
-            OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            ClientPipelineOptions instrumentedOptions = InstrumentClientOptions(options);
             T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
 

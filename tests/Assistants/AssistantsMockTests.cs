@@ -43,7 +43,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
@@ -97,7 +97,7 @@ public class AssistantsMockTests : ClientTestBase
             data: [DONE]
             """);
 
-        OpenAIClientOptions options = new()
+        AssistantClientOptions options = new()
         {
             Transport = new MockPipelineTransport(_ => response)
             {
