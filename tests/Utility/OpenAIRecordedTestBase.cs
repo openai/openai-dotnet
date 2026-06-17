@@ -32,6 +32,8 @@ namespace OpenAI.Tests.Utility
 
         internal T GetProxiedOpenAIClient<T>(string overrideModel = null, ClientPipelineOptions options = default) where T : class
         {
+            options ??= new OpenAIClientOptions();
+
             ClientPipelineOptions instrumentedOptions = InstrumentClientOptions(options);
             T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
