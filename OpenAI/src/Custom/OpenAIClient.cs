@@ -413,7 +413,7 @@ public partial class OpenAIClient
     /// This method is functionally equivalent to using the <see cref="VectorStoreClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="OpenAIModelClient"/>. </returns>
+    /// <returns> A new <see cref="VectorStoreClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, new VectorStoreClientOptions
     {
