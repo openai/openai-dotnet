@@ -41,7 +41,7 @@ public class UserAgentTests
             _ = m?.Request?.Headers?.TryGetValue("User-Agent", out userAgent);
         });
 
-        OpenAIClientOptions options = applicationId is not null
+        ChatClientOptions options = applicationId is not null
             ? new() { UserAgentApplicationId = applicationId, }
             : new();
 
