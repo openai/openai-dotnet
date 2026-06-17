@@ -74,7 +74,7 @@ public class ErrorHandlingMockTests : ClientTestBase
             }
             """;
         MockPipelineResponse response = new MockPipelineResponse(400).WithContent(content);
-        OpenAIClientOptions options = new OpenAIClientOptions
+        EvaluationClientOptions options = new EvaluationClientOptions
         {
             Transport = new MockPipelineTransport(_ => response) { ExpectSyncPipeline = !IsAsync },
         };
