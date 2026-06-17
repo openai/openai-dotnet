@@ -124,11 +124,11 @@ namespace OpenAI.Assistants {
         protected AssistantClient();
         [Experimental("SCME0002")]
         public AssistantClient(AssistantClientSettings settings);
-        public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public AssistantClient(ApiKeyCredential credential, AssistantClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
-        public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy, AssistantClientOptions options);
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
-        protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal AssistantClient(ClientPipeline pipeline, AssistantClientOptions options);
         public AssistantClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -230,9 +230,16 @@ namespace OpenAI.Assistants {
         public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class AssistantClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class AssistantClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public AssistantClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -963,9 +970,15 @@ namespace OpenAI.Audio {
         protected AudioClient();
         [Experimental("SCME0002")]
         public AudioClient(AudioClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal AudioClient(ClientPipeline pipeline, string model, AudioClientOptions options);
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public AudioClient(string model, ApiKeyCredential credential, AudioClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy, AudioClientOptions options);
         [Experimental("OPENAI001")]
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -1037,10 +1050,17 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult> UpdateVoiceConsentAsync(string consentId, BinaryContent content, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class AudioClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class AudioClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public AudioClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Flags]
@@ -1337,11 +1357,11 @@ namespace OpenAI.Batch {
         protected BatchClient();
         [Experimental("SCME0002")]
         public BatchClient(BatchClientSettings settings);
-        public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public BatchClient(ApiKeyCredential credential, BatchClientOptions options);
         public BatchClient(ApiKeyCredential credential);
-        public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public BatchClient(AuthenticationPolicy authenticationPolicy, BatchClientOptions options);
         public BatchClient(AuthenticationPolicy authenticationPolicy);
-        protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal BatchClient(ClientPipeline pipeline, BatchClientOptions options);
         public BatchClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -1355,9 +1375,16 @@ namespace OpenAI.Batch {
         public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
+    public class BatchClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class BatchClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public BatchClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -1435,9 +1462,15 @@ namespace OpenAI.Chat {
         protected ChatClient();
         [Experimental("SCME0002")]
         public ChatClient(ChatClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal ChatClient(ClientPipeline pipeline, string model, ChatClientOptions options);
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ChatClient(string model, ApiKeyCredential credential, ChatClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy, ChatClientOptions options);
         [Experimental("OPENAI001")]
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -1499,10 +1532,17 @@ namespace OpenAI.Chat {
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class ChatClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ChatClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ChatClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
@@ -2190,11 +2230,11 @@ namespace OpenAI.Containers {
         protected ContainerClient();
         [Experimental("SCME0002")]
         public ContainerClient(ContainerClientSettings settings);
-        public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ContainerClient(ApiKeyCredential credential, ContainerClientOptions options);
         public ContainerClient(ApiKeyCredential credential);
-        public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy, ContainerClientOptions options);
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ContainerClient(ClientPipeline pipeline, ContainerClientOptions options);
         public ContainerClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -2234,9 +2274,16 @@ namespace OpenAI.Containers {
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class ContainerClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ContainerClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ContainerClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -2349,11 +2396,11 @@ namespace OpenAI.Conversations {
         protected ConversationClient();
         [Experimental("SCME0002")]
         public ConversationClient(ConversationClientSettings settings);
-        public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ConversationClient(ApiKeyCredential credential, ConversationClientOptions options);
         public ConversationClient(ApiKeyCredential credential);
-        public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ConversationClient(AuthenticationPolicy authenticationPolicy, ConversationClientOptions options);
         public ConversationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ConversationClient(ClientPipeline pipeline, ConversationClientOptions options);
         public ConversationClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -2375,9 +2422,16 @@ namespace OpenAI.Conversations {
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class ConversationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ConversationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ConversationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -2408,9 +2462,15 @@ namespace OpenAI.Embeddings {
         protected EmbeddingClient();
         [Experimental("SCME0002")]
         public EmbeddingClient(EmbeddingClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal EmbeddingClient(ClientPipeline pipeline, string model, EmbeddingClientOptions options);
         protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public EmbeddingClient(string model, ApiKeyCredential credential, EmbeddingClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, EmbeddingClientOptions options);
         [Experimental("OPENAI001")]
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -2430,10 +2490,17 @@ namespace OpenAI.Embeddings {
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class EmbeddingClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class EmbeddingClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public EmbeddingClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>, IPersistableModel<EmbeddingGenerationOptions> {
@@ -2482,11 +2549,11 @@ namespace OpenAI.Evals {
         protected EvaluationClient();
         [Experimental("SCME0002")]
         public EvaluationClient(EvaluationClientSettings settings);
-        public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public EvaluationClient(ApiKeyCredential credential, EvaluationClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
-        public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy, EvaluationClientOptions options);
         public EvaluationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal EvaluationClient(ClientPipeline pipeline, EvaluationClientOptions options);
         public EvaluationClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -2516,9 +2583,16 @@ namespace OpenAI.Evals {
         public virtual ClientResult UpdateEvaluation(string evaluationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateEvaluationAsync(string evaluationId, BinaryContent content, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class EvaluationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class EvaluationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public EvaluationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
@@ -2589,12 +2663,18 @@ namespace OpenAI.Files {
         protected OpenAIFileClient();
         [Experimental("SCME0002")]
         public OpenAIFileClient(OpenAIFileClientSettings settings);
+        [Experimental("OPENAI001")]
+        public OpenAIFileClient(ApiKeyCredential credential, OpenAIFileClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIFileClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
+        [Experimental("OPENAI001")]
+        protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIFileClientOptions options);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         [Experimental("OPENAI001")]
@@ -2647,9 +2727,16 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
     }
+    [Experimental("OPENAI001")]
+    public class OpenAIFileClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class OpenAIFileClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public OpenAIFileClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {
@@ -2691,11 +2778,11 @@ namespace OpenAI.FineTuning {
         protected FineTuningClient();
         [Experimental("SCME0002")]
         public FineTuningClient(FineTuningClientSettings settings);
-        public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public FineTuningClient(ApiKeyCredential credential, FineTuningClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
-        public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy, FineTuningClientOptions options);
         public FineTuningClient(AuthenticationPolicy authenticationPolicy);
-        protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal FineTuningClient(ClientPipeline pipeline, FineTuningClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
         [Experimental("OPENAI001")]
@@ -2720,9 +2807,16 @@ namespace OpenAI.FineTuning {
         public virtual ClientResult ResumeFineTuningJob(string fineTuningJobId, RequestOptions options);
         public virtual Task<ClientResult> ResumeFineTuningJobAsync(string fineTuningJobId, RequestOptions options);
     }
+    [Experimental("OPENAI001")]
+    public class FineTuningClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class FineTuningClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public FineTuningClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -2985,11 +3079,11 @@ namespace OpenAI.Graders {
         protected GraderClient();
         [Experimental("SCME0002")]
         public GraderClient(GraderClientSettings settings);
-        public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public GraderClient(ApiKeyCredential credential, GraderClientOptions options);
         public GraderClient(ApiKeyCredential credential);
-        public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public GraderClient(AuthenticationPolicy authenticationPolicy, GraderClientOptions options);
         public GraderClient(AuthenticationPolicy authenticationPolicy);
-        protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal GraderClient(ClientPipeline pipeline, GraderClientOptions options);
         public GraderClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -2999,9 +3093,16 @@ namespace OpenAI.Graders {
         public virtual ClientResult ValidateGrader(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> ValidateGraderAsync(BinaryContent content, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class GraderClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class GraderClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public GraderClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -3314,9 +3415,15 @@ namespace OpenAI.Images {
         protected ImageClient();
         [Experimental("SCME0002")]
         public ImageClient(ImageClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal ImageClient(ClientPipeline pipeline, string model, ImageClientOptions options);
         protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ImageClient(string model, ApiKeyCredential credential, ImageClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ImageClient(string model, AuthenticationPolicy authenticationPolicy, ImageClientOptions options);
         [Experimental("OPENAI001")]
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -3362,10 +3469,17 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class ImageClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ImageClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ImageClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {
@@ -3467,12 +3581,18 @@ namespace OpenAI.Models {
         protected OpenAIModelClient();
         [Experimental("SCME0002")]
         public OpenAIModelClient(OpenAIModelClientSettings settings);
+        [Experimental("OPENAI001")]
+        public OpenAIModelClient(ApiKeyCredential credential, OpenAIModelClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIModelClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
+        [Experimental("OPENAI001")]
+        protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIModelClientOptions options);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         [Experimental("OPENAI001")]
@@ -3491,9 +3611,16 @@ namespace OpenAI.Models {
         public virtual Task<ClientResult> GetModelsAsync(RequestOptions options);
         public virtual Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class OpenAIModelClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class OpenAIModelClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public OpenAIModelClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {
@@ -3525,9 +3652,15 @@ namespace OpenAI.Moderations {
         protected ModerationClient();
         [Experimental("SCME0002")]
         public ModerationClient(ModerationClientSettings settings);
+        [Experimental("OPENAI001")]
+        protected internal ModerationClient(ClientPipeline pipeline, string model, ModerationClientOptions options);
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public ModerationClient(string model, ApiKeyCredential credential, ModerationClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, ModerationClientOptions options);
         [Experimental("OPENAI001")]
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         [Experimental("OPENAI001")]
@@ -3553,10 +3686,17 @@ namespace OpenAI.Moderations {
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class ModerationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class ModerationClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ModerationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -7067,11 +7207,11 @@ namespace OpenAI.Skills {
         protected SkillClient();
         [Experimental("SCME0002")]
         public SkillClient(SkillClientSettings settings);
-        public SkillClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public SkillClient(ApiKeyCredential credential, SkillClientOptions options);
         public SkillClient(ApiKeyCredential credential);
-        public SkillClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public SkillClient(AuthenticationPolicy authenticationPolicy, SkillClientOptions options);
         public SkillClient(AuthenticationPolicy authenticationPolicy);
-        protected internal SkillClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal SkillClient(ClientPipeline pipeline, SkillClientOptions options);
         public SkillClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -7099,9 +7239,16 @@ namespace OpenAI.Skills {
         public virtual ClientResult UploadSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class SkillClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class SkillClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public SkillClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
@@ -7143,11 +7290,11 @@ namespace OpenAI.VectorStores {
         protected VectorStoreClient();
         [Experimental("SCME0002")]
         public VectorStoreClient(VectorStoreClientSettings settings);
-        public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VectorStoreClient(ApiKeyCredential credential, VectorStoreClientOptions options);
         public VectorStoreClient(ApiKeyCredential credential);
-        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, VectorStoreClientOptions options);
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal VectorStoreClient(ClientPipeline pipeline, VectorStoreClientOptions options);
         public VectorStoreClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -7213,9 +7360,16 @@ namespace OpenAI.VectorStores {
         public virtual Task<ClientResult> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStoreFile>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI001")]
+    public class VectorStoreClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class VectorStoreClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public VectorStoreClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Experimental("OPENAI001")]
@@ -7406,11 +7560,11 @@ namespace OpenAI.Videos {
         protected VideoClient();
         [Experimental("SCME0002")]
         public VideoClient(VideoClientSettings settings);
-        public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VideoClient(ApiKeyCredential credential, VideoClientOptions options);
         public VideoClient(ApiKeyCredential credential);
-        public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VideoClient(AuthenticationPolicy authenticationPolicy, VideoClientOptions options);
         public VideoClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal VideoClient(ClientPipeline pipeline, VideoClientOptions options);
         public VideoClient(string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
@@ -7428,9 +7582,16 @@ namespace OpenAI.Videos {
         public virtual CollectionResult GetVideos(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual AsyncCollectionResult GetVideosAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
+    [Experimental("OPENAI001")]
+    public class VideoClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     [Experimental("SCME0002")]
     public sealed class VideoClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public VideoClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
