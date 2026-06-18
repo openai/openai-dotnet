@@ -27,7 +27,7 @@ public partial class CombinationExamples
         GeneratedImage imageGeneration = imageResult.Value;
         Console.WriteLine($"Majestic alpaca available at:\n{imageGeneration.ImageUri.AbsoluteUri}");
 
-        // Now, we'll ask a cranky art critic to evaluate the image using gpt-4-vision-preview:
+        // Now, we'll ask a cranky art critic to evaluate the image using gpt-4o-mini:
         ChatClient chatClient = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ChatCompletion chatCompletion = chatClient.CompleteChat(
             [
@@ -114,7 +114,7 @@ public partial class CombinationExamples
         Uri imageLocation = imageGenerationResult.Value.ImageUri;
         Console.WriteLine($"Creature image available at:\n{imageLocation.AbsoluteUri}");
 
-        // Now, we'll use gpt-4-vision-preview to get a hopelessly taken assessment from a usually exigent art connoisseur
+        // Now, we'll use gpt-4o-mini to get a hopelessly taken assessment from a usually exigent art connoisseur
         ChatClient imageCriticClient = new("gpt-4o-mini", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         ClientResult<ChatCompletion> criticalAppraisalResult = await imageCriticClient.CompleteChatAsync(
             [
