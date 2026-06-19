@@ -3,39 +3,52 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public partial class ContainerResource
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status)
+        internal ContainerResource(string id, string name, DateTimeOffset createdAt, string status)
         {
             Id = id;
-            Object = @object;
             Name = name;
             CreatedAt = createdAt;
             Status = status;
         }
 
-        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status, ContainerResourceExpiresAfter expiresAfter, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status, DateTimeOffset? lastActiveAt, ContainerExpirationPolicy expiresAfter, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
             Name = name;
             CreatedAt = createdAt;
             Status = status;
+            LastActiveAt = lastActiveAt;
             ExpiresAfter = expiresAfter;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            MemoryLimit = memoryLimit;
+            NetworkPolicy = networkPolicy;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
 
-        public string Object { get; }
+        public string Object { get; } = "container";
 
         public string Name { get; }
 
@@ -43,12 +56,12 @@ namespace OpenAI.Containers
 
         public string Status { get; }
 
-        public ContainerResourceExpiresAfter ExpiresAfter { get; }
+        public DateTimeOffset? LastActiveAt { get; }
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public ContainerExpirationPolicy ExpiresAfter { get; }
+
+        public ContainerMemoryLimit? MemoryLimit { get; }
+
+        public ContainerNetworkPolicy NetworkPolicy { get; }
     }
 }

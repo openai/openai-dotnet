@@ -49,6 +49,15 @@ public partial class ContainerClient
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ContainerClient"/>. </summary>
+    /// <param name="settings"> The settings to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="settings"/> is null. </exception>
+    [Experimental("SCME0002")]
+    public ContainerClient(ContainerClientSettings settings) : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="ContainerClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
@@ -78,16 +87,9 @@ public partial class ContainerClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
-    [Experimental("SCME0002")]
-    public ContainerClient(ContainerClientSettings settings)
-        : this(AuthenticationPolicy.Create(settings), settings?.Options)
-    {
-    }
-
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
-
 }

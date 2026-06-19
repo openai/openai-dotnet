@@ -17,6 +17,8 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     // Classes that are protocol models.
     private static readonly HashSet<string> _protocolModels = new(StringComparer.OrdinalIgnoreCase)
     {
+        "OpenAI.Containers.CreateContainerOptions",
+
         "OpenAI.Responses.CreateResponseOptions",
         "OpenAI.Responses.ResponseDeletionResult",
         "OpenAI.Responses.ResponseInputTokenUsageDetails",

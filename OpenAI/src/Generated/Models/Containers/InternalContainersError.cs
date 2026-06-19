@@ -2,14 +2,17 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     internal partial class InternalContainersError
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalContainersError(string code, string message, string @param, string kind)
         {
@@ -19,14 +22,21 @@ namespace OpenAI.Containers
             Kind = kind;
         }
 
-        internal InternalContainersError(string code, string message, string @param, string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalContainersError(string code, string message, string @param, string kind, in JsonPatch patch)
         {
             Code = code;
             Message = message;
             Param = @param;
             Kind = kind;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Code { get; }
 
@@ -35,11 +45,5 @@ namespace OpenAI.Containers
         public string Param { get; }
 
         public string Kind { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

@@ -30,7 +30,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = TestEnvironment.GetTestClient<ContainerClient>();
 
         // Create a test container that will be used by all tests
-        ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody($"test-container-{Guid.NewGuid():N}"));
+        ContainerResource result = await client.CreateContainerAsync(new CreateContainerOptions($"test-container-{Guid.NewGuid():N}"));
         _testContainerId = result.Id;
 
         Console.WriteLine($"Created test container: {_testContainerId}");
@@ -77,14 +77,6 @@ public class ContainerTests : OpenAIRecordedTestBase
                 _testContainerId = null;
             }
         }
-    }
-
-    private static CreateContainerBody CreateContainerBodyFromName(string name)
-    {
-        // Use reflection to create the CreateContainerBody since it only has internal constructors
-        var createBodyType = typeof(CreateContainerBody);
-        var constructor = createBodyType.GetConstructors(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)[0];
-        return (CreateContainerBody)constructor.Invoke(new object[] { name });
     }
 
     [RecordedTest]
@@ -519,7 +511,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             try
             {
                 // Now delete the file
-                ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                ClientResult<ContainerFileDeletionResult> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
 
                 Assert.That(deleteResult, Is.Not.Null);
                 Assert.That(deleteResult.Value, Is.Not.Null);
@@ -691,7 +683,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
             // Delete the file with cancellation token
-            ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+            ClientResult<ContainerFileDeletionResult> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
 
             Assert.That(deleteResult, Is.Not.Null);
             Assert.That(deleteResult.Value, Is.Not.Null);

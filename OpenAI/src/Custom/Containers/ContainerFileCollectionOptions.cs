@@ -6,4 +6,10 @@ namespace OpenAI.Containers;
 [CodeGenType("ContainerFileCollectionOptions")]
 public partial class ContainerFileCollectionOptions
 {
+    [CodeGenMember("Limit")]
+    public int? PageSizeLimit { get; set; }
+
+
+    [CodeGenMember("After")]
+    public string AfterId { get; set; }
 }

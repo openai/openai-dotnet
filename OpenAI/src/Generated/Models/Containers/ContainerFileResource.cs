@@ -3,17 +3,31 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
     public partial class ContainerFileResource
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdAt, long? sizeInBytes, string path, string source)
+        internal ContainerFileResource(string id, string containerId, DateTimeOffset createdAt, long? sizeInBytes, string path, string source)
+        {
+            Id = id;
+            ContainerId = containerId;
+            CreatedAt = createdAt;
+            SizeInBytes = sizeInBytes;
+            Path = path;
+            Source = source;
+        }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdAt, long? sizeInBytes, string path, string source, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
@@ -22,23 +36,18 @@ namespace OpenAI.Containers
             SizeInBytes = sizeInBytes;
             Path = path;
             Source = source;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal ContainerFileResource(string id, string @object, string containerId, DateTimeOffset createdAt, long? sizeInBytes, string path, string source, IDictionary<string, BinaryData> additionalBinaryDataProperties)
-        {
-            Id = id;
-            Object = @object;
-            ContainerId = containerId;
-            CreatedAt = createdAt;
-            SizeInBytes = sizeInBytes;
-            Path = path;
-            Source = source;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
-        }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
 
-        public string Object { get; }
+        public string Object { get; } = "container.file";
 
         public string ContainerId { get; }
 
@@ -49,11 +58,5 @@ namespace OpenAI.Containers
         public string Path { get; }
 
         public string Source { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

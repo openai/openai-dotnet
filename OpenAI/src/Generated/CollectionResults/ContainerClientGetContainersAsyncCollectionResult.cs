@@ -16,20 +16,22 @@ namespace OpenAI.Containers
         private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
+        private readonly string _name;
         private readonly RequestOptions _options;
 
-        public ContainerClientGetContainersAsyncCollectionResult(ContainerClient client, int? limit, string order, string after, RequestOptions options)
+        public ContainerClientGetContainersAsyncCollectionResult(ContainerClient client, int? limit, string order, string after, string name, RequestOptions options)
         {
             _client = client;
             _limit = limit;
             _order = order;
             _after = after;
+            _name = name;
             _options = options;
         }
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetContainersRequest(_limit, _order, _after, _options);
+            PipelineMessage message = _client.CreateGetContainersRequest(_limit, _order, _after, _name, _options);
             string nextToken = null;
             while (true)
             {
@@ -37,20 +39,20 @@ namespace OpenAI.Containers
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
-                bool hasMore = ((InternalContainerListResource)result).HasMore;
-                nextToken = ((InternalContainerListResource)result).LastId;
+                bool hasMore = ((InternalContainerCollection)result).HasMore;
+                nextToken = ((InternalContainerCollection)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
                 if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }
-                message = _client.CreateGetContainersRequest(_limit, _order, nextToken, _options);
+                message = _client.CreateGetContainersRequest(_limit, _order, nextToken, _name, _options);
             }
         }
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            string nextPage = ((InternalContainerListResource)page).LastId;
+            string nextPage = ((InternalContainerCollection)page).LastId;
             if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));

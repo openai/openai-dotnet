@@ -9,11 +9,11 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class InternalContainerFileListResource
+    internal partial class InternalContainerCollection
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalContainerFileListResource(IEnumerable<ContainerFileResource> data, string firstId, string lastId, bool hasMore)
+        internal InternalContainerCollection(IEnumerable<ContainerResource> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
@@ -21,11 +21,11 @@ namespace OpenAI.Containers
             HasMore = hasMore;
         }
 
-        internal InternalContainerFileListResource(string @object, IList<ContainerFileResource> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalContainerCollection(string @object, IList<ContainerResource> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
-            Data = data ?? new ChangeTrackingList<ContainerFileResource>();
+            Data = data ?? new ChangeTrackingList<ContainerResource>();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
@@ -34,7 +34,7 @@ namespace OpenAI.Containers
 
         public string Object { get; } = "list";
 
-        public IList<ContainerFileResource> Data { get; }
+        public IList<ContainerResource> Data { get; }
 
         public string FirstId { get; }
 

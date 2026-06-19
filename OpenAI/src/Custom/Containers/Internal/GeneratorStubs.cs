@@ -2,8 +2,10 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Containers;
 
-[CodeGenType("ContainerListResource")] internal partial class InternalContainerListResource { }
-[CodeGenType("ContainerFileListResource")] internal partial class InternalContainerFileListResource { }
-[CodeGenType("ContainerResourceExpiresAfterAnchor")] internal partial struct InternalContainerResourceExpiresAfterAnchor { }
 [CodeGenType("ContainersError")] internal partial class InternalContainersError {}
 [CodeGenType("ContainersErrorResponse")] internal partial class InternalContainersErrorResponse {}
+
+[CodeGenType("UnknownContainerNetworkPolicy")] internal partial class InternalUnknownContainerNetworkPolicy { }
+[CodeGenType("ContainerCollection")] internal partial class InternalContainerCollection { }
+
+[CodeGenType("ContainerFileCollection")] internal partial class InternalContainerFileCollection { }
