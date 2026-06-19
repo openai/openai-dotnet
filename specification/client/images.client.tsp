@@ -14,6 +14,9 @@ using Azure.ClientGenerator.Core;
 
 @@clientName(ImagesResponse.data, "Items");
 
+@@usage(CreateImageEditRequest, Usage.json);
+@@usage(CreateImageVariationRequest, Usage.json);
+
 @@usage(ImageEditPartialImageEvent, Usage.output);
 @@usage(ImageEditCompletedEvent, Usage.output);
 @@usage(ImageGenPartialImageEvent, Usage.output);

@@ -27,6 +27,9 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(updateVoiceConsent, "Audio");
 @@clientLocation(createVoice, "Audio");
 
+@@usage(CreateTranscriptionRequest, Usage.json);
+@@usage(CreateTranslationRequest, Usage.json);
+
 @@convenientAPI(listVoiceConsents, false);
 @@convenientAPI(createVoiceConsent, false);
 @@convenientAPI(deleteVoiceConsent, false);

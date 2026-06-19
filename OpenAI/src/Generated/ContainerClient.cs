@@ -143,6 +143,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUploadContainerFileRequest(containerId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -152,9 +153,32 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUploadContainerFileRequest(containerId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("SCME0004")]
+        public virtual ClientResult<ContainerFileResource> UploadContainerFile(string containerId, CreateContainerFileBody body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNull(body, nameof(body));
+
+            using MultiPartFormContent content = body.ToMultipartFormContent();
+            ClientResult result = UploadContainerFile(containerId, content, content.MediaType, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ContainerFileResource)result, result.GetRawResponse());
+        }
+
+        [Experimental("SCME0004")]
+        public virtual async Task<ClientResult<ContainerFileResource>> UploadContainerFileAsync(string containerId, CreateContainerFileBody body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNull(body, nameof(body));
+
+            using MultiPartFormContent content = body.ToMultipartFormContent();
+            ClientResult result = await UploadContainerFileAsync(containerId, content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ContainerFileResource)result, result.GetRawResponse());
         }
 
         public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options)

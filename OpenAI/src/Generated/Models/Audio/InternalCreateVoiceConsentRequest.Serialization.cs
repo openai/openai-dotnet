@@ -3,11 +3,14 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using OpenAI;
 
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 namespace OpenAI.Audio
 {
     internal partial class InternalCreateVoiceConsentRequest : IJsonModel<InternalCreateVoiceConsentRequest>
@@ -71,14 +74,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("recording") != true)
             {
                 writer.WritePropertyName("recording"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Recording);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Recording))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(Recording, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("language") != true)
             {
@@ -127,7 +123,7 @@ namespace OpenAI.Audio
                 return null;
             }
             string name = default;
-            BinaryData recording = default;
+            FileBinaryContent recording = default;
             string language = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -139,7 +135,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("recording"u8))
                 {
-                    recording = BinaryData.FromString(prop.Value.GetRawText());
+                    recording = new FileBinaryContent(new MemoryStream(prop.Value.GetBytesFromBase64(), false));
                     continue;
                 }
                 if (prop.NameEquals("language"u8))
@@ -154,3 +150,4 @@ namespace OpenAI.Audio
         }
     }
 }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
