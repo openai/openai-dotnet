@@ -169,6 +169,7 @@ jobs:
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }}
           ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
+          --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
