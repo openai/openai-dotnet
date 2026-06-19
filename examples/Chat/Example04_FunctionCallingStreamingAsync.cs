@@ -16,7 +16,7 @@ public partial class ChatExamples
     [Test]
     public async Task Example04_FunctionCallingStreamingAsync()
     {
-        ChatClient client = new("gpt-4-turbo", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         #region
         List<ChatMessage> messages =
