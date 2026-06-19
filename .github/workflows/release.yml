@@ -138,6 +138,7 @@ jobs:
           ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
 
       - name: Update GitHub release notes to point to the changelog
         if: github.event_name == 'release'
