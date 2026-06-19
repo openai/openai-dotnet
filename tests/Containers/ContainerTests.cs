@@ -30,7 +30,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = TestEnvironment.GetTestClient<ContainerClient>();
 
         // Create a test container that will be used by all tests
-        ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody($"test-container-{Guid.NewGuid():N}"));
+        ContainerResource result = await client.CreateContainerAsync(new CreateContainerOptions($"test-container-{Guid.NewGuid():N}"));
         _testContainerId = result.Id;
 
         Console.WriteLine($"Created test container: {_testContainerId}");
@@ -77,14 +77,6 @@ public class ContainerTests : OpenAIRecordedTestBase
                 _testContainerId = null;
             }
         }
-    }
-
-    private static CreateContainerBody CreateContainerBodyFromName(string name)
-    {
-        // Use reflection to create the CreateContainerBody since it only has internal constructors
-        var createBodyType = typeof(CreateContainerBody);
-        var constructor = createBodyType.GetConstructors(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)[0];
-        return (CreateContainerBody)constructor.Invoke(new object[] { name });
     }
 
     [RecordedTest]
@@ -145,7 +137,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test GetContainerFilesAsync method
-        ContainerFileCollectionOptions options = new()
+        ContainerFileCollectionOptions options = new(_testContainerId)
         {
             Order = ContainerFileCollectionOrder.Descending,
             PageSizeLimit = 10
@@ -153,7 +145,7 @@ public class ContainerTests : OpenAIRecordedTestBase
 
         int count = 0;
 
-        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options);
+        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(options);
         await foreach (ContainerFileResource file in files)
         {
             Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
@@ -226,7 +218,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         // Test with default options (null)
         int count = 0;
 
-        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId);
+        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(new ContainerFileCollectionOptions(_testContainerId));
         await foreach (ContainerFileResource file in files)
         {
             Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
@@ -303,7 +295,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
-        ContainerFileCollectionOptions options = new()
+        ContainerFileCollectionOptions options = new(_testContainerId)
         {
             PageSizeLimit = 5
         };
@@ -312,7 +304,7 @@ public class ContainerTests : OpenAIRecordedTestBase
 
         try
         {
-            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options, cancellationTokenSource.Token);
+            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(options, cancellationTokenSource.Token);
             await foreach (ContainerFileResource file in files.WithCancellation(cancellationTokenSource.Token))
             {
                 Validate(file);
@@ -397,13 +389,13 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test different ordering options for files
-        var ascendingOptions = new ContainerFileCollectionOptions()
+        var ascendingOptions = new ContainerFileCollectionOptions(_testContainerId)
         {
             Order = ContainerFileCollectionOrder.Ascending,
             PageSizeLimit = 5
         };
 
-        var descendingOptions = new ContainerFileCollectionOptions()
+        var descendingOptions = new ContainerFileCollectionOptions(_testContainerId)
         {
             Order = ContainerFileCollectionOrder.Descending,
             PageSizeLimit = 5
@@ -413,7 +405,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         int descendingCount = 0;
 
         // Test ascending order
-        AsyncCollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFilesAsync(_testContainerId, ascendingOptions);
+        AsyncCollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFilesAsync(ascendingOptions);
         await foreach (ContainerFileResource file in ascendingFiles)
         {
             Validate(file);
@@ -423,7 +415,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test descending order
-        AsyncCollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFilesAsync(_testContainerId, descendingOptions);
+        AsyncCollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFilesAsync(descendingOptions);
         await foreach (ContainerFileResource file in descendingFiles)
         {
             Validate(file);
@@ -519,11 +511,11 @@ public class ContainerTests : OpenAIRecordedTestBase
             try
             {
                 // Now delete the file
-                ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                ClientResult<ContainerFileDeletionResult> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
 
                 Assert.That(deleteResult, Is.Not.Null);
                 Assert.That(deleteResult.Value, Is.Not.Null);
-                Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId), "Deleted file ID should match");
+                Assert.That(deleteResult.Value.ContainerFileId, Is.EqualTo(fileId), "Deleted file ID should match");
                 Assert.That(deleteResult.Value.Object, Is.Not.Null.And.Not.Empty);
                 Assert.That(deleteResult.Value.Deleted, Is.True, "File should be marked as deleted");
 
@@ -691,11 +683,11 @@ public class ContainerTests : OpenAIRecordedTestBase
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
             // Delete the file with cancellation token
-            ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+            ClientResult<ContainerFileDeletionResult> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
 
             Assert.That(deleteResult, Is.Not.Null);
             Assert.That(deleteResult.Value, Is.Not.Null);
-            Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId));
+            Assert.That(deleteResult.Value.ContainerFileId, Is.EqualTo(fileId));
             Assert.That(deleteResult.Value.Deleted, Is.True);
 
             Console.WriteLine($"Successfully deleted file with cancellation token: {fileId}");

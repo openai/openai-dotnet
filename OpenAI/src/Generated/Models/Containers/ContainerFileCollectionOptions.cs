@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Containers
 {
@@ -13,21 +14,23 @@ namespace OpenAI.Containers
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ContainerFileCollectionOptions()
+        public ContainerFileCollectionOptions(string containerId)
         {
+            Argument.AssertNotNull(containerId, nameof(containerId));
+
+            ContainerId = containerId;
         }
 
-        internal ContainerFileCollectionOptions(string afterId, int? pageSizeLimit, ContainerFileCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ContainerFileCollectionOptions(string containerId, int? pageSizeLimit, ContainerFileCollectionOrder? order, string afterId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            AfterId = afterId;
+            ContainerId = containerId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
+            AfterId = afterId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string AfterId { get; set; }
-
-        public int? PageSizeLimit { get; set; }
+        public string ContainerId { get; set; }
 
         public ContainerFileCollectionOrder? Order { get; set; }
 

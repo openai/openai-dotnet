@@ -12,6 +12,10 @@ namespace OpenAI.Containers
 {
     public partial class ContainerFileCollectionOptions : IJsonModel<ContainerFileCollectionOptions>
     {
+        public ContainerFileCollectionOptions()
+        {
+        }
+
         protected virtual ContainerFileCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -100,16 +104,17 @@ namespace OpenAI.Containers
             {
                 return null;
             }
-            string afterId = default;
+            string containerId = default;
             int? pageSizeLimit = default;
             ContainerFileCollectionOrder? order = default;
+            string afterId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties);
+            return new ContainerFileCollectionOptions(containerId, pageSizeLimit, order, afterId, additionalBinaryDataProperties);
         }
     }
 }

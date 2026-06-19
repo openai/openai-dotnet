@@ -5,7 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,7 +13,7 @@ namespace OpenAI.Containers
 {
     public partial class ContainerFileResource : IJsonModel<ContainerFileResource>
     {
-        internal ContainerFileResource()
+        public ContainerFileResource()
         {
         }
 
@@ -25,7 +25,7 @@ namespace OpenAI.Containers
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeContainerFileResource(document.RootElement, options);
+                        return DeserializeContainerFileResource(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ContainerFileResource)} does not support reading '{options.Format}' format.");
@@ -53,12 +53,21 @@ namespace OpenAI.Containers
         public static explicit operator ContainerFileResource(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeContainerFileResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeContainerFileResource(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
         void IJsonModel<ContainerFileResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -71,68 +80,49 @@ namespace OpenAI.Containers
             {
                 throw new FormatException($"The model {nameof(ContainerFileResource)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            if (!Patch.Contains("$.object"u8))
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("container_id") != true)
+            if (!Patch.Contains("$.container_id"u8))
             {
                 writer.WritePropertyName("container_id"u8);
                 writer.WriteStringValue(ContainerId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
+            if (Optional.IsDefined(SizeInBytes) && !Patch.Contains("$.bytes"u8))
             {
-                if (Optional.IsDefined(SizeInBytes))
-                {
-                    writer.WritePropertyName("bytes"u8);
-                    writer.WriteNumberValue(SizeInBytes.Value);
-                }
-                else
-                {
-                    writer.WriteNull("bytes"u8);
-                }
+                writer.WritePropertyName("bytes"u8);
+                writer.WriteNumberValue(SizeInBytes.Value);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("path") != true)
+            else
+            {
+                writer.WriteNull("bytes"u8);
+            }
+            if (!Patch.Contains("$.path"u8))
             {
                 writer.WritePropertyName("path"u8);
                 writer.WriteStringValue(Path);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("source") != true)
+            if (!Patch.Contains("$.source"u8))
             {
                 writer.WritePropertyName("source"u8);
                 writer.WriteStringValue(Source);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ContainerFileResource IJsonModel<ContainerFileResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -145,10 +135,10 @@ namespace OpenAI.Containers
                 throw new FormatException($"The model {nameof(ContainerFileResource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeContainerFileResource(document.RootElement, options);
+            return DeserializeContainerFileResource(document.RootElement, null, options);
         }
 
-        internal static ContainerFileResource DeserializeContainerFileResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static ContainerFileResource DeserializeContainerFileResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -161,7 +151,9 @@ namespace OpenAI.Containers
             long? sizeInBytes = default;
             string path = default;
             string source = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
@@ -204,8 +196,7 @@ namespace OpenAI.Containers
                     source = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ContainerFileResource(
                 id,
@@ -215,7 +206,7 @@ namespace OpenAI.Containers
                 sizeInBytes,
                 path,
                 source,
-                additionalBinaryDataProperties);
+                patch);
         }
     }
 }

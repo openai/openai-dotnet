@@ -248,61 +248,114 @@ namespace OpenAI
             return new ChatCompletionDeletionResult("chat.completion.deleted", chatCompletionId, deleted, default);
         }
 
-        public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
-        {
-            return new ContainerResource(
-                id,
-                @object,
-                name,
-                createdAt,
-                status,
-                expiresAfter,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerResourceExpiresAfter ContainerResourceExpiresAfter(string anchor = default, int? minutes = default)
-        {
-            return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
-        }
-
-        public static CreateContainerBody CreateContainerBody(string name = default, IEnumerable<string> fileIds = default, CreateContainerBodyExpiresAfter expiresAfter = default)
+        public static CreateContainerOptions CreateContainerOptions(string name = default, IEnumerable<string> fileIds = default, ContainerExpirationPolicy expiresAfter = default, ContainerMemoryLimit? memoryLimit = default, ContainerNetworkPolicy networkPolicy = default)
         {
             fileIds ??= new ChangeTrackingList<string>();
 
-            return new CreateContainerBody(name, fileIds.ToList(), expiresAfter, additionalBinaryDataProperties: null);
+            return new CreateContainerOptions(
+                name,
+                fileIds.ToList(),
+                expiresAfter,
+                memoryLimit,
+                networkPolicy,
+                default);
         }
 
-        public static CreateContainerBodyExpiresAfter CreateContainerBodyExpiresAfter(int minutes = default)
+        public static ContainerExpirationPolicy ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor = default, int? minutes = default)
         {
-            return new CreateContainerBodyExpiresAfter("last_active_at", minutes, additionalBinaryDataProperties: null);
+            return new ContainerExpirationPolicy(anchor, minutes, default);
         }
 
-        public static DeleteContainerResponse DeleteContainerResponse(string id = default)
+        public static ContainerNetworkPolicy ContainerNetworkPolicy(string kind = default)
         {
-            return new DeleteContainerResponse(id, "container.deleted", true, additionalBinaryDataProperties: null);
+            return new InternalUnknownContainerNetworkPolicy(new ContainerNetworkPolicyKind(kind), default);
         }
 
-        public static CreateContainerFileBody CreateContainerFileBody(string fileId = default, BinaryData @file = default)
+        public static ContainerDisabledNetworkPolicy ContainerDisabledNetworkPolicy()
         {
-            return new CreateContainerFileBody(fileId, @file, additionalBinaryDataProperties: null);
+            return new ContainerDisabledNetworkPolicy(ContainerNetworkPolicyKind.Disabled, default);
         }
 
-        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, long? sizeInBytes = default, string path = default, string source = default)
+        public static ContainerAllowlistNetworkPolicy ContainerAllowlistNetworkPolicy(IEnumerable<string> allowedDomains = default, IEnumerable<ContainerNetworkPolicyDomainSecret> domainSecrets = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+            domainSecrets ??= new ChangeTrackingList<ContainerNetworkPolicyDomainSecret>();
+
+            return new ContainerAllowlistNetworkPolicy(ContainerNetworkPolicyKind.Allowlist, default, allowedDomains.ToList(), domainSecrets.ToList());
+        }
+
+        public static ContainerNetworkPolicyDomainSecret ContainerNetworkPolicyDomainSecret(string domain = default, string name = default, string value = default)
+        {
+            return new ContainerNetworkPolicyDomainSecret(domain, name, value, default);
+        }
+
+        public static ContainerResource ContainerResource(string id = default, string name = default, DateTimeOffset createdAt = default, string status = default, DateTimeOffset? lastActiveAt = default, ContainerExpirationPolicy expiresAfter = default, ContainerMemoryLimit? memoryLimit = default, ContainerNetworkPolicy networkPolicy = default)
+        {
+            return new ContainerResource(
+                id,
+                default,
+                name,
+                createdAt,
+                status,
+                lastActiveAt,
+                expiresAfter,
+                memoryLimit,
+                networkPolicy,
+                default);
+        }
+
+        public static ContainerDeletionResult ContainerDeletionResult(string containerId = default, bool deleted = default)
+        {
+            return new ContainerDeletionResult(containerId, default, deleted, default);
+        }
+
+        public static ContainerCollectionPage ContainerCollectionPage(IEnumerable<ContainerResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<ContainerResource>();
+
+            return new ContainerCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static UploadContainerFileOptions UploadContainerFileOptions(string fileId = default, BinaryData @file = default)
+        {
+            return new UploadContainerFileOptions(fileId, @file, default);
+        }
+
+        public static ContainerFileResource ContainerFileResource(string id = default, string containerId = default, DateTimeOffset createdAt = default, long? sizeInBytes = default, string path = default, string source = default)
         {
             return new ContainerFileResource(
                 id,
-                @object,
+                default,
                 containerId,
                 createdAt,
                 sizeInBytes,
                 path,
                 source,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
-        public static DeleteContainerFileResponse DeleteContainerFileResponse(string id = default)
+        public static ContainerFileDeletionResult ContainerFileDeletionResult(string containerFileId = default)
         {
-            return new DeleteContainerFileResponse(id, "container.file.deleted", true, additionalBinaryDataProperties: null);
+            return new ContainerFileDeletionResult(containerFileId, default, default, default);
+        }
+
+        public static ContainerFileCollectionPage ContainerFileCollectionPage(IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<ContainerFileResource>();
+
+            return new ContainerFileCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                additionalBinaryDataProperties: null);
         }
 
         public static FineTuningError FineTuningError(string code = default, string message = default, string invalidParameter = default)
@@ -2072,14 +2125,14 @@ namespace OpenAI
                 default);
         }
 
-        public static ContainerCollectionOptions ContainerCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
+        public static ContainerCollectionOptions ContainerCollectionOptions(int? pageSizeLimit = default, ContainerCollectionOrder? order = default, string afterId = default, string name = default)
         {
-            return new ContainerCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new ContainerCollectionOptions(pageSizeLimit, order, afterId, name, additionalBinaryDataProperties: null);
         }
 
-        public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerFileCollectionOrder? order = default)
+        public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string containerId = default, int? pageSizeLimit = default, ContainerFileCollectionOrder? order = default, string afterId = default)
         {
-            return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new ContainerFileCollectionOptions(containerId, pageSizeLimit, order, afterId, additionalBinaryDataProperties: null);
         }
 
         public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)

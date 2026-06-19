@@ -11,53 +11,53 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class InternalContainerFileListResource : IJsonModel<InternalContainerFileListResource>
+    public partial class ContainerFileCollectionPage : IJsonModel<ContainerFileCollectionPage>
     {
-        internal InternalContainerFileListResource() : this(null, null, null, null, default, null)
+        public ContainerFileCollectionPage() : this(null, null, null, null, default, null)
         {
         }
 
-        protected virtual InternalContainerFileListResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ContainerFileCollectionPage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileListResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCollectionPage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalContainerFileListResource(document.RootElement, options);
+                        return DeserializeContainerFileCollectionPage(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalContainerFileListResource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ContainerFileCollectionPage)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileListResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCollectionPage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalContainerFileListResource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ContainerFileCollectionPage)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalContainerFileListResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ContainerFileCollectionPage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalContainerFileListResource IPersistableModel<InternalContainerFileListResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ContainerFileCollectionPage IPersistableModel<ContainerFileCollectionPage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalContainerFileListResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ContainerFileCollectionPage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator InternalContainerFileListResource(ClientResult result)
+        public static explicit operator ContainerFileCollectionPage(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalContainerFileListResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeContainerFileCollectionPage(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
-        void IJsonModel<InternalContainerFileListResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ContainerFileCollectionPage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -66,10 +66,10 @@ namespace OpenAI.Containers
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileListResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCollectionPage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalContainerFileListResource)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ContainerFileCollectionPage)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -123,20 +123,20 @@ namespace OpenAI.Containers
             }
         }
 
-        InternalContainerFileListResource IJsonModel<InternalContainerFileListResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ContainerFileCollectionPage IJsonModel<ContainerFileCollectionPage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalContainerFileListResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ContainerFileCollectionPage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileListResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCollectionPage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalContainerFileListResource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ContainerFileCollectionPage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalContainerFileListResource(document.RootElement, options);
+            return DeserializeContainerFileCollectionPage(document.RootElement, options);
         }
 
-        internal static InternalContainerFileListResource DeserializeInternalContainerFileListResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static ContainerFileCollectionPage DeserializeContainerFileCollectionPage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -160,7 +160,7 @@ namespace OpenAI.Containers
                     List<ContainerFileResource> array = new List<ContainerFileResource>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ContainerFileResource.DeserializeContainerFileResource(item, options));
+                        array.Add(ContainerFileResource.DeserializeContainerFileResource(item, item.GetUtf8Bytes(), options));
                     }
                     data = array;
                     continue;
@@ -183,7 +183,7 @@ namespace OpenAI.Containers
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalContainerFileListResource(
+            return new ContainerFileCollectionPage(
                 @object,
                 data,
                 firstId,
