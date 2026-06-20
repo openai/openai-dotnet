@@ -52,6 +52,9 @@ public class PaginationVisitor : ScmLibraryVisitor
         { "containerId", "ContainerId" },
         { "container_id", "ContainerId" }
     };
+    private static readonly Dictionary<string, string[]> _parameterNamesByReplacement = _paramReplacementMap
+        .GroupBy(pair => pair.Value, pair => pair.Key)
+        .ToDictionary(group => group.Key, group => group.ToArray(), StringComparer.Ordinal);
     private static readonly Dictionary<string, OptionsReplacementInfo> _optionsReplacements = new()
     {
         {
@@ -338,9 +341,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         }
 
         string statementText = statement.ToDisplayString();
-        return _paramReplacementMap
-            .Where(pair => pair.Value == replacement)
-            .Select(pair => pair.Key)
+        return _parameterNamesByReplacement[replacement]
             .Any(parameterName => statementText.Contains(
                 $"{validationMethod}({parameterName}, nameof({parameterName}))",
                 StringComparison.Ordinal));
