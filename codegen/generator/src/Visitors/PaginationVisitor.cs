@@ -332,10 +332,18 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static bool MatchesValidationStatement(MethodBodyStatement statement, ParameterProvider parameter, string validationMethod)
     {
+        if (!TryGetReplacementPropertyName(parameter, out string replacement))
+        {
+            return false;
+        }
+
         string statementText = statement.ToDisplayString();
-        return statementText.Contains(
-            $"{validationMethod}({parameter.Name}, nameof({parameter.Name}))",
-            StringComparison.Ordinal);
+        return _paramReplacementMap
+            .Where(pair => pair.Value == replacement)
+            .Select(pair => pair.Key)
+            .Any(parameterName => statementText.Contains(
+                $"{validationMethod}({parameterName}, nameof({parameterName}))",
+                StringComparison.Ordinal));
     }
 
     private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
