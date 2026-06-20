@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Primitives;
@@ -322,10 +321,9 @@ public class PaginationVisitor : ScmLibraryVisitor
     {
         string normalizedStatement = NormalizeParameterName(statement.ToDisplayString());
         return GetNormalizedParameterNames(parameter).Any(normalizedParameterName =>
-            Regex.IsMatch(
-                normalizedStatement,
-                $@"{Regex.Escape(validationMethod)}\((?<parameter>{Regex.Escape(normalizedParameterName)}),\s*nameof\(\k<parameter>\)\)",
-                RegexOptions.IgnoreCase));
+            normalizedStatement.Contains(
+                $"{validationMethod}({normalizedParameterName}, nameof({normalizedParameterName}))",
+                StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
@@ -362,7 +360,10 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static IReadOnlySet<string> GetNormalizedParameterNames(ParameterProvider parameter)
     {
-        HashSet<string> parameterNames = [NormalizeParameterName(parameter.Name)];
+        HashSet<string> parameterNames = new(StringComparer.OrdinalIgnoreCase)
+        {
+            NormalizeParameterName(parameter.Name)
+        };
 
         if (parameter.InputParameter?.Name is string inputName)
         {
@@ -386,7 +387,9 @@ public class PaginationVisitor : ScmLibraryVisitor
         => string.Equals(NormalizeParameterName(expectedName), NormalizeParameterName(actualName), StringComparison.OrdinalIgnoreCase);
 
     private static string NormalizeParameterName(string parameterName)
-        => parameterName.Replace("_", string.Empty, StringComparison.Ordinal);
+        => parameterName
+            .Replace("_", string.Empty, StringComparison.Ordinal)
+            .Replace("-", string.Empty, StringComparison.Ordinal);
 
     private static MethodBodyStatement CreatePropertyValidationStatement(
         ParameterProvider optionsParam,
