@@ -17,7 +17,7 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
 {
-    private readonly record struct OptionsReplacementInfo(string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace);
+    private sealed record OptionsReplacementInfo(string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace);
 
     private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter", "name"];
     private static readonly string[] _containerFilePaginationParamsToReplace = [.. _paginationParamsToReplace, "containerId"];
@@ -174,7 +174,8 @@ public class PaginationVisitor : ScmLibraryVisitor
         // If so, we will update its parameters to replace the specified parameters with the options type.
         if (method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
-            _optionsReplacements.TryGetValue(method.Signature.Name, out OptionsReplacementInfo options) &&
+            _optionsReplacements.TryGetValue(method.Signature.Name, out OptionsReplacementInfo? options) &&
+            options is not null &&
             method.Signature.ReturnType.IsGenericType &&
             method.Signature.ReturnType.Arguments.Count == 1 &&
             method.Signature.ReturnType.Arguments[0].Name == options.ReturnType)
@@ -365,7 +366,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static IReadOnlySet<string> GetNormalizedParameterNames(ParameterProvider parameter)
     {
-        HashSet<string> parameterNames = new(StringComparer.OrdinalIgnoreCase)
+        HashSet<string> parameterNames = new()
         {
             NormalizeParameterName(parameter.Name)
         };
@@ -389,15 +390,16 @@ public class PaginationVisitor : ScmLibraryVisitor
     }
 
     private static HashSet<string> CreateNormalizedNameSet(IEnumerable<string> parameterNames)
-        => new HashSet<string>(parameterNames.Select(NormalizeParameterName), StringComparer.OrdinalIgnoreCase);
+        => new HashSet<string>(parameterNames.Select(NormalizeParameterName));
 
     private static Dictionary<string, string> CreateNormalizedReplacementMap(IEnumerable<KeyValuePair<string, string>> replacements)
-        => replacements.ToDictionary(pair => NormalizeParameterName(pair.Key), pair => pair.Value, StringComparer.OrdinalIgnoreCase);
+        => replacements.ToDictionary(pair => NormalizeParameterName(pair.Key), pair => pair.Value);
 
     private static string NormalizeParameterName(string parameterName)
         => parameterName
             .Replace("_", string.Empty, StringComparison.Ordinal)
-            .Replace("-", string.Empty, StringComparison.Ordinal);
+            .Replace("-", string.Empty, StringComparison.Ordinal)
+            .ToLowerInvariant();
 
     private static MethodBodyStatement CreatePropertyValidationStatement(
         ParameterProvider optionsParam,
