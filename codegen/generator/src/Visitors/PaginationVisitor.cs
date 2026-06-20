@@ -395,6 +395,7 @@ public class PaginationVisitor : ScmLibraryVisitor
     private static Dictionary<string, string> CreateNormalizedReplacementMap(IEnumerable<KeyValuePair<string, string>> replacements)
         => replacements.ToDictionary(pair => NormalizeParameterName(pair.Key), pair => pair.Value, StringComparer.Ordinal);
 
+    // Normalization removes alternate separators and lowercases names, so ordinal comparisons on normalized values are sufficient.
     private static string NormalizeParameterName(string parameterName)
         => parameterName
             .Replace("_", string.Empty, StringComparison.Ordinal)
