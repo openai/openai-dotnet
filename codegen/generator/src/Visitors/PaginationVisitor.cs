@@ -17,6 +17,7 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
 {
+    private readonly record struct OptionsReplacementInfo(string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace);
 
     private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter", "name"];
     private static readonly string[] _containerFilePaginationParamsToReplace = [.. _paginationParamsToReplace, "containerId"];
@@ -37,111 +38,111 @@ public class PaginationVisitor : ScmLibraryVisitor
     private static readonly HashSet<string> _normalizedPaginationParamsToReplace = CreateNormalizedNameSet(_paginationParamsToReplace);
     private static readonly HashSet<string> _normalizedContainerFilePaginationParamsToReplace = CreateNormalizedNameSet(_containerFilePaginationParamsToReplace);
     private static readonly Dictionary<string, string> _normalizedParamReplacementMap = CreateNormalizedReplacementMap(_paramReplacementMap);
-    private static readonly Dictionary<string, (string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace)> _optionsReplacements = new()
+    private static readonly Dictionary<string, OptionsReplacementInfo> _optionsReplacements = new()
     {
         {
             "GetChatCompletions",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ChatCompletion", "ChatCompletionCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetChatCompletionsAsync",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ChatCompletion", "ChatCompletionCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetChatCompletionMessages",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetChatCompletionMessagesAsync",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetBatches",
-            ("BatchJob", "BatchCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("BatchJob", "BatchCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetBatchesAsync",
-            ("BatchJob", "BatchCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("BatchJob", "BatchCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStores",
-            ("VectorStore", "VectorStoreCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("VectorStore", "VectorStoreCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoresAsync",
-            ("VectorStore", "VectorStoreCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("VectorStore", "VectorStoreCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFiles",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFilesAsync",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFilesInBatch",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFilesInBatchAsync",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetContainers",
-            ("ContainerResource", "ContainerCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ContainerResource", "ContainerCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetContainersAsync",
-            ("ContainerResource", "ContainerCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ContainerResource", "ContainerCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetContainerFiles",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _normalizedContainerFilePaginationParamsToReplace)
+            new OptionsReplacementInfo("ContainerFileResource", "ContainerFileCollectionOptions", _normalizedContainerFilePaginationParamsToReplace)
         },
         {
             "GetContainerFilesAsync",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _normalizedContainerFilePaginationParamsToReplace)
+            new OptionsReplacementInfo("ContainerFileResource", "ContainerFileCollectionOptions", _normalizedContainerFilePaginationParamsToReplace)
         },
         {
             "GetResponseInputItems",
-            ("ResponseItem", "ResponseItemCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ResponseItem", "ResponseItemCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetResponseInputItemsAsync",
-            ("ResponseItem", "ResponseItemCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ResponseItem", "ResponseItemCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetAssistants",
-            ("Assistant", "AssistantCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("Assistant", "AssistantCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetAssistantsAsync",
-            ("Assistant", "AssistantCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("Assistant", "AssistantCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetMessages",
-            ("ThreadMessage", "MessageCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ThreadMessage", "MessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetMessagesAsync",
-            ("ThreadMessage", "MessageCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ThreadMessage", "MessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRuns",
-            ("ThreadRun", "RunCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ThreadRun", "RunCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRunsAsync",
-            ("ThreadRun", "RunCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("ThreadRun", "RunCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRunSteps",
-            ("RunStep", "RunStepCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("RunStep", "RunStepCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRunStepsAsync",
-            ("RunStep", "RunStepCollectionOptions", _normalizedPaginationParamsToReplace)
+            new OptionsReplacementInfo("RunStep", "RunStepCollectionOptions", _normalizedPaginationParamsToReplace)
         }
     };
 
@@ -173,7 +174,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         // If so, we will update its parameters to replace the specified parameters with the options type.
         if (method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
-            _optionsReplacements.TryGetValue(method.Signature.Name, out (string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace) options) &&
+            _optionsReplacements.TryGetValue(method.Signature.Name, out OptionsReplacementInfo options) &&
             method.Signature.ReturnType.IsGenericType &&
             method.Signature.ReturnType.Arguments.Count == 1 &&
             method.Signature.ReturnType.Arguments[0].Name == options.ReturnType)
@@ -236,9 +237,9 @@ public class PaginationVisitor : ScmLibraryVisitor
 
                     foreach (ParameterProvider replacedParameter in replacedParameters.Where(parameter => parameter.Validation != ParameterValidationType.None))
                     {
-                        if (TryGetReplacementPropertyName(replacedParameter, out string replacement))
+                        if (TryGetReplacementPropertyName(replacedParameter, out string replacementPropertyName))
                         {
-                            statements.Insert(insertIndex++, CreatePropertyValidationStatement(optionsParam, replacement, replacedParameter.Validation));
+                            statements.Insert(insertIndex++, CreatePropertyValidationStatement(optionsParam, replacementPropertyName, replacedParameter.Validation));
                         }
                     }
 
@@ -257,18 +258,18 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     foreach (ValueExpression param in newInstance.Parameters)
                                     {
                                         if (param is VariableExpression variableExpression
-                                            && TryGetReplacementPropertyName(variableExpression.Declaration.RequestedName, options.ParamsToReplace, out string replacement))
+                                            && TryGetReplacementPropertyName(variableExpression.Declaration.RequestedName, options.ParamsToReplace, out string replacementPropertyName))
                                         {
                                             bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, variableExpression.Declaration.RequestedName);
-                                            newParameters.Add(GetOptionsPropertyValue(optionsParam, replacement, useNullConditional));
+                                            newParameters.Add(GetOptionsPropertyValue(optionsParam, replacementPropertyName, useNullConditional));
                                         }
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
                                                  invokeMethod.InstanceReference is NullConditionalExpression nullConditional &&
-                                                 nullConditional.Inner is VariableExpression variableExpression2 &&
-                                                 TryGetReplacementPropertyName(variableExpression2.Declaration.RequestedName, options.ParamsToReplace, out string replacement2))
+                                                 nullConditional.Inner is VariableExpression invokeVariableExpression &&
+                                                 TryGetReplacementPropertyName(invokeVariableExpression.Declaration.RequestedName, options.ParamsToReplace, out string invokeReplacementPropertyName))
                                         {
-                                            bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, variableExpression2.Declaration.RequestedName);
-                                            ValueExpression propertyValue = GetOptionsPropertyValue(optionsParam, replacement2, useNullConditional);
+                                            bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, invokeVariableExpression.Declaration.RequestedName);
+                                            ValueExpression propertyValue = GetOptionsPropertyValue(optionsParam, invokeReplacementPropertyName, useNullConditional);
                                             newParameters.Add(useNullConditional
                                                 ? propertyValue.NullConditional().Invoke("ToString", Array.Empty<ValueExpression>())
                                                 : propertyValue.Invoke("ToString", Array.Empty<ValueExpression>()));
