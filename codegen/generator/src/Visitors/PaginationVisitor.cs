@@ -189,7 +189,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
-                    if (TryGetReplacedParameterName(newParameters[i], options.ParamsToReplace, out _))
+                    if (HasReplacedParameterName(newParameters[i], options.ParamsToReplace))
                     {
                         replacedParameters.Add(newParameters[i]);
                         newParameters.RemoveAt(i);
@@ -297,9 +297,12 @@ public class PaginationVisitor : ScmLibraryVisitor
     }
 
     private static bool ShouldUseNullConditional(bool optionsParameterIsOptional, IReadOnlyList<ParameterProvider> replacedParameters, string parameterName)
-        => optionsParameterIsOptional || replacedParameters.Any(parameter =>
-            ParameterMatchesName(parameter, parameterName)
+    {
+        string normalizedParameterName = NormalizeParameterName(parameterName);
+        return optionsParameterIsOptional || replacedParameters.Any(parameter =>
+            HasNormalizedParameterName(parameter, normalizedParameterName)
             && parameter.DefaultValue is not null);
+    }
 
     private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool useNullConditional)
         => useNullConditional
@@ -352,26 +355,13 @@ public class PaginationVisitor : ScmLibraryVisitor
         return false;
     }
 
-    private static bool TryGetReplacedParameterName(ParameterProvider parameter, IReadOnlySet<string> paramsToReplace, out string parameterName)
+    private static bool HasReplacedParameterName(ParameterProvider parameter, IReadOnlySet<string> paramsToReplace)
     {
-        foreach (string normalizedParameterName in GetNormalizedParameterNames(parameter))
-        {
-            if (paramsToReplace.Contains(normalizedParameterName))
-            {
-                parameterName = normalizedParameterName;
-                return true;
-            }
-        }
-
-        parameterName = string.Empty;
-        return false;
+        return GetNormalizedParameterNames(parameter).Any(paramsToReplace.Contains);
     }
 
-    private static bool ParameterMatchesName(ParameterProvider parameter, string parameterName)
-    {
-        string normalizedParameterName = NormalizeParameterName(parameterName);
-        return GetNormalizedParameterNames(parameter).Contains(normalizedParameterName);
-    }
+    private static bool HasNormalizedParameterName(ParameterProvider parameter, string normalizedParameterName)
+        => GetNormalizedParameterNames(parameter).Contains(normalizedParameterName);
 
     private static IReadOnlySet<string> GetNormalizedParameterNames(ParameterProvider parameter)
     {
