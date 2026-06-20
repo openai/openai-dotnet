@@ -34,111 +34,114 @@ public class PaginationVisitor : ScmLibraryVisitor
         { "name", "Name" },
         { "containerId", "ContainerId" }
     };
-    private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
+    private static readonly HashSet<string> _normalizedPaginationParamsToReplace = CreateNormalizedNameSet(_paginationParamsToReplace);
+    private static readonly HashSet<string> _normalizedContainerFilePaginationParamsToReplace = CreateNormalizedNameSet(_containerFilePaginationParamsToReplace);
+    private static readonly Dictionary<string, string> _normalizedParamReplacementMap = CreateNormalizedReplacementMap(_paramReplacementMap);
+    private static readonly Dictionary<string, (string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace)> _optionsReplacements = new()
     {
         {
             "GetChatCompletions",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetChatCompletionsAsync",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetChatCompletionMessages",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetChatCompletionMessagesAsync",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetBatches",
-            ("BatchJob", "BatchCollectionOptions", _paginationParamsToReplace)
+            ("BatchJob", "BatchCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetBatchesAsync",
-            ("BatchJob", "BatchCollectionOptions", _paginationParamsToReplace)
+            ("BatchJob", "BatchCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStores",
-            ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
+            ("VectorStore", "VectorStoreCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoresAsync",
-            ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
+            ("VectorStore", "VectorStoreCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFiles",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFilesAsync",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFilesInBatch",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetVectorStoreFilesInBatchAsync",
-            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetContainers",
-            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
+            ("ContainerResource", "ContainerCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetContainersAsync",
-            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
+            ("ContainerResource", "ContainerCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetContainerFiles",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _containerFilePaginationParamsToReplace)
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _normalizedContainerFilePaginationParamsToReplace)
         },
         {
             "GetContainerFilesAsync",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _containerFilePaginationParamsToReplace)
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _normalizedContainerFilePaginationParamsToReplace)
         },
         {
             "GetResponseInputItems",
-            ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
+            ("ResponseItem", "ResponseItemCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetResponseInputItemsAsync",
-            ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
+            ("ResponseItem", "ResponseItemCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetAssistants",
-            ("Assistant", "AssistantCollectionOptions", _paginationParamsToReplace)
+            ("Assistant", "AssistantCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetAssistantsAsync",
-            ("Assistant", "AssistantCollectionOptions", _paginationParamsToReplace)
+            ("Assistant", "AssistantCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetMessages",
-            ("ThreadMessage", "MessageCollectionOptions", _paginationParamsToReplace)
+            ("ThreadMessage", "MessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetMessagesAsync",
-            ("ThreadMessage", "MessageCollectionOptions", _paginationParamsToReplace)
+            ("ThreadMessage", "MessageCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRuns",
-            ("ThreadRun", "RunCollectionOptions", _paginationParamsToReplace)
+            ("ThreadRun", "RunCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRunsAsync",
-            ("ThreadRun", "RunCollectionOptions", _paginationParamsToReplace)
+            ("ThreadRun", "RunCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRunSteps",
-            ("RunStep", "RunStepCollectionOptions", _paginationParamsToReplace)
+            ("RunStep", "RunStepCollectionOptions", _normalizedPaginationParamsToReplace)
         },
         {
             "GetRunStepsAsync",
-            ("RunStep", "RunStepCollectionOptions", _paginationParamsToReplace)
+            ("RunStep", "RunStepCollectionOptions", _normalizedPaginationParamsToReplace)
         }
     };
 
@@ -170,18 +173,18 @@ public class PaginationVisitor : ScmLibraryVisitor
         // If so, we will update its parameters to replace the specified parameters with the options type.
         if (method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
-            _optionsReplacements.TryGetValue(method.Signature.Name, out var options) &&
+            _optionsReplacements.TryGetValue(method.Signature.Name, out (string ReturnType, string OptionsType, IReadOnlySet<string> ParamsToReplace) options) &&
             method.Signature.ReturnType.IsGenericType &&
             method.Signature.ReturnType.Arguments.Count == 1 &&
             method.Signature.ReturnType.Arguments[0].Name == options.ReturnType)
         {
-            var optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == options.OptionsType);
+            TypeProvider? optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == options.OptionsType);
             if (optionsType is not null)
             {
                 // replace the method parameters with names in the _paramsToReplace array with the optionsType
-                var methodSignature = method.Signature;
-                var newParameters = methodSignature.Parameters.ToList();
-                var replacedParameters = new List<ParameterProvider>();
+                MethodSignature methodSignature = method.Signature;
+                List<ParameterProvider> newParameters = methodSignature.Parameters.ToList();
+                List<ParameterProvider> replacedParameters = new List<ParameterProvider>();
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
@@ -205,7 +208,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                             defaultValue: optionsParameterIsOptional ? Snippet.Default : null,
                             validation: optionsParameterIsOptional ? null : ParameterValidationType.AssertNotNull));
 
-                    var newSignature = new MethodSignature(
+                    MethodSignature newSignature = new MethodSignature(
                         methodSignature.Name,
                         methodSignature.Description,
                         methodSignature.Modifiers,
@@ -218,10 +221,10 @@ public class PaginationVisitor : ScmLibraryVisitor
                         methodSignature.ExplicitInterface,
                         methodSignature.NonDocumentComment);
 
-                    var optionsParam = newParameters[lastRemovedIndex];
+                    ParameterProvider optionsParam = newParameters[lastRemovedIndex];
 
                     // Update the method body statements to replace the old parameters with the new options parameter.
-                    var statements = method.BodyStatements?
+                    List<MethodBodyStatement> statements = method.BodyStatements?
                         .Where(statement => !replacedParameters.Any(parameter => IsValidationStatementForParameter(statement, parameter)))
                         .ToList() ?? new List<MethodBodyStatement>();
 
@@ -231,9 +234,9 @@ public class PaginationVisitor : ScmLibraryVisitor
                         statements.Insert(insertIndex++, ArgumentSnippets.ValidateParameter(optionsParam));
                     }
 
-                    foreach (var replacedParameter in replacedParameters.Where(parameter => parameter.Validation != ParameterValidationType.None))
+                    foreach (ParameterProvider replacedParameter in replacedParameters.Where(parameter => parameter.Validation != ParameterValidationType.None))
                     {
-                        if (TryGetReplacementPropertyName(replacedParameter, out var replacement))
+                        if (TryGetReplacementPropertyName(replacedParameter, out string replacement))
                         {
                             statements.Insert(insertIndex++, CreatePropertyValidationStatement(optionsParam, replacement, replacedParameter.Validation));
                         }
@@ -250,32 +253,25 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     newInstance.Parameters.Count > 0)
                                 {
                                     // Create the new parameters with the options parameter.
-                                    var newParameters = new List<ValueExpression>();
-                                    foreach (var param in newInstance.Parameters)
+                                    List<ValueExpression> newParameters = new List<ValueExpression>();
+                                    foreach (ValueExpression param in newInstance.Parameters)
                                     {
-                                        if (param is VariableExpression varExpr && options.ParamsToReplace.Contains(varExpr.Declaration.RequestedName))
+                                        if (param is VariableExpression variableExpression
+                                            && TryGetReplacementPropertyName(variableExpression.Declaration.RequestedName, options.ParamsToReplace, out string replacement))
                                         {
-                                            // Replace the parameter with the options parameter.
-                                            if (_paramReplacementMap.TryGetValue(varExpr.Declaration.RequestedName, out var replacement))
-                                            {
-                                                bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, varExpr.Declaration.RequestedName);
-                                                newParameters.Add(GetOptionsPropertyValue(optionsParam, replacement, useNullConditional));
-                                            }
+                                            bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, variableExpression.Declaration.RequestedName);
+                                            newParameters.Add(GetOptionsPropertyValue(optionsParam, replacement, useNullConditional));
                                         }
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
                                                  invokeMethod.InstanceReference is NullConditionalExpression nullConditional &&
-                                                 nullConditional.Inner is VariableExpression varExpr2 &&
-                                                 options.ParamsToReplace.Contains(varExpr2.Declaration.RequestedName))
+                                                 nullConditional.Inner is VariableExpression variableExpression2 &&
+                                                 TryGetReplacementPropertyName(variableExpression2.Declaration.RequestedName, options.ParamsToReplace, out string replacement2))
                                         {
-                                            // Replace the parameter with the options parameter.
-                                            if (_paramReplacementMap.TryGetValue(varExpr2.Declaration.RequestedName, out var replacement))
-                                            {
-                                                bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, varExpr2.Declaration.RequestedName);
-                                                var propertyValue = GetOptionsPropertyValue(optionsParam, replacement, useNullConditional);
-                                                newParameters.Add(useNullConditional
-                                                    ? propertyValue.NullConditional().Invoke("ToString", Array.Empty<ValueExpression>())
-                                                    : propertyValue.Invoke("ToString", Array.Empty<ValueExpression>()));
-                                            }
+                                            bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, variableExpression2.Declaration.RequestedName);
+                                            ValueExpression propertyValue = GetOptionsPropertyValue(optionsParam, replacement2, useNullConditional);
+                                            newParameters.Add(useNullConditional
+                                                ? propertyValue.NullConditional().Invoke("ToString", Array.Empty<ValueExpression>())
+                                                : propertyValue.Invoke("ToString", Array.Empty<ValueExpression>()));
                                         }
                                         else
                                         {
@@ -301,7 +297,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static bool ShouldUseNullConditional(bool optionsParameterIsOptional, IReadOnlyList<ParameterProvider> replacedParameters, string parameterName)
         => optionsParameterIsOptional || replacedParameters.Any(parameter =>
-            TryGetReplacedParameterName(parameter, [parameterName], out _)
+            ParameterMatchesName(parameter, parameterName)
             && parameter.DefaultValue is not null);
 
     private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool useNullConditional)
@@ -328,12 +324,11 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
     {
-        foreach (var normalizedParameterName in GetNormalizedParameterNames(parameter))
+        foreach (string normalizedParameterName in GetNormalizedParameterNames(parameter))
         {
-            string? replacementKey = _paramReplacementMap.Keys.FirstOrDefault(key => ParameterNamesMatch(key, normalizedParameterName));
-            if (replacementKey is not null)
+            if (_normalizedParamReplacementMap.TryGetValue(normalizedParameterName, out string? mappedReplacement))
             {
-                replacement = _paramReplacementMap[replacementKey];
+                replacement = mappedReplacement;
                 return true;
             }
         }
@@ -342,20 +337,39 @@ public class PaginationVisitor : ScmLibraryVisitor
         return false;
     }
 
-    private static bool TryGetReplacedParameterName(ParameterProvider parameter, IReadOnlyCollection<string> paramsToReplace, out string parameterName)
+    private static bool TryGetReplacementPropertyName(string parameterName, IReadOnlySet<string> paramsToReplace, out string replacement)
     {
-        foreach (var normalizedParameterName in GetNormalizedParameterNames(parameter))
+        string normalizedParameterName = NormalizeParameterName(parameterName);
+        if (paramsToReplace.Contains(normalizedParameterName) &&
+            _normalizedParamReplacementMap.TryGetValue(normalizedParameterName, out string? mappedReplacement))
         {
-            string? matchingParameterName = paramsToReplace.FirstOrDefault(parameterToReplace => ParameterNamesMatch(parameterToReplace, normalizedParameterName));
-            if (matchingParameterName is not null)
+            replacement = mappedReplacement;
+            return true;
+        }
+
+        replacement = string.Empty;
+        return false;
+    }
+
+    private static bool TryGetReplacedParameterName(ParameterProvider parameter, IReadOnlySet<string> paramsToReplace, out string parameterName)
+    {
+        foreach (string normalizedParameterName in GetNormalizedParameterNames(parameter))
+        {
+            if (paramsToReplace.Contains(normalizedParameterName))
             {
-                parameterName = matchingParameterName;
+                parameterName = normalizedParameterName;
                 return true;
             }
         }
 
         parameterName = string.Empty;
         return false;
+    }
+
+    private static bool ParameterMatchesName(ParameterProvider parameter, string parameterName)
+    {
+        string normalizedParameterName = NormalizeParameterName(parameterName);
+        return GetNormalizedParameterNames(parameter).Contains(normalizedParameterName);
     }
 
     private static IReadOnlySet<string> GetNormalizedParameterNames(ParameterProvider parameter)
@@ -383,8 +397,11 @@ public class PaginationVisitor : ScmLibraryVisitor
         return parameterNames;
     }
 
-    private static bool ParameterNamesMatch(string expectedName, string actualName)
-        => string.Equals(NormalizeParameterName(expectedName), NormalizeParameterName(actualName), StringComparison.OrdinalIgnoreCase);
+    private static HashSet<string> CreateNormalizedNameSet(IEnumerable<string> parameterNames)
+        => new HashSet<string>(parameterNames.Select(NormalizeParameterName), StringComparer.OrdinalIgnoreCase);
+
+    private static Dictionary<string, string> CreateNormalizedReplacementMap(IEnumerable<KeyValuePair<string, string>> replacements)
+        => replacements.ToDictionary(pair => NormalizeParameterName(pair.Key), pair => pair.Value, StringComparer.OrdinalIgnoreCase);
 
     private static string NormalizeParameterName(string parameterName)
         => parameterName
@@ -396,8 +413,8 @@ public class PaginationVisitor : ScmLibraryVisitor
         string replacement,
         ParameterValidationType validation)
     {
-        var propertyExpression = optionsParam.Property(replacement);
-        var propertyName = new LiteralExpression($"options.{replacement}");
+        ValueExpression propertyExpression = optionsParam.Property(replacement);
+        LiteralExpression propertyName = new LiteralExpression($"options.{replacement}");
 
         return validation switch
         {
@@ -419,7 +436,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         if ((method.Signature.Name == "GetRawPagesAsync" || method.Signature.Name == "GetRawPages") && method.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Internal))
         {
             VariableExpression? hasMoreVariable = null;
-            var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
+            List<MethodBodyStatement> statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
             VisitExplodedMethodBodyStatements(
                 statements!,
                 statement =>
@@ -441,7 +458,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                 {
                                     // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
                                     // in the WhileStatement handler below.
-                                    var hasMoreNullCheck = Snippet.Not(hasMoreVariable);
+                                    ValueExpression hasMoreNullCheck = Snippet.Not(hasMoreVariable);
 
                                     // Return "string.IsNullOrEmpty(nextToken) || !hasMore"
                                     return BoolSnippets.Or(invokeExpr.As<bool>(), hasMoreNullCheck);
@@ -453,7 +470,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                     }
                     else if (statement is WhileStatement whileStatement)
                     {
-                        var statementList = whileStatement.Body
+                        List<MethodBodyStatement> statementList = whileStatement.Body
                             .SelectMany(bodyStatement => bodyStatement)
                             .ToList();
 
@@ -468,14 +485,14 @@ public class PaginationVisitor : ScmLibraryVisitor
                                 memberExpression.MemberName == "LastId")
                             {
                                 // Create a new assignment for hasMore
-                                var hasMoreAssignment = new AssignmentExpression(
+                                AssignmentExpression hasMoreAssignment = new AssignmentExpression(
                                     Snippet.Declare("hasMore", typeof(bool), out hasMoreVariable),
                                     new MemberExpression(memberExpression.Inner, "HasMore"));
 
                                 // Insert the new assignment before the existing one
                                 statementList.Insert(i, hasMoreAssignment.Terminate());
                                 statementList.Insert(i, new SingleLineCommentStatement("Plugin customization: add hasMore assignment"));
-                                var updatedWhileStatement = new WhileStatement(whileStatement.Condition);
+                                WhileStatement updatedWhileStatement = new WhileStatement(whileStatement.Condition);
                                 foreach (MethodBodyStatement bodyStatement in statementList)
                                 {
                                     updatedWhileStatement.Add(bodyStatement);
