@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Expressions;
 using Microsoft.TypeSpec.Generator.Primitives;
@@ -321,9 +322,10 @@ public class PaginationVisitor : ScmLibraryVisitor
     {
         string normalizedStatement = NormalizeParameterName(statement.ToDisplayString());
         return GetParameterNames(parameter).Any(parameterName =>
-            normalizedStatement.Contains(
-                $"{validationMethod}({NormalizeParameterName(parameterName)}, nameof({NormalizeParameterName(parameterName)}))",
-                StringComparison.OrdinalIgnoreCase));
+            Regex.IsMatch(
+                normalizedStatement,
+                $@"{Regex.Escape(validationMethod)}\({Regex.Escape(NormalizeParameterName(parameterName))},\s*nameof\([A-Za-z_][A-Za-z0-9_]*\)\)",
+                RegexOptions.IgnoreCase));
     }
 
     private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
@@ -338,7 +340,7 @@ public class PaginationVisitor : ScmLibraryVisitor
             }
         }
 
-        replacement = null!;
+        replacement = string.Empty;
         return false;
     }
 
@@ -354,7 +356,7 @@ public class PaginationVisitor : ScmLibraryVisitor
             }
         }
 
-        parameterName = null!;
+        parameterName = string.Empty;
         return false;
     }
 
