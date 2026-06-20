@@ -185,7 +185,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
-                    if (options.ParamsToReplace.Contains(newParameters[i].Name))
+                    if (TryGetReplacedParameterName(newParameters[i], options.ParamsToReplace, out _))
                     {
                         replacedParameters.Add(newParameters[i]);
                         newParameters.RemoveAt(i);
@@ -233,7 +233,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
                     foreach (var replacedParameter in replacedParameters.Where(parameter => parameter.Validation != ParameterValidationType.None))
                     {
-                        if (_paramReplacementMap.TryGetValue(replacedParameter.Name, out var replacement))
+                        if (TryGetReplacementPropertyName(replacedParameter, out var replacement))
                         {
                             statements.Insert(insertIndex++, CreatePropertyValidationStatement(optionsParam, replacement, replacedParameter.Validation));
                         }
@@ -301,7 +301,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static bool ShouldUseNullConditional(bool optionsParameterIsOptional, IReadOnlyList<ParameterProvider> replacedParameters, string parameterName)
         => optionsParameterIsOptional || replacedParameters.Any(parameter =>
-            parameter.Name == parameterName
+            TryGetReplacedParameterName(parameter, [parameterName], out _)
             && parameter.DefaultValue is not null);
 
     private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool useNullConditional)
@@ -312,10 +312,79 @@ public class PaginationVisitor : ScmLibraryVisitor
     private static bool IsValidationStatementForParameter(MethodBodyStatement statement, ParameterProvider parameter)
         => parameter.Validation switch
         {
-            ParameterValidationType.AssertNotNull => statement.ToDisplayString().Contains($"Argument.AssertNotNull({parameter.Name}, nameof({parameter.Name}))"),
-            ParameterValidationType.AssertNotNullOrEmpty => statement.ToDisplayString().Contains($"Argument.AssertNotNullOrEmpty({parameter.Name}, nameof({parameter.Name}))"),
+            ParameterValidationType.AssertNotNull => MatchesValidationStatement(statement, parameter, "Argument.AssertNotNull"),
+            ParameterValidationType.AssertNotNullOrEmpty => MatchesValidationStatement(statement, parameter, "Argument.AssertNotNullOrEmpty"),
             _ => false,
         };
+
+    private static bool MatchesValidationStatement(MethodBodyStatement statement, ParameterProvider parameter, string validationMethod)
+    {
+        string normalizedStatement = NormalizeParameterName(statement.ToDisplayString());
+        return GetParameterNames(parameter).Any(parameterName =>
+            normalizedStatement.Contains(
+                $"{validationMethod}({NormalizeParameterName(parameterName)}, nameof({NormalizeParameterName(parameterName)}))",
+                StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
+    {
+        foreach (var parameterName in GetParameterNames(parameter))
+        {
+            string? replacementKey = _paramReplacementMap.Keys.FirstOrDefault(key => ParameterNamesMatch(key, parameterName));
+            if (replacementKey is not null)
+            {
+                replacement = _paramReplacementMap[replacementKey];
+                return true;
+            }
+        }
+
+        replacement = null!;
+        return false;
+    }
+
+    private static bool TryGetReplacedParameterName(ParameterProvider parameter, IReadOnlyCollection<string> paramsToReplace, out string parameterName)
+    {
+        foreach (var candidateParameterName in GetParameterNames(parameter))
+        {
+            string? matchingParameterName = paramsToReplace.FirstOrDefault(parameterToReplace => ParameterNamesMatch(parameterToReplace, candidateParameterName));
+            if (matchingParameterName is not null)
+            {
+                parameterName = matchingParameterName;
+                return true;
+            }
+        }
+
+        parameterName = null!;
+        return false;
+    }
+
+    private static IEnumerable<string> GetParameterNames(ParameterProvider parameter)
+    {
+        HashSet<string> parameterNames = [parameter.Name];
+
+        if (parameter.InputParameter?.Name is string inputName)
+        {
+            parameterNames.Add(inputName);
+        }
+
+        if (parameter.InputParameter?.OriginalName is string originalName)
+        {
+            parameterNames.Add(originalName);
+        }
+
+        if (parameter.InputParameter?.SerializedName is string serializedName)
+        {
+            parameterNames.Add(serializedName);
+        }
+
+        return parameterNames;
+    }
+
+    private static bool ParameterNamesMatch(string expectedName, string actualName)
+        => string.Equals(NormalizeParameterName(expectedName), NormalizeParameterName(actualName), StringComparison.OrdinalIgnoreCase);
+
+    private static string NormalizeParameterName(string parameterName)
+        => parameterName.Replace("_", string.Empty, StringComparison.Ordinal);
 
     private static MethodBodyStatement CreatePropertyValidationStatement(
         ParameterProvider optionsParam,
