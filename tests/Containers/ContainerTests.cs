@@ -137,7 +137,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test GetContainerFilesAsync method
-        ContainerFileCollectionOptions options = new()
+        ContainerFileCollectionOptions options = new(_testContainerId)
         {
             Order = ContainerFileCollectionOrder.Descending,
             PageSizeLimit = 10
@@ -145,7 +145,7 @@ public class ContainerTests : OpenAIRecordedTestBase
 
         int count = 0;
 
-        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options);
+        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(options);
         await foreach (ContainerFileResource file in files)
         {
             Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
@@ -218,7 +218,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         // Test with default options (null)
         int count = 0;
 
-        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId);
+        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(new ContainerFileCollectionOptions(_testContainerId));
         await foreach (ContainerFileResource file in files)
         {
             Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
@@ -295,7 +295,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
-        ContainerFileCollectionOptions options = new()
+        ContainerFileCollectionOptions options = new(_testContainerId)
         {
             PageSizeLimit = 5
         };
@@ -304,7 +304,7 @@ public class ContainerTests : OpenAIRecordedTestBase
 
         try
         {
-            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options, cancellationTokenSource.Token);
+            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(options, cancellationTokenSource.Token);
             await foreach (ContainerFileResource file in files.WithCancellation(cancellationTokenSource.Token))
             {
                 Validate(file);
@@ -389,13 +389,13 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test different ordering options for files
-        var ascendingOptions = new ContainerFileCollectionOptions()
+        var ascendingOptions = new ContainerFileCollectionOptions(_testContainerId)
         {
             Order = ContainerFileCollectionOrder.Ascending,
             PageSizeLimit = 5
         };
 
-        var descendingOptions = new ContainerFileCollectionOptions()
+        var descendingOptions = new ContainerFileCollectionOptions(_testContainerId)
         {
             Order = ContainerFileCollectionOrder.Descending,
             PageSizeLimit = 5
@@ -405,7 +405,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         int descendingCount = 0;
 
         // Test ascending order
-        AsyncCollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFilesAsync(_testContainerId, ascendingOptions);
+        AsyncCollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFilesAsync(ascendingOptions);
         await foreach (ContainerFileResource file in ascendingFiles)
         {
             Validate(file);
@@ -415,7 +415,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test descending order
-        AsyncCollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFilesAsync(_testContainerId, descendingOptions);
+        AsyncCollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFilesAsync(descendingOptions);
         await foreach (ContainerFileResource file in descendingFiles)
         {
             Validate(file);

@@ -18,7 +18,8 @@ namespace OpenAILibraryPlugin.Visitors;
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter", "name", "containerId"];
+    private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter", "name"];
+    private static readonly string[] _containerFilePaginationParamsToReplace = [.. _paginationParamsToReplace, "containerId"];
     private static readonly Dictionary<string, string> _paramReplacementMap = new()
     {
         { "after", "AfterId" },
@@ -93,11 +94,11 @@ public class PaginationVisitor : ScmLibraryVisitor
         },
         {
             "GetContainerFiles",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _containerFilePaginationParamsToReplace)
         },
         {
             "GetContainerFilesAsync",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _containerFilePaginationParamsToReplace)
         },
         {
             "GetResponseInputItems",
@@ -180,11 +181,13 @@ public class PaginationVisitor : ScmLibraryVisitor
                 // replace the method parameters with names in the _paramsToReplace array with the optionsType
                 var methodSignature = method.Signature;
                 var newParameters = methodSignature.Parameters.ToList();
+                var replacedParameters = new List<ParameterProvider>();
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
-                    if (_paginationParamsToReplace.Contains(newParameters[i].Name))
+                    if (options.ParamsToReplace.Contains(newParameters[i].Name))
                     {
+                        replacedParameters.Add(newParameters[i]);
                         newParameters.RemoveAt(i);
                         lastRemovedIndex = i;
                         i--;
@@ -192,9 +195,15 @@ public class PaginationVisitor : ScmLibraryVisitor
                 }
                 if (lastRemovedIndex >= 0)
                 {
+                    bool optionsParameterIsOptional = HasPublicParameterlessConstructor(optionsType);
                     newParameters.Insert(
                         lastRemovedIndex,
-                        new ParameterProvider("options", $"The pagination options", optionsType.Type, defaultValue: Snippet.Default));
+                        new ParameterProvider(
+                            "options",
+                            $"The pagination options",
+                            optionsType.Type,
+                            defaultValue: optionsParameterIsOptional ? Snippet.Default : null,
+                            validation: optionsParameterIsOptional ? null : ParameterValidationType.AssertNotNull));
 
                     var newSignature = new MethodSignature(
                         methodSignature.Name,
@@ -212,7 +221,24 @@ public class PaginationVisitor : ScmLibraryVisitor
                     var optionsParam = newParameters[lastRemovedIndex];
 
                     // Update the method body statements to replace the old parameters with the new options parameter.
-                    var statements = method.BodyStatements?.ToList() ?? new List<MethodBodyStatement>();
+                    var statements = method.BodyStatements?
+                        .Where(statement => !replacedParameters.Any(parameter => IsValidationStatementForParameter(statement, parameter)))
+                        .ToList() ?? new List<MethodBodyStatement>();
+
+                    int insertIndex = 0;
+                    if (!optionsParameterIsOptional)
+                    {
+                        statements.Insert(insertIndex++, ArgumentSnippets.ValidateParameter(optionsParam));
+                    }
+
+                    foreach (var replacedParameter in replacedParameters.Where(parameter => parameter.Validation != ParameterValidationType.None))
+                    {
+                        if (_paramReplacementMap.TryGetValue(replacedParameter.Name, out var replacement))
+                        {
+                            statements.Insert(insertIndex++, CreatePropertyValidationStatement(optionsParam, replacement, replacedParameter.Validation));
+                        }
+                    }
+
                     VisitExplodedMethodBodyStatements(statements!,
                         statement =>
                         {
@@ -232,7 +258,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                             // Replace the parameter with the options parameter.
                                             if (_paramReplacementMap.TryGetValue(varExpr.Declaration.RequestedName, out var replacement))
                                             {
-                                                newParameters.Add(optionsParam.NullConditional().Property(replacement));
+                                                newParameters.Add(GetOptionsPropertyValue(optionsParam, replacement, optionsParameterIsOptional));
                                             }
                                         }
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
@@ -243,7 +269,10 @@ public class PaginationVisitor : ScmLibraryVisitor
                                             // Replace the parameter with the options parameter.
                                             if (_paramReplacementMap.TryGetValue(varExpr2.Declaration.RequestedName, out var replacement))
                                             {
-                                                newParameters.Add(optionsParam.NullConditional().Property(replacement).NullConditional().Invoke("ToString", Array.Empty<ValueExpression>()));
+                                                var propertyValue = GetOptionsPropertyValue(optionsParam, replacement, optionsParameterIsOptional);
+                                                newParameters.Add(optionsParameterIsOptional
+                                                    ? propertyValue.NullConditional().Invoke("ToString", Array.Empty<ValueExpression>())
+                                                    : propertyValue.Invoke("ToString", Array.Empty<ValueExpression>()));
                                             }
                                         }
                                         else
@@ -266,6 +295,41 @@ public class PaginationVisitor : ScmLibraryVisitor
         }
 
         return false;
+    }
+
+    private static bool HasPublicParameterlessConstructor(TypeProvider typeProvider)
+        => typeProvider.Constructors.Any(constructor =>
+            constructor.Signature.Parameters.Count == 0 &&
+            (constructor.Signature.Modifiers == MethodSignatureModifiers.None
+                || constructor.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Public)));
+
+    private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool optionsParameterIsOptional)
+        => optionsParameterIsOptional
+            ? optionsParam.NullConditional().Property(replacement)
+            : optionsParam.Property(replacement);
+
+    private static bool IsValidationStatementForParameter(MethodBodyStatement statement, ParameterProvider parameter)
+        => parameter.Validation switch
+        {
+            ParameterValidationType.AssertNotNull => statement.ToDisplayString().Trim() == $"Argument.AssertNotNull({parameter.Name}, nameof({parameter.Name}));",
+            ParameterValidationType.AssertNotNullOrEmpty => statement.ToDisplayString().Trim() == $"Argument.AssertNotNullOrEmpty({parameter.Name}, nameof({parameter.Name}));",
+            _ => false,
+        };
+
+    private static MethodBodyStatement CreatePropertyValidationStatement(
+        ParameterProvider optionsParam,
+        string replacement,
+        ParameterValidationType validation)
+    {
+        var propertyExpression = optionsParam.Property(replacement);
+        var propertyName = new LiteralExpression($"options.{replacement}");
+
+        return validation switch
+        {
+            ParameterValidationType.AssertNotNull => ArgumentSnippets.AssertNotNull(propertyExpression, propertyName),
+            ParameterValidationType.AssertNotNullOrEmpty => ArgumentSnippets.AssertNotNullOrEmpty(propertyExpression, propertyName),
+            _ => MethodBodyStatement.Empty,
+        };
     }
 
     /// <summary>
