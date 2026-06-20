@@ -52,9 +52,6 @@ public class PaginationVisitor : ScmLibraryVisitor
         { "containerId", "ContainerId" },
         { "container_id", "ContainerId" }
     };
-    private static readonly Dictionary<string, string[]> _parameterNamesByReplacement = _paramReplacementMap
-        .GroupBy(pair => pair.Value, pair => pair.Key)
-        .ToDictionary(group => group.Key, group => group.ToArray(), StringComparer.Ordinal);
     private static readonly Dictionary<string, OptionsReplacementInfo> _optionsReplacements = new()
     {
         {
@@ -191,13 +188,13 @@ public class PaginationVisitor : ScmLibraryVisitor
         // If so, we will update its parameters to replace the specified parameters with the options type.
         if (method.Signature.ReturnType is not null &&
             method.Signature.ReturnType.Name.EndsWith("CollectionResult") &&
-            _optionsReplacements.TryGetValue(method.Signature.Name, out OptionsReplacementInfo? options) &&
-            options is not null &&
+            _optionsReplacements.TryGetValue(method.Signature.Name, out OptionsReplacementInfo? replacementInfo) &&
+            replacementInfo is not null &&
             method.Signature.ReturnType.IsGenericType &&
             method.Signature.ReturnType.Arguments.Count == 1 &&
-            method.Signature.ReturnType.Arguments[0].Name == options.ReturnType)
+            method.Signature.ReturnType.Arguments[0].Name == replacementInfo.ReturnType)
         {
-            TypeProvider? optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == options.OptionsType);
+            TypeProvider? optionsType = OpenAILibraryGenerator.Instance.OutputLibrary.TypeProviders.SingleOrDefault(t => t.Type.Name == replacementInfo.OptionsType);
             if (optionsType is not null)
             {
                 // replace the method parameters with names in the _paramsToReplace array with the optionsType
@@ -207,7 +204,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
-                    if (HasReplacedParameterName(newParameters[i], options.ParamsToReplace))
+                    if (replacementInfo.ParamsToReplace.Contains(newParameters[i].Name))
                     {
                         replacedParameters.Add(newParameters[i]);
                         newParameters.RemoveAt(i);
@@ -244,7 +241,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
                     // Update the method body statements to replace the old parameters with the new options parameter.
                     List<MethodBodyStatement> statements = method.BodyStatements?
-                        .Where(statement => !replacedParameters.Any(parameter => IsValidationStatementForParameter(statement, parameter)))
+                        .Where(statement => !replacedParameters.Any(parameter => IsValidationStatementForParameter(statement, parameter, replacementInfo.ParamsToReplace)))
                         .ToList() ?? new List<MethodBodyStatement>();
 
                     int insertIndex = 0;
@@ -255,7 +252,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
                     foreach (ParameterProvider replacedParameter in replacedParameters.Where(parameter => parameter.Validation != ParameterValidationType.None))
                     {
-                        if (TryGetReplacementPropertyName(replacedParameter, out string replacementPropertyName))
+                        if (TryGetReplacementPropertyName(replacedParameter.Name, replacementInfo.ParamsToReplace, out string replacementPropertyName))
                         {
                             statements.Insert(insertIndex++, CreatePropertyValidationStatement(optionsParam, replacementPropertyName, replacedParameter.Validation));
                         }
@@ -276,7 +273,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                     foreach (ValueExpression param in newInstance.Parameters)
                                     {
                                         if (param is VariableExpression variableExpression
-                                            && TryGetReplacementPropertyName(variableExpression.Declaration.RequestedName, options.ParamsToReplace, out string replacementPropertyName))
+                                            && TryGetReplacementPropertyName(variableExpression.Declaration.RequestedName, replacementInfo.ParamsToReplace, out string replacementPropertyName))
                                         {
                                             bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, variableExpression.Declaration.RequestedName);
                                             newParameters.Add(GetOptionsPropertyValue(optionsParam, replacementPropertyName, useNullConditional));
@@ -284,7 +281,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
                                                  invokeMethod.InstanceReference is NullConditionalExpression nullConditional &&
                                                  nullConditional.Inner is VariableExpression invokeVariableExpression &&
-                                                 TryGetReplacementPropertyName(invokeVariableExpression.Declaration.RequestedName, options.ParamsToReplace, out string invokeReplacementPropertyName))
+                                                 TryGetReplacementPropertyName(invokeVariableExpression.Declaration.RequestedName, replacementInfo.ParamsToReplace, out string invokeReplacementPropertyName))
                                         {
                                             bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, invokeVariableExpression.Declaration.RequestedName);
                                             ValueExpression propertyValue = GetOptionsPropertyValue(optionsParam, invokeReplacementPropertyName, useNullConditional);
@@ -325,38 +322,29 @@ public class PaginationVisitor : ScmLibraryVisitor
             ? optionsParam.NullConditional().Property(replacement)
             : optionsParam.Property(replacement);
 
-    private static bool IsValidationStatementForParameter(MethodBodyStatement statement, ParameterProvider parameter)
+    private static bool IsValidationStatementForParameter(MethodBodyStatement statement, ParameterProvider parameter, IReadOnlySet<string> paramsToReplace)
         => parameter.Validation switch
         {
-            ParameterValidationType.AssertNotNull => MatchesValidationStatement(statement, parameter, "Argument.AssertNotNull"),
-            ParameterValidationType.AssertNotNullOrEmpty => MatchesValidationStatement(statement, parameter, "Argument.AssertNotNullOrEmpty"),
+            ParameterValidationType.AssertNotNull => MatchesValidationStatement(statement, parameter, paramsToReplace, "Argument.AssertNotNull"),
+            ParameterValidationType.AssertNotNullOrEmpty => MatchesValidationStatement(statement, parameter, paramsToReplace, "Argument.AssertNotNullOrEmpty"),
             _ => false,
         };
 
-    private static bool MatchesValidationStatement(MethodBodyStatement statement, ParameterProvider parameter, string validationMethod)
+    private static bool MatchesValidationStatement(MethodBodyStatement statement, ParameterProvider parameter, IReadOnlySet<string> paramsToReplace, string validationMethod)
     {
-        if (!TryGetReplacementPropertyName(parameter, out string replacement))
+        if (!TryGetReplacementPropertyName(parameter.Name, paramsToReplace, out string replacement))
         {
             return false;
         }
 
         string statementText = statement.ToDisplayString();
-        return _parameterNamesByReplacement[replacement]
+        return paramsToReplace
+            .Where(parameterName =>
+                _paramReplacementMap.TryGetValue(parameterName, out string? mappedReplacement) &&
+                mappedReplacement == replacement)
             .Any(parameterName => statementText.Contains(
                 $"{validationMethod}({parameterName}, nameof({parameterName}))",
                 StringComparison.Ordinal));
-    }
-
-    private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
-    {
-        if (_paramReplacementMap.TryGetValue(parameter.Name, out string? mappedReplacement))
-        {
-            replacement = mappedReplacement;
-            return true;
-        }
-
-        replacement = string.Empty;
-        return false;
     }
 
     private static bool TryGetReplacementPropertyName(string parameterName, IReadOnlySet<string> paramsToReplace, out string replacement)
@@ -370,11 +358,6 @@ public class PaginationVisitor : ScmLibraryVisitor
 
         replacement = string.Empty;
         return false;
-    }
-
-    private static bool HasReplacedParameterName(ParameterProvider parameter, IReadOnlySet<string> paramsToReplace)
-    {
-        return paramsToReplace.Contains(parameter.Name);
     }
 
     private static MethodBodyStatement CreatePropertyValidationStatement(
