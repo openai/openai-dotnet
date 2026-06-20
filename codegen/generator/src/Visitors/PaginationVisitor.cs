@@ -183,6 +183,13 @@ public class PaginationVisitor : ScmLibraryVisitor
                 var newParameters = methodSignature.Parameters.ToList();
                 var replacedParameters = new List<ParameterProvider>();
                 int lastRemovedIndex = -1;
+                if (ShouldReplaceLeadingContainerId(methodSignature.Name, options.OptionsType, newParameters))
+                {
+                    replacedParameters.Add(newParameters[0]);
+                    newParameters.RemoveAt(0);
+                    lastRemovedIndex = 0;
+                }
+
                 for (int i = 0; i < newParameters.Count; i++)
                 {
                     if (options.ParamsToReplace.Contains(newParameters[i].Name))
@@ -222,7 +229,9 @@ public class PaginationVisitor : ScmLibraryVisitor
 
                     // Update the method body statements to replace the old parameters with the new options parameter.
                     var statements = method.BodyStatements?
-                        .Where(statement => !replacedParameters.Any(parameter => IsValidationStatementForParameter(statement, parameter)))
+                        .Where(statement =>
+                            !replacedParameters.Any(parameter => IsValidationStatementForParameter(statement, parameter))
+                            && !IsContainerIdValidationStatement(statement, methodSignature.Name, options.OptionsType))
                         .ToList() ?? new List<MethodBodyStatement>();
 
                     int insertIndex = 0;
@@ -239,9 +248,21 @@ public class PaginationVisitor : ScmLibraryVisitor
                         }
                     }
 
+                    if (options.OptionsType == "ContainerFileCollectionOptions")
+                    {
+                        statements.Insert(insertIndex++, ArgumentSnippets.AssertNotNullOrEmpty(
+                            optionsParam.Property("ContainerId"),
+                            new LiteralExpression("options.ContainerId")));
+                    }
+
                     VisitExplodedMethodBodyStatements(statements!,
                         statement =>
                         {
+                            if (statement is not null && IsContainerIdValidationStatement(statement, methodSignature.Name, options.OptionsType))
+                            {
+                                return new SingleLineCommentStatement("Plugin customization: remove obsolete containerId validation");
+                            }
+
                             // Check if the statement is a return statement
                             if (statement is ExpressionStatement exp && exp.Expression is KeywordExpression keyword && keyword.Keyword == "return")
                             {
@@ -258,7 +279,8 @@ public class PaginationVisitor : ScmLibraryVisitor
                                             // Replace the parameter with the options parameter.
                                             if (_paramReplacementMap.TryGetValue(varExpr.Declaration.RequestedName, out var replacement))
                                             {
-                                                newParameters.Add(GetOptionsPropertyValue(optionsParam, replacement, optionsParameterIsOptional));
+                                                bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, varExpr.Declaration.RequestedName);
+                                                newParameters.Add(GetOptionsPropertyValue(optionsParam, replacement, useNullConditional));
                                             }
                                         }
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
@@ -269,8 +291,9 @@ public class PaginationVisitor : ScmLibraryVisitor
                                             // Replace the parameter with the options parameter.
                                             if (_paramReplacementMap.TryGetValue(varExpr2.Declaration.RequestedName, out var replacement))
                                             {
-                                                var propertyValue = GetOptionsPropertyValue(optionsParam, replacement, optionsParameterIsOptional);
-                                                newParameters.Add(optionsParameterIsOptional
+                                                bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, varExpr2.Declaration.RequestedName);
+                                                var propertyValue = GetOptionsPropertyValue(optionsParam, replacement, useNullConditional);
+                                                newParameters.Add(useNullConditional
                                                     ? propertyValue.NullConditional().Invoke("ToString", Array.Empty<ValueExpression>())
                                                     : propertyValue.Invoke("ToString", Array.Empty<ValueExpression>()));
                                             }
@@ -303,16 +326,32 @@ public class PaginationVisitor : ScmLibraryVisitor
             (constructor.Signature.Modifiers == MethodSignatureModifiers.None
                 || constructor.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Public)));
 
-    private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool optionsParameterIsOptional)
-        => optionsParameterIsOptional
+    private static bool ShouldReplaceLeadingContainerId(string methodName, string optionsTypeName, IReadOnlyList<ParameterProvider> parameters)
+        => optionsTypeName == "ContainerFileCollectionOptions"
+            && (methodName == "GetContainerFiles" || methodName == "GetContainerFilesAsync")
+            && parameters.Count > 0
+            && parameters[0].Type.Equals(new CSharpType(typeof(string)));
+
+    private static bool ShouldUseNullConditional(bool optionsParameterIsOptional, IReadOnlyList<ParameterProvider> replacedParameters, string parameterName)
+        => optionsParameterIsOptional || !replacedParameters.Any(parameter =>
+            parameter.Name == parameterName
+            && parameter.Validation != ParameterValidationType.None);
+
+    private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool useNullConditional)
+        => useNullConditional
             ? optionsParam.NullConditional().Property(replacement)
             : optionsParam.Property(replacement);
+
+    private static bool IsContainerIdValidationStatement(MethodBodyStatement statement, string methodName, string optionsTypeName)
+        => optionsTypeName == "ContainerFileCollectionOptions"
+            && (methodName == "GetContainerFiles" || methodName == "GetContainerFilesAsync")
+            && statement.ToDisplayString().Contains("Argument.AssertNotNullOrEmpty(containerId, nameof(containerId))");
 
     private static bool IsValidationStatementForParameter(MethodBodyStatement statement, ParameterProvider parameter)
         => parameter.Validation switch
         {
-            ParameterValidationType.AssertNotNull => statement.ToDisplayString().Trim() == $"Argument.AssertNotNull({parameter.Name}, nameof({parameter.Name}));",
-            ParameterValidationType.AssertNotNullOrEmpty => statement.ToDisplayString().Trim() == $"Argument.AssertNotNullOrEmpty({parameter.Name}, nameof({parameter.Name}));",
+            ParameterValidationType.AssertNotNull => statement.ToDisplayString().Contains($"Argument.AssertNotNull({parameter.Name}, nameof({parameter.Name}))"),
+            ParameterValidationType.AssertNotNullOrEmpty => statement.ToDisplayString().Contains($"Argument.AssertNotNullOrEmpty({parameter.Name}, nameof({parameter.Name}))"),
             _ => false,
         };
 

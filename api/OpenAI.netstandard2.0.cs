@@ -1916,9 +1916,9 @@ namespace OpenAI.Containers {
         public ContainerClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerOptions body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerOptions body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateContainerAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteContainer(string containerId, RequestOptions options);
         public virtual ClientResult<ContainerDeletionResult> DeleteContainer(string containerId, CancellationToken cancellationToken = default);
@@ -1940,13 +1940,13 @@ namespace OpenAI.Containers {
         public virtual ClientResult<ContainerFileResource> GetContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<ContainerFileResource>> GetContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options);
-        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetContainerFilesAsync(string containerId, int? limit, string order, string after, RequestOptions options);
-        public virtual CollectionResult<ContainerResource> GetContainers(ContainerCollectionOptions options = null, string name = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ContainerResource> GetContainers(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetContainers(int? limit, string order, string after, string name, RequestOptions options);
-        public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = null, string name = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, string name, RequestOptions options);
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);

@@ -279,9 +279,10 @@ namespace OpenAI.Containers
                 options);
         }
 
-        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, ContainerFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNull(options, nameof(options));
+            Argument.AssertNotNullOrEmpty(options.ContainerId, "options.ContainerId");
 
             return new ContainerClientGetContainerFilesCollectionResultOfT(
                 this,
@@ -292,9 +293,10 @@ namespace OpenAI.Containers
                 cancellationToken.ToRequestOptions());
         }
 
-        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNull(options, nameof(options));
+            Argument.AssertNotNullOrEmpty(options.ContainerId, "options.ContainerId");
 
             return new ContainerClientGetContainerFilesAsyncCollectionResultOfT(
                 this,
