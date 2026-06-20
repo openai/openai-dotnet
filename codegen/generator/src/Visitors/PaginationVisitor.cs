@@ -275,7 +275,8 @@ public class PaginationVisitor : ScmLibraryVisitor
                                         if (param is VariableExpression variableExpression
                                             && TryGetReplacementPropertyName(variableExpression.Declaration.RequestedName, replacementInfo.ParamsToReplace, out string replacementPropertyName))
                                         {
-                                            bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, variableExpression.Declaration.RequestedName);
+                                            bool useNullConditional = optionsParameterIsOptional || replacedParameters.Any(parameter =>
+                                                parameter.Name == variableExpression.Declaration.RequestedName && parameter.DefaultValue is not null);
                                             newParameters.Add(GetOptionsPropertyValue(optionsParam, replacementPropertyName, useNullConditional));
                                         }
                                         else if (param is InvokeMethodExpression invokeMethod && invokeMethod.MethodName == "ToString" &&
@@ -283,7 +284,8 @@ public class PaginationVisitor : ScmLibraryVisitor
                                                  nullConditional.Inner is VariableExpression invokeVariableExpression &&
                                                  TryGetReplacementPropertyName(invokeVariableExpression.Declaration.RequestedName, replacementInfo.ParamsToReplace, out string invokeReplacementPropertyName))
                                         {
-                                            bool useNullConditional = ShouldUseNullConditional(optionsParameterIsOptional, replacedParameters, invokeVariableExpression.Declaration.RequestedName);
+                                            bool useNullConditional = optionsParameterIsOptional || replacedParameters.Any(parameter =>
+                                                parameter.Name == invokeVariableExpression.Declaration.RequestedName && parameter.DefaultValue is not null);
                                             ValueExpression propertyValue = GetOptionsPropertyValue(optionsParam, invokeReplacementPropertyName, useNullConditional);
                                             newParameters.Add(useNullConditional
                                                 ? propertyValue.NullConditional().Invoke("ToString", Array.Empty<ValueExpression>())
@@ -309,12 +311,6 @@ public class PaginationVisitor : ScmLibraryVisitor
         }
 
         return false;
-    }
-
-    private static bool ShouldUseNullConditional(bool optionsParameterIsOptional, IReadOnlyList<ParameterProvider> replacedParameters, string parameterName)
-    {
-        return optionsParameterIsOptional || replacedParameters.Any(parameter =>
-            parameter.Name == parameterName && parameter.DefaultValue is not null);
     }
 
     private static ValueExpression GetOptionsPropertyValue(ParameterProvider optionsParam, string replacement, bool useNullConditional)
