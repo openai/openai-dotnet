@@ -321,18 +321,18 @@ public class PaginationVisitor : ScmLibraryVisitor
     private static bool MatchesValidationStatement(MethodBodyStatement statement, ParameterProvider parameter, string validationMethod)
     {
         string normalizedStatement = NormalizeParameterName(statement.ToDisplayString());
-        return GetParameterNames(parameter).Any(parameterName =>
+        return GetNormalizedParameterNames(parameter).Any(normalizedParameterName =>
             Regex.IsMatch(
                 normalizedStatement,
-                $@"{Regex.Escape(validationMethod)}\({Regex.Escape(NormalizeParameterName(parameterName))},\s*nameof\([A-Za-z_][A-Za-z0-9_]*\)\)",
+                $@"{Regex.Escape(validationMethod)}\((?<parameter>{Regex.Escape(normalizedParameterName)}),\s*nameof\(\k<parameter>\)\)",
                 RegexOptions.IgnoreCase));
     }
 
     private static bool TryGetReplacementPropertyName(ParameterProvider parameter, out string replacement)
     {
-        foreach (var parameterName in GetParameterNames(parameter))
+        foreach (var normalizedParameterName in GetNormalizedParameterNames(parameter))
         {
-            string? replacementKey = _paramReplacementMap.Keys.FirstOrDefault(key => ParameterNamesMatch(key, parameterName));
+            string? replacementKey = _paramReplacementMap.Keys.FirstOrDefault(key => ParameterNamesMatch(key, normalizedParameterName));
             if (replacementKey is not null)
             {
                 replacement = _paramReplacementMap[replacementKey];
@@ -346,9 +346,9 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static bool TryGetReplacedParameterName(ParameterProvider parameter, IReadOnlyCollection<string> paramsToReplace, out string parameterName)
     {
-        foreach (var candidateParameterName in GetParameterNames(parameter))
+        foreach (var normalizedParameterName in GetNormalizedParameterNames(parameter))
         {
-            string? matchingParameterName = paramsToReplace.FirstOrDefault(parameterToReplace => ParameterNamesMatch(parameterToReplace, candidateParameterName));
+            string? matchingParameterName = paramsToReplace.FirstOrDefault(parameterToReplace => ParameterNamesMatch(parameterToReplace, normalizedParameterName));
             if (matchingParameterName is not null)
             {
                 parameterName = matchingParameterName;
@@ -360,23 +360,23 @@ public class PaginationVisitor : ScmLibraryVisitor
         return false;
     }
 
-    private static IEnumerable<string> GetParameterNames(ParameterProvider parameter)
+    private static IReadOnlySet<string> GetNormalizedParameterNames(ParameterProvider parameter)
     {
-        HashSet<string> parameterNames = [parameter.Name];
+        HashSet<string> parameterNames = [NormalizeParameterName(parameter.Name)];
 
         if (parameter.InputParameter?.Name is string inputName)
         {
-            parameterNames.Add(inputName);
+            parameterNames.Add(NormalizeParameterName(inputName));
         }
 
         if (parameter.InputParameter?.OriginalName is string originalName)
         {
-            parameterNames.Add(originalName);
+            parameterNames.Add(NormalizeParameterName(originalName));
         }
 
         if (parameter.InputParameter?.SerializedName is string serializedName)
         {
-            parameterNames.Add(serializedName);
+            parameterNames.Add(NormalizeParameterName(serializedName));
         }
 
         return parameterNames;
