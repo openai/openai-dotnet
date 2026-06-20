@@ -286,7 +286,7 @@ namespace OpenAI.Containers
 
             return new ContainerClientGetContainerFilesCollectionResultOfT(
                 this,
-                options?.ContainerId,
+                options.ContainerId,
                 options?.PageSizeLimit,
                 options?.Order?.ToString(),
                 options?.AfterId,
@@ -300,7 +300,7 @@ namespace OpenAI.Containers
 
             return new ContainerClientGetContainerFilesAsyncCollectionResultOfT(
                 this,
-                options?.ContainerId,
+                options.ContainerId,
                 options?.PageSizeLimit,
                 options?.Order?.ToString(),
                 options?.AfterId,
