@@ -366,7 +366,7 @@ public class PaginationVisitor : ScmLibraryVisitor
 
     private static IReadOnlySet<string> GetNormalizedParameterNames(ParameterProvider parameter)
     {
-        HashSet<string> parameterNames = new()
+        HashSet<string> parameterNames = new(StringComparer.Ordinal)
         {
             NormalizeParameterName(parameter.Name)
         };
@@ -390,10 +390,10 @@ public class PaginationVisitor : ScmLibraryVisitor
     }
 
     private static HashSet<string> CreateNormalizedNameSet(IEnumerable<string> parameterNames)
-        => new HashSet<string>(parameterNames.Select(NormalizeParameterName));
+        => new HashSet<string>(parameterNames.Select(NormalizeParameterName), StringComparer.Ordinal);
 
     private static Dictionary<string, string> CreateNormalizedReplacementMap(IEnumerable<KeyValuePair<string, string>> replacements)
-        => replacements.ToDictionary(pair => NormalizeParameterName(pair.Key), pair => pair.Value);
+        => replacements.ToDictionary(pair => NormalizeParameterName(pair.Key), pair => pair.Value, StringComparer.Ordinal);
 
     private static string NormalizeParameterName(string parameterName)
         => parameterName
