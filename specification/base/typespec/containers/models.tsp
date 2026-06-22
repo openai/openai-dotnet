@@ -106,9 +106,10 @@ model ContainerResource {
   @encode(DateTimeKnownEncoding.unixTimestamp, integer)
   last_active_at?: utcDateTime;
 
-  /**The container will expire after this time period.
-  The anchor is the reference point for the expiration.
-  The minutes is the number of minutes after the anchor before the container expires.*/
+  /** The container will expire after this time period.
+   * The anchor is the reference point for the expiration.
+   * The minutes is the number of minutes after the anchor before the container expires.
+   */
   expires_after?: ContainerExpiresAfter;
 
   /** The memory limit configured for the container. */
@@ -192,7 +193,7 @@ union ContainerCollectionOrder {
 model ContainerCollectionOptions {
   /** A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
   @query
-  limit?: int32 = 20;
+  limit?: integer = 20;
 
   /** Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order. */
   @query
@@ -237,20 +238,20 @@ union ContainerFileCollectionOrder {
 @usage(Usage.input)
 model ContainerFileCollectionOptions {
   @path
-  container_id: string,
+  container_id: string;
 
   /** A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. */
   @query
-  limit?: integer = 20,
+  limit?: integer = 20;
 
   /** Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order. */
   @query
-  order?: ContainerFileCollectionOrder = ContainerFileCollectionOrder.desc,
+  order?: ContainerFileCollectionOrder = ContainerFileCollectionOrder.desc;
 
   /** A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
   @query
   @continuationToken
-  after?: string,
+  after?: string;
 }
 
 model ContainerFileCollection {

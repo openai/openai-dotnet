@@ -123,10 +123,10 @@ public partial class ContainerClient
     public virtual ClientResult<ContainerCollectionPage> GetContainerCollectionPage(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
     {
         ClientResult result = GetContainerCollectionPage(
-            limit: options.PageSizeLimit,
-            order: options.Order?.ToString(),
-            after: options.AfterId,
-            name: options.Name,
+            limit: options?.PageSizeLimit,
+            order: options?.Order?.ToString(),
+            after: options?.AfterId,
+            name: options?.Name,
             options: cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((ContainerCollectionPage)result, result.GetRawResponse());
     }
@@ -135,10 +135,10 @@ public partial class ContainerClient
     public virtual async Task<ClientResult<ContainerCollectionPage>> GetContainerCollectionPageAsync(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
     {
         ClientResult result = await GetContainerCollectionPageAsync(
-            limit: options.PageSizeLimit,
-            order: options.Order?.ToString(),
-            after: options.AfterId,
-            name: options.Name,
+            limit: options?.PageSizeLimit,
+            order: options?.Order?.ToString(),
+            after: options?.AfterId,
+            name: options?.Name,
             options: cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((ContainerCollectionPage)result, result.GetRawResponse());
     }
