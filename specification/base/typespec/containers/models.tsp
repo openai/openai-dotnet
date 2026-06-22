@@ -205,7 +205,7 @@ model ContainerCollectionOptions {
 
   /** Filter results by container name. */
   @query
-  name?: string,
+  name?: string;
 }
 
 model ContainerCollection {
