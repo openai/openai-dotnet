@@ -9,7 +9,5 @@ using Azure.ClientGenerator.Core;
 @@clientName(Containers.retrieveContainerFile, "GetContainerFile");
 @@clientName(Containers.retrieveContainerFileContent, "DownloadContainerFile");
 
-@@usage(CreateContainerFileBody, Usage.json);
-
 @@clientName(ContainerFileResource.bytes, "SizeInBytes");
 @@alternateType(ContainerFileResource.bytes, int64 | null);
