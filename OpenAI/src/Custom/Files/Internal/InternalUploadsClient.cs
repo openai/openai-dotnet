@@ -14,7 +14,7 @@ internal partial class InternalUploadsClient
     /// <summary> Initializes a new instance of <see cref="InternalUploadsClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public InternalUploadsClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public InternalUploadsClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIFileClientOptions())
     {
     }
 
@@ -24,7 +24,7 @@ internal partial class InternalUploadsClient
     /// <summary> Initializes a new instance of <see cref="InternalUploadsClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    internal InternalUploadsClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    internal InternalUploadsClient(ApiKeyCredential credential) : this(credential, new OpenAIFileClientOptions())
     {
     }
 
@@ -35,7 +35,7 @@ internal partial class InternalUploadsClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    internal InternalUploadsClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    internal InternalUploadsClient(ApiKeyCredential credential, OpenAIFileClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -43,7 +43,7 @@ internal partial class InternalUploadsClient
     /// <summary> Initializes a new instance of <see cref="InternalUploadsClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public InternalUploadsClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public InternalUploadsClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIFileClientOptions())
     {
     }
 
@@ -52,13 +52,13 @@ internal partial class InternalUploadsClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public InternalUploadsClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public InternalUploadsClient(AuthenticationPolicy authenticationPolicy, OpenAIFileClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new OpenAIFileClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -69,12 +69,12 @@ internal partial class InternalUploadsClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal InternalUploadsClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal InternalUploadsClient(ClientPipeline pipeline, OpenAIFileClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new OpenAIFileClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 }

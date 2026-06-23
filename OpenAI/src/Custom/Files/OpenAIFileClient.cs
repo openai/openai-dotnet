@@ -74,7 +74,14 @@ public partial class OpenAIFileClient
 
         Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
-        _internalUploadsClient = new(Pipeline, options);
+        OpenAIFileClientOptions fileOptions = new()
+        {
+            Endpoint = options.Endpoint,
+            OrganizationId = options.OrganizationId,
+            ProjectId = options.ProjectId,
+            UserAgentApplicationId = options.UserAgentApplicationId,
+        };
+        _internalUploadsClient = new(Pipeline, fileOptions);
     }
 
     // CUSTOM:
@@ -92,7 +99,14 @@ public partial class OpenAIFileClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
-        _internalUploadsClient = new(pipeline, options);
+        OpenAIFileClientOptions fileOptions = new()
+        {
+            Endpoint = options.Endpoint,
+            OrganizationId = options.OrganizationId,
+            ProjectId = options.ProjectId,
+            UserAgentApplicationId = options.UserAgentApplicationId,
+        };
+        _internalUploadsClient = new(pipeline, fileOptions);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
@@ -116,8 +130,7 @@ public partial class OpenAIFileClient
 
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
-        _internalUploadsClient = new(Pipeline, sharedOptions);
+        _internalUploadsClient = new(Pipeline, options);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
@@ -132,8 +145,7 @@ public partial class OpenAIFileClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
-        _internalUploadsClient = new(pipeline, sharedOptions);
+        _internalUploadsClient = new(pipeline, options);
     }
 
     [Experimental("SCME0002")]

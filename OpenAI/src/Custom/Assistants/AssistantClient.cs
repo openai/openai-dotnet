@@ -77,10 +77,9 @@ public partial class AssistantClient
 
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
-        _messageSubClient = new(Pipeline, sharedOptions);
-        _runSubClient = new(Pipeline, sharedOptions);
-        _threadSubClient = new(Pipeline, sharedOptions);
+        _messageSubClient = new(Pipeline, options);
+        _runSubClient = new(Pipeline, options);
+        _threadSubClient = new(Pipeline, options);
     }
 
     [Experimental("SCME0002")]
@@ -111,10 +110,9 @@ public partial class AssistantClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        var sharedOptions = new OpenAIClientOptions { Endpoint = options.Endpoint };
-        _messageSubClient = new(Pipeline, sharedOptions);
-        _runSubClient = new(Pipeline, sharedOptions);
-        _threadSubClient = new(Pipeline, sharedOptions);
+        _messageSubClient = new(Pipeline, options);
+        _runSubClient = new(Pipeline, options);
+        _threadSubClient = new(Pipeline, options);
     }
 
     /// <summary> Creates a new assistant. </summary>
