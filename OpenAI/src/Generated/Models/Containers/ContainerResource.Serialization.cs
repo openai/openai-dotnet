@@ -111,10 +111,10 @@ namespace OpenAI.Containers
                 writer.WritePropertyName("last_active_at"u8);
                 writer.WriteNumberValue(LastActiveAt.Value, "U");
             }
-            if (Optional.IsDefined(ExpiresAfter) && !Patch.Contains("$.expires_after"u8))
+            if (Optional.IsDefined(ExpirationPolicy) && !Patch.Contains("$.expires_after"u8))
             {
                 writer.WritePropertyName("expires_after"u8);
-                writer.WriteObjectValue(ExpiresAfter, options);
+                writer.WriteObjectValue(ExpirationPolicy, options);
             }
             if (Optional.IsDefined(MemoryLimit) && !Patch.Contains("$.memory_limit"u8))
             {
@@ -156,7 +156,7 @@ namespace OpenAI.Containers
             DateTimeOffset createdAt = default;
             string status = default;
             DateTimeOffset? lastActiveAt = default;
-            ContainerExpirationPolicy expiresAfter = default;
+            ContainerExpirationPolicy expirationPolicy = default;
             ContainerMemoryLimit? memoryLimit = default;
             ContainerNetworkPolicy networkPolicy = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -204,7 +204,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    expiresAfter = ContainerExpirationPolicy.DeserializeContainerExpirationPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    expirationPolicy = ContainerExpirationPolicy.DeserializeContainerExpirationPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("memory_limit"u8))
@@ -234,7 +234,7 @@ namespace OpenAI.Containers
                 createdAt,
                 status,
                 lastActiveAt,
-                expiresAfter,
+                expirationPolicy,
                 memoryLimit,
                 networkPolicy,
                 patch);
@@ -248,7 +248,7 @@ namespace OpenAI.Containers
 
             if (local.StartsWith("expires_after"u8))
             {
-                return ExpiresAfter.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("expires_after"u8.Length)], out value);
+                return ExpirationPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("expires_after"u8.Length)], out value);
             }
             if (local.StartsWith("network_policy"u8))
             {
@@ -265,7 +265,7 @@ namespace OpenAI.Containers
 
             if (local.StartsWith("expires_after"u8))
             {
-                ExpiresAfter.Patch.Set([.. "$"u8, .. local.Slice("expires_after"u8.Length)], value);
+                ExpirationPolicy.Patch.Set([.. "$"u8, .. local.Slice("expires_after"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("network_policy"u8))

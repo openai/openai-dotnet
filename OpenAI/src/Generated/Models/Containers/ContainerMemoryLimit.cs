@@ -13,10 +13,10 @@ namespace OpenAI.Containers
     public readonly partial struct ContainerMemoryLimit : IEquatable<ContainerMemoryLimit>
     {
         private readonly string _value;
-        private const string _1gValue = "1g";
-        private const string _4gValue = "4g";
-        private const string _16gValue = "16g";
-        private const string _64gValue = "64g";
+        private const string Limit1GValue = "1g";
+        private const string Limit4GValue = "4g";
+        private const string Limit16GValue = "16g";
+        private const string Limit64GValue = "64g";
 
         public ContainerMemoryLimit(string value)
         {
@@ -25,13 +25,13 @@ namespace OpenAI.Containers
             _value = value;
         }
 
-        public static ContainerMemoryLimit _1g { get; } = new ContainerMemoryLimit(_1gValue);
+        public static ContainerMemoryLimit Limit1G { get; } = new ContainerMemoryLimit(Limit1GValue);
 
-        public static ContainerMemoryLimit _4g { get; } = new ContainerMemoryLimit(_4gValue);
+        public static ContainerMemoryLimit Limit4G { get; } = new ContainerMemoryLimit(Limit4GValue);
 
-        public static ContainerMemoryLimit _16g { get; } = new ContainerMemoryLimit(_16gValue);
+        public static ContainerMemoryLimit Limit16G { get; } = new ContainerMemoryLimit(Limit16GValue);
 
-        public static ContainerMemoryLimit _64g { get; } = new ContainerMemoryLimit(_64gValue);
+        public static ContainerMemoryLimit Limit64G { get; } = new ContainerMemoryLimit(Limit64GValue);
 
         public static bool operator ==(ContainerMemoryLimit left, ContainerMemoryLimit right) => left.Equals(right);
 

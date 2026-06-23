@@ -12,55 +12,55 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    public partial class CreateContainerOptions : IJsonModel<CreateContainerOptions>
+    public partial class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>
     {
-        public CreateContainerOptions() : this(null, null, null, default, null, default)
+        public ContainerCreationOptions() : this(null, null, null, default, null, default)
         {
         }
 
-        protected virtual CreateContainerOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ContainerCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateContainerOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCreateContainerOptions(document.RootElement, data, options);
+                        return DeserializeContainerCreationOptions(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(CreateContainerOptions)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ContainerCreationOptions)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateContainerOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(CreateContainerOptions)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ContainerCreationOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<CreateContainerOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ContainerCreationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        CreateContainerOptions IPersistableModel<CreateContainerOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ContainerCreationOptions IPersistableModel<ContainerCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<CreateContainerOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ContainerCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static implicit operator BinaryContent(CreateContainerOptions createContainerOptions)
+        public static implicit operator BinaryContent(ContainerCreationOptions containerCreationOptions)
         {
-            if (createContainerOptions == null)
+            if (containerCreationOptions == null)
             {
                 return null;
             }
-            return BinaryContent.Create(createContainerOptions, ModelSerializationExtensions.WireOptions);
+            return BinaryContent.Create(containerCreationOptions, ModelSerializationExtensions.WireOptions);
         }
 
-        void IJsonModel<CreateContainerOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ContainerCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -77,10 +77,10 @@ namespace OpenAI.Containers
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateContainerOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(CreateContainerOptions)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ContainerCreationOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (!Patch.Contains("$.name"u8))
@@ -116,10 +116,10 @@ namespace OpenAI.Containers
                 Patch.WriteTo(writer, "$.file_ids"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ExpiresAfter) && !Patch.Contains("$.expires_after"u8))
+            if (Optional.IsDefined(ExpirationPolicy) && !Patch.Contains("$.expires_after"u8))
             {
                 writer.WritePropertyName("expires_after"u8);
-                writer.WriteObjectValue(ExpiresAfter, options);
+                writer.WriteObjectValue(ExpirationPolicy, options);
             }
             if (Optional.IsDefined(MemoryLimit) && !Patch.Contains("$.memory_limit"u8))
             {
@@ -136,20 +136,20 @@ namespace OpenAI.Containers
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        CreateContainerOptions IJsonModel<CreateContainerOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ContainerCreationOptions IJsonModel<ContainerCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual CreateContainerOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ContainerCreationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateContainerOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(CreateContainerOptions)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ContainerCreationOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCreateContainerOptions(document.RootElement, null, options);
+            return DeserializeContainerCreationOptions(document.RootElement, null, options);
         }
 
-        internal static CreateContainerOptions DeserializeCreateContainerOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ContainerCreationOptions DeserializeContainerCreationOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -157,7 +157,7 @@ namespace OpenAI.Containers
             }
             string name = default;
             IList<string> fileIds = default;
-            ContainerExpirationPolicy expiresAfter = default;
+            ContainerExpirationPolicy expirationPolicy = default;
             ContainerMemoryLimit? memoryLimit = default;
             ContainerNetworkPolicy networkPolicy = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -197,7 +197,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    expiresAfter = ContainerExpirationPolicy.DeserializeContainerExpirationPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    expirationPolicy = ContainerExpirationPolicy.DeserializeContainerExpirationPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("memory_limit"u8))
@@ -220,10 +220,10 @@ namespace OpenAI.Containers
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CreateContainerOptions(
+            return new ContainerCreationOptions(
                 name,
                 fileIds ?? new ChangeTrackingList<string>(),
-                expiresAfter,
+                expirationPolicy,
                 memoryLimit,
                 networkPolicy,
                 patch);
@@ -237,7 +237,7 @@ namespace OpenAI.Containers
 
             if (local.StartsWith("expires_after"u8))
             {
-                return ExpiresAfter.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("expires_after"u8.Length)], out value);
+                return ExpirationPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("expires_after"u8.Length)], out value);
             }
             if (local.StartsWith("network_policy"u8))
             {
@@ -254,7 +254,7 @@ namespace OpenAI.Containers
 
             if (local.StartsWith("expires_after"u8))
             {
-                ExpiresAfter.Patch.Set([.. "$"u8, .. local.Slice("expires_after"u8.Length)], value);
+                ExpirationPolicy.Patch.Set([.. "$"u8, .. local.Slice("expires_after"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("network_policy"u8))

@@ -11,6 +11,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(Containers.retrieveContainerFile, "GetContainerFile");
 @@clientName(Containers.retrieveContainerFileContent, "DownloadContainerFile");
 
+@@clientName(ContainerResource.expires_after, "ExpirationPolicy");
+
+@@clientName(ContainerCreationOptions.expires_after, "ExpirationPolicy");
+
 @@clientName(ContainerFileResource.bytes, "SizeInBytes");
 @@alternateType(ContainerFileResource.bytes, int64 | null);
 
@@ -19,6 +23,11 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(ContainerFileCollectionOrder.asc, "Ascending");
 @@clientName(ContainerFileCollectionOrder.desc, "Descending");
+
+@@clientName(ContainerMemoryLimit.`1g`, "Limit1G");
+@@clientName(ContainerMemoryLimit.`4g`, "Limit4G");
+@@clientName(ContainerMemoryLimit.`16g`, "Limit16G");
+@@clientName(ContainerMemoryLimit.`64g`, "Limit64G");
 
 @@dynamicModel(ContainersError);
 @@dynamicModel(ContainersErrorResponse);
@@ -31,8 +40,8 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ContainerNetworkPolicyAllowlist);
 @@dynamicModel(ContainerNetworkPolicyDomainSecret);
 @@dynamicModel(ContainerResource);
-@@dynamicModel(CreateContainerOptions);
+@@dynamicModel(ContainerCreationOptions);
 @@dynamicModel(ContainerFileResource);
-@@dynamicModel(CreateContainerFileOptions);
+@@dynamicModel(ContainerFileUploadOptions);
 @@dynamicModel(ContainerDeletionResult);
 @@dynamicModel(ContainerFileDeletionResult);

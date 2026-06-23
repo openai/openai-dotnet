@@ -25,7 +25,7 @@ namespace OpenAI.Containers
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status, DateTimeOffset? lastActiveAt, ContainerExpirationPolicy expiresAfter, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
+        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status, DateTimeOffset? lastActiveAt, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
@@ -33,7 +33,7 @@ namespace OpenAI.Containers
             CreatedAt = createdAt;
             Status = status;
             LastActiveAt = lastActiveAt;
-            ExpiresAfter = expiresAfter;
+            ExpirationPolicy = expirationPolicy;
             MemoryLimit = memoryLimit;
             NetworkPolicy = networkPolicy;
             _patch = patch;
@@ -58,7 +58,7 @@ namespace OpenAI.Containers
 
         public DateTimeOffset? LastActiveAt { get; set; }
 
-        public ContainerExpirationPolicy ExpiresAfter { get; set; }
+        public ContainerExpirationPolicy ExpirationPolicy { get; set; }
 
         public ContainerMemoryLimit? MemoryLimit { get; set; }
 

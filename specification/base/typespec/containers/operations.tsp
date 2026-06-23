@@ -15,7 +15,7 @@ interface Containers {
   @operationId("CreateContainer")
   createContainer(
     @body
-    options: CreateContainerOptions,
+    options: ContainerCreationOptions,
   ): ContainerResource | ContainersErrorResponse;
 
   @get
@@ -52,7 +52,7 @@ interface Containers {
     contentType: "multipart/form-data",
 
     @multipartBody
-    options: CreateContainerFileOptions,
+    options: ContainerFileUploadOptions,
   ): ContainerFileResource | ContainersErrorResponse;
 
   @get

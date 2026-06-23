@@ -118,7 +118,7 @@ model ContainerResource {
   network_policy?: ContainerNetworkPolicy;
 }
 
-model CreateContainerOptions {
+model ContainerCreationOptions {
   /** Name of the container to create. */
   name: string;
 
@@ -162,7 +162,7 @@ model ContainerFileResource {
   source: string;
 }
 
-model CreateContainerFileOptions {
+model ContainerFileUploadOptions {
   /** Name of the file to create. */
   file_id?: HttpPart<string>;
 

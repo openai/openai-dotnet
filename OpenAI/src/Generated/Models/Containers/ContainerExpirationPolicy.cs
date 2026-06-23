@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -20,10 +21,10 @@ namespace OpenAI.Containers
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor, int? minutes, in JsonPatch patch)
+        internal ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor, TimeSpan? duration, in JsonPatch patch)
         {
             Anchor = anchor;
-            Minutes = minutes;
+            Duration = duration;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -34,7 +35,5 @@ namespace OpenAI.Containers
         public ref JsonPatch Patch => ref _patch;
 
         public ContainerExpirationPolicyAnchor? Anchor { get; set; }
-
-        public int? Minutes { get; set; }
     }
 }

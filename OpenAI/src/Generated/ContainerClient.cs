@@ -39,7 +39,7 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerOptions options, CancellationToken cancellationToken = default)
+        public virtual ClientResult<ContainerResource> CreateContainer(ContainerCreationOptions options, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNull(options, nameof(options));
 
@@ -47,7 +47,7 @@ namespace OpenAI.Containers
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 
-        public virtual async Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerOptions options, CancellationToken cancellationToken = default)
+        public virtual async Task<ClientResult<ContainerResource>> CreateContainerAsync(ContainerCreationOptions options, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNull(options, nameof(options));
 

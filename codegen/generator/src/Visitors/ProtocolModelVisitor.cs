@@ -18,6 +18,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     private static readonly HashSet<string> _protocolModels = new(StringComparer.OrdinalIgnoreCase)
     {
         "OpenAI.Containers.ContainerAllowlistNetworkPolicy",
+        "OpenAI.Containers.ContainerCreationOptions",
         "OpenAI.Containers.ContainerCollectionOptions",
         "OpenAI.Containers.ContainerCollectionOrder",
         "OpenAI.Containers.ContainerCollectionPage",
@@ -35,8 +36,6 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
         "OpenAI.Containers.ContainerNetworkPolicyDomainSecret",
         "OpenAI.Containers.ContainerNetworkPolicyKind",
         "OpenAI.Containers.ContainerResource",
-        "OpenAI.Containers.CreateContainerOptions",
-        "OpenAI.Containers.UploadContainerFileOptions",
 
         "OpenAI.Responses.CreateResponseOptions",
         "OpenAI.Responses.ResponseDeletionResult",

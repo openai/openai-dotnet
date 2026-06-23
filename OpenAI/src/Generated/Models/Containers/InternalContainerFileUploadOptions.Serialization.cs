@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text;
 using System.Text.Json;
@@ -11,51 +10,42 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    public partial class UploadContainerFileOptions : IJsonModel<UploadContainerFileOptions>
+    internal partial class InternalContainerFileUploadOptions : IJsonModel<InternalContainerFileUploadOptions>
     {
-        protected virtual UploadContainerFileOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual InternalContainerFileUploadOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<UploadContainerFileOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeUploadContainerFileOptions(document.RootElement, data, options);
+                        return DeserializeInternalContainerFileUploadOptions(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(UploadContainerFileOptions)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalContainerFileUploadOptions)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<UploadContainerFileOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(UploadContainerFileOptions)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalContainerFileUploadOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<UploadContainerFileOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<InternalContainerFileUploadOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        UploadContainerFileOptions IPersistableModel<UploadContainerFileOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalContainerFileUploadOptions IPersistableModel<InternalContainerFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<UploadContainerFileOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<InternalContainerFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static implicit operator BinaryContent(UploadContainerFileOptions uploadContainerFileOptions)
-        {
-            if (uploadContainerFileOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(uploadContainerFileOptions, ModelSerializationExtensions.WireOptions);
-        }
-
-        void IJsonModel<UploadContainerFileOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<InternalContainerFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -72,10 +62,10 @@ namespace OpenAI.Containers
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<UploadContainerFileOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(UploadContainerFileOptions)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalContainerFileUploadOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
@@ -100,20 +90,20 @@ namespace OpenAI.Containers
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        UploadContainerFileOptions IJsonModel<UploadContainerFileOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalContainerFileUploadOptions IJsonModel<InternalContainerFileUploadOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual UploadContainerFileOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual InternalContainerFileUploadOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<UploadContainerFileOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalContainerFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(UploadContainerFileOptions)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalContainerFileUploadOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeUploadContainerFileOptions(document.RootElement, null, options);
+            return DeserializeInternalContainerFileUploadOptions(document.RootElement, null, options);
         }
 
-        internal static UploadContainerFileOptions DeserializeUploadContainerFileOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static InternalContainerFileUploadOptions DeserializeInternalContainerFileUploadOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -142,7 +132,7 @@ namespace OpenAI.Containers
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new UploadContainerFileOptions(fileId, @file, patch);
+            return new InternalContainerFileUploadOptions(fileId, @file, patch);
         }
     }
 }

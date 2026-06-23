@@ -73,10 +73,10 @@ namespace OpenAI.Containers
                 writer.WritePropertyName("anchor"u8);
                 writer.WriteStringValue(Anchor.Value.ToString());
             }
-            if (Optional.IsDefined(Minutes) && !Patch.Contains("$.minutes"u8))
+            if (Optional.IsDefined(Duration) && !Patch.Contains("$.minutes"u8))
             {
                 writer.WritePropertyName("minutes"u8);
-                writer.WriteNumberValue(Minutes.Value);
+                SerializeDurationValue(writer, options);
             }
 
             Patch.WriteTo(writer);
@@ -103,7 +103,7 @@ namespace OpenAI.Containers
                 return null;
             }
             ContainerExpirationPolicyAnchor? anchor = default;
-            int? minutes = default;
+            TimeSpan? duration = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -120,16 +120,12 @@ namespace OpenAI.Containers
                 }
                 if (prop.NameEquals("minutes"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    minutes = prop.Value.GetInt32();
+                    DeserializeDurationValue(prop, ref duration, options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ContainerExpirationPolicy(anchor, minutes, patch);
+            return new ContainerExpirationPolicy(anchor, duration, patch);
         }
     }
 }

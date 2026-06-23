@@ -4,6 +4,7 @@ using OpenAI.Containers;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace OpenAI.Tests.Containers;
 public class ContainerTests : OpenAIRecordedTestBase
 {
     private static string _testContainerId;
+
     public ContainerTests(bool isAsync) : base(isAsync)
     {
     }
@@ -29,8 +31,9 @@ public class ContainerTests : OpenAIRecordedTestBase
 
         ContainerClient client = TestEnvironment.GetTestClient<ContainerClient>();
 
-        // Create a test container that will be used by all tests
-        ContainerResource result = await client.CreateContainerAsync(new CreateContainerOptions($"test-container-{Guid.NewGuid():N}"));
+        ContainerCreationOptions options = new ($"test-container-{Guid.NewGuid():N}");
+
+        ContainerResource result = await client.CreateContainerAsync(options);
         _testContainerId = result.Id;
 
         Console.WriteLine($"Created test container: {_testContainerId}");
@@ -447,6 +450,41 @@ public class ContainerTests : OpenAIRecordedTestBase
         Validate(container);
         Assert.That(container.Id, Is.EqualTo(_testContainerId), "Retrieved container should have the correct ID");
         Console.WriteLine($"Retrieved container: {container.Id} with status {container.Status}");
+    }
+
+    [RecordedTest]
+    public async Task CanCreateContainer()
+    {
+        TimeSpan expectedContainerDuration = TimeSpan.FromMinutes(20);
+        ContainerMemoryLimit expectedContainerMemoryLimit = ContainerMemoryLimit.Limit4G;
+
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
+
+        ContainerCreationOptions options = new($"test-container")
+        {
+            ExpirationPolicy = new ContainerExpirationPolicy
+            {
+                Anchor = ContainerExpirationPolicyAnchor.LastActiveAt,
+                Duration = expectedContainerDuration,
+            },
+            MemoryLimit = expectedContainerMemoryLimit,
+            NetworkPolicy = new ContainerDisabledNetworkPolicy(),
+        };
+
+        ContainerResource container = await client.CreateContainerAsync(options);
+
+        Assert.That(container, Is.Not.Null);
+        Validate(container);
+
+        Assert.That(container.Name, Is.EqualTo("test-container"));
+        Assert.That(container.ExpirationPolicy, Is.Not.Null);
+        Assert.That(container.ExpirationPolicy.Anchor, Is.EqualTo(ContainerExpirationPolicyAnchor.LastActiveAt));
+        Assert.That(container.ExpirationPolicy.Duration, Is.EqualTo(expectedContainerDuration));
+        Assert.That(container.MemoryLimit, Is.EqualTo(expectedContainerMemoryLimit));
+        Assert.That(container.NetworkPolicy, Is.InstanceOf<ContainerDisabledNetworkPolicy>());
+
+        ContainerDisabledNetworkPolicy networkPolicy = (ContainerDisabledNetworkPolicy)container.NetworkPolicy;
+        Assert.That(networkPolicy.Kind, Is.EqualTo(ContainerNetworkPolicyKind.Disabled));
     }
 
     [RecordedTest]

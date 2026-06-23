@@ -248,22 +248,22 @@ namespace OpenAI
             return new ChatCompletionDeletionResult("chat.completion.deleted", chatCompletionId, deleted, default);
         }
 
-        public static CreateContainerOptions CreateContainerOptions(string name = default, IEnumerable<string> fileIds = default, ContainerExpirationPolicy expiresAfter = default, ContainerMemoryLimit? memoryLimit = default, ContainerNetworkPolicy networkPolicy = default)
+        public static ContainerCreationOptions ContainerCreationOptions(string name = default, IEnumerable<string> fileIds = default, ContainerExpirationPolicy expirationPolicy = default, ContainerMemoryLimit? memoryLimit = default, ContainerNetworkPolicy networkPolicy = default)
         {
             fileIds ??= new ChangeTrackingList<string>();
 
-            return new CreateContainerOptions(
+            return new ContainerCreationOptions(
                 name,
                 fileIds.ToList(),
-                expiresAfter,
+                expirationPolicy,
                 memoryLimit,
                 networkPolicy,
                 default);
         }
 
-        public static ContainerExpirationPolicy ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor = default, int? minutes = default)
+        public static ContainerExpirationPolicy ContainerExpirationPolicy(ContainerExpirationPolicyAnchor? anchor = default, TimeSpan? duration = default)
         {
-            return new ContainerExpirationPolicy(anchor, minutes, default);
+            return new ContainerExpirationPolicy(anchor, duration, default);
         }
 
         public static ContainerNetworkPolicy ContainerNetworkPolicy(string kind = default)
@@ -289,7 +289,7 @@ namespace OpenAI
             return new ContainerNetworkPolicyDomainSecret(domain, name, value, default);
         }
 
-        public static ContainerResource ContainerResource(string id = default, string name = default, DateTimeOffset createdAt = default, string status = default, DateTimeOffset? lastActiveAt = default, ContainerExpirationPolicy expiresAfter = default, ContainerMemoryLimit? memoryLimit = default, ContainerNetworkPolicy networkPolicy = default)
+        public static ContainerResource ContainerResource(string id = default, string name = default, DateTimeOffset createdAt = default, string status = default, DateTimeOffset? lastActiveAt = default, ContainerExpirationPolicy expirationPolicy = default, ContainerMemoryLimit? memoryLimit = default, ContainerNetworkPolicy networkPolicy = default)
         {
             return new ContainerResource(
                 id,
@@ -298,7 +298,7 @@ namespace OpenAI
                 createdAt,
                 status,
                 lastActiveAt,
-                expiresAfter,
+                expirationPolicy,
                 memoryLimit,
                 networkPolicy,
                 default);
@@ -320,11 +320,6 @@ namespace OpenAI
                 lastId,
                 hasMore,
                 additionalBinaryDataProperties: null);
-        }
-
-        public static UploadContainerFileOptions UploadContainerFileOptions(string fileId = default, BinaryData @file = default)
-        {
-            return new UploadContainerFileOptions(fileId, @file, default);
         }
 
         public static ContainerFileResource ContainerFileResource(string id = default, string containerId = default, DateTimeOffset createdAt = default, long? sizeInBytes = default, string path = default, string source = default)

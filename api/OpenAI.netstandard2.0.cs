@@ -1917,9 +1917,9 @@ namespace OpenAI.Containers {
         public ContainerClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ContainerResource> CreateContainer(ContainerCreationOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(ContainerCreationOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateContainerAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteContainer(string containerId, RequestOptions options);
         public virtual ClientResult<ContainerDeletionResult> DeleteContainer(string containerId, CancellationToken cancellationToken = default);
@@ -1990,6 +1990,19 @@ namespace OpenAI.Containers {
         public string Object { get; set; }
         public static explicit operator ContainerCollectionPage(ClientResult result);
     }
+    public class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>, IPersistableModel<ContainerCreationOptions> {
+        public ContainerCreationOptions();
+        public ContainerCreationOptions(string name);
+        public ContainerExpirationPolicy ExpirationPolicy { get; set; }
+        public IList<string> FileIds { get; }
+        public ContainerMemoryLimit? MemoryLimit { get; set; }
+        public string Name { get; set; }
+        public ContainerNetworkPolicy NetworkPolicy { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(ContainerCreationOptions containerCreationOptions);
+    }
     public class ContainerDeletionResult : IJsonModel<ContainerDeletionResult>, IPersistableModel<ContainerDeletionResult> {
         public string ContainerId { get; set; }
         public bool Deleted { get; set; }
@@ -2005,7 +2018,7 @@ namespace OpenAI.Containers {
     }
     public class ContainerExpirationPolicy : IJsonModel<ContainerExpirationPolicy>, IPersistableModel<ContainerExpirationPolicy> {
         public ContainerExpirationPolicyAnchor? Anchor { get; set; }
-        public int? Minutes { get; set; }
+        public TimeSpan? Duration { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -2081,10 +2094,10 @@ namespace OpenAI.Containers {
     }
     public readonly partial struct ContainerMemoryLimit : IEquatable<ContainerMemoryLimit> {
         public ContainerMemoryLimit(string value);
-        public static ContainerMemoryLimit _16g { get; }
-        public static ContainerMemoryLimit _1g { get; }
-        public static ContainerMemoryLimit _4g { get; }
-        public static ContainerMemoryLimit _64g { get; }
+        public static ContainerMemoryLimit Limit16G { get; }
+        public static ContainerMemoryLimit Limit1G { get; }
+        public static ContainerMemoryLimit Limit4G { get; }
+        public static ContainerMemoryLimit Limit64G { get; }
         public readonly bool Equals(ContainerMemoryLimit other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -2130,7 +2143,7 @@ namespace OpenAI.Containers {
     }
     public class ContainerResource : IJsonModel<ContainerResource>, IPersistableModel<ContainerResource> {
         public DateTimeOffset CreatedAt { get; set; }
-        public ContainerExpirationPolicy ExpiresAfter { get; set; }
+        public ContainerExpirationPolicy ExpirationPolicy { get; set; }
         public string Id { get; set; }
         public DateTimeOffset? LastActiveAt { get; set; }
         public ContainerMemoryLimit? MemoryLimit { get; set; }
@@ -2142,27 +2155,6 @@ namespace OpenAI.Containers {
         public ref JsonPatch Patch { get; }
         public string Status { get; set; }
         public static explicit operator ContainerResource(ClientResult result);
-    }
-    public class CreateContainerOptions : IJsonModel<CreateContainerOptions>, IPersistableModel<CreateContainerOptions> {
-        public CreateContainerOptions();
-        public CreateContainerOptions(string name);
-        public ContainerExpirationPolicy ExpiresAfter { get; set; }
-        public IList<string> FileIds { get; }
-        public ContainerMemoryLimit? MemoryLimit { get; set; }
-        public string Name { get; set; }
-        public ContainerNetworkPolicy NetworkPolicy { get; set; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        public static implicit operator BinaryContent(CreateContainerOptions createContainerOptions);
-    }
-    public class UploadContainerFileOptions : IJsonModel<UploadContainerFileOptions>, IPersistableModel<UploadContainerFileOptions> {
-        public BinaryData File { get; set; }
-        public string FileId { get; set; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        public static implicit operator BinaryContent(UploadContainerFileOptions uploadContainerFileOptions);
     }
 }
 namespace OpenAI.Conversations {

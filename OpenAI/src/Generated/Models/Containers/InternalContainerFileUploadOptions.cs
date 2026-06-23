@@ -10,18 +10,17 @@ using System.Text.Json.Serialization;
 
 namespace OpenAI.Containers
 {
-    [Experimental("OPENAI001")]
-    public partial class UploadContainerFileOptions
+    internal partial class InternalContainerFileUploadOptions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public UploadContainerFileOptions()
+        public InternalContainerFileUploadOptions()
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal UploadContainerFileOptions(string fileId, BinaryData @file, in JsonPatch patch)
+        internal InternalContainerFileUploadOptions(string fileId, BinaryData @file, in JsonPatch patch)
         {
             FileId = fileId;
             File = @file;

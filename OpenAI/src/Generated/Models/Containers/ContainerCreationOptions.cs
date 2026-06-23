@@ -12,12 +12,12 @@ using OpenAI;
 namespace OpenAI.Containers
 {
     [Experimental("OPENAI001")]
-    public partial class CreateContainerOptions
+    public partial class ContainerCreationOptions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public CreateContainerOptions(string name)
+        public ContainerCreationOptions(string name)
         {
             Argument.AssertNotNull(name, nameof(name));
 
@@ -26,12 +26,12 @@ namespace OpenAI.Containers
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateContainerOptions(string name, IList<string> fileIds, ContainerExpirationPolicy expiresAfter, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
+        internal ContainerCreationOptions(string name, IList<string> fileIds, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Name = name;
             FileIds = fileIds ?? new ChangeTrackingList<string>();
-            ExpiresAfter = expiresAfter;
+            ExpirationPolicy = expirationPolicy;
             MemoryLimit = memoryLimit;
             NetworkPolicy = networkPolicy;
             _patch = patch;
@@ -48,7 +48,7 @@ namespace OpenAI.Containers
 
         public IList<string> FileIds { get; }
 
-        public ContainerExpirationPolicy ExpiresAfter { get; set; }
+        public ContainerExpirationPolicy ExpirationPolicy { get; set; }
 
         public ContainerMemoryLimit? MemoryLimit { get; set; }
 
