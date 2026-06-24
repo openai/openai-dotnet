@@ -1582,6 +1582,185 @@ model ApplyPatchTool extends Tool {
   type: ToolType.apply_patch;
 }
 
+// ------------ Shell tool ------------
+
+/** A tool that allows the model to execute shell commands. */
+@summary("Shell tool")
+model ShellTool extends Tool {
+  /** The type of the shell tool. Always `shell`. */
+  type: ToolType.shell;
+
+  /** Configuration for the environment in which the model may execute shell commands. */
+  environment?: ShellToolEnvironment | null;
+}
+
+union ShellToolEnvironmentType {
+  string,
+  container_auto: "container_auto",
+  container_reference: "container_reference",
+  local: "local",
+}
+
+/** Configuration for the environment in which the shell tool may execute commands. */
+@discriminator("type")
+model ShellToolEnvironment {
+  type: ShellToolEnvironmentType;
+}
+
+union ShellToolContainerMemoryLimit {
+  string,
+  one_gigabyte: "1g",
+  four_gigabytes: "4g",
+  sixteen_gigabytes: "16g",
+  sixty_four_gigabytes: "64g",
+}
+
+union ShellToolContainerNetworkPolicyType {
+  string,
+  disabled: "disabled",
+  allowlist: "allowlist",
+}
+
+/** Network policy controlling outbound network access from the container. */
+@discriminator("type")
+model ShellToolContainerNetworkPolicy {
+  type: ShellToolContainerNetworkPolicyType;
+}
+
+/** Disables outbound network access from the container. */
+model ShellToolDisabledContainerNetworkPolicy extends ShellToolContainerNetworkPolicy {
+  /** Disable outbound network access. Always `disabled`. */
+  type: ShellToolContainerNetworkPolicyType.disabled;
+}
+
+/** A domain-scoped secret injected at request time for allowlisted domains. */
+model ShellToolDomainSecret {
+  /** The domain associated with the secret. */
+  domain: string;
+
+  /** The name of the secret to inject for the domain. */
+  name: string;
+
+  /** The secret value to inject for the domain. */
+  value: string;
+}
+
+/** Allows outbound network access only to specified domains. */
+model ShellToolAllowlistContainerNetworkPolicy extends ShellToolContainerNetworkPolicy {
+  /** Allow outbound network access only to specified domains. Always `allowlist`. */
+  type: ShellToolContainerNetworkPolicyType.allowlist;
+
+  /** A list of allowed domains. */
+  allowed_domains: string[];
+
+  /** Optional domain-scoped secrets for allowlisted domains. */
+  domain_secrets?: ShellToolDomainSecret[];
+}
+
+union ShellToolSkillType {
+  string,
+  skill_reference: "skill_reference",
+  inline: "inline",
+}
+
+/** A skill made available to the hosted shell environment. */
+@discriminator("type")
+model ShellToolSkill {
+  type: ShellToolSkillType;
+}
+
+/** References a skill created with the /v1/skills endpoint. */
+model ShellToolSkillReference extends ShellToolSkill {
+  /** References a skill created with the /v1/skills endpoint. */
+  type: ShellToolSkillType.skill_reference;
+
+  /** The ID of the referenced skill. */
+  skill_id: string;
+
+  /** Optional skill version. Use a positive integer or 'latest'. Omit for default. */
+  version?: string;
+}
+
+union ShellToolInlineSkillSourceType {
+  string,
+  base64: "base64",
+}
+
+/** Inline skill payload. */
+model ShellToolInlineSkillSource {
+  /** The type of the inline skill source. Must be `base64`. */
+  type: ShellToolInlineSkillSourceType = ShellToolInlineSkillSourceType.base64;
+
+  /** The media type of the inline skill payload. Must be `application/zip`. */
+  media_type: "application/zip" = "application/zip";
+
+  /** Base64-encoded skill zip bundle. */
+  data: bytes;
+}
+
+/** Defines an inline skill for this request. */
+model ShellToolInlineSkill extends ShellToolSkill {
+  /** Defines an inline skill for this request. */
+  type: ShellToolSkillType.inline;
+
+  /** The name of the skill. */
+  name: string;
+
+  /** The description of the skill. */
+  description: string;
+
+  /** Inline skill payload. */
+  source: ShellToolInlineSkillSource;
+}
+
+/** Automatically creates a container for this request. */
+model ShellToolContainerAutoEnvironment extends ShellToolEnvironment {
+  /** Automatically creates a container for this request. Always `container_auto`. */
+  type: ShellToolEnvironmentType.container_auto;
+
+  /** An optional list of uploaded files to make available inside the container. */
+  file_ids?: string[];
+
+  /** The memory limit for the container. */
+  memory_limit?: ShellToolContainerMemoryLimit | null;
+
+  /** Network access policy for the container. */
+  network_policy?: ShellToolContainerNetworkPolicy;
+
+  /** An optional list of skills referenced by id or inline data. */
+  skills?: ShellToolSkill[];
+}
+
+/** References a container previously created with the /v1/containers endpoint. */
+model ShellToolContainerReferenceEnvironment extends ShellToolEnvironment {
+  /** References a container previously created with the /v1/containers endpoint. Always `container_reference`. */
+  type: ShellToolEnvironmentType.container_reference;
+
+  /** The ID of the referenced container. */
+  container_id: string;
+}
+
+/** Uses a local computer environment to perform shell actions. */
+model ShellToolLocalEnvironment extends ShellToolEnvironment {
+  /** Use a local computer environment. Always `local`. */
+  type: ShellToolEnvironmentType.local;
+
+  /** An optional list of skills to make available in the local environment. */
+  skills?: ShellToolLocalSkill[];
+}
+
+/** A skill located at a path in the local environment. */
+model ShellToolLocalSkill {
+  /** The name of the skill. */
+  name: string;
+
+  /** The description of the skill. */
+  description: string;
+
+  /** The path to the directory containing the skill. */
+  path: string;
+}
+
 alias SseResponseOfResponseStreamEvent = {
   @header("Content-Type") contentType: "text/event-stream";
   @body responseBody: ResponseStreamEvent;

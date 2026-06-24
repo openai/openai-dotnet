@@ -2,6 +2,17 @@
 
 ## (Unreleased)
 
+### Features Added
+
+- OpenAI.Responses:
+  - Added support for executing shell commands (locally or in a hosted container) via the Shell tool.
+    - Added the following derived types of `ResponseTool`:
+      - `ShellTool`
+    - Added the following derived types of `ResponseItem`:
+      - `ShellCallItem`
+      - `ShellCallOutputItem`
+    - Added the `ShellToolEnvironment` type (with `ShellToolContainerAutoEnvironment`, `ShellToolContainerReferenceEnvironment`, and `ShellToolLocalEnvironment` variants) for selecting between hosted and local execution.
+
 ### Bugs Fixed
 
 - OpenAI.Chat:

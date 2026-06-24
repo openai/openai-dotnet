@@ -152,4 +152,17 @@ public partial class ResponseTool
             partialImageCount: partialImageCount,
             action: action);
     }
+
+    // CUSTOM: Added factory method as a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="ShellTool"/> class.
+    /// </summary>
+    /// <param name="environment">Configuration for the environment in which the model may execute shell commands.</param>
+    public static ShellTool CreateShellTool(ShellToolEnvironment environment = null)
+    {
+        return new ShellTool(
+            kind: ResponseToolKind.Shell,
+            patch: default,
+            environment: environment);
+    }
 }

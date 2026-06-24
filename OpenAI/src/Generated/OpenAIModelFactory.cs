@@ -743,6 +743,21 @@ namespace OpenAI
             return new ApplyPatchTool(ResponseToolKind.ApplyPatch, default);
         }
 
+        public static ShellTool ShellTool(ShellToolEnvironment environment = default)
+        {
+            return new ShellTool(ResponseToolKind.Shell, default, environment);
+        }
+
+        public static ShellToolDomainSecret ShellToolDomainSecret(string domain = default, string name = default, string value = default)
+        {
+            return new ShellToolDomainSecret(domain, name, value, default);
+        }
+
+        public static ShellToolLocalSkill ShellToolLocalSkill(string name = default, string description = default, string path = default)
+        {
+            return new ShellToolLocalSkill(name, description, path, default);
+        }
+
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
@@ -819,6 +834,18 @@ namespace OpenAI
         public static McpToolDefinition McpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
             return new McpToolDefinition(name, description, inputSchema, annotations, default);
+        }
+
+        public static ShellAction ShellAction(IEnumerable<string> commandParts = default, TimeSpan? timeout = default, int? maxOutputLength = default)
+        {
+            commandParts ??= new ChangeTrackingList<string>();
+
+            return new ShellAction(commandParts.ToList(), timeout, maxOutputLength, default);
+        }
+
+        public static ShellCallOutputContent ShellCallOutputContent(string stdout = default, string stderr = default, ShellCallOutcome outcome = default)
+        {
+            return new ShellCallOutputContent(stdout, stderr, outcome, default);
         }
 
         public static ResponseConversationOptions ResponseConversationOptions(string conversationId = default)
@@ -1063,6 +1090,31 @@ namespace OpenAI
                 status,
                 output,
                 createdBy);
+        }
+
+        public static ShellCallItem ShellCallItem(string id = default, ShellCallStatus? status = default, string callId = default, ShellAction action = default)
+        {
+            return new ShellCallItem(
+                ResponseItemKind.ShellCall,
+                id,
+                default,
+                status,
+                callId,
+                action);
+        }
+
+        public static ShellCallOutputItem ShellCallOutputItem(string id = default, ShellCallStatus? status = default, string callId = default, IEnumerable<ShellCallOutputContent> output = default, int? maxOutputLength = default)
+        {
+            output ??= new ChangeTrackingList<ShellCallOutputContent>();
+
+            return new ShellCallOutputItem(
+                ResponseItemKind.ShellCallOutput,
+                id,
+                default,
+                status,
+                callId,
+                output.ToList(),
+                maxOutputLength);
         }
 
         public static ReferenceResponseItem ReferenceResponseItem(string id = default)

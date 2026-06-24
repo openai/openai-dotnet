@@ -54,7 +54,7 @@ namespace OpenAI.Responses
 
         internal static ResponseToolKind LocalShell { get; } = new ResponseToolKind(LocalShellValue);
 
-        internal static ResponseToolKind Shell { get; } = new ResponseToolKind(ShellValue);
+        public static ResponseToolKind Shell { get; } = new ResponseToolKind(ShellValue);
 
         internal static ResponseToolKind Custom { get; } = new ResponseToolKind(CustomValue);
 

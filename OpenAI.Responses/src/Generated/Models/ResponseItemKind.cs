@@ -78,9 +78,9 @@ namespace OpenAI.Responses
 
         internal static ResponseItemKind LocalShellCallOutput { get; } = new ResponseItemKind(LocalShellCallOutputValue);
 
-        internal static ResponseItemKind ShellCall { get; } = new ResponseItemKind(ShellCallValue);
+        public static ResponseItemKind ShellCall { get; } = new ResponseItemKind(ShellCallValue);
 
-        internal static ResponseItemKind ShellCallOutput { get; } = new ResponseItemKind(ShellCallOutputValue);
+        public static ResponseItemKind ShellCallOutput { get; } = new ResponseItemKind(ShellCallOutputValue);
 
         public static ResponseItemKind ApplyPatchCall { get; } = new ResponseItemKind(ApplyPatchCallValue);
 

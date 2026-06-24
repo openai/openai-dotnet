@@ -146,6 +146,10 @@ namespace OpenAI.Responses
                         return ApplyPatchCallItem.DeserializeApplyPatchCallItem(element, data, options);
                     case "apply_patch_call_output":
                         return ApplyPatchCallOutputItem.DeserializeApplyPatchCallOutputItem(element, data, options);
+                    case "shell_call":
+                        return ShellCallItem.DeserializeShellCallItem(element, data, options);
+                    case "shell_call_output":
+                        return ShellCallOutputItem.DeserializeShellCallOutputItem(element, data, options);
                     case "item_reference":
                         return ReferenceResponseItem.DeserializeReferenceResponseItem(element, data, options);
                 }

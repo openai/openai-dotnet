@@ -109,3 +109,14 @@ namespace OpenAI.Responses;
 [CodeGenType("TokenCountsBodyTextVerbosity")] internal readonly partial struct InternalTokenCountsBodyTextVerbosity {}
 [CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum {}
 [CodeGenType("GetResponseContentType")] internal readonly partial struct InternalGetResponseContentType {}
+[CodeGenType("ShellToolEnvironmentType")] internal readonly partial struct InternalShellToolEnvironmentType {}
+[CodeGenType("ShellToolContainerNetworkPolicyType")] internal readonly partial struct InternalShellToolContainerNetworkPolicyType {}
+[CodeGenType("ShellToolSkillType")] internal readonly partial struct InternalShellToolSkillType {}
+[CodeGenType("ShellToolInlineSkillSourceType")] internal readonly partial struct InternalShellToolInlineSkillSourceType {}
+[CodeGenType("ShellCallOutcomeType")] internal readonly partial struct InternalShellCallOutcomeType {}
+[CodeGenType("ShellToolCallItemParam")] internal partial class InternalShellToolCallItemParam {}
+[CodeGenType("ShellToolCallOutputItemParam")] internal partial class InternalShellToolCallOutputItemParam {}
+[CodeGenType("UnknownShellToolEnvironment")] internal partial class InternalUnknownShellToolEnvironment {}
+[CodeGenType("UnknownShellToolContainerNetworkPolicy")] internal partial class InternalUnknownShellToolContainerNetworkPolicy {}
+[CodeGenType("UnknownShellToolSkill")] internal partial class InternalUnknownShellToolSkill {}
+[CodeGenType("UnknownShellCallOutcome")] internal partial class InternalUnknownShellCallOutcome {}

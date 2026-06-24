@@ -114,6 +114,16 @@ public partial class ResponseItem
         return new ApplyPatchCallOutputItem(callId, status);
     }
 
+    public static ShellCallItem CreateShellCallItem(string callId, ShellAction action)
+    {
+        return new ShellCallItem(callId, action);
+    }
+
+    public static ShellCallOutputItem CreateShellCallOutputItem(string callId, IEnumerable<ShellCallOutputContent> output)
+    {
+        return new ShellCallOutputItem(callId, output);
+    }
+
     public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts)
     {
         return new ReasoningResponseItem(summaryParts);

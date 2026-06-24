@@ -6129,6 +6129,8 @@ namespace OpenAI.Responses {
         public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public static ReasoningResponseItem CreateReasoningItem(string summaryText);
         public static ReferenceResponseItem CreateReferenceItem(string id);
+        public static ShellCallItem CreateShellCallItem(string callId, ShellAction action);
+        public static ShellCallOutputItem CreateShellCallOutputItem(string callId, IEnumerable<ShellCallOutputContent> output);
         public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateSystemMessageItem(string inputTextContent);
         public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts);
@@ -6193,6 +6195,8 @@ namespace OpenAI.Responses {
         public static ResponseItemKind McpListTools { get; }
         public static ResponseItemKind Message { get; }
         public static ResponseItemKind Reasoning { get; }
+        public static ResponseItemKind ShellCall { get; }
+        public static ResponseItemKind ShellCallOutput { get; }
         public static ResponseItemKind WebSearchCall { get; }
         public readonly bool Equals(ResponseItemKind other);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -6489,6 +6493,7 @@ namespace OpenAI.Responses {
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
+        public static ShellTool CreateShellTool(ShellToolEnvironment environment = null);
         public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null);
     }
@@ -6526,6 +6531,7 @@ namespace OpenAI.Responses {
         public static ResponseToolKind Function { get; }
         public static ResponseToolKind ImageGeneration { get; }
         public static ResponseToolKind Mcp { get; }
+        public static ResponseToolKind Shell { get; }
         public static ResponseToolKind WebSearch { get; }
         public static ResponseToolKind WebSearchPreview { get; }
         public readonly bool Equals(ResponseToolKind other);
@@ -6554,6 +6560,192 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ShellAction : IJsonModel<ShellAction>, IPersistableModel<ShellAction> {
+        public ShellAction(IEnumerable<string> commandParts);
+        public IList<string> CommandParts { get; }
+        public int? MaxOutputLength { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public TimeSpan? Timeout { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellCallExitOutcome : ShellCallOutcome, IJsonModel<ShellCallExitOutcome>, IPersistableModel<ShellCallExitOutcome> {
+        public ShellCallExitOutcome(int exitCode);
+        public int ExitCode { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellCallItem : ResponseItem, IJsonModel<ShellCallItem>, IPersistableModel<ShellCallItem> {
+        public ShellCallItem(string callId, ShellAction action) : base(default);
+        public ShellAction Action { get; set; }
+        public string CallId { get; set; }
+        public ShellCallStatus? Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellCallOutcome : IJsonModel<ShellCallOutcome>, IPersistableModel<ShellCallOutcome> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellCallOutputContent : IJsonModel<ShellCallOutputContent>, IPersistableModel<ShellCallOutputContent> {
+        public ShellCallOutputContent(string stdout, string stderr, ShellCallOutcome outcome);
+        public ShellCallOutcome Outcome { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Stderr { get; set; }
+        public string Stdout { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellCallOutputItem : ResponseItem, IJsonModel<ShellCallOutputItem>, IPersistableModel<ShellCallOutputItem> {
+        public ShellCallOutputItem(string callId, IEnumerable<ShellCallOutputContent> output) : base(default);
+        public string CallId { get; set; }
+        public int? MaxOutputLength { get; set; }
+        public IList<ShellCallOutputContent> Output { get; }
+        public ShellCallStatus? Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ShellCallStatus : IEquatable<ShellCallStatus> {
+        public ShellCallStatus(string value);
+        public static ShellCallStatus Completed { get; }
+        public static ShellCallStatus Incomplete { get; }
+        public static ShellCallStatus InProgress { get; }
+        public readonly bool Equals(ShellCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ShellCallStatus left, ShellCallStatus right);
+        public static implicit operator ShellCallStatus(string value);
+        public static implicit operator ShellCallStatus?(string value);
+        public static bool operator !=(ShellCallStatus left, ShellCallStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ShellCallTimeoutOutcome : ShellCallOutcome, IJsonModel<ShellCallTimeoutOutcome>, IPersistableModel<ShellCallTimeoutOutcome> {
+        public ShellCallTimeoutOutcome();
+    }
+    [Experimental("OPENAI001")]
+    public class ShellTool : ResponseTool, IJsonModel<ShellTool>, IPersistableModel<ShellTool> {
+        public ShellTool() : base(default);
+        public ShellToolEnvironment Environment { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolAllowlistContainerNetworkPolicy : ShellToolContainerNetworkPolicy, IJsonModel<ShellToolAllowlistContainerNetworkPolicy>, IPersistableModel<ShellToolAllowlistContainerNetworkPolicy> {
+        public ShellToolAllowlistContainerNetworkPolicy(IEnumerable<string> allowedDomains);
+        public IList<string> AllowedDomains { get; }
+        public IList<ShellToolDomainSecret> DomainSecrets { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolContainerAutoEnvironment : ShellToolEnvironment, IJsonModel<ShellToolContainerAutoEnvironment>, IPersistableModel<ShellToolContainerAutoEnvironment> {
+        public ShellToolContainerAutoEnvironment();
+        public IList<string> FileIds { get; }
+        public ShellToolContainerMemoryLimit? MemoryLimit { get; set; }
+        public ShellToolContainerNetworkPolicy NetworkPolicy { get; set; }
+        public IList<ShellToolSkill> Skills { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ShellToolContainerMemoryLimit : IEquatable<ShellToolContainerMemoryLimit> {
+        public ShellToolContainerMemoryLimit(string value);
+        public static ShellToolContainerMemoryLimit FourGigabytes { get; }
+        public static ShellToolContainerMemoryLimit OneGigabyte { get; }
+        public static ShellToolContainerMemoryLimit SixteenGigabytes { get; }
+        public static ShellToolContainerMemoryLimit SixtyFourGigabytes { get; }
+        public readonly bool Equals(ShellToolContainerMemoryLimit other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ShellToolContainerMemoryLimit left, ShellToolContainerMemoryLimit right);
+        public static implicit operator ShellToolContainerMemoryLimit(string value);
+        public static implicit operator ShellToolContainerMemoryLimit?(string value);
+        public static bool operator !=(ShellToolContainerMemoryLimit left, ShellToolContainerMemoryLimit right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolContainerNetworkPolicy : IJsonModel<ShellToolContainerNetworkPolicy>, IPersistableModel<ShellToolContainerNetworkPolicy> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolContainerReferenceEnvironment : ShellToolEnvironment, IJsonModel<ShellToolContainerReferenceEnvironment>, IPersistableModel<ShellToolContainerReferenceEnvironment> {
+        public ShellToolContainerReferenceEnvironment(string containerId);
+        public string ContainerId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolDisabledContainerNetworkPolicy : ShellToolContainerNetworkPolicy, IJsonModel<ShellToolDisabledContainerNetworkPolicy>, IPersistableModel<ShellToolDisabledContainerNetworkPolicy> {
+        public ShellToolDisabledContainerNetworkPolicy();
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolDomainSecret : IJsonModel<ShellToolDomainSecret>, IPersistableModel<ShellToolDomainSecret> {
+        public ShellToolDomainSecret(string domain, string name, string value);
+        public string Domain { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Value { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolEnvironment : IJsonModel<ShellToolEnvironment>, IPersistableModel<ShellToolEnvironment> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolInlineSkill : ShellToolSkill, IJsonModel<ShellToolInlineSkill>, IPersistableModel<ShellToolInlineSkill> {
+        public ShellToolInlineSkill(string name, string description, ShellToolInlineSkillSource source);
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public ShellToolInlineSkillSource Source { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolInlineSkillSource : IJsonModel<ShellToolInlineSkillSource>, IPersistableModel<ShellToolInlineSkillSource> {
+        public BinaryData Data { get; set; }
+        public string MediaType { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolLocalEnvironment : ShellToolEnvironment, IJsonModel<ShellToolLocalEnvironment>, IPersistableModel<ShellToolLocalEnvironment> {
+        public ShellToolLocalEnvironment();
+        public IList<ShellToolLocalSkill> Skills { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolLocalSkill : IJsonModel<ShellToolLocalSkill>, IPersistableModel<ShellToolLocalSkill> {
+        public ShellToolLocalSkill(string name, string description, string path);
+        public string Description { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Path { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolSkill : IJsonModel<ShellToolSkill>, IPersistableModel<ShellToolSkill> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ShellToolSkillReference : ShellToolSkill, IJsonModel<ShellToolSkillReference>, IPersistableModel<ShellToolSkillReference> {
+        public ShellToolSkillReference(string skillId);
+        public string SkillId { get; set; }
+        public string Version { get; set; }
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
