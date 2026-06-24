@@ -1988,6 +1988,9 @@ namespace OpenAI.Containers {
         public string LastId { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         public static explicit operator ContainerCollectionPage(ClientResult result);
     }
     public class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>, IPersistableModel<ContainerCreationOptions> {
@@ -2067,6 +2070,9 @@ namespace OpenAI.Containers {
         public string LastId { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         public static explicit operator ContainerFileCollectionPage(ClientResult result);
     }
     public class ContainerFileDeletionResult : IJsonModel<ContainerFileDeletionResult>, IPersistableModel<ContainerFileDeletionResult> {

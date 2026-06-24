@@ -2281,6 +2281,10 @@ namespace OpenAI.Containers {
         public string LastId { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static explicit operator ContainerCollectionPage(ClientResult result);
     }
     [Experimental("OPENAI001")]
@@ -2371,6 +2375,10 @@ namespace OpenAI.Containers {
         public string LastId { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static explicit operator ContainerFileCollectionPage(ClientResult result);
     }
     [Experimental("OPENAI001")]
