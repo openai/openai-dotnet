@@ -107,10 +107,12 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.ThrowsAsync<TaskCanceledException>(async () => await enumerator.MoveNextAsync().AsTask());
     }
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     [RecordedTest]
     public async Task CreateGetAndCancelBatchProtocol()
     {
-        using MemoryStream testFileStream = new();
+        using Stream testFileStream = Manager.GetStream();
         using StreamWriter streamWriter = new(testFileStream);
         streamWriter.NewLine = "\r\n";
         string input = @"{""custom_id"": ""request-1"", ""method"": ""POST"", ""url"": ""/v1/chat/completions"", ""body"": {""model"": ""gpt-4o-mini"", ""messages"": [{""role"": ""system"", ""content"": ""You are a helpful assistant.""}, {""role"": ""user"", ""content"": ""What is 2+2?""}]}}";
@@ -172,7 +174,7 @@ public class BatchTests : OpenAIRecordedTestBase
     [TestCase(false)]
     public async Task CanRehydrateBatchOperation(bool useBatchId)
     {
-        using MemoryStream testFileStream = new();
+        using Stream testFileStream = Manager.GetStream();
         using StreamWriter streamWriter = new(testFileStream);
         streamWriter.NewLine = "\r\n";
         string input = @"{""custom_id"": ""request-1"", ""method"": ""POST"", ""url"": ""/v1/chat/completions"", ""body"": {""model"": ""gpt-4o-mini"", ""messages"": [{""role"": ""system"", ""content"": ""You are a helpful assistant.""}, {""role"": ""user"", ""content"": ""What is 2+2?""}]}}";

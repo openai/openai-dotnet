@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
 using System;
+using System.Buffers;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
@@ -23,11 +24,13 @@ public partial class ChatExamples
     }
     #endregion
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     #region
     public static BinaryData SerializeMessages(IEnumerable<ChatMessage> messages)
     {
-        using MemoryStream stream = new();
-        using Utf8JsonWriter writer = new(stream);
+        using Microsoft.IO.RecyclableMemoryStream stream = Manager.GetStream();
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartArray();
 

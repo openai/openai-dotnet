@@ -106,6 +106,8 @@ public class ImagesMockTests : ClientTestBase
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditDeserializesRevisedPrompt(ImageSourceKind imageSourceKind)
@@ -126,7 +128,7 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
+            using Stream stream = Manager.GetStream();
 
             image = await client.GenerateImageEditAsync(stream, "filename", "prompt");
         }
@@ -146,7 +148,7 @@ public class ImagesMockTests : ClientTestBase
     public void GenerateImageEditFromStreamRespectsTheCancellationToken()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Stream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -176,8 +178,8 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
-            using Stream mask = new MemoryStream();
+            using Stream stream = Manager.GetStream();
+            using Stream mask = Manager.GetStream();
 
             image = await client.GenerateImageEditAsync(stream, "filename", "prompt", mask, "maskFilename");
         }
@@ -197,7 +199,7 @@ public class ImagesMockTests : ClientTestBase
     public void GenerateImageEditFromStreamWithMaskRespectsTheCancellationToken()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Stream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -222,7 +224,7 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
+            using Stream stream = Manager.GetStream();
 
             images = await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2);
         }
@@ -258,7 +260,7 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
+            using Stream stream = Manager.GetStream();
 
             images = await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2);
         }
@@ -279,7 +281,7 @@ public class ImagesMockTests : ClientTestBase
     public void GenerateImageEditsFromStreamRespectsTheCancellationToken()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Stream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -309,8 +311,8 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
-            using Stream mask = new MemoryStream();
+            using Stream stream = Manager.GetStream();
+            using Stream mask = Manager.GetStream();
 
             images = await client.GenerateImageEditsAsync(stream, "filename", "prompt", mask, "maskFilename", 2);
         }
@@ -331,7 +333,7 @@ public class ImagesMockTests : ClientTestBase
     public void GenerateImageEditsFromStreamWithMaskRespectsTheCancellationToken()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Stream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
@@ -359,7 +361,7 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
+            using Stream stream = Manager.GetStream();
 
             image = await client.GenerateImageVariationAsync(stream, "filename");
         }
@@ -379,7 +381,7 @@ public class ImagesMockTests : ClientTestBase
     public void GenerateImageVariationFromStreamRespectsTheCancellationToken()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Stream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
         Assert.That(async () => await client.GenerateImageVariationAsync(stream, "filename", cancellationToken: cancellationSource.Token),
@@ -403,7 +405,7 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
+            using Stream stream = Manager.GetStream();
 
             images = await client.GenerateImageVariationsAsync(stream, "filename", 2);
         }
@@ -439,7 +441,7 @@ public class ImagesMockTests : ClientTestBase
 
         if (imageSourceKind == ImageSourceKind.UsingStream)
         {
-            using Stream stream = new MemoryStream();
+            using Stream stream = Manager.GetStream();
 
             images = await client.GenerateImageVariationsAsync(stream, "filename", 2);
         }
@@ -460,7 +462,7 @@ public class ImagesMockTests : ClientTestBase
     public void GenerateImageVariationsFromStreamRespectsTheCancellationToken()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Stream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 

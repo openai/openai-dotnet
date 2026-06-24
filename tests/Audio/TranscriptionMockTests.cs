@@ -137,11 +137,13 @@ public partial class TranscriptionMockTests : ClientTestBase
         Assert.That(segment.NoSpeechProbability, Is.EqualTo(0.2f));
     }
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     [Test]
     public void TranscribeAudioFromStreamRespectsTheCancellationToken()
     {
         AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential));
-        using Stream stream = new MemoryStream();
+        using Microsoft.IO.RecyclableMemoryStream stream = Manager.GetStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 

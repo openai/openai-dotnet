@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics;
@@ -28,8 +29,8 @@ internal class FineTuningCheckpointCollectionPageToken: ContinuationToken
 
     public override BinaryData ToBytes()
     {
-        using MemoryStream stream = new();
-        using Utf8JsonWriter writer = new(stream);
+        using Microsoft.IO.RecyclableMemoryStream stream = OpenAI.MemoryStreamManager.Manager.GetStream();
+        using Utf8JsonWriter writer = new(stream as System.IO.Stream);
 
         writer.WriteStartObject();
         writer.WriteString("jobId", JobId);

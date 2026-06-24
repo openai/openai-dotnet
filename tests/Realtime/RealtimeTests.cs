@@ -611,6 +611,8 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(gotResponseDone, Is.True);
     }
 
+    private static readonly Microsoft.IO.RecyclableMemoryStreamManager Manager = new ();
+
     [Test]
     public async Task AudioStreamConvenienceBlocksCorrectly()
     {
@@ -656,7 +658,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                         Assert.ThrowsAsync<InvalidOperationException>(
                             async () =>
                             {
-                                using MemoryStream dummyStream = new();
+                                using Stream dummyStream = Manager.GetStream();
                                 await sessionClient.SendInputAudioAsync(dummyStream, CancellationToken);
                             },
                             "Sending a Stream while another Stream is being sent should throw!");

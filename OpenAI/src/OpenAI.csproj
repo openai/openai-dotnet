@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
     <PackageReference Include="System.ClientModel" />
     <PackageReference Include="System.Net.ServerSentEvents" />
   </ItemGroup>
