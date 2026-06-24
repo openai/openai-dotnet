@@ -457,6 +457,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     {
         TimeSpan expectedContainerDuration = TimeSpan.FromMinutes(20);
         ContainerMemoryLimit expectedContainerMemoryLimit = ContainerMemoryLimit.Limit4G;
+        string createdContainerId = null;
 
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
@@ -471,20 +472,31 @@ public class ContainerTests : OpenAIRecordedTestBase
             NetworkPolicy = new ContainerDisabledNetworkPolicy(),
         };
 
-        ContainerResource container = await client.CreateContainerAsync(options);
+        try
+        {
+            ContainerResource container = await client.CreateContainerAsync(options);
+            createdContainerId = container.Id;
 
-        Assert.That(container, Is.Not.Null);
-        Validate(container);
+            Assert.That(container, Is.Not.Null);
+            Validate(container);
 
-        Assert.That(container.Name, Is.EqualTo("test-container"));
-        Assert.That(container.ExpirationPolicy, Is.Not.Null);
-        Assert.That(container.ExpirationPolicy.Anchor, Is.EqualTo(ContainerExpirationPolicyAnchor.LastActiveAt));
-        Assert.That(container.ExpirationPolicy.Duration, Is.EqualTo(expectedContainerDuration));
-        Assert.That(container.MemoryLimit, Is.EqualTo(expectedContainerMemoryLimit));
-        Assert.That(container.NetworkPolicy, Is.InstanceOf<ContainerDisabledNetworkPolicy>());
+            Assert.That(container.Name, Is.EqualTo("test-container"));
+            Assert.That(container.ExpirationPolicy, Is.Not.Null);
+            Assert.That(container.ExpirationPolicy.Anchor, Is.EqualTo(ContainerExpirationPolicyAnchor.LastActiveAt));
+            Assert.That(container.ExpirationPolicy.Duration, Is.EqualTo(expectedContainerDuration));
+            Assert.That(container.MemoryLimit, Is.EqualTo(expectedContainerMemoryLimit));
+            Assert.That(container.NetworkPolicy, Is.InstanceOf<ContainerDisabledNetworkPolicy>());
 
-        ContainerDisabledNetworkPolicy networkPolicy = (ContainerDisabledNetworkPolicy)container.NetworkPolicy;
-        Assert.That(networkPolicy.Kind, Is.EqualTo(ContainerNetworkPolicyKind.Disabled));
+            ContainerDisabledNetworkPolicy networkPolicy = (ContainerDisabledNetworkPolicy)container.NetworkPolicy;
+            Assert.That(networkPolicy.Kind, Is.EqualTo(ContainerNetworkPolicyKind.Disabled));
+        }
+        finally
+        {
+            if (!string.IsNullOrEmpty(createdContainerId))
+            {
+                await client.DeleteContainerAsync(createdContainerId);
+            }
+        }
     }
 
     [RecordedTest]

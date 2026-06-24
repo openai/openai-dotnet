@@ -2,10 +2,12 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Containers
@@ -13,7 +15,8 @@ namespace OpenAI.Containers
     [Experimental("OPENAI001")]
     public partial class ContainerCollectionPage
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal ContainerCollectionPage(IEnumerable<ContainerResource> data, string firstId, string lastId, bool hasMore)
         {
@@ -23,7 +26,8 @@ namespace OpenAI.Containers
             HasMore = hasMore;
         }
 
-        internal ContainerCollectionPage(string @object, IList<ContainerResource> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ContainerCollectionPage(string @object, IList<ContainerResource> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -31,8 +35,15 @@ namespace OpenAI.Containers
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public IList<ContainerResource> Data { get; }
 
@@ -41,11 +52,5 @@ namespace OpenAI.Containers
         public string LastId { get; set; }
 
         public bool HasMore { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

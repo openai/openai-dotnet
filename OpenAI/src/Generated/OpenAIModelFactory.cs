@@ -319,7 +319,7 @@ namespace OpenAI
                 firstId,
                 lastId,
                 hasMore,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static ContainerFileResource ContainerFileResource(string id = default, string containerId = default, DateTimeOffset createdAt = default, long? sizeInBytes = default, string path = default, string source = default)
@@ -350,7 +350,7 @@ namespace OpenAI
                 firstId,
                 lastId,
                 hasMore,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static FineTuningError FineTuningError(string code = default, string message = default, string invalidParameter = default)

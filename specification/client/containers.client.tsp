@@ -45,3 +45,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ContainerFileUploadOptions);
 @@dynamicModel(ContainerDeletionResult);
 @@dynamicModel(ContainerFileDeletionResult);
+@@dynamicModel(ContainerCollectionOrder);
+@@dynamicModel(ContainerCollection);
+@@dynamicModel(ContainerFileCollectionOrder);
+@@dynamicModel(ContainerFileCollection);

@@ -30,7 +30,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a105ff014a0cd301-SEA",
+        "CF-Ray": "a10da70009809ce6-SEA",
         "Connection": "keep-alive",
         "Content-Length": "353",
         "Content-Type": "application/json",
@@ -46,20 +46,58 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "cntr_6a3ae27663b48198ae7856a87f49125d0cc53a4c6ee6b45e",
+        "id": "cntr_6a3c1c1024a8819892cfe6b854387cea0bb1797a3699251c",
         "object": "container",
-        "created_at": 1782243958,
+        "created_at": 1782324240,
         "status": "running",
         "expires_after": {
           "anchor": "last_active_at",
           "minutes": 20
         },
-        "last_active_at": 1782243958,
+        "last_active_at": 1782324240,
         "memory_limit": "4g",
         "name": "test-container",
         "network_policy": {
           "type": "disabled"
         }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/containers/cntr_6a3c1c1024a8819892cfe6b854387cea0bb1797a3699251c",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a10da705fe6c9ce6-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "119",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "cntr_6a3c1c1024a8819892cfe6b854387cea0bb1797a3699251c",
+        "object": "container.deleted",
+        "deleted": true
       }
     }
   ],
