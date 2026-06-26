@@ -2054,16 +2054,16 @@ namespace OpenAI.Conversations {
         public ConversationClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult<ConversationResource> CreateConversation(CreateConversationBody body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ConversationResource> CreateConversation(ConversationCreationOptions body, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateConversation(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ConversationResource>> CreateConversationAsync(CreateConversationBody body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ConversationResource>> CreateConversationAsync(ConversationCreationOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateConversationAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult CreateConversationItems(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual Task<ClientResult> CreateConversationItemsAsync(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual ClientResult DeleteConversation(string conversationId, RequestOptions options);
-        public virtual ClientResult<DeletedConversationResource> DeleteConversation(string conversationId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ConversationDeletionResult> DeleteConversation(string conversationId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteConversationAsync(string conversationId, RequestOptions options);
-        public virtual Task<ClientResult<DeletedConversationResource>> DeleteConversationAsync(string conversationId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ConversationDeletionResult>> DeleteConversationAsync(string conversationId, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteConversationItem(string conversationId, string itemId, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteConversationItemAsync(string conversationId, string itemId, RequestOptions options = null);
         public virtual ClientResult GetConversation(string conversationId, RequestOptions options);
@@ -2074,33 +2074,52 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult> GetConversationItemAsync(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual CollectionResult GetConversationItems(string conversationId, int? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, int? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual ClientResult<ConversationResource> UpdateConversation(string conversationId, UpdateConversationBody body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ConversationResource> UpdateConversation(string conversationId, ConversationUpdateOptions body, CancellationToken cancellationToken = default);
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, UpdateConversationBody body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
     public sealed class ConversationClientSettings : ClientSettings {
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
+    public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
+        public ConversationCreationOptions(IDictionary<string, string> metadata);
+        public IList<ResponseItem> Items { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(ConversationCreationOptions conversationCreationOptions);
+    }
+    public class ConversationDeletionResult : IJsonModel<ConversationDeletionResult>, IPersistableModel<ConversationDeletionResult> {
+        public string ConversationId { get; }
+        public bool Deleted { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator ConversationDeletionResult(ClientResult result);
+    }
     public class ConversationResource : IJsonModel<ConversationResource>, IPersistableModel<ConversationResource> {
         public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
         public IDictionary<string, string> Metadata { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         public static explicit operator ConversationResource(ClientResult result);
     }
-    public class CreateConversationBody : IJsonModel<CreateConversationBody>, IPersistableModel<CreateConversationBody> {
-        public CreateConversationBody(IDictionary<string, string> metadata);
-        public IList<ResponseItem> Items { get; set; }
+    public class ConversationUpdateOptions : IJsonModel<ConversationUpdateOptions>, IPersistableModel<ConversationUpdateOptions> {
+        public ConversationUpdateOptions(IDictionary<string, string> metadata);
         public IDictionary<string, string> Metadata { get; }
-        public static implicit operator BinaryContent(CreateConversationBody createConversationBody);
-    }
-    public class DeletedConversationResource : IJsonModel<DeletedConversationResource>, IPersistableModel<DeletedConversationResource> {
-        public bool Deleted { get; }
-        public string Id { get; }
-        public string Object { get; }
-        public static explicit operator DeletedConversationResource(ClientResult result);
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(ConversationUpdateOptions conversationUpdateOptions);
     }
     public readonly partial struct IncludedConversationItemProperty : IEquatable<IncludedConversationItemProperty> {
         public IncludedConversationItemProperty(string value);
@@ -2122,11 +2141,6 @@ namespace OpenAI.Conversations {
         public static implicit operator IncludedConversationItemProperty?(string value);
         public static bool operator !=(IncludedConversationItemProperty left, IncludedConversationItemProperty right);
         public override readonly string ToString();
-    }
-    public class UpdateConversationBody : IJsonModel<UpdateConversationBody>, IPersistableModel<UpdateConversationBody> {
-        public UpdateConversationBody(IDictionary<string, string> metadata);
-        public IDictionary<string, string> Metadata { get; }
-        public static implicit operator BinaryContent(UpdateConversationBody updateConversationBody);
     }
 }
 namespace OpenAI.Embeddings {
