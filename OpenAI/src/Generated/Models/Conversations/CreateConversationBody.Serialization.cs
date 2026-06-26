@@ -3,61 +3,54 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalConversationResource : IJsonModel<InternalConversationResource>
+    public partial class CreateConversationBody : IJsonModel<CreateConversationBody>
     {
-        internal InternalConversationResource() : this(null, null, null, default, null)
+        internal CreateConversationBody() : this(null, null, null)
         {
         }
 
-        protected virtual InternalConversationResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual CreateConversationBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CreateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalConversationResource(document.RootElement, options);
+                        return DeserializeCreateConversationBody(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalConversationResource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(CreateConversationBody)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CreateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalConversationResource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(CreateConversationBody)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalConversationResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<CreateConversationBody>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalConversationResource IPersistableModel<InternalConversationResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        CreateConversationBody IPersistableModel<CreateConversationBody>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalConversationResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<CreateConversationBody>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator InternalConversationResource(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalConversationResource(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
-
-        void IJsonModel<InternalConversationResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<CreateConversationBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -66,20 +59,10 @@ namespace OpenAI.Conversations
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CreateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalConversationResource)} does not support writing '{format}' format.");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                throw new FormatException($"The model {nameof(CreateConversationBody)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -104,10 +87,15 @@ namespace OpenAI.Conversations
                     writer.WriteNull("metadata"u8);
                 }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            if (Optional.IsCollectionDefined(Items) && _additionalBinaryDataProperties?.ContainsKey("items") != true)
             {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WritePropertyName("items"u8);
+                writer.WriteStartArray();
+                foreach (ResponseItem item in Items)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -131,42 +119,30 @@ namespace OpenAI.Conversations
             }
         }
 
-        InternalConversationResource IJsonModel<InternalConversationResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        CreateConversationBody IJsonModel<CreateConversationBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalConversationResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual CreateConversationBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CreateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalConversationResource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(CreateConversationBody)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalConversationResource(document.RootElement, options);
+            return DeserializeCreateConversationBody(document.RootElement, options);
         }
 
-        internal static InternalConversationResource DeserializeInternalConversationResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static CreateConversationBody DeserializeCreateConversationBody(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string id = default;
-            string @object = default;
             IDictionary<string, string> metadata = default;
-            DateTimeOffset createdAt = default;
+            IList<ResponseItem> items = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("id"u8))
-                {
-                    id = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -189,15 +165,24 @@ namespace OpenAI.Conversations
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("created_at"u8))
+                if (prop.NameEquals("items"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ResponseItem> array = new List<ResponseItem>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseItem.DeserializeResponseItem(item, item.GetUtf8Bytes(), options));
+                    }
+                    items = array;
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalConversationResource(id, @object, metadata, createdAt, additionalBinaryDataProperties);
+            return new CreateConversationBody(metadata, items ?? new ChangeTrackingList<ResponseItem>(), additionalBinaryDataProperties);
         }
     }
 }

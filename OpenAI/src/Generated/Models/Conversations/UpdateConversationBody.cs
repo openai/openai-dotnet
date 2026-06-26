@@ -4,33 +4,30 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalCreateConversationBody
+    [Experimental("OPENAI001")]
+    public partial class UpdateConversationBody
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateConversationBody(IDictionary<string, string> metadata)
+        public UpdateConversationBody(IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Items = new ChangeTrackingList<ResponseItem>();
         }
 
-        internal InternalCreateConversationBody(IDictionary<string, string> metadata, IList<ResponseItem> items, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal UpdateConversationBody(IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Items = items ?? new ChangeTrackingList<ResponseItem>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IDictionary<string, string> Metadata { get; }
-
-        public IList<ResponseItem> Items { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

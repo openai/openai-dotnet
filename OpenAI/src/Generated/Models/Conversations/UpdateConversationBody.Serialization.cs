@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalUpdateConversationBody : IJsonModel<InternalUpdateConversationBody>
+    public partial class UpdateConversationBody : IJsonModel<UpdateConversationBody>
     {
-        internal InternalUpdateConversationBody() : this(null, null)
+        internal UpdateConversationBody() : this(null, null)
         {
         }
 
-        protected virtual InternalUpdateConversationBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual UpdateConversationBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalUpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalUpdateConversationBody(document.RootElement, options);
+                        return DeserializeUpdateConversationBody(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalUpdateConversationBody)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(UpdateConversationBody)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalUpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalUpdateConversationBody)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(UpdateConversationBody)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalUpdateConversationBody>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<UpdateConversationBody>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalUpdateConversationBody IPersistableModel<InternalUpdateConversationBody>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        UpdateConversationBody IPersistableModel<UpdateConversationBody>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalUpdateConversationBody>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<UpdateConversationBody>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalUpdateConversationBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<UpdateConversationBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,10 +58,10 @@ namespace OpenAI.Conversations
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalUpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalUpdateConversationBody)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(UpdateConversationBody)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -108,20 +108,20 @@ namespace OpenAI.Conversations
             }
         }
 
-        InternalUpdateConversationBody IJsonModel<InternalUpdateConversationBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        UpdateConversationBody IJsonModel<UpdateConversationBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalUpdateConversationBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual UpdateConversationBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalUpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UpdateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalUpdateConversationBody)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(UpdateConversationBody)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalUpdateConversationBody(document.RootElement, options);
+            return DeserializeUpdateConversationBody(document.RootElement, options);
         }
 
-        internal static InternalUpdateConversationBody DeserializeInternalUpdateConversationBody(JsonElement element, ModelReaderWriterOptions options)
+        internal static UpdateConversationBody DeserializeUpdateConversationBody(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -156,7 +156,7 @@ namespace OpenAI.Conversations
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUpdateConversationBody(metadata, additionalBinaryDataProperties);
+            return new UpdateConversationBody(metadata, additionalBinaryDataProperties);
         }
     }
 }

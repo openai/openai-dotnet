@@ -10,6 +10,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -1710,6 +1711,33 @@ namespace OpenAI
             segments ??= new ChangeTrackingList<TranscribedSegment>();
 
             return new AudioTranslation(language, duration, text, segments.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static ConversationResource ConversationResource(string id = default, IDictionary<string, string> metadata = default, DateTimeOffset createdAt = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ConversationResource(id, "conversation", metadata, createdAt, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateConversationBody CreateConversationBody(IDictionary<string, string> metadata = default, IEnumerable<ResponseItem> items = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            items ??= new ChangeTrackingList<ResponseItem>();
+
+            return new CreateConversationBody(metadata, items.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static DeletedConversationResource DeletedConversationResource(bool deleted = default, string id = default)
+        {
+            return new DeletedConversationResource("conversation.deleted", deleted, id, additionalBinaryDataProperties: null);
+        }
+
+        public static UpdateConversationBody UpdateConversationBody(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new UpdateConversationBody(metadata, additionalBinaryDataProperties: null);
         }
 
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)

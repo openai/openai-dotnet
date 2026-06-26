@@ -4,20 +4,22 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalDeletedConversationResource
+    [Experimental("OPENAI001")]
+    public partial class DeletedConversationResource
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalDeletedConversationResource(bool deleted, string id)
+        internal DeletedConversationResource(bool deleted, string id)
         {
             Deleted = deleted;
             Id = id;
         }
 
-        internal InternalDeletedConversationResource(string @object, bool deleted, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal DeletedConversationResource(string @object, bool deleted, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Deleted = deleted;

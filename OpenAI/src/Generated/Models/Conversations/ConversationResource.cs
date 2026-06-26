@@ -4,15 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalConversationResource
+    [Experimental("OPENAI001")]
+    public partial class ConversationResource
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdAt)
+        internal ConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdAt)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -20,7 +22,7 @@ namespace OpenAI.Conversations
             CreatedAt = createdAt;
         }
 
-        internal InternalConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;

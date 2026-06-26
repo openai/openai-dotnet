@@ -11,53 +11,53 @@ using OpenAI;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalDeletedConversationResource : IJsonModel<InternalDeletedConversationResource>
+    public partial class DeletedConversationResource : IJsonModel<DeletedConversationResource>
     {
-        internal InternalDeletedConversationResource()
+        internal DeletedConversationResource()
         {
         }
 
-        protected virtual InternalDeletedConversationResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual DeletedConversationResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalDeletedConversationResource(document.RootElement, options);
+                        return DeserializeDeletedConversationResource(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalDeletedConversationResource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DeletedConversationResource)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalDeletedConversationResource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DeletedConversationResource)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalDeletedConversationResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<DeletedConversationResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalDeletedConversationResource IPersistableModel<InternalDeletedConversationResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        DeletedConversationResource IPersistableModel<DeletedConversationResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalDeletedConversationResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<DeletedConversationResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator InternalDeletedConversationResource(ClientResult result)
+        public static explicit operator DeletedConversationResource(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalDeletedConversationResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeDeletedConversationResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
-        void IJsonModel<InternalDeletedConversationResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<DeletedConversationResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -66,10 +66,10 @@ namespace OpenAI.Conversations
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalDeletedConversationResource)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(DeletedConversationResource)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -108,20 +108,20 @@ namespace OpenAI.Conversations
             }
         }
 
-        InternalDeletedConversationResource IJsonModel<InternalDeletedConversationResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        DeletedConversationResource IJsonModel<DeletedConversationResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalDeletedConversationResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual DeletedConversationResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DeletedConversationResource>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalDeletedConversationResource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(DeletedConversationResource)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalDeletedConversationResource(document.RootElement, options);
+            return DeserializeDeletedConversationResource(document.RootElement, options);
         }
 
-        internal static InternalDeletedConversationResource DeserializeInternalDeletedConversationResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static DeletedConversationResource DeserializeDeletedConversationResource(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -151,7 +151,7 @@ namespace OpenAI.Conversations
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalDeletedConversationResource(@object, deleted, id, additionalBinaryDataProperties);
+            return new DeletedConversationResource(@object, deleted, id, additionalBinaryDataProperties);
         }
     }
 }
