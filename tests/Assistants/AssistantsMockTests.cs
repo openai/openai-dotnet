@@ -4,6 +4,8 @@ using NUnit.Framework;
 using OpenAI.Assistants;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Assistants;
@@ -127,4 +129,53 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(updates, Has.Count.EqualTo(1));
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
     }
+
+    [Test]
+    public async Task CreateThreadAndRunStreamingKeepsRequestContentAliveUntilEnumeration()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = CreateStreamingRunResponse();
+        OpenAIClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        AssistantClient client = new(s_fakeCredential, options);
+
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate _ in client.CreateThreadAndRunStreamingAsync("asst_abc"))
+            {
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate _ in client.CreateThreadAndRunStreaming("asst_abc"))
+            {
+            }
+        }
+
+        using JsonDocument requestDocument = JsonDocument.Parse(requestBody);
+        Assert.That(requestDocument.RootElement.GetProperty("assistant_id").GetString(), Is.EqualTo("asst_abc"));
+        Assert.That(requestDocument.RootElement.GetProperty("stream").GetBoolean(), Is.True);
+    }
+
+    private static MockPipelineResponse CreateStreamingRunResponse()
+        => new MockPipelineResponse(200).WithContent(
+            """
+            event: thread.run.created
+            data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+            event: done
+            data: [DONE]
+            """);
 }
