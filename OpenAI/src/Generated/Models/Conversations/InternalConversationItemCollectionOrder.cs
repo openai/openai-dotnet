@@ -10,17 +10,17 @@ namespace OpenAI.Conversations
     internal readonly partial struct InternalConversationItemCollectionOrder : IEquatable<InternalConversationItemCollectionOrder>
     {
         private readonly string _value;
-        private const string AscValue = "asc";
-        private const string DescValue = "desc";
+        private const string AscendingValue = "asc";
+        private const string DescendingValue = "desc";
 
         public InternalConversationItemCollectionOrder(string value)
         {
             _value = value;
         }
 
-        internal static InternalConversationItemCollectionOrder Asc { get; } = new InternalConversationItemCollectionOrder(AscValue);
+        internal static InternalConversationItemCollectionOrder Ascending { get; } = new InternalConversationItemCollectionOrder(AscendingValue);
 
-        internal static InternalConversationItemCollectionOrder Desc { get; } = new InternalConversationItemCollectionOrder(DescValue);
+        internal static InternalConversationItemCollectionOrder Descending { get; } = new InternalConversationItemCollectionOrder(DescendingValue);
 
         public static bool operator ==(InternalConversationItemCollectionOrder left, InternalConversationItemCollectionOrder right) => left.Equals(right);
 

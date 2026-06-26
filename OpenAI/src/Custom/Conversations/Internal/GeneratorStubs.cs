@@ -7,7 +7,3 @@ namespace OpenAI.Conversations;
 [CodeGenType("ConversationItemResource")] internal partial class InternalConversationItemResource {}
 [CodeGenType("UnknownConversationItemResource")] internal partial class InternalUnknownConversationItemResource {}
 [CodeGenType("CreateConversationItemsParametersBody")] internal partial class InternalCreateConversationItemsParametersBody {}
-[CodeGenType("ConversationResource")] internal partial class InternalConversationResource {}
-[CodeGenType("CreateConversationBody")] internal partial class InternalCreateConversationBody {}
-[CodeGenType("DeletedConversationResource")] internal partial class InternalDeletedConversationResource {}
-[CodeGenType("UpdateConversationBody")] internal partial class InternalUpdateConversationBody {}

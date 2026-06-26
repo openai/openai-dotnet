@@ -10,6 +10,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -1710,6 +1711,33 @@ namespace OpenAI
             segments ??= new ChangeTrackingList<TranscribedSegment>();
 
             return new AudioTranslation(language, duration, text, segments.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static ConversationResource ConversationResource(string id = default, IDictionary<string, string> metadata = default, DateTimeOffset createdAt = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ConversationResource(id, "conversation", metadata, createdAt, default);
+        }
+
+        public static ConversationCreationOptions ConversationCreationOptions(IDictionary<string, string> metadata = default, IEnumerable<ResponseItem> items = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            items ??= new ChangeTrackingList<ResponseItem>();
+
+            return new ConversationCreationOptions(metadata, items.ToList(), default);
+        }
+
+        public static ConversationDeletionResult ConversationDeletionResult(bool deleted = default, string conversationId = default)
+        {
+            return new ConversationDeletionResult("conversation.deleted", deleted, conversationId, default);
+        }
+
+        public static ConversationUpdateOptions ConversationUpdateOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ConversationUpdateOptions(metadata, default);
         }
 
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)

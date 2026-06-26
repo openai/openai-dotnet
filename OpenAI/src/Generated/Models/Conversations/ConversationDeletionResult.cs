@@ -3,33 +3,31 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json.Serialization;
-using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalCreateConversationItemsParametersBody
+    [Experimental("OPENAI001")]
+    public partial class ConversationDeletionResult
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalCreateConversationItemsParametersBody(IEnumerable<ResponseItem> items)
+        internal ConversationDeletionResult(bool deleted, string conversationId)
         {
-            Items = items.ToList();
+            Deleted = deleted;
+            ConversationId = conversationId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCreateConversationItemsParametersBody(IList<ResponseItem> items, in JsonPatch patch)
+        internal ConversationDeletionResult(string @object, bool deleted, string conversationId, in JsonPatch patch)
         {
-            // Plugin customization: ensure initialization of collections
-            Items = items ?? new ChangeTrackingList<ResponseItem>();
+            Object = @object;
+            Deleted = deleted;
+            ConversationId = conversationId;
             _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -38,6 +36,8 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public IList<ResponseItem> Items { get; }
+        public bool Deleted { get; set; }
+
+        public string ConversationId { get; set; }
     }
 }

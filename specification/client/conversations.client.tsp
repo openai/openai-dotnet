@@ -16,11 +16,14 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(getConversationItem, "Conversations");
 @@clientLocation(deleteConversationItem, "Conversations");
 
+@@clientName(CreateConversationBody, "ConversationCreationOptions");
+@@clientName(UpdateConversationBody, "ConversationUpdateOptions");
+@@clientName(DeletedConversationResource, "ConversationDeletionResult");
+@@clientName(DeletedConversationResource.id, "ConversationId");
+@@clientName(ConversationItemCollectionOrder.asc, "Ascending");
+@@clientName(ConversationItemCollectionOrder.desc, "Descending");
+
 // Not generate convenience methods for these operations
-@@convenientAPI(createConversation, false);
-@@convenientAPI(getConversation, false);
-@@convenientAPI(updateConversation, false);
-@@convenientAPI(deleteConversation, false);
 @@convenientAPI(listConversationItems, false);
 @@convenientAPI(createConversationItems, false);
 @@convenientAPI(getConversationItem, false);
@@ -32,3 +35,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(IncludeEnum.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
 @@clientName(IncludeEnum.`message.input_image.image_url`, "MessageInputImageUri");
 @@clientName(IncludeEnum.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");
+
+@@dynamicModel(CreateConversationBody);
+@@dynamicModel(ConversationResource);
+@@dynamicModel(UpdateConversationBody);
+@@dynamicModel(DeletedConversationResource);
+@@dynamicModel(CreateConversationItemsParametersBody);
+@@dynamicModel(ConversationItemCollection);

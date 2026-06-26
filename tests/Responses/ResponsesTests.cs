@@ -445,23 +445,34 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ConversationClient conversationClient = GetProxiedOpenAIClient<ConversationClient>();
 
-        BinaryData createConversationParameters = BinaryData.FromBytes("""
-            {
-               "metadata": { "topic": "test" },
-               "items": [
-                   {
-                       "type": "message",
-                       "role": "user",
-                       "content": "tell me a joke"
-                   }
-               ]
-            }
-            """u8.ToArray());
+        MessageResponseItem initialConversationItem = ResponseItem.CreateUserMessageItem("tell me a joke");
+        ConversationCreationOptions createConversationOptions = new(new Dictionary<string, string>()
+        {
+            ["topic"] = "test",
+        })
+        {
+            Items = { initialConversationItem },
+        };
+        Assert.That(createConversationOptions.Items.Single(), Is.SameAs(initialConversationItem));
+        Assert.That(createConversationOptions.Metadata["topic"], Is.EqualTo("test"));
 
-        using BinaryContent requestContent = BinaryContent.Create(createConversationParameters);
-        var conversationResult = await conversationClient.CreateConversationAsync(requestContent);
-        using JsonDocument conversationResultAsJson = JsonDocument.Parse(conversationResult.GetRawResponse().Content.ToString());
-        string conversationId = conversationResultAsJson.RootElement.GetProperty("id"u8).GetString();
+        ClientResult<ConversationResource> conversationResult = await conversationClient.CreateConversationAsync(createConversationOptions);
+        ConversationResource conversation = conversationResult.Value;
+        string conversationId = conversation.Id;
+
+        Assert.That(conversation.Metadata["topic"], Is.EqualTo("test"));
+
+        ConversationUpdateOptions updateConversationOptions = new(new Dictionary<string, string>()
+        {
+            ["topic"] = "updated-test",
+            ["purpose"] = "responses-test",
+        });
+        ClientResult<ConversationResource> updatedConversationResult = await conversationClient.UpdateConversationAsync(conversationId, updateConversationOptions);
+        ConversationResource updatedConversation = updatedConversationResult.Value;
+
+        Assert.That(updatedConversation.Id, Is.EqualTo(conversationId));
+        Assert.That(updatedConversation.Metadata["topic"], Is.EqualTo("updated-test"));
+        Assert.That(updatedConversation.Metadata["purpose"], Is.EqualTo("responses-test"));
 
         ResponsesClient client = GetProxiedResponsesClient();
         ResponseResult response = await client.CreateResponseAsync(

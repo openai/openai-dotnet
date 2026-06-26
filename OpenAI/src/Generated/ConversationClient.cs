@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -121,7 +122,23 @@ namespace OpenAI.Conversations
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult DeleteConversation(string conversationId, RequestOptions options = null)
+        public virtual ClientResult<ConversationResource> CreateConversation(ConversationCreationOptions body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            ClientResult result = CreateConversation(body, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ConversationResource)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ConversationResource>> CreateConversationAsync(ConversationCreationOptions body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            ClientResult result = await CreateConversationAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ConversationResource)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteConversation(string conversationId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
@@ -129,7 +146,7 @@ namespace OpenAI.Conversations
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> DeleteConversationAsync(string conversationId, RequestOptions options = null)
+        public virtual async Task<ClientResult> DeleteConversationAsync(string conversationId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
@@ -137,7 +154,23 @@ namespace OpenAI.Conversations
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetConversation(string conversationId, RequestOptions options = null)
+        public virtual ClientResult<ConversationDeletionResult> DeleteConversation(string conversationId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
+
+            ClientResult result = DeleteConversation(conversationId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ConversationDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ConversationDeletionResult>> DeleteConversationAsync(string conversationId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
+
+            ClientResult result = await DeleteConversationAsync(conversationId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ConversationDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult GetConversation(string conversationId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
@@ -145,12 +178,28 @@ namespace OpenAI.Conversations
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetConversationAsync(string conversationId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetConversationAsync(string conversationId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
             using PipelineMessage message = CreateGetConversationRequest(conversationId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<ConversationResource> GetConversation(string conversationId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
+
+            ClientResult result = GetConversation(conversationId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ConversationResource)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ConversationResource>> GetConversationAsync(string conversationId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
+
+            ClientResult result = await GetConversationAsync(conversationId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ConversationResource)result, result.GetRawResponse());
         }
 
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null)
@@ -169,6 +218,24 @@ namespace OpenAI.Conversations
 
             using PipelineMessage message = CreateUpdateConversationRequest(conversationId, content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<ConversationResource> UpdateConversation(string conversationId, ConversationUpdateOptions body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
+            Argument.AssertNotNull(body, nameof(body));
+
+            ClientResult result = UpdateConversation(conversationId, body, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ConversationResource)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
+            Argument.AssertNotNull(body, nameof(body));
+
+            ClientResult result = await UpdateConversationAsync(conversationId, body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ConversationResource)result, result.GetRawResponse());
         }
     }
 }
