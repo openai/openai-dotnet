@@ -193,6 +193,17 @@ model CreateResponse {
    *  Items from this conversation are prepended to input_items for this response request.
    *  Input items and output items from this response are automatically added to this conversation after this response completes. */
   conversation?: ConversationParam | null;
+
+  /** Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching). */
+  prompt_cache_key?: string;
+
+  prompt_cache_retention?: PromptCacheRetention;
+}
+
+union PromptCacheRetention {
+  string,
+  in_memory: "in_memory",
+  `24h`: "24h",
 }
 
 /**The conversation that this response belongs to. Items from this conversation are prepended to `input_items` for this response request.
@@ -320,6 +331,11 @@ model Response {
 
   /** The conversation that this response belongs to. Input items and output items from this response are automatically added to this conversation. */
   conversation?: `ConversationParam-2` | null;
+
+  /** Used by OpenAI to cache responses for similar requests to optimize your cache hit rates. Replaces the `user` field. [Learn more](/docs/guides/prompt-caching). */
+  prompt_cache_key?: string;
+
+  prompt_cache_retention?: PromptCacheRetention;
 }
 
 model ResponseProperties {
