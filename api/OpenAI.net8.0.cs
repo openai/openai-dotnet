@@ -2390,6 +2390,7 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
+        public ConversationCreationOptions();
         public ConversationCreationOptions(IDictionary<string, string> metadata);
         public IList<ResponseItem> Items { get; set; }
         public IDictionary<string, string> Metadata { get; }
@@ -2401,8 +2402,8 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationDeletionResult : IJsonModel<ConversationDeletionResult>, IPersistableModel<ConversationDeletionResult> {
-        public string ConversationId { get; }
-        public bool Deleted { get; }
+        public string ConversationId { get; set; }
+        public bool Deleted { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; }
         [Serialization.JsonIgnore]
@@ -2413,8 +2414,8 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationResource : IJsonModel<ConversationResource>, IPersistableModel<ConversationResource> {
-        public DateTimeOffset CreatedAt { get; }
-        public string Id { get; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public string Id { get; set; }
         public IDictionary<string, string> Metadata { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; }
@@ -2426,6 +2427,7 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationUpdateOptions : IJsonModel<ConversationUpdateOptions>, IPersistableModel<ConversationUpdateOptions> {
+        public ConversationUpdateOptions();
         public ConversationUpdateOptions(IDictionary<string, string> metadata);
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]

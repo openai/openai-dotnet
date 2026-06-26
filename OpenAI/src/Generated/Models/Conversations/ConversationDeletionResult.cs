@@ -36,8 +36,8 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public bool Deleted { get; }
+        public bool Deleted { get; set; }
 
-        public string ConversationId { get; }
+        public string ConversationId { get; set; }
     }
 }

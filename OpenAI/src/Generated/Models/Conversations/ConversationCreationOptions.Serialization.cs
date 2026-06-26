@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +15,7 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>
     {
-        internal ConversationCreationOptions() : this(null, null, default)
+        public ConversationCreationOptions() : this(null, null, default)
         {
         }
 
@@ -50,6 +51,15 @@ namespace OpenAI.Conversations
         ConversationCreationOptions IPersistableModel<ConversationCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
         string IPersistableModel<ConversationCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static implicit operator BinaryContent(ConversationCreationOptions conversationCreationOptions)
+        {
+            if (conversationCreationOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(conversationCreationOptions, ModelSerializationExtensions.WireOptions);
+        }
 
         void IJsonModel<ConversationCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

@@ -2084,6 +2084,7 @@ namespace OpenAI.Conversations {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
+        public ConversationCreationOptions();
         public ConversationCreationOptions(IDictionary<string, string> metadata);
         public IList<ResponseItem> Items { get; set; }
         public IDictionary<string, string> Metadata { get; }
@@ -2093,8 +2094,8 @@ namespace OpenAI.Conversations {
         public static implicit operator BinaryContent(ConversationCreationOptions conversationCreationOptions);
     }
     public class ConversationDeletionResult : IJsonModel<ConversationDeletionResult>, IPersistableModel<ConversationDeletionResult> {
-        public string ConversationId { get; }
-        public bool Deleted { get; }
+        public string ConversationId { get; set; }
+        public bool Deleted { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; }
         [Serialization.JsonIgnore]
@@ -2103,8 +2104,8 @@ namespace OpenAI.Conversations {
         public static explicit operator ConversationDeletionResult(ClientResult result);
     }
     public class ConversationResource : IJsonModel<ConversationResource>, IPersistableModel<ConversationResource> {
-        public DateTimeOffset CreatedAt { get; }
-        public string Id { get; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public string Id { get; set; }
         public IDictionary<string, string> Metadata { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; }
@@ -2114,6 +2115,7 @@ namespace OpenAI.Conversations {
         public static explicit operator ConversationResource(ClientResult result);
     }
     public class ConversationUpdateOptions : IJsonModel<ConversationUpdateOptions>, IPersistableModel<ConversationUpdateOptions> {
+        public ConversationUpdateOptions();
         public ConversationUpdateOptions(IDictionary<string, string> metadata);
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]

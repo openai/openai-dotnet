@@ -43,10 +43,10 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Id { get; }
+        public string Id { get; set; }
 
         public IDictionary<string, string> Metadata { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }
