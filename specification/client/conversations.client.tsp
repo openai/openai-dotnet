@@ -17,10 +17,6 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(deleteConversationItem, "Conversations");
 
 // Not generate convenience methods for these operations
-@@convenientAPI(createConversation, false);
-@@convenientAPI(getConversation, false);
-@@convenientAPI(updateConversation, false);
-@@convenientAPI(deleteConversation, false);
 @@convenientAPI(listConversationItems, false);
 @@convenientAPI(createConversationItems, false);
 @@convenientAPI(getConversationItem, false);
