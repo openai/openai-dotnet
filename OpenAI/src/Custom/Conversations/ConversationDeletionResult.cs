@@ -3,9 +3,9 @@ using System.ComponentModel;
 
 namespace OpenAI.Conversations;
 
-[CodeGenType("ConversationResource")]
-public partial class ConversationResource
+[CodeGenType("ConversationDeletionResult")]
+public partial class ConversationDeletionResult
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public string Object { get; } = "conversation";
+    public string Object { get; } = "conversation.deleted";
 }
