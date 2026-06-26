@@ -6,6 +6,7 @@ namespace OpenAI.Conversations;
 [CodeGenType("ConversationResource")]
 public partial class ConversationResource
 {
+    [CodeGenMember("Object")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public string Object { get; } = "conversation";
 }

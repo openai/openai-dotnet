@@ -1717,27 +1717,27 @@ namespace OpenAI
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
 
-            return new ConversationResource(id, "conversation", metadata, createdAt, additionalBinaryDataProperties: null);
+            return new ConversationResource(id, "conversation", metadata, createdAt, default);
         }
 
-        public static CreateConversationBody CreateConversationBody(IDictionary<string, string> metadata = default, IEnumerable<ResponseItem> items = default)
+        public static ConversationCreationOptions ConversationCreationOptions(IDictionary<string, string> metadata = default, IEnumerable<ResponseItem> items = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             items ??= new ChangeTrackingList<ResponseItem>();
 
-            return new CreateConversationBody(metadata, items.ToList(), additionalBinaryDataProperties: null);
+            return new ConversationCreationOptions(metadata, items.ToList(), default);
         }
 
-        public static DeletedConversationResource DeletedConversationResource(bool deleted = default, string id = default)
+        public static ConversationDeletionResult ConversationDeletionResult(bool deleted = default, string conversationId = default)
         {
-            return new DeletedConversationResource("conversation.deleted", deleted, id, additionalBinaryDataProperties: null);
+            return new ConversationDeletionResult("conversation.deleted", deleted, conversationId, default);
         }
 
-        public static UpdateConversationBody UpdateConversationBody(IDictionary<string, string> metadata = default)
+        public static ConversationUpdateOptions ConversationUpdateOptions(IDictionary<string, string> metadata = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
 
-            return new UpdateConversationBody(metadata, additionalBinaryDataProperties: null);
+            return new ConversationUpdateOptions(metadata, default);
         }
 
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)

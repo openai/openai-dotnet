@@ -6,30 +6,29 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json.Serialization;
 using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalCreateConversationItemsParametersBody
+    [Experimental("OPENAI001")]
+    public partial class ConversationUpdateOptions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalCreateConversationItemsParametersBody(IEnumerable<ResponseItem> items)
+        public ConversationUpdateOptions(IDictionary<string, string> metadata)
         {
-            Items = items.ToList();
+            // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCreateConversationItemsParametersBody(IList<ResponseItem> items, in JsonPatch patch)
+        internal ConversationUpdateOptions(IDictionary<string, string> metadata, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
-            Items = items ?? new ChangeTrackingList<ResponseItem>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -38,6 +37,6 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public IList<ResponseItem> Items { get; }
+        public IDictionary<string, string> Metadata { get; }
     }
 }

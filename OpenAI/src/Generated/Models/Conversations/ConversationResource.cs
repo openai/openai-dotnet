@@ -3,8 +3,11 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Conversations
@@ -12,7 +15,8 @@ namespace OpenAI.Conversations
     [Experimental("OPENAI001")]
     public partial class ConversationResource
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal ConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdAt)
         {
@@ -22,28 +26,27 @@ namespace OpenAI.Conversations
             CreatedAt = createdAt;
         }
 
-        internal ConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             CreatedAt = createdAt;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
-
-        public string Object { get; } = "conversation";
 
         public IDictionary<string, string> Metadata { get; }
 
         public DateTimeOffset CreatedAt { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

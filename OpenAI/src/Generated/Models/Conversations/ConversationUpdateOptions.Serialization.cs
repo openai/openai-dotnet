@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text;
@@ -12,54 +11,46 @@ using OpenAI;
 
 namespace OpenAI.Conversations
 {
-    public partial class ConversationResource : IJsonModel<ConversationResource>
+    public partial class ConversationUpdateOptions : IJsonModel<ConversationUpdateOptions>
     {
-        internal ConversationResource() : this(null, null, null, default, default)
+        internal ConversationUpdateOptions() : this(null, default)
         {
         }
 
-        protected virtual ConversationResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ConversationUpdateOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationUpdateOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeConversationResource(document.RootElement, data, options);
+                        return DeserializeConversationUpdateOptions(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ConversationResource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ConversationUpdateOptions)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationUpdateOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ConversationResource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ConversationUpdateOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<ConversationResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ConversationUpdateOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        ConversationResource IPersistableModel<ConversationResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ConversationUpdateOptions IPersistableModel<ConversationUpdateOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<ConversationResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ConversationUpdateOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator ConversationResource(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeConversationResource(document.RootElement, data, ModelSerializationExtensions.WireOptions);
-        }
-
-        void IJsonModel<ConversationResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ConversationUpdateOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -76,22 +67,12 @@ namespace OpenAI.Conversations
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationUpdateOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ConversationResource)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ConversationUpdateOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.id"u8))
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (!Patch.Contains("$.object"u8))
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
             if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
             {
                 writer.WritePropertyName("metadata"u8);
@@ -126,54 +107,36 @@ namespace OpenAI.Conversations
             {
                 writer.WriteNull("metadata"u8);
             }
-            if (!Patch.Contains("$.created_at"u8))
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ConversationResource IJsonModel<ConversationResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ConversationUpdateOptions IJsonModel<ConversationUpdateOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual ConversationResource JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ConversationUpdateOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ConversationResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationUpdateOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ConversationResource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ConversationUpdateOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeConversationResource(document.RootElement, null, options);
+            return DeserializeConversationUpdateOptions(document.RootElement, null, options);
         }
 
-        internal static ConversationResource DeserializeConversationResource(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ConversationUpdateOptions DeserializeConversationUpdateOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            string id = default;
-            string @object = default;
             IDictionary<string, string> metadata = default;
-            DateTimeOffset createdAt = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("id"u8))
-                {
-                    id = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -196,14 +159,9 @@ namespace OpenAI.Conversations
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("created_at"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
-                    continue;
-                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ConversationResource(id, @object, metadata, createdAt, patch);
+            return new ConversationUpdateOptions(metadata, patch);
         }
     }
 }
