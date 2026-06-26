@@ -13,7 +13,7 @@ namespace OpenAI.Conversations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCreateConversationBody(IDictionary<string, string> metadata)
+        public InternalCreateConversationBody(IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -30,7 +30,7 @@ namespace OpenAI.Conversations
 
         public IDictionary<string, string> Metadata { get; }
 
-        public IList<ResponseItem> Items { get; }
+        public IList<ResponseItem> Items { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

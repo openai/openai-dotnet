@@ -12,7 +12,7 @@ namespace OpenAI.Conversations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalUpdateConversationBody(IDictionary<string, string> metadata)
+        public InternalUpdateConversationBody(IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();

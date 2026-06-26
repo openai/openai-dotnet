@@ -25,7 +25,7 @@ namespace OpenAI.Conversations
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Object { get; } = "conversation.deleted";
+        public string Object { get; } = "conversation.deleted";
 
         public bool Deleted { get; }
 

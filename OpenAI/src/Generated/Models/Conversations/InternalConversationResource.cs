@@ -32,7 +32,7 @@ namespace OpenAI.Conversations
 
         public string Id { get; }
 
-        internal string Object { get; } = "conversation";
+        public string Object { get; } = "conversation";
 
         public IDictionary<string, string> Metadata { get; }
 
