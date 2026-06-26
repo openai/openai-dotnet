@@ -7,11 +7,16 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
     internal partial class InternalCreateConversationBody : IJsonModel<InternalCreateConversationBody>
     {
+        internal InternalCreateConversationBody() : this(null, null, null)
+        {
+        }
+
         protected virtual InternalCreateConversationBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalCreateConversationBody>)this).GetFormatFromOptions(options) : options.Format;
@@ -59,27 +64,34 @@ namespace OpenAI.Conversations
             {
                 throw new FormatException($"The model {nameof(InternalCreateConversationBody)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                if (Optional.IsCollectionDefined(Metadata))
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
                     {
-                        writer.WriteNullValue();
-                        continue;
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
                     }
-                    writer.WriteStringValue(item.Value);
+                    writer.WriteEndObject();
                 }
-                writer.WriteEndObject();
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
             }
             if (Optional.IsCollectionDefined(Items) && _additionalBinaryDataProperties?.ContainsKey("items") != true)
             {
                 writer.WritePropertyName("items"u8);
                 writer.WriteStartArray();
-                foreach (InternalConversationItemResource item in Items)
+                foreach (ResponseItem item in Items)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -127,7 +139,7 @@ namespace OpenAI.Conversations
                 return null;
             }
             IDictionary<string, string> metadata = default;
-            IList<InternalConversationItemResource> items = default;
+            IList<ResponseItem> items = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -135,6 +147,7 @@ namespace OpenAI.Conversations
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        metadata = new ChangeTrackingDictionary<string, string>();
                         continue;
                     }
                     Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -158,10 +171,10 @@ namespace OpenAI.Conversations
                     {
                         continue;
                     }
-                    List<InternalConversationItemResource> array = new List<InternalConversationItemResource>();
+                    List<ResponseItem> array = new List<ResponseItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalConversationItemResource.DeserializeInternalConversationItemResource(item, options));
+                        array.Add(ResponseItem.DeserializeResponseItem(item, item.GetUtf8Bytes(), options));
                     }
                     items = array;
                     continue;
@@ -169,7 +182,7 @@ namespace OpenAI.Conversations
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateConversationBody(metadata ?? new ChangeTrackingDictionary<string, string>(), items ?? new ChangeTrackingList<InternalConversationItemResource>(), additionalBinaryDataProperties);
+            return new InternalCreateConversationBody(metadata, items ?? new ChangeTrackingList<ResponseItem>(), additionalBinaryDataProperties);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -32,12 +33,35 @@ namespace OpenAI.Conversations
         public override IEnumerable<ClientResult> GetRawPages()
         {
             PipelineMessage message = _client.CreateGetConversationItemsRequest(_conversationId, _limit, _order, _after, _include, _options);
-            yield return GetNextResponse(message);
+            string nextToken = null;
+            while (true)
+            {
+                ClientResult result = GetNextResponse(message);
+                yield return result;
+
+                // Plugin customization: add hasMore assignment
+                bool hasMore = ((InternalConversationItemCollection)result).HasMore;
+                nextToken = ((InternalConversationItemCollection)result).LastId;
+                // Plugin customization: add hasMore == false check to pagination condition
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
+                {
+                    yield break;
+                }
+                message = _client.CreateGetConversationItemsRequest(_conversationId, _limit, _order, nextToken, _include, _options);
+            }
         }
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            return null;
+            string nextPage = ((InternalConversationItemCollection)page).LastId;
+            if (!string.IsNullOrEmpty(nextPage))
+            {
+                return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
+            }
+            else
+            {
+                return null;
+            }
         }
 
         private ClientResult GetNextResponse(PipelineMessage message)

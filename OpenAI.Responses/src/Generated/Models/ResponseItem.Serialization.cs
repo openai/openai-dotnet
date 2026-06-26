@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 using OpenAI;
@@ -48,6 +49,14 @@ namespace OpenAI.Responses
         ResponseItem IPersistableModel<ResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
         string IPersistableModel<ResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ResponseItem(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeResponseItem(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+        }
 
         void IJsonModel<ResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

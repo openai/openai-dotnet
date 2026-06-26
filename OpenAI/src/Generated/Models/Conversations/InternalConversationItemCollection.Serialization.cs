@@ -8,56 +8,57 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalConversationItemList : IJsonModel<InternalConversationItemList>
+    internal partial class InternalConversationItemCollection : IJsonModel<InternalConversationItemCollection>
     {
-        internal InternalConversationItemList() : this(null, null, default, null, null, null)
+        internal InternalConversationItemCollection() : this(null, null, null, null, default, null)
         {
         }
 
-        protected virtual InternalConversationItemList PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual InternalConversationItemCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalConversationItemList(document.RootElement, options);
+                        return DeserializeInternalConversationItemCollection(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalConversationItemList)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalConversationItemCollection)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalConversationItemList)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(InternalConversationItemCollection)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalConversationItemList>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<InternalConversationItemCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalConversationItemList IPersistableModel<InternalConversationItemList>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalConversationItemCollection IPersistableModel<InternalConversationItemCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalConversationItemList>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<InternalConversationItemCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator InternalConversationItemList(ClientResult result)
+        public static explicit operator InternalConversationItemCollection(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalConversationItemList(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeInternalConversationItemCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
 
-        void IJsonModel<InternalConversationItemList>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<InternalConversationItemCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -66,10 +67,10 @@ namespace OpenAI.Conversations
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalConversationItemList)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalConversationItemCollection)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -80,16 +81,11 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
-                foreach (InternalConversationItemResource item in Data)
+                foreach (ResponseItem item in Data)
                 {
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
-            {
-                writer.WritePropertyName("has_more"u8);
-                writer.WriteBooleanValue(HasMore);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("first_id") != true)
             {
@@ -100,6 +96,11 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("last_id"u8);
                 writer.WriteStringValue(LastId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
+            {
+                writer.WritePropertyName("has_more"u8);
+                writer.WriteBooleanValue(HasMore);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -123,30 +124,30 @@ namespace OpenAI.Conversations
             }
         }
 
-        InternalConversationItemList IJsonModel<InternalConversationItemList>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalConversationItemCollection IJsonModel<InternalConversationItemCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalConversationItemList JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual InternalConversationItemCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalConversationItemList)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(InternalConversationItemCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalConversationItemList(document.RootElement, options);
+            return DeserializeInternalConversationItemCollection(document.RootElement, options);
         }
 
-        internal static InternalConversationItemList DeserializeInternalConversationItemList(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalConversationItemCollection DeserializeInternalConversationItemCollection(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string @object = default;
-            IList<InternalConversationItemResource> data = default;
-            bool hasMore = default;
+            IList<ResponseItem> data = default;
             string firstId = default;
             string lastId = default;
+            bool hasMore = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -157,17 +158,12 @@ namespace OpenAI.Conversations
                 }
                 if (prop.NameEquals("data"u8))
                 {
-                    List<InternalConversationItemResource> array = new List<InternalConversationItemResource>();
+                    List<ResponseItem> array = new List<ResponseItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalConversationItemResource.DeserializeInternalConversationItemResource(item, options));
+                        array.Add(ResponseItem.DeserializeResponseItem(item, item.GetUtf8Bytes(), options));
                     }
                     data = array;
-                    continue;
-                }
-                if (prop.NameEquals("has_more"u8))
-                {
-                    hasMore = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("first_id"u8))
@@ -180,15 +176,20 @@ namespace OpenAI.Conversations
                     lastId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("has_more"u8))
+                {
+                    hasMore = prop.Value.GetBoolean();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalConversationItemList(
+            return new InternalConversationItemCollection(
                 @object,
                 data,
-                hasMore,
                 firstId,
                 lastId,
+                hasMore,
                 additionalBinaryDataProperties);
         }
     }

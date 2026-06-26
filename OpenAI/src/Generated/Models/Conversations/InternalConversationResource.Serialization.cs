@@ -13,7 +13,7 @@ namespace OpenAI.Conversations
 {
     internal partial class InternalConversationResource : IJsonModel<InternalConversationResource>
     {
-        internal InternalConversationResource()
+        internal InternalConversationResource() : this(null, null, null, default, null)
         {
         }
 
@@ -83,20 +83,31 @@ namespace OpenAI.Conversations
             }
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
-                writer.WritePropertyName("metadata"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Metadata);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Metadata))
+                if (Optional.IsCollectionDefined(Metadata))
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
                 }
-#endif
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt);
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -141,8 +152,8 @@ namespace OpenAI.Conversations
             }
             string id = default;
             string @object = default;
-            BinaryData metadata = default;
-            int createdAt = default;
+            IDictionary<string, string> metadata = default;
+            DateTimeOffset createdAt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -158,12 +169,29 @@ namespace OpenAI.Conversations
                 }
                 if (prop.NameEquals("metadata"u8))
                 {
-                    metadata = BinaryData.FromString(prop.Value.GetRawText());
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        metadata = new ChangeTrackingDictionary<string, string>();
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = prop.Value.GetInt32();
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

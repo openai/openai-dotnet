@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
@@ -13,19 +14,19 @@ namespace OpenAI.Conversations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCreateConversationItemsParametersBody(IEnumerable<InternalConversationItemResource> items)
+        internal InternalCreateConversationItemsParametersBody(IEnumerable<ResponseItem> items)
         {
             Items = items.ToList();
         }
 
-        internal InternalCreateConversationItemsParametersBody(IList<InternalConversationItemResource> items, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateConversationItemsParametersBody(IList<ResponseItem> items, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Items = items ?? new ChangeTrackingList<InternalConversationItemResource>();
+            Items = items ?? new ChangeTrackingList<ResponseItem>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal IList<InternalConversationItemResource> Items { get; }
+        public IList<ResponseItem> Items { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

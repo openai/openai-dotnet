@@ -6,41 +6,42 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalConversationItemList
+    internal partial class InternalConversationItemCollection
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalConversationItemList(IEnumerable<InternalConversationItemResource> data, bool hasMore, string firstId, string lastId)
+        internal InternalConversationItemCollection(IEnumerable<ResponseItem> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
-            HasMore = hasMore;
             FirstId = firstId;
             LastId = lastId;
+            HasMore = hasMore;
         }
 
-        internal InternalConversationItemList(string @object, IList<InternalConversationItemResource> data, bool hasMore, string firstId, string lastId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalConversationItemCollection(string @object, IList<ResponseItem> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
-            Data = data ?? new ChangeTrackingList<InternalConversationItemResource>();
-            HasMore = hasMore;
+            Data = data ?? new ChangeTrackingList<ResponseItem>();
             FirstId = firstId;
             LastId = lastId;
+            HasMore = hasMore;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         internal string Object { get; } = "list";
 
-        internal IList<InternalConversationItemResource> Data { get; }
-
-        public bool HasMore { get; }
+        public IList<ResponseItem> Data { get; }
 
         public string FirstId { get; }
 
         public string LastId { get; }
+
+        public bool HasMore { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

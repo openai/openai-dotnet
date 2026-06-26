@@ -7,6 +7,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
+using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
@@ -67,7 +68,7 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("items"u8);
                 writer.WriteStartArray();
-                foreach (InternalConversationItemResource item in Items)
+                foreach (ResponseItem item in Items)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -114,16 +115,16 @@ namespace OpenAI.Conversations
             {
                 return null;
             }
-            IList<InternalConversationItemResource> items = default;
+            IList<ResponseItem> items = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("items"u8))
                 {
-                    List<InternalConversationItemResource> array = new List<InternalConversationItemResource>();
+                    List<ResponseItem> array = new List<ResponseItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalConversationItemResource.DeserializeInternalConversationItemResource(item, options));
+                        array.Add(ResponseItem.DeserializeResponseItem(item, item.GetUtf8Bytes(), options));
                     }
                     items = array;
                     continue;

@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Conversations
 {
@@ -11,18 +12,20 @@ namespace OpenAI.Conversations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalConversationResource(string id, BinaryData metadata, int createdAt)
+        internal InternalConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdAt)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             CreatedAt = createdAt;
         }
 
-        internal InternalConversationResource(string id, string @object, BinaryData metadata, int createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            Metadata = metadata;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             CreatedAt = createdAt;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -31,9 +34,9 @@ namespace OpenAI.Conversations
 
         internal string Object { get; } = "conversation";
 
-        public BinaryData Metadata { get; }
+        public IDictionary<string, string> Metadata { get; }
 
-        public int CreatedAt { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
