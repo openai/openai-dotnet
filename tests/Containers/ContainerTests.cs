@@ -439,6 +439,51 @@ public class ContainerTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task CanCreateGetAndDeleteContainer()
+    {
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
+        string containerName = $"test-container-{Guid.NewGuid():N}";
+        ContainerResource container = null;
+
+        try
+        {
+            ClientResult<ContainerResource> createResult = await client.CreateContainerAsync(new CreateContainerBody(containerName));
+            container = createResult.Value;
+
+            Validate(container);
+            Assert.That(container.Name, Is.EqualTo(containerName));
+
+            ClientResult<ContainerResource> getResult = await client.GetContainerAsync(container.Id);
+            ContainerResource retrievedContainer = getResult.Value;
+
+            Validate(retrievedContainer);
+            Assert.That(retrievedContainer.Id, Is.EqualTo(container.Id));
+            Assert.That(retrievedContainer.Name, Is.EqualTo(containerName));
+
+            ClientResult<DeleteContainerResponse> deleteResult = await client.DeleteContainerAsync(container.Id);
+
+            Assert.That(deleteResult.Value, Is.Not.Null);
+            Assert.That(deleteResult.Value.Id, Is.EqualTo(container.Id));
+            Assert.That(deleteResult.Value.Deleted, Is.True);
+            container = null;
+        }
+        finally
+        {
+            if (container is not null)
+            {
+                try
+                {
+                    await client.DeleteContainerAsync(container.Id);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to clean up container {container.Id}: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    [RecordedTest]
     public async Task CanGetContainer()
     {
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
