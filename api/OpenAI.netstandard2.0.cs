@@ -2054,9 +2054,9 @@ namespace OpenAI.Conversations {
         public ConversationClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult<ConversationResource> CreateConversation(ConversationCreationOptions body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ConversationResource> CreateConversation(ConversationCreationOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateConversation(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ConversationResource>> CreateConversationAsync(ConversationCreationOptions body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ConversationResource>> CreateConversationAsync(ConversationCreationOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateConversationAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult CreateConversationItems(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual Task<ClientResult> CreateConversationItemsAsync(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
@@ -2074,9 +2074,9 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult> GetConversationItemAsync(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual CollectionResult GetConversationItems(string conversationId, int? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, int? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual ClientResult<ConversationResource> UpdateConversation(string conversationId, ConversationUpdateOptions body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ConversationResource> UpdateConversation(string conversationId, ConversationUpdateOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
     public sealed class ConversationClientSettings : ClientSettings {
@@ -2084,9 +2084,7 @@ namespace OpenAI.Conversations {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
-        public ConversationCreationOptions();
-        public ConversationCreationOptions(IDictionary<string, string> metadata);
-        public IList<ResponseItem> Items { get; set; }
+        public IList<ResponseItem> Items { get; }
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -2097,7 +2095,7 @@ namespace OpenAI.Conversations {
         public string ConversationId { get; set; }
         public bool Deleted { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public string Object { get; }
+        public string Object { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -2108,7 +2106,7 @@ namespace OpenAI.Conversations {
         public string Id { get; set; }
         public IDictionary<string, string> Metadata { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public string Object { get; }
+        public string Object { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }

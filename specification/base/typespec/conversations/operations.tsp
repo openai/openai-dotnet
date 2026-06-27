@@ -35,7 +35,7 @@ op createConversationItems(
   include?: IncludeEnum[],
 
   @body
-  body: CreateConversationItemsParametersBody,
+  options: CreateConversationItemsParametersBody,
 ): ConversationItemCollection;
 
 /** Delete an item from a conversation with the given IDs. */
@@ -81,7 +81,7 @@ op getConversationItem(
 @tag("Conversations")
 op createConversation(
   @body
-  body: CreateConversationBody,
+  options: CreateConversationBody,
 ): ConversationResource;
 
 /** Delete a conversation. Items in the conversation will not be deleted. */
@@ -117,5 +117,5 @@ op updateConversation(
   conversation_id: string,
 
   @body
-  body: UpdateConversationBody,
+  options: UpdateConversationBody,
 ): ConversationResource;

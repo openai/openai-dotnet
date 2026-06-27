@@ -18,11 +18,8 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ConversationCreationOptions(IDictionary<string, string> metadata)
+        public ConversationCreationOptions() : this(null, null, default)
         {
-            // Plugin customization: ensure initialization of collections
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Items = new ChangeTrackingList<ResponseItem>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -43,6 +40,6 @@ namespace OpenAI.Conversations
 
         public IDictionary<string, string> Metadata { get; }
 
-        public IList<ResponseItem> Items { get; set; }
+        public IList<ResponseItem> Items { get; }
     }
 }

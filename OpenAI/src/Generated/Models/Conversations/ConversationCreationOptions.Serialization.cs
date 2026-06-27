@@ -15,10 +15,6 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>
     {
-        public ConversationCreationOptions() : this(null, null, default)
-        {
-        }
-
         protected virtual ConversationCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -114,10 +110,6 @@ namespace OpenAI.Conversations
                 Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
-            else
-            {
-                writer.WriteNull("metadata"u8);
-            }
             if (Patch.Contains("$.items"u8))
             {
                 if (!Patch.IsRemoved("$.items"u8))
@@ -176,7 +168,6 @@ namespace OpenAI.Conversations
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        metadata = new ChangeTrackingDictionary<string, string>();
                         continue;
                     }
                     Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -210,7 +201,7 @@ namespace OpenAI.Conversations
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ConversationCreationOptions(metadata, items ?? new ChangeTrackingList<ResponseItem>(), patch);
+            return new ConversationCreationOptions(metadata ?? new ChangeTrackingDictionary<string, string>(), items ?? new ChangeTrackingList<ResponseItem>(), patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

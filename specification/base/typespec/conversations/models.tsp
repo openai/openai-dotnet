@@ -10,8 +10,8 @@ using Azure.ClientGenerator.Core;
 namespace OpenAI;
 
 model CreateConversationBody {
-  metadata: Record<string> | null;
-  items?: ItemResource[] | null;
+  metadata?: Record<string>;
+  items?: ItemResource[];
 }
 
 model ConversationResource {

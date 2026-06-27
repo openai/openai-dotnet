@@ -8,5 +8,5 @@ public partial class ConversationResource
 {
     [CodeGenMember("Object")]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public string Object { get; } = "conversation";
+    public string Object { get; set; } = "conversation";
 }
