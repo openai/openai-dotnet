@@ -1067,4 +1067,22 @@ public class ChatSmokeTests : ClientTestBase
 
         AssertExpectedFilePart(deserializedFilePart);
     }
+
+    [Test]
+    public void DeserializingInvalidFileDataUriThrowsArgumentException()
+    {
+        BinaryData data = BinaryData.FromString("""
+            {
+              "type": "file",
+              "file": {
+                "filename": "broken.txt",
+                "file_data": "data:text/plain;base64,%%"
+              }
+            }
+            """);
+
+        Assert.That(
+            () => ModelReaderWriter.Read<ChatMessageContentPart>(data),
+            Throws.TypeOf<ArgumentException>());
+    }
 }
