@@ -4863,6 +4863,8 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; set; }
+        public string PromptCacheKey { get; set; }
+        public ResponsePromptCacheRetentionPolicy? PromptCacheRetentionPolicy { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
         public string SafetyIdentifier { get; set; }
         public ResponseServiceTier? ServiceTier { get; set; }
@@ -5558,6 +5560,21 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
         public int ReasoningTokenCount { get; set; }
     }
+    public readonly partial struct ResponsePromptCacheRetentionPolicy : IEquatable<ResponsePromptCacheRetentionPolicy> {
+        public ResponsePromptCacheRetentionPolicy(string value);
+        public static ResponsePromptCacheRetentionPolicy InMemory { get; }
+        public static ResponsePromptCacheRetentionPolicy Max24Hours { get; }
+        public readonly bool Equals(ResponsePromptCacheRetentionPolicy other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponsePromptCacheRetentionPolicy left, ResponsePromptCacheRetentionPolicy right);
+        public static implicit operator ResponsePromptCacheRetentionPolicy(string value);
+        public static implicit operator ResponsePromptCacheRetentionPolicy?(string value);
+        public static bool operator !=(ResponsePromptCacheRetentionPolicy left, ResponsePromptCacheRetentionPolicy right);
+        public override readonly string ToString();
+    }
     public readonly partial struct ResponseReasoningEffortLevel : IEquatable<ResponseReasoningEffortLevel> {
         public ResponseReasoningEffortLevel(string value);
         public static ResponseReasoningEffortLevel High { get; }
@@ -5620,6 +5637,8 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; set; }
+        public string PromptCacheKey { get; set; }
+        public ResponsePromptCacheRetentionPolicy? PromptCacheRetentionPolicy { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
         public string SafetyIdentifier { get; set; }
         public ResponseServiceTier? ServiceTier { get; set; }
