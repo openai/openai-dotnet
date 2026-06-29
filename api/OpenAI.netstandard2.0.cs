@@ -2100,10 +2100,10 @@ namespace OpenAI.Containers {
     }
     public readonly partial struct ContainerMemoryLimit : IEquatable<ContainerMemoryLimit> {
         public ContainerMemoryLimit(string value);
-        public static ContainerMemoryLimit Limit16G { get; }
-        public static ContainerMemoryLimit Limit1G { get; }
-        public static ContainerMemoryLimit Limit4G { get; }
-        public static ContainerMemoryLimit Limit64G { get; }
+        public static ContainerMemoryLimit Max16GB { get; }
+        public static ContainerMemoryLimit Max1GB { get; }
+        public static ContainerMemoryLimit Max4GB { get; }
+        public static ContainerMemoryLimit Max64GB { get; }
         public readonly bool Equals(ContainerMemoryLimit other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);

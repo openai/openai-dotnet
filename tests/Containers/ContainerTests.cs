@@ -456,7 +456,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     public async Task CanCreateContainer()
     {
         TimeSpan expectedContainerDuration = TimeSpan.FromMinutes(20);
-        ContainerMemoryLimit expectedContainerMemoryLimit = ContainerMemoryLimit.Limit4G;
+        ContainerMemoryLimit expectedContainerMemoryLimit = ContainerMemoryLimit.Max4GB;
         string createdContainerId = null;
 
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();

@@ -24,10 +24,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(ContainerFileCollectionOrder.asc, "Ascending");
 @@clientName(ContainerFileCollectionOrder.desc, "Descending");
 
-@@clientName(ContainerMemoryLimit.`1g`, "Limit1G");
-@@clientName(ContainerMemoryLimit.`4g`, "Limit4G");
-@@clientName(ContainerMemoryLimit.`16g`, "Limit16G");
-@@clientName(ContainerMemoryLimit.`64g`, "Limit64G");
+@@clientName(ContainerMemoryLimit.`1g`, "Max1GB");
+@@clientName(ContainerMemoryLimit.`4g`, "Max4GB");
+@@clientName(ContainerMemoryLimit.`16g`, "Max16GB");
+@@clientName(ContainerMemoryLimit.`64g`, "Max64GB");
 
 @@dynamicModel(ContainersError);
 @@dynamicModel(ContainersErrorResponse);
