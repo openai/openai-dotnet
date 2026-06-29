@@ -3,11 +3,14 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using OpenAI;
 
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 namespace OpenAI.Videos
 {
     internal partial class InternalCreateVideoBody : IJsonModel<InternalCreateVideoBody>
@@ -76,14 +79,7 @@ namespace OpenAI.Videos
             if (Optional.IsDefined(InputReference) && _additionalBinaryDataProperties?.ContainsKey("input_reference") != true)
             {
                 writer.WritePropertyName("input_reference"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(InputReference);
-#else
-                using (JsonDocument document = JsonDocument.Parse(InputReference))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(InputReference, options);
             }
             if (Optional.IsDefined(Seconds) && _additionalBinaryDataProperties?.ContainsKey("seconds") != true)
             {
@@ -138,7 +134,7 @@ namespace OpenAI.Videos
             }
             InternalVideoModel? model = default;
             string prompt = default;
-            BinaryData inputReference = default;
+            FileBinaryContent inputReference = default;
             InternalVideoSeconds? seconds = default;
             InternalVideoSize? size = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -164,7 +160,7 @@ namespace OpenAI.Videos
                     {
                         continue;
                     }
-                    inputReference = BinaryData.FromString(prop.Value.GetRawText());
+                    inputReference = new FileBinaryContent(new MemoryStream(prop.Value.GetBytesFromBase64(), false));
                     continue;
                 }
                 if (prop.NameEquals("seconds"u8))
@@ -198,3 +194,4 @@ namespace OpenAI.Videos
         }
     }
 }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.

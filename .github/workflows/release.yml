@@ -169,8 +169,10 @@ jobs:
       - name: Upload release asset
         run: gh release upload ${{ github.event.release.tag_name }}
           ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
+          --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
 
       - name: Update GitHub release notes to point to the changelog
         run: |
@@ -178,6 +180,7 @@ jobs:
             --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0

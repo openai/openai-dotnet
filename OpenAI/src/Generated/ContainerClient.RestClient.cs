@@ -15,31 +15,6 @@ namespace OpenAI.Containers
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetContainersRequest(int? limit, string order, string after, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/containers", false);
-            if (limit != null)
-            {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
-            }
-            if (order != null)
-            {
-                uri.AppendQuery("order", order, true);
-            }
-            if (after != null)
-            {
-                uri.AppendQuery("after", after, true);
-            }
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json");
-            message.Apply(options);
-            return message;
-        }
-
-        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateContainerRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -83,30 +58,11 @@ namespace OpenAI.Containers
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateUploadContainerFileRequest(string containerId, BinaryContent content, string contentType, RequestOptions options)
+        internal virtual PipelineMessage CreateGetContainersRequest(int? limit, string order, string after, string name, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
-            uri.AppendPath("/containers/", false);
-            uri.AppendPath(containerId, true);
-            uri.AppendPath("/files", false);
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Content-Type", contentType);
-            request.Headers.Set("Accept", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetContainerFilesRequest(string containerId, int? limit, string order, string after, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/containers/", false);
-            uri.AppendPath(containerId, true);
-            uri.AppendPath("/files", false);
+            uri.AppendPath("/containers", false);
             if (limit != null)
             {
                 uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
@@ -119,9 +75,30 @@ namespace OpenAI.Containers
             {
                 uri.AppendQuery("after", after, true);
             }
+            if (name != null)
+            {
+                uri.AppendQuery("name", name, true);
+            }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateUploadContainerFileRequest(string containerId, BinaryContent content, string contentType, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/containers/", false);
+            uri.AppendPath(containerId, true);
+            uri.AppendPath("/files", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", contentType);
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
             message.Apply(options);
             return message;
         }
@@ -152,6 +129,33 @@ namespace OpenAI.Containers
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetContainerFilesRequest(string containerId, int? limit, string order, string after, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/containers/", false);
+            uri.AppendPath(containerId, true);
+            uri.AppendPath("/files", false);
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+            }
+            if (order != null)
+            {
+                uri.AppendQuery("order", order, true);
+            }
+            if (after != null)
+            {
+                uri.AppendQuery("after", after, true);
+            }
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);

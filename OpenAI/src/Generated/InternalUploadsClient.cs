@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
@@ -61,6 +62,22 @@ namespace OpenAI.Files
         {
             using PipelineMessage message = CreateAddUploadPartRequest(uploadId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("SCME0004")]
+        public virtual ClientResult<InternalUploadPart> AddUploadPart(string uploadId, InternalAddUploadPartRequest requestBody, CancellationToken cancellationToken = default)
+        {
+            using MultiPartFormContent content = requestBody.ToMultipartFormContent();
+            ClientResult result = AddUploadPart(uploadId, content, content.MediaType, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((InternalUploadPart)result, result.GetRawResponse());
+        }
+
+        [Experimental("SCME0004")]
+        public virtual async Task<ClientResult<InternalUploadPart>> AddUploadPartAsync(string uploadId, InternalAddUploadPartRequest requestBody, CancellationToken cancellationToken = default)
+        {
+            using MultiPartFormContent content = requestBody.ToMultipartFormContent();
+            ClientResult result = await AddUploadPartAsync(uploadId, content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((InternalUploadPart)result, result.GetRawResponse());
         }
 
         public virtual ClientResult CompleteUpload(string uploadId, BinaryContent content, RequestOptions options = null)

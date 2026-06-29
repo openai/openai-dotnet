@@ -39,8 +39,8 @@ namespace OpenAI.Containers
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
-                bool hasMore = ((InternalContainerFileListResource)result).HasMore;
-                nextToken = ((InternalContainerFileListResource)result).LastId;
+                bool hasMore = ((ContainerFileCollectionPage)result).HasMore;
+                nextToken = ((ContainerFileCollectionPage)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
                 if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
@@ -52,7 +52,7 @@ namespace OpenAI.Containers
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            string nextPage = ((InternalContainerFileListResource)page).LastId;
+            string nextPage = ((ContainerFileCollectionPage)page).LastId;
             if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
@@ -65,7 +65,7 @@ namespace OpenAI.Containers
 
         protected override async IAsyncEnumerable<ContainerFileResource> GetValuesFromPageAsync(ClientResult page)
         {
-            foreach (ContainerFileResource item in ((InternalContainerFileListResource)page).Data)
+            foreach (ContainerFileResource item in ((ContainerFileCollectionPage)page).Data)
             {
                 yield return item;
                 await Task.Yield();

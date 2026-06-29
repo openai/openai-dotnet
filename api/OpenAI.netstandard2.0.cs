@@ -1900,6 +1900,12 @@ namespace OpenAI.Chat {
     }
 }
 namespace OpenAI.Containers {
+    public class ContainerAllowlistNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerAllowlistNetworkPolicy>, IPersistableModel<ContainerAllowlistNetworkPolicy> {
+        public ContainerAllowlistNetworkPolicy() : base(default);
+        public ContainerAllowlistNetworkPolicy(IEnumerable<string> allowedDomains) : base(default);
+        public IList<string> AllowedDomains { get; }
+        public IList<ContainerNetworkPolicyDomainSecret> DomainSecrets { get; }
+    }
     public class ContainerClient {
         protected ContainerClient();
         public ContainerClient(ContainerClientSettings settings);
@@ -1911,18 +1917,18 @@ namespace OpenAI.Containers {
         public ContainerClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerBody body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ContainerResource> CreateContainer(ContainerCreationOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerBody body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ContainerResource>> CreateContainerAsync(ContainerCreationOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateContainerAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteContainer(string containerId, RequestOptions options);
-        public virtual ClientResult<DeleteContainerResponse> DeleteContainer(string containerId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ContainerDeletionResult> DeleteContainer(string containerId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options);
-        public virtual Task<ClientResult<DeleteContainerResponse>> DeleteContainerAsync(string containerId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ContainerDeletionResult>> DeleteContainerAsync(string containerId, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteContainerFile(string containerId, string fileId, RequestOptions options);
-        public virtual ClientResult<DeleteContainerFileResponse> DeleteContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ContainerFileDeletionResult> DeleteContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<DeleteContainerFileResponse>> DeleteContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ContainerFileDeletionResult>> DeleteContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult DownloadContainerFile(string containerId, string fileId, RequestOptions options);
         public virtual ClientResult<BinaryData> DownloadContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DownloadContainerFileAsync(string containerId, string fileId, RequestOptions options);
@@ -1931,18 +1937,22 @@ namespace OpenAI.Containers {
         public virtual ClientResult<ContainerResource> GetContainer(string containerId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options);
         public virtual Task<ClientResult<ContainerResource>> GetContainerAsync(string containerId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ContainerCollectionPage> GetContainerCollectionPage(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetContainerCollectionPage(int? limit, string order, string after, string name, RequestOptions options);
+        public virtual Task<ClientResult<ContainerCollectionPage>> GetContainerCollectionPageAsync(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetContainerCollectionPageAsync(int? limit, string order, string after, string name, RequestOptions options);
         public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options);
         public virtual ClientResult<ContainerFileResource> GetContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<ContainerFileResource>> GetContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options);
-        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetContainerFilesAsync(string containerId, int? limit, string order, string after, RequestOptions options);
+        public virtual ClientResult<ContainerFileCollectionPage> GetContainerFileCollectionPage(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetContainerFileCollectionPage(string containerId, int? limit, string order, string after, RequestOptions options);
+        public virtual Task<ClientResult<ContainerFileCollectionPage>> GetContainerFileCollectionPageAsync(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetContainerFileCollectionPageAsync(string containerId, int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(ContainerFileCollectionOptions options, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ContainerResource> GetContainers(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetContainers(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, RequestOptions options);
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
@@ -1952,6 +1962,7 @@ namespace OpenAI.Containers {
     }
     public class ContainerCollectionOptions : IJsonModel<ContainerCollectionOptions>, IPersistableModel<ContainerCollectionOptions> {
         public string AfterId { get; set; }
+        public string Name { get; set; }
         public ContainerCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
@@ -1970,8 +1981,70 @@ namespace OpenAI.Containers {
         public static bool operator !=(ContainerCollectionOrder left, ContainerCollectionOrder right);
         public override readonly string ToString();
     }
+    public class ContainerCollectionPage : IJsonModel<ContainerCollectionPage>, IPersistableModel<ContainerCollectionPage> {
+        public IList<ContainerResource> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator ContainerCollectionPage(ClientResult result);
+    }
+    public class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>, IPersistableModel<ContainerCreationOptions> {
+        public ContainerCreationOptions();
+        public ContainerCreationOptions(string name);
+        public ContainerExpirationPolicy ExpirationPolicy { get; set; }
+        public IList<string> FileIds { get; }
+        public ContainerMemoryLimit? MemoryLimit { get; set; }
+        public string Name { get; set; }
+        public ContainerNetworkPolicy NetworkPolicy { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(ContainerCreationOptions containerCreationOptions);
+    }
+    public class ContainerDeletionResult : IJsonModel<ContainerDeletionResult>, IPersistableModel<ContainerDeletionResult> {
+        public string ContainerId { get; set; }
+        public bool Deleted { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator ContainerDeletionResult(ClientResult result);
+    }
+    public class ContainerDisabledNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerDisabledNetworkPolicy>, IPersistableModel<ContainerDisabledNetworkPolicy> {
+        public ContainerDisabledNetworkPolicy() : base(default);
+    }
+    public class ContainerExpirationPolicy : IJsonModel<ContainerExpirationPolicy>, IPersistableModel<ContainerExpirationPolicy> {
+        public ContainerExpirationPolicyAnchor? Anchor { get; set; }
+        public TimeSpan? Duration { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public readonly partial struct ContainerExpirationPolicyAnchor : IEquatable<ContainerExpirationPolicyAnchor> {
+        public ContainerExpirationPolicyAnchor(string value);
+        public static ContainerExpirationPolicyAnchor LastActiveAt { get; }
+        public readonly bool Equals(ContainerExpirationPolicyAnchor other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ContainerExpirationPolicyAnchor left, ContainerExpirationPolicyAnchor right);
+        public static implicit operator ContainerExpirationPolicyAnchor(string value);
+        public static implicit operator ContainerExpirationPolicyAnchor?(string value);
+        public static bool operator !=(ContainerExpirationPolicyAnchor left, ContainerExpirationPolicyAnchor right);
+        public override readonly string ToString();
+    }
     public class ContainerFileCollectionOptions : IJsonModel<ContainerFileCollectionOptions>, IPersistableModel<ContainerFileCollectionOptions> {
+        public ContainerFileCollectionOptions();
+        public ContainerFileCollectionOptions(string containerId);
         public string AfterId { get; set; }
+        public string ContainerId { get; set; }
         public ContainerFileCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
     }
@@ -1990,56 +2063,104 @@ namespace OpenAI.Containers {
         public static bool operator !=(ContainerFileCollectionOrder left, ContainerFileCollectionOrder right);
         public override readonly string ToString();
     }
+    public class ContainerFileCollectionPage : IJsonModel<ContainerFileCollectionPage>, IPersistableModel<ContainerFileCollectionPage> {
+        public IList<ContainerFileResource> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator ContainerFileCollectionPage(ClientResult result);
+    }
+    public class ContainerFileDeletionResult : IJsonModel<ContainerFileDeletionResult>, IPersistableModel<ContainerFileDeletionResult> {
+        public string ContainerFileId { get; set; }
+        public bool Deleted { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator ContainerFileDeletionResult(ClientResult result);
+    }
     public class ContainerFileResource : IJsonModel<ContainerFileResource>, IPersistableModel<ContainerFileResource> {
-        public string ContainerId { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public string Id { get; }
-        public string Object { get; }
-        public string Path { get; }
-        public long? SizeInBytes { get; }
-        public string Source { get; }
+        public string ContainerId { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public string Id { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Path { get; set; }
+        public long? SizeInBytes { get; set; }
+        public string Source { get; set; }
         public static explicit operator ContainerFileResource(ClientResult result);
     }
+    public readonly partial struct ContainerMemoryLimit : IEquatable<ContainerMemoryLimit> {
+        public ContainerMemoryLimit(string value);
+        public static ContainerMemoryLimit Max16GB { get; }
+        public static ContainerMemoryLimit Max1GB { get; }
+        public static ContainerMemoryLimit Max4GB { get; }
+        public static ContainerMemoryLimit Max64GB { get; }
+        public readonly bool Equals(ContainerMemoryLimit other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ContainerMemoryLimit left, ContainerMemoryLimit right);
+        public static implicit operator ContainerMemoryLimit(string value);
+        public static implicit operator ContainerMemoryLimit?(string value);
+        public static bool operator !=(ContainerMemoryLimit left, ContainerMemoryLimit right);
+        public override readonly string ToString();
+    }
+    public class ContainerNetworkPolicy : IJsonModel<ContainerNetworkPolicy>, IPersistableModel<ContainerNetworkPolicy> {
+        protected internal ContainerNetworkPolicy(ContainerNetworkPolicyKind kind);
+        public ContainerNetworkPolicyKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class ContainerNetworkPolicyDomainSecret : IJsonModel<ContainerNetworkPolicyDomainSecret>, IPersistableModel<ContainerNetworkPolicyDomainSecret> {
+        public ContainerNetworkPolicyDomainSecret();
+        public ContainerNetworkPolicyDomainSecret(string domain, string name, string value);
+        public string Domain { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Value { get; set; }
+    }
+    public readonly partial struct ContainerNetworkPolicyKind : IEquatable<ContainerNetworkPolicyKind> {
+        public ContainerNetworkPolicyKind(string value);
+        public static ContainerNetworkPolicyKind Allowlist { get; }
+        public static ContainerNetworkPolicyKind Disabled { get; }
+        public readonly bool Equals(ContainerNetworkPolicyKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ContainerNetworkPolicyKind left, ContainerNetworkPolicyKind right);
+        public static implicit operator ContainerNetworkPolicyKind(string value);
+        public static implicit operator ContainerNetworkPolicyKind?(string value);
+        public static bool operator !=(ContainerNetworkPolicyKind left, ContainerNetworkPolicyKind right);
+        public override readonly string ToString();
+    }
     public class ContainerResource : IJsonModel<ContainerResource>, IPersistableModel<ContainerResource> {
-        public DateTimeOffset CreatedAt { get; }
-        public ContainerResourceExpiresAfter ExpiresAfter { get; }
-        public string Id { get; }
-        public string Name { get; }
-        public string Object { get; }
-        public string Status { get; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public ContainerExpirationPolicy ExpirationPolicy { get; set; }
+        public string Id { get; set; }
+        public DateTimeOffset? LastActiveAt { get; set; }
+        public ContainerMemoryLimit? MemoryLimit { get; set; }
+        public string Name { get; set; }
+        public ContainerNetworkPolicy NetworkPolicy { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Status { get; set; }
         public static explicit operator ContainerResource(ClientResult result);
-    }
-    public class ContainerResourceExpiresAfter : IJsonModel<ContainerResourceExpiresAfter>, IPersistableModel<ContainerResourceExpiresAfter> {
-        public string Anchor { get; }
-        public int? Minutes { get; }
-    }
-    public class CreateContainerBody : IJsonModel<CreateContainerBody>, IPersistableModel<CreateContainerBody> {
-        public CreateContainerBody(string name);
-        public CreateContainerBodyExpiresAfter ExpiresAfter { get; set; }
-        public IList<string> FileIds { get; }
-        public string Name { get; }
-        public static implicit operator BinaryContent(CreateContainerBody createContainerBody);
-    }
-    public class CreateContainerBodyExpiresAfter : IJsonModel<CreateContainerBodyExpiresAfter>, IPersistableModel<CreateContainerBodyExpiresAfter> {
-        public CreateContainerBodyExpiresAfter(int minutes);
-        public string Anchor { get; }
-        public int Minutes { get; }
-    }
-    public class CreateContainerFileBody : IJsonModel<CreateContainerFileBody>, IPersistableModel<CreateContainerFileBody> {
-        public BinaryData File { get; set; }
-        public string FileId { get; set; }
-    }
-    public class DeleteContainerFileResponse : IJsonModel<DeleteContainerFileResponse>, IPersistableModel<DeleteContainerFileResponse> {
-        public bool Deleted { get; }
-        public string Id { get; }
-        public string Object { get; }
-        public static explicit operator DeleteContainerFileResponse(ClientResult result);
-    }
-    public class DeleteContainerResponse : IJsonModel<DeleteContainerResponse>, IPersistableModel<DeleteContainerResponse> {
-        public bool Deleted { get; }
-        public string Id { get; }
-        public string Object { get; }
-        public static explicit operator DeleteContainerResponse(ClientResult result);
     }
 }
 namespace OpenAI.Conversations {

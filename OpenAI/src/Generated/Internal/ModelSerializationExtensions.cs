@@ -4,14 +4,17 @@
 
 using System;
 using System.Buffers.Text;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 namespace OpenAI
 {
     internal static partial class ModelSerializationExtensions
@@ -246,6 +249,9 @@ namespace OpenAI
                 case TimeSpan timeSpan:
                     writer.WriteStringValue(timeSpan, "P");
                     break;
+                case FileBinaryContent fileBinaryContent:
+                    writer.WriteFileBinaryContent(fileBinaryContent);
+                    break;
                 default:
                     throw new NotSupportedException($"Not supported type {value.GetType()}");
             }
@@ -341,6 +347,14 @@ namespace OpenAI
             return index >= jsonPath.Length ? ReadOnlySpan<byte>.Empty : jsonPath[index] == '.' ? jsonPath.Slice(index) : jsonPath.Slice(index + 2);
         }
 
+        public static void WriteFileBinaryContent(this Utf8JsonWriter writer, FileBinaryContent value)
+        {
+            int capacity = value.TryComputeLength(out long length) && length <= int.MaxValue ? (int)length : 0;
+            using MemoryStream stream = new MemoryStream(capacity);
+            value.WriteTo(stream);
+            writer.WriteBase64StringValue(stream.GetBuffer().AsSpan(0, (int)stream.Position));
+        }
+
         internal static bool IsSentinelValue(BinaryData value)
         {
             ReadOnlySpan<byte> sentinelSpan = _sentinelValue.ToMemory().Span;
@@ -349,3 +363,4 @@ namespace OpenAI
         }
     }
 }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.

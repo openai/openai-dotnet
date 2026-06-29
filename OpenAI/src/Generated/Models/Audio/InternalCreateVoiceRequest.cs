@@ -3,7 +3,9 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
@@ -11,24 +13,29 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCreateVoiceRequest(string name, BinaryData audioSample, string consent)
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCreateVoiceRequest(string name, FileBinaryContent audioSample, string consent)
         {
             Name = name;
             AudioSample = audioSample;
             Consent = consent;
         }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal InternalCreateVoiceRequest(string name, BinaryData audioSample, string consent, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCreateVoiceRequest(string name, FileBinaryContent audioSample, string consent, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Name = name;
             AudioSample = audioSample;
             Consent = consent;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Name { get; }
 
-        public BinaryData AudioSample { get; }
+        [Experimental("SCME0004")]
+        public FileBinaryContent AudioSample { get; }
 
         public string Consent { get; }
 
