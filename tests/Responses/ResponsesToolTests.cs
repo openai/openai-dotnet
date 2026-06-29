@@ -582,7 +582,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedResponsesClient();
 
         // Create a container first using the Containers API
-        CreateContainerBody containerBody = new("test-container-for-code-interpreter");
+        ContainerCreationOptions containerBody = new("test-container-for-code-interpreter");
         var containerResult = await containerClient.CreateContainerAsync(containerBody);
         Assert.That(containerResult.Value, Is.Not.Null);
         Assert.That(containerResult.Value.Id, Is.Not.Null.And.Not.Empty);

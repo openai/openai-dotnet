@@ -82,22 +82,6 @@ public class PaginationVisitor : ScmLibraryVisitor
             ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetContainers",
-            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainersAsync",
-            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainerFiles",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainerFilesAsync",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
-        },
-        {
             "GetResponseInputItems",
             ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         },
