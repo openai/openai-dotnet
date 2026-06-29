@@ -19,7 +19,7 @@ public class ConversationTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task CanCreateGetUpdateAndDeleteConversationAsyncWithCancellationToken()
+    public async Task CanCreateGetUpdateAndDeleteConversation()
     {
         ConversationClient client = GetProxiedOpenAIClient<ConversationClient>();
         string conversationId = null;
