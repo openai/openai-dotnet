@@ -2026,7 +2026,7 @@ namespace OpenAI.Containers {
         public int Minutes { get; }
     }
     public class CreateContainerFileBody : IJsonModel<CreateContainerFileBody>, IPersistableModel<CreateContainerFileBody> {
-        public BinaryData File { get; set; }
+        public FileBinaryContent File { get; set; }
         public string FileId { get; set; }
     }
     public class DeleteContainerFileResponse : IJsonModel<DeleteContainerFileResponse>, IPersistableModel<DeleteContainerFileResponse> {

@@ -3,11 +3,14 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using OpenAI;
 
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 namespace OpenAI.Containers
 {
     public partial class CreateContainerFileBody : IJsonModel<CreateContainerFileBody>
@@ -67,14 +70,7 @@ namespace OpenAI.Containers
             if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
                 writer.WritePropertyName("file"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(File);
-#else
-                using (JsonDocument document = JsonDocument.Parse(File))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(File, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -118,7 +114,7 @@ namespace OpenAI.Containers
                 return null;
             }
             string fileId = default;
-            BinaryData @file = default;
+            FileBinaryContent @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -133,7 +129,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    @file = BinaryData.FromString(prop.Value.GetRawText());
+                    @file = new FileBinaryContent(new MemoryStream(prop.Value.GetBytesFromBase64(), false));
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -143,3 +139,4 @@ namespace OpenAI.Containers
         }
     }
 }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.

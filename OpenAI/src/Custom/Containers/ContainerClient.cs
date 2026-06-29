@@ -3,11 +3,14 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace OpenAI.Containers;
 
 [CodeGenType("Containers")]
 [CodeGenSuppress("ContainerClient", typeof(ClientPipeline), typeof(Uri))]
+[CodeGenSuppress(nameof(UploadContainerFile), typeof(string), typeof(CreateContainerFileBody), typeof(CancellationToken))]
+[CodeGenSuppress(nameof(UploadContainerFileAsync), typeof(string), typeof(CreateContainerFileBody), typeof(CancellationToken))]
 public partial class ContainerClient
 {
     // CUSTOM: Added as a convenience.

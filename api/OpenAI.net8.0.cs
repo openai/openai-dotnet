@@ -2325,7 +2325,8 @@ namespace OpenAI.Containers {
     }
     [Experimental("OPENAI001")]
     public class CreateContainerFileBody : IJsonModel<CreateContainerFileBody>, IPersistableModel<CreateContainerFileBody> {
-        public BinaryData File { get; set; }
+        [Experimental("SCME0004")]
+        public FileBinaryContent File { get; set; }
         public string FileId { get; set; }
     }
     [Experimental("OPENAI001")]

@@ -143,6 +143,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUploadContainerFileRequest(containerId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -152,6 +153,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUploadContainerFileRequest(containerId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
