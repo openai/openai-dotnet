@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -56,26 +55,6 @@ namespace OpenAI.Audio
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        [Experimental("SCME0004")]
-        public virtual ClientResult<BinaryData> TranscribeAudio(AudioTranscriptionOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = TranscribeAudio(content, content.MediaType, cancellationToken.ToRequestOptions());
-            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
-        }
-
-        [Experimental("SCME0004")]
-        public virtual async Task<ClientResult<BinaryData>> TranscribeAudioAsync(AudioTranscriptionOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = await TranscribeAudioAsync(content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
-        }
-
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -92,26 +71,6 @@ namespace OpenAI.Audio
 
             using PipelineMessage message = CreateTranslateAudioRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        [Experimental("SCME0004")]
-        public virtual ClientResult<BinaryData> TranslateAudio(AudioTranslationOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = TranslateAudio(content, content.MediaType, cancellationToken.ToRequestOptions());
-            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
-        }
-
-        [Experimental("SCME0004")]
-        public virtual async Task<ClientResult<BinaryData>> TranslateAudioAsync(AudioTranslationOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = await TranslateAudioAsync(content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
 
         [Experimental("OPENAI001")]

@@ -888,11 +888,9 @@ namespace OpenAI.Audio {
         public virtual Task<ClientResult> GetVoiceConsentAsync(string consentId, RequestOptions options = null);
         public virtual CollectionResult GetVoiceConsents(string after = null, int? limit = null, RequestOptions options = null);
         public virtual AsyncCollectionResult GetVoiceConsentsAsync(string after = null, int? limit = null, RequestOptions options = null);
-        public virtual ClientResult<BinaryData> TranscribeAudio(AudioTranscriptionOptions body, CancellationToken cancellationToken = default);
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
-        public virtual Task<ClientResult<BinaryData>> TranscribeAudioAsync(AudioTranscriptionOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> TranscribeAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioTranscriptionOptions options = null);
@@ -904,11 +902,9 @@ namespace OpenAI.Audio {
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult<BinaryData> TranslateAudio(AudioTranslationOptions body, CancellationToken cancellationToken = default);
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranslation> TranslateAudio(string audioFilePath, AudioTranslationOptions options = null);
-        public virtual Task<ClientResult<BinaryData>> TranslateAudioAsync(AudioTranslationOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> TranslateAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(string audioFilePath, AudioTranslationOptions options = null);
@@ -1947,9 +1943,7 @@ namespace OpenAI.Containers {
         public virtual CollectionResult GetContainers(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, RequestOptions options);
-        public virtual ClientResult<ContainerFileResource> UploadContainerFile(string containerId, CreateContainerFileBody body, CancellationToken cancellationToken = default);
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
-        public virtual Task<ClientResult<ContainerFileResource>> UploadContainerFileAsync(string containerId, CreateContainerFileBody body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
     public sealed class ContainerClientSettings : ClientSettings {
@@ -2930,13 +2924,11 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(string imageFilePath, string prompt, string maskFilePath, ImageEditOptions options = null);
-        public virtual ClientResult<BinaryData> GenerateImageEdits(ImageEditOptions body, CancellationToken cancellationToken = default);
         public virtual ClientResult GenerateImageEdits(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
-        public virtual Task<ClientResult<BinaryData>> GenerateImageEditsAsync(ImageEditOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateImageEditsAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
@@ -2950,11 +2942,9 @@ namespace OpenAI.Images {
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageVariationOptions options = null);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(string imageFilePath, ImageVariationOptions options = null);
-        public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(ImageVariationOptions body, CancellationToken cancellationToken = default);
         public virtual ClientResult GenerateImageVariations(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(string imageFilePath, int imageCount, ImageVariationOptions options = null);
-        public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(ImageVariationOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateImageVariationsAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);

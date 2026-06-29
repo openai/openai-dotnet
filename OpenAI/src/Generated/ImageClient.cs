@@ -5,8 +5,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -38,26 +36,6 @@ namespace OpenAI.Images
 
             using PipelineMessage message = CreateGenerateImageEditsRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        [Experimental("SCME0004")]
-        public virtual ClientResult<BinaryData> GenerateImageEdits(ImageEditOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = GenerateImageEdits(content, content.MediaType, cancellationToken.ToRequestOptions());
-            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
-        }
-
-        [Experimental("SCME0004")]
-        public virtual async Task<ClientResult<BinaryData>> GenerateImageEditsAsync(ImageEditOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = await GenerateImageEditsAsync(content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
 
         public virtual ClientResult GenerateImages(BinaryContent content, RequestOptions options = null)
@@ -92,26 +70,6 @@ namespace OpenAI.Images
 
             using PipelineMessage message = CreateGenerateImageVariationsRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        [Experimental("SCME0004")]
-        public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(ImageVariationOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = GenerateImageVariations(content, content.MediaType, cancellationToken.ToRequestOptions());
-            return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
-        }
-
-        [Experimental("SCME0004")]
-        public virtual async Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(ImageVariationOptions body, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNull(body, nameof(body));
-
-            using MultiPartFormContent content = body.ToMultipartFormContent();
-            ClientResult result = await GenerateImageVariationsAsync(content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
         }
     }
 }
