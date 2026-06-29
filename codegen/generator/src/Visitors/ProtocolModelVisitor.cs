@@ -17,6 +17,26 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     // Classes that are protocol models.
     private static readonly HashSet<string> _protocolModels = new(StringComparer.OrdinalIgnoreCase)
     {
+        "OpenAI.Containers.ContainerAllowlistNetworkPolicy",
+        "OpenAI.Containers.ContainerCreationOptions",
+        "OpenAI.Containers.ContainerCollectionOptions",
+        "OpenAI.Containers.ContainerCollectionOrder",
+        "OpenAI.Containers.ContainerCollectionPage",
+        "OpenAI.Containers.ContainerDeletionResult",
+        "OpenAI.Containers.ContainerDisabledNetworkPolicy",
+        "OpenAI.Containers.ContainerExpirationPolicy",
+        "OpenAI.Containers.ContainerExpirationPolicyAnchor",
+        "OpenAI.Containers.ContainerFileCollectionOptions",
+        "OpenAI.Containers.ContainerFileCollectionOrder",
+        "OpenAI.Containers.ContainerFileCollectionPage",
+        "OpenAI.Containers.ContainerFileDeletionResult",
+        "OpenAI.Containers.ContainerFileResource",
+        "OpenAI.Containers.ContainerMemoryLimit",
+        "OpenAI.Containers.ContainerNetworkPolicy",
+        "OpenAI.Containers.ContainerNetworkPolicyDomainSecret",
+        "OpenAI.Containers.ContainerNetworkPolicyKind",
+        "OpenAI.Containers.ContainerResource",
+
         "OpenAI.Conversations.ConversationCreationOptions",
         "OpenAI.Conversations.ConversationDeletionResult",
         "OpenAI.Conversations.ConversationResource",

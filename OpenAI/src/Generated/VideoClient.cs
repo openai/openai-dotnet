@@ -35,6 +35,7 @@ namespace OpenAI.Videos
         public virtual ClientResult CreateVideo(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateCreateVideoRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -43,6 +44,7 @@ namespace OpenAI.Videos
         public virtual async Task<ClientResult> CreateVideoAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateCreateVideoRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
@@ -100,6 +102,7 @@ namespace OpenAI.Videos
         {
             Argument.AssertNotNullOrEmpty(videoId, nameof(videoId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateCreateVideoRemixRequest(videoId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -109,6 +112,7 @@ namespace OpenAI.Videos
         {
             Argument.AssertNotNullOrEmpty(videoId, nameof(videoId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateCreateVideoRemixRequest(videoId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));

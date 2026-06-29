@@ -352,6 +352,27 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task ResponsesWithPromptCache()
+    {
+        string expectedPromptCacheKey = "test-prompt-cache-key";
+        ResponsePromptCacheRetentionPolicy expectedPromptCacheRetentionPolicy = ResponsePromptCacheRetentionPolicy.Max24Hours;
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        CreateResponseOptions options = new("gpt-5.5", [ResponseItem.CreateUserMessageItem("Hello, world!")])
+        {
+            PromptCacheKey = expectedPromptCacheKey,
+            PromptCacheRetentionPolicy = expectedPromptCacheRetentionPolicy,
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Id, Is.Not.Null);
+        Assert.That(response.PromptCacheKey, Is.EqualTo(expectedPromptCacheKey));
+        Assert.That(response.PromptCacheRetentionPolicy, Is.EqualTo(expectedPromptCacheRetentionPolicy));
+    }
+
+    [RecordedTest]
     public async Task ReasoningWithStoreDisabled()
     {
         ResponsesClient client = GetProxiedResponsesClient();

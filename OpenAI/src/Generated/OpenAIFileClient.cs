@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -38,6 +39,7 @@ namespace OpenAI.Files
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUploadFileRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -46,9 +48,26 @@ namespace OpenAI.Files
         public virtual async Task<ClientResult> UploadFileAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUploadFileRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        [Experimental("SCME0004")]
+        internal virtual ClientResult<OpenAIFile> UploadFile(InternalFileUploadOptions body, CancellationToken cancellationToken = default)
+        {
+            using MultiPartFormContent content = body.ToMultipartFormContent();
+            ClientResult result = UploadFile(content, content.MediaType, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+        }
+
+        [Experimental("SCME0004")]
+        internal virtual async Task<ClientResult<OpenAIFile>> UploadFileAsync(InternalFileUploadOptions body, CancellationToken cancellationToken = default)
+        {
+            using MultiPartFormContent content = body.ToMultipartFormContent();
+            ClientResult result = await UploadFileAsync(content, content.MediaType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
         }
 
         public virtual ClientResult DeleteFile(string fileId, RequestOptions options)

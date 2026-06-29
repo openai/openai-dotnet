@@ -100,6 +100,12 @@ namespace OpenAILibraryPlugin.Visitors
 
         protected override MethodProvider? VisitMethod(MethodProvider methodProvider)
         {
+            // Skip methods that are already marked as experimental.
+            if (methodProvider.Signature.Attributes.Any(attr => attr.Type.Equals(typeof(ExperimentalAttribute))))
+            {
+                return base.VisitMethod(methodProvider);
+            }
+
             // Skip methods that are not public or are in non-stable classes
             if ((!methodProvider.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Public) &&
                     !methodProvider.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Protected)) ||

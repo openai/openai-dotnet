@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace OpenAI.Files
 {
@@ -11,18 +14,40 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        [Experimental("SCME0004")]
+        public InternalAddUploadPartRequest(string dataPath)
+        {
+            Data = new FileBinaryContent(dataPath);
+        }
+
+        [Experimental("SCME0004")]
+        public InternalAddUploadPartRequest(Stream data)
+        {
+            Data = new FileBinaryContent(data);
+        }
+
+        [Experimental("SCME0004")]
         public InternalAddUploadPartRequest(BinaryData data)
+        {
+            Data = new FileBinaryContent(data);
+        }
+
+        [Experimental("SCME0004")]
+        public InternalAddUploadPartRequest(FileBinaryContent data)
         {
             Data = data;
         }
 
-        internal InternalAddUploadPartRequest(BinaryData data, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalAddUploadPartRequest(FileBinaryContent data, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Data = data;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public BinaryData Data { get; }
+        [Experimental("SCME0004")]
+        public FileBinaryContent Data { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
