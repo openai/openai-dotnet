@@ -3,7 +3,9 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Videos
 {
@@ -16,7 +18,8 @@ namespace OpenAI.Videos
             Prompt = prompt;
         }
 
-        internal InternalCreateVideoBody(InternalVideoModel? model, string prompt, BinaryData inputReference, InternalVideoSeconds? seconds, InternalVideoSize? size, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCreateVideoBody(InternalVideoModel? model, string prompt, FileBinaryContent inputReference, InternalVideoSeconds? seconds, InternalVideoSize? size, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Model = model;
             Prompt = prompt;
@@ -25,12 +28,14 @@ namespace OpenAI.Videos
             Size = size;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal InternalVideoModel? Model { get; }
 
         public string Prompt { get; }
 
-        public BinaryData InputReference { get; }
+        [Experimental("SCME0004")]
+        public FileBinaryContent InputReference { get; }
 
         internal InternalVideoSeconds? Seconds { get; }
 

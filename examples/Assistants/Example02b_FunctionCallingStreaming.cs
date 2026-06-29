@@ -78,7 +78,7 @@ public partial class AssistantExamples
             Tools = { getTemperatureTool, getRainProbabilityTool },
         };
 
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4-turbo", assistantOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", assistantOptions);
         #endregion
 
         #region Step 2 - Create a thread and add messages

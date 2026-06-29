@@ -3,11 +3,14 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
 
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 namespace OpenAI.Containers
 {
     internal partial class InternalContainerFileUploadOptions : IJsonModel<InternalContainerFileUploadOptions>
@@ -76,14 +79,7 @@ namespace OpenAI.Containers
             if (Optional.IsDefined(File) && !Patch.Contains("$.file"u8))
             {
                 writer.WritePropertyName("file"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(File);
-#else
-                using (JsonDocument document = JsonDocument.Parse(File))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(File, options);
             }
 
             Patch.WriteTo(writer);
@@ -110,7 +106,7 @@ namespace OpenAI.Containers
                 return null;
             }
             string fileId = default;
-            BinaryData @file = default;
+            FileBinaryContent @file = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -127,7 +123,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    @file = BinaryData.FromString(prop.Value.GetRawText());
+                    @file = new FileBinaryContent(new MemoryStream(prop.Value.GetBytesFromBase64(), false));
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -136,3 +132,4 @@ namespace OpenAI.Containers
         }
     }
 }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.

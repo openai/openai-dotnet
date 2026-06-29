@@ -18,6 +18,9 @@ namespace OpenAI.Containers;
 [CodeGenSuppress(nameof(GetContainerFiles), typeof(string), typeof(int?), typeof(ContainerFileCollectionOrder?), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GetContainerFilesAsync), typeof(string), typeof(int?), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress(nameof(GetContainerFilesAsync), typeof(string), typeof(int?), typeof(ContainerFileCollectionOrder?), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress(nameof(UploadContainerFile), typeof(string), typeof(InternalContainerFileUploadOptions), typeof(CancellationToken))]
+[CodeGenSuppress(nameof(UploadContainerFileAsync), typeof(string), typeof(InternalContainerFileUploadOptions), typeof(CancellationToken))]
+
 public partial class ContainerClient
 {
     // CUSTOM: Added as a convenience.

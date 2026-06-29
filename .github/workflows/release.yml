@@ -12,8 +12,7 @@ on:
     - cron: '0 0 * * *'
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 jobs:
   build:
@@ -118,34 +117,18 @@ jobs:
         name: build-artifacts-signed
         path: ${{ github.workspace }}/build-artifacts
 
-  deploy:
-    name: Publish package
+  publish-github-packages:
+    name: Publish package to GitHub Packages
     needs: sign
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Download build artifacts
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: build-artifacts-signed
           path: ${{ github.workspace }}/build-artifacts
-
-      - name: Upload release asset
-        if: github.event_name == 'release'
-        run: gh release upload ${{ github.event.release.tag_name }}
-          ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update GitHub release notes to point to the changelog
-        if: github.event_name == 'release'
-        run: |
-          gh release edit "${{ github.event.release.tag_name }}" \
-            --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup .NET
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
@@ -167,10 +150,52 @@ jobs:
             --api-key ${{ secrets.GITHUB_TOKEN }}
             --skip-duplicate
 
+  publish-nuget:
+    name: Publish package to NuGet.org
+    if: github.event_name == 'release'
+    needs: sign
+    runs-on: ubuntu-latest
+    environment: publish
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: build-artifacts-signed
+          path: ${{ github.workspace }}/build-artifacts
+
+      - name: Upload release asset
+        run: gh release upload ${{ github.event.release.tag_name }}
+          ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
+          --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Update GitHub release notes to point to the changelog
+        run: |
+          gh release edit "${{ github.event.release.tag_name }}" \
+            --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          dotnet-version: '9.x'
+
+      - name: NuGet login
+        uses: NuGet/login@ebc737b6fc418a6ca0073cf116ec8dc156d8b81e # v1
+        id: nuget-login
+        with:
+          user: openai-publisher
+
       - name: Publish package to nuget.org
-        if: github.event_name == 'release'
         run: dotnet nuget push
             ${{ github.workspace }}/build-artifacts/packages/*.nupkg
             --source https://api.nuget.org/v3/index.json
-            --api-key ${{ secrets.NUGET_API_KEY }}
+            --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
             --skip-duplicate

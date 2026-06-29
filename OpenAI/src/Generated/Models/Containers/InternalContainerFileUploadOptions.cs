@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -20,13 +20,15 @@ namespace OpenAI.Containers
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalContainerFileUploadOptions(string fileId, BinaryData @file, in JsonPatch patch)
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalContainerFileUploadOptions(string fileId, FileBinaryContent @file, in JsonPatch patch)
         {
             FileId = fileId;
             File = @file;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -35,6 +37,7 @@ namespace OpenAI.Containers
 
         public string FileId { get; set; }
 
-        public BinaryData File { get; set; }
+        [Experimental("SCME0004")]
+        public FileBinaryContent File { get; set; }
     }
 }

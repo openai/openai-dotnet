@@ -3,11 +3,14 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using OpenAI;
 
+#pragma warning disable SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 namespace OpenAI.Files
 {
     internal partial class InternalAddUploadPartRequest : IJsonModel<InternalAddUploadPartRequest>
@@ -66,14 +69,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Data);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Data))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(Data, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -116,13 +112,13 @@ namespace OpenAI.Files
             {
                 return null;
             }
-            BinaryData data = default;
+            FileBinaryContent data = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("data"u8))
                 {
-                    data = BinaryData.FromString(prop.Value.GetRawText());
+                    data = new FileBinaryContent(new MemoryStream(prop.Value.GetBytesFromBase64(), false));
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -132,3 +128,4 @@ namespace OpenAI.Files
         }
     }
 }
+#pragma warning restore SCME0004 // Type is for evaluation purposes only and is subject to change or removal in future updates.
