@@ -199,5 +199,5 @@ Invoke-APICompat -ProjectPath $projectPath `
     -DirectoryBuildPropsPath $buildPropsPath `
     -ReleasePath $releasePath `
     -PackageName "OpenAI" `
-    -BaselineVersion "2.10.0" `
+    -BaselineVersion "2.11.0" `
     -IgnoredNamespaces $experimentalNamespaces
