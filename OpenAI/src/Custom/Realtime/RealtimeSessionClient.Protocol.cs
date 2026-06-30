@@ -116,7 +116,35 @@ public partial class RealtimeSessionClient
 
     public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options)
     {
-        throw new NotImplementedException();
+        lock (_singleReceiveLock)
+        {
+            _receiveCollectionResult ??= new(WebSocket, options?.CancellationToken ?? default);
+        }
+
+        return EnumerateSync();
+
+        IEnumerable<ClientResult> EnumerateSync()
+        {
+            IAsyncEnumerator<ClientResult> enumerator = _receiveCollectionResult.GetAsyncEnumerator();
+
+            try
+            {
+                while (enumerator.MoveNextAsync().AsTask().GetAwaiter().GetResult())
+                {
+                    ClientResult result = enumerator.Current;
+                    BinaryData incomingMessage = result?.GetRawResponse()?.Content;
+                    if (incomingMessage is not null)
+                    {
+                        _parentClient?.RaiseOnReceivingCommand(this, incomingMessage);
+                    }
+                    yield return result;
+                }
+            }
+            finally
+            {
+                enumerator.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            }
+        }
     }
 
     private static Uri BuildSessionUri(Uri endpoint, string model, string intent)
