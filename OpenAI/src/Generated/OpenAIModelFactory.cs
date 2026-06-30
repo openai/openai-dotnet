@@ -10,6 +10,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -371,470 +372,6 @@ namespace OpenAI
                 lastId,
                 hasMore,
                 default);
-        }
-
-        public static FineTuningError FineTuningError(string code = default, string message = default, string invalidParameter = default)
-        {
-            return new FineTuningError(code, message, invalidParameter, additionalBinaryDataProperties: null);
-        }
-
-        public static FineTuningIntegration FineTuningIntegration(string kind = default)
-        {
-            return new UnknownCreateFineTuningJobRequestIntegration(new InternalCreateFineTuningJobRequestIntegrationType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static HyperparametersForSupervised HyperparametersForSupervised(BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData nEpochs = default)
-        {
-            return new HyperparametersForSupervised(batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties: null);
-        }
-
-        public static HyperparametersForDPO HyperparametersForDPO(BinaryData beta = default, BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData nEpochs = default)
-        {
-            return new HyperparametersForDPO(beta, batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties: null);
-        }
-
-        public static GraderStringCheck GraderStringCheck(string name = default, string input = default, string reference = default, GraderStringCheckOperation operation = default)
-        {
-            return new GraderStringCheck(
-                GraderType.StringCheck,
-                additionalBinaryDataProperties: null,
-                name,
-                input,
-                reference,
-                operation);
-        }
-
-        public static Grader Grader(string kind = default)
-        {
-            return new UnknownGrader(new GraderType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static GraderTextSimilarity GraderTextSimilarity(string name = default, string input = default, string reference = default, GraderTextSimilarityEvaluationMetric evaluationMetric = default)
-        {
-            return new GraderTextSimilarity(
-                GraderType.TextSimilarity,
-                additionalBinaryDataProperties: null,
-                name,
-                input,
-                reference,
-                evaluationMetric);
-        }
-
-        public static GraderPython GraderPython(string name = default, string source = default, string imageTag = default)
-        {
-            return new GraderPython(GraderType.Python, additionalBinaryDataProperties: null, name, source, imageTag);
-        }
-
-        public static GraderMulti GraderMulti(string name = default, BinaryData graders = default, string calculateOutput = default)
-        {
-            return new GraderMulti(GraderType.Multi, additionalBinaryDataProperties: null, name, graders, calculateOutput);
-        }
-
-        public static FineTuningHyperparameters FineTuningHyperparameters(BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData epochCount = default)
-        {
-            return new FineTuningHyperparameters(batchSize, learningRateMultiplier, epochCount, additionalBinaryDataProperties: null);
-        }
-
-        public static FineTuningCheckpoint FineTuningCheckpoint(string id = default, DateTimeOffset createdAt = default, string modelId = default, int stepNumber = default, FineTuningCheckpointMetrics metrics = default, string jobId = default)
-        {
-            return new FineTuningCheckpoint(
-                id,
-                createdAt,
-                modelId,
-                stepNumber,
-                metrics,
-                jobId,
-                default,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static FineTuningCheckpointMetrics FineTuningCheckpointMetrics(int stepNumber = default, float? trainLoss = default, float? trainMeanTokenAccuracy = default, float? validLoss = default, float? validMeanTokenAccuracy = default, float? fullValidLoss = default, float? fullValidMeanTokenAccuracy = default)
-        {
-            return new FineTuningCheckpointMetrics(
-                stepNumber,
-                trainLoss,
-                trainMeanTokenAccuracy,
-                validLoss,
-                validMeanTokenAccuracy,
-                fullValidLoss,
-                fullValidMeanTokenAccuracy,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static FineTuningEvent FineTuningEvent(string id = default, DateTimeOffset createdAt = default, string message = default, FineTuningJobEventKind? kind = default, BinaryData data = default, string level = default, string @object = default)
-        {
-            return new FineTuningEvent(
-                id,
-                createdAt,
-                message,
-                kind,
-                data,
-                level,
-                @object,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static RunGraderRequest RunGraderRequest(BinaryData grader = default, BinaryData item = default, string modelSample = default)
-        {
-            return new RunGraderRequest(grader, item, modelSample, additionalBinaryDataProperties: null);
-        }
-
-        public static RunGraderResponse RunGraderResponse(float reward = default, RunGraderResponseMetadata metadata = default, BinaryData subRewards = default, BinaryData modelGraderTokenUsagePerModel = default)
-        {
-            return new RunGraderResponse(reward, metadata, subRewards, modelGraderTokenUsagePerModel, additionalBinaryDataProperties: null);
-        }
-
-        public static RunGraderResponseMetadata RunGraderResponseMetadata(string name = default, string kind = default, RunGraderResponseMetadataErrors errors = default, float executionTime = default, BinaryData scores = default, int? tokenUsage = default, string sampledModelName = default)
-        {
-            return new RunGraderResponseMetadata(
-                name,
-                kind,
-                errors,
-                executionTime,
-                scores,
-                tokenUsage,
-                sampledModelName,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static RunGraderResponseMetadataErrors RunGraderResponseMetadataErrors(bool formulaParseError = default, bool sampleParseError = default, bool truncatedObservationError = default, bool unresponsiveRewardError = default, bool invalidVariableError = default, bool otherError = default, bool pythonGraderServerError = default, string pythonGraderServerErrorType = default, bool pythonGraderRuntimeError = default, string pythonGraderRuntimeErrorDetails = default, bool modelGraderServerError = default, bool modelGraderRefusalError = default, bool modelGraderParseError = default, string modelGraderServerErrorDetails = default)
-        {
-            return new RunGraderResponseMetadataErrors(
-                formulaParseError,
-                sampleParseError,
-                truncatedObservationError,
-                unresponsiveRewardError,
-                invalidVariableError,
-                otherError,
-                pythonGraderServerError,
-                pythonGraderServerErrorType,
-                pythonGraderRuntimeError,
-                pythonGraderRuntimeErrorDetails,
-                modelGraderServerError,
-                modelGraderRefusalError,
-                modelGraderParseError,
-                modelGraderServerErrorDetails,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ValidateGraderRequest ValidateGraderRequest(BinaryData grader = default)
-        {
-            return new ValidateGraderRequest(grader, additionalBinaryDataProperties: null);
-        }
-
-        public static ValidateGraderResponse ValidateGraderResponse(BinaryData grader = default)
-        {
-            return new ValidateGraderResponse(grader, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageCreationOptions MessageCreationOptions(Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, IEnumerable<MessageCreationAttachment> attachments = default, IDictionary<string, string> metadata = default)
-        {
-            content ??= new ChangeTrackingList<MessageContent>();
-            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new MessageCreationOptions(role, content.ToList(), attachments.ToList(), metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageContent MessageContent(string kind = default)
-        {
-            return new InternalUnknownMessageContent(new InternalMessageContentType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static MessageCreationAttachment MessageCreationAttachment(string fileId = default, IEnumerable<ToolDefinition> tools = default)
-        {
-            tools ??= new ChangeTrackingList<ToolDefinition>();
-
-            return new MessageCreationAttachment(fileId, tools.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static ThreadMessage ThreadMessage(string id = default, DateTimeOffset createdAt = default, string threadId = default, Assistants.MessageStatus status = default, MessageFailureDetails incompleteDetails = default, DateTimeOffset? completedAt = default, DateTimeOffset? incompleteAt = default, Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, string assistantId = default, string runId = default, IEnumerable<MessageCreationAttachment> attachments = default, IReadOnlyDictionary<string, string> metadata = default)
-        {
-            content ??= new ChangeTrackingList<MessageContent>();
-            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ThreadMessage(
-                id,
-                "thread.message",
-                createdAt,
-                threadId,
-                status,
-                incompleteDetails,
-                completedAt,
-                incompleteAt,
-                role,
-                content.ToList(),
-                assistantId,
-                runId,
-                attachments.ToList(),
-                metadata,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static MessageFailureDetails MessageFailureDetails(MessageFailureReason reason = default)
-        {
-            return new MessageFailureDetails(reason, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageModificationOptions MessageModificationOptions(IDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new MessageModificationOptions(metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageDeletionResult MessageDeletionResult(string messageId = default, bool deleted = default)
-        {
-            return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
-        }
-
-        public static CreateClientSecretOptions CreateClientSecretOptions(RealtimeClientSecretExpirationPolicy expirationPolicy = default, RealtimeSessionOptions sessionOptions = default)
-        {
-            return new CreateClientSecretOptions(expirationPolicy, sessionOptions, default);
-        }
-
-        public static RealtimeClientSecretExpirationPolicy RealtimeClientSecretExpirationPolicy(RealtimeClientSecretExpirationAnchor? anchor = default, int? seconds = default)
-        {
-            return new RealtimeClientSecretExpirationPolicy(anchor, seconds, default);
-        }
-
-        public static RealtimeSessionOptions RealtimeSessionOptions(string kind = default)
-        {
-            return new InternalUnknownRealtimeSessionCreateRequestGABaseGA(new InternalRealtimeSessionCreateRequestGABaseTypeGA(kind), default);
-        }
-
-        public static RealtimeConversationSessionOptions RealtimeConversationSessionOptions(IEnumerable<RealtimeOutputModality> outputModalities = default, string model = default, string instructions = default, RealtimeConversationSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTracing tracing = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeTruncation truncation = default)
-        {
-            outputModalities ??= new ChangeTrackingList<RealtimeOutputModality>();
-            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
-            tools ??= new ChangeTrackingList<RealtimeTool>();
-
-            return new RealtimeConversationSessionOptions(
-                InternalRealtimeSessionCreateRequestGABaseTypeGA.Realtime,
-                default,
-                outputModalities.ToList(),
-                model,
-                instructions,
-                audioOptions,
-                includedProperties.ToList(),
-                tracing,
-                tools.ToList(),
-                toolChoice,
-                maxOutputTokenCount,
-                truncation);
-        }
-
-        public static RealtimeConversationSessionAudioOptions RealtimeConversationSessionAudioOptions(RealtimeConversationSessionInputAudioOptions inputAudioOptions = default, RealtimeConversationSessionOutputAudioOptions outputAudioOptions = default)
-        {
-            return new RealtimeConversationSessionAudioOptions(inputAudioOptions, outputAudioOptions, default);
-        }
-
-        public static RealtimeConversationSessionInputAudioOptions RealtimeConversationSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
-        {
-            return new RealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
-        }
-
-        public static RealtimeAudioFormat RealtimeAudioFormat(string kind = default)
-        {
-            return new InternalUnknownRealtimeAudioFormatGA(new InternalRealtimeAudioFormatType(kind), default);
-        }
-
-        public static RealtimePcmAudioFormat RealtimePcmAudioFormat()
-        {
-            return new RealtimePcmAudioFormat(InternalRealtimeAudioFormatType.AudioPcm, default, 24000);
-        }
-
-        public static RealtimePcmuAudioFormat RealtimePcmuAudioFormat()
-        {
-            return new RealtimePcmuAudioFormat(InternalRealtimeAudioFormatType.AudioPcmu, default);
-        }
-
-        public static RealtimePcmaAudioFormat RealtimePcmaAudioFormat()
-        {
-            return new RealtimePcmaAudioFormat(InternalRealtimeAudioFormatType.AudioPcma, default);
-        }
-
-        public static RealtimeAudioTranscriptionOptions RealtimeAudioTranscriptionOptions(string model = default, string language = default, string prompt = default)
-        {
-            return new RealtimeAudioTranscriptionOptions(model, language, prompt, default);
-        }
-
-        public static RealtimeNoiseReduction RealtimeNoiseReduction(RealtimeNoiseReductionKind kind = default)
-        {
-            return new RealtimeNoiseReduction(kind, default);
-        }
-
-        public static RealtimeTurnDetection RealtimeTurnDetection(string kind = default)
-        {
-            return new InternalUnknownRealtimeTurnDetectionBaseGA(new InternalRealtimeTurnDetectionBaseTypeGA(kind), default);
-        }
-
-        public static RealtimeServerVadTurnDetection RealtimeServerVadTurnDetection(float? detectionThreshold = default, TimeSpan? prefixPadding = default, TimeSpan? silenceDuration = default, bool? createResponseEnabled = default, bool? interruptResponseEnabled = default, TimeSpan? idleTimeout = default)
-        {
-            return new RealtimeServerVadTurnDetection(
-                InternalRealtimeTurnDetectionBaseTypeGA.ServerVad,
-                default,
-                detectionThreshold,
-                prefixPadding,
-                silenceDuration,
-                createResponseEnabled,
-                interruptResponseEnabled,
-                idleTimeout);
-        }
-
-        public static RealtimeSemanticVadTurnDetection RealtimeSemanticVadTurnDetection(RealtimeSemanticVadEagernessLevel? eagernessLevel = default, bool? createResponseEnabled = default, bool? interruptResponseEnabled = default)
-        {
-            return new RealtimeSemanticVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA.SemanticVad, default, eagernessLevel, createResponseEnabled, interruptResponseEnabled);
-        }
-
-        public static RealtimeConversationSessionOutputAudioOptions RealtimeConversationSessionOutputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeVoice? voice = default, float? speed = default)
-        {
-            return new RealtimeConversationSessionOutputAudioOptions(audioFormat, voice, speed, default);
-        }
-
-        public static RealtimeCustomTracing RealtimeCustomTracing(string workflowName = default, string groupId = default, IDictionary<string, BinaryData> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
-
-            return new RealtimeCustomTracing(workflowName, groupId, metadata, default);
-        }
-
-        public static RealtimeTool RealtimeTool(string kind = default)
-        {
-            return new InternalUnknownRealtimeToolBaseGA(new InternalRealtimeToolBaseTypeGA(kind), default);
-        }
-
-        public static RealtimeFunctionTool RealtimeFunctionTool(string functionName = default, string functionDescription = default, BinaryData functionParameters = default)
-        {
-            return new RealtimeFunctionTool(InternalRealtimeToolBaseTypeGA.Function, default, functionName, functionDescription, functionParameters);
-        }
-
-        public static RealtimeMcpTool RealtimeMcpTool(string serverLabel = default, Uri serverUri = default, RealtimeMcpToolConnectorId? connectorId = default, string authorizationToken = default, string serverDescription = default, IDictionary<string, string> headers = default, RealtimeMcpToolFilter allowedTools = default, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy = default)
-        {
-            headers ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RealtimeMcpTool(
-                InternalRealtimeToolBaseTypeGA.Mcp,
-                default,
-                serverLabel,
-                serverUri,
-                connectorId,
-                authorizationToken,
-                serverDescription,
-                headers,
-                allowedTools,
-                toolCallApprovalPolicy);
-        }
-
-        public static RealtimeMcpToolFilter RealtimeMcpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
-        {
-            toolNames ??= new ChangeTrackingList<string>();
-
-            return new RealtimeMcpToolFilter(toolNames.ToList(), isReadOnly, default);
-        }
-
-        public static RealtimeCustomMcpToolCallApprovalPolicy RealtimeCustomMcpToolCallApprovalPolicy(RealtimeMcpToolFilter toolsAlwaysRequiringApproval = default, RealtimeMcpToolFilter toolsNeverRequiringApproval = default)
-        {
-            return new RealtimeCustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
-        }
-
-        public static RealtimeCustomToolChoice RealtimeCustomToolChoice(string kind = default)
-        {
-            return new InternalUnknownToolChoiceBaseGA(new InternalToolChoiceBaseTypeGA(kind), default);
-        }
-
-        public static RealtimeCustomFunctionToolChoice RealtimeCustomFunctionToolChoice(string functionName = default)
-        {
-            return new RealtimeCustomFunctionToolChoice(InternalToolChoiceBaseTypeGA.Function, default, functionName);
-        }
-
-        public static RealtimeCustomMcpToolChoice RealtimeCustomMcpToolChoice(string serverLabel = default, string mcpToolName = default)
-        {
-            return new RealtimeCustomMcpToolChoice(InternalToolChoiceBaseTypeGA.Mcp, default, serverLabel, mcpToolName);
-        }
-
-        public static RealtimeCustomTruncation RealtimeCustomTruncation(string kind = default)
-        {
-            return new InternalUnknownRealtimeTruncationBaseGA(new InternalRealtimeTruncationBaseTypeGA(kind), default);
-        }
-
-        public static RealtimeCustomRetentionRatioTruncation RealtimeCustomRetentionRatioTruncation(float retentionRatio = default, RealtimeRetentionRatioTokenLimitDetails tokenLimitDetails = default)
-        {
-            return new RealtimeCustomRetentionRatioTruncation(InternalRealtimeTruncationBaseTypeGA.RetentionRatio, default, retentionRatio, tokenLimitDetails);
-        }
-
-        public static RealtimeRetentionRatioTokenLimitDetails RealtimeRetentionRatioTokenLimitDetails(int? maxPostInstructionsTokenCount = default)
-        {
-            return new RealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, default);
-        }
-
-        public static RealtimeTranscriptionSessionOptions RealtimeTranscriptionSessionOptions(RealtimeTranscriptionSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default)
-        {
-            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
-
-            return new RealtimeTranscriptionSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA.Transcription, default, audioOptions, includedProperties.ToList());
-        }
-
-        public static RealtimeTranscriptionSessionAudioOptions RealtimeTranscriptionSessionAudioOptions(RealtimeTranscriptionSessionInputAudioOptions inputAudioOptions = default)
-        {
-            return new RealtimeTranscriptionSessionAudioOptions(inputAudioOptions, default);
-        }
-
-        public static RealtimeTranscriptionSessionInputAudioOptions RealtimeTranscriptionSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
-        {
-            return new RealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
-        }
-
-        public static CreateClientSecretResult CreateClientSecretResult(string value = default, DateTimeOffset expiresAt = default, RealtimeSession session = default)
-        {
-            return new CreateClientSecretResult(value, expiresAt, session, default);
-        }
-
-        public static RealtimeSession RealtimeSession(string kind = default)
-        {
-            return new InternalUnknownRealtimeSessionCreateResponseBaseGA(new InternalRealtimeSessionCreateResponseBaseTypeGA(kind), default);
-        }
-
-        public static RealtimeConversationSession RealtimeConversationSession(RealtimeClientSecret clientSecret = default, IEnumerable<RealtimeOutputModality> outputModalities = default, string model = default, string instructions = default, RealtimeConversationSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTracing tracing = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeTruncation truncation = default)
-        {
-            outputModalities ??= new ChangeTrackingList<RealtimeOutputModality>();
-            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
-            tools ??= new ChangeTrackingList<RealtimeTool>();
-
-            return new RealtimeConversationSession(
-                InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime,
-                default,
-                clientSecret,
-                outputModalities.ToList(),
-                model,
-                instructions,
-                audioOptions,
-                includedProperties.ToList(),
-                tracing,
-                tools.ToList(),
-                toolChoice,
-                maxOutputTokenCount,
-                truncation);
-        }
-
-        public static RealtimeClientSecret RealtimeClientSecret(string value = default, DateTimeOffset expiresAt = default)
-        {
-            return new RealtimeClientSecret(value, expiresAt, default);
-        }
-
-        public static RealtimeTranscriptionSession RealtimeTranscriptionSession(string id = default, string @object = default, DateTimeOffset? expiresAt = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTranscriptionSessionAudioOptions audioOptions = default)
-        {
-            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
-
-            return new RealtimeTranscriptionSession(
-                InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription,
-                default,
-                id,
-                @object,
-                expiresAt,
-                includedProperties.ToList(),
-                audioOptions);
         }
 
         public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default, string promptCacheKey = default, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy = default)
@@ -1874,6 +1411,470 @@ namespace OpenAI
                 default);
         }
 
+        public static FineTuningError FineTuningError(string code = default, string message = default, string invalidParameter = default)
+        {
+            return new FineTuningError(code, message, invalidParameter, additionalBinaryDataProperties: null);
+        }
+
+        public static FineTuningIntegration FineTuningIntegration(string kind = default)
+        {
+            return new UnknownCreateFineTuningJobRequestIntegration(new InternalCreateFineTuningJobRequestIntegrationType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static HyperparametersForSupervised HyperparametersForSupervised(BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData nEpochs = default)
+        {
+            return new HyperparametersForSupervised(batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties: null);
+        }
+
+        public static HyperparametersForDPO HyperparametersForDPO(BinaryData beta = default, BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData nEpochs = default)
+        {
+            return new HyperparametersForDPO(beta, batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties: null);
+        }
+
+        public static GraderStringCheck GraderStringCheck(string name = default, string input = default, string reference = default, GraderStringCheckOperation operation = default)
+        {
+            return new GraderStringCheck(
+                GraderType.StringCheck,
+                additionalBinaryDataProperties: null,
+                name,
+                input,
+                reference,
+                operation);
+        }
+
+        public static Grader Grader(string kind = default)
+        {
+            return new UnknownGrader(new GraderType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static GraderTextSimilarity GraderTextSimilarity(string name = default, string input = default, string reference = default, GraderTextSimilarityEvaluationMetric evaluationMetric = default)
+        {
+            return new GraderTextSimilarity(
+                GraderType.TextSimilarity,
+                additionalBinaryDataProperties: null,
+                name,
+                input,
+                reference,
+                evaluationMetric);
+        }
+
+        public static GraderPython GraderPython(string name = default, string source = default, string imageTag = default)
+        {
+            return new GraderPython(GraderType.Python, additionalBinaryDataProperties: null, name, source, imageTag);
+        }
+
+        public static GraderMulti GraderMulti(string name = default, BinaryData graders = default, string calculateOutput = default)
+        {
+            return new GraderMulti(GraderType.Multi, additionalBinaryDataProperties: null, name, graders, calculateOutput);
+        }
+
+        public static FineTuningHyperparameters FineTuningHyperparameters(BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData epochCount = default)
+        {
+            return new FineTuningHyperparameters(batchSize, learningRateMultiplier, epochCount, additionalBinaryDataProperties: null);
+        }
+
+        public static FineTuningCheckpoint FineTuningCheckpoint(string id = default, DateTimeOffset createdAt = default, string modelId = default, int stepNumber = default, FineTuningCheckpointMetrics metrics = default, string jobId = default)
+        {
+            return new FineTuningCheckpoint(
+                id,
+                createdAt,
+                modelId,
+                stepNumber,
+                metrics,
+                jobId,
+                default,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static FineTuningCheckpointMetrics FineTuningCheckpointMetrics(int stepNumber = default, float? trainLoss = default, float? trainMeanTokenAccuracy = default, float? validLoss = default, float? validMeanTokenAccuracy = default, float? fullValidLoss = default, float? fullValidMeanTokenAccuracy = default)
+        {
+            return new FineTuningCheckpointMetrics(
+                stepNumber,
+                trainLoss,
+                trainMeanTokenAccuracy,
+                validLoss,
+                validMeanTokenAccuracy,
+                fullValidLoss,
+                fullValidMeanTokenAccuracy,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static FineTuningEvent FineTuningEvent(string id = default, DateTimeOffset createdAt = default, string message = default, FineTuningJobEventKind? kind = default, BinaryData data = default, string level = default, string @object = default)
+        {
+            return new FineTuningEvent(
+                id,
+                createdAt,
+                message,
+                kind,
+                data,
+                level,
+                @object,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderRequest RunGraderRequest(BinaryData grader = default, BinaryData item = default, string modelSample = default)
+        {
+            return new RunGraderRequest(grader, item, modelSample, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponse RunGraderResponse(float reward = default, RunGraderResponseMetadata metadata = default, BinaryData subRewards = default, BinaryData modelGraderTokenUsagePerModel = default)
+        {
+            return new RunGraderResponse(reward, metadata, subRewards, modelGraderTokenUsagePerModel, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponseMetadata RunGraderResponseMetadata(string name = default, string kind = default, RunGraderResponseMetadataErrors errors = default, float executionTime = default, BinaryData scores = default, int? tokenUsage = default, string sampledModelName = default)
+        {
+            return new RunGraderResponseMetadata(
+                name,
+                kind,
+                errors,
+                executionTime,
+                scores,
+                tokenUsage,
+                sampledModelName,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponseMetadataErrors RunGraderResponseMetadataErrors(bool formulaParseError = default, bool sampleParseError = default, bool truncatedObservationError = default, bool unresponsiveRewardError = default, bool invalidVariableError = default, bool otherError = default, bool pythonGraderServerError = default, string pythonGraderServerErrorType = default, bool pythonGraderRuntimeError = default, string pythonGraderRuntimeErrorDetails = default, bool modelGraderServerError = default, bool modelGraderRefusalError = default, bool modelGraderParseError = default, string modelGraderServerErrorDetails = default)
+        {
+            return new RunGraderResponseMetadataErrors(
+                formulaParseError,
+                sampleParseError,
+                truncatedObservationError,
+                unresponsiveRewardError,
+                invalidVariableError,
+                otherError,
+                pythonGraderServerError,
+                pythonGraderServerErrorType,
+                pythonGraderRuntimeError,
+                pythonGraderRuntimeErrorDetails,
+                modelGraderServerError,
+                modelGraderRefusalError,
+                modelGraderParseError,
+                modelGraderServerErrorDetails,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ValidateGraderRequest ValidateGraderRequest(BinaryData grader = default)
+        {
+            return new ValidateGraderRequest(grader, additionalBinaryDataProperties: null);
+        }
+
+        public static ValidateGraderResponse ValidateGraderResponse(BinaryData grader = default)
+        {
+            return new ValidateGraderResponse(grader, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageCreationOptions MessageCreationOptions(Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, IEnumerable<MessageCreationAttachment> attachments = default, IDictionary<string, string> metadata = default)
+        {
+            content ??= new ChangeTrackingList<MessageContent>();
+            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new MessageCreationOptions(role, content.ToList(), attachments.ToList(), metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageContent MessageContent(string kind = default)
+        {
+            return new InternalUnknownMessageContent(new InternalMessageContentType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static MessageCreationAttachment MessageCreationAttachment(string fileId = default, IEnumerable<ToolDefinition> tools = default)
+        {
+            tools ??= new ChangeTrackingList<ToolDefinition>();
+
+            return new MessageCreationAttachment(fileId, tools.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadMessage ThreadMessage(string id = default, DateTimeOffset createdAt = default, string threadId = default, Assistants.MessageStatus status = default, MessageFailureDetails incompleteDetails = default, DateTimeOffset? completedAt = default, DateTimeOffset? incompleteAt = default, Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, string assistantId = default, string runId = default, IEnumerable<MessageCreationAttachment> attachments = default, IReadOnlyDictionary<string, string> metadata = default)
+        {
+            content ??= new ChangeTrackingList<MessageContent>();
+            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ThreadMessage(
+                id,
+                "thread.message",
+                createdAt,
+                threadId,
+                status,
+                incompleteDetails,
+                completedAt,
+                incompleteAt,
+                role,
+                content.ToList(),
+                assistantId,
+                runId,
+                attachments.ToList(),
+                metadata,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static MessageFailureDetails MessageFailureDetails(MessageFailureReason reason = default)
+        {
+            return new MessageFailureDetails(reason, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageModificationOptions MessageModificationOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new MessageModificationOptions(metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageDeletionResult MessageDeletionResult(string messageId = default, bool deleted = default)
+        {
+            return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
+        }
+
+        public static CreateClientSecretOptions CreateClientSecretOptions(RealtimeClientSecretExpirationPolicy expirationPolicy = default, RealtimeSessionOptions sessionOptions = default)
+        {
+            return new CreateClientSecretOptions(expirationPolicy, sessionOptions, default);
+        }
+
+        public static RealtimeClientSecretExpirationPolicy RealtimeClientSecretExpirationPolicy(RealtimeClientSecretExpirationAnchor? anchor = default, int? seconds = default)
+        {
+            return new RealtimeClientSecretExpirationPolicy(anchor, seconds, default);
+        }
+
+        public static RealtimeSessionOptions RealtimeSessionOptions(string kind = default)
+        {
+            return new InternalUnknownRealtimeSessionCreateRequestGABaseGA(new InternalRealtimeSessionCreateRequestGABaseTypeGA(kind), default);
+        }
+
+        public static RealtimeConversationSessionOptions RealtimeConversationSessionOptions(IEnumerable<RealtimeOutputModality> outputModalities = default, string model = default, string instructions = default, RealtimeConversationSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTracing tracing = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeTruncation truncation = default)
+        {
+            outputModalities ??= new ChangeTrackingList<RealtimeOutputModality>();
+            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
+            tools ??= new ChangeTrackingList<RealtimeTool>();
+
+            return new RealtimeConversationSessionOptions(
+                InternalRealtimeSessionCreateRequestGABaseTypeGA.Realtime,
+                default,
+                outputModalities.ToList(),
+                model,
+                instructions,
+                audioOptions,
+                includedProperties.ToList(),
+                tracing,
+                tools.ToList(),
+                toolChoice,
+                maxOutputTokenCount,
+                truncation);
+        }
+
+        public static RealtimeConversationSessionAudioOptions RealtimeConversationSessionAudioOptions(RealtimeConversationSessionInputAudioOptions inputAudioOptions = default, RealtimeConversationSessionOutputAudioOptions outputAudioOptions = default)
+        {
+            return new RealtimeConversationSessionAudioOptions(inputAudioOptions, outputAudioOptions, default);
+        }
+
+        public static RealtimeConversationSessionInputAudioOptions RealtimeConversationSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
+        {
+            return new RealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
+        }
+
+        public static RealtimeAudioFormat RealtimeAudioFormat(string kind = default)
+        {
+            return new InternalUnknownRealtimeAudioFormatGA(new InternalRealtimeAudioFormatType(kind), default);
+        }
+
+        public static RealtimePcmAudioFormat RealtimePcmAudioFormat()
+        {
+            return new RealtimePcmAudioFormat(InternalRealtimeAudioFormatType.AudioPcm, default, 24000);
+        }
+
+        public static RealtimePcmuAudioFormat RealtimePcmuAudioFormat()
+        {
+            return new RealtimePcmuAudioFormat(InternalRealtimeAudioFormatType.AudioPcmu, default);
+        }
+
+        public static RealtimePcmaAudioFormat RealtimePcmaAudioFormat()
+        {
+            return new RealtimePcmaAudioFormat(InternalRealtimeAudioFormatType.AudioPcma, default);
+        }
+
+        public static RealtimeAudioTranscriptionOptions RealtimeAudioTranscriptionOptions(string model = default, string language = default, string prompt = default)
+        {
+            return new RealtimeAudioTranscriptionOptions(model, language, prompt, default);
+        }
+
+        public static RealtimeNoiseReduction RealtimeNoiseReduction(RealtimeNoiseReductionKind kind = default)
+        {
+            return new RealtimeNoiseReduction(kind, default);
+        }
+
+        public static RealtimeTurnDetection RealtimeTurnDetection(string kind = default)
+        {
+            return new InternalUnknownRealtimeTurnDetectionBaseGA(new InternalRealtimeTurnDetectionBaseTypeGA(kind), default);
+        }
+
+        public static RealtimeServerVadTurnDetection RealtimeServerVadTurnDetection(float? detectionThreshold = default, TimeSpan? prefixPadding = default, TimeSpan? silenceDuration = default, bool? createResponseEnabled = default, bool? interruptResponseEnabled = default, TimeSpan? idleTimeout = default)
+        {
+            return new RealtimeServerVadTurnDetection(
+                InternalRealtimeTurnDetectionBaseTypeGA.ServerVad,
+                default,
+                detectionThreshold,
+                prefixPadding,
+                silenceDuration,
+                createResponseEnabled,
+                interruptResponseEnabled,
+                idleTimeout);
+        }
+
+        public static RealtimeSemanticVadTurnDetection RealtimeSemanticVadTurnDetection(RealtimeSemanticVadEagernessLevel? eagernessLevel = default, bool? createResponseEnabled = default, bool? interruptResponseEnabled = default)
+        {
+            return new RealtimeSemanticVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA.SemanticVad, default, eagernessLevel, createResponseEnabled, interruptResponseEnabled);
+        }
+
+        public static RealtimeConversationSessionOutputAudioOptions RealtimeConversationSessionOutputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeVoice? voice = default, float? speed = default)
+        {
+            return new RealtimeConversationSessionOutputAudioOptions(audioFormat, voice, speed, default);
+        }
+
+        public static RealtimeCustomTracing RealtimeCustomTracing(string workflowName = default, string groupId = default, IDictionary<string, BinaryData> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
+
+            return new RealtimeCustomTracing(workflowName, groupId, metadata, default);
+        }
+
+        public static RealtimeTool RealtimeTool(string kind = default)
+        {
+            return new InternalUnknownRealtimeToolBaseGA(new InternalRealtimeToolBaseTypeGA(kind), default);
+        }
+
+        public static RealtimeFunctionTool RealtimeFunctionTool(string functionName = default, string functionDescription = default, BinaryData functionParameters = default)
+        {
+            return new RealtimeFunctionTool(InternalRealtimeToolBaseTypeGA.Function, default, functionName, functionDescription, functionParameters);
+        }
+
+        public static RealtimeMcpTool RealtimeMcpTool(string serverLabel = default, Uri serverUri = default, RealtimeMcpToolConnectorId? connectorId = default, string authorizationToken = default, string serverDescription = default, IDictionary<string, string> headers = default, RealtimeMcpToolFilter allowedTools = default, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy = default)
+        {
+            headers ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RealtimeMcpTool(
+                InternalRealtimeToolBaseTypeGA.Mcp,
+                default,
+                serverLabel,
+                serverUri,
+                connectorId,
+                authorizationToken,
+                serverDescription,
+                headers,
+                allowedTools,
+                toolCallApprovalPolicy);
+        }
+
+        public static RealtimeMcpToolFilter RealtimeMcpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
+        {
+            toolNames ??= new ChangeTrackingList<string>();
+
+            return new RealtimeMcpToolFilter(toolNames.ToList(), isReadOnly, default);
+        }
+
+        public static RealtimeCustomMcpToolCallApprovalPolicy RealtimeCustomMcpToolCallApprovalPolicy(RealtimeMcpToolFilter toolsAlwaysRequiringApproval = default, RealtimeMcpToolFilter toolsNeverRequiringApproval = default)
+        {
+            return new RealtimeCustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
+        }
+
+        public static RealtimeCustomToolChoice RealtimeCustomToolChoice(string kind = default)
+        {
+            return new InternalUnknownToolChoiceBaseGA(new InternalToolChoiceBaseTypeGA(kind), default);
+        }
+
+        public static RealtimeCustomFunctionToolChoice RealtimeCustomFunctionToolChoice(string functionName = default)
+        {
+            return new RealtimeCustomFunctionToolChoice(InternalToolChoiceBaseTypeGA.Function, default, functionName);
+        }
+
+        public static RealtimeCustomMcpToolChoice RealtimeCustomMcpToolChoice(string serverLabel = default, string mcpToolName = default)
+        {
+            return new RealtimeCustomMcpToolChoice(InternalToolChoiceBaseTypeGA.Mcp, default, serverLabel, mcpToolName);
+        }
+
+        public static RealtimeCustomTruncation RealtimeCustomTruncation(string kind = default)
+        {
+            return new InternalUnknownRealtimeTruncationBaseGA(new InternalRealtimeTruncationBaseTypeGA(kind), default);
+        }
+
+        public static RealtimeCustomRetentionRatioTruncation RealtimeCustomRetentionRatioTruncation(float retentionRatio = default, RealtimeRetentionRatioTokenLimitDetails tokenLimitDetails = default)
+        {
+            return new RealtimeCustomRetentionRatioTruncation(InternalRealtimeTruncationBaseTypeGA.RetentionRatio, default, retentionRatio, tokenLimitDetails);
+        }
+
+        public static RealtimeRetentionRatioTokenLimitDetails RealtimeRetentionRatioTokenLimitDetails(int? maxPostInstructionsTokenCount = default)
+        {
+            return new RealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, default);
+        }
+
+        public static RealtimeTranscriptionSessionOptions RealtimeTranscriptionSessionOptions(RealtimeTranscriptionSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default)
+        {
+            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
+
+            return new RealtimeTranscriptionSessionOptions(InternalRealtimeSessionCreateRequestGABaseTypeGA.Transcription, default, audioOptions, includedProperties.ToList());
+        }
+
+        public static RealtimeTranscriptionSessionAudioOptions RealtimeTranscriptionSessionAudioOptions(RealtimeTranscriptionSessionInputAudioOptions inputAudioOptions = default)
+        {
+            return new RealtimeTranscriptionSessionAudioOptions(inputAudioOptions, default);
+        }
+
+        public static RealtimeTranscriptionSessionInputAudioOptions RealtimeTranscriptionSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
+        {
+            return new RealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
+        }
+
+        public static CreateClientSecretResult CreateClientSecretResult(string value = default, DateTimeOffset expiresAt = default, RealtimeSession session = default)
+        {
+            return new CreateClientSecretResult(value, expiresAt, session, default);
+        }
+
+        public static RealtimeSession RealtimeSession(string kind = default)
+        {
+            return new InternalUnknownRealtimeSessionCreateResponseBaseGA(new InternalRealtimeSessionCreateResponseBaseTypeGA(kind), default);
+        }
+
+        public static RealtimeConversationSession RealtimeConversationSession(RealtimeClientSecret clientSecret = default, IEnumerable<RealtimeOutputModality> outputModalities = default, string model = default, string instructions = default, RealtimeConversationSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTracing tracing = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeTruncation truncation = default)
+        {
+            outputModalities ??= new ChangeTrackingList<RealtimeOutputModality>();
+            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
+            tools ??= new ChangeTrackingList<RealtimeTool>();
+
+            return new RealtimeConversationSession(
+                InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime,
+                default,
+                clientSecret,
+                outputModalities.ToList(),
+                model,
+                instructions,
+                audioOptions,
+                includedProperties.ToList(),
+                tracing,
+                tools.ToList(),
+                toolChoice,
+                maxOutputTokenCount,
+                truncation);
+        }
+
+        public static RealtimeClientSecret RealtimeClientSecret(string value = default, DateTimeOffset expiresAt = default)
+        {
+            return new RealtimeClientSecret(value, expiresAt, default);
+        }
+
+        public static RealtimeTranscriptionSession RealtimeTranscriptionSession(string id = default, string @object = default, DateTimeOffset? expiresAt = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTranscriptionSessionAudioOptions audioOptions = default)
+        {
+            includedProperties ??= new ChangeTrackingList<RealtimeIncludedProperty>();
+
+            return new RealtimeTranscriptionSession(
+                InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription,
+                default,
+                id,
+                @object,
+                expiresAt,
+                includedProperties.ToList(),
+                audioOptions);
+        }
+
         public static ThreadCreationOptions ThreadCreationOptions(IEnumerable<MessageCreationOptions> internalMessages = default, ToolResources toolResources = default, IDictionary<string, string> metadata = default)
         {
             internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
@@ -2128,6 +2129,33 @@ namespace OpenAI
             segments ??= new ChangeTrackingList<TranscribedSegment>();
 
             return new AudioTranslation(language, duration, text, segments.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static ConversationResource ConversationResource(string id = default, IDictionary<string, string> metadata = default, DateTimeOffset createdAt = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ConversationResource(id, "conversation", metadata, createdAt, default);
+        }
+
+        public static ConversationCreationOptions ConversationCreationOptions(IDictionary<string, string> metadata = default, IEnumerable<ResponseItem> items = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            items ??= new ChangeTrackingList<ResponseItem>();
+
+            return new ConversationCreationOptions(metadata, items.ToList(), default);
+        }
+
+        public static ConversationDeletionResult ConversationDeletionResult(bool deleted = default, string conversationId = default)
+        {
+            return new ConversationDeletionResult("conversation.deleted", deleted, conversationId, default);
+        }
+
+        public static ConversationUpdateOptions ConversationUpdateOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ConversationUpdateOptions(metadata, default);
         }
 
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
@@ -2554,6 +2582,45 @@ namespace OpenAI
         public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string containerId = default, int? pageSizeLimit = default, ContainerFileCollectionOrder? order = default, string afterId = default)
         {
             return new ContainerFileCollectionOptions(containerId, pageSizeLimit, order, afterId, additionalBinaryDataProperties: null);
+        }
+
+        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
+        {
+            return new ResponseItemCollectionOptions(
+                responseId,
+                afterId,
+                beforeId,
+                pageSizeLimit,
+                order,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static GetResponseOptions GetResponseOptions(string responseId = default, int? startingAfter = default, bool? includeObfuscation = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? streamingEnabled = default)
+        {
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
+
+            return new GetResponseOptions(
+                responseId,
+                startingAfter,
+                includeObfuscation,
+                includedProperties.ToList(),
+                streamingEnabled,
+                default);
+        }
+
+        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = default, McpToolFilter toolsNeverRequiringApproval = default)
+        {
+            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
+        }
+
+        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
+        {
+            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
+        }
+
+        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
+        {
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
         public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
@@ -3238,45 +3305,6 @@ namespace OpenAI
         public static RealtimeClientCommandOutputAudioBufferClear RealtimeClientCommandOutputAudioBufferClear(string eventId = default)
         {
             return new RealtimeClientCommandOutputAudioBufferClear(InternalRealtimeClientEventTypeGA.OutputAudioBufferClear, default, eventId);
-        }
-
-        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
-        {
-            return new ResponseItemCollectionOptions(
-                responseId,
-                afterId,
-                beforeId,
-                pageSizeLimit,
-                order,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static GetResponseOptions GetResponseOptions(string responseId = default, int? startingAfter = default, bool? includeObfuscation = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? streamingEnabled = default)
-        {
-            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
-
-            return new GetResponseOptions(
-                responseId,
-                startingAfter,
-                includeObfuscation,
-                includedProperties.ToList(),
-                streamingEnabled,
-                default);
-        }
-
-        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = default, McpToolFilter toolsNeverRequiringApproval = default)
-        {
-            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
-        }
-
-        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
-        {
-            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
-        }
-
-        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
-        {
-            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
         public static RunStepUpdateCodeInterpreterOutput RunStepUpdateCodeInterpreterOutput(string kind = default)

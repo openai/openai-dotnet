@@ -13,21 +13,28 @@ using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalCreateConversationItemsParametersBody
+    internal partial class InternalConversationItemCollection
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalCreateConversationItemsParametersBody(IEnumerable<ResponseItem> items)
+        internal InternalConversationItemCollection(IEnumerable<ResponseItem> data, string firstId, string lastId, bool hasMore)
         {
-            Items = items.ToList();
+            Data = data.ToList();
+            FirstId = firstId;
+            LastId = lastId;
+            HasMore = hasMore;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCreateConversationItemsParametersBody(IList<ResponseItem> items, in JsonPatch patch)
+        internal InternalConversationItemCollection(string @object, IList<ResponseItem> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
-            Items = items ?? new ChangeTrackingList<ResponseItem>();
+            Object = @object;
+            Data = data ?? new ChangeTrackingList<ResponseItem>();
+            FirstId = firstId;
+            LastId = lastId;
+            HasMore = hasMore;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -38,6 +45,14 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public IList<ResponseItem> Items { get; }
+        internal string Object { get; } = "list";
+
+        public IList<ResponseItem> Data { get; }
+
+        public string FirstId { get; }
+
+        public string LastId { get; }
+
+        public bool HasMore { get; }
     }
 }

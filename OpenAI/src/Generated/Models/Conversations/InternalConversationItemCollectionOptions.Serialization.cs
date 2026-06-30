@@ -12,6 +12,10 @@ namespace OpenAI.Conversations
 {
     internal partial class InternalConversationItemCollectionOptions : IJsonModel<InternalConversationItemCollectionOptions>
     {
+        internal InternalConversationItemCollectionOptions() : this(null, default, default, null, null, null)
+        {
+        }
+
         protected virtual InternalConversationItemCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalConversationItemCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -100,16 +104,24 @@ namespace OpenAI.Conversations
             {
                 return null;
             }
-            string afterId = default;
-            int? pageSizeLimit = default;
+            string conversationId = default;
+            int? limit = default;
             InternalConversationItemCollectionOrder? order = default;
+            string after = default;
+            IList<IncludedConversationItemProperty> include = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalConversationItemCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties);
+            return new InternalConversationItemCollectionOptions(
+                conversationId,
+                limit,
+                order,
+                after,
+                include ?? new ChangeTrackingList<IncludedConversationItemProperty>(),
+                additionalBinaryDataProperties);
         }
     }
 }

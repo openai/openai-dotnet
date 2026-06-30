@@ -1,0 +1,183 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "130",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "topic": "test"
+        },
+        "items": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "tell me a joke"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a12024c00dba76f2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "164",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+        "object": "conversation",
+        "created_at": 1782518134,
+        "metadata": {
+          "topic": "test"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a12024c57a4f76f2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "164",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+        "object": "conversation",
+        "created_at": 1782518134,
+        "metadata": {
+          "topic": "test"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "67",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "topic": "updated-test",
+          "purpose": "conversation-test"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a12024c7dc2276f2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "208",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+        "object": "conversation",
+        "created_at": 1782518134,
+        "metadata": {
+          "topic": "updated-test",
+          "purpose": "conversation-test"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a12024cbbf3076f2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "122",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a3f11765ab88196bb163daa1e6dc3030eea6ca4e48c1c16",
+        "object": "conversation.deleted",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

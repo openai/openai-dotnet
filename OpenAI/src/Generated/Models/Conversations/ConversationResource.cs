@@ -2,34 +2,39 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json.Serialization;
 using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalCreateConversationItemsParametersBody
+    [Experimental("OPENAI001")]
+    public partial class ConversationResource
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalCreateConversationItemsParametersBody(IEnumerable<ResponseItem> items)
+        internal ConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdAt)
         {
-            Items = items.ToList();
+            // Plugin customization: ensure initialization of collections
+            Id = id;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+            CreatedAt = createdAt;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalCreateConversationItemsParametersBody(IList<ResponseItem> items, in JsonPatch patch)
+        internal ConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
-            Items = items ?? new ChangeTrackingList<ResponseItem>();
+            Id = id;
+            Object = @object;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+            CreatedAt = createdAt;
             _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -38,6 +43,10 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public IList<ResponseItem> Items { get; }
+        public string Id { get; set; }
+
+        public IDictionary<string, string> Metadata { get; }
+
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }

@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "172",
+        "Content-Length": "146",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "metadata": {
@@ -17,16 +17,22 @@
         "items": [
           {
             "type": "message",
-            "role": "user",
-            "content": "tell me a joke"
+            "role": "system",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "You are a helpful assistant."
+              }
+            ]
           }
         ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9ab7ce2c3b779898-LAX",
+        "CF-RAY": "a12055487b21ba4e-SEA",
         "Connection": "keep-alive",
         "Content-Length": "164",
         "Content-Type": "application/json",
@@ -36,20 +42,16 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "484",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3",
+        "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83",
         "object": "conversation",
-        "created_at": 1765317941,
+        "created_at": 1782520122,
         "metadata": {
           "topic": "test"
         }
@@ -61,12 +63,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "199",
+        "Content-Length": "203",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "model": "gpt-4.1",
+        "model": "gpt-4o-mini",
         "input": [
           {
             "type": "message",
@@ -74,22 +76,27 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "tell me another"
+                "text": "Tell me a joke."
               }
             ]
           }
         ],
         "conversation": {
-          "id": "conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3"
+          "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83"
         }
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9ab7ce307df39898-LAX",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a120554cdf4eba4e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1643",
+        "Content-Length": "2109",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -99,36 +106,38 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "954",
-        "x-ratelimit-limit-requests": "10000",
-        "x-ratelimit-limit-tokens": "30000000",
-        "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999992",
-        "x-ratelimit-reset-requests": "6ms",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999957",
+        "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0ee136b97ccde5b30069389d362b148194884f79a55bc9f340",
+        "id": "resp_0903dc172c433d83006a3f193a95148197a63e0918e859de99",
         "object": "response",
-        "created_at": 1765317942,
+        "created_at": 1782520122,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1782520123,
         "conversation": {
-          "id": "conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3"
+          "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83"
         },
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
-        "model": "gpt-4.1-2025-04-14",
+        "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
         "output": [
           {
-            "id": "msg_0ee136b97ccde5b30069389d3690d4819496d9be8fe716c987",
+            "id": "msg_0903dc172c433d83006a3f193bcd28819790de018a308e0dde",
             "type": "message",
             "status": "completed",
             "content": [
@@ -136,17 +145,19 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Of course! Here’s another one:\n\n**Why can’t you give Elsa a balloon?**\n\nBecause she will let it go!"
+                "text": "Why did the scarecrow win an award?\n\nBecause he was outstanding in his field!"
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": null,
           "effort": null,
           "summary": null
         },
@@ -161,41 +172,60 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [],
         "top_logprobs": 0,
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 18,
+          "input_tokens": 22,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 27,
+          "output_tokens": 18,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 45
+          "total_tokens": 40
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/conversations/conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3/items",
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83/items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9ab7ce390b009898-LAX",
+        "CF-RAY": "a12055596b88ba4e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1178",
+        "Content-Length": "1160",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -205,7 +235,6 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "349",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -213,7 +242,7 @@
         "object": "list",
         "data": [
           {
-            "id": "msg_0ee136b97ccde5b30069389d3690d4819496d9be8fe716c987",
+            "id": "msg_0903dc172c433d83006a3f193bcd28819790de018a308e0dde",
             "type": "message",
             "status": "completed",
             "content": [
@@ -221,43 +250,78 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Of course! Here’s another one:\n\n**Why can’t you give Elsa a balloon?**\n\nBecause she will let it go!"
+                "text": "Why did the scarecrow win an award?\n\nBecause he was outstanding in his field!"
               }
             ],
             "role": "assistant"
           },
           {
-            "id": "msg_0ee136b97ccde5b30069389d3652788194a67fba0b4865e8d5",
+            "id": "msg_0903dc172c433d83006a3f193ad248819784f5f286a185c711",
             "type": "message",
             "status": "completed",
             "content": [
               {
                 "type": "input_text",
-                "text": "tell me another"
+                "text": "Tell me a joke."
               }
             ],
             "role": "user"
           },
           {
-            "id": "msg_69389d35991481948df3d31de8a3d1e60ee136b97ccde5b3",
+            "id": "msg_6a3f193a242081979148afa228b7e3ed0903dc172c433d83",
             "type": "message",
             "status": "completed",
             "content": [
               {
                 "type": "input_text",
-                "text": "tell me a joke"
+                "text": "You are a helpful assistant."
               }
             ],
-            "role": "user"
+            "role": "system"
           }
         ],
-        "first_id": "msg_0ee136b97ccde5b30069389d3690d4819496d9be8fe716c987",
+        "first_id": "msg_0903dc172c433d83006a3f193bcd28819790de018a308e0dde",
         "has_more": false,
-        "last_id": "msg_69389d35991481948df3d31de8a3d1e60ee136b97ccde5b3"
+        "last_id": "msg_6a3f193a242081979148afa228b7e3ed0903dc172c433d83"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a120555accefba4e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "122",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83",
+        "object": "conversation.deleted",
+        "deleted": true
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

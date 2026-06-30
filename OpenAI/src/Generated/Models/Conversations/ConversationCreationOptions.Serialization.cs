@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text;
@@ -12,46 +13,51 @@ using OpenAI.Responses;
 
 namespace OpenAI.Conversations
 {
-    internal partial class InternalCreateConversationItemsParametersBody : IJsonModel<InternalCreateConversationItemsParametersBody>
+    public partial class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>
     {
-        internal InternalCreateConversationItemsParametersBody() : this(null, default)
+        protected virtual ConversationCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-        }
-
-        protected virtual InternalCreateConversationItemsParametersBody PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateConversationItemsParametersBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalCreateConversationItemsParametersBody(document.RootElement, data, options);
+                        return DeserializeConversationCreationOptions(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalCreateConversationItemsParametersBody)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ConversationCreationOptions)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateConversationItemsParametersBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalCreateConversationItemsParametersBody)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ConversationCreationOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalCreateConversationItemsParametersBody>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ConversationCreationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalCreateConversationItemsParametersBody IPersistableModel<InternalCreateConversationItemsParametersBody>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ConversationCreationOptions IPersistableModel<ConversationCreationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalCreateConversationItemsParametersBody>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ConversationCreationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalCreateConversationItemsParametersBody>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        public static implicit operator BinaryContent(ConversationCreationOptions conversationCreationOptions)
+        {
+            if (conversationCreationOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(conversationCreationOptions, ModelSerializationExtensions.WireOptions);
+        }
+
+        void IJsonModel<ConversationCreationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -68,12 +74,42 @@ namespace OpenAI.Conversations
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateConversationItemsParametersBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalCreateConversationItemsParametersBody)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ConversationCreationOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
+            {
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+#if NET8_0_OR_GREATER
+                global::System.Span<byte> buffer = stackalloc byte[256];
+#endif
+                foreach (var item in Metadata)
+                {
+#if NET8_0_OR_GREATER
+                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
+#else
+                    bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                    if (!patchContains)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                }
+
+                Patch.WriteTo(writer, "$.metadata"u8);
+                writer.WriteEndObject();
+            }
             if (Patch.Contains("$.items"u8))
             {
                 if (!Patch.IsRemoved("$.items"u8))
@@ -82,7 +118,7 @@ namespace OpenAI.Conversations
                     writer.WriteRawValue(Patch.GetJson("$.items"u8));
                 }
             }
-            else
+            else if (Optional.IsCollectionDefined(Items))
             {
                 writer.WritePropertyName("items"u8);
                 writer.WriteStartArray();
@@ -102,33 +138,59 @@ namespace OpenAI.Conversations
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        InternalCreateConversationItemsParametersBody IJsonModel<InternalCreateConversationItemsParametersBody>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ConversationCreationOptions IJsonModel<ConversationCreationOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalCreateConversationItemsParametersBody JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ConversationCreationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateConversationItemsParametersBody>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ConversationCreationOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalCreateConversationItemsParametersBody)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ConversationCreationOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateConversationItemsParametersBody(document.RootElement, null, options);
+            return DeserializeConversationCreationOptions(document.RootElement, null, options);
         }
 
-        internal static InternalCreateConversationItemsParametersBody DeserializeInternalCreateConversationItemsParametersBody(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ConversationCreationOptions DeserializeConversationCreationOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
+            IDictionary<string, string> metadata = default;
             IList<ResponseItem> items = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("metadata"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
+                    continue;
+                }
                 if (prop.NameEquals("items"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     List<ResponseItem> array = new List<ResponseItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
@@ -139,7 +201,7 @@ namespace OpenAI.Conversations
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCreateConversationItemsParametersBody(items, patch);
+            return new ConversationCreationOptions(metadata ?? new ChangeTrackingDictionary<string, string>(), items ?? new ChangeTrackingList<ResponseItem>(), patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

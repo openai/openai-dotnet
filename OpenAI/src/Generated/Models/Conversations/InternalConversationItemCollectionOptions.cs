@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Conversations
 {
@@ -11,23 +12,32 @@ namespace OpenAI.Conversations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalConversationItemCollectionOptions()
+        public InternalConversationItemCollectionOptions(string conversationId)
         {
+            ConversationId = conversationId;
+            Include = new ChangeTrackingList<IncludedConversationItemProperty>();
         }
 
-        internal InternalConversationItemCollectionOptions(string afterId, int? pageSizeLimit, InternalConversationItemCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalConversationItemCollectionOptions(string conversationId, int? limit, InternalConversationItemCollectionOrder? order, string after, IList<IncludedConversationItemProperty> include, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            AfterId = afterId;
-            PageSizeLimit = pageSizeLimit;
+            // Plugin customization: ensure initialization of collections
+            ConversationId = conversationId;
+            Limit = limit;
             Order = order;
+            After = after;
+            Include = include ?? new ChangeTrackingList<IncludedConversationItemProperty>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string AfterId { get; set; }
+        public string ConversationId { get; }
 
-        public int? PageSizeLimit { get; set; }
+        public int? Limit { get; set; }
 
         internal InternalConversationItemCollectionOrder? Order { get; set; }
+
+        public string After { get; set; }
+
+        public IList<IncludedConversationItemProperty> Include { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

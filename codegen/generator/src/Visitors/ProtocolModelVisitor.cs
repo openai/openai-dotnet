@@ -37,6 +37,11 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
         "OpenAI.Containers.ContainerNetworkPolicyKind",
         "OpenAI.Containers.ContainerResource",
 
+        "OpenAI.Conversations.ConversationCreationOptions",
+        "OpenAI.Conversations.ConversationDeletionResult",
+        "OpenAI.Conversations.ConversationResource",
+        "OpenAI.Conversations.ConversationUpdateOptions",
+
         "OpenAI.Responses.CreateResponseOptions",
         "OpenAI.Responses.ResponseDeletionResult",
         "OpenAI.Responses.ResponseInputTokenUsageDetails",
