@@ -27,7 +27,17 @@ internal static partial class DataEncodingHelpers
         }
 
         string matchedBase64Data = parsedDataUri.Groups["data"].Value;
-        byte[] matchedBase64RawBytes = Convert.FromBase64String(matchedBase64Data);
+        byte[] matchedBase64RawBytes;
+        try
+        {
+            matchedBase64RawBytes = Convert.FromBase64String(matchedBase64Data);
+        }
+        catch (FormatException)
+        {
+            bytes = null;
+            bytesMediaType = null;
+            return false;
+        }
         
         bytes = BinaryData.FromBytes(matchedBase64RawBytes);
         bytesMediaType = parsedDataUri.Groups["type"].Value;
