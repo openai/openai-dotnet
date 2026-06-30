@@ -30,11 +30,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
     - Added the `ConversationUpdateOptions` type.
     - Added the `ConversationDeletionResult` type.
     - Added the `ConversationResource` type.
-      - Added new convenience methods to the `ConversationClient`:
-        - `CreateConversation` and `CreateConversationAsync`
-        - `DeleteConversation` and `DeleteConversationAsync`
-        - `GetConversation` and `GetConversationAsync`
-        - `UpdateConversation` and `UpdateConversationAsync`
+    - Added new convenience methods to the `ConversationClient`:
+      - `CreateConversation` and `CreateConversationAsync`
+      - `DeleteConversation` and `DeleteConversationAsync`
+      - `GetConversation` and `GetConversationAsync`
+      - `UpdateConversation` and `UpdateConversationAsync`
 - OpenAI.Responses:
   - Added support for cache keys and cache retention policies, used by OpenAI to cache responses for similar requests in order to optimize your cache hit rates.
     - Added the `ResponsePromptCacheRetentionPolicy` extensible enum.
