@@ -1,11 +1,74 @@
 # Release History
 
-## (Unreleased)
+## 2.12.0 (2026-06-30)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- [@thejesh23](https://github.com/thejesh23)
+- [@bymle](https://github.com/bymle)
+
+### Features Added
+
+- OpenAI.Containers:
+  - Added support for network policies.
+    - Added the `ContainerNetworkPolicy` type with the following derived types:
+      - `ContainerAllowlistNetworkPolicy`
+      - `ContainerDisabledNetworkPolicy`
+    - Added the `ContainerNetworkPolicyKind` extensible enum.
+    - Added the `ContainerNetworkPolicyDomainSecret` type.
+    - Added the `NetworkPolicy` property to `ContainerCreationOptions`.
+  - Added support for memory limits for containers.
+    - Added the `ContainerMemoryLimit` extensible enum.
+    - Added the `MemoryLimit` property to `ContainerCreationOptions`.
+  - Added support for listing containers filtered by name.
+    - Added the `Name` property to `ContainerCollectionOptions`.
+- OpenAI.Conversations:
+  - Added new conveniences to the `ConversationClient`:
+    - Added the `ConversationCreationOptions` type.
+    - Added the `ConversationUpdateOptions` type.
+    - Added the `ConversationDeletionResult` type.
+    - Added the `ConversationResource` type.
+      - Added new convenience methods to the `ConversationClient`:
+        - `CreateConversation` and `CreateConversationAsync`
+        - `DeleteConversation` and `DeleteConversationAsync`
+        - `GetConversation` and `GetConversationAsync`
+        - `UpdateConversation` and `UpdateConversationAsync`
+- OpenAI.Responses:
+  - Added support for cache keys and cache retention policies, used by OpenAI to cache responses for similar requests in order to optimize your cache hit rates.
+    - Added the `ResponsePromptCacheRetentionPolicy` extensible enum.
+    - Added the `PromptCacheKey` and `PromptCacheRetentionPolicy` properties to `CreateResponseOptions`.
+    - Added the `PromptCacheKey` and `PromptCacheRetentionPolicy` properties to `ResponseResult`.
 
 ### Bugs Fixed
 
 - OpenAI.Chat:
-  - Fixed `ChatMessageContentPart.CreateImagePart(Uri)` incorrectly serializing `image_url.url` via `Uri.ToString()`, which would de-escape percent-encoded characters (e.g., `%20` → space) and break downstream image fetches. The serialized URL now uses `Uri.AbsoluteUri` to preserve percent-encoding.
+  - Fixed `ChatMessageContentPart.CreateImagePart(Uri)` incorrectly serializing `image_url.url` via `Uri.ToString()`, which would unescape percent-encoded characters (e.g., `%20` → space) and break downstream image fetches. The serialized URL now uses `Uri.AbsoluteUri` to preserve percent-encoding.
+
+### Other Changes
+
+- Updated the `System.ClientModel` dependency to version 1.14.0. For more information, see the [System.ClientModel changelog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.14.0/sdk/core/System.ClientModel/CHANGELOG.md).
+
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Containers:
+  - Renamed the following classes for consistency:
+    - Renamed `DeleteContainerResponse` to `ContainerDeletionResult`.
+    - Renamed `DeleteContainerFileResponse` to `ContainerFileDeletionResult`.
+    - Renamed `ContainerResourceExpiresAfter` to `ContainerExpirationPolicy`.
+    - Renamed `CreateContainerBody` to `ContainerCreationOptions`.
+  - Renamed the following properties for consistency:
+    - Renamed the `Minutes` property of `ContainerExpirationPolicy` to `Duration`.
+    - Renamed the `Id` property of `ContainerDeletionResult` to `ContainerId`.
+    - Renamed the `Id` property of `ContainerFileDeletionResult` to `ContainerFileId`.
+    - Renamed the `ExpiresAfter` property of `ContainerResource` to `ExpirationPolicy`.
+  - Changed the type of the `Anchor` property of `ContainerExpirationPolicy` from `string` to `ContainerExpirationPolicyAnchor?`.
+  - Changed the type of the `Duration` property of `ContainerExpirationPolicy` from `int` to `TimeSpan?`.
+  - Changed the type of the `ExpiresAfter` property of `ContainerResource` from `ContainerResourceExpiresAfter` to `ContainerExpirationPolicy`.
+  - Removed the `ContainerResourceExpiresAfter` class.
+- OpenAI.Conversations:
+  - Made the `options` parameter of type `RequestOptions` required for several methods in the `ConversationClient` in order to disambiguate the new overloads.
 
 ## 2.11.0 (2026-06-05)
 
