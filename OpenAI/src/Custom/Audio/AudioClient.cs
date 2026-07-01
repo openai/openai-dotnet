@@ -198,10 +198,14 @@ public partial class AudioClient
         options ??= new();
         options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
         CreateSpeechGenerationOptions(text, voice, ref options);
+        BinaryData requestData = ModelReaderWriter.Write(options, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
-        using BinaryContent content = options.ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
-            async () => await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+            },
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
     }
@@ -222,10 +226,14 @@ public partial class AudioClient
         options ??= new();
         options.StreamFormat = InternalCreateSpeechRequestStreamFormat.Sse;
         CreateSpeechGenerationOptions(text, voice, ref options);
+        BinaryData requestData = ModelReaderWriter.Write(options, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
-        using BinaryContent content = options.ToBinaryContent();
         return new SseUpdateCollection<StreamingSpeechUpdate>(
-            () => GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true)),
+            () =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true));
+            },
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
     }

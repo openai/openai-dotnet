@@ -1,9 +1,13 @@
 ﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Audio;
 using System;
 using System.ClientModel;
+using System.IO;
+using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Audio;
 
@@ -43,4 +47,52 @@ internal class GenerateSpeechMockTests : ClientTestBase
                 .With.Message.Contains(model)
                 .And.Message.Contains("OPENAI_ENABLE_TTS_SSE_STREAMING"));
     }
+
+    [Test]
+    public async Task GenerateSpeechStreamingKeepsRequestContentAliveUntilEnumeration()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = CreateStreamingSpeechResponse();
+        OpenAIClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AudioClient client = CreateProxyFromClient(new AudioClient("gpt-4o-mini-tts", s_fakeCredential, options));
+
+        if (IsAsync)
+        {
+            await foreach (StreamingSpeechUpdate _ in client.GenerateSpeechStreamingAsync("text", GeneratedSpeechVoice.Alloy))
+            {
+            }
+        }
+        else
+        {
+            foreach (StreamingSpeechUpdate _ in client.GenerateSpeechStreaming("text", GeneratedSpeechVoice.Alloy))
+            {
+            }
+        }
+
+        using JsonDocument requestDocument = JsonDocument.Parse(requestBody);
+        Assert.That(requestDocument.RootElement.GetProperty("input").GetString(), Is.EqualTo("text"));
+        Assert.That(requestDocument.RootElement.GetProperty("stream_format").GetString(), Is.EqualTo("sse"));
+    }
+
+    private static MockPipelineResponse CreateStreamingSpeechResponse()
+        => new MockPipelineResponse(200).WithContent(
+            """
+            data: {"type":"speech.audio.delta","audio":"AQI="}
+
+            data: {"type":"speech.audio.done"}
+
+            data: [DONE]
+            """);
 }

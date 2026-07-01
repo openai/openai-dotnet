@@ -6,7 +6,9 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -288,6 +290,44 @@ public class ChatMockTests : ClientTestBase
         stopwatch.Stop();
 
         Assert.That(response.IsDisposed);
+    }
+
+    [Test]
+    public async Task CompleteChatStreamingKeepsRequestContentAliveUntilEnumeration()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = CreateStreamingChatResponse();
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, clientOptions));
+
+        if (IsAsync)
+        {
+            await foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreamingAsync(s_messages))
+            {
+            }
+        }
+        else
+        {
+            foreach (StreamingChatCompletionUpdate _ in client.CompleteChatStreaming(s_messages))
+            {
+            }
+        }
+
+        using JsonDocument requestDocument = JsonDocument.Parse(requestBody);
+        Assert.That(requestDocument.RootElement.GetProperty("stream").GetBoolean(), Is.True);
+        Assert.That(requestBody, Does.Contain("Message content."));
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)

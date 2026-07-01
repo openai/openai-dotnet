@@ -250,10 +250,14 @@ public partial class ChatClient
 
         options ??= new();
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
+        BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
-        using BinaryContent content = clonedOptions.ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
-            async () => await CompleteChatAsync(content, requestOptions).ConfigureAwait(false),
+            async () =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
+            },
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
             requestOptions.CancellationToken);
     }
@@ -277,10 +281,14 @@ public partial class ChatClient
 
         options ??= new();
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
+        BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
-        using BinaryContent content = clonedOptions.ToBinaryContent();
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
-            () => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true)),
+            () =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
+            },
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
             cancellationToken);
     }
