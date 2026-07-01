@@ -104,11 +104,11 @@ namespace OpenAI.Assistants {
     public class AssistantClient {
         protected AssistantClient();
         public AssistantClient(AssistantClientSettings settings);
-        public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public AssistantClient(ApiKeyCredential credential, AssistantClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
-        public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public AssistantClient(AuthenticationPolicy authenticationPolicy, AssistantClientOptions options);
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
-        protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal AssistantClient(ClientPipeline pipeline, AssistantClientOptions options);
         public AssistantClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -209,8 +209,14 @@ namespace OpenAI.Assistants {
         public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(string threadId, string runId, IEnumerable<ToolOutput> toolOutputs, CancellationToken cancellationToken = default);
     }
+    public class AssistantClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class AssistantClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public AssistantClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class AssistantCollectionOptions : IJsonModel<AssistantCollectionOptions>, IPersistableModel<AssistantCollectionOptions> {
@@ -863,9 +869,12 @@ namespace OpenAI.Audio {
     public class AudioClient {
         protected AudioClient();
         public AudioClient(AudioClientSettings settings);
+        protected internal AudioClient(ClientPipeline pipeline, string model, AudioClientOptions options);
         protected internal AudioClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public AudioClient(string model, ApiKeyCredential credential, AudioClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public AudioClient(string model, ApiKeyCredential credential);
+        public AudioClient(string model, AuthenticationPolicy authenticationPolicy, AudioClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
@@ -911,9 +920,15 @@ namespace OpenAI.Audio {
         public virtual ClientResult UpdateVoiceConsent(string consentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateVoiceConsentAsync(string consentId, BinaryContent content, RequestOptions options = null);
     }
+    public class AudioClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class AudioClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public AudioClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     [Flags]
@@ -1172,11 +1187,11 @@ namespace OpenAI.Batch {
     public class BatchClient {
         protected BatchClient();
         public BatchClient(BatchClientSettings settings);
-        public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public BatchClient(ApiKeyCredential credential, BatchClientOptions options);
         public BatchClient(ApiKeyCredential credential);
-        public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public BatchClient(AuthenticationPolicy authenticationPolicy, BatchClientOptions options);
         public BatchClient(AuthenticationPolicy authenticationPolicy);
-        protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal BatchClient(ClientPipeline pipeline, BatchClientOptions options);
         public BatchClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -1189,8 +1204,14 @@ namespace OpenAI.Batch {
         public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
+    public class BatchClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class BatchClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public BatchClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class BatchCollectionOptions : IJsonModel<BatchCollectionOptions>, IPersistableModel<BatchCollectionOptions> {
@@ -1260,9 +1281,12 @@ namespace OpenAI.Chat {
     public class ChatClient {
         protected ChatClient();
         public ChatClient(ChatClientSettings settings);
+        protected internal ChatClient(ClientPipeline pipeline, string model, ChatClientOptions options);
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public ChatClient(string model, ApiKeyCredential credential, ChatClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
+        public ChatClient(string model, AuthenticationPolicy authenticationPolicy, ChatClientOptions options);
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
@@ -1300,9 +1324,15 @@ namespace OpenAI.Chat {
         public virtual Task<ClientResult> UpdateChatCompletionAsync(string completionId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ChatCompletion>> UpdateChatCompletionAsync(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
     }
+    public class ChatClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ChatClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ChatClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ChatCompletion : IJsonModel<ChatCompletion>, IPersistableModel<ChatCompletion> {
@@ -1909,11 +1939,11 @@ namespace OpenAI.Containers {
     public class ContainerClient {
         protected ContainerClient();
         public ContainerClient(ContainerClientSettings settings);
-        public ContainerClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ContainerClient(ApiKeyCredential credential, ContainerClientOptions options);
         public ContainerClient(ApiKeyCredential credential);
-        public ContainerClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ContainerClient(AuthenticationPolicy authenticationPolicy, ContainerClientOptions options);
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ContainerClient(ClientPipeline pipeline, ContainerClientOptions options);
         public ContainerClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -1956,8 +1986,14 @@ namespace OpenAI.Containers {
         public virtual ClientResult UploadContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadContainerFileAsync(string containerId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    public class ContainerClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ContainerClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ContainerClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ContainerCollectionOptions : IJsonModel<ContainerCollectionOptions>, IPersistableModel<ContainerCollectionOptions> {
@@ -2167,11 +2203,11 @@ namespace OpenAI.Conversations {
     public class ConversationClient {
         protected ConversationClient();
         public ConversationClient(ConversationClientSettings settings);
-        public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ConversationClient(ApiKeyCredential credential, ConversationClientOptions options);
         public ConversationClient(ApiKeyCredential credential);
-        public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ConversationClient(AuthenticationPolicy authenticationPolicy, ConversationClientOptions options);
         public ConversationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ConversationClient(ClientPipeline pipeline, ConversationClientOptions options);
         public ConversationClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -2200,8 +2236,14 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult<ConversationResource>> UpdateConversationAsync(string conversationId, ConversationUpdateOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
+    public class ConversationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ConversationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ConversationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
@@ -2268,9 +2310,12 @@ namespace OpenAI.Embeddings {
     public class EmbeddingClient {
         protected EmbeddingClient();
         public EmbeddingClient(EmbeddingClientSettings settings);
+        protected internal EmbeddingClient(ClientPipeline pipeline, string model, EmbeddingClientOptions options);
         protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public EmbeddingClient(string model, ApiKeyCredential credential, EmbeddingClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential);
+        public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, EmbeddingClientOptions options);
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy);
         public EmbeddingClient(string model, string apiKey);
@@ -2286,9 +2331,15 @@ namespace OpenAI.Embeddings {
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<ReadOnlyMemory<int>> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
     }
+    public class EmbeddingClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class EmbeddingClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public EmbeddingClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>, IPersistableModel<EmbeddingGenerationOptions> {
@@ -2330,11 +2381,11 @@ namespace OpenAI.Evals {
     public class EvaluationClient {
         protected EvaluationClient();
         public EvaluationClient(EvaluationClientSettings settings);
-        public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public EvaluationClient(ApiKeyCredential credential, EvaluationClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
-        public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public EvaluationClient(AuthenticationPolicy authenticationPolicy, EvaluationClientOptions options);
         public EvaluationClient(AuthenticationPolicy authenticationPolicy);
-        protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal EvaluationClient(ClientPipeline pipeline, EvaluationClientOptions options);
         public EvaluationClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -2363,8 +2414,14 @@ namespace OpenAI.Evals {
         public virtual ClientResult UpdateEvaluation(string evaluationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateEvaluationAsync(string evaluationId, BinaryContent content, RequestOptions options = null);
     }
+    public class EvaluationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class EvaluationClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public EvaluationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
@@ -2428,10 +2485,13 @@ namespace OpenAI.Files {
     public class OpenAIFileClient {
         protected OpenAIFileClient();
         public OpenAIFileClient(OpenAIFileClientSettings settings);
+        public OpenAIFileClient(ApiKeyCredential credential, OpenAIFileClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
+        public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIFileClientOptions options);
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
+        protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIFileClientOptions options);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
         public Uri Endpoint { get; }
@@ -2473,8 +2533,14 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
     }
+    public class OpenAIFileClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class OpenAIFileClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public OpenAIFileClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIFileCollection : ObjectModel.ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>, IPersistableModel<OpenAIFileCollection> {
@@ -2510,11 +2576,11 @@ namespace OpenAI.FineTuning {
     public class FineTuningClient {
         protected FineTuningClient();
         public FineTuningClient(FineTuningClientSettings settings);
-        public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public FineTuningClient(ApiKeyCredential credential, FineTuningClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
-        public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public FineTuningClient(AuthenticationPolicy authenticationPolicy, FineTuningClientOptions options);
         public FineTuningClient(AuthenticationPolicy authenticationPolicy);
-        protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal FineTuningClient(ClientPipeline pipeline, FineTuningClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
         public Uri Endpoint { get; }
@@ -2538,8 +2604,14 @@ namespace OpenAI.FineTuning {
         public virtual ClientResult ResumeFineTuningJob(string fineTuningJobId, RequestOptions options);
         public virtual Task<ClientResult> ResumeFineTuningJobAsync(string fineTuningJobId, RequestOptions options);
     }
+    public class FineTuningClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class FineTuningClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public FineTuningClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class FineTuningError : IJsonModel<FineTuningError>, IPersistableModel<FineTuningError> {
@@ -2778,11 +2850,11 @@ namespace OpenAI.Graders {
     public class GraderClient {
         protected GraderClient();
         public GraderClient(GraderClientSettings settings);
-        public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public GraderClient(ApiKeyCredential credential, GraderClientOptions options);
         public GraderClient(ApiKeyCredential credential);
-        public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public GraderClient(AuthenticationPolicy authenticationPolicy, GraderClientOptions options);
         public GraderClient(AuthenticationPolicy authenticationPolicy);
-        protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal GraderClient(ClientPipeline pipeline, GraderClientOptions options);
         public GraderClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -2791,8 +2863,14 @@ namespace OpenAI.Graders {
         public virtual ClientResult ValidateGrader(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> ValidateGraderAsync(BinaryContent content, RequestOptions options = null);
     }
+    public class GraderClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class GraderClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public GraderClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class GraderLabelModel : Grader, IJsonModel<GraderLabelModel>, IPersistableModel<GraderLabelModel> {
@@ -3072,9 +3150,12 @@ namespace OpenAI.Images {
     public class ImageClient {
         protected ImageClient();
         public ImageClient(ImageClientSettings settings);
+        protected internal ImageClient(ClientPipeline pipeline, string model, ImageClientOptions options);
         protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public ImageClient(string model, ApiKeyCredential credential, ImageClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential);
+        public ImageClient(string model, AuthenticationPolicy authenticationPolicy, ImageClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
@@ -3116,9 +3197,15 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(Stream image, string imageFilename, int imageCount, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
+    public class ImageClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ImageClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ImageClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {
@@ -3201,10 +3288,13 @@ namespace OpenAI.Models {
     public class OpenAIModelClient {
         protected OpenAIModelClient();
         public OpenAIModelClient(OpenAIModelClientSettings settings);
+        public OpenAIModelClient(ApiKeyCredential credential, OpenAIModelClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
+        public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIModelClientOptions options);
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
+        protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIModelClientOptions options);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
         public Uri Endpoint { get; }
@@ -3222,8 +3312,14 @@ namespace OpenAI.Models {
         public virtual Task<ClientResult> GetModelsAsync(RequestOptions options);
         public virtual Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default);
     }
+    public class OpenAIModelClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class OpenAIModelClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public OpenAIModelClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class OpenAIModelCollection : ObjectModel.ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>, IPersistableModel<OpenAIModelCollection> {
@@ -3251,9 +3347,12 @@ namespace OpenAI.Moderations {
     public class ModerationClient {
         protected ModerationClient();
         public ModerationClient(ModerationClientSettings settings);
+        protected internal ModerationClient(ClientPipeline pipeline, string model, ModerationClientOptions options);
         protected internal ModerationClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public ModerationClient(string model, ApiKeyCredential credential, ModerationClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ModerationClient(string model, ApiKeyCredential credential);
+        public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, ModerationClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
@@ -3271,9 +3370,15 @@ namespace OpenAI.Moderations {
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
     }
+    public class ModerationClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ModerationClientSettings : ClientSettings {
         public string Model { get; set; }
-        public OpenAIClientOptions Options { get; set; }
+        public ModerationClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
@@ -6360,11 +6465,11 @@ namespace OpenAI.Skills {
     public class SkillClient {
         protected SkillClient();
         public SkillClient(SkillClientSettings settings);
-        public SkillClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public SkillClient(ApiKeyCredential credential, SkillClientOptions options);
         public SkillClient(ApiKeyCredential credential);
-        public SkillClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public SkillClient(AuthenticationPolicy authenticationPolicy, SkillClientOptions options);
         public SkillClient(AuthenticationPolicy authenticationPolicy);
-        protected internal SkillClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal SkillClient(ClientPipeline pipeline, SkillClientOptions options);
         public SkillClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -6391,8 +6496,14 @@ namespace OpenAI.Skills {
         public virtual ClientResult UploadSkillVersion(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> UploadSkillVersionAsync(string skillId, BinaryContent content, string contentType, RequestOptions options = null);
     }
+    public class SkillClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class SkillClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public SkillClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }
@@ -6428,11 +6539,11 @@ namespace OpenAI.VectorStores {
     public class VectorStoreClient {
         protected VectorStoreClient();
         public VectorStoreClient(VectorStoreClientSettings settings);
-        public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VectorStoreClient(ApiKeyCredential credential, VectorStoreClientOptions options);
         public VectorStoreClient(ApiKeyCredential credential);
-        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VectorStoreClient(AuthenticationPolicy authenticationPolicy, VectorStoreClientOptions options);
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal VectorStoreClient(ClientPipeline pipeline, VectorStoreClientOptions options);
         public VectorStoreClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -6497,8 +6608,14 @@ namespace OpenAI.VectorStores {
         public virtual Task<ClientResult> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStoreFile>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
     }
+    public class VectorStoreClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class VectorStoreClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public VectorStoreClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class VectorStoreCollectionOptions : IJsonModel<VectorStoreCollectionOptions>, IPersistableModel<VectorStoreCollectionOptions> {
@@ -6669,11 +6786,11 @@ namespace OpenAI.Videos {
     public class VideoClient {
         protected VideoClient();
         public VideoClient(VideoClientSettings settings);
-        public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VideoClient(ApiKeyCredential credential, VideoClientOptions options);
         public VideoClient(ApiKeyCredential credential);
-        public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VideoClient(AuthenticationPolicy authenticationPolicy, VideoClientOptions options);
         public VideoClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal VideoClient(ClientPipeline pipeline, VideoClientOptions options);
         public VideoClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -6690,8 +6807,14 @@ namespace OpenAI.Videos {
         public virtual CollectionResult GetVideos(int? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual AsyncCollectionResult GetVideosAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
+    public class VideoClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class VideoClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public VideoClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
 }

@@ -122,6 +122,53 @@ public partial class ImageClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary> Initializes a new instance of <see cref="ImageClient"/>. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public ImageClient(string model, ApiKeyCredential credential, ImageClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+    }
+
+    /// <summary> Initializes a new instance of <see cref="ImageClient"/>. </summary>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public ImageClient(string model, AuthenticationPolicy authenticationPolicy, ImageClientOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new ImageClientOptions();
+
+        _model = model;
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="ImageClient"/>. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    protected internal ImageClient(ClientPipeline pipeline, string model, ImageClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        options ??= new ImageClientOptions();
+
+        _model = model;
+        Pipeline = pipeline;
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+    }
+
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>
