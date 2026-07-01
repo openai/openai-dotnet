@@ -191,7 +191,7 @@ jobs:
         uses: NuGet/login@ebc737b6fc418a6ca0073cf116ec8dc156d8b81e # v1
         id: nuget-login
         with:
-          user: openai-publisher
+          user: bebroder
 
       - name: Publish package to nuget.org
         run: dotnet nuget push
