@@ -106,7 +106,7 @@ namespace OpenAI.Containers
                 writer.WritePropertyName("bytes"u8);
                 writer.WriteNumberValue(SizeInBytes.Value);
             }
-            else
+            else if (!Patch.Contains("$.bytes"u8))
             {
                 writer.WriteNull("bytes"u8);
             }

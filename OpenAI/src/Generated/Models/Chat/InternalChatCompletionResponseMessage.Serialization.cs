@@ -78,7 +78,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
-            else
+            else if (!Patch.Contains("$.content"u8))
             {
                 writer.WriteNull("content"u8);
             }
@@ -87,7 +87,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStringValue(Refusal);
             }
-            else
+            else if (!Patch.Contains("$.refusal"u8))
             {
                 writer.WriteNull("refusal"u8);
             }

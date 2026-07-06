@@ -78,7 +78,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("code"u8);
                 writer.WriteStringValue(Code);
             }
-            else
+            else if (!Patch.Contains("$.code"u8))
             {
                 writer.WriteNull("code"u8);
             }
@@ -92,7 +92,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("param"u8);
                 writer.WriteStringValue(Param);
             }
-            else
+            else if (!Patch.Contains("$.param"u8))
             {
                 writer.WriteNull("param"u8);
             }

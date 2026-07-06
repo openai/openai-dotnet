@@ -71,7 +71,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("finish_reason"u8);
                 writer.WriteStringValue(FinishReason.Value.ToSerialString());
             }
-            else
+            else if (!Patch.Contains("$.finish_reason"u8))
             {
                 writer.WriteNull("finish_reason"u8);
             }

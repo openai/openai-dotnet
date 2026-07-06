@@ -28,10 +28,10 @@
     "dist/**"
   ],
   "dependencies": {
-    "@azure-tools/typespec-client-generator-core": "0.69.0",
+    "@azure-tools/typespec-client-generator-core": "0.69.2",
     "@open-ai/plugin": "file:",
     "@typespec/http": "1.13.0",
-    "@typespec/http-client-csharp": "1.0.0-alpha.20260612.4",
+    "@typespec/http-client-csharp": "1.0.0-alpha.20260703.2",
     "@typespec/openapi": "1.13.0"
   },
   "devDependencies": {

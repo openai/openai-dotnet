@@ -92,7 +92,7 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteObjectValue(Logprobs, options);
             }
-            else
+            else if (!Patch.Contains("$.logprobs"u8))
             {
                 writer.WriteNull("logprobs"u8);
             }

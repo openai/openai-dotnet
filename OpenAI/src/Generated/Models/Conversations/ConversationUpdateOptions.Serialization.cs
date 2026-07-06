@@ -113,7 +113,7 @@ namespace OpenAI.Conversations
                 Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
-            else
+            else if (!Patch.Contains("$.metadata"u8))
             {
                 writer.WriteNull("metadata"u8);
             }
