@@ -215,6 +215,7 @@ public partial class OpenAIFileClient
     {
         Argument.AssertNotNull(file, nameof(file));
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+        Argument.AssertInRange(expiresAfterSeconds, 3600, 2592000, nameof(expiresAfterSeconds));
 
         InternalFileUploadOptions options = new()
         {
