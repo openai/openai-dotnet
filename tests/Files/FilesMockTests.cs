@@ -420,6 +420,104 @@ public class FilesMockTests : ClientTestBase
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
+#pragma warning disable OPENAI001
+    [Test]
+    [TestCaseSource(nameof(s_fileSourceKindSource))]
+    public async Task UploadFileWithExpirationIncludesExpiresAfterFields(FileSourceKind fileSourceKind)
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
+        {
+            "id": "returned_file_id"
+        }
+        """);
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        string filename = "images_dog_and_cat.png";
+        string path = Path.Combine("Assets", filename);
+        int expiresAfterSeconds = 3600;
+
+        if (fileSourceKind == FileSourceKind.UsingStream)
+        {
+            using FileStream file = File.OpenRead(path);
+            await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants, expiresAfterSeconds);
+        }
+        else if (fileSourceKind == FileSourceKind.UsingFilePath)
+        {
+            await client.UploadFileAsync(path, FileUploadPurpose.Assistants, expiresAfterSeconds);
+        }
+        else if (fileSourceKind == FileSourceKind.UsingBinaryData)
+        {
+            using FileStream file = File.OpenRead(path);
+            BinaryData content = BinaryData.FromStream(file);
+            await client.UploadFileAsync(content, filename, FileUploadPurpose.Assistants, expiresAfterSeconds);
+        }
+
+        string[] lines = requestBody.Split(["\r\n", "\n"], StringSplitOptions.None);
+        Assert.That(lines, Has.Some.Contains("name=\"expires_after[anchor]\""));
+        Assert.That(lines, Has.Some.Contains("name=\"expires_after[seconds]\""));
+        Assert.That(lines, Has.Some.EqualTo("created_at"));
+        Assert.That(lines, Has.Some.EqualTo("3600"));
+    }
+
+    [Test]
+    [TestCaseSource(nameof(s_fileSourceKindSource))]
+    public async Task UploadFileWithoutExpirationOmitsExpiresAfterFields(FileSourceKind fileSourceKind)
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
+        {
+            "id": "returned_file_id"
+        }
+        """);
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
+
+        Assert.That(requestBody, Does.Not.Contain("expires_after"));
+    }
+
+    [Test]
+    [TestCase(0)]
+    [TestCase(3599)]
+    [TestCase(2592001)]
+    public void UploadFileWithOutOfRangeExpirationThrows(int expiresAfterSeconds)
+    {
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
+        using var stream = new MemoryStream(Array.Empty<byte>());
+
+        Assert.That(async () => await client.UploadFileAsync(stream, "file.txt", FileUploadPurpose.Assistants, expiresAfterSeconds),
+            Throws.InstanceOf<ArgumentOutOfRangeException>());
+    }
+#pragma warning restore OPENAI001
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
