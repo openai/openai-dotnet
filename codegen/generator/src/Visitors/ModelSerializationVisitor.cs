@@ -13,6 +13,12 @@ public class ModelSerializationVisitor : ScmLibraryVisitor
 {
     protected override ModelProvider? PreVisitModel(InputModelType model, ModelProvider? type)
     {
+        // Ensure multipart form data models also get JSON usage so that MRW serialization is generated.
+        if (model.Usage.HasFlag(InputModelTypeUsage.MultipartFormData) && !model.Usage.HasFlag(InputModelTypeUsage.Json))
+        {
+            model.Update(usage: model.Usage | InputModelTypeUsage.Json);
+        }
+
         if (type is null || model.Usage.HasFlag(InputModelTypeUsage.Json))
         {
             return base.PreVisitModel(model, type);
