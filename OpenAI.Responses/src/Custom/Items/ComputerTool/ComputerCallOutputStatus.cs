@@ -6,7 +6,7 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAICUA001")]
+[Experimental("OPENAI001")]
 [CodeGenType("ComputerToolCallOutputItemResourceStatus")]
 public enum ComputerCallOutputStatus
 {

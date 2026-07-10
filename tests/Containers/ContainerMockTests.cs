@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using OpenAI.Containers;
 using System;
 using System.ClientModel.Primitives;
 
 namespace OpenAI.Tests.Containers;
 
-#pragma warning disable OPENAICUA001
+#pragma warning disable OPENAI001
 
 [Category("Containers")]
 [Category("Smoke")]

@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public partial class ComputerCallOutputResponseItem : ResponseItem
     {
         public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output) : base(ResponseItemKind.ComputerCallOutput)

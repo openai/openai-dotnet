@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Responses;
 
-#pragma warning disable OPENAICUA001
+#pragma warning disable OPENAI001
 
 [Category("Responses")]
 public partial class ResponsesTests : OpenAIRecordedTestBase

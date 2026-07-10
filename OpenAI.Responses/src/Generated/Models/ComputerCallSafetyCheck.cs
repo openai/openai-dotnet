@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public partial class ComputerCallSafetyCheck
     {
         [Experimental("SCME0001")]

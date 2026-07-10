@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace OpenAI.Tests.Responses;
 
-#pragma warning disable OPENAICUA001
+#pragma warning disable OPENAI001
 
 [Category("Responses")]
 [Category("Smoke")]
