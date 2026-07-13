@@ -94,7 +94,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.output"u8))
                 {
                     writer.WritePropertyName("output"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.output"u8));
+                    Patch.WriteTo(writer, "$.output"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(OutputItems))
@@ -169,7 +169,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.output_modalities"u8))
                 {
                     writer.WritePropertyName("output_modalities"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.output_modalities"u8));
+                    Patch.WriteTo(writer, "$.output_modalities"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(OutputModalities))

@@ -96,7 +96,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.tool_calls"u8))
                 {
                     writer.WritePropertyName("tool_calls"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tool_calls"u8));
+                    Patch.WriteTo(writer, "$.tool_calls"u8);
                 }
             }
             else if (options.Format != "W" && Optional.IsCollectionDefined(ToolCalls))
@@ -119,7 +119,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.annotations"u8))
                 {
                     writer.WritePropertyName("annotations"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.annotations"u8));
+                    Patch.WriteTo(writer, "$.annotations"u8);
                 }
             }
             else if (options.Format != "W" && Optional.IsCollectionDefined(Annotations))

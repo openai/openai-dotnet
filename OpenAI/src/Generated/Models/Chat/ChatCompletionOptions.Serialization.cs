@@ -142,7 +142,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.messages"u8))
                 {
                     writer.WritePropertyName("messages"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.messages"u8));
+                    Patch.WriteTo(writer, "$.messages"u8);
                 }
             }
             else
@@ -165,7 +165,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.modalities"u8))
                 {
                     writer.WritePropertyName("modalities"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.modalities"u8));
+                    Patch.WriteTo(writer, "$.modalities"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(InternalModalities))
@@ -233,7 +233,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.stop"u8))
                 {
                     writer.WritePropertyName("stop"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.stop"u8));
+                    Patch.WriteTo(writer, "$.stop"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(StopSequences))
@@ -281,7 +281,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.tools"u8))
                 {
                     writer.WritePropertyName("tools"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tools"u8));
+                    Patch.WriteTo(writer, "$.tools"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Tools))
@@ -319,7 +319,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.functions"u8))
                 {
                     writer.WritePropertyName("functions"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.functions"u8));
+                    Patch.WriteTo(writer, "$.functions"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Functions))

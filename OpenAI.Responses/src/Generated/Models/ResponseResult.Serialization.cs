@@ -198,7 +198,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.tools"u8))
                 {
                     writer.WritePropertyName("tools"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tools"u8));
+                    Patch.WriteTo(writer, "$.tools"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Tools))
@@ -269,7 +269,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.output"u8))
                 {
                     writer.WritePropertyName("output"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.output"u8));
+                    Patch.WriteTo(writer, "$.output"u8);
                 }
             }
             else
@@ -292,7 +292,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.instructions"u8))
                 {
                     writer.WritePropertyName("instructions"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.instructions"u8));
+                    Patch.WriteTo(writer, "$.instructions"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Instructions))

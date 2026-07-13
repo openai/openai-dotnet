@@ -87,7 +87,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.bytes"u8))
                 {
                     writer.WritePropertyName("bytes"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.bytes"u8));
+                    Patch.WriteTo(writer, "$.bytes"u8);
                 }
             }
             else

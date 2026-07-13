@@ -80,7 +80,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.include"u8))
                 {
                     writer.WritePropertyName("include"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.include"u8));
+                    Patch.WriteTo(writer, "$.include"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(IncludedProperties))

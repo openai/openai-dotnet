@@ -89,7 +89,7 @@ namespace OpenAI.Embeddings
                 if (!Patch.IsRemoved("$.data"u8))
                 {
                     writer.WritePropertyName("data"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.data"u8));
+                    Patch.WriteTo(writer, "$.data"u8);
                 }
             }
             else

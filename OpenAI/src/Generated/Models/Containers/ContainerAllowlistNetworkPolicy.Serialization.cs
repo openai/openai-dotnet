@@ -79,7 +79,7 @@ namespace OpenAI.Containers
                 if (!Patch.IsRemoved("$.allowed_domains"u8))
                 {
                     writer.WritePropertyName("allowed_domains"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.allowed_domains"u8));
+                    Patch.WriteTo(writer, "$.allowed_domains"u8);
                 }
             }
             else
@@ -107,7 +107,7 @@ namespace OpenAI.Containers
                 if (!Patch.IsRemoved("$.domain_secrets"u8))
                 {
                     writer.WritePropertyName("domain_secrets"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.domain_secrets"u8));
+                    Patch.WriteTo(writer, "$.domain_secrets"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(DomainSecrets))

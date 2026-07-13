@@ -97,7 +97,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.choices"u8))
                 {
                     writer.WritePropertyName("choices"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.choices"u8));
+                    Patch.WriteTo(writer, "$.choices"u8);
                 }
             }
             else

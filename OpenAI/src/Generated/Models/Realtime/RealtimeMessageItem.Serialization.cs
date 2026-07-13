@@ -99,7 +99,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.content"u8))
                 {
                     writer.WritePropertyName("content"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.content"u8));
+                    Patch.WriteTo(writer, "$.content"u8);
                 }
             }
             else

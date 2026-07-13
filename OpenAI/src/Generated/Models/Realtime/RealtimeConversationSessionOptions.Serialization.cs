@@ -75,7 +75,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.output_modalities"u8))
                 {
                     writer.WritePropertyName("output_modalities"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.output_modalities"u8));
+                    Patch.WriteTo(writer, "$.output_modalities"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(OutputModalities))
@@ -113,7 +113,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.include"u8))
                 {
                     writer.WritePropertyName("include"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.include"u8));
+                    Patch.WriteTo(writer, "$.include"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(IncludedProperties))
@@ -141,7 +141,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.tools"u8))
                 {
                     writer.WritePropertyName("tools"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tools"u8));
+                    Patch.WriteTo(writer, "$.tools"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Tools))

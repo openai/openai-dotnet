@@ -89,7 +89,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.pending_safety_checks"u8))
                 {
                     writer.WritePropertyName("pending_safety_checks"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.pending_safety_checks"u8));
+                    Patch.WriteTo(writer, "$.pending_safety_checks"u8);
                 }
             }
             else

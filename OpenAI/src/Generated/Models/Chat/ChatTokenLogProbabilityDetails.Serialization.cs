@@ -92,7 +92,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.bytes"u8))
                 {
                     writer.WritePropertyName("bytes"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.bytes"u8));
+                    Patch.WriteTo(writer, "$.bytes"u8);
                 }
             }
             else if (Optional.IsDefined(Utf8Bytes))
@@ -119,7 +119,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.top_logprobs"u8))
                 {
                     writer.WritePropertyName("top_logprobs"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.top_logprobs"u8));
+                    Patch.WriteTo(writer, "$.top_logprobs"u8);
                 }
             }
             else

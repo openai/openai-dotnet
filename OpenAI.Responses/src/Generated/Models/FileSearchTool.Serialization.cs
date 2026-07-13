@@ -79,7 +79,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.vector_store_ids"u8))
                 {
                     writer.WritePropertyName("vector_store_ids"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.vector_store_ids"u8));
+                    Patch.WriteTo(writer, "$.vector_store_ids"u8);
                 }
             }
             else

@@ -96,7 +96,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.outputs"u8))
                 {
                     writer.WritePropertyName("outputs"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.outputs"u8));
+                    Patch.WriteTo(writer, "$.outputs"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Outputs))

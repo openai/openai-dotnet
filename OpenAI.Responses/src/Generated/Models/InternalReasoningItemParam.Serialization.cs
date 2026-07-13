@@ -84,7 +84,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.summary"u8))
                 {
                     writer.WritePropertyName("summary"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.summary"u8));
+                    Patch.WriteTo(writer, "$.summary"u8);
                 }
             }
             else
