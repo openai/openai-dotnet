@@ -66,7 +66,7 @@ internal class GenerateSpeechMockTests : ClientTestBase
                 ExpectSyncPipeline = !IsAsync
             }
         };
-        AudioClient client = CreateProxyFromClient(new AudioClient("gpt-4o-mini-tts", s_fakeCredential, options));
+        AudioClient client = new("gpt-4o-mini-tts", s_fakeCredential, options);
 
         if (IsAsync)
         {

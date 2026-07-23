@@ -310,7 +310,7 @@ public class ChatMockTests : ClientTestBase
                 ExpectSyncPipeline = !IsAsync
             }
         };
-        ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, clientOptions));
+        ChatClient client = new("model", s_fakeCredential, clientOptions);
 
         if (IsAsync)
         {

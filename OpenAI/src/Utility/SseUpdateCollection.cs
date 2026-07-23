@@ -16,7 +16,9 @@ namespace OpenAI;
 /// </summary>
 internal class SseUpdateCollection<T> : CollectionResult<T>
 {
-    private readonly Func<ClientResult> _sendRequestFunc;
+    private readonly Func<ClientResult>? _sendRequestFunc;
+    private readonly Func<BinaryData, ClientResult>? _sendRequestWithDataFunc;
+    private readonly BinaryData? _requestData;
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
 
@@ -41,6 +43,20 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         CancellationToken cancellationToken)
             : this(
                   sendRequestFunc,
+                  AsyncSseUpdateCollection<T>.DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public SseUpdateCollection(
+        Func<BinaryData, ClientResult> sendRequestFunc,
+        BinaryData requestData,
+        Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestFunc,
+                  requestData,
                   AsyncSseUpdateCollection<T>.DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
                   cancellationToken)
     {
@@ -73,6 +89,20 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     }
 
     public SseUpdateCollection(
+        Func<BinaryData, ClientResult> sendRequestFunc,
+        BinaryData requestData,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestFunc,
+                  requestData,
+                  AsyncSseUpdateCollection<T>.DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public SseUpdateCollection(
         Func<ClientResult> sendRequestFunc,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken)
@@ -85,6 +115,22 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         _cancellationToken = cancellationToken;
     }
 
+    public SseUpdateCollection(
+        Func<BinaryData, ClientResult> sendRequestFunc,
+        BinaryData requestData,
+        Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
+        CancellationToken cancellationToken)
+    {
+        Argument.AssertNotNull(sendRequestFunc, nameof(sendRequestFunc));
+        Argument.AssertNotNull(requestData, nameof(requestData));
+        Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
+
+        _sendRequestWithDataFunc = sendRequestFunc;
+        _requestData = requestData;
+        _eventDeserializerFunc = eventDeserializerFunc;
+        _cancellationToken = cancellationToken;
+    }
+
     public override ContinuationToken? GetContinuationToken(ClientResult page)
         // Continuation is not supported for SSE streams.
         => null;
@@ -93,7 +139,9 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     {
         // We don't currently support resuming a dropped connection from the
         // last received event, so the response collection has a single element.
-        yield return _sendRequestFunc();
+        yield return _sendRequestWithDataFunc is not null
+            ? _sendRequestWithDataFunc(_requestData!)
+            : _sendRequestFunc!();
     }
 
     protected override IEnumerable<T> GetValuesFromPage(ClientResult page)

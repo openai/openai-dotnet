@@ -197,11 +197,12 @@ public partial class AudioClient
         BinaryData requestData = ModelReaderWriter.Write(options, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
         return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
-            async () =>
+            async requestData =>
             {
                 using BinaryContent content = BinaryContent.Create(requestData);
                 return await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
             },
+            requestData,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
     }
@@ -225,11 +226,12 @@ public partial class AudioClient
         BinaryData requestData = ModelReaderWriter.Write(options, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
         return new SseUpdateCollection<StreamingSpeechUpdate>(
-            () =>
+            requestData =>
             {
                 using BinaryContent content = BinaryContent.Create(requestData);
                 return GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true));
             },
+            requestData,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
     }

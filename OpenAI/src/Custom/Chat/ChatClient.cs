@@ -253,11 +253,12 @@ public partial class ChatClient
         BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
-            async () =>
+            async requestData =>
             {
                 using BinaryContent content = BinaryContent.Create(requestData);
                 return await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
             },
+            requestData,
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
             requestOptions.CancellationToken);
     }
@@ -284,11 +285,12 @@ public partial class ChatClient
         BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
-            () =>
+            requestData =>
             {
                 using BinaryContent content = BinaryContent.Create(requestData);
                 return CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
             },
+            requestData,
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
             cancellationToken);
     }

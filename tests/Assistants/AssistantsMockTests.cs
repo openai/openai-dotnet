@@ -2,6 +2,7 @@ using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Assistants;
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.IO;
