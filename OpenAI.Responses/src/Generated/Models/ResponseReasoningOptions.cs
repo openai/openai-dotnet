@@ -20,9 +20,10 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, InternalCreateResponseReasoningGenerateSummary? generateSummary, in JsonPatch patch)
+        internal ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningContext? context, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, InternalCreateResponseReasoningGenerateSummary? generateSummary, in JsonPatch patch)
         {
             ReasoningEffortLevel = reasoningEffortLevel;
+            Context = context;
             ReasoningSummaryVerbosity = reasoningSummaryVerbosity;
             GenerateSummary = generateSummary;
             _patch = patch;
@@ -33,6 +34,8 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        public ResponseReasoningContext? Context { get; set; }
 
         internal InternalCreateResponseReasoningGenerateSummary? GenerateSummary { get; set; }
     }
