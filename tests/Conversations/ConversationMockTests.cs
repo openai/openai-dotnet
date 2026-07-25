@@ -83,7 +83,7 @@ public class ConversationMockTests
             requestUri.AbsoluteUri,
             Is.EqualTo(
                 $"https://example.invalid/v1{path}"
-                + "?include=message.input_image.image_url"
-                + "&include=web_search_call.action.sources"));
+                + "?include[]=message.input_image.image_url"
+                + "&include[]=web_search_call.action.sources"));
     }
 }

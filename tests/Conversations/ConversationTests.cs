@@ -3,8 +3,10 @@ using NUnit.Framework;
 using OpenAI.Conversations;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +15,12 @@ namespace OpenAI.Tests.Conversations;
 [Category("Conversations")]
 public class ConversationTests : OpenAIRecordedTestBase
 {
+    private static readonly IncludedConversationItemProperty[] s_includedProperties =
+    [
+        IncludedConversationItemProperty.MessageInputImageUri,
+        IncludedConversationItemProperty.WebSearchCallActionSources,
+    ];
+
     public ConversationTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
@@ -66,6 +74,64 @@ public class ConversationTests : OpenAIRecordedTestBase
 
             Assert.That(deletedConversation.Deleted, Is.True);
             Assert.That(deletedConversation.ConversationId, Is.EqualTo(conversation.Id));
+        }
+        finally
+        {
+            if (conversationId is not null)
+            {
+                await client.DeleteConversationAsync(conversationId);
+            }
+        }
+    }
+
+    [RecordedTest]
+    public async Task ConversationItemEndpointsAcceptIncludeQuery()
+    {
+        ConversationClient client = GetProxiedOpenAIClient<ConversationClient>();
+        string conversationId = null;
+
+        try
+        {
+            ConversationCreationOptions createOptions = new()
+            {
+                Items = { ResponseItem.CreateUserMessageItem("first item") },
+            };
+
+            ClientResult<ConversationResource> createResult = await client.CreateConversationAsync(createOptions);
+            conversationId = createResult.Value.Id;
+
+            BinaryContent createItemsContent = BinaryContent.Create(
+                BinaryData.FromString(
+                    """{"items":[{"type":"message","role":"user","content":[{"type":"input_text","text":"second item"}]}]}"""));
+            ClientResult createItemsResult = await client.CreateConversationItemsAsync(
+                conversationId,
+                createItemsContent,
+                include: s_includedProperties);
+            Assert.That(createItemsResult.GetRawResponse().Status, Is.EqualTo(200));
+
+            using JsonDocument createdItemsJson = JsonDocument.Parse(createItemsResult.GetRawResponse().Content);
+            string itemId = createdItemsJson.RootElement
+                .GetProperty("data")[0]
+                .GetProperty("id")
+                .GetString();
+            Assert.That(itemId, Is.Not.Null.And.Not.Empty);
+
+            ClientResult getItemResult = await client.GetConversationItemAsync(
+                conversationId,
+                itemId,
+                include: s_includedProperties);
+            Assert.That(getItemResult.GetRawResponse().Status, Is.EqualTo(200));
+
+            bool receivedPage = false;
+            await foreach (ClientResult page in client
+                .GetConversationItemsAsync(conversationId, include: s_includedProperties)
+                .GetRawPagesAsync())
+            {
+                Assert.That(page.GetRawResponse().Status, Is.EqualTo(200));
+                receivedPage = true;
+                break;
+            }
+            Assert.That(receivedPage, Is.True);
         }
         finally
         {

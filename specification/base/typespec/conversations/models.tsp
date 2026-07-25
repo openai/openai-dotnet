@@ -113,7 +113,7 @@ model ConversationItemCollectionOptions {
    * This enables reasoning items to be used in multi-turn conversations when using the Responses API statelessly (like when the `store` parameter is set to `false`, 
    * or when an organization is enrolled in the zero data retention program).
    * */
-  @query(#{ explode: true })
+  @query(#{ name: "include[]", explode: true })
   include?: IncludeEnum[],
 }
 

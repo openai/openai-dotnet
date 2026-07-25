@@ -39,7 +39,7 @@ namespace OpenAI.Conversations
             {
                 foreach (var @param in include)
                 {
-                    uri.AppendQuery("include", @param.ToString(), true);
+                    uri.AppendQuery("include[]", @param.ToString(), true);
                 }
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
@@ -61,7 +61,7 @@ namespace OpenAI.Conversations
             {
                 foreach (var @param in include)
                 {
-                    uri.AppendQuery("include", @param.ToString(), true);
+                    uri.AppendQuery("include[]", @param.ToString(), true);
                 }
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
@@ -102,7 +102,7 @@ namespace OpenAI.Conversations
             {
                 foreach (var @param in include)
                 {
-                    uri.AppendQuery("include", @param.ToString(), true);
+                    uri.AppendQuery("include[]", @param.ToString(), true);
                 }
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);

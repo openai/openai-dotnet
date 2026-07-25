@@ -31,7 +31,7 @@ op createConversationItems(
   /** Additional fields to include in the response. See the `include`
     * parameter for [listing Conversation items above](https://platform.openai.com/docs/api-reference/conversations/list-items#conversations_list_items-include)
     * for more information. */
-  @query(#{ explode: true })
+  @query(#{ name: "include[]", explode: true })
   include?: IncludeEnum[],
 
   @body
@@ -70,7 +70,7 @@ op getConversationItem(
   /** Additional fields to include in the response. See the `include`
     * parameter for [listing Conversation items above](https://platform.openai.com/docs/api-reference/conversations/list-items#conversations_list_items-include)
     * for more information. */
-  @query(#{ explode: true })
+  @query(#{ name: "include[]", explode: true })
   include?: IncludeEnum[],
 ): ItemResource;
 
