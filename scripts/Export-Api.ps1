@@ -24,22 +24,9 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$configuration = "Release"
+# ── Function Definitions ──────────────────────────────────────────────────────
 
-# Resolve paths
-$repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$outputDirectory = Join-Path $repoRootPath "api"
-$intermediateDirectory = Join-Path $repoRootPath "api" "artifacts"
-
-# Projects to export. Each entry has a project file path and the library name
-# used as the prefix for the generated API files.
-$projects = @(
-    @{
-        Name = "OpenAI"
-        Path = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
-    }
-)
-
+# Returns the auto-generated header prepended to every API listing file.
 function Get-GeneratedHeader {
     return @"
 //------------------------------------------------------------------------------
@@ -52,6 +39,11 @@ function Get-GeneratedHeader {
 "@
 }
 
+# Cleans and normalizes raw GenAPI output into a compact, public-only API listing.
+# Strips fully-qualified namespace prefixes, internal/private members, and
+# implementation details such as IJsonModel/IPersistableModel methods. Within each
+# OpenAI sub-namespace block, the block's own namespace prefix is removed for
+# brevity while cross-namespace references are preserved.
 function Format-ApiListing {
     param(
         [Parameter(Mandatory = $true)]
@@ -120,6 +112,8 @@ function Format-ApiListing {
     return $Content
 }
 
+# Splits a formatted monolithic API listing into one file per namespace.
+# Writes each namespace block to <OutputDirectory>/<TargetFramework>/<Namespace>.<TargetFramework>.cs.
 function Split-Artifact {
     param(
         [Parameter(Mandatory = $true)]
@@ -158,6 +152,24 @@ function Split-Artifact {
         Write-Host "  Wrote $TargetFramework/$fileName"
     }
 }
+
+# ── Main Script ───────────────────────────────────────────────────────────────
+
+$configuration = "Release"
+
+# Resolve paths
+$repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
+$outputDirectory = Join-Path $repoRootPath "api"
+$intermediateDirectory = Join-Path $repoRootPath "artifacts" "api"
+
+# Projects to export. Each entry has a project file path and the library name
+# used as the prefix for the generated API files.
+$projects = @(
+    @{
+        Name = "OpenAI"
+        Path = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
+    }
+)
 
 # Get ClientTargetFrameworks from Directory.Build.props
 $propsPath = Join-Path $repoRootPath "Directory.Build.props"

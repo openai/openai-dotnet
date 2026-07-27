@@ -22,7 +22,6 @@ launchSettings.json
 
 # Build results
 /artifacts
-api/artifacts/
 binaries/
 [Dd]ebug*/
 [Rr]elease/
