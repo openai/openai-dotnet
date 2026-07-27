@@ -47,7 +47,7 @@ namespace OpenAI.Conversations {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
-        public IList<ResponseItem> Items { get; }
+        public IList<Responses.ResponseItem> Items { get; }
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

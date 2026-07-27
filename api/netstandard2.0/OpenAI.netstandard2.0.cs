@@ -16,25 +16,25 @@ namespace OpenAI {
         public OpenAIClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual AssistantClient GetAssistantClient();
-        public virtual AudioClient GetAudioClient(string model);
-        public virtual BatchClient GetBatchClient();
-        public virtual ChatClient GetChatClient(string model);
-        public virtual ContainerClient GetContainerClient();
-        public virtual ConversationClient GetConversationClient();
-        public virtual EmbeddingClient GetEmbeddingClient(string model);
-        public virtual EvaluationClient GetEvaluationClient();
-        public virtual FineTuningClient GetFineTuningClient();
-        public virtual GraderClient GetGraderClient();
-        public virtual ImageClient GetImageClient(string model);
-        public virtual ModerationClient GetModerationClient(string model);
-        public virtual OpenAIFileClient GetOpenAIFileClient();
-        public virtual OpenAIModelClient GetOpenAIModelClient();
-        public virtual RealtimeClient GetRealtimeClient();
-        public virtual ResponsesClient GetResponsesClient();
-        public virtual SkillClient GetSkillClient();
-        public virtual VectorStoreClient GetVectorStoreClient();
-        public virtual VideoClient GetVideoClient();
+        public virtual Assistants.AssistantClient GetAssistantClient();
+        public virtual Audio.AudioClient GetAudioClient(string model);
+        public virtual Batch.BatchClient GetBatchClient();
+        public virtual Chat.ChatClient GetChatClient(string model);
+        public virtual Containers.ContainerClient GetContainerClient();
+        public virtual Conversations.ConversationClient GetConversationClient();
+        public virtual Embeddings.EmbeddingClient GetEmbeddingClient(string model);
+        public virtual Evals.EvaluationClient GetEvaluationClient();
+        public virtual FineTuning.FineTuningClient GetFineTuningClient();
+        public virtual Graders.GraderClient GetGraderClient();
+        public virtual Images.ImageClient GetImageClient(string model);
+        public virtual Moderations.ModerationClient GetModerationClient(string model);
+        public virtual Files.OpenAIFileClient GetOpenAIFileClient();
+        public virtual Models.OpenAIModelClient GetOpenAIModelClient();
+        public virtual Realtime.RealtimeClient GetRealtimeClient();
+        public virtual Responses.ResponsesClient GetResponsesClient();
+        public virtual Skills.SkillClient GetSkillClient();
+        public virtual VectorStores.VectorStoreClient GetVectorStoreClient();
+        public virtual Videos.VideoClient GetVideoClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }

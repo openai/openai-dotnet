@@ -854,9 +854,9 @@ namespace OpenAI.Assistants {
     [Experimental("OPENAI001")]
     public class VectorStoreCreationHelper : IJsonModel<VectorStoreCreationHelper>, IPersistableModel<VectorStoreCreationHelper> {
         public VectorStoreCreationHelper();
-        public VectorStoreCreationHelper(IEnumerable<OpenAIFile> files);
+        public VectorStoreCreationHelper(IEnumerable<Files.OpenAIFile> files);
         public VectorStoreCreationHelper(IEnumerable<string> fileIds);
-        public FileChunkingStrategy ChunkingStrategy { get; set; }
+        public VectorStores.FileChunkingStrategy ChunkingStrategy { get; set; }
         public IList<string> FileIds { get; }
         public IDictionary<string, string> Metadata { get; }
     }

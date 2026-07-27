@@ -52,7 +52,7 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationCreationOptions : IJsonModel<ConversationCreationOptions>, IPersistableModel<ConversationCreationOptions> {
-        public IList<ResponseItem> Items { get; }
+        public IList<Responses.ResponseItem> Items { get; }
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

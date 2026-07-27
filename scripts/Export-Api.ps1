@@ -29,7 +29,7 @@ $configuration = "Release"
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
 $outputDirectory = Join-Path $repoRootPath "api"
-$intermediateDirectory = Join-Path $repoRootPath "artifacts" "api"
+$intermediateDirectory = Join-Path $repoRootPath "api" "artifacts"
 
 # Projects to export. Each entry has a project file path and the library name
 # used as the prefix for the generated API files.
@@ -52,7 +52,7 @@ function Get-GeneratedHeader {
 "@
 }
 
-function Get-CleanApiContent {
+function Format-ApiListing {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Content
@@ -83,12 +83,6 @@ function Get-CleanApiContent {
         "System\." # System must be last to avoid partial matches
     ) | ForEach-Object { $Content = $Content -creplace $_, "" }
 
-    # Remove OpenAI sub-namespace prefixes.
-    [regex]::Matches($Content, '(?m)^namespace OpenAI\.([A-Za-z0-9_]+) \{') `
-        | ForEach-Object { $_.Groups[1].Value } `
-        | Sort-Object -Unique -Descending `
-        | ForEach-Object { $Content = $Content -creplace "$([regex]::Escape($_))\.", "" }
-
     # Remove non-public APIs.
     $Content = $Content -creplace "  * internal.*`n", ""
     $Content = $Content -creplace ".*private.*dummy.*`n", ""
@@ -114,7 +108,7 @@ function Get-CleanApiContent {
     return $Content
 }
 
-function Export-SplitApiContent {
+function Split-Artifact {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Content,
@@ -148,6 +142,12 @@ function Export-SplitApiContent {
         $filePath = Join-Path $targetFrameworkDirectory $fileName
         $fileContent = $generatedHeader + "`n" + $match.Value.Trim()
 
+        # Remove the file's own namespace prefix for a more compact view.
+        if ($namespace -ne "OpenAI") {
+            $escapedPrefix = [regex]::Escape("$namespace.")
+            $fileContent = $fileContent -creplace $escapedPrefix, ""
+        }
+
         Set-Content -Path $filePath -Value $fileContent -NoNewline
         Write-Host "  Wrote $TargetFramework/$fileName"
     }
@@ -180,7 +180,6 @@ if (Test-Path $outputDirectory) {
     Write-Host "Cleaning existing output directory..." -ForegroundColor Cyan
     try {
         foreach ($project in $projects) {
-            Get-ChildItem -Path $outputDirectory -Filter "$($project.Name).net*.cs" -Force | Remove-Item -Force
             foreach ($targetFramework in $targetFrameworks) {
                 $targetFrameworkDirectory = Join-Path $outputDirectory $targetFramework
                 if (Test-Path $targetFrameworkDirectory) {
@@ -248,8 +247,8 @@ foreach ($project in $projects) {
         Write-Host "  Processing $projectName.$targetFramework.cs..."
 
         $content = Get-Content $generatedFile -Raw
-        $content = Get-CleanApiContent -Content $content
-        Export-SplitApiContent -Content $content -TargetFramework $targetFramework -ProjectName $projectName -OutputDirectory $outputDirectory
+        $content = Format-ApiListing -Content $content
+        Split-Artifact -Content $content -TargetFramework $targetFramework -ProjectName $projectName -OutputDirectory $outputDirectory
         Remove-Item -Path $generatedFile -Force
     }
 

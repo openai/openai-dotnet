@@ -20,36 +20,36 @@ namespace OpenAI {
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         [Experimental("OPENAI001")]
-        public virtual AssistantClient GetAssistantClient();
-        public virtual AudioClient GetAudioClient(string model);
+        public virtual Assistants.AssistantClient GetAssistantClient();
+        public virtual Audio.AudioClient GetAudioClient(string model);
         [Experimental("OPENAI001")]
-        public virtual BatchClient GetBatchClient();
-        public virtual ChatClient GetChatClient(string model);
+        public virtual Batch.BatchClient GetBatchClient();
+        public virtual Chat.ChatClient GetChatClient(string model);
         [Experimental("OPENAI001")]
-        public virtual ContainerClient GetContainerClient();
+        public virtual Containers.ContainerClient GetContainerClient();
         [Experimental("OPENAI001")]
-        public virtual ConversationClient GetConversationClient();
-        public virtual EmbeddingClient GetEmbeddingClient(string model);
+        public virtual Conversations.ConversationClient GetConversationClient();
+        public virtual Embeddings.EmbeddingClient GetEmbeddingClient(string model);
         [Experimental("OPENAI001")]
-        public virtual EvaluationClient GetEvaluationClient();
+        public virtual Evals.EvaluationClient GetEvaluationClient();
         [Experimental("OPENAI001")]
-        public virtual FineTuningClient GetFineTuningClient();
+        public virtual FineTuning.FineTuningClient GetFineTuningClient();
         [Experimental("OPENAI001")]
-        public virtual GraderClient GetGraderClient();
-        public virtual ImageClient GetImageClient(string model);
-        public virtual ModerationClient GetModerationClient(string model);
-        public virtual OpenAIFileClient GetOpenAIFileClient();
-        public virtual OpenAIModelClient GetOpenAIModelClient();
+        public virtual Graders.GraderClient GetGraderClient();
+        public virtual Images.ImageClient GetImageClient(string model);
+        public virtual Moderations.ModerationClient GetModerationClient(string model);
+        public virtual Files.OpenAIFileClient GetOpenAIFileClient();
+        public virtual Models.OpenAIModelClient GetOpenAIModelClient();
         [Experimental("OPENAI002")]
-        public virtual RealtimeClient GetRealtimeClient();
+        public virtual Realtime.RealtimeClient GetRealtimeClient();
         [Experimental("OPENAI001")]
-        public virtual ResponsesClient GetResponsesClient();
+        public virtual Responses.ResponsesClient GetResponsesClient();
         [Experimental("OPENAI001")]
-        public virtual SkillClient GetSkillClient();
+        public virtual Skills.SkillClient GetSkillClient();
         [Experimental("OPENAI001")]
-        public virtual VectorStoreClient GetVectorStoreClient();
+        public virtual VectorStores.VectorStoreClient GetVectorStoreClient();
         [Experimental("OPENAI001")]
-        public virtual VideoClient GetVideoClient();
+        public virtual Videos.VideoClient GetVideoClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
