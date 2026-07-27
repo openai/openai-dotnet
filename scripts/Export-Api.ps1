@@ -83,6 +83,18 @@ function Format-ApiListing {
         "System\." # System must be last to avoid partial matches
     ) | ForEach-Object { $Content = $Content -creplace $_, "" }
 
+    # Remove OpenAI sub-namespace prefixes within their own namespace blocks for a more compact view.
+    # Each namespace block only has its own prefix stripped (e.g. "OpenAI.Containers." is removed
+    # inside the OpenAI.Containers block, but "OpenAI.Chat." references there remain unchanged).
+    $namespaceBlockPattern = '(?ms)^(namespace (?<NS>OpenAI\.[A-Za-z0-9_]+) \{.*?(?=^namespace OpenAI(?:\.[A-Za-z0-9_]+)* \{|\z))'
+    $Content = [regex]::Replace($Content, $namespaceBlockPattern, {
+        param($m)
+        $ns = $m.Groups["NS"].Value
+        $block = $m.Value
+        $block = $block -creplace "$([regex]::Escape($ns))\.", ""
+        return $block
+    })
+
     # Remove non-public APIs.
     $Content = $Content -creplace "  * internal.*`n", ""
     $Content = $Content -creplace ".*private.*dummy.*`n", ""
@@ -141,12 +153,6 @@ function Split-Artifact {
         $fileName = "$namespace.$TargetFramework.cs"
         $filePath = Join-Path $targetFrameworkDirectory $fileName
         $fileContent = $generatedHeader + "`n" + $match.Value.Trim()
-
-        # Remove the file's own namespace prefix for a more compact view.
-        if ($namespace -ne "OpenAI") {
-            $escapedPrefix = [regex]::Escape("$namespace.")
-            $fileContent = $fileContent -creplace $escapedPrefix, ""
-        }
 
         Set-Content -Path $filePath -Value $fileContent -NoNewline
         Write-Host "  Wrote $TargetFramework/$fileName"
