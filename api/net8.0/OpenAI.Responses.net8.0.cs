@@ -144,7 +144,7 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
         public static AutomaticCodeInterpreterToolContainerConfiguration CreateAutomaticContainerConfiguration(IEnumerable<string> fileIds = null);
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
         public Drawing.Point? ClickCoordinates { get; }
         public ComputerCallActionMouseButton? ClickMouseButton { get; }
@@ -171,7 +171,7 @@ namespace OpenAI.Responses {
         public static ComputerCallAction CreateTypeAction(string typeText);
         public static ComputerCallAction CreateWaitAction();
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public enum ComputerCallActionKind {
         Click = 0,
         DoubleClick = 1,
@@ -183,7 +183,7 @@ namespace OpenAI.Responses {
         Type = 7,
         Wait = 8
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public enum ComputerCallActionMouseButton {
         Left = 0,
         Right = 1,
@@ -191,7 +191,7 @@ namespace OpenAI.Responses {
         Back = 3,
         Forward = 4
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -201,7 +201,7 @@ namespace OpenAI.Responses {
         public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId);
         public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri);
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>, IPersistableModel<ComputerCallOutputResponseItem> {
         public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output) : base(default);
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
@@ -209,13 +209,13 @@ namespace OpenAI.Responses {
         public ComputerCallOutput Output { get; set; }
         public ComputerCallOutputStatus? Status { get; set; }
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public enum ComputerCallOutputStatus {
         InProgress = 0,
         Completed = 1,
         Incomplete = 2
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
         public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(default);
         public ComputerCallAction Action { get; set; }
@@ -223,7 +223,7 @@ namespace OpenAI.Responses {
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
         public ComputerCallStatus? Status { get; set; }
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public class ComputerCallSafetyCheck : IJsonModel<ComputerCallSafetyCheck>, IPersistableModel<ComputerCallSafetyCheck> {
         public ComputerCallSafetyCheck(string id, string code, string message);
         public string Code { get; set; }
@@ -234,7 +234,7 @@ namespace OpenAI.Responses {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public enum ComputerCallStatus {
         InProgress = 0,
         Completed = 1,
@@ -247,7 +247,7 @@ namespace OpenAI.Responses {
         public int DisplayWidth { get; set; }
         public ComputerToolEnvironment Environment { get; set; }
     }
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public readonly partial struct ComputerToolEnvironment : IEquatable<ComputerToolEnvironment> {
         public ComputerToolEnvironment(string value);
         public static ComputerToolEnvironment Browser { get; }
@@ -962,9 +962,9 @@ namespace OpenAI.Responses {
         public static ApplyPatchCallOutputItem CreateApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status);
         public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
-        [Experimental("OPENAICUA001")]
+        [Experimental("OPENAI001")]
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
-        [Experimental("OPENAICUA001")]
+        [Experimental("OPENAI001")]
         public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
@@ -1350,7 +1350,7 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
         public static ApplyPatchTool CreateApplyPatchTool();
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
-        [Experimental("OPENAICUA001")]
+        [Experimental("OPENAI001")]
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
@@ -1365,7 +1365,7 @@ namespace OpenAI.Responses {
         public string FunctionName { get; }
         public ResponseToolChoiceKind Kind { get; }
         public static ResponseToolChoice CreateAutoChoice();
-        [Experimental("OPENAICUA001")]
+        [Experimental("OPENAI001")]
         public static ResponseToolChoice CreateComputerChoice();
         public static ResponseToolChoice CreateFileSearchChoice();
         public static ResponseToolChoice CreateFunctionChoice(string functionName);
