@@ -75,7 +75,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.file_ids"u8))
                 {
                     writer.WritePropertyName("file_ids"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.file_ids"u8));
+                    Patch.WriteTo(writer, "$.file_ids"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(FileIds))

@@ -84,7 +84,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.acknowledged_safety_checks"u8))
                 {
                     writer.WritePropertyName("acknowledged_safety_checks"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.acknowledged_safety_checks"u8));
+                    Patch.WriteTo(writer, "$.acknowledged_safety_checks"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(AcknowledgedSafetyChecks))

@@ -28,7 +28,7 @@ public partial class ResponseToolChoice
     public static ResponseToolChoice CreateWebSearchChoice()
         => new(new InternalToolChoiceObjectWebSearch());
 
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public static ResponseToolChoice CreateComputerChoice()
         => new(new InternalToolChoiceObjectComputer());
 

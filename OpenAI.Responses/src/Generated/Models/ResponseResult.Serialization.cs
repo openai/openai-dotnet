@@ -112,7 +112,7 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
-            else
+            else if (!Patch.Contains("$.metadata"u8))
             {
                 writer.WriteNull("metadata"u8);
             }
@@ -121,7 +121,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            else
+            else if (!Patch.Contains("$.temperature"u8))
             {
                 writer.WriteNull("temperature"u8);
             }
@@ -135,7 +135,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(TopP.Value);
             }
-            else
+            else if (!Patch.Contains("$.top_p"u8))
             {
                 writer.WriteNull("top_p"u8);
             }
@@ -144,7 +144,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
             }
-            else
+            else if (!Patch.Contains("$.user"u8))
             {
                 writer.WriteNull("user"u8);
             }
@@ -198,7 +198,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.tools"u8))
                 {
                     writer.WritePropertyName("tools"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tools"u8));
+                    Patch.WriteTo(writer, "$.tools"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Tools))
@@ -251,7 +251,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("error"u8);
                 writer.WriteObjectValue(Error, options);
             }
-            else
+            else if (!Patch.Contains("$.error"u8))
             {
                 writer.WriteNull("error"u8);
             }
@@ -260,7 +260,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("incomplete_details"u8);
                 writer.WriteObjectValue(IncompleteStatusDetails, options);
             }
-            else
+            else if (!Patch.Contains("$.incomplete_details"u8))
             {
                 writer.WriteNull("incomplete_details"u8);
             }
@@ -269,7 +269,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.output"u8))
                 {
                     writer.WritePropertyName("output"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.output"u8));
+                    Patch.WriteTo(writer, "$.output"u8);
                 }
             }
             else
@@ -292,7 +292,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.instructions"u8))
                 {
                     writer.WritePropertyName("instructions"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.instructions"u8));
+                    Patch.WriteTo(writer, "$.instructions"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Instructions))

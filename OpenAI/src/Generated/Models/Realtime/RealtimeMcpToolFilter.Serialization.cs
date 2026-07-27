@@ -74,7 +74,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.tool_names"u8))
                 {
                     writer.WritePropertyName("tool_names"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tool_names"u8));
+                    Patch.WriteTo(writer, "$.tool_names"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(ToolNames))

@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public partial class ComputerCallOutput
     {
         [Experimental("SCME0001")]

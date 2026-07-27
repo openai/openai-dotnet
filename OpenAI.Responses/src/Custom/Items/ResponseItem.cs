@@ -72,13 +72,13 @@ public partial class ResponseItem
             ]);
     }
 
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
     {
         return new ComputerCallResponseItem(callId, action, pendingSafetyChecks);
     }
 
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output)
     {
         return new ComputerCallOutputResponseItem(callId, output);

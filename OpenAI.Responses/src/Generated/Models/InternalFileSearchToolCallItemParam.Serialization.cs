@@ -79,7 +79,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.queries"u8))
                 {
                     writer.WritePropertyName("queries"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.queries"u8));
+                    Patch.WriteTo(writer, "$.queries"u8);
                 }
             }
             else
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.results"u8))
                 {
                     writer.WritePropertyName("results"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.results"u8));
+                    Patch.WriteTo(writer, "$.results"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Results))

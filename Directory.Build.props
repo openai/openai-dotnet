@@ -39,7 +39,7 @@
     <NoWarn>$(NoWarn);0169</NoWarn>
 
     <!-- Disable warnings for experimental APIs -->
-    <NoWarn>$(NoWarn);OPENAI001;OPENAI002;OPENAICUA001;SCME0001</NoWarn>
+    <NoWarn>$(NoWarn);OPENAI001;OPENAI002;SCME0001</NoWarn>
 
     <!-- Enable AOT for compatible target frameworks -->
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
@@ -112,6 +112,6 @@
       Reset the base ignores and reset to ignore XML doc comments
       on test types and members and experimental APIs.
     -->
-    <NoWarn>CS1591;OPENAI001;OPENAI002;OPENAICUA001;SCME0001</NoWarn>
+    <NoWarn>CS1591;OPENAI001;OPENAI002;SCME0001</NoWarn>
   </PropertyGroup>
 </Project>

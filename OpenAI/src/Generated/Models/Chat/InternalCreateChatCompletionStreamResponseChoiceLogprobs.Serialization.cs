@@ -74,7 +74,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.content"u8))
                 {
                     writer.WritePropertyName("content"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.content"u8));
+                    Patch.WriteTo(writer, "$.content"u8);
                 }
             }
             else if (options.Format != "W" && !Patch.Contains("$.content"u8))
@@ -97,7 +97,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.refusal"u8))
                 {
                     writer.WritePropertyName("refusal"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.refusal"u8));
+                    Patch.WriteTo(writer, "$.refusal"u8);
                 }
             }
             else if (options.Format != "W" && !Patch.Contains("$.refusal"u8))

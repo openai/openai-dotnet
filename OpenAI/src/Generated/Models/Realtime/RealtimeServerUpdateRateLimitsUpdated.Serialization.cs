@@ -84,7 +84,7 @@ namespace OpenAI.Realtime
                 if (!Patch.IsRemoved("$.rate_limits"u8))
                 {
                     writer.WritePropertyName("rate_limits"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.rate_limits"u8));
+                    Patch.WriteTo(writer, "$.rate_limits"u8);
                 }
             }
             else

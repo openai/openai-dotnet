@@ -84,7 +84,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.annotations"u8))
                 {
                     writer.WritePropertyName("annotations"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.annotations"u8));
+                    Patch.WriteTo(writer, "$.annotations"u8);
                 }
             }
             else
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.logprobs"u8))
                 {
                     writer.WritePropertyName("logprobs"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.logprobs"u8));
+                    Patch.WriteTo(writer, "$.logprobs"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(Logprobs))

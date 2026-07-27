@@ -74,7 +74,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.allowed_domains"u8))
                 {
                     writer.WritePropertyName("allowed_domains"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.allowed_domains"u8));
+                    Patch.WriteTo(writer, "$.allowed_domains"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(AllowedDomains))

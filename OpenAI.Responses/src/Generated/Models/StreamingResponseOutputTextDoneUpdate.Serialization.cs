@@ -99,7 +99,7 @@ namespace OpenAI.Responses
                 if (!Patch.IsRemoved("$.logprobs"u8))
                 {
                     writer.WritePropertyName("logprobs"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.logprobs"u8));
+                    Patch.WriteTo(writer, "$.logprobs"u8);
                 }
             }
             else

@@ -79,7 +79,7 @@ namespace OpenAI.Conversations
                 if (!Patch.IsRemoved("$.items"u8))
                 {
                     writer.WritePropertyName("items"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.items"u8));
+                    Patch.WriteTo(writer, "$.items"u8);
                 }
             }
             else

@@ -115,7 +115,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("result"u8);
                 writer.WriteBase64StringValue(ImageResultBytes.ToArray(), "D");
             }
-            else
+            else if (!Patch.Contains("$.result"u8))
             {
                 writer.WriteNull("result"u8);
             }

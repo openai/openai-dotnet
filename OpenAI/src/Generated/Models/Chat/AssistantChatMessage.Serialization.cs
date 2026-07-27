@@ -79,7 +79,7 @@ namespace OpenAI.Chat
                 if (!Patch.IsRemoved("$.tool_calls"u8))
                 {
                     writer.WritePropertyName("tool_calls"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.tool_calls"u8));
+                    Patch.WriteTo(writer, "$.tool_calls"u8);
                 }
             }
             else if (Optional.IsCollectionDefined(ToolCalls))

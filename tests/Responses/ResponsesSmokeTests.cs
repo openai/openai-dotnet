@@ -6,12 +6,13 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Tests.Responses;
 
-#pragma warning disable OPENAICUA001
+#pragma warning disable OPENAI001
 
 [Category("Responses")]
 [Category("Smoke")]
@@ -176,6 +177,27 @@ public partial class ResponsesSmokeTests
                 Assert.That(potatoPart.Kind, Is.EqualTo(ResponseContentPartKind.Unknown));
                 Assert.That(potatoPart.Text, Is.Null);
             });
+    }
+
+    [Test]
+    public void ContentPartKindSetterUpdatesBackingType()
+    {
+        ResponseContentPart contentPart = ResponseContentPart.CreateInputTextPart("hello");
+
+        PropertyInfo kindProperty = typeof(ResponseContentPart).GetProperty(
+            nameof(ResponseContentPart.Kind),
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        PropertyInfo internalTypeProperty = typeof(ResponseContentPart).GetProperty(
+            "InternalType",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.That(kindProperty, Is.Not.Null);
+        Assert.That(internalTypeProperty, Is.Not.Null);
+
+        kindProperty.SetValue(contentPart, ResponseContentPartKind.OutputText);
+
+        Assert.That(contentPart.Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(internalTypeProperty.GetValue(contentPart)?.ToString(), Is.EqualTo("output_text"));
     }
 
     [Test]

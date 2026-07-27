@@ -27,7 +27,7 @@ public partial class ResponseTool
     }
 
     // CUSTOM: Added factory method as a convenience.
-    [Experimental("OPENAICUA001")]
+    [Experimental("OPENAI001")]
     public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight)
     {
         return new ComputerTool(
