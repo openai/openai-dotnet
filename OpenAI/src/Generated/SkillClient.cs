@@ -88,6 +88,7 @@ namespace OpenAI.Skills
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUpdateSkillRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -97,6 +98,7 @@ namespace OpenAI.Skills
         {
             Argument.AssertNotNullOrEmpty(skillId, nameof(skillId));
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateUpdateSkillRequest(skillId, content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
