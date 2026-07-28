@@ -18,7 +18,7 @@ public partial class VideoClient
     /// <summary> Initializes a new instance of <see cref="VideoClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public VideoClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public VideoClient(string apiKey) : this(new ApiKeyCredential(apiKey), new VideoClientOptions())
     {
     }
 
@@ -28,7 +28,7 @@ public partial class VideoClient
     /// <summary> Initializes a new instance of <see cref="VideoClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public VideoClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public VideoClient(ApiKeyCredential credential) : this(credential, new VideoClientOptions())
     {
     }
 
@@ -39,7 +39,7 @@ public partial class VideoClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public VideoClient(ApiKeyCredential credential, VideoClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -47,7 +47,7 @@ public partial class VideoClient
     /// <summary> Initializes a new instance of <see cref="VideoClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public VideoClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public VideoClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new VideoClientOptions())
     {
     }
 
@@ -56,13 +56,13 @@ public partial class VideoClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public VideoClient(AuthenticationPolicy authenticationPolicy, VideoClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new VideoClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -73,13 +73,13 @@ public partial class VideoClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal VideoClient(ClientPipeline pipeline, VideoClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new VideoClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     [Experimental("SCME0002")]

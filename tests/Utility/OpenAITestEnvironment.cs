@@ -133,32 +133,50 @@ public class OpenAITestEnvironment : TestEnvironment
         }
     }
 
-    public T GetTestClient<T>(string modelName = default, OpenAIClientOptions options = default)
+    public T GetTestClient<T>(string modelName = default, ClientPipelineOptions options = default)
     {
-        options ??= new();
         var credential = ApiKeyCredential;
 
         object clientObject = typeof(T).Name switch
         {
-            nameof(AssistantClient) => new AssistantClient(credential, options),
-            nameof(AudioClient) => new AudioClient(modelName ?? TestModel.Audio_Whisper, credential, options),
-            nameof(BatchClient) => new BatchClient(credential, options),
-            nameof(ChatClient) => new ChatClient(modelName ?? TestModel.Chat, credential, options),
-            nameof(ContainerClient) => new ContainerClient(credential, options),
-            nameof(ConversationClient) => new ConversationClient(credential, options),
-            nameof(EmbeddingClient) => new EmbeddingClient(modelName ?? TestModel.Embeddings, credential, options),
-            nameof(OpenAIFileClient) => new OpenAIFileClient(credential, options),
-            nameof(FineTuningClient) => new FineTuningClient(credential, options),
-            nameof(ImageClient) => new ImageClient(modelName ?? TestModel.Images, credential, options),
-            nameof(OpenAIModelClient) => new OpenAIModelClient(credential, options),
-            nameof(ModerationClient) => new ModerationClient(modelName ?? TestModel.Moderations, credential, options),
-            nameof(VectorStoreClient) => new VectorStoreClient(credential, options),
-            nameof(OpenAIClient) => new OpenAIClient(credential, options),
-            nameof(SkillClient) => new SkillClient(credential, options),
+            nameof(AssistantClient) => new AssistantClient(credential, NormalizeOptions<AssistantClientOptions>(options)),
+            nameof(AudioClient) => new AudioClient(modelName ?? TestModel.Audio_Whisper, credential, NormalizeOptions<AudioClientOptions>(options)),
+            nameof(BatchClient) => new BatchClient(credential, NormalizeOptions<BatchClientOptions>(options)),
+            nameof(ChatClient) => new ChatClient(modelName ?? TestModel.Chat, credential, NormalizeOptions<ChatClientOptions>(options)),
+            nameof(ContainerClient) => new ContainerClient(credential, NormalizeOptions<ContainerClientOptions>(options)),
+            nameof(ConversationClient) => new ConversationClient(credential, NormalizeOptions<ConversationClientOptions>(options)),
+            nameof(EmbeddingClient) => new EmbeddingClient(modelName ?? TestModel.Embeddings, credential, NormalizeOptions<EmbeddingClientOptions>(options)),
+            nameof(OpenAIFileClient) => new OpenAIFileClient(credential, NormalizeOptions<OpenAIFileClientOptions>(options)),
+            nameof(FineTuningClient) => new FineTuningClient(credential, NormalizeOptions<FineTuningClientOptions>(options)),
+            nameof(ImageClient) => new ImageClient(modelName ?? TestModel.Images, credential, NormalizeOptions<ImageClientOptions>(options)),
+            nameof(OpenAIModelClient) => new OpenAIModelClient(credential, NormalizeOptions<OpenAIModelClientOptions>(options)),
+            nameof(ModerationClient) => new ModerationClient(modelName ?? TestModel.Moderations, credential, NormalizeOptions<ModerationClientOptions>(options)),
+            nameof(VectorStoreClient) => new VectorStoreClient(credential, NormalizeOptions<VectorStoreClientOptions>(options)),
+            nameof(OpenAIClient) => new OpenAIClient(credential, NormalizeOptions<OpenAIClientOptions>(options)),
+            nameof(SkillClient) => new SkillClient(credential, NormalizeOptions<SkillClientOptions>(options)),
             _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
         };
 
         return (T)clientObject;
+    }
+
+    private static TOptions NormalizeOptions<TOptions>(ClientPipelineOptions options)
+        where TOptions : ClientPipelineOptions, new()
+    {
+        if (options is TOptions typedOptions)
+        {
+            return typedOptions;
+        }
+
+        TOptions normalizedOptions = new();
+
+        if (options is not null)
+        {
+            // Preserve mock transport when callers pass a different options type.
+            normalizedOptions.Transport = options.Transport;
+        }
+
+        return normalizedOptions;
     }
 
     public RealtimeClient GetTestRealtimeClient(RealtimeClientOptions options = default)

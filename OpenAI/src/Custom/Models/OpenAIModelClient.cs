@@ -92,6 +92,43 @@ public partial class OpenAIModelClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary> Initializes a new instance of <see cref="OpenAIModelClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIModelClient(ApiKeyCredential credential, OpenAIModelClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIModelClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIModelClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new OpenAIModelClientOptions();
+
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIModelClient"/>. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIModelClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new OpenAIModelClientOptions();
+
+        Pipeline = pipeline;
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+    }
+
     [Experimental("SCME0002")]
     public OpenAIModelClient(OpenAIModelClientSettings settings)
         : this(AuthenticationPolicy.Create(settings), settings?.Options)

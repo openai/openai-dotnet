@@ -24,7 +24,7 @@ internal partial class InternalAssistantThreadClient
     /// <summary> Initializes a new instance of <see cref="InternalAssistantThreadClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public InternalAssistantThreadClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public InternalAssistantThreadClient(ApiKeyCredential credential) : this(credential, new AssistantClientOptions())
     {
     }
 
@@ -35,7 +35,7 @@ internal partial class InternalAssistantThreadClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public InternalAssistantThreadClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public InternalAssistantThreadClient(ApiKeyCredential credential, AssistantClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -43,7 +43,7 @@ internal partial class InternalAssistantThreadClient
     /// <summary> Initializes a new instance of <see cref="InternalAssistantThreadClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public InternalAssistantThreadClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public InternalAssistantThreadClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new AssistantClientOptions())
     {
     }
 
@@ -52,13 +52,13 @@ internal partial class InternalAssistantThreadClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
-    public InternalAssistantThreadClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public InternalAssistantThreadClient(AuthenticationPolicy authenticationPolicy, AssistantClientOptions options)
     {
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new AssistantClientOptions();
 
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 
     // CUSTOM:
@@ -69,12 +69,12 @@ internal partial class InternalAssistantThreadClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal InternalAssistantThreadClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal InternalAssistantThreadClient(ClientPipeline pipeline, AssistantClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new AssistantClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }
 }

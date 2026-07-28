@@ -8,14 +8,14 @@ namespace OpenAI.Models;
 [Experimental("SCME0002")]
 public sealed class OpenAIModelClientSettings : ClientSettings
 {
-    public OpenAIClientOptions Options { get; set; }
+    public OpenAIModelClientOptions Options { get; set; }
 
     protected override void BindCore(IConfigurationSection section)
     {
         var optionsSection = section.GetSection("Options");
         if (optionsSection.Exists())
         {
-            Options ??= new OpenAIClientOptions(optionsSection);
+            Options ??= new OpenAIModelClientOptions(optionsSection);
         }
     }
 }
