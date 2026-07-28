@@ -35,7 +35,7 @@
 
   <!-- GenAPI Properties -->
   <PropertyGroup>
-    <GenAPIOutputDirectory>$(RepositoryRoot)api\</GenAPIOutputDirectory>
+    <GenAPIOutputDirectory>$(RepositoryRoot)artifacts\api\</GenAPIOutputDirectory>
   </PropertyGroup>
 
   <!-- Import GenAPI Task package when exporting API -->
@@ -49,8 +49,8 @@
     Usage:
       dotnet build OpenAI/src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
 
-    Outputs to:
-      api/$(MSBuildProjectName).<TargetFramework>.cs
+    Outputs intermediate files to:
+      artifacts/api/$(MSBuildProjectName).<TargetFramework>.cs
   -->
 
   <!-- Outer build target: Dispatches to inner builds for each target framework -->
@@ -76,6 +76,7 @@
            Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' != ''">
 
     <!-- Run GenAPI task -->
+    <MakeDir Directories="$(GenAPIOutputDirectory)" />
     <GenAPITask Assemblies="$(TargetPath)"
                 AssemblyReferences="@(ReferencePath)"
                 OutputPath="$(GenAPIOutputDirectory)$(MSBuildProjectName).$(TargetFramework).cs" />
