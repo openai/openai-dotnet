@@ -143,6 +143,39 @@ public partial class OpenAIFileClient
     ///     not match.
     /// </param>
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="expiresAfterSeconds">
+    ///     The number of seconds after creation that the file will expire.
+    ///     Must be between 3600 (1 hour) and 2592000 (30 days).
+    /// </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, int expiresAfterSeconds, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(file, nameof(file));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+        Argument.AssertInRange(expiresAfterSeconds, 3600, 2592000, nameof(expiresAfterSeconds));
+        InternalFileUploadOptions options = new()
+        {
+            Purpose = purpose,
+            ExpiresAfter = new InternalFileExpirationAfter("created_at", expiresAfterSeconds)
+        };
+
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
+        ClientResult result = await UploadFileAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="file"> The file stream to upload. </param>
+    /// <param name="filename">
+    ///     The filename associated with the file stream. The filename's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the filename's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
@@ -163,6 +196,40 @@ public partial class OpenAIFileClient
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
     /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="file"> The file stream to upload. </param>
+    /// <param name="filename">
+    ///     The filename associated with the file stream. The filename's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the filename's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="expiresAfterSeconds">
+    ///     The number of seconds after creation that the file will expire.
+    ///     Must be between 3600 (1 hour) and 2592000 (30 days).
+    /// </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<OpenAIFile> UploadFile(Stream file, string filename, FileUploadPurpose purpose, int expiresAfterSeconds, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(file, nameof(file));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+        Argument.AssertInRange(expiresAfterSeconds, 3600, 2592000, nameof(expiresAfterSeconds));
+
+        InternalFileUploadOptions options = new()
+        {
+            Purpose = purpose,
+            ExpiresAfter = new InternalFileExpirationAfter("created_at", expiresAfterSeconds)
+        };
+
+        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
+        ClientResult result = UploadFile(content, content.ContentType, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
     /// <param name="file"> The file bytes to upload. </param>
     /// <param name="filename">
     ///     The filename associated with the file bytes. The filename's extension (for example: .json) will be used to
@@ -170,13 +237,22 @@ public partial class OpenAIFileClient
     ///     not match.
     /// </param>
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="expiresAfterSeconds">
+    ///     The number of seconds after creation that the file will expire.
+    ///     Must be between 3600 (1 hour) and 2592000 (30 days).
+    /// </param>
     /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(BinaryData file, string filename, FileUploadPurpose purpose)
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(BinaryData file, string filename, FileUploadPurpose purpose, int? expiresAfterSeconds = null)
     {
         Argument.AssertNotNull(file, nameof(file));
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
+        if (expiresAfterSeconds.HasValue)
+        {
+            return UploadFileAsync(file?.ToStream(), filename, purpose, expiresAfterSeconds.Value);
+        }
         return UploadFileAsync(file?.ToStream(), filename, purpose);
     }
 
@@ -189,13 +265,22 @@ public partial class OpenAIFileClient
     ///     not match.
     /// </param>
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="expiresAfterSeconds">
+    ///     The number of seconds after creation that the file will expire.
+    ///     Must be between 3600 (1 hour) and 2592000 (30 days).
+    /// </param>
     /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose)
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose, int? expiresAfterSeconds = null)
     {
         Argument.AssertNotNull(file, nameof(file));
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
+        if (expiresAfterSeconds.HasValue)
+        {
+            return UploadFile(file?.ToStream(), filename, purpose, expiresAfterSeconds.Value);
+        }
         return UploadFile(file?.ToStream(), filename, purpose);
     }
 
@@ -209,11 +294,16 @@ public partial class OpenAIFileClient
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="filePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filePath"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose)
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose, int? expiresAfterSeconds = null)
     {
         Argument.AssertNotNullOrEmpty(filePath, nameof(filePath));
 
         using FileStream stream = File.OpenRead(filePath);
+        if (expiresAfterSeconds.HasValue)
+        {
+            return await UploadFileAsync(stream, Path.GetFileName(filePath), purpose, expiresAfterSeconds.Value).ConfigureAwait(false);
+        }
         return await UploadFileAsync(stream, Path.GetFileName(filePath), purpose).ConfigureAwait(false);
     }
 
@@ -227,11 +317,16 @@ public partial class OpenAIFileClient
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="filePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filePath"/> is an empty string, and was expected to be non-empty. </exception>
-    public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose)
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose, int? expiresAfterSeconds = null)
     {
         Argument.AssertNotNullOrEmpty(filePath, nameof(filePath));
 
         using FileStream stream = File.OpenRead(filePath);
+        if (expiresAfterSeconds.HasValue)
+        {
+            return UploadFile(stream, Path.GetFileName(filePath), purpose, expiresAfterSeconds.Value);
+        }
         return UploadFile(stream, Path.GetFileName(filePath), purpose);
     }
 

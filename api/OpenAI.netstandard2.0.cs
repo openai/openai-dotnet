@@ -2464,14 +2464,16 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options);
         public virtual Task<ClientResult> GetFilesAsync(string purpose, int? limit, string order, string after, RequestOptions options);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default);
-        public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose);
+        public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose, int? expiresAfterSeconds = null);
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult<OpenAIFile> UploadFile(Stream file, string filename, FileUploadPurpose purpose, int expiresAfterSeconds, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFile> UploadFile(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
-        public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose);
-        public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(BinaryData file, string filename, FileUploadPurpose purpose);
+        public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose, int? expiresAfterSeconds = null);
+        public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(BinaryData file, string filename, FileUploadPurpose purpose, int? expiresAfterSeconds = null);
         public virtual Task<ClientResult> UploadFileAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, int expiresAfterSeconds, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose);
+        public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose, int? expiresAfterSeconds = null);
     }
     public sealed class OpenAIFileClientSettings : ClientSettings {
         public OpenAIClientOptions Options { get; set; }

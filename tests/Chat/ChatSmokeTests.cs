@@ -22,6 +22,7 @@ public class ChatSmokeTests : ClientTestBase
 {
     public ChatSmokeTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [Test]

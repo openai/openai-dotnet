@@ -39,6 +39,12 @@ internal partial class InternalFileUploadOptions
 
         content.Add(Purpose.ToString(), "purpose");
 
+        if (ExpiresAfter is not null)
+        {
+            content.Add(ExpiresAfter.Value.Anchor, "expires_after[anchor]");
+            content.Add(ExpiresAfter.Value.Seconds, "expires_after[seconds]");
+        }
+
         return content;
     }
 }
