@@ -37,7 +37,10 @@ namespace OpenAI.Conversations
             }
             if (include != null && !(include is ChangeTrackingList<IncludedConversationItemProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                uri.AppendQueryDelimited("include", include, ",", escape: true);
+                foreach (var @param in include)
+                {
+                    uri.AppendQuery("include[]", @param.ToString(), true);
+                }
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -56,7 +59,10 @@ namespace OpenAI.Conversations
             uri.AppendPath("/items", false);
             if (include != null && !(include is ChangeTrackingList<IncludedConversationItemProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                uri.AppendQueryDelimited("include", include, ",", escape: true);
+                foreach (var @param in include)
+                {
+                    uri.AppendQuery("include[]", @param.ToString(), true);
+                }
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -94,7 +100,10 @@ namespace OpenAI.Conversations
             uri.AppendPath(itemId, true);
             if (include != null && !(include is ChangeTrackingList<IncludedConversationItemProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                uri.AppendQueryDelimited("include", include, ",", escape: true);
+                foreach (var @param in include)
+                {
+                    uri.AppendQuery("include[]", @param.ToString(), true);
+                }
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
