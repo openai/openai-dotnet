@@ -6440,6 +6440,23 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct ResponseReasoningContext : IEquatable<ResponseReasoningContext> {
+        public ResponseReasoningContext(string value);
+        public static ResponseReasoningContext AllTurns { get; }
+        public static ResponseReasoningContext Auto { get; }
+        public static ResponseReasoningContext CurrentTurn { get; }
+        public readonly bool Equals(ResponseReasoningContext other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseReasoningContext left, ResponseReasoningContext right);
+        public static implicit operator ResponseReasoningContext(string value);
+        public static implicit operator ResponseReasoningContext?(string value);
+        public static bool operator !=(ResponseReasoningContext left, ResponseReasoningContext right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public readonly partial struct ResponseReasoningEffortLevel : IEquatable<ResponseReasoningEffortLevel> {
         public ResponseReasoningEffortLevel(string value);
         public static ResponseReasoningEffortLevel High { get; }
@@ -6460,6 +6477,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseReasoningOptions : IJsonModel<ResponseReasoningOptions>, IPersistableModel<ResponseReasoningOptions> {
+        public ResponseReasoningContext? Context { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]

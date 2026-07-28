@@ -28,6 +28,13 @@ union ResponsesReasoningEffort {
   "high",
 }
 
+/** Controls how much reasoning context is preserved across turns. */
+union ResponsesReasoningContext {
+  "auto",
+  "current_turn",
+  "all_turns",
+}
+
 union ResponsesCompoundFilterType {
   string,
   AndValue: "and",
@@ -714,6 +721,9 @@ model ApproximateLocation extends Location {
  */
 model Reasoning {
   effort?: ResponsesReasoningEffort | null = "medium";
+
+  /** Controls how much reasoning context is preserved across turns. */
+  context?: ResponsesReasoningContext | null;
 
   @doc("""
     A summary of the reasoning performed by the model. This can be
