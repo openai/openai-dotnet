@@ -46,9 +46,9 @@ Quick reference for all paths involved in spec ingestion.
 
 | What | Path |
 |------|------|
-| .NET 8.0 API surface | `api/OpenAI.net8.0.cs` |
-| .NET 10.0 API surface | `api/OpenAI.net10.0.cs` |
-| .NET Standard 2.0 API surface | `api/OpenAI.netstandard2.0.cs` |
+| .NET 8.0 API surface | `api/net8.0/` |
+| .NET 10.0 API surface | `api/net10.0/` |
+| .NET Standard 2.0 API surface | `api/netstandard2.0/` |
 
 ## Local Repository — Codegen Plugin
 

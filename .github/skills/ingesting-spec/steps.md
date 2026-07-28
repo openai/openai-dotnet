@@ -295,10 +295,10 @@ Compare old generated code (`src/Generated/`) with new generated code:
 - **Changed files** — summarize significant changes (new properties, renamed types, changed method signatures)
 
 ### 9c. API Surface Changes
-Run `./scripts/Export-Api.ps1` and diff the `api/` files:
-- `api/OpenAI.net8.0.cs`
-- `api/OpenAI.net10.0.cs`
-- `api/OpenAI.netstandard2.0.cs`
+Run `./scripts/Export-Api.ps1` and diff the `api/` listings:
+- `api/net8.0/`
+- `api/net10.0/`
+- `api/netstandard2.0/`
 
 List any breaking changes (removed or renamed public API members).
 
