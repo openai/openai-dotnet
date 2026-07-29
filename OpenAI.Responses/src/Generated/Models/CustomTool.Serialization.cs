@@ -14,7 +14,9 @@ namespace OpenAI.Responses
     {
         public CustomTool() : this(ResponseToolKind.Custom, default, null, null, null)
         {
-        }        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        }
+
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CustomTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

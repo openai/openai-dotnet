@@ -955,6 +955,8 @@ namespace OpenAI.Responses {
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
+        public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName);
+        public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
@@ -964,8 +966,6 @@ namespace OpenAI.Responses {
         public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
         public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
         public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
-        public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName);
-        public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output);
         public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public static ReasoningResponseItem CreateReasoningItem(string summaryText);
         public static ReferenceResponseItem CreateReferenceItem(string id);
