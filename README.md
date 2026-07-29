@@ -1078,7 +1078,7 @@ OpenAI .NET library supports experimental distributed tracing and metrics with O
 
 ### Telemetry and privacy
 
-To help OpenAI understand which platforms the SDK runs on, every request includes a small set of headers describing the library and the runtime that issued it:
+To help OpenAI understand which platforms the SDK runs on, requests include a small set of headers by default describing the library and the runtime that issued them:
 
 | Header | Example |
 | --- | --- |

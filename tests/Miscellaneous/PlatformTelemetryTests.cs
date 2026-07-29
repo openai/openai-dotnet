@@ -199,13 +199,24 @@ public class PlatformTelemetryTests
     [TestCase("2.12.0\r\n")]
     [TestCase("2.12.0-caf\u00e9")]
     [TestCase("2.12.0\u0000")]
+    [TestCase("2.12.0\t")]
     [TestCase("2.12.0 ")]
+    [TestCase(" 2.12.0")]
     [TestCase("+abc123")]
     public void PackageVersionIsUnknownWhenItCouldNotBeSentVerbatim(string version)
     {
         // Reporting unknown is preferable to emitting a rewritten value that would be indistinguishable from a
-        // real version while disagreeing with the user agent.
+        // real version while disagreeing with the user agent. Surrounding spaces count as unsendable because
+        // RFC 7230 lets an HTTP stack strip them from a field value.
         Assert.That(PlatformTelemetry.NormalizePackageVersion(version), Is.EqualTo(UnknownValue));
+    }
+
+    [Test]
+    public void PackageVersionAllowsInteriorSpaces()
+    {
+        // Interior whitespace is legal in a header value and is transmitted unaltered, so it does not force
+        // the fallback.
+        Assert.That(PlatformTelemetry.NormalizePackageVersion("2.12.0 beta"), Is.EqualTo("2.12.0 beta"));
     }
 
     [TestCase(null)]

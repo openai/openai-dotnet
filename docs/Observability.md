@@ -58,7 +58,7 @@ The following sources and meters are available:
 
 ## Telemetry and privacy
 
-Separately from the OpenTelemetry instrumentation described above, the library always includes a small set of headers on outgoing requests that describe the SDK and the platform it is running on. The two features are independent: `OpenAI.Experimental.EnableOpenTelemetry` does not govern these headers, and `OpenAI.TelemetryDisabled` does not govern OpenTelemetry tracing or metrics.
+Separately from the OpenTelemetry instrumentation described above, the library includes a small set of headers on outgoing requests that describe the SDK and the platform it is running on. Unlike the instrumentation above, which is opt-in, these are sent by default and can be turned off; see [Opting out](#opting-out). The two features are independent: `OpenAI.Experimental.EnableOpenTelemetry` does not govern these headers, and `OpenAI.TelemetryDisabled` does not govern OpenTelemetry tracing or metrics.
 
 ### What is sent
 

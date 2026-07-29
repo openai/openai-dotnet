@@ -154,9 +154,15 @@ internal static class PlatformTelemetry
     /// Determines whether a value can be transmitted as an HTTP header value without alteration.
     /// </summary>
     /// <param name="value">The value to evaluate.</param>
+    /// <remarks>
+    /// Leading and trailing spaces are rejected because RFC 7230 section 3.2 treats them as optional
+    /// whitespace surrounding the field value rather than as part of it, so an HTTP stack is free to strip
+    /// them. Interior spaces are legal and are preserved, so they remain acceptable. Tabs and other control
+    /// characters are covered by the printable-ASCII check.
+    /// </remarks>
     private static bool IsHeaderSafe(string value)
     {
-        if (value.Length == 0 || value[value.Length - 1] == ' ')
+        if (value.Length == 0 || value[0] == ' ' || value[value.Length - 1] == ' ')
         {
             return false;
         }
