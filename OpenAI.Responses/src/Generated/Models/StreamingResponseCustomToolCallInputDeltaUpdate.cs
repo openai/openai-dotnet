@@ -3,31 +3,33 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate
+    [Experimental("OPENAI001")]
+    public partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber, int outputIndex, string itemId, string delta) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, sequenceNumber)
+        internal StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber, string delta, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, sequenceNumber)
         {
-            OutputIndex = outputIndex;
-            ItemId = itemId;
             Delta = delta;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string delta) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string delta, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
         {
-            OutputIndex = outputIndex;
-            ItemId = itemId;
             Delta = delta;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public int OutputIndex { get; set; }
+        public string Delta { get; set; }
 
         public string ItemId { get; set; }
 
-        public string Delta { get; set; }
+        public int OutputIndex { get; set; }
     }
 }
