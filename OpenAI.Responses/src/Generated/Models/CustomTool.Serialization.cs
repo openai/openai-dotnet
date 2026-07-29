@@ -14,9 +14,7 @@ namespace OpenAI.Responses
     {
         public CustomTool() : this(ResponseToolKind.Custom, default, null, null, null)
         {
-        }
-
-        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        }        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CustomTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -76,17 +74,17 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                writer.WriteStringValue(ToolName);
             }
-            if (Optional.IsDefined(Description) && !Patch.Contains("$.description"u8))
+            if (Optional.IsDefined(ToolDescription) && !Patch.Contains("$.description"u8))
             {
                 writer.WritePropertyName("description"u8);
-                writer.WriteStringValue(Description);
+                writer.WriteStringValue(ToolDescription);
             }
-            if (Optional.IsDefined(Format) && !Patch.Contains("$.format"u8))
+            if (Optional.IsDefined(ToolFormat) && !Patch.Contains("$.format"u8))
             {
                 writer.WritePropertyName("format"u8);
-                writer.WriteObjectValue(Format, options);
+                writer.WriteObjectValue(ToolFormat, options);
             }
 
             Patch.WriteTo(writer);
@@ -116,9 +114,9 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string name = default;
-            string description = default;
-            CustomToolFormat format = default;
+            string toolName = default;
+            string toolDescription = default;
+            CustomToolFormat toolFormat = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -128,12 +126,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("name"u8))
                 {
-                    name = prop.Value.GetString();
+                    toolName = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("description"u8))
                 {
-                    description = prop.Value.GetString();
+                    toolDescription = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("format"u8))
@@ -142,12 +140,12 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    format = CustomToolFormat.DeserializeCustomToolFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    toolFormat = CustomToolFormat.DeserializeCustomToolFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CustomTool(kind, patch, name, description, format);
+            return new CustomTool(kind, patch, toolName, toolDescription, toolFormat);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -158,7 +156,7 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("format"u8))
             {
-                return Format.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
+                return ToolFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
             }
             return false;
         }
@@ -171,7 +169,7 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("format"u8))
             {
-                Format.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
+                ToolFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
                 return true;
             }
             return false;

@@ -149,4 +149,16 @@ public partial class ResponseItem
         return new McpToolDefinitionListItem(serverLabel, toolDefinitions);
     }
 
+    [Experimental("OPENAI001")]
+    public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string name)
+    {
+        return new CustomToolCallItem(callId, input, name);
+    }
+
+    [Experimental("OPENAI001")]
+    public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output)
+    {
+        return new CustomToolCallOutputItem(callId, output);
+    }
+
 }

@@ -152,4 +152,18 @@ public partial class ResponseTool
             partialImageCount: partialImageCount,
             action: action);
     }
+
+    // CUSTOM: Added factory method as a convenience.
+    [Experimental("OPENAI001")]
+    public static CustomTool CreateCustomTool(string name)
+    {
+        Argument.AssertNotNull(name, nameof(name));
+
+        return new CustomTool(
+            kind: ResponseToolKind.Custom,
+            patch: default,
+            toolName: name,
+            toolDescription: null,
+            toolFormat: null);
+    }
 }

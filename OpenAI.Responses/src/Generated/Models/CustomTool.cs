@@ -11,27 +11,27 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomTool : ResponseTool
     {
-        public CustomTool(string name) : base(ResponseToolKind.Custom)
+        public CustomTool(string toolName) : base(ResponseToolKind.Custom)
         {
-            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(toolName, nameof(toolName));
 
-            Name = name;
+            ToolName = toolName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomTool(ResponseToolKind kind, in JsonPatch patch, string name, string description, CustomToolFormat format) : base(kind, patch)
+        internal CustomTool(ResponseToolKind kind, in JsonPatch patch, string toolName, string toolDescription, CustomToolFormat toolFormat) : base(kind, patch)
         {
-            Name = name;
-            Description = description;
-            Format = format;
+            ToolName = toolName;
+            ToolDescription = toolDescription;
+            ToolFormat = toolFormat;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Name { get; set; }
+        public string ToolName { get; set; }
 
-        public string Description { get; set; }
+        public string ToolDescription { get; set; }
 
-        public CustomToolFormat Format { get; set; }
+        public CustomToolFormat ToolFormat { get; set; }
     }
 }

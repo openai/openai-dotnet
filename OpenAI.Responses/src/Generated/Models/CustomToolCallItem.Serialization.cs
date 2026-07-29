@@ -14,9 +14,7 @@ namespace OpenAI.Responses
     {
         public CustomToolCallItem() : this(ResponseItemKind.CustomToolCall, null, default, null, null, null, null, null, default)
         {
-        }
-
-        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        }        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CustomToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -86,17 +84,17 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                writer.WriteStringValue(ToolName);
             }
             if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
             {
                 writer.WritePropertyName("created_by"u8);
                 writer.WriteStringValue(CreatedBy);
             }
-            if (Optional.IsDefined(Namespace) && !Patch.Contains("$.namespace"u8))
+            if (Optional.IsDefined(ToolNamespace) && !Patch.Contains("$.namespace"u8))
             {
                 writer.WritePropertyName("namespace"u8);
-                writer.WriteStringValue(Namespace);
+                writer.WriteStringValue(ToolNamespace);
             }
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
@@ -134,9 +132,9 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             string input = default;
-            string name = default;
+            string toolName = default;
             string createdBy = default;
-            string @namespace = default;
+            string toolNamespace = default;
             CustomToolCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -162,7 +160,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("name"u8))
                 {
-                    name = prop.Value.GetString();
+                    toolName = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("created_by"u8))
@@ -172,7 +170,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("namespace"u8))
                 {
-                    @namespace = prop.Value.GetString();
+                    toolNamespace = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -192,9 +190,9 @@ namespace OpenAI.Responses
                 patch,
                 callId,
                 input,
-                name,
+                toolName,
                 createdBy,
-                @namespace,
+                toolNamespace,
                 status);
         }
     }
