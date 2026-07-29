@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>
+    public partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>
     {
-        public StreamingResponseCustomToolCallInputDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, default, default, default, null, null)
+        public StreamingResponseCustomToolCallInputDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, default, default, null, null, default)
         {
         }
 
@@ -73,20 +73,20 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.output_index"u8))
+            if (!Patch.Contains("$.delta"u8))
             {
-                writer.WritePropertyName("output_index"u8);
-                writer.WriteNumberValue(OutputIndex);
+                writer.WritePropertyName("delta"u8);
+                writer.WriteStringValue(Delta);
             }
             if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.delta"u8))
+            if (!Patch.Contains("$.output_index"u8))
             {
-                writer.WritePropertyName("delta"u8);
-                writer.WriteStringValue(Delta);
+                writer.WritePropertyName("output_index"u8);
+                writer.WriteNumberValue(OutputIndex);
             }
 
             Patch.WriteTo(writer);
@@ -117,9 +117,9 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            int outputIndex = default;
-            string itemId = default;
             string delta = default;
+            string itemId = default;
+            int outputIndex = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -132,9 +132,9 @@ namespace OpenAI.Responses
                     sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("output_index"u8))
+                if (prop.NameEquals("delta"u8))
                 {
-                    outputIndex = prop.Value.GetInt32();
+                    delta = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("item_id"u8))
@@ -142,9 +142,9 @@ namespace OpenAI.Responses
                     itemId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("delta"u8))
+                if (prop.NameEquals("output_index"u8))
                 {
-                    delta = prop.Value.GetString();
+                    outputIndex = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -153,9 +153,9 @@ namespace OpenAI.Responses
                 kind,
                 sequenceNumber,
                 patch,
-                outputIndex,
+                delta,
                 itemId,
-                delta);
+                outputIndex);
         }
     }
 }

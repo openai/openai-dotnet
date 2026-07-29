@@ -4,6 +4,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseCustomToolCallInputDoneEvent")]
-internal partial class StreamingResponseCustomToolCallInputDoneUpdate
+public partial class StreamingResponseCustomToolCallInputDoneUpdate
 {
 }
