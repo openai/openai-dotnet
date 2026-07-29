@@ -292,7 +292,7 @@ internal static class PlatformTelemetry
 
     /// <summary>
     /// Reduces a value to something safe to transmit as an HTTP header: printable ASCII only, no line
-    /// breaks, and bounded in length.
+    /// breaks, no leading or trailing spaces, and bounded in length.
     /// </summary>
     /// <param name="value">The value to sanitize.</param>
     /// <param name="fallback">The value to return when nothing usable remains.</param>
@@ -317,10 +317,24 @@ internal static class PlatformTelemetry
             builder.Append(character >= ' ' && character <= '~' ? character : '_');
         }
 
-        // Trailing whitespace is not meaningful and is invalid in a header value.
+        // Leading and trailing spaces are not part of an HTTP header field value; they are optional
+        // whitespace that intermediaries are free to strip. Removing them here means the value that was
+        // computed is the value that arrives, rather than one silently normalized in transit.
         while (builder.Length > 0 && builder[builder.Length - 1] == ' ')
         {
             builder.Length--;
+        }
+
+        int leadingSpaces = 0;
+
+        while (leadingSpaces < builder.Length && builder[leadingSpaces] == ' ')
+        {
+            leadingSpaces++;
+        }
+
+        if (leadingSpaces > 0)
+        {
+            builder.Remove(0, leadingSpaces);
         }
 
         return builder.Length == 0 ? fallback : builder.ToString();

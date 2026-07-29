@@ -39,14 +39,18 @@ namespace OpenAI.Tests.Utility
         /// <summary>
         /// The SDK platform metadata headers that the client adds to every request.
         /// </summary>
+        /// <remarks>
+        /// These reference the client's own constants rather than restating the names, so that the sanitizer
+        /// cannot drift away from what the client actually sends.
+        /// </remarks>
         internal static readonly string[] PlatformTelemetryHeaderNames =
         [
-            "X-Stainless-Lang",
-            "X-Stainless-Package-Version",
-            "X-Stainless-Runtime",
-            "X-Stainless-Runtime-Version",
-            "X-Stainless-OS",
-            "X-Stainless-Arch",
+            PlatformTelemetry.LangHeaderName,
+            PlatformTelemetry.PackageVersionHeaderName,
+            PlatformTelemetry.RuntimeHeaderName,
+            PlatformTelemetry.RuntimeVersionHeaderName,
+            PlatformTelemetry.OSHeaderName,
+            PlatformTelemetry.ArchHeaderName,
         ];
 
         internal T GetProxiedOpenAIClient<T>(string overrideModel = null, OpenAIClientOptions options = default) where T : class

@@ -302,6 +302,21 @@ public class PlatformTelemetryTests
         Assert.That(sanitized, Is.EqualTo(new string('a', 60)));
     }
 
+    [Test]
+    public void SanitizeTrimsLeadingSpaces()
+    {
+        // A leading space is optional whitespace that an HTTP stack may strip, so the value that was computed
+        // would not be the value that arrives.
+        Assert.That(PlatformTelemetry.Sanitize("   Darwin 21.1.0", UnknownValue), Is.EqualTo("Darwin 21.1.0"));
+    }
+
+    [Test]
+    public void SanitizePreservesInteriorSpaces()
+    {
+        // Only the edges are whitespace-sensitive; interior spaces are legal and carry meaning.
+        Assert.That(PlatformTelemetry.Sanitize("  Darwin 21.1.0 (x86_64)  ", UnknownValue), Is.EqualTo("Darwin 21.1.0 (x86_64)"));
+    }
+
     #endregion
 
     /// <summary>
