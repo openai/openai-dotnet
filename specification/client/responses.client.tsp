@@ -85,6 +85,15 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
 
+@@clientName(CustomTool.name, "ToolName");
+@@clientName(CustomTool.description, "ToolDescription");
+@@clientName(CustomTool.format, "ToolFormat");
+
+@@clientName(CustomToolCallItem.name, "ToolName");
+@@clientName(CustomToolCallItem.`namespace`, "ToolNamespace");
+
+@@clientName(ResponseCustomToolCallInputDeltaEvent.delta, "InputDelta");
+
 @@clientName(FunctionTool.name, "FunctionName");
 @@clientName(FunctionTool.description, "FunctionDescription");
 @@clientName(FunctionTool.parameters, "FunctionParameters");

@@ -11,25 +11,25 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomToolCallItem : ResponseItem
     {
-        public CustomToolCallItem(string callId, string input, string name) : base(ResponseItemKind.CustomToolCall)
+        public CustomToolCallItem(string callId, string input, string toolName) : base(ResponseItemKind.CustomToolCall)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(toolName, nameof(toolName));
 
             CallId = callId;
             Input = input;
-            Name = name;
+            ToolName = toolName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string name, string createdBy, string @namespace, CustomToolCallStatus? status) : base(kind, id, patch)
+        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string toolName, string createdBy, string toolNamespace, CustomToolCallStatus? status) : base(kind, id, patch)
         {
             CallId = callId;
             Input = input;
-            Name = name;
+            ToolName = toolName;
             CreatedBy = createdBy;
-            Namespace = @namespace;
+            ToolNamespace = toolNamespace;
             Status = status;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,11 +38,11 @@ namespace OpenAI.Responses
 
         public string Input { get; set; }
 
-        public string Name { get; set; }
+        public string ToolName { get; set; }
 
         public string CreatedBy { get; set; }
 
-        public string Namespace { get; set; }
+        public string ToolNamespace { get; set; }
 
         public CustomToolCallStatus? Status { get; set; }
     }

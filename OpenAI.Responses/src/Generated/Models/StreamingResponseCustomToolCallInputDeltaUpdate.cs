@@ -10,23 +10,23 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber, string delta, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, sequenceNumber)
+        internal StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber, string inputDelta, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, sequenceNumber)
         {
-            Delta = delta;
+            InputDelta = inputDelta;
             ItemId = itemId;
             OutputIndex = outputIndex;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string delta, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string inputDelta, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
         {
-            Delta = delta;
+            InputDelta = inputDelta;
             ItemId = itemId;
             OutputIndex = outputIndex;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Delta { get; set; }
+        public string InputDelta { get; set; }
 
         public string ItemId { get; set; }
 

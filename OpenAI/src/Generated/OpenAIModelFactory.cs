@@ -567,9 +567,9 @@ namespace OpenAI
             return new ApplyPatchTool(ResponseToolKind.ApplyPatch, default);
         }
 
-        public static CustomTool CustomTool(string name = default, string description = default, CustomToolFormat format = default)
+        public static CustomTool CustomTool(string toolName = default, string toolDescription = default, CustomToolFormat toolFormat = default)
         {
-            return new CustomTool(ResponseToolKind.Custom, default, name, description, format);
+            return new CustomTool(ResponseToolKind.Custom, default, toolName, toolDescription, toolFormat);
         }
 
         public static CustomToolFormat CustomToolFormat(string kind = default)
@@ -1009,7 +1009,7 @@ namespace OpenAI
             return new ReferenceResponseItem(ResponseItemKind.ItemReference, id, default);
         }
 
-        public static CustomToolCallItem CustomToolCallItem(string id = default, string callId = default, string input = default, string name = default, string createdBy = default, string @namespace = default, CustomToolCallStatus? status = default)
+        public static CustomToolCallItem CustomToolCallItem(string id = default, string callId = default, string input = default, string toolName = default, string createdBy = default, string toolNamespace = default, CustomToolCallStatus? status = default)
         {
             return new CustomToolCallItem(
                 ResponseItemKind.CustomToolCall,
@@ -1017,9 +1017,9 @@ namespace OpenAI
                 default,
                 callId,
                 input,
-                name,
+                toolName,
                 createdBy,
-                @namespace,
+                toolNamespace,
                 status);
         }
 
@@ -1444,13 +1444,13 @@ namespace OpenAI
             return new StreamingResponseQueuedUpdate(default, sequenceNumber, default, response);
         }
 
-        public static StreamingResponseCustomToolCallInputDeltaUpdate StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber = default, string delta = default, string itemId = default, int outputIndex = default)
+        public static StreamingResponseCustomToolCallInputDeltaUpdate StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber = default, string inputDelta = default, string itemId = default, int outputIndex = default)
         {
             return new StreamingResponseCustomToolCallInputDeltaUpdate(
                 default,
                 sequenceNumber,
                 default,
-                delta,
+                inputDelta,
                 itemId,
                 outputIndex);
         }
