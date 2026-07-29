@@ -155,15 +155,8 @@ public partial class ResponseTool
 
     // CUSTOM: Added factory method as a convenience.
     [Experimental("OPENAI001")]
-    public static CustomTool CreateCustomTool(string name)
+    public static CustomTool CreateCustomTool(string toolName)
     {
-        Argument.AssertNotNull(name, nameof(name));
-
-        return new CustomTool(
-            kind: ResponseToolKind.Custom,
-            patch: default,
-            toolName: name,
-            toolDescription: null,
-            toolFormat: null);
+        return new CustomTool(toolName);
     }
 }

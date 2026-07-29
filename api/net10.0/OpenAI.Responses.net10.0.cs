@@ -1089,7 +1089,7 @@ namespace OpenAI.Responses {
         public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
         public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
         public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
-        public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string name);
+        public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName);
         public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output);
         public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public static ReasoningResponseItem CreateReasoningItem(string summaryText);
@@ -1469,7 +1469,7 @@ namespace OpenAI.Responses {
         [Experimental("OPENAI001")]
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         [Experimental("OPENAI001")]
-        public static CustomTool CreateCustomTool(string name);
+        public static CustomTool CreateCustomTool(string toolName);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);

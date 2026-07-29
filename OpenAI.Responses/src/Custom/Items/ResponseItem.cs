@@ -150,9 +150,9 @@ public partial class ResponseItem
     }
 
     [Experimental("OPENAI001")]
-    public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string name)
+    public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName)
     {
-        return new CustomToolCallItem(callId, input, name);
+        return new CustomToolCallItem(callId, input, toolName);
     }
 
     [Experimental("OPENAI001")]
