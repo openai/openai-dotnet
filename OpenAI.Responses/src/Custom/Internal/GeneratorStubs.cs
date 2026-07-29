@@ -58,6 +58,7 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownAnnotation")] internal partial class InternalUnknownAnnotation {}
 [CodeGenType("UnknownComputerAction")] internal partial class InternalUnknownComputerAction {}
 [CodeGenType("UnknownComputerToolCallOutputItemOutput")] internal partial class InternalUnknownComputerToolCallOutputItemOutput {}
+[CodeGenType("UnknownCustomToolFormat")] internal partial class InternalUnknownCustomToolFormat {}
 [CodeGenType("UnknownItemContent")] internal partial class InternalUnknownItemContent {}
 [CodeGenType("UnknownItemParam")] internal partial class InternalUnknownItemParam {}
 [CodeGenType("UnknownItemResource")] internal partial class InternalUnknownItemResource {}

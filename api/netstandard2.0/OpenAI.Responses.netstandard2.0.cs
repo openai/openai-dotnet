@@ -279,6 +279,109 @@ namespace OpenAI.Responses {
         public McpToolFilter ToolsAlwaysRequiringApproval { get; set; }
         public McpToolFilter ToolsNeverRequiringApproval { get; set; }
     }
+    public class CustomTool : ResponseTool, IJsonModel<CustomTool>, IPersistableModel<CustomTool> {
+        public CustomTool() : base(default);
+        public CustomTool(string name) : base(default);
+        public string Description { get; set; }
+        public CustomToolFormat Format { get; set; }
+        public string Name { get; set; }
+    }
+    public class CustomToolCallItem : ResponseItem, IJsonModel<CustomToolCallItem>, IPersistableModel<CustomToolCallItem> {
+        public CustomToolCallItem() : base(default);
+        public CustomToolCallItem(string callId, string input, string name) : base(default);
+        public string CallId { get; set; }
+        public string CreatedBy { get; set; }
+        public string Input { get; set; }
+        public string Name { get; set; }
+        public string Namespace { get; set; }
+        public CustomToolCallStatus? Status { get; set; }
+    }
+    public class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>, IPersistableModel<CustomToolCallOutputItem> {
+        public CustomToolCallOutputItem() : base(default);
+        public CustomToolCallOutputItem(string callId, BinaryData output) : base(default);
+        public string CallId { get; set; }
+        public string CreatedBy { get; set; }
+        public BinaryData Output { get; set; }
+        public CustomToolCallOutputStatus? Status { get; set; }
+    }
+    public readonly partial struct CustomToolCallOutputStatus : IEquatable<CustomToolCallOutputStatus> {
+        public CustomToolCallOutputStatus(string value);
+        public static CustomToolCallOutputStatus Completed { get; }
+        public static CustomToolCallOutputStatus Incomplete { get; }
+        public static CustomToolCallOutputStatus InProgress { get; }
+        public readonly bool Equals(CustomToolCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolCallOutputStatus left, CustomToolCallOutputStatus right);
+        public static implicit operator CustomToolCallOutputStatus(string value);
+        public static implicit operator CustomToolCallOutputStatus?(string value);
+        public static bool operator !=(CustomToolCallOutputStatus left, CustomToolCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct CustomToolCallStatus : IEquatable<CustomToolCallStatus> {
+        public CustomToolCallStatus(string value);
+        public static CustomToolCallStatus Completed { get; }
+        public static CustomToolCallStatus Incomplete { get; }
+        public static CustomToolCallStatus InProgress { get; }
+        public readonly bool Equals(CustomToolCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolCallStatus left, CustomToolCallStatus right);
+        public static implicit operator CustomToolCallStatus(string value);
+        public static implicit operator CustomToolCallStatus?(string value);
+        public static bool operator !=(CustomToolCallStatus left, CustomToolCallStatus right);
+        public override readonly string ToString();
+    }
+    public class CustomToolFormat : IJsonModel<CustomToolFormat>, IPersistableModel<CustomToolFormat> {
+        protected internal CustomToolFormat(CustomToolFormatKind kind);
+        public CustomToolFormatKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public readonly partial struct CustomToolFormatKind : IEquatable<CustomToolFormatKind> {
+        public CustomToolFormatKind(string value);
+        public static CustomToolFormatKind Grammar { get; }
+        public static CustomToolFormatKind Text { get; }
+        public readonly bool Equals(CustomToolFormatKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolFormatKind left, CustomToolFormatKind right);
+        public static implicit operator CustomToolFormatKind(string value);
+        public static implicit operator CustomToolFormatKind?(string value);
+        public static bool operator !=(CustomToolFormatKind left, CustomToolFormatKind right);
+        public override readonly string ToString();
+    }
+    public class CustomToolGrammarFormat : CustomToolFormat, IJsonModel<CustomToolGrammarFormat>, IPersistableModel<CustomToolGrammarFormat> {
+        public CustomToolGrammarFormat() : base(default);
+        public CustomToolGrammarFormat(CustomToolGrammarFormatSyntax syntax, string definition) : base(default);
+        public string Definition { get; set; }
+        public CustomToolGrammarFormatSyntax Syntax { get; set; }
+    }
+    public readonly partial struct CustomToolGrammarFormatSyntax : IEquatable<CustomToolGrammarFormatSyntax> {
+        public CustomToolGrammarFormatSyntax(string value);
+        public static CustomToolGrammarFormatSyntax Lark { get; }
+        public static CustomToolGrammarFormatSyntax Regex { get; }
+        public readonly bool Equals(CustomToolGrammarFormatSyntax other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolGrammarFormatSyntax left, CustomToolGrammarFormatSyntax right);
+        public static implicit operator CustomToolGrammarFormatSyntax(string value);
+        public static implicit operator CustomToolGrammarFormatSyntax?(string value);
+        public static bool operator !=(CustomToolGrammarFormatSyntax left, CustomToolGrammarFormatSyntax right);
+        public override readonly string ToString();
+    }
+    public class CustomToolTextFormat : CustomToolFormat, IJsonModel<CustomToolTextFormat>, IPersistableModel<CustomToolTextFormat> {
+        public CustomToolTextFormat() : base(default);
+    }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
         public FileCitationMessageAnnotation(string fileId, int index, string filename);
         public string FileId { get; set; }
@@ -1314,6 +1417,18 @@ namespace OpenAI.Responses {
     public class StreamingResponseCreatedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCreatedUpdate>, IPersistableModel<StreamingResponseCreatedUpdate> {
         public StreamingResponseCreatedUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
+    }
+    public class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>, IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate> {
+        public StreamingResponseCustomToolCallInputDeltaUpdate() : base(default, default);
+        public string Delta { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+    }
+    public class StreamingResponseCustomToolCallInputDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDoneUpdate>, IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate> {
+        public StreamingResponseCustomToolCallInputDoneUpdate() : base(default, default);
+        public string Input { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
     }
     public class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>, IPersistableModel<StreamingResponseErrorUpdate> {
         public StreamingResponseErrorUpdate() : base(default, default);
