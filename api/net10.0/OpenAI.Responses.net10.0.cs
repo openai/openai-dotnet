@@ -335,21 +335,21 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class CustomTool : ResponseTool, IJsonModel<CustomTool>, IPersistableModel<CustomTool> {
         public CustomTool() : base(default);
-        public CustomTool(string name) : base(default);
-        public string Description { get; set; }
-        public CustomToolFormat Format { get; set; }
-        public string Name { get; set; }
+        public CustomTool(string toolName) : base(default);
+        public string ToolDescription { get; set; }
+        public CustomToolFormat ToolFormat { get; set; }
+        public string ToolName { get; set; }
     }
     [Experimental("OPENAI001")]
     public class CustomToolCallItem : ResponseItem, IJsonModel<CustomToolCallItem>, IPersistableModel<CustomToolCallItem> {
         public CustomToolCallItem() : base(default);
-        public CustomToolCallItem(string callId, string input, string name) : base(default);
+        public CustomToolCallItem(string callId, string input, string toolName) : base(default);
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
         public string Input { get; set; }
-        public string Name { get; set; }
-        public string Namespace { get; set; }
         public CustomToolCallStatus? Status { get; set; }
+        public string ToolName { get; set; }
+        public string ToolNamespace { get; set; }
     }
     [Experimental("OPENAI001")]
     public class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>, IPersistableModel<CustomToolCallOutputItem> {
@@ -1106,6 +1106,10 @@ namespace OpenAI.Responses {
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         [Experimental("OPENAI001")]
         public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
+        [Experimental("OPENAI001")]
+        public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName);
+        [Experimental("OPENAI001")]
+        public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
@@ -1493,6 +1497,8 @@ namespace OpenAI.Responses {
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         [Experimental("OPENAI001")]
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        [Experimental("OPENAI001")]
+        public static CustomTool CreateCustomTool(string toolName);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);
@@ -1625,7 +1631,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>, IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate> {
         public StreamingResponseCustomToolCallInputDeltaUpdate() : base(default, default);
-        public string Delta { get; set; }
+        public string InputDelta { get; set; }
         public string ItemId { get; set; }
         public int OutputIndex { get; set; }
     }

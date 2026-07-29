@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.delta"u8))
             {
                 writer.WritePropertyName("delta"u8);
-                writer.WriteStringValue(Delta);
+                writer.WriteStringValue(InputDelta);
             }
             if (!Patch.Contains("$.item_id"u8))
             {
@@ -117,7 +117,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string delta = default;
+            string inputDelta = default;
             string itemId = default;
             int outputIndex = default;
             foreach (var prop in element.EnumerateObject())
@@ -134,7 +134,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("delta"u8))
                 {
-                    delta = prop.Value.GetString();
+                    inputDelta = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("item_id"u8))
@@ -153,7 +153,7 @@ namespace OpenAI.Responses
                 kind,
                 sequenceNumber,
                 patch,
-                delta,
+                inputDelta,
                 itemId,
                 outputIndex);
         }
