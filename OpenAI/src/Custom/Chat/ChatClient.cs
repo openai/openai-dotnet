@@ -252,6 +252,7 @@ public partial class ChatClient
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
         BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
             async requestData =>
             {
@@ -284,6 +285,7 @@ public partial class ChatClient
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
         BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
             requestData =>
             {

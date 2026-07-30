@@ -196,6 +196,7 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
         BinaryData requestData = ModelReaderWriter.Write(options, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
             async requestData =>
             {
@@ -225,6 +226,7 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
         BinaryData requestData = ModelReaderWriter.Write(options, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingSpeechUpdate>(
             requestData =>
             {

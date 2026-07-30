@@ -691,6 +691,7 @@ public partial class AssistantClient
         runOptions ??= new();
         runOptions.Stream = true;
         BinaryData protocolData = CreateThreadAndRunProtocolData(assistantId, threadOptions, runOptions);
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingUpdate>(
             async protocolData =>
             {
@@ -720,6 +721,7 @@ public partial class AssistantClient
         runOptions ??= new();
         runOptions.Stream = true;
         BinaryData protocolData = CreateThreadAndRunProtocolData(assistantId, threadOptions, runOptions);
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingUpdate>(
             protocolData =>
             {
@@ -848,6 +850,7 @@ public partial class AssistantClient
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
         BinaryData requestData = ModelReaderWriter.Write(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingUpdate>(
             async requestData =>
             {
@@ -879,6 +882,7 @@ public partial class AssistantClient
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
         BinaryData requestData = ModelReaderWriter.Write(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingUpdate>(
             requestData =>
             {

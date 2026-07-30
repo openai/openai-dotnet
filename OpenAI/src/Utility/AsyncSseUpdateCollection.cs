@@ -17,9 +17,7 @@ namespace OpenAI;
 /// </summary>
 internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 {
-    private readonly Func<Task<ClientResult>>? _sendRequestAsync;
-    private readonly Func<BinaryData, Task<ClientResult>>? _sendRequestWithDataAsync;
-    private readonly BinaryData? _requestData;
+    private readonly Func<Task<ClientResult>> _sendRequestAsync;
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
 
@@ -119,15 +117,13 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         BinaryData requestData,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken)
+            : this(
+                  () => sendRequestAsync(requestData),
+                  eventDeserializerFunc,
+                  cancellationToken)
     {
         Argument.AssertNotNull(sendRequestAsync, nameof(sendRequestAsync));
         Argument.AssertNotNull(requestData, nameof(requestData));
-        Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
-
-        _sendRequestWithDataAsync = sendRequestAsync;
-        _requestData = requestData;
-        _eventDeserializerFunc = eventDeserializerFunc;
-        _cancellationToken = cancellationToken;
     }
 
     public override ContinuationToken? GetContinuationToken(ClientResult page)
@@ -138,9 +134,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     {
         // We don't currently support resuming a dropped connection from the
         // last received event, so the response collection has a single element.
-        yield return _sendRequestWithDataAsync is not null
-            ? await _sendRequestWithDataAsync(_requestData!)
-            : await _sendRequestAsync!();
+        yield return await _sendRequestAsync();
     }
 
     protected async override IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)

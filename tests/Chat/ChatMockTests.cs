@@ -325,9 +325,54 @@ public class ChatMockTests : ClientTestBase
             }
         }
 
+        Assert.That(requestBody, Is.Not.Null, "Transport callback was never invoked");
         using JsonDocument requestDocument = JsonDocument.Parse(requestBody);
         Assert.That(requestDocument.RootElement.GetProperty("stream").GetBoolean(), Is.True);
         Assert.That(requestBody, Does.Contain("Message content."));
+    }
+
+    [Test]
+    public void CompleteChatWithDisposedRequestContentFailsWhenDeferredSendBegins()
+    {
+        MockPipelineResponse response = CreateStreamingChatResponse();
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ChatClient client = new("model", s_fakeCredential, clientOptions);
+
+        if (IsAsync)
+        {
+            Func<Task<ClientResult>> deferredSend;
+            using (BinaryContent content = BinaryContent.Create(new MemoryStream("{}"u8.ToArray())))
+            {
+                deferredSend = async () => await client.CompleteChatAsync(content).ConfigureAwait(false);
+            }
+
+            Assert.That(
+                async () => await deferredSend(),
+                Throws.InstanceOf<ObjectDisposedException>());
+        }
+        else
+        {
+            Func<ClientResult> deferredSend;
+            using (BinaryContent content = BinaryContent.Create(new MemoryStream("{}"u8.ToArray())))
+            {
+                deferredSend = () => client.CompleteChat(content);
+            }
+
+            Assert.That(
+                () => deferredSend(),
+                Throws.InstanceOf<ObjectDisposedException>());
+        }
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
