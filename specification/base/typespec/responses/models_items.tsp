@@ -1301,8 +1301,9 @@ model CustomToolCallItem extends ItemResource {
   // WIP
   // caller?: ToolCallCaller | null;
 
-  /** The identifier of the actor that created the item. */
-  created_by?: string;
+  // WIP
+  // /** The identifier of the actor that created the item. */
+  // created_by?: string;
 
   /** The namespace of the custom tool being called. */
   `namespace`?: string;
@@ -1337,8 +1338,9 @@ model CustomToolCallOutputItem extends ItemResource {
   // WIP
   // caller?: BetaToolCallCallerParam | null;
 
-  /** The identifier of the actor that created the item. */
-  created_by?: string;
+  // WIP
+  // /** The identifier of the actor that created the item. */
+  // created_by?: string;
 
   /**The status of the item. One of `in_progress`, `completed`, or
   `incomplete`. Populated when items are returned via API.*/

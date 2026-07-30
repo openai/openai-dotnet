@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CustomToolCallItem : ResponseItem, IJsonModel<CustomToolCallItem>
     {
-        public CustomToolCallItem() : this(ResponseItemKind.CustomToolCall, null, default, null, null, null, null, null, default)
+        public CustomToolCallItem() : this(ResponseItemKind.CustomToolCall, null, default, null, null, null, null, default)
         {
         }
 
@@ -88,11 +88,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
-            if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
-            {
-                writer.WritePropertyName("created_by"u8);
-                writer.WriteStringValue(CreatedBy);
-            }
             if (Optional.IsDefined(ToolNamespace) && !Patch.Contains("$.namespace"u8))
             {
                 writer.WritePropertyName("namespace"u8);
@@ -135,7 +130,6 @@ namespace OpenAI.Responses
             string callId = default;
             string input = default;
             string toolName = default;
-            string createdBy = default;
             string toolNamespace = default;
             CustomToolCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
@@ -165,11 +159,6 @@ namespace OpenAI.Responses
                     toolName = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("created_by"u8))
-                {
-                    createdBy = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("namespace"u8))
                 {
                     toolNamespace = prop.Value.GetString();
@@ -193,7 +182,6 @@ namespace OpenAI.Responses
                 callId,
                 input,
                 toolName,
-                createdBy,
                 toolNamespace,
                 status);
         }
