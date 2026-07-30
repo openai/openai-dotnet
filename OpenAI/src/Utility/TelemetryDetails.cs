@@ -13,7 +13,12 @@ namespace OpenAI;
 /// </summary>
 internal class TelemetryDetails
 {
-    private const int MaxApplicationIdLength = 24;
+    /// <summary>
+    /// Upper bound on the caller-supplied application id. The value is echoed in the <c>User-Agent</c> of
+    /// every request, so it is bounded to keep an oversized identifier from inflating each one.
+    /// </summary>
+    private const int MaxApplicationIdLength = 512;
+
     private readonly string _userAgent;
 
     /// <summary>
@@ -38,9 +43,10 @@ internal class TelemetryDetails
     internal TelemetryDetails(Assembly assembly, string? applicationId = null, RuntimeInformationWrapper? runtimeInformation = default)
     {
         Argument.AssertNotNull(assembly, nameof(assembly));
+
         if (applicationId?.Length > MaxApplicationIdLength)
         {
-            throw new ArgumentOutOfRangeException(nameof(applicationId), $"{nameof(applicationId)} must be shorter than {MaxApplicationIdLength + 1} characters");
+            throw new ArgumentOutOfRangeException(nameof(applicationId), $"{nameof(applicationId)} must be {MaxApplicationIdLength} characters or fewer.");
         }
 
         Assembly = assembly;

@@ -32,12 +32,12 @@ public class PlatformTelemetryOptOutTests
 
     private static readonly string[] s_headerNames =
     [
-        "X-Stainless-Lang",
-        "X-Stainless-Package-Version",
-        "X-Stainless-Runtime",
-        "X-Stainless-Runtime-Version",
-        "X-Stainless-OS",
-        "X-Stainless-Arch",
+        PlatformTelemetry.LangHeaderName,
+        PlatformTelemetry.PackageVersionHeaderName,
+        PlatformTelemetry.RuntimeHeaderName,
+        PlatformTelemetry.RuntimeVersionHeaderName,
+        PlatformTelemetry.OSHeaderName,
+        PlatformTelemetry.ArchHeaderName,
     ];
 
     private static readonly ApiKeyCredential s_credential = new("fake-key");
@@ -139,6 +139,19 @@ public class PlatformTelemetryOptOutTests
         Assert.That(PlatformTelemetryHeaderTests.GetHeader(request, "Authorization"), Is.EqualTo("Bearer fake-key"));
         Assert.That(PlatformTelemetryHeaderTests.GetHeader(request, "OpenAI-Organization"), Is.EqualTo("org-id"));
         Assert.That(PlatformTelemetryHeaderTests.GetHeader(request, "OpenAI-Project"), Is.EqualTo("project-id"));
+    }
+
+    [Test]
+    [Order(8)]
+    public void OptingOutStillValidatesTheUserAgentApplicationId()
+    {
+        // The application id is validated when the pipeline is built, whether or not telemetry is enabled, so
+        // that an invalid value is rejected identically on every machine rather than depending on how the
+        // opt-out happens to be configured.
+        Environment.SetEnvironmentVariable(EnvironmentVariableName, "true");
+
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => SendRequest(options => options.UserAgentApplicationId = new string('a', 513)));
     }
 
     [Test]

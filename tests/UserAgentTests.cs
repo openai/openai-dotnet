@@ -1,4 +1,5 @@
-﻿using System.ClientModel;
+﻿using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.IO;
 using NUnit.Framework;
@@ -11,12 +12,28 @@ public class UserAgentTests
     private static readonly OpenAITestEnvironment TestEnvironment = new();
 
     [Test]
-    public void DefaultUserAgentStringWorks() => UserAgentStringWorks(useApplicationId: false);
+    public void DefaultUserAgentStringWorks() => UserAgentStringWorks(applicationId: null);
 
     [Test]
-    public void UserAgentWithApplicationIdWorks() => UserAgentStringWorks(useApplicationId: true);
+    public void UserAgentWithApplicationIdWorks() => UserAgentStringWorks(applicationId: "test-application-id");
 
-    private void UserAgentStringWorks(bool useApplicationId)
+    [Test]
+    public void UserAgentApplicationIdAllowsTheMaximumLength()
+    {
+        UserAgentStringWorks(applicationId: new string('a', 512));
+    }
+
+    [Test]
+    public void UserAgentApplicationIdRejectsValuesOverTheMaximumLength()
+    {
+        // The application id is echoed in the user agent of every request, so it is bounded to keep an
+        // oversized value from inflating each one.
+        OpenAIClientOptions options = new() { UserAgentApplicationId = new string('a', 513), };
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => TestEnvironment.GetTestClient<ChatClient>(options: options));
+    }
+
+    private void UserAgentStringWorks(string applicationId)
     {
         string userAgent = null;
         TestPipelinePolicy policy = new((m) =>
@@ -24,8 +41,8 @@ public class UserAgentTests
             _ = m?.Request?.Headers?.TryGetValue("User-Agent", out userAgent);
         });
 
-        OpenAIClientOptions options = useApplicationId
-            ? new() { UserAgentApplicationId = "test-application-id",}
+        OpenAIClientOptions options = applicationId is not null
+            ? new() { UserAgentApplicationId = applicationId, }
             : new();
 
         options.AddPolicy(policy, PipelinePosition.BeforeTransport);
@@ -38,9 +55,9 @@ public class UserAgentTests
 
         Assert.That(userAgent, Is.Not.Null.Or.Empty);
 
-        if (useApplicationId)
+        if (applicationId is not null)
         {
-            Assert.That(userAgent, Does.Contain("test-application-id"));
+            Assert.That(userAgent, Does.Contain(applicationId));
         }
 
         Assert.That(userAgent, Does.Contain("OpenAI/"));
