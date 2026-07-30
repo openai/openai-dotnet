@@ -23,12 +23,11 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string toolName, string createdBy, string toolNamespace, CustomToolCallStatus? status) : base(kind, id, patch)
+        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string toolName, string toolNamespace, CustomToolCallStatus? status) : base(kind, id, patch)
         {
             CallId = callId;
             Input = input;
             ToolName = toolName;
-            CreatedBy = createdBy;
             ToolNamespace = toolNamespace;
             Status = status;
         }
@@ -39,8 +38,6 @@ namespace OpenAI.Responses
         public string Input { get; set; }
 
         public string ToolName { get; set; }
-
-        public string CreatedBy { get; set; }
 
         public string ToolNamespace { get; set; }
 

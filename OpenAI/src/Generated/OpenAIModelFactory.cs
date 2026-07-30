@@ -1009,7 +1009,7 @@ namespace OpenAI
             return new ReferenceResponseItem(ResponseItemKind.ItemReference, id, default);
         }
 
-        public static CustomToolCallItem CustomToolCallItem(string id = default, string callId = default, string input = default, string toolName = default, string createdBy = default, string toolNamespace = default, CustomToolCallStatus? status = default)
+        public static CustomToolCallItem CustomToolCallItem(string id = default, string callId = default, string input = default, string toolName = default, string toolNamespace = default, CustomToolCallStatus? status = default)
         {
             return new CustomToolCallItem(
                 ResponseItemKind.CustomToolCall,
@@ -1018,12 +1018,11 @@ namespace OpenAI
                 callId,
                 input,
                 toolName,
-                createdBy,
                 toolNamespace,
                 status);
         }
 
-        public static CustomToolCallOutputItem CustomToolCallOutputItem(string id = default, string callId = default, BinaryData output = default, string createdBy = default, CustomToolCallOutputStatus? status = default)
+        public static CustomToolCallOutputItem CustomToolCallOutputItem(string id = default, string callId = default, BinaryData output = default, CustomToolCallOutputStatus? status = default)
         {
             return new CustomToolCallOutputItem(
                 ResponseItemKind.CustomToolCallOutput,
@@ -1031,7 +1030,6 @@ namespace OpenAI
                 default,
                 callId,
                 output,
-                createdBy,
                 status);
         }
 

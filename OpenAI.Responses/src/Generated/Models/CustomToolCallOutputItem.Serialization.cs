@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>
     {
-        public CustomToolCallOutputItem() : this(ResponseItemKind.CustomToolCallOutput, null, default, null, null, null, default)
+        public CustomToolCallOutputItem() : this(ResponseItemKind.CustomToolCallOutput, null, default, null, null, default)
         {
         }
 
@@ -90,11 +90,6 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
-            {
-                writer.WritePropertyName("created_by"u8);
-                writer.WriteStringValue(CreatedBy);
-            }
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -131,7 +126,6 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             BinaryData output = default;
-            string createdBy = default;
             CustomToolCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -155,11 +149,6 @@ namespace OpenAI.Responses
                     output = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (prop.NameEquals("created_by"u8))
-                {
-                    createdBy = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("status"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -177,7 +166,6 @@ namespace OpenAI.Responses
                 patch,
                 callId,
                 output,
-                createdBy,
                 status);
         }
     }

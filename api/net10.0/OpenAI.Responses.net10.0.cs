@@ -345,7 +345,6 @@ namespace OpenAI.Responses {
         public CustomToolCallItem() : base(default);
         public CustomToolCallItem(string callId, string input, string toolName) : base(default);
         public string CallId { get; set; }
-        public string CreatedBy { get; set; }
         public string Input { get; set; }
         public CustomToolCallStatus? Status { get; set; }
         public string ToolName { get; set; }
@@ -356,7 +355,6 @@ namespace OpenAI.Responses {
         public CustomToolCallOutputItem() : base(default);
         public CustomToolCallOutputItem(string callId, BinaryData output) : base(default);
         public string CallId { get; set; }
-        public string CreatedBy { get; set; }
         public BinaryData Output { get; set; }
         public CustomToolCallOutputStatus? Status { get; set; }
     }
