@@ -33,6 +33,6 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalContainersError Error { get; }
+        internal InternalContainersError Error { get; set; }
     }
 }

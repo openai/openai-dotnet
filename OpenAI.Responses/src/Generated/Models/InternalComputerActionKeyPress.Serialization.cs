@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionKeyPress : ComputerCallAction, IJsonModel<InternalComputerActionKeyPress>
     {
-        internal InternalComputerActionKeyPress() : this(ComputerCallActionKind.KeyPress, default, null)
+        public InternalComputerActionKeyPress() : this(ComputerCallActionKind.KeyPress, default, null)
         {
         }
 

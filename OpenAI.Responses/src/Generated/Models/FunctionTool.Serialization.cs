@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FunctionTool : ResponseTool, IJsonModel<FunctionTool>
     {
-        internal FunctionTool() : this(ResponseToolKind.Function, default, null, null, null, default)
+        public FunctionTool() : this(ResponseToolKind.Function, default, null, null, null, default)
         {
         }
 

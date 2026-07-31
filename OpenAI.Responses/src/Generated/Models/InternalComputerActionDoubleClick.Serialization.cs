@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionDoubleClick : ComputerCallAction, IJsonModel<InternalComputerActionDoubleClick>
     {
-        internal InternalComputerActionDoubleClick() : this(ComputerCallActionKind.DoubleClick, default, default, default)
+        public InternalComputerActionDoubleClick() : this(ComputerCallActionKind.DoubleClick, default, default, default)
         {
         }
 

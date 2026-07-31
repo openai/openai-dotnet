@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningSummaryTextPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryTextPart>
     {
-        internal ReasoningSummaryTextPart() : this(InternalReasoningItemSummaryPartType.SummaryText, default, null)
+        public ReasoningSummaryTextPart() : this(InternalReasoningItemSummaryPartType.SummaryText, default, null)
         {
         }
 

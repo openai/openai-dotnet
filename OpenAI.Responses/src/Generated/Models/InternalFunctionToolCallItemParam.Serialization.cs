@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFunctionToolCallItemParam : InternalItemParam, IJsonModel<InternalFunctionToolCallItemParam>
     {
-        internal InternalFunctionToolCallItemParam() : this(ResponseItemKind.FunctionCall, default, null, null, null)
+        public InternalFunctionToolCallItemParam() : this(ResponseItemKind.FunctionCall, default, null, null, null)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class McpToolDefinition : IJsonModel<McpToolDefinition>
     {
-        internal McpToolDefinition()
+        public McpToolDefinition()
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Containers
 {
     internal partial class InternalContainersErrorResponse : IJsonModel<InternalContainersErrorResponse>
     {
-        internal InternalContainersErrorResponse()
+        public InternalContainersErrorResponse()
         {
         }
 

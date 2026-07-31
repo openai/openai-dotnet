@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownWebSearchActionSearchSourceBase : WebSearchActionSource, IJsonModel<WebSearchActionSource>
     {
-        internal InternalUnknownWebSearchActionSearchSourceBase() : this(default, default)
+        public InternalUnknownWebSearchActionSearchSourceBase() : this(default, default)
         {
         }
 

@@ -32,15 +32,15 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Id { get; }
+        public string Id { get; set; }
 
-        internal string Object { get; } = "response.compaction";
+        internal string Object { get; set; }
 
         public IList<ResponseItem> Output { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedAt { get; set; }
 
-        public ResponseTokenUsage Usage { get; }
+        public ResponseTokenUsage Usage { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

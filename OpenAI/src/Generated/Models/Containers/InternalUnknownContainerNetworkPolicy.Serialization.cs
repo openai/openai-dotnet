@@ -12,7 +12,7 @@ namespace OpenAI.Containers
 {
     internal partial class InternalUnknownContainerNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerNetworkPolicy>
     {
-        internal InternalUnknownContainerNetworkPolicy() : this(default, default)
+        public InternalUnknownContainerNetworkPolicy() : this(default, default)
         {
         }
 

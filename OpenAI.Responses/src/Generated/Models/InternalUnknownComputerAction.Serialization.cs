@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownComputerAction : ComputerCallAction, IJsonModel<ComputerCallAction>
     {
-        internal InternalUnknownComputerAction() : this(default, default)
+        public InternalUnknownComputerAction() : this(default, default)
         {
         }
 

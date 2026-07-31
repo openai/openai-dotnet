@@ -43,7 +43,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
         public int? StartingAfter { get; set; }
 

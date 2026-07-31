@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPApprovalResponseItemParam : InternalItemParam, IJsonModel<InternalMCPApprovalResponseItemParam>
     {
-        internal InternalMCPApprovalResponseItemParam() : this(ResponseItemKind.McpApprovalResponse, default, null, default, null)
+        public InternalMCPApprovalResponseItemParam() : this(ResponseItemKind.McpApprovalResponse, default, null, default, null)
         {
         }
 

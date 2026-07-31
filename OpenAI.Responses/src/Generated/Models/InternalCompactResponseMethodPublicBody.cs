@@ -25,13 +25,13 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalModelIdsCompaction? Model { get; }
+        internal InternalModelIdsCompaction? Model { get; set; }
 
-        public BinaryData Input { get; }
+        public BinaryData Input { get; set; }
 
-        public string PreviousResponseId { get; }
+        public string PreviousResponseId { get; set; }
 
-        public string Instructions { get; }
+        public string Instructions { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class GetResponseOptions : IJsonModel<GetResponseOptions>
     {
-        internal GetResponseOptions() : this(null, default, default, null, default, default)
+        public GetResponseOptions() : this(null, default, default, null, default, default)
         {
         }
 

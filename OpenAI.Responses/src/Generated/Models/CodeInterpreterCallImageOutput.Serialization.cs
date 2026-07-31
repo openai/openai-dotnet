@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterCallImageOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallImageOutput>
     {
-        internal CodeInterpreterCallImageOutput() : this(InternalCodeInterpreterToolOutputType.Image, default, null)
+        public CodeInterpreterCallImageOutput() : this(InternalCodeInterpreterToolOutputType.Image, default, null)
         {
         }
 

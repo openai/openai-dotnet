@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionClick : ComputerCallAction, IJsonModel<InternalComputerActionClick>
     {
-        internal InternalComputerActionClick() : this(ComputerCallActionKind.Click, default, default, default, default)
+        public InternalComputerActionClick() : this(ComputerCallActionKind.Click, default, default, default, default)
         {
         }
 

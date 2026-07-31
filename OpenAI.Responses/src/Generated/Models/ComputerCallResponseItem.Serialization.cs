@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>
     {
-        internal ComputerCallResponseItem() : this(ResponseItemKind.ComputerCall, null, default, default, null, null, null)
+        public ComputerCallResponseItem() : this(ResponseItemKind.ComputerCall, null, default, default, null, null, null)
         {
         }
 

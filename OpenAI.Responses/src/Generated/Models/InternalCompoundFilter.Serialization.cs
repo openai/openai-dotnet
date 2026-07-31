@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCompoundFilter : IJsonModel<InternalCompoundFilter>
     {
-        internal InternalCompoundFilter() : this(default, null, default)
+        public InternalCompoundFilter() : this(default, null, default)
         {
         }
 

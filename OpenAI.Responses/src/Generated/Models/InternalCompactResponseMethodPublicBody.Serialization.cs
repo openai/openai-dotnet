@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCompactResponseMethodPublicBody : IJsonModel<InternalCompactResponseMethodPublicBody>
     {
-        internal InternalCompactResponseMethodPublicBody()
+        public InternalCompactResponseMethodPublicBody()
         {
         }
 

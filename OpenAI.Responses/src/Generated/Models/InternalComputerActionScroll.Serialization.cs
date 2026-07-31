@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionScroll : ComputerCallAction, IJsonModel<InternalComputerActionScroll>
     {
-        internal InternalComputerActionScroll() : this(ComputerCallActionKind.Scroll, default, default, default, default, default)
+        public InternalComputerActionScroll() : this(ComputerCallActionKind.Scroll, default, default, default, default, default)
         {
         }
 

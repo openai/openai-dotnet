@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>
     {
-        internal FileSearchTool() : this(ResponseToolKind.FileSearch, default, null, default, null, null)
+        public FileSearchTool() : this(ResponseToolKind.FileSearch, default, null, default, null, null)
         {
         }
 

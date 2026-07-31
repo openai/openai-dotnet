@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class McpToolCallApprovalRequestItem : ResponseItem, IJsonModel<McpToolCallApprovalRequestItem>
     {
-        internal McpToolCallApprovalRequestItem() : this(ResponseItemKind.McpApprovalRequest, null, default, null, null, null)
+        public McpToolCallApprovalRequestItem() : this(ResponseItemKind.McpApprovalRequest, null, default, null, null, null)
         {
         }
 

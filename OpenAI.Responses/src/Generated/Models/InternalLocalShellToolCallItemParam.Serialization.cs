@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallItemParam : InternalItemParam, IJsonModel<InternalLocalShellToolCallItemParam>
     {
-        internal InternalLocalShellToolCallItemParam() : this(ResponseItemKind.LocalShellCall, default, null, null)
+        public InternalLocalShellToolCallItemParam() : this(ResponseItemKind.LocalShellCall, default, null, null)
         {
         }
 

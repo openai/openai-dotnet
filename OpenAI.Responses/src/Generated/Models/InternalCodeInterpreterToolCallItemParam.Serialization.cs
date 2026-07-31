@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCodeInterpreterToolCallItemParam : InternalItemParam, IJsonModel<InternalCodeInterpreterToolCallItemParam>
     {
-        internal InternalCodeInterpreterToolCallItemParam() : this(ResponseItemKind.CodeInterpreterCall, default, null, null, null)
+        public InternalCodeInterpreterToolCallItemParam() : this(ResponseItemKind.CodeInterpreterCall, default, null, null, null)
         {
         }
 

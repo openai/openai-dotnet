@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonSchema : ResponseTextFormat, IJsonModel<InternalResponsesTextFormatJsonSchema>
     {
-        internal InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, default, null, null, null, default)
+        public InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, default, null, null, null, default)
         {
         }
 

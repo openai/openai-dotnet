@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionMove : ComputerCallAction, IJsonModel<InternalComputerActionMove>
     {
-        internal InternalComputerActionMove() : this(ComputerCallActionKind.Move, default, default, default)
+        public InternalComputerActionMove() : this(ComputerCallActionKind.Move, default, default, default)
         {
         }
 

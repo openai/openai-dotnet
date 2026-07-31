@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>
     {
-        internal FileSearchCallResponseItem() : this(ResponseItemKind.FileSearchCall, null, default, default, null, null)
+        public FileSearchCallResponseItem() : this(ResponseItemKind.FileSearchCall, null, default, default, null, null)
         {
         }
 

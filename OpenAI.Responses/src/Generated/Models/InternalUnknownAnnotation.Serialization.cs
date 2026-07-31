@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownAnnotation : ResponseMessageAnnotation, IJsonModel<ResponseMessageAnnotation>
     {
-        internal InternalUnknownAnnotation() : this(default, default)
+        public InternalUnknownAnnotation() : this(default, default)
         {
         }
 

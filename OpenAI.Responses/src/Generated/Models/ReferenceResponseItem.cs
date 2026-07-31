@@ -10,7 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReferenceResponseItem : ResponseItem
     {
-        internal ReferenceResponseItem() : this(ResponseItemKind.ItemReference, null, default)
+        public ReferenceResponseItem() : this(ResponseItemKind.ItemReference, null, default)
         {
         }
 

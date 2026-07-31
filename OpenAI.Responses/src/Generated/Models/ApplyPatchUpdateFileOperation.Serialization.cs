@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>
     {
-        internal ApplyPatchUpdateFileOperation() : this(InternalApplyPatchOperationType.UpdateFile, default, null, null)
+        public ApplyPatchUpdateFileOperation() : this(InternalApplyPatchOperationType.UpdateFile, default, null, null)
         {
         }
 
