@@ -143,14 +143,14 @@ public class PlatformTelemetryOptOutTests
 
     [Test]
     [Order(8)]
-    public void OptingOutStillValidatesTheUserAgentApplicationId()
+    public void OptingOutIgnoresTheUserAgentApplicationId()
     {
-        // The application id is validated when the pipeline is built, whether or not telemetry is enabled, so
-        // that an invalid value is rejected identically on every machine rather than depending on how the
-        // opt-out happens to be configured.
+        // The application id feeds only the user agent, so when it will not be sent the value is unused. It is
+        // neither composed into a string nor validated: the length bound exists to keep the header from being
+        // inflated, and an opted-out request carries no such header.
         Environment.SetEnvironmentVariable(EnvironmentVariableName, "true");
 
-        Assert.Throws<ArgumentOutOfRangeException>(
+        Assert.DoesNotThrow(
             () => SendRequest(options => options.UserAgentApplicationId = new string('a', 513)));
     }
 

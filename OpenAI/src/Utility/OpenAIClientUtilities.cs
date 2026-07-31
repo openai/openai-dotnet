@@ -42,14 +42,15 @@ internal static class OpenAIClientUtilities
 
     private static PipelinePolicy CreateAddCustomHeadersPolicy(string userAgentApplicationId, string organizationId, string projectId)
     {
-        // Constructed unconditionally, and deliberately not deferred until telemetry is known to be enabled:
-        // this is where the caller-supplied application id is validated, so deferring it would let the
-        // telemetry opt-out determine whether an invalid value is rejected. Validation of a caller's options
-        // must not vary by machine. The cost is paid once, when the pipeline is built.
-        TelemetryDetails telemetryDetails = new(typeof(OpenAIClientUtilities).Assembly, userAgentApplicationId);
-
         // Evaluated once when the pipeline is built, so the request path is a single field test.
         bool isTelemetryDisabled = PlatformTelemetry.IsTelemetryDisabled();
+
+        // Opting out means no telemetry work is performed at all. The application id feeds only the user
+        // agent, so when it will not be sent the value is unused and neither composed nor validated: the
+        // length bound exists to keep the header from being inflated, and there is no header to inflate.
+        TelemetryDetails telemetryDetails = isTelemetryDisabled
+            ? null
+            : new TelemetryDetails(typeof(OpenAIClientUtilities).Assembly, userAgentApplicationId);
 
         return new GenericActionPipelinePolicy((message) =>
         {

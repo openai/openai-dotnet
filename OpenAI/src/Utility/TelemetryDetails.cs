@@ -19,6 +19,12 @@ internal class TelemetryDetails
     /// </summary>
     private const int MaxApplicationIdLength = 512;
 
+    /// <summary>
+    /// Substituted when a platform description cannot be read, matching the placeholder used by the SDK
+    /// platform metadata headers.
+    /// </summary>
+    private const string UnknownPlatformDescription = "unknown";
+
     private readonly string _userAgent;
 
     /// <summary>
@@ -71,11 +77,35 @@ internal class TelemetryDetails
             version = version.Substring(0, hashSeparator);
         }
         runtimeInformation ??= new RuntimeInformationWrapper();
-        var platformInformation = EscapeProductInformation($"({runtimeInformation.FrameworkDescription}; {runtimeInformation.OSDescription})");
+
+        // These describe the environment and are used for telemetry only. They are not guaranteed to be
+        // readable on every runtime, and failing to read one must not prevent a client from being created.
+        // They are read independently so that losing one does not discard the other.
+        string frameworkDescription = ReadPlatformDescription(() => runtimeInformation.FrameworkDescription);
+        string osDescription = ReadPlatformDescription(() => runtimeInformation.OSDescription);
+
+        var platformInformation = EscapeProductInformation($"({frameworkDescription}; {osDescription})");
 
         return applicationId != null
             ? $"{applicationId} {assemblyName}/{version} {platformInformation}"
             : $"{assemblyName}/{version} {platformInformation}";
+    }
+
+    /// <summary>
+    /// Reads a platform description, substituting a stable placeholder if it cannot be determined.
+    /// </summary>
+    /// <param name="read">The accessor for the description to read.</param>
+    private static string ReadPlatformDescription(Func<string> read)
+    {
+        try
+        {
+            string description = read();
+            return string.IsNullOrEmpty(description) ? UnknownPlatformDescription : description;
+        }
+        catch (Exception)
+        {
+            return UnknownPlatformDescription;
+        }
     }
 
     /// <summary>

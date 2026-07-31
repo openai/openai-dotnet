@@ -61,11 +61,6 @@ internal static class PlatformTelemetry
     private static readonly OSPlatform s_macCatalyst = OSPlatform.Create("MACCATALYST");
     private static readonly OSPlatform s_browser = OSPlatform.Create("BROWSER");
 
-    private static readonly string s_packageVersion = GetPackageVersion(typeof(PlatformTelemetry).Assembly);
-    private static readonly string s_runtimeVersion = GetRuntimeVersion(new TelemetryDetails.RuntimeInformationWrapper());
-    private static readonly string s_operatingSystem = GetOperatingSystem(new TelemetryDetails.RuntimeInformationWrapper());
-    private static readonly string s_architecture = GetArchitecture(new TelemetryDetails.RuntimeInformationWrapper());
-
     /// <summary>
     /// Determines whether the caller has opted out of SDK telemetry, which suppresses both these headers and
     /// the <c>User-Agent</c> header that the library would otherwise add.
@@ -93,11 +88,29 @@ internal static class PlatformTelemetry
         }
 
         SetIfAbsent(request, LangHeaderName, LangValue);
-        SetIfAbsent(request, PackageVersionHeaderName, s_packageVersion);
+        SetIfAbsent(request, PackageVersionHeaderName, Values.PackageVersion);
         SetIfAbsent(request, RuntimeHeaderName, RuntimeValue);
-        SetIfAbsent(request, RuntimeVersionHeaderName, s_runtimeVersion);
-        SetIfAbsent(request, OSHeaderName, s_operatingSystem);
-        SetIfAbsent(request, ArchHeaderName, s_architecture);
+        SetIfAbsent(request, RuntimeVersionHeaderName, Values.RuntimeVersion);
+        SetIfAbsent(request, OSHeaderName, Values.OperatingSystem);
+        SetIfAbsent(request, ArchHeaderName, Values.Architecture);
+    }
+
+    /// <summary>
+    /// The values that are determined once and reused for the lifetime of the process.
+    /// </summary>
+    /// <remarks>
+    /// These are held in a nested type so that they are computed on first use rather than when
+    /// <see cref="PlatformTelemetry"/> is first touched. A process that has opted out calls
+    /// <see cref="IsTelemetryDisabled"/> but never <see cref="ApplyTo"/>, and so never pays to determine them.
+    /// </remarks>
+    private static class Values
+    {
+        private static readonly TelemetryDetails.RuntimeInformationWrapper s_runtimeInformation = new();
+
+        public static readonly string PackageVersion = GetPackageVersion(typeof(PlatformTelemetry).Assembly);
+        public static readonly string RuntimeVersion = GetRuntimeVersion(s_runtimeInformation);
+        public static readonly string OperatingSystem = GetOperatingSystem(s_runtimeInformation);
+        public static readonly string Architecture = GetArchitecture(s_runtimeInformation);
     }
 
     private static void SetIfAbsent(PipelineRequest request, string name, string value)
