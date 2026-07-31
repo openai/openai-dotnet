@@ -14,98 +14,12 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class ProtocolModelVisitor : ScmLibraryVisitor
 {
-    // Classes that are protocol models.
-    private static readonly HashSet<string> _protocolModels = new(StringComparer.OrdinalIgnoreCase)
+    // Namespaces that contain protocol models.
+    private static readonly HashSet<string> _protocolModelNamespaces = new(StringComparer.OrdinalIgnoreCase)
     {
-        "OpenAI.Containers.ContainerAllowlistNetworkPolicy",
-        "OpenAI.Containers.ContainerCreationOptions",
-        "OpenAI.Containers.ContainerCollectionOptions",
-        "OpenAI.Containers.ContainerCollectionOrder",
-        "OpenAI.Containers.ContainerCollectionPage",
-        "OpenAI.Containers.ContainerDeletionResult",
-        "OpenAI.Containers.ContainerDisabledNetworkPolicy",
-        "OpenAI.Containers.ContainerExpirationPolicy",
-        "OpenAI.Containers.ContainerExpirationPolicyAnchor",
-        "OpenAI.Containers.ContainerFileCollectionOptions",
-        "OpenAI.Containers.ContainerFileCollectionOrder",
-        "OpenAI.Containers.ContainerFileCollectionPage",
-        "OpenAI.Containers.ContainerFileDeletionResult",
-        "OpenAI.Containers.ContainerFileResource",
-        "OpenAI.Containers.ContainerMemoryLimit",
-        "OpenAI.Containers.ContainerNetworkPolicy",
-        "OpenAI.Containers.ContainerNetworkPolicyDomainSecret",
-        "OpenAI.Containers.ContainerNetworkPolicyKind",
-        "OpenAI.Containers.ContainerResource",
-
-        "OpenAI.Conversations.ConversationCreationOptions",
-        "OpenAI.Conversations.ConversationDeletionResult",
-        "OpenAI.Conversations.ConversationResource",
-        "OpenAI.Conversations.ConversationUpdateOptions",
-
-        "OpenAI.Responses.CreateResponseOptions",
-        "OpenAI.Responses.ResponseDeletionResult",
-        "OpenAI.Responses.ResponseInputTokenUsageDetails",
-        "OpenAI.Responses.ResponseItemCollectionPage",
-        "OpenAI.Responses.ResponseOutputTokenUsageDetails",
-        "OpenAI.Responses.ResponseResult",
-        "OpenAI.Responses.ResponseTokenUsage",
-        "OpenAI.Responses.ResponseTokenLogProbabilityDetails",
-        "OpenAI.Responses.ResponseTokenTopLogProbabilityDetails",
-
-        "OpenAI.Responses.StreamingResponseUpdate",
-        "OpenAI.Responses.StreamingResponseAudioDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseAudioDoneUpdate",
-        "OpenAI.Responses.StreamingResponseAudioTranscriptDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseAudioTranscriptDoneUpdate",
-        "OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDoneUpdate",
-        "OpenAI.Responses.StreamingResponseCodeInterpreterCallCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseCodeInterpreterCallInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseCodeInterpreterCallInterpretingUpdate",
-        "OpenAI.Responses.StreamingResponseCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseContentPartAddedUpdate",
-        "OpenAI.Responses.StreamingResponseContentPartDoneUpdate",
-        "OpenAI.Responses.StreamingResponseCreatedUpdate",
-        "OpenAI.Responses.StreamingResponseCustomToolCallInputDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseCustomToolCallInputDoneUpdate",
-        "OpenAI.Responses.StreamingResponseErrorUpdate",
-        "OpenAI.Responses.StreamingResponseFailedUpdate",
-        "OpenAI.Responses.StreamingResponseFileSearchCallCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseFileSearchCallInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseFileSearchCallSearchingUpdate",
-        "OpenAI.Responses.StreamingResponseFunctionCallArgumentsDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseFunctionCallArgumentsDoneUpdate",
-        "OpenAI.Responses.StreamingResponseImageGenerationCallCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseImageGenerationCallGeneratingUpdate",
-        "OpenAI.Responses.StreamingResponseImageGenerationCallInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseImageGenerationCallPartialImageUpdate",
-        "OpenAI.Responses.StreamingResponseIncompleteUpdate",
-        "OpenAI.Responses.StreamingResponseInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseMcpCallArgumentsDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseMcpCallArgumentsDoneUpdate",
-        "OpenAI.Responses.StreamingResponseMcpCallCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseMcpCallFailedUpdate",
-        "OpenAI.Responses.StreamingResponseMcpCallInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseMcpListToolsCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseMcpListToolsFailedUpdate",
-        "OpenAI.Responses.StreamingResponseMcpListToolsInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseOutputItemAddedUpdate",
-        "OpenAI.Responses.StreamingResponseOutputItemDoneUpdate",
-        "OpenAI.Responses.StreamingResponseOutputTextAnnotationAddedUpdate",
-        "OpenAI.Responses.StreamingResponseOutputTextDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseOutputTextDoneUpdate",
-        "OpenAI.Responses.StreamingResponseQueuedUpdate",
-        "OpenAI.Responses.StreamingResponseReasoningSummaryPartAddedUpdate",
-        "OpenAI.Responses.StreamingResponseReasoningSummaryPartDoneUpdate",
-        "OpenAI.Responses.StreamingResponseReasoningSummaryTextDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseReasoningSummaryTextDoneUpdate",
-        "OpenAI.Responses.StreamingResponseReasoningTextDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseReasoningTextDoneUpdate",
-        "OpenAI.Responses.StreamingResponseRefusalDeltaUpdate",
-        "OpenAI.Responses.StreamingResponseRefusalDoneUpdate",
-        "OpenAI.Responses.StreamingResponseWebSearchCallCompletedUpdate",
-        "OpenAI.Responses.StreamingResponseWebSearchCallInProgressUpdate",
-        "OpenAI.Responses.StreamingResponseWebSearchCallSearchingUpdate",
+        "OpenAI.Containers",
+        "OpenAI.Conversations",
+        "OpenAI.Responses",
     };
 
     // All the properties of protocol models should have setters, except for collection properties.
@@ -113,7 +27,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     {
         if (propertyProvider is not null
             && !propertyProvider.Type.IsCollection
-            && _protocolModels.Contains($"{propertyProvider.EnclosingType.Type.Namespace}.{propertyProvider.EnclosingType.Name}"))
+            && _protocolModelNamespaces.Contains(propertyProvider.EnclosingType.Type.Namespace))
         {
             propertyProvider.Update(body: new AutoPropertyBody(HasSetter: true));
         }
@@ -139,7 +53,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
                 if (constructorProvider is not null
                     && constructorProvider.Signature.Parameters.Count == 0 // Check that this is a default constructor
                     && modelProvider.DerivedModels.Count == 0 // The default constructor should be visible in the derived models, not the base model
-                    && _protocolModels.Contains($"{constructorProvider.EnclosingType.Type.Namespace}.{constructorProvider.EnclosingType.Name}"))
+                    && _protocolModelNamespaces.Contains(constructorProvider.EnclosingType.Type.Namespace))
                 {
                     constructorProvider.Signature.Update(modifiers: MethodSignatureModifiers.Public);
                 }
@@ -158,7 +72,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
             && methodProvider.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Operator)
             && methodProvider.Signature.Name == "BinaryContent"
             && methodProvider.Signature.Parameters.Count == 1
-            && !_protocolModels.Contains($"{methodProvider.EnclosingType.Type.Namespace}.{methodProvider.EnclosingType.Name}"))
+            && !_protocolModelNamespaces.Contains(methodProvider.EnclosingType.Type.Namespace))
         {
             return null;
         }
