@@ -2,11 +2,11 @@
 
 This example configures mTLS on .NET's native `SocketsHttpHandler` and passes the resulting `HttpClient` to the OpenAI SDK through `HttpClientPipelineTransport`. Keeping certificate handling in the HTTP transport preserves .NET's native certificate, proxy, and rotation capabilities without adding an SDK-specific mTLS option.
 
-Before running it, follow the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program) instructions to understand request authentication and enroll, upload, and activate a client certificate for your organization or project. To manage uploaded certificates programmatically, see the [Certificates API reference](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/certificates/).
+Before running it, follow the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program) instructions to understand request authentication and enroll. Upload and activate the CA certificate that issues your client certificate; keep the leaf client certificate and its private key in the PFX used by this example. To manage uploaded CA certificates programmatically, see the [Certificates API reference](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/certificates/).
 
 ## Certificate bundle
 
-Set `OPENAI_CLIENT_PFX_PATH` to a PFX/PKCS#12 bundle containing:
+Certificate-chain support is available by request and must be enabled for your organization. Without it, the leaf client certificate must be signed directly by the uploaded CA. When chain support is enabled, set `OPENAI_CLIENT_PFX_PATH` to a PFX/PKCS#12 bundle containing:
 
 1. Exactly one certificate with a private key: the leaf client certificate.
 2. Every required intermediate certificate.
@@ -22,7 +22,7 @@ Set `OPENAI_BASE_URL` to the base URL that matches your data residency:
 | Global (default) | `https://mtls.api.openai.com/v1` |
 | EU Data Residency | `https://mtls-eu.api.openai.com/v1` |
 
-`OPENAI_BASE_URL` must be an absolute HTTPS URI.
+For safety, the example accepts only these two HTTPS origins and the `/v1` base path. It rejects custom hosts, non-default ports, credentials, query strings, and fragments so the API key and client certificate cannot be sent to an unintended server.
 
 ## Run the example
 

@@ -1,3 +1,4 @@
+#if SNIPPET || NET9_0_OR_GREATER
 using NUnit.Framework;
 using OpenAI.Chat;
 using System;
@@ -16,7 +17,6 @@ namespace OpenAI.Tests.Snippets;
 [TestFixture]
 public class MutualTlsReadMeSnippets
 {
-#pragma warning disable SYSLIB0057
     [Test]
     public async Task MutualTls()
     {
@@ -26,18 +26,10 @@ public class MutualTlsReadMeSnippets
         string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")
             ?? throw new InvalidOperationException("OPENAI_API_KEY is required.");
 
-#if SNIPPET
         X509Certificate2Collection certificates =
             X509CertificateLoader.LoadPkcs12CollectionFromFile(
                 pfxPath,
                 Environment.GetEnvironmentVariable("OPENAI_CLIENT_PFX_PASSWORD"));
-#else
-        X509Certificate2Collection certificates = new();
-        certificates.Import(
-            pfxPath,
-            Environment.GetEnvironmentVariable("OPENAI_CLIENT_PFX_PASSWORD"),
-            X509KeyStorageFlags.DefaultKeySet);
-#endif
 
         try
         {
@@ -60,7 +52,11 @@ public class MutualTlsReadMeSnippets
             };
             handler.SslOptions.ClientCertificateContext = certificateContext;
 
-            using HttpClient httpClient = new(handler);
+            using HttpClient httpClient = new(handler)
+            {
+                // Let the SDK pipeline enforce OpenAIClientOptions.NetworkTimeout.
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
+            };
             OpenAIClientOptions options = new()
             {
                 Endpoint = new Uri("https://mtls.api.openai.com/v1"),
@@ -84,5 +80,5 @@ public class MutualTlsReadMeSnippets
         }
         #endregion
     }
-#pragma warning restore SYSLIB0057
 }
+#endif

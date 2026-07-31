@@ -18,6 +18,9 @@ namespace OpenAI.Examples;
 
 public partial class MutualTlsExamples
 {
+    private const string GlobalEndpoint = "https://mtls.api.openai.com/v1";
+    private const string EuropeanUnionEndpoint = "https://mtls-eu.api.openai.com/v1";
+
     [Test]
     [Explicit("Requires an API key and a client certificate enrolled in the OpenAI mTLS beta.")]
     public async Task Example01_MutualTlsAsync()
@@ -51,7 +54,11 @@ public partial class MutualTlsExamples
             };
             handler.SslOptions.ClientCertificateContext = certificateContext;
 
-            using HttpClient httpClient = new(handler);
+            using HttpClient httpClient = new(handler)
+            {
+                // The SDK pipeline owns request timeouts through NetworkTimeout.
+                Timeout = System.Threading.Timeout.InfiniteTimeSpan,
+            };
             OpenAIClientOptions options = new()
             {
                 Endpoint = endpoint,
@@ -84,18 +91,61 @@ public partial class MutualTlsExamples
 
     private static Uri GetEndpoint()
     {
-        // Choose the global endpoint or set OPENAI_BASE_URL to the EU endpoint:
-        // https://mtls-eu.api.openai.com/v1
         string value = Environment.GetEnvironmentVariable("OPENAI_BASE_URL")
-            ?? "https://mtls.api.openai.com/v1";
+            ?? GlobalEndpoint;
+        return GetEndpoint(value);
+    }
 
+    private static Uri GetEndpoint(string value)
+    {
         if (!Uri.TryCreate(value, UriKind.Absolute, out Uri endpoint)
-            || endpoint.Scheme != Uri.UriSchemeHttps)
+            || !IsSupportedEndpoint(endpoint))
         {
             throw new InvalidOperationException(
-                "OPENAI_BASE_URL must be an absolute HTTPS URI.");
+                $"OPENAI_BASE_URL must be {GlobalEndpoint} or "
+                + $"{EuropeanUnionEndpoint}.");
         }
 
         return endpoint;
+    }
+
+    private static bool IsSupportedEndpoint(Uri endpoint)
+    {
+        return endpoint.Scheme == Uri.UriSchemeHttps
+        && endpoint is
+        {
+            IsDefaultPort: true,
+            UserInfo.Length: 0,
+            Query.Length: 0,
+            Fragment.Length: 0,
+        }
+        && endpoint.AbsolutePath.TrimEnd('/') == "/v1"
+        && (endpoint.IdnHost.Equals(
+                "mtls.api.openai.com",
+                StringComparison.OrdinalIgnoreCase)
+            || endpoint.IdnHost.Equals(
+                "mtls-eu.api.openai.com",
+                StringComparison.OrdinalIgnoreCase));
+    }
+
+    [TestCase(GlobalEndpoint)]
+    [TestCase(EuropeanUnionEndpoint)]
+    [TestCase("https://mtls.api.openai.com:443/v1")]
+    [TestCase("https://mtls.api.openai.com/v1/")]
+    public void GetEndpointAcceptsSupportedMtlsBaseUrls(string value)
+    {
+        Assert.That(GetEndpoint(value), Is.Not.Null);
+    }
+
+    [TestCase("http://mtls.api.openai.com/v1")]
+    [TestCase("https://mtls.api.openai.com:444/v1")]
+    [TestCase("https://mtls.api.openai.com@attacker.example/v1")]
+    [TestCase("https://mtls.api.openai.com.attacker.example/v1")]
+    [TestCase("https://mtls.api.openai.com/v1/other")]
+    [TestCase("https://mtls.api.openai.com/v1?query=value")]
+    [TestCase("https://mtls.api.openai.com/v1#fragment")]
+    public void GetEndpointRejectsUntrustedDestinations(string value)
+    {
+        Assert.Throws<InvalidOperationException>(() => GetEndpoint(value));
     }
 }

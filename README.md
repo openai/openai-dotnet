@@ -991,9 +991,11 @@ Console.WriteLine(response.Value.GetOutputText());
 
 ### Using mutual TLS
 
-The API mTLS beta combines your API key with a client certificate. For how request authentication works, certificate requirements, activation, and supported API operations, see the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program). To manage uploaded certificates programmatically, see the [Certificates API reference](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/certificates/).
+The API mTLS beta combines your API key with a client certificate. For how request authentication works, certificate requirements, activation, and supported API operations, see the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program). To upload and activate the issuing CA programmatically, see the [Certificates API reference](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/certificates/).
 
-Configure the client certificate chain on a `SocketsHttpHandler`, then provide its `HttpClient` to the SDK through `HttpClientPipelineTransport`. The PFX/PKCS#12 file must contain exactly one certificate with a private key—the leaf client certificate—along with any intermediate certificates required to build its chain. This example uses `X509CertificateLoader`, available in .NET 9 and later.
+Upload and activate the CA certificate that signs the client leaf; keep the leaf certificate and its private key in the PFX used by the application. Certificate-chain support is available by request and must be enabled for your organization. Without it, the leaf must be signed directly by the uploaded CA. When chain support is enabled, the PFX/PKCS#12 file must contain exactly one certificate with a private key—the leaf—and every intermediate certificate needed to build a chain to the uploaded CA.
+
+Configure that bundle on a `SocketsHttpHandler`, then provide its `HttpClient` to the SDK through `HttpClientPipelineTransport`. This example uses `X509CertificateLoader`, available in .NET 9 and later.
 
 Choose the base URL that matches your data residency:
 
@@ -1034,7 +1036,11 @@ try
     };
     handler.SslOptions.ClientCertificateContext = certificateContext;
 
-    using HttpClient httpClient = new(handler);
+    using HttpClient httpClient = new(handler)
+    {
+        // Let the SDK pipeline enforce OpenAIClientOptions.NetworkTimeout.
+        Timeout = System.Threading.Timeout.InfiniteTimeSpan,
+    };
     OpenAIClientOptions options = new()
     {
         Endpoint = new Uri("https://mtls.api.openai.com/v1"),
