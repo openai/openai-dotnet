@@ -42,12 +42,33 @@ internal static class OpenAIClientUtilities
 
     private static PipelinePolicy CreateAddCustomHeadersPolicy(string userAgentApplicationId, string organizationId, string projectId)
     {
-        TelemetryDetails telemetryDetails = new(typeof(OpenAIClientUtilities).Assembly, userAgentApplicationId);
+        // Evaluated once when the pipeline is built, so the request path is a single field test.
+        bool isTelemetryDisabled = PlatformTelemetry.IsTelemetryDisabled();
+
+        // Opting out means no telemetry work is performed at all. The application id feeds only the user
+        // agent, so when it will not be sent the value is unused and neither composed nor validated: the
+        // length bound exists to keep the header from being inflated, and there is no header to inflate.
+        TelemetryDetails telemetryDetails = isTelemetryDisabled
+            ? null
+            : new TelemetryDetails(typeof(OpenAIClientUtilities).Assembly, userAgentApplicationId);
+
         return new GenericActionPipelinePolicy((message) =>
         {
-            if (message?.Request?.Headers?.TryGetValue(UserAgentHeaderName, out string _) == false)
+            if (message?.Request?.Headers is null)
             {
-                message.Request.Headers.Set(UserAgentHeaderName, telemetryDetails.ToString());
+                return;
+            }
+
+            // Opting out of telemetry suppresses both the platform metadata headers and the user agent that
+            // this library would otherwise add. A caller-supplied user agent is still honored.
+            if (!isTelemetryDisabled)
+            {
+                if (!message.Request.Headers.TryGetValue(UserAgentHeaderName, out string _))
+                {
+                    message.Request.Headers.Set(UserAgentHeaderName, telemetryDetails.ToString());
+                }
+
+                PlatformTelemetry.ApplyTo(message.Request);
             }
 
             if (!string.IsNullOrEmpty(organizationId))

@@ -2,8 +2,14 @@
 
 ## (Unreleased)
 
+### Features Added
+
+- Requests now include structured SDK platform metadata headers (`X-Stainless-Lang`, `X-Stainless-Package-Version`, `X-Stainless-Runtime`, `X-Stainless-Runtime-Version`, `X-Stainless-OS`, and `X-Stainless-Arch`), bringing the .NET library to parity with the other official OpenAI SDKs. These restate information already present in the `User-Agent` header in a machine-parseable form, plus the process CPU architecture, so consumers no longer need to parse the user agent string. Any value you set yourself is preserved. The `User-Agent` header itself is unchanged.
+- Added an opt-out for SDK telemetry, via the `OpenAI.DisableTelemetry` `AppContext` switch or the `OPENAI_DISABLE_TELEMETRY` environment variable. When enabled, the library sends neither the `X-Stainless-*` headers nor the `User-Agent` header that it would otherwise add. See [Telemetry and privacy](https://github.com/openai/openai-dotnet/blob/main/docs/Observability.md#telemetry-and-privacy) for details.
+
 ### Other Changes
 
+- Relaxed the limit on `UserAgentApplicationId` from 24 characters to 512. Application identifiers up to that length are now accepted and passed through to the `User-Agent` header verbatim; longer values throw `ArgumentOutOfRangeException` when a client is created, so that the header cannot be inflated without bound. The identifier is ignored, and the limit not applied, when telemetry is disabled and no `User-Agent` will be sent.
 - OpenAI.Responses:
   - Consolidated the experimental diagnostic used by the Computer Use tool types onto the standard `OPENAI001`. These types were previously marked with a dedicated `OPENAICUA001` code, which has been removed. Consumers who explicitly suppressed `OPENAICUA001` should suppress `OPENAI001` instead (the same code already used by the other experimental Responses APIs).
 

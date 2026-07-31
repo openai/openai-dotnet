@@ -1075,3 +1075,28 @@ By default, the client classes will automatically retry the following errors up 
 ### Observability
 
 OpenAI .NET library supports experimental distributed tracing and metrics with OpenTelemetry. Check out [Observability with OpenTelemetry](./docs/Observability.md) for more details.
+
+### Telemetry and privacy
+
+To help OpenAI understand which platforms the SDK runs on, requests include a small set of headers by default describing the library and the runtime that issued them:
+
+| Header | Example |
+| --- | --- |
+| `X-Stainless-Lang` | `csharp` |
+| `X-Stainless-Package-Version` | `2.12.0` |
+| `X-Stainless-Runtime` | `dotnet` |
+| `X-Stainless-Runtime-Version` | `8.0.11` |
+| `X-Stainless-OS` | `Windows` |
+| `X-Stainless-Arch` | `x64` |
+
+These restate, in a machine-parseable form, information already present in the `User-Agent` header the library has always sent, plus the process CPU architecture. They contain no user names, machine names, file paths, or persistent identifiers, and nothing that is unique to you or to your installation: every value is derived locally, and two installations of the same package version on the same platform and runtime send byte-for-byte identical values.
+
+To turn this off, set the `OPENAI_DISABLE_TELEMETRY` environment variable to `true`, or set the corresponding context switch in your application code before creating any clients:
+
+```csharp
+AppContext.SetSwitch("OpenAI.DisableTelemetry", true);
+```
+
+Opting out suppresses both these headers and the `User-Agent` header that the library adds. It does not affect the `Authorization`, `OpenAI-Organization`, or `OpenAI-Project` headers, and a `User-Agent` you supply yourself is still sent.
+
+See [Telemetry and privacy](./docs/Observability.md#telemetry-and-privacy) for the full contract.

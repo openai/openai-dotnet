@@ -31,6 +31,9 @@
   <ItemGroup>
     <Compile Include="..\OpenAI\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
     <Compile Include="..\OpenAI\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\PlatformTelemetry.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\TelemetryDetails.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Generated\Internal\Argument.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
   <ItemGroup>
