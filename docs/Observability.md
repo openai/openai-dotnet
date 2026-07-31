@@ -58,7 +58,7 @@ The following sources and meters are available:
 
 ## Telemetry and privacy
 
-Separately from the OpenTelemetry instrumentation described above, the library includes a small set of headers on outgoing requests that describe the SDK and the platform it is running on. Unlike the instrumentation above, which is opt-in, these are sent by default and can be turned off; see [Opting out](#opting-out). The two features are independent: `OpenAI.Experimental.EnableOpenTelemetry` does not govern these headers, and `OpenAI.TelemetryDisabled` does not govern OpenTelemetry tracing or metrics.
+Separately from the OpenTelemetry instrumentation described above, the library includes a small set of headers on outgoing requests that describe the SDK and the platform it is running on. Unlike the instrumentation above, which is opt-in, these are sent by default and can be turned off; see [Opting out](#opting-out). The two features are independent: `OpenAI.Experimental.EnableOpenTelemetry` does not govern these headers, and `OpenAI.DisableTelemetry` does not govern OpenTelemetry tracing or metrics.
 
 ### What is sent
 
@@ -85,13 +85,13 @@ Any of these headers that you set yourself is preserved; the library only suppli
 
 Use either of the following, in order of precedence:
 
-1. Set the `OpenAI.TelemetryDisabled` context switch when your application starts, before creating any clients:
+1. Set the `OpenAI.DisableTelemetry` context switch when your application starts, before creating any clients:
 
    ```csharp
-   AppContext.SetSwitch("OpenAI.TelemetryDisabled", true);
+   AppContext.SetSwitch("OpenAI.DisableTelemetry", true);
    ```
 
-2. Set the `OPENAI_TELEMETRY_DISABLED` environment variable to `true` or `1`.
+2. Set the `OPENAI_DISABLE_TELEMETRY` environment variable to `true` or `1`.
 
 The setting is read when a client is created, so it must be applied before constructing any client.
 

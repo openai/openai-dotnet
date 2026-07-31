@@ -39,8 +39,8 @@ internal static class PlatformTelemetry
     public const string OSHeaderName = "X-Stainless-OS";
     public const string ArchHeaderName = "X-Stainless-Arch";
 
-    public const string TelemetryDisabledSwitchName = "OpenAI.TelemetryDisabled";
-    public const string TelemetryDisabledEnvironmentVariableName = "OPENAI_TELEMETRY_DISABLED";
+    public const string DisableTelemetrySwitchName = "OpenAI.DisableTelemetry";
+    public const string DisableTelemetryEnvironmentVariableName = "OPENAI_DISABLE_TELEMETRY";
 
     private const string LangValue = "csharp";
     private const string RuntimeValue = "dotnet";
@@ -77,8 +77,8 @@ internal static class PlatformTelemetry
     /// </remarks>
     public static bool IsTelemetryDisabled()
         => AppContextSwitchHelper.GetConfigValue(
-            TelemetryDisabledSwitchName,
-            TelemetryDisabledEnvironmentVariableName);
+            DisableTelemetrySwitchName,
+            DisableTelemetryEnvironmentVariableName);
 
     /// <summary>
     /// Applies the platform metadata headers to <paramref name="request"/>, preserving any value that the

@@ -27,8 +27,8 @@ namespace OpenAI.Tests.Miscellaneous;
 [Category("Smoke")]
 public class PlatformTelemetryOptOutTests
 {
-    private const string SwitchName = "OpenAI.TelemetryDisabled";
-    private const string EnvironmentVariableName = "OPENAI_TELEMETRY_DISABLED";
+    private const string SwitchName = "OpenAI.DisableTelemetry";
+    private const string EnvironmentVariableName = "OPENAI_DISABLE_TELEMETRY";
 
     private static readonly string[] s_headerNames =
     [
