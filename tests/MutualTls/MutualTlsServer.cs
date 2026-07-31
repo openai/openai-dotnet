@@ -145,12 +145,40 @@ internal sealed class MutualTlsServer : IAsyncDisposable
                     _cancellationSource.Token)
                 .ConfigureAwait(false);
         }
-        catch (Exception exception)
+        catch (OperationCanceledException)
+            when (_cancellationSource.IsCancellationRequested)
         {
-            if (!_cancellationSource.IsCancellationRequested)
-            {
-                Failure = exception;
-            }
+            return;
+        }
+        catch (ObjectDisposedException)
+            when (_cancellationSource.IsCancellationRequested)
+        {
+            return;
+        }
+        catch (SocketException)
+            when (_cancellationSource.IsCancellationRequested)
+        {
+            return;
+        }
+        catch (OperationCanceledException exception)
+        {
+            Failure = exception;
+        }
+        catch (SocketException exception)
+        {
+            Failure = exception;
+        }
+        catch (IOException exception)
+        {
+            Failure = exception;
+        }
+        catch (AuthenticationException exception)
+        {
+            Failure = exception;
+        }
+        catch (CryptographicException exception)
+        {
+            Failure = exception;
         }
     }
 

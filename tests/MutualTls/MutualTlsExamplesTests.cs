@@ -284,9 +284,11 @@ public class MutualTlsExamplesTests
                 }),
             certificates.ServerCertificate);
 
+        using StringContent requestContent =
+            new(requestBody, Encoding.UTF8);
         using HttpResponseMessage response = await httpClient.PostAsync(
             new Uri(server.Endpoint, "unicode"),
-            new StringContent(requestBody, Encoding.UTF8));
+            requestContent);
         await server.Completion.WaitAsync(TimeSpan.FromSeconds(10));
 
         Assert.Multiple(() =>
