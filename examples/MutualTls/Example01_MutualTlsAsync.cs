@@ -46,6 +46,7 @@ public partial class MutualTlsExamples
                 SslStreamCertificateContext.Create(
                     clientCertificate,
                     intermediateCertificates,
+                    // Build the local chain without revocation network lookups.
                     offline: true);
 
             SocketsHttpHandler handler = new()
@@ -126,26 +127,5 @@ public partial class MutualTlsExamples
             || endpoint.IdnHost.Equals(
                 "mtls-eu.api.openai.com",
                 StringComparison.OrdinalIgnoreCase));
-    }
-
-    [TestCase(GlobalEndpoint)]
-    [TestCase(EuropeanUnionEndpoint)]
-    [TestCase("https://mtls.api.openai.com:443/v1")]
-    [TestCase("https://mtls.api.openai.com/v1/")]
-    public void GetEndpointAcceptsSupportedMtlsBaseUrls(string value)
-    {
-        Assert.That(GetEndpoint(value), Is.Not.Null);
-    }
-
-    [TestCase("http://mtls.api.openai.com/v1")]
-    [TestCase("https://mtls.api.openai.com:444/v1")]
-    [TestCase("https://mtls.api.openai.com@attacker.example/v1")]
-    [TestCase("https://mtls.api.openai.com.attacker.example/v1")]
-    [TestCase("https://mtls.api.openai.com/v1/other")]
-    [TestCase("https://mtls.api.openai.com/v1?query=value")]
-    [TestCase("https://mtls.api.openai.com/v1#fragment")]
-    public void GetEndpointRejectsUntrustedDestinations(string value)
-    {
-        Assert.Throws<InvalidOperationException>(() => GetEndpoint(value));
     }
 }

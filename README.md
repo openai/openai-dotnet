@@ -1027,6 +1027,7 @@ try
         SslStreamCertificateContext.Create(
             clientCertificate,
             intermediateCertificates,
+            // Build the local chain without revocation network lookups.
             offline: true);
 
     SocketsHttpHandler handler = new()
