@@ -55,9 +55,13 @@ public partial class McpToolCallApprovalPolicy
         {
             globalPolicy = new GlobalMcpToolCallApprovalPolicy(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             customPolicy = CustomMcpToolCallApprovalPolicy.DeserializeCustomMcpToolCallApprovalPolicy(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected MCP tool call approval policy to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, patch);

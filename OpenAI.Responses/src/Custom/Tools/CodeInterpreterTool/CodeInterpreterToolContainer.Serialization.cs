@@ -54,9 +54,13 @@ public partial class CodeInterpreterToolContainer
         {
             containerId = element.GetString();
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             container = CodeInterpreterToolContainerConfiguration.DeserializeCodeInterpreterToolContainerConfiguration(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected code interpreter tool container to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new CodeInterpreterToolContainer(containerId, container, patch);

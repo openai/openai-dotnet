@@ -135,6 +135,8 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+        public static implicit operator CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration);
+        public static implicit operator CodeInterpreterToolContainer(string containerId);
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterToolContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>, IPersistableModel<CodeInterpreterToolContainerConfiguration> {

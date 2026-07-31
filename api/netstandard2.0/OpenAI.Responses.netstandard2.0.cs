@@ -115,6 +115,8 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
+        public static implicit operator CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration);
+        public static implicit operator CodeInterpreterToolContainer(string containerId);
     }
     public class CodeInterpreterToolContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>, IPersistableModel<CodeInterpreterToolContainerConfiguration> {
         [Serialization.JsonIgnore]
