@@ -19,8 +19,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     environment: Live Testing
-    env:
-      version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
     steps:
       - name: Setup .NET 10
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
@@ -43,6 +41,19 @@ jobs:
       - name: Restore tools
         run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
 
+      # Derive the package version from the release tag (e.g. "OpenAI_2.12.0" -> "2.12.0") so the
+      # published version always matches the tag. For scheduled runs, append an alpha suffix instead.
+      - name: Determine version arguments
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            tag="${{ github.event.release.tag_name }}"
+            echo "args=/p:Version=${tag#OpenAI_}" >> "$GITHUB_OUTPUT"
+          else
+            echo "args=/p:VersionSuffix=alpha.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          fi
+
       # Pack the client NuGet package and include URL back to the repository and release tag
       - name: Build and pack
         run: dotnet pack
@@ -50,14 +61,14 @@ jobs:
           --output "${{ github.workspace }}/artifacts/packages"
           /p:PackageProjectUrl="${{ github.server_url }}/${{ github.repository }}/tree/${{ github.event.release.tag_name }}"
           /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
-          ${{ env.version_suffix_args }}
+          ${{ steps.version.outputs.args }}
 
       - name: Run tests in Playback mode
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
           --logger "trx;LogFilePrefix=playback"
           --results-directory ${{ github.workspace }}/artifacts/test-results
-          ${{ env.version_suffix_args }}
+          ${{ steps.version.outputs.args }}
         env:
           CLIENTMODEL_TEST_MODE: Playback
           CLIENTMODEL_DISABLE_AUTO_RECORDING: true
