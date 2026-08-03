@@ -554,16 +554,14 @@ public class AssistantsTests : OpenAIRecordedTestBase
             string message = $"{update.UpdateKind} ";
             if (update is RunUpdate runUpdate)
             {
-                string timestamp;
-                if (update.UpdateKind == StreamingUpdateReason.RunCreated)
-                    timestamp = runUpdate.Value.CreatedAt.ToString();
-                else if (update.UpdateKind == StreamingUpdateReason.RunQueued || update.UpdateKind == StreamingUpdateReason.RunInProgress)
-                    timestamp = runUpdate.Value.StartedAt.ToString();
-                else if (update.UpdateKind == StreamingUpdateReason.RunCompleted)
-                    timestamp = runUpdate.Value.CompletedAt.ToString();
-                else
-                    timestamp = "???";
-                message += $"at {timestamp}";
+                message += $"at {update.UpdateKind switch
+                {
+                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
+                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
+                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
+                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
+                    _ => "???",
+                }}";
             }
             if (update is MessageContentUpdate contentUpdate)
             {

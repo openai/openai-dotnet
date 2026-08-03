@@ -30,8 +30,10 @@ public class ThreadUpdate : StreamingUpdate<AssistantThread>
         ModelReaderWriterOptions options = null)
     {
         AssistantThread thread = AssistantThread.DeserializeAssistantThread(element, options);
-        if (updateKind == StreamingUpdateReason.ThreadCreated)
-            return [new ThreadUpdate(thread)];
-        return [new StreamingUpdate<AssistantThread>(thread, updateKind)];
+        return updateKind switch
+        {
+            StreamingUpdateReason.ThreadCreated => [new ThreadUpdate(thread)],
+            _ => [new StreamingUpdate<AssistantThread>(thread, updateKind)],
+        };
     }
 }
