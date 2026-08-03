@@ -14,8 +14,8 @@ public partial class ResponseTextFormat
     internal InternalResponsesTextFormatType InternalType { get; set;  }
     public ResponseTextFormatKind Kind
     {
-        get => InternalType.ToString().ToResponseTextFormatKind();
-        set => InternalType = value.ToSerialString();
+        get => new ResponseTextFormatKind(InternalType.ToString());
+        set => InternalType = value.ToString();
     }
 
     public static ResponseTextFormat CreateTextFormat() => new InternalResponsesTextFormatText();

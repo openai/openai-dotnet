@@ -257,7 +257,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (!Patch.Contains("$.created_at"u8))
             {
@@ -607,7 +607,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    status = prop.Value.GetString().ToResponseStatus();
+                    status = new ResponseStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))

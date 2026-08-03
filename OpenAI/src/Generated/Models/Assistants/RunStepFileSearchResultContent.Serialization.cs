@@ -66,7 +66,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
+                writer.WriteStringValue(Kind.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -121,7 +121,7 @@ namespace OpenAI.Assistants
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToRunStepFileSearchResultContentKind();
+                    kind = new RunStepFileSearchResultContentKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))

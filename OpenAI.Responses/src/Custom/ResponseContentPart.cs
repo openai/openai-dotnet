@@ -16,8 +16,8 @@ public partial class ResponseContentPart
     internal InternalItemContentType InternalType { get; set; }
     public ResponseContentPartKind Kind
     {
-        get => InternalType.ToString().ToResponseContentPartKind();
-        private set => InternalType = value.ToSerialString();
+        get => new ResponseContentPartKind(InternalType.ToString());
+        private set => InternalType = value.ToString();
     }
 
     // CUSTOM: Exposed input text properties.

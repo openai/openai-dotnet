@@ -12,8 +12,8 @@ public partial class MessageResponseItem
     internal InternalResponsesMessageRole InternalRole { get; set; }
     public MessageRole Role
     {
-        get => InternalRole.ToString().ToMessageRole();
-        private set => InternalRole = value.ToSerialString();
+        get => new MessageRole(InternalRole.ToString());
+        private set => InternalRole = value.ToString();
     }
 
     // CUSTOM: Recombined content from derived types.

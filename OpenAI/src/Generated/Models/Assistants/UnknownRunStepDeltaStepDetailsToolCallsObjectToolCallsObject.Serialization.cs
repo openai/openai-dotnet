@@ -91,7 +91,7 @@ namespace OpenAI.Assistants
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToRunStepToolCallKind();
+                    kind = new RunStepToolCallKind(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

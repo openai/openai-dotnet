@@ -104,7 +104,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
+                writer.WriteStringValue(Status.ToString());
             }
             if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
@@ -232,7 +232,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToVectorStoreStatus();
+                    status = new VectorStoreStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("expires_after"u8))
