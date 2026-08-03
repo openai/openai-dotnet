@@ -142,22 +142,17 @@ public partial class ResponseExamples
     {
         foreach (MessageResponseItem messageItem in messageItems)
         {
-            switch (messageItem.Role)
+            if (messageItem.Role == MessageRole.User)
             {
-                case MessageRole.User:
-                    Console.WriteLine($"[USER]:");
-                    Console.WriteLine($"{messageItem.Content[0].Text}");
-                    Console.WriteLine();
-                    break;
-
-                case MessageRole.Assistant:
-                    Console.WriteLine($"[ASSISTANT]:");
-                    Console.WriteLine($"{messageItem.Content[0].Text}");
-                    Console.WriteLine();
-                    break;
-
-                default:
-                    break;
+                Console.WriteLine($"[USER]:");
+                Console.WriteLine($"{messageItem.Content[0].Text}");
+                Console.WriteLine();
+            }
+            else if (messageItem.Role == MessageRole.Assistant)
+            {
+                Console.WriteLine($"[ASSISTANT]:");
+                Console.WriteLine($"{messageItem.Content[0].Text}");
+                Console.WriteLine();
             }
         }
     }

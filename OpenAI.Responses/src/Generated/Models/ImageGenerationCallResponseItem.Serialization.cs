@@ -78,7 +78,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
             {
@@ -170,7 +170,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToImageGenerationCallStatus();
+                    status = new ImageGenerationCallStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("action"u8))

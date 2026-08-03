@@ -6,11 +6,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ComputerToolCallOutputItemResourceStatus")]
-public enum ComputerCallOutputStatus
-{
-    InProgress,
-    Completed,
-    Incomplete
-}
+// - Converted to extensible enum.
+[CodeGenType("ComputerCallOutputStatus")]
+public readonly partial struct ComputerCallOutputStatus { }

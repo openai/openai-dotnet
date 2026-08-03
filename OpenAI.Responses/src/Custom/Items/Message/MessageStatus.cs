@@ -6,11 +6,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ResponsesMessageItemResourceStatus")]
-public enum MessageStatus
-{
-    InProgress,
-    Completed,
-    Incomplete
-}
+// - Converted to extensible enum.
+[CodeGenType("MessageStatus")]
+public readonly partial struct MessageStatus { }

@@ -1,4 +1,5 @@
 import "../base/typespec/responses/main.tsp";
+import "./models/responses.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 import "@typespec/http-client-csharp";
 
@@ -11,6 +12,7 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
 @@alternateType(Response.`model`, string);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
+@@alternateType(Response.status, ResponseStatus);
 
 // Do not generate convenience methods for these operations
 @@convenientAPI(Responses.getInputTokenCounts, false);
@@ -28,28 +30,37 @@ using TypeSpec.HttpClient.CSharp;
 @@visibility(ItemResource.id, Lifecycle.Read);
 
 @@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(CodeInterpreterToolCallItemResource.status, CodeInterpreterCallStatus);
 @@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
 
 @@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(ComputerToolCallItemResource.status, ComputerCallStatus);
 
 @@visibility(ComputerToolCallOutputItemResource.status, Lifecycle.Read);
+@@alternateType(ComputerToolCallOutputItemResource.status, ComputerCallOutputStatus);
 
 @@visibility(FileSearchToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(FileSearchToolCallItemResource.status, FileSearchCallStatus);
 
 @@visibility(FunctionToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(FunctionToolCallItemResource.status, FunctionCallStatus);
 @@alternateType(FunctionToolCallItemResource.arguments, unknown);
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
 
 @@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
+@@alternateType(FunctionToolCallOutputItemResource.status, FunctionCallOutputStatus);
 @@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
 
 @@visibility(ReasoningItemResource.status, Lifecycle.Read);
+@@alternateType(ReasoningItemResource.status, ReasoningStatus);
 @@clientName(ReasoningItemResource.summary, "SummaryParts");
 
 @@visibility(WebSearchToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(WebSearchToolCallItemResource.status, WebSearchCallStatus);
 
 @@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
+@@alternateType(ResponsesMessageItemResource.status, MessageStatus);
 
 @@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
 @@clientName(MCPApprovalRequestItemResource.name, "ToolName");
@@ -67,7 +78,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
 @@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(ImageGenToolCallItemResource.status, ImageGenerationCallStatus);
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
+
+@@alternateType(ComputerActionClick.button, ComputerCallActionMouseButton);
 
 @@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
 
@@ -275,10 +289,25 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(DotNetGetResponseOptions);
 @@dynamicModel(DotNetGlobalToolCallApprovalPolicy);
 @@dynamicModel(DotNetCustomToolCallApprovalPolicy);
+@@dynamicModel(ResponseStatus);
+@@dynamicModel(MessageStatus);
+@@dynamicModel(FunctionCallStatus);
+@@dynamicModel(FileSearchCallStatus);
+@@dynamicModel(WebSearchCallStatus);
+@@dynamicModel(CodeInterpreterCallStatus);
+@@dynamicModel(ImageGenerationCallStatus);
+@@dynamicModel(ReasoningStatus);
+@@dynamicModel(ComputerCallActionMouseButton);
+@@dynamicModel(ComputerCallOutputStatus);
+@@dynamicModel(ComputerCallStatus);
+@@dynamicModel(FunctionCallOutputStatus);
 @@dynamicModel(DotNetToolCallApprovalPolicy);
 @@dynamicModel(DotNetCodeInterpreterToolContainer);
 // client/models/common.models.tsp models
 @@dynamicModel(DotNetResponseServiceTier);
+// Extensible enum types (named unions)
+@@dynamicModel(ComputerActionType);
+@@dynamicModel(AnnotationType);
 // models_streaming.tsp
 @@dynamicModel(ResponseStreamEvent);
 @@dynamicModel(ResponseAudioDeltaEvent);
