@@ -566,7 +566,6 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
-        public ImageGenerationToolInputImageMask();
         public ImageGenerationToolInputImageMask(BinaryData imageBytes);
         public ImageGenerationToolInputImageMask(string fileId);
         public ImageGenerationToolInputImageMask(Uri imageUri);
@@ -682,7 +681,6 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpToolCallApprovalPolicy : IJsonModel<McpToolCallApprovalPolicy>, IPersistableModel<McpToolCallApprovalPolicy> {
-        public McpToolCallApprovalPolicy();
         public McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy);
         public McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy);
         public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
@@ -829,7 +827,6 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ReferenceResponseItem : ResponseItem, IJsonModel<ReferenceResponseItem>, IPersistableModel<ReferenceResponseItem> {
-        public ReferenceResponseItem() : base(default);
         public ReferenceResponseItem(string id) : base(default);
     }
     [Experimental("OPENAI001")]
