@@ -108,7 +108,7 @@ public partial class ResponsesSmokeTests
             @"{""type"":""message"",""role"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoMessage =>
             {
-                Assert.That(potatoMessage.Role, Is.EqualTo(MessageRole.Unknown));
+                Assert.That(potatoMessage.Role, Is.EqualTo(new MessageRole("potato")));
                 Assert.That(potatoMessage.Content, Has.Count.EqualTo(0));
             });
     }
@@ -143,7 +143,7 @@ public partial class ResponsesSmokeTests
 
         AssertSerializationRoundTrip<ResponseToolChoice>(
             @"{""type"":""something_else""}",
-            toolChoice => Assert.That(toolChoice.Kind, Is.EqualTo(ResponseToolChoiceKind.Unknown)));
+            toolChoice => Assert.That(toolChoice.Kind, Is.EqualTo(new ResponseToolChoiceKind("something_else"))));
     }
 
     [Test]
@@ -174,7 +174,7 @@ public partial class ResponsesSmokeTests
             @"{""type"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoPart =>
             {
-                Assert.That(potatoPart.Kind, Is.EqualTo(ResponseContentPartKind.Unknown));
+                Assert.That(potatoPart.Kind, Is.EqualTo(new ResponseContentPartKind("potato")));
                 Assert.That(potatoPart.Text, Is.Null);
             });
     }

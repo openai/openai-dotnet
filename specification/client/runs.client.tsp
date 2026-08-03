@@ -1,8 +1,16 @@
 import "../base/typespec/runs/main.tsp";
+import "./models/assistants.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
+import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
+using TypeSpec.HttpClient.CSharp;
+
+@@alternateType(RunStepObject.type, RunStepKind);
+
+@@dynamicModel(RunStepKind);
+@@dynamicModel(RunStepDetailsToolCallType);
 
 @@access(RunStepDeltaObject, Access.public);
 @@usage(RunStepDeltaObject, Usage.output);

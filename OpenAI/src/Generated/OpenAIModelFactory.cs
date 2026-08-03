@@ -136,6 +136,216 @@ namespace OpenAI
             return new AssistantDeletionResult(assistantId, deleted, "assistant.deleted", additionalBinaryDataProperties: null);
         }
 
+        public static ThreadCreationOptions ThreadCreationOptions(IEnumerable<MessageCreationOptions> internalMessages = default, ToolResources toolResources = default, IDictionary<string, string> metadata = default)
+        {
+            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ThreadCreationOptions(internalMessages.ToList(), toolResources, metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageCreationOptions MessageCreationOptions(Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, IEnumerable<MessageCreationAttachment> attachments = default, IDictionary<string, string> metadata = default)
+        {
+            content ??= new ChangeTrackingList<MessageContent>();
+            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new MessageCreationOptions(role, content.ToList(), attachments.ToList(), metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageContent MessageContent(string kind = default)
+        {
+            return new InternalUnknownMessageContent(new InternalMessageContentType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static MessageCreationAttachment MessageCreationAttachment(string fileId = default, IEnumerable<ToolDefinition> tools = default)
+        {
+            tools ??= new ChangeTrackingList<ToolDefinition>();
+
+            return new MessageCreationAttachment(fileId, tools.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static RunError RunError(RunErrorCode code = default, string message = default)
+        {
+            return new RunError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static RunIncompleteDetails RunIncompleteDetails(RunIncompleteReason? reason = default)
+        {
+            return new RunIncompleteDetails(reason, additionalBinaryDataProperties: null);
+        }
+
+        public static RunTokenUsage RunTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
+        {
+            return new RunTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static RunCreationOptions RunCreationOptions(string assistantId = default, string modelOverride = default, RunReasoningEffortLevel? reasoningEffortLevel = default, string instructionsOverride = default, string additionalInstructions = default, IEnumerable<MessageCreationOptions> internalMessages = default, IEnumerable<ToolDefinition> toolsOverride = default, IDictionary<string, string> metadata = default, float? temperature = default, float? nucleusSamplingFactor = default, bool? stream = default, int? maxInputTokenCount = default, int? maxOutputTokenCount = default, RunTruncationStrategy truncationStrategy = default, ToolConstraint toolConstraint = default, bool? allowParallelToolCalls = default, AssistantResponseFormat responseFormat = default)
+        {
+            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
+            toolsOverride ??= new ChangeTrackingList<ToolDefinition>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RunCreationOptions(
+                assistantId,
+                modelOverride,
+                reasoningEffortLevel,
+                instructionsOverride,
+                additionalInstructions,
+                internalMessages.ToList(),
+                toolsOverride.ToList(),
+                metadata,
+                temperature,
+                nucleusSamplingFactor,
+                stream,
+                maxInputTokenCount,
+                maxOutputTokenCount,
+                truncationStrategy,
+                toolConstraint,
+                allowParallelToolCalls,
+                responseFormat,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunModificationOptions RunModificationOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RunModificationOptions(metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static ToolOutput ToolOutput(string toolCallId = default, string output = default)
+        {
+            return new ToolOutput(toolCallId, output, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStep RunStep(string id = default, DateTimeOffset createdAt = default, string assistantId = default, string threadId = default, string runId = default, RunStepKind kind = default, RunStepStatus status = default, RunStepDetails details = default, RunStepError lastError = default, DateTimeOffset? expiredAt = default, DateTimeOffset? cancelledAt = default, DateTimeOffset? failedAt = default, DateTimeOffset? completedAt = default, IReadOnlyDictionary<string, string> metadata = default, RunStepTokenUsage usage = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new RunStep(
+                id,
+                "thread.run.step",
+                createdAt,
+                assistantId,
+                threadId,
+                runId,
+                kind,
+                status,
+                details,
+                lastError,
+                expiredAt,
+                cancelledAt,
+                failedAt,
+                completedAt,
+                metadata,
+                usage,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepDetails RunStepDetails(string kind = default)
+        {
+            return new UnknownRunStepObjectStepDetails(new InternalRunStepDetailsType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
+        {
+            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(new RunStepToolCallKind(kind), id, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepCodeInterpreterOutput RunStepCodeInterpreterOutput(string kind = default)
+        {
+            return new UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(new InternalRunStepDetailsCodeInterpreterOutputType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepFileSearchResult RunStepFileSearchResult(string fileId = default, string fileName = default, float score = default, IEnumerable<RunStepFileSearchResultContent> content = default)
+        {
+            content ??= new ChangeTrackingList<RunStepFileSearchResultContent>();
+
+            return new RunStepFileSearchResult(fileId, fileName, score, content.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default)
+        {
+            return new RunStepFileSearchResultContent("RunStepFileSearchResultContentKind.Text", text, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
+        {
+            return new RunStepError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepTokenUsage RunStepTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
+        {
+            return new RunStepTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadMessage ThreadMessage(string id = default, DateTimeOffset createdAt = default, string threadId = default, Assistants.MessageStatus status = default, MessageFailureDetails incompleteDetails = default, DateTimeOffset? completedAt = default, DateTimeOffset? incompleteAt = default, Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, string assistantId = default, string runId = default, IEnumerable<MessageCreationAttachment> attachments = default, IReadOnlyDictionary<string, string> metadata = default)
+        {
+            content ??= new ChangeTrackingList<MessageContent>();
+            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ThreadMessage(
+                id,
+                "thread.message",
+                createdAt,
+                threadId,
+                status,
+                incompleteDetails,
+                completedAt,
+                incompleteAt,
+                role,
+                content.ToList(),
+                assistantId,
+                runId,
+                attachments.ToList(),
+                metadata,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static MessageFailureDetails MessageFailureDetails(MessageFailureReason reason = default)
+        {
+            return new MessageFailureDetails(reason, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageModificationOptions MessageModificationOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new MessageModificationOptions(metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageDeletionResult MessageDeletionResult(string messageId = default, bool deleted = default)
+        {
+            return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
+        }
+
+        public static AssistantThread AssistantThread(string id = default, DateTimeOffset createdAt = default, ToolResources toolResources = default, IReadOnlyDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new AssistantThread(
+                id,
+                "thread",
+                createdAt,
+                toolResources,
+                metadata,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadModificationOptions ThreadModificationOptions(ToolResources toolResources = default, IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ThreadModificationOptions(toolResources, metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static ThreadDeletionResult ThreadDeletionResult(string threadId = default, bool deleted = default)
+        {
+            return new ThreadDeletionResult(threadId, deleted, "thread.deleted", additionalBinaryDataProperties: null);
+        }
+
         public static ChatOutputAudio ChatOutputAudio(string id = default, DateTimeOffset expiresAt = default, BinaryData audioBytes = default, string transcript = default)
         {
             return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, default);
@@ -574,7 +784,7 @@ namespace OpenAI
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
-            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
+            return new InternalUnknownAnnotation(new ResponseMessageAnnotationKind(kind), default);
         }
 
         public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default, string filename = default)
@@ -637,7 +847,7 @@ namespace OpenAI
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
         {
-            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), default);
+            return new InternalUnknownComputerAction(new ComputerCallActionKind(kind), default);
         }
 
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
@@ -1570,68 +1780,6 @@ namespace OpenAI
             return new ValidateGraderResponse(grader, additionalBinaryDataProperties: null);
         }
 
-        public static MessageCreationOptions MessageCreationOptions(Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, IEnumerable<MessageCreationAttachment> attachments = default, IDictionary<string, string> metadata = default)
-        {
-            content ??= new ChangeTrackingList<MessageContent>();
-            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new MessageCreationOptions(role, content.ToList(), attachments.ToList(), metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageContent MessageContent(string kind = default)
-        {
-            return new InternalUnknownMessageContent(new InternalMessageContentType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static MessageCreationAttachment MessageCreationAttachment(string fileId = default, IEnumerable<ToolDefinition> tools = default)
-        {
-            tools ??= new ChangeTrackingList<ToolDefinition>();
-
-            return new MessageCreationAttachment(fileId, tools.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static ThreadMessage ThreadMessage(string id = default, DateTimeOffset createdAt = default, string threadId = default, Assistants.MessageStatus status = default, MessageFailureDetails incompleteDetails = default, DateTimeOffset? completedAt = default, DateTimeOffset? incompleteAt = default, Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, string assistantId = default, string runId = default, IEnumerable<MessageCreationAttachment> attachments = default, IReadOnlyDictionary<string, string> metadata = default)
-        {
-            content ??= new ChangeTrackingList<MessageContent>();
-            attachments ??= new ChangeTrackingList<MessageCreationAttachment>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ThreadMessage(
-                id,
-                "thread.message",
-                createdAt,
-                threadId,
-                status,
-                incompleteDetails,
-                completedAt,
-                incompleteAt,
-                role,
-                content.ToList(),
-                assistantId,
-                runId,
-                attachments.ToList(),
-                metadata,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static MessageFailureDetails MessageFailureDetails(MessageFailureReason reason = default)
-        {
-            return new MessageFailureDetails(reason, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageModificationOptions MessageModificationOptions(IDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new MessageModificationOptions(metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static MessageDeletionResult MessageDeletionResult(string messageId = default, bool deleted = default)
-        {
-            return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
-        }
-
         public static CreateClientSecretOptions CreateClientSecretOptions(RealtimeClientSecretExpirationPolicy expirationPolicy = default, RealtimeSessionOptions sessionOptions = default)
         {
             return new CreateClientSecretOptions(expirationPolicy, sessionOptions, default);
@@ -1878,154 +2026,6 @@ namespace OpenAI
                 expiresAt,
                 includedProperties.ToList(),
                 audioOptions);
-        }
-
-        public static ThreadCreationOptions ThreadCreationOptions(IEnumerable<MessageCreationOptions> internalMessages = default, ToolResources toolResources = default, IDictionary<string, string> metadata = default)
-        {
-            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ThreadCreationOptions(internalMessages.ToList(), toolResources, metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static RunError RunError(RunErrorCode code = default, string message = default)
-        {
-            return new RunError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static RunIncompleteDetails RunIncompleteDetails(RunIncompleteReason? reason = default)
-        {
-            return new RunIncompleteDetails(reason, additionalBinaryDataProperties: null);
-        }
-
-        public static RunTokenUsage RunTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
-        {
-            return new RunTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static RunCreationOptions RunCreationOptions(string assistantId = default, string modelOverride = default, RunReasoningEffortLevel? reasoningEffortLevel = default, string instructionsOverride = default, string additionalInstructions = default, IEnumerable<MessageCreationOptions> internalMessages = default, IEnumerable<ToolDefinition> toolsOverride = default, IDictionary<string, string> metadata = default, float? temperature = default, float? nucleusSamplingFactor = default, bool? stream = default, int? maxInputTokenCount = default, int? maxOutputTokenCount = default, RunTruncationStrategy truncationStrategy = default, ToolConstraint toolConstraint = default, bool? allowParallelToolCalls = default, AssistantResponseFormat responseFormat = default)
-        {
-            internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
-            toolsOverride ??= new ChangeTrackingList<ToolDefinition>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RunCreationOptions(
-                assistantId,
-                modelOverride,
-                reasoningEffortLevel,
-                instructionsOverride,
-                additionalInstructions,
-                internalMessages.ToList(),
-                toolsOverride.ToList(),
-                metadata,
-                temperature,
-                nucleusSamplingFactor,
-                stream,
-                maxInputTokenCount,
-                maxOutputTokenCount,
-                truncationStrategy,
-                toolConstraint,
-                allowParallelToolCalls,
-                responseFormat,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static RunModificationOptions RunModificationOptions(IDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RunModificationOptions(metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static ToolOutput ToolOutput(string toolCallId = default, string output = default)
-        {
-            return new ToolOutput(toolCallId, output, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStep RunStep(string id = default, DateTimeOffset createdAt = default, string assistantId = default, string threadId = default, string runId = default, RunStepKind kind = default, RunStepStatus status = default, RunStepDetails details = default, RunStepError lastError = default, DateTimeOffset? expiredAt = default, DateTimeOffset? cancelledAt = default, DateTimeOffset? failedAt = default, DateTimeOffset? completedAt = default, IReadOnlyDictionary<string, string> metadata = default, RunStepTokenUsage usage = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new RunStep(
-                id,
-                "thread.run.step",
-                createdAt,
-                assistantId,
-                threadId,
-                runId,
-                kind,
-                status,
-                details,
-                lastError,
-                expiredAt,
-                cancelledAt,
-                failedAt,
-                completedAt,
-                metadata,
-                usage,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepDetails RunStepDetails(string kind = default)
-        {
-            return new UnknownRunStepObjectStepDetails(new InternalRunStepDetailsType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
-        {
-            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepCodeInterpreterOutput RunStepCodeInterpreterOutput(string kind = default)
-        {
-            return new UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(new InternalRunStepDetailsCodeInterpreterOutputType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepFileSearchResult RunStepFileSearchResult(string fileId = default, string fileName = default, float score = default, IEnumerable<RunStepFileSearchResultContent> content = default)
-        {
-            content ??= new ChangeTrackingList<RunStepFileSearchResultContent>();
-
-            return new RunStepFileSearchResult(fileId, fileName, score, content.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default)
-        {
-            return new RunStepFileSearchResultContent(RunStepFileSearchResultContentKind.Text, text, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
-        {
-            return new RunStepError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepTokenUsage RunStepTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default)
-        {
-            return new RunStepTokenUsage(outputTokenCount, inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static AssistantThread AssistantThread(string id = default, DateTimeOffset createdAt = default, ToolResources toolResources = default, IReadOnlyDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new AssistantThread(
-                id,
-                "thread",
-                createdAt,
-                toolResources,
-                metadata,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ThreadModificationOptions ThreadModificationOptions(ToolResources toolResources = default, IDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ThreadModificationOptions(toolResources, metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static ThreadDeletionResult ThreadDeletionResult(string threadId = default, bool deleted = default)
-        {
-            return new ThreadDeletionResult(threadId, deleted, "thread.deleted", additionalBinaryDataProperties: null);
         }
 
         public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
@@ -2311,7 +2311,7 @@ namespace OpenAI
 
         public static ModerationInputPart ModerationInputPart(string kind = default)
         {
-            return new InternalUnknownModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownModerationInputPart(new ModerationInputPartKind(kind), additionalBinaryDataProperties: null);
         }
 
         public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
@@ -2471,6 +2471,11 @@ namespace OpenAI
                 order,
                 filter,
                 additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepUpdateCodeInterpreterOutput RunStepUpdateCodeInterpreterOutput(string kind = default)
+        {
+            return new UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(new InternalRunStepDetailsCodeInterpreterOutputType(kind), additionalBinaryDataProperties: null);
         }
 
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
@@ -3305,11 +3310,6 @@ namespace OpenAI
         public static RealtimeClientCommandOutputAudioBufferClear RealtimeClientCommandOutputAudioBufferClear(string eventId = default)
         {
             return new RealtimeClientCommandOutputAudioBufferClear(InternalRealtimeClientEventTypeGA.OutputAudioBufferClear, default, eventId);
-        }
-
-        public static RunStepUpdateCodeInterpreterOutput RunStepUpdateCodeInterpreterOutput(string kind = default)
-        {
-            return new UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(new InternalRunStepDetailsCodeInterpreterOutputType(kind), additionalBinaryDataProperties: null);
         }
     }
 }
