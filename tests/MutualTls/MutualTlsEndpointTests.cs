@@ -1,10 +1,13 @@
-// Keeps endpoint security-policy tests separate from the runnable mTLS example.
+#if NET9_0_OR_GREATER
+// Compiles with the linked runnable sample so its private endpoint policy can
+// be tested without adding test hooks to the example.
 
 using NUnit.Framework;
 using System;
 
 namespace OpenAI.Examples;
 
+[Category("MutualTls")]
 public partial class MutualTlsExamples
 {
     [TestCase(GlobalEndpoint)]
@@ -28,3 +31,4 @@ public partial class MutualTlsExamples
         Assert.Throws<InvalidOperationException>(() => GetEndpoint(value));
     }
 }
+#endif

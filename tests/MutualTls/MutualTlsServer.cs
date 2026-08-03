@@ -168,6 +168,10 @@ internal sealed class MutualTlsServer : IAsyncDisposable
         {
             Failure = exception;
         }
+        catch (InvalidDataException exception)
+        {
+            Failure = exception;
+        }
         catch (IOException exception)
         {
             Failure = exception;
@@ -195,6 +199,7 @@ internal sealed class MutualTlsServer : IAsyncDisposable
 
         chain.ChainPolicy.ApplicationPolicy.Add(new Oid(ClientAuthenticationOid));
         chain.ChainPolicy.CustomTrustStore.Add(_trustedClientRoot);
+        chain.ChainPolicy.DisableCertificateDownloads = true;
         chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
         chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
 
