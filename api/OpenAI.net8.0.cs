@@ -852,43 +852,33 @@ namespace OpenAI.Assistants {
         public StreamingUpdateReason UpdateKind { get; }
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct StreamingUpdateReason : IEquatable<StreamingUpdateReason> {
-        public StreamingUpdateReason(string value);
-        public static StreamingUpdateReason Done { get; }
-        public static StreamingUpdateReason Error { get; }
-        public static StreamingUpdateReason MessageCompleted { get; }
-        public static StreamingUpdateReason MessageCreated { get; }
-        public static StreamingUpdateReason MessageFailed { get; }
-        public static StreamingUpdateReason MessageInProgress { get; }
-        public static StreamingUpdateReason MessageUpdated { get; }
-        public static StreamingUpdateReason RunCancelled { get; }
-        public static StreamingUpdateReason RunCancelling { get; }
-        public static StreamingUpdateReason RunCompleted { get; }
-        public static StreamingUpdateReason RunCreated { get; }
-        public static StreamingUpdateReason RunExpired { get; }
-        public static StreamingUpdateReason RunFailed { get; }
-        public static StreamingUpdateReason RunIncomplete { get; }
-        public static StreamingUpdateReason RunInProgress { get; }
-        public static StreamingUpdateReason RunQueued { get; }
-        public static StreamingUpdateReason RunRequiresAction { get; }
-        public static StreamingUpdateReason RunStepCancelled { get; }
-        public static StreamingUpdateReason RunStepCompleted { get; }
-        public static StreamingUpdateReason RunStepCreated { get; }
-        public static StreamingUpdateReason RunStepExpired { get; }
-        public static StreamingUpdateReason RunStepFailed { get; }
-        public static StreamingUpdateReason RunStepInProgress { get; }
-        public static StreamingUpdateReason RunStepUpdated { get; }
-        public static StreamingUpdateReason ThreadCreated { get; }
-        public readonly bool Equals(StreamingUpdateReason other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(StreamingUpdateReason left, StreamingUpdateReason right);
-        public static implicit operator StreamingUpdateReason(string value);
-        public static implicit operator StreamingUpdateReason?(string value);
-        public static bool operator !=(StreamingUpdateReason left, StreamingUpdateReason right);
-        public override readonly string ToString();
+    public enum StreamingUpdateReason {
+        Unknown = 0,
+        ThreadCreated = 1,
+        RunCreated = 2,
+        RunQueued = 3,
+        RunInProgress = 4,
+        RunRequiresAction = 5,
+        RunCompleted = 6,
+        RunIncomplete = 7,
+        RunFailed = 8,
+        RunCancelling = 9,
+        RunCancelled = 10,
+        RunExpired = 11,
+        RunStepCreated = 12,
+        RunStepInProgress = 13,
+        RunStepUpdated = 14,
+        RunStepCompleted = 15,
+        RunStepFailed = 16,
+        RunStepCancelled = 17,
+        RunStepExpired = 18,
+        MessageCreated = 19,
+        MessageInProgress = 20,
+        MessageUpdated = 21,
+        MessageCompleted = 22,
+        MessageFailed = 23,
+        Error = 24,
+        Done = 25
     }
     [Experimental("OPENAI001")]
     public class StreamingUpdate<T> : StreamingUpdate where T : class {
