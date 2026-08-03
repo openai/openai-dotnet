@@ -104,7 +104,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
+                writer.WriteStringValue(Kind.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -297,7 +297,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToRunStepKind();
+                    kind = new RunStepKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))

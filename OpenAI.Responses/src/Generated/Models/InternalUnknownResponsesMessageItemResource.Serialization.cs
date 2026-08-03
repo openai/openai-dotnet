@@ -118,7 +118,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToMessageStatus();
+                    status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("role"u8))

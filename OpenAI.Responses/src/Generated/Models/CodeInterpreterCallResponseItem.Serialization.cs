@@ -79,7 +79,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (Optional.IsDefined(ContainerId) && !Patch.Contains("$.container_id"u8))
             {
@@ -161,7 +161,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToCodeInterpreterCallStatus();
+                    status = new CodeInterpreterCallStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("container_id"u8))

@@ -4,12 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ImageGenToolCallItemResourceStatus")]
-public enum ImageGenerationCallStatus
-{
-    InProgress,
-    Completed,
-    Generating,
-    Failed
-}
+// - Converted to extensible enum.
+[CodeGenType("ImageGenerationCallStatus")]
+public readonly partial struct ImageGenerationCallStatus { }

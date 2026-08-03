@@ -51,34 +51,39 @@ public abstract partial class StreamingUpdate
         JsonElement e = dataDocument.RootElement;
         ModelReaderWriterOptions serializationOptions = ModelReaderWriterOptions.Json;
 
-        return updateKind switch
-        {
-            StreamingUpdateReason.ThreadCreated => ThreadUpdate.DeserializeThreadCreationUpdates(e, updateKind, serializationOptions),
-            StreamingUpdateReason.RunCreated
-            or StreamingUpdateReason.RunQueued
-            or StreamingUpdateReason.RunInProgress
-            or StreamingUpdateReason.RunCompleted
-            or StreamingUpdateReason.RunIncomplete
-            or StreamingUpdateReason.RunFailed
-            or StreamingUpdateReason.RunCancelling
-            or StreamingUpdateReason.RunCancelled
-            or StreamingUpdateReason.RunExpired => RunUpdate.DeserializeRunUpdates(e, updateKind, serializationOptions),
-            StreamingUpdateReason.RunRequiresAction => RequiredActionUpdate.DeserializeRequiredActionUpdates(e),
-            StreamingUpdateReason.RunStepCreated
-            or StreamingUpdateReason.RunStepInProgress
-            or StreamingUpdateReason.RunStepCompleted
-            or StreamingUpdateReason.RunStepFailed
-            or StreamingUpdateReason.RunStepCancelled
-            or StreamingUpdateReason.RunStepExpired => RunStepUpdate.DeserializeRunStepUpdates(e, updateKind, serializationOptions),
-            StreamingUpdateReason.MessageCreated
-            or StreamingUpdateReason.MessageInProgress
-            or StreamingUpdateReason.MessageCompleted
-            or StreamingUpdateReason.MessageFailed => MessageStatusUpdate.DeserializeMessageStatusUpdates(e, updateKind, serializationOptions),
-            StreamingUpdateReason.RunStepUpdated => RunStepDetailsUpdate.DeserializeRunStepDetailsUpdates(e, updateKind, serializationOptions),
-            StreamingUpdateReason.MessageUpdated => MessageContentUpdate.DeserializeMessageContentUpdates(e, updateKind, serializationOptions),
-            StreamingUpdateReason.Error => throw CreateExceptionFromErrorEvent(e),
-            _ => [],
-        };
+        if (updateKind == StreamingUpdateReason.ThreadCreated)
+            return ThreadUpdate.DeserializeThreadCreationUpdates(e, updateKind, serializationOptions);
+        if (updateKind == StreamingUpdateReason.RunCreated
+            || updateKind == StreamingUpdateReason.RunQueued
+            || updateKind == StreamingUpdateReason.RunInProgress
+            || updateKind == StreamingUpdateReason.RunCompleted
+            || updateKind == StreamingUpdateReason.RunIncomplete
+            || updateKind == StreamingUpdateReason.RunFailed
+            || updateKind == StreamingUpdateReason.RunCancelling
+            || updateKind == StreamingUpdateReason.RunCancelled
+            || updateKind == StreamingUpdateReason.RunExpired)
+            return RunUpdate.DeserializeRunUpdates(e, updateKind, serializationOptions);
+        if (updateKind == StreamingUpdateReason.RunRequiresAction)
+            return RequiredActionUpdate.DeserializeRequiredActionUpdates(e);
+        if (updateKind == StreamingUpdateReason.RunStepCreated
+            || updateKind == StreamingUpdateReason.RunStepInProgress
+            || updateKind == StreamingUpdateReason.RunStepCompleted
+            || updateKind == StreamingUpdateReason.RunStepFailed
+            || updateKind == StreamingUpdateReason.RunStepCancelled
+            || updateKind == StreamingUpdateReason.RunStepExpired)
+            return RunStepUpdate.DeserializeRunStepUpdates(e, updateKind, serializationOptions);
+        if (updateKind == StreamingUpdateReason.MessageCreated
+            || updateKind == StreamingUpdateReason.MessageInProgress
+            || updateKind == StreamingUpdateReason.MessageCompleted
+            || updateKind == StreamingUpdateReason.MessageFailed)
+            return MessageStatusUpdate.DeserializeMessageStatusUpdates(e, updateKind, serializationOptions);
+        if (updateKind == StreamingUpdateReason.RunStepUpdated)
+            return RunStepDetailsUpdate.DeserializeRunStepDetailsUpdates(e, updateKind, serializationOptions);
+        if (updateKind == StreamingUpdateReason.MessageUpdated)
+            return MessageContentUpdate.DeserializeMessageContentUpdates(e, updateKind, serializationOptions);
+        if (updateKind == StreamingUpdateReason.Error)
+            throw CreateExceptionFromErrorEvent(e);
+        return [];
     }
 
     // The service can emit an "error" event mid-stream (for example, when an account is out of quota or the server

@@ -414,17 +414,39 @@ namespace OpenAI.Assistants {
         public static bool operator !=(MessageFailureReason left, MessageFailureReason right);
         public override readonly string ToString();
     }
-    public enum MessageImageDetail {
-        Auto = 0,
-        Low = 1,
-        High = 2
+    public readonly partial struct MessageImageDetail : IEquatable<MessageImageDetail> {
+        public MessageImageDetail(string value);
+        public static MessageImageDetail Auto { get; }
+        public static MessageImageDetail High { get; }
+        public static MessageImageDetail Low { get; }
+        public readonly bool Equals(MessageImageDetail other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(MessageImageDetail left, MessageImageDetail right);
+        public static implicit operator MessageImageDetail(string value);
+        public static implicit operator MessageImageDetail?(string value);
+        public static bool operator !=(MessageImageDetail left, MessageImageDetail right);
+        public override readonly string ToString();
     }
     public class MessageModificationOptions : IJsonModel<MessageModificationOptions>, IPersistableModel<MessageModificationOptions> {
         public IDictionary<string, string> Metadata { get; }
     }
-    public enum MessageRole {
-        User = 0,
-        Assistant = 1
+    public readonly partial struct MessageRole : IEquatable<MessageRole> {
+        public MessageRole(string value);
+        public static MessageRole Assistant { get; }
+        public static MessageRole User { get; }
+        public readonly bool Equals(MessageRole other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(MessageRole left, MessageRole right);
+        public static implicit operator MessageRole(string value);
+        public static implicit operator MessageRole?(string value);
+        public static bool operator !=(MessageRole left, MessageRole right);
+        public override readonly string ToString();
     }
     public readonly partial struct MessageStatus : IEquatable<MessageStatus> {
         public MessageStatus(string value);
@@ -645,12 +667,34 @@ namespace OpenAI.Assistants {
         public RunStepFileSearchResultContentKind Kind { get; }
         public string Text { get; }
     }
-    public enum RunStepFileSearchResultContentKind {
-        Text = 0
+    public readonly partial struct RunStepFileSearchResultContentKind : IEquatable<RunStepFileSearchResultContentKind> {
+        public RunStepFileSearchResultContentKind(string value);
+        public static RunStepFileSearchResultContentKind Text { get; }
+        public readonly bool Equals(RunStepFileSearchResultContentKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RunStepFileSearchResultContentKind left, RunStepFileSearchResultContentKind right);
+        public static implicit operator RunStepFileSearchResultContentKind(string value);
+        public static implicit operator RunStepFileSearchResultContentKind?(string value);
+        public static bool operator !=(RunStepFileSearchResultContentKind left, RunStepFileSearchResultContentKind right);
+        public override readonly string ToString();
     }
-    public enum RunStepKind {
-        CreatedMessage = 0,
-        ToolCall = 1
+    public readonly partial struct RunStepKind : IEquatable<RunStepKind> {
+        public RunStepKind(string value);
+        public static RunStepKind CreatedMessage { get; }
+        public static RunStepKind ToolCall { get; }
+        public readonly bool Equals(RunStepKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RunStepKind left, RunStepKind right);
+        public static implicit operator RunStepKind(string value);
+        public static implicit operator RunStepKind?(string value);
+        public static bool operator !=(RunStepKind left, RunStepKind right);
+        public override readonly string ToString();
     }
     public readonly partial struct RunStepStatus : IEquatable<RunStepStatus> {
         public RunStepStatus(string value);
@@ -686,10 +730,21 @@ namespace OpenAI.Assistants {
         public string Id { get; }
         public RunStepToolCallKind Kind { get; }
     }
-    public enum RunStepToolCallKind {
-        CodeInterpreter = 0,
-        FileSearch = 1,
-        Function = 2
+    public readonly partial struct RunStepToolCallKind : IEquatable<RunStepToolCallKind> {
+        public RunStepToolCallKind(string value);
+        public static RunStepToolCallKind CodeInterpreter { get; }
+        public static RunStepToolCallKind FileSearch { get; }
+        public static RunStepToolCallKind Function { get; }
+        public readonly bool Equals(RunStepToolCallKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RunStepToolCallKind left, RunStepToolCallKind right);
+        public static implicit operator RunStepToolCallKind(string value);
+        public static implicit operator RunStepToolCallKind?(string value);
+        public static bool operator !=(RunStepToolCallKind left, RunStepToolCallKind right);
+        public override readonly string ToString();
     }
     public class RunStepUpdate : StreamingUpdate<RunStep> {
     }
@@ -713,33 +768,43 @@ namespace OpenAI.Assistants {
     public abstract class StreamingUpdate {
         public StreamingUpdateReason UpdateKind { get; }
     }
-    public enum StreamingUpdateReason {
-        Unknown = 0,
-        ThreadCreated = 1,
-        RunCreated = 2,
-        RunQueued = 3,
-        RunInProgress = 4,
-        RunRequiresAction = 5,
-        RunCompleted = 6,
-        RunIncomplete = 7,
-        RunFailed = 8,
-        RunCancelling = 9,
-        RunCancelled = 10,
-        RunExpired = 11,
-        RunStepCreated = 12,
-        RunStepInProgress = 13,
-        RunStepUpdated = 14,
-        RunStepCompleted = 15,
-        RunStepFailed = 16,
-        RunStepCancelled = 17,
-        RunStepExpired = 18,
-        MessageCreated = 19,
-        MessageInProgress = 20,
-        MessageUpdated = 21,
-        MessageCompleted = 22,
-        MessageFailed = 23,
-        Error = 24,
-        Done = 25
+    public readonly partial struct StreamingUpdateReason : IEquatable<StreamingUpdateReason> {
+        public StreamingUpdateReason(string value);
+        public static StreamingUpdateReason Done { get; }
+        public static StreamingUpdateReason Error { get; }
+        public static StreamingUpdateReason MessageCompleted { get; }
+        public static StreamingUpdateReason MessageCreated { get; }
+        public static StreamingUpdateReason MessageFailed { get; }
+        public static StreamingUpdateReason MessageInProgress { get; }
+        public static StreamingUpdateReason MessageUpdated { get; }
+        public static StreamingUpdateReason RunCancelled { get; }
+        public static StreamingUpdateReason RunCancelling { get; }
+        public static StreamingUpdateReason RunCompleted { get; }
+        public static StreamingUpdateReason RunCreated { get; }
+        public static StreamingUpdateReason RunExpired { get; }
+        public static StreamingUpdateReason RunFailed { get; }
+        public static StreamingUpdateReason RunIncomplete { get; }
+        public static StreamingUpdateReason RunInProgress { get; }
+        public static StreamingUpdateReason RunQueued { get; }
+        public static StreamingUpdateReason RunRequiresAction { get; }
+        public static StreamingUpdateReason RunStepCancelled { get; }
+        public static StreamingUpdateReason RunStepCompleted { get; }
+        public static StreamingUpdateReason RunStepCreated { get; }
+        public static StreamingUpdateReason RunStepExpired { get; }
+        public static StreamingUpdateReason RunStepFailed { get; }
+        public static StreamingUpdateReason RunStepInProgress { get; }
+        public static StreamingUpdateReason RunStepUpdated { get; }
+        public static StreamingUpdateReason ThreadCreated { get; }
+        public readonly bool Equals(StreamingUpdateReason other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(StreamingUpdateReason left, StreamingUpdateReason right);
+        public static implicit operator StreamingUpdateReason(string value);
+        public static implicit operator StreamingUpdateReason?(string value);
+        public static bool operator !=(StreamingUpdateReason left, StreamingUpdateReason right);
+        public override readonly string ToString();
     }
     public class StreamingUpdate<T> : StreamingUpdate where T : class {
         public T Value { get; }
@@ -3283,9 +3348,20 @@ namespace OpenAI.Moderations {
         public static ModerationInputPart CreateImagePart(Uri imageUri);
         public static ModerationInputPart CreateTextPart(string text);
     }
-    public enum ModerationInputPartKind {
-        Text = 0,
-        Image = 1
+    public readonly partial struct ModerationInputPartKind : IEquatable<ModerationInputPartKind> {
+        public ModerationInputPartKind(string value);
+        public static ModerationInputPartKind Image { get; }
+        public static ModerationInputPartKind Text { get; }
+        public readonly bool Equals(ModerationInputPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ModerationInputPartKind left, ModerationInputPartKind right);
+        public static implicit operator ModerationInputPartKind(string value);
+        public static implicit operator ModerationInputPartKind?(string value);
+        public static bool operator !=(ModerationInputPartKind left, ModerationInputPartKind right);
+        public override readonly string ToString();
     }
     public class ModerationResult : IJsonModel<ModerationResult>, IPersistableModel<ModerationResult> {
         public bool Flagged { get; }
@@ -4749,12 +4825,21 @@ namespace OpenAI.Responses {
         public IList<CodeInterpreterCallOutput> Outputs { get; }
         public CodeInterpreterCallStatus? Status { get; set; }
     }
-    public enum CodeInterpreterCallStatus {
-        InProgress = 0,
-        Interpreting = 1,
-        Completed = 2,
-        Incomplete = 3,
-        Failed = 4
+    public readonly partial struct CodeInterpreterCallStatus : IEquatable<CodeInterpreterCallStatus> {
+        public CodeInterpreterCallStatus(string value);
+        public static CodeInterpreterCallStatus Completed { get; }
+        public static CodeInterpreterCallStatus InProgress { get; }
+        public static CodeInterpreterCallStatus Interpreting { get; }
+        public readonly bool Equals(CodeInterpreterCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right);
+        public static implicit operator CodeInterpreterCallStatus(string value);
+        public static implicit operator CodeInterpreterCallStatus?(string value);
+        public static bool operator !=(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right);
+        public override readonly string ToString();
     }
     public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
         public CodeInterpreterTool(CodeInterpreterToolContainer container) : base(default);
@@ -4800,23 +4885,45 @@ namespace OpenAI.Responses {
         public static ComputerCallAction CreateTypeAction(string typeText);
         public static ComputerCallAction CreateWaitAction();
     }
-    public enum ComputerCallActionKind {
-        Click = 0,
-        DoubleClick = 1,
-        Drag = 2,
-        KeyPress = 3,
-        Move = 4,
-        Screenshot = 5,
-        Scroll = 6,
-        Type = 7,
-        Wait = 8
+    public readonly partial struct ComputerCallActionKind : IEquatable<ComputerCallActionKind> {
+        public ComputerCallActionKind(string value);
+        public static ComputerCallActionKind Click { get; }
+        public static ComputerCallActionKind DoubleClick { get; }
+        public static ComputerCallActionKind Drag { get; }
+        public static ComputerCallActionKind KeyPress { get; }
+        public static ComputerCallActionKind Move { get; }
+        public static ComputerCallActionKind Screenshot { get; }
+        public static ComputerCallActionKind Scroll { get; }
+        public static ComputerCallActionKind Type { get; }
+        public static ComputerCallActionKind Wait { get; }
+        public readonly bool Equals(ComputerCallActionKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ComputerCallActionKind left, ComputerCallActionKind right);
+        public static implicit operator ComputerCallActionKind(string value);
+        public static implicit operator ComputerCallActionKind?(string value);
+        public static bool operator !=(ComputerCallActionKind left, ComputerCallActionKind right);
+        public override readonly string ToString();
     }
-    public enum ComputerCallActionMouseButton {
-        Left = 0,
-        Right = 1,
-        Wheel = 2,
-        Back = 3,
-        Forward = 4
+    public readonly partial struct ComputerCallActionMouseButton : IEquatable<ComputerCallActionMouseButton> {
+        public ComputerCallActionMouseButton(string value);
+        public static ComputerCallActionMouseButton Back { get; }
+        public static ComputerCallActionMouseButton Forward { get; }
+        public static ComputerCallActionMouseButton Left { get; }
+        public static ComputerCallActionMouseButton Right { get; }
+        public static ComputerCallActionMouseButton Wheel { get; }
+        public readonly bool Equals(ComputerCallActionMouseButton other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ComputerCallActionMouseButton left, ComputerCallActionMouseButton right);
+        public static implicit operator ComputerCallActionMouseButton(string value);
+        public static implicit operator ComputerCallActionMouseButton?(string value);
+        public static bool operator !=(ComputerCallActionMouseButton left, ComputerCallActionMouseButton right);
+        public override readonly string ToString();
     }
     public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
         [Serialization.JsonIgnore]
@@ -4833,10 +4940,21 @@ namespace OpenAI.Responses {
         public ComputerCallOutput Output { get; set; }
         public ComputerCallOutputStatus? Status { get; set; }
     }
-    public enum ComputerCallOutputStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct ComputerCallOutputStatus : IEquatable<ComputerCallOutputStatus> {
+        public ComputerCallOutputStatus(string value);
+        public static ComputerCallOutputStatus Completed { get; }
+        public static ComputerCallOutputStatus Incomplete { get; }
+        public static ComputerCallOutputStatus InProgress { get; }
+        public readonly bool Equals(ComputerCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ComputerCallOutputStatus left, ComputerCallOutputStatus right);
+        public static implicit operator ComputerCallOutputStatus(string value);
+        public static implicit operator ComputerCallOutputStatus?(string value);
+        public static bool operator !=(ComputerCallOutputStatus left, ComputerCallOutputStatus right);
+        public override readonly string ToString();
     }
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
         public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(default);
@@ -4854,10 +4972,21 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
-    public enum ComputerCallStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct ComputerCallStatus : IEquatable<ComputerCallStatus> {
+        public ComputerCallStatus(string value);
+        public static ComputerCallStatus Completed { get; }
+        public static ComputerCallStatus Incomplete { get; }
+        public static ComputerCallStatus InProgress { get; }
+        public readonly bool Equals(ComputerCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ComputerCallStatus left, ComputerCallStatus right);
+        public static implicit operator ComputerCallStatus(string value);
+        public static implicit operator ComputerCallStatus?(string value);
+        public static bool operator !=(ComputerCallStatus left, ComputerCallStatus right);
+        public override readonly string ToString();
     }
     public class ComputerTool : ResponseTool, IJsonModel<ComputerTool>, IPersistableModel<ComputerTool> {
         public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(default);
@@ -4959,12 +5088,23 @@ namespace OpenAI.Responses {
         public float? Score { get; set; }
         public string Text { get; set; }
     }
-    public enum FileSearchCallStatus {
-        InProgress = 0,
-        Searching = 1,
-        Completed = 2,
-        Incomplete = 3,
-        Failed = 4
+    public readonly partial struct FileSearchCallStatus : IEquatable<FileSearchCallStatus> {
+        public FileSearchCallStatus(string value);
+        public static FileSearchCallStatus Completed { get; }
+        public static FileSearchCallStatus Failed { get; }
+        public static FileSearchCallStatus Incomplete { get; }
+        public static FileSearchCallStatus InProgress { get; }
+        public static FileSearchCallStatus Searching { get; }
+        public readonly bool Equals(FileSearchCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FileSearchCallStatus left, FileSearchCallStatus right);
+        public static implicit operator FileSearchCallStatus(string value);
+        public static implicit operator FileSearchCallStatus?(string value);
+        public static bool operator !=(FileSearchCallStatus left, FileSearchCallStatus right);
+        public override readonly string ToString();
     }
     public class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>, IPersistableModel<FileSearchTool> {
         public FileSearchTool(IEnumerable<string> vectorStoreIds) : base(default);
@@ -5001,10 +5141,21 @@ namespace OpenAI.Responses {
         public string FunctionOutput { get; set; }
         public FunctionCallOutputStatus? Status { get; set; }
     }
-    public enum FunctionCallOutputStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct FunctionCallOutputStatus : IEquatable<FunctionCallOutputStatus> {
+        public FunctionCallOutputStatus(string value);
+        public static FunctionCallOutputStatus Completed { get; }
+        public static FunctionCallOutputStatus Incomplete { get; }
+        public static FunctionCallOutputStatus InProgress { get; }
+        public readonly bool Equals(FunctionCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FunctionCallOutputStatus left, FunctionCallOutputStatus right);
+        public static implicit operator FunctionCallOutputStatus(string value);
+        public static implicit operator FunctionCallOutputStatus?(string value);
+        public static bool operator !=(FunctionCallOutputStatus left, FunctionCallOutputStatus right);
+        public override readonly string ToString();
     }
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
         public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments) : base(default);
@@ -5013,10 +5164,21 @@ namespace OpenAI.Responses {
         public string FunctionName { get; set; }
         public FunctionCallStatus? Status { get; set; }
     }
-    public enum FunctionCallStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct FunctionCallStatus : IEquatable<FunctionCallStatus> {
+        public FunctionCallStatus(string value);
+        public static FunctionCallStatus Completed { get; }
+        public static FunctionCallStatus Incomplete { get; }
+        public static FunctionCallStatus InProgress { get; }
+        public readonly bool Equals(FunctionCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FunctionCallStatus left, FunctionCallStatus right);
+        public static implicit operator FunctionCallStatus(string value);
+        public static implicit operator FunctionCallStatus?(string value);
+        public static bool operator !=(FunctionCallStatus left, FunctionCallStatus right);
+        public override readonly string ToString();
     }
     public class FunctionTool : ResponseTool, IJsonModel<FunctionTool>, IPersistableModel<FunctionTool> {
         public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(default);
@@ -5062,11 +5224,22 @@ namespace OpenAI.Responses {
         public ImageGenerationToolSize? Size { get; set; }
         public ImageGenerationCallStatus? Status { get; set; }
     }
-    public enum ImageGenerationCallStatus {
-        InProgress = 0,
-        Completed = 1,
-        Generating = 2,
-        Failed = 3
+    public readonly partial struct ImageGenerationCallStatus : IEquatable<ImageGenerationCallStatus> {
+        public ImageGenerationCallStatus(string value);
+        public static ImageGenerationCallStatus Completed { get; }
+        public static ImageGenerationCallStatus Failed { get; }
+        public static ImageGenerationCallStatus Generating { get; }
+        public static ImageGenerationCallStatus InProgress { get; }
+        public readonly bool Equals(ImageGenerationCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationCallStatus left, ImageGenerationCallStatus right);
+        public static implicit operator ImageGenerationCallStatus(string value);
+        public static implicit operator ImageGenerationCallStatus?(string value);
+        public static bool operator !=(ImageGenerationCallStatus left, ImageGenerationCallStatus right);
+        public override readonly string ToString();
     }
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
         public ImageGenerationTool() : base(default);
@@ -5315,17 +5488,38 @@ namespace OpenAI.Responses {
         public MessageRole Role { get; }
         public MessageStatus? Status { get; set; }
     }
-    public enum MessageRole {
-        Unknown = 0,
-        Assistant = 1,
-        Developer = 2,
-        System = 3,
-        User = 4
+    public readonly partial struct MessageRole : IEquatable<MessageRole> {
+        public MessageRole(string value);
+        public static MessageRole Assistant { get; }
+        public static MessageRole Developer { get; }
+        public static MessageRole System { get; }
+        public static MessageRole User { get; }
+        public readonly bool Equals(MessageRole other);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(MessageRole left, MessageRole right);
+        public static implicit operator MessageRole(string value);
+        public static implicit operator MessageRole?(string value);
+        public static bool operator !=(MessageRole left, MessageRole right);
+        public override readonly string ToString();
     }
-    public enum MessageStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct MessageStatus : IEquatable<MessageStatus> {
+        public MessageStatus(string value);
+        public static MessageStatus Completed { get; }
+        public static MessageStatus Incomplete { get; }
+        public static MessageStatus InProgress { get; }
+        public readonly bool Equals(MessageStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(MessageStatus left, MessageStatus right);
+        public static implicit operator MessageStatus(string value);
+        public static implicit operator MessageStatus?(string value);
+        public static bool operator !=(MessageStatus left, MessageStatus right);
+        public override readonly string ToString();
     }
     public static class OpenAIResponsesHostBuilderExtensions {
         public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
@@ -5339,10 +5533,21 @@ namespace OpenAI.Responses {
         public IList<ReasoningSummaryPart> SummaryParts { get; }
         public string GetSummaryText();
     }
-    public enum ReasoningStatus {
-        InProgress = 0,
-        Completed = 1,
-        Incomplete = 2
+    public readonly partial struct ReasoningStatus : IEquatable<ReasoningStatus> {
+        public ReasoningStatus(string value);
+        public static ReasoningStatus Completed { get; }
+        public static ReasoningStatus Incomplete { get; }
+        public static ReasoningStatus InProgress { get; }
+        public readonly bool Equals(ReasoningStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ReasoningStatus left, ReasoningStatus right);
+        public static implicit operator ReasoningStatus(string value);
+        public static implicit operator ReasoningStatus?(string value);
+        public static bool operator !=(ReasoningStatus left, ReasoningStatus right);
+        public override readonly string ToString();
     }
     public class ReasoningSummaryPart : IJsonModel<ReasoningSummaryPart>, IPersistableModel<ReasoningSummaryPart> {
         [Serialization.JsonIgnore]
@@ -5384,13 +5589,23 @@ namespace OpenAI.Responses {
         public static ResponseContentPart CreateOutputTextPart(string text, IEnumerable<ResponseMessageAnnotation> annotations);
         public static ResponseContentPart CreateRefusalPart(string refusal);
     }
-    public enum ResponseContentPartKind {
-        Unknown = 0,
-        InputText = 1,
-        InputImage = 2,
-        InputFile = 3,
-        OutputText = 4,
-        Refusal = 5
+    public readonly partial struct ResponseContentPartKind : IEquatable<ResponseContentPartKind> {
+        public ResponseContentPartKind(string value);
+        public static ResponseContentPartKind InputFile { get; }
+        public static ResponseContentPartKind InputImage { get; }
+        public static ResponseContentPartKind InputText { get; }
+        public static ResponseContentPartKind OutputText { get; }
+        public static ResponseContentPartKind Refusal { get; }
+        public readonly bool Equals(ResponseContentPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseContentPartKind left, ResponseContentPartKind right);
+        public static implicit operator ResponseContentPartKind(string value);
+        public static implicit operator ResponseContentPartKind?(string value);
+        public static bool operator !=(ResponseContentPartKind left, ResponseContentPartKind right);
+        public override readonly string ToString();
     }
     public class ResponseConversationOptions : IJsonModel<ResponseConversationOptions>, IPersistableModel<ResponseConversationOptions> {
         public ResponseConversationOptions(string conversationId);
@@ -5595,11 +5810,22 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
-    public enum ResponseMessageAnnotationKind {
-        FileCitation = 0,
-        UriCitation = 1,
-        FilePath = 2,
-        ContainerFileCitation = 3
+    public readonly partial struct ResponseMessageAnnotationKind : IEquatable<ResponseMessageAnnotationKind> {
+        public ResponseMessageAnnotationKind(string value);
+        public static ResponseMessageAnnotationKind ContainerFileCitation { get; }
+        public static ResponseMessageAnnotationKind FileCitation { get; }
+        public static ResponseMessageAnnotationKind FilePath { get; }
+        public static ResponseMessageAnnotationKind UriCitation { get; }
+        public readonly bool Equals(ResponseMessageAnnotationKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseMessageAnnotationKind left, ResponseMessageAnnotationKind right);
+        public static implicit operator ResponseMessageAnnotationKind(string value);
+        public static implicit operator ResponseMessageAnnotationKind?(string value);
+        public static bool operator !=(ResponseMessageAnnotationKind left, ResponseMessageAnnotationKind right);
+        public override readonly string ToString();
     }
     public class ResponseOutputTokenUsageDetails : IJsonModel<ResponseOutputTokenUsageDetails>, IPersistableModel<ResponseOutputTokenUsageDetails> {
         [Serialization.JsonIgnore]
@@ -5784,13 +6010,24 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseServiceTier left, ResponseServiceTier right);
         public override readonly string ToString();
     }
-    public enum ResponseStatus {
-        InProgress = 0,
-        Completed = 1,
-        Cancelled = 2,
-        Queued = 3,
-        Incomplete = 4,
-        Failed = 5
+    public readonly partial struct ResponseStatus : IEquatable<ResponseStatus> {
+        public ResponseStatus(string value);
+        public static ResponseStatus Cancelled { get; }
+        public static ResponseStatus Completed { get; }
+        public static ResponseStatus Failed { get; }
+        public static ResponseStatus Incomplete { get; }
+        public static ResponseStatus InProgress { get; }
+        public static ResponseStatus Queued { get; }
+        public readonly bool Equals(ResponseStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseStatus left, ResponseStatus right);
+        public static implicit operator ResponseStatus(string value);
+        public static implicit operator ResponseStatus?(string value);
+        public static bool operator !=(ResponseStatus left, ResponseStatus right);
+        public override readonly string ToString();
     }
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
         public ResponseTextFormatKind Kind { get; set; }
@@ -5801,11 +6038,21 @@ namespace OpenAI.Responses {
         public static ResponseTextFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
         public static ResponseTextFormat CreateTextFormat();
     }
-    public enum ResponseTextFormatKind {
-        Unknown = 0,
-        Text = 1,
-        JsonObject = 2,
-        JsonSchema = 3
+    public readonly partial struct ResponseTextFormatKind : IEquatable<ResponseTextFormatKind> {
+        public ResponseTextFormatKind(string value);
+        public static ResponseTextFormatKind JsonObject { get; }
+        public static ResponseTextFormatKind JsonSchema { get; }
+        public static ResponseTextFormatKind Text { get; }
+        public readonly bool Equals(ResponseTextFormatKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseTextFormatKind left, ResponseTextFormatKind right);
+        public static implicit operator ResponseTextFormatKind(string value);
+        public static implicit operator ResponseTextFormatKind?(string value);
+        public static bool operator !=(ResponseTextFormatKind left, ResponseTextFormatKind right);
+        public override readonly string ToString();
     }
     public class ResponseTextOptions : IJsonModel<ResponseTextOptions>, IPersistableModel<ResponseTextOptions> {
         [Serialization.JsonIgnore]
@@ -5872,15 +6119,25 @@ namespace OpenAI.Responses {
         public static ResponseToolChoice CreateRequiredChoice();
         public static ResponseToolChoice CreateWebSearchChoice();
     }
-    public enum ResponseToolChoiceKind {
-        Unknown = 0,
-        Auto = 1,
-        None = 2,
-        Required = 3,
-        Function = 4,
-        FileSearch = 5,
-        WebSearch = 6,
-        Computer = 7
+    public readonly partial struct ResponseToolChoiceKind : IEquatable<ResponseToolChoiceKind> {
+        public ResponseToolChoiceKind(string value);
+        public static ResponseToolChoiceKind Auto { get; }
+        public static ResponseToolChoiceKind Computer { get; }
+        public static ResponseToolChoiceKind FileSearch { get; }
+        public static ResponseToolChoiceKind Function { get; }
+        public static ResponseToolChoiceKind None { get; }
+        public static ResponseToolChoiceKind Required { get; }
+        public static ResponseToolChoiceKind WebSearch { get; }
+        public readonly bool Equals(ResponseToolChoiceKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
+        public static implicit operator ResponseToolChoiceKind(string value);
+        public static implicit operator ResponseToolChoiceKind?(string value);
+        public static bool operator !=(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
+        public override readonly string ToString();
     }
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
         public ResponseToolKind(string value);
@@ -6287,11 +6544,22 @@ namespace OpenAI.Responses {
         public WebSearchAction Action { get; set; }
         public WebSearchCallStatus? Status { get; set; }
     }
-    public enum WebSearchCallStatus {
-        InProgress = 0,
-        Searching = 1,
-        Completed = 2,
-        Failed = 3
+    public readonly partial struct WebSearchCallStatus : IEquatable<WebSearchCallStatus> {
+        public WebSearchCallStatus(string value);
+        public static WebSearchCallStatus Completed { get; }
+        public static WebSearchCallStatus Failed { get; }
+        public static WebSearchCallStatus InProgress { get; }
+        public static WebSearchCallStatus Searching { get; }
+        public readonly bool Equals(WebSearchCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(WebSearchCallStatus left, WebSearchCallStatus right);
+        public static implicit operator WebSearchCallStatus(string value);
+        public static implicit operator WebSearchCallStatus?(string value);
+        public static bool operator !=(WebSearchCallStatus left, WebSearchCallStatus right);
+        public override readonly string ToString();
     }
     public class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>, IPersistableModel<WebSearchFindInPageAction> {
         public WebSearchFindInPageAction(Uri uri, string pattern);
@@ -6535,9 +6803,19 @@ namespace OpenAI.VectorStores {
         public string VectorStoreId { get; }
         public static explicit operator VectorStoreDeletionResult(ClientResult result);
     }
-    public enum VectorStoreExpirationAnchor {
-        Unknown = 0,
-        LastActiveAt = 1
+    public readonly partial struct VectorStoreExpirationAnchor : IEquatable<VectorStoreExpirationAnchor> {
+        public VectorStoreExpirationAnchor(string value);
+        public static VectorStoreExpirationAnchor LastActiveAt { get; }
+        public readonly bool Equals(VectorStoreExpirationAnchor other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreExpirationAnchor left, VectorStoreExpirationAnchor right);
+        public static implicit operator VectorStoreExpirationAnchor(string value);
+        public static implicit operator VectorStoreExpirationAnchor?(string value);
+        public static bool operator !=(VectorStoreExpirationAnchor left, VectorStoreExpirationAnchor right);
+        public override readonly string ToString();
     }
     public class VectorStoreExpirationPolicy : IJsonModel<VectorStoreExpirationPolicy>, IPersistableModel<VectorStoreExpirationPolicy> {
         public VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days);
@@ -6629,12 +6907,22 @@ namespace OpenAI.VectorStores {
         public static bool operator !=(VectorStoreFileErrorCode left, VectorStoreFileErrorCode right);
         public override readonly string ToString();
     }
-    public enum VectorStoreFileStatus {
-        Unknown = 0,
-        InProgress = 1,
-        Completed = 2,
-        Cancelled = 3,
-        Failed = 4
+    public readonly partial struct VectorStoreFileStatus : IEquatable<VectorStoreFileStatus> {
+        public VectorStoreFileStatus(string value);
+        public static VectorStoreFileStatus Cancelled { get; }
+        public static VectorStoreFileStatus Completed { get; }
+        public static VectorStoreFileStatus Failed { get; }
+        public static VectorStoreFileStatus InProgress { get; }
+        public readonly bool Equals(VectorStoreFileStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileStatus left, VectorStoreFileStatus right);
+        public static implicit operator VectorStoreFileStatus(string value);
+        public static implicit operator VectorStoreFileStatus?(string value);
+        public static bool operator !=(VectorStoreFileStatus left, VectorStoreFileStatus right);
+        public override readonly string ToString();
     }
     public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter> {
         public VectorStoreFileStatusFilter(string value);
@@ -6658,11 +6946,21 @@ namespace OpenAI.VectorStores {
         public IDictionary<string, string> Metadata { get; }
         public string Name { get; set; }
     }
-    public enum VectorStoreStatus {
-        Unknown = 0,
-        InProgress = 1,
-        Completed = 2,
-        Expired = 3
+    public readonly partial struct VectorStoreStatus : IEquatable<VectorStoreStatus> {
+        public VectorStoreStatus(string value);
+        public static VectorStoreStatus Completed { get; }
+        public static VectorStoreStatus Expired { get; }
+        public static VectorStoreStatus InProgress { get; }
+        public readonly bool Equals(VectorStoreStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreStatus left, VectorStoreStatus right);
+        public static implicit operator VectorStoreStatus(string value);
+        public static implicit operator VectorStoreStatus?(string value);
+        public static bool operator !=(VectorStoreStatus left, VectorStoreStatus right);
+        public override readonly string ToString();
     }
 }
 namespace OpenAI.Videos {
