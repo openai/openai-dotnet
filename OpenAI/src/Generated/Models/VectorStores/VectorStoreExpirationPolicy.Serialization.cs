@@ -67,7 +67,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("anchor") != true)
             {
                 writer.WritePropertyName("anchor"u8);
-                writer.WriteStringValue(Anchor.ToSerialString());
+                writer.WriteStringValue(Anchor.ToString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("days") != true)
@@ -123,7 +123,7 @@ namespace OpenAI.VectorStores
             {
                 if (prop.NameEquals("anchor"u8))
                 {
-                    anchor = prop.Value.GetString().ToVectorStoreExpirationAnchor();
+                    anchor = new VectorStoreExpirationAnchor(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("days"u8))

@@ -107,7 +107,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
+                writer.WriteStringValue(Status.ToString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
@@ -242,7 +242,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToVectorStoreFileStatus();
+                    status = new VectorStoreFileStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("last_error"u8))

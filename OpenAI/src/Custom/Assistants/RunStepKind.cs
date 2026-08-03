@@ -3,15 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
-[Experimental("OPENAI001")]
-[CodeGenType("RunStepObjectType")]
-public enum RunStepKind
+[CodeGenType("RunStepKind")]
+public readonly partial struct RunStepKind
 {
-    // CUSTOM: Renamed.
     [CodeGenMember("MessageCreation")]
-    CreatedMessage,
+    public static RunStepKind CreatedMessage { get; } = new RunStepKind(MessageCreationValue);
 
-    // CUSTOM: Renamed.
     [CodeGenMember("ToolCalls")]
-    ToolCall,
+    public static RunStepKind ToolCall { get; } = new RunStepKind(ToolCallsValue);
 }

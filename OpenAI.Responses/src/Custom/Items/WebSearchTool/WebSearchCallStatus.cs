@@ -6,12 +6,6 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("WebSearchToolCallItemResourceStatus")]
-public enum WebSearchCallStatus
-{
-    InProgress,
-    Searching,
-    Completed,
-    Failed
-}
+// - Converted to extensible enum.
+[CodeGenType("WebSearchCallStatus")]
+public readonly partial struct WebSearchCallStatus { }

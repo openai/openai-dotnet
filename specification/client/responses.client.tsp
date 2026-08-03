@@ -1,4 +1,5 @@
 import "../base/typespec/responses/main.tsp";
+import "./models/responses.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -18,6 +19,7 @@ namespace OpenAI.Responses;
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
 @@alternateType(Response.`model`, string);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
+@@alternateType(Response.status, ResponseStatus);
 
 // Do not generate convenience methods for these operations
 @@convenientAPI(getInputTokenCounts, false);
@@ -38,15 +40,38 @@ namespace OpenAI.Responses;
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);
 
+@@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(CodeInterpreterToolCallItemResource.status, CodeInterpreterCallStatus);
 @@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
 
+@@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(ComputerToolCallItemResource.status, ComputerCallStatus);
+
+@@visibility(ComputerToolCallOutputItemResource.status, Lifecycle.Read);
+@@alternateType(ComputerToolCallOutputItemResource.status, ComputerCallOutputStatus);
+
+@@visibility(FileSearchToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(FileSearchToolCallItemResource.status, FileSearchCallStatus);
+
+@@visibility(FunctionToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(FunctionToolCallItemResource.status, FunctionCallStatus);
 @@alternateType(FunctionToolCallItemResource.arguments, unknown);
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
 
+@@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
+@@alternateType(FunctionToolCallOutputItemResource.status, FunctionCallOutputStatus);
 @@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
 
+@@visibility(ReasoningItemResource.status, Lifecycle.Read);
+@@alternateType(ReasoningItemResource.status, ReasoningStatus);
 @@clientName(ReasoningItemResource.summary, "SummaryParts");
+
+@@visibility(WebSearchToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(WebSearchToolCallItemResource.status, WebSearchCallStatus);
+
+@@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
+@@alternateType(ResponsesMessageItemResource.status, MessageStatus);
 
 @@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
 @@clientName(MCPApprovalRequestItemResource.name, "ToolName");
@@ -63,7 +88,17 @@ namespace OpenAI.Responses;
 @@alternateType(MCPListToolsItemResource.error, unknown | null);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
+@@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(ImageGenToolCallItemResource.status, ImageGenerationCallStatus);
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
+
+@@alternateType(ComputerActionClick.button, ComputerCallActionMouseButton);
+
+@@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
+
+// NOTE: Contrary to other tools, the "status" property of `ApplyPatchToolCallOutputItemResource`
+// is set by the client instead of being set by the server, and it is also required. The "status"
+// property is used to indicate if the client successfully applied the patch or not.
 
 // This is a data URL. Treat it as a string internally to avoid Uri limits.
 @@alternateType(ItemContentInputImage.image_url, string | null); 

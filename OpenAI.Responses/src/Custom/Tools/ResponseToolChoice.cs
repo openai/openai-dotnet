@@ -9,9 +9,11 @@ namespace OpenAI.Responses;
 public partial class ResponseToolChoice
 {
     public ResponseToolChoiceKind Kind
-        => _toolChoiceOption?.ToResponseToolChoiceKind()
-        ?? _toolChoiceObject?.Kind.ToResponseToolChoiceKind()
-        ?? ResponseToolChoiceKind.Unknown;
+        => _toolChoiceOption.HasValue
+            ? new ResponseToolChoiceKind(_toolChoiceOption.Value.ToString())
+            : _toolChoiceObject != null
+                ? new ResponseToolChoiceKind(_toolChoiceObject.Kind.ToString())
+                : default;
 
     public string FunctionName
         => (_toolChoiceObject as InternalToolChoiceObjectFunction)?.Name;

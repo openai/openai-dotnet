@@ -1,8 +1,11 @@
 import "../base/typespec/vector-stores/main.tsp";
+import "./models/vector-stores-enums.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
+import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
+using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(StaticChunkingStrategy.max_chunk_size_tokens, int32);
 @@alternateType(StaticChunkingStrategy.chunk_overlap_tokens, int32);
@@ -35,8 +38,11 @@ using Azure.ClientGenerator.Core;
 @@alternateType(CreateVectorStoreRequest.metadata, Record<string>);
 @@alternateType(UpdateVectorStoreRequest.metadata, Record<string>);
 @@alternateType(VectorStoreObject.metadata, Record<string> | null);
+@@alternateType(VectorStoreObject.status, VectorStoreStatus);
 
 @@alternateType(VectorStoreExpirationAfter.anchor, VectorStoreExpirationAnchor);
+
+@@alternateType(VectorStoreFileObject.status, VectorStoreFileStatus);
 
 @@clientName(VectorStoreFileObject.usage_bytes, "UsageInBytes");
 @@alternateType(VectorStoreFileObject.usage_bytes, int64 | null);
@@ -74,3 +80,6 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(updateVectorStoreFileAttributes, "VectorStores");
 @@clientLocation(retrieveVectorStoreFileContent, "VectorStores");
 @@clientLocation(searchVectorStore, "VectorStores");
+
+@@dynamicModel(VectorStoreStatus);
+@@dynamicModel(VectorStoreFileStatus);

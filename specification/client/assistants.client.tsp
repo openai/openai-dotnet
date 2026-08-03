@@ -1,8 +1,11 @@
 import "../base/typespec/assistants/main.tsp";
+import "./models/assistants.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
+import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
+using TypeSpec.HttpClient.CSharp;
 
 @@visibility(ListAssistantsResponse.data, Lifecycle.Read);
 @@visibility(AssistantObject.tools, Lifecycle.Read);
@@ -13,3 +16,7 @@ using Azure.ClientGenerator.Core;
 @@clientName(AssistantCollectionOptions.after, "AfterId");
 @@clientName(AssistantCollectionOptions.before, "BeforeId");
 @@clientName(AssistantCollectionOptions.limit, "PageSizeLimit");
+
+@@alternateType(CreateMessageRequest.role, AssistantMessageRole);
+
+@@dynamicModel(AssistantMessageRole);

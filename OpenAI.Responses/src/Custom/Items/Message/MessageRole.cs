@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
@@ -5,13 +7,38 @@ namespace OpenAI.Responses;
 // CUSTOM:
 // - Added Experimental attribute.
 // - Renamed.
-// - Plain enum type, with Unknown, to convert from an underlying extensible enum.
+// - Converted to extensible enum.
 [Experimental("OPENAI001")]
-public enum MessageRole
+public readonly partial struct MessageRole : IEquatable<MessageRole>
 {
-    Unknown = 0,
-    Assistant = 1,
-    Developer = 2,
-    System = 3,
-    User = 4,
+    private readonly string _value;
+
+    private const string AssistantValue = "assistant";
+    private const string DeveloperValue = "developer";
+    private const string SystemValue = "system";
+    private const string UserValue = "user";
+
+    public MessageRole(string value)
+    {
+        Argument.AssertNotNull(value, nameof(value));
+        _value = value;
+    }
+
+    public static MessageRole Assistant { get; } = new MessageRole(AssistantValue);
+    public static MessageRole Developer { get; } = new MessageRole(DeveloperValue);
+    public static MessageRole System { get; } = new MessageRole(SystemValue);
+    public static MessageRole User { get; } = new MessageRole(UserValue);
+
+    public static bool operator ==(MessageRole left, MessageRole right) => left.Equals(right);
+    public static bool operator !=(MessageRole left, MessageRole right) => !left.Equals(right);
+    public static implicit operator MessageRole(string value) => new MessageRole(value);
+    public static implicit operator MessageRole?(string value) => value == null ? null : new MessageRole(value);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => obj is MessageRole other && Equals(other);
+    public bool Equals(MessageRole other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
+    public override string ToString() => _value;
 }

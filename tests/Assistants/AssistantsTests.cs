@@ -555,14 +555,16 @@ public class AssistantsTests : OpenAIRecordedTestBase
             string message = $"{update.UpdateKind} ";
             if (update is RunUpdate runUpdate)
             {
-                message += $"at {update.UpdateKind switch
-                {
-                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedOn,
-                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedOn,
-                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedOn,
-                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedOn,
-                    _ => "???",
-                }}";
+                string timestamp;
+                if (update.UpdateKind == StreamingUpdateReason.RunCreated)
+                    timestamp = runUpdate.Value.CreatedOn.ToString();
+                else if (update.UpdateKind == StreamingUpdateReason.RunQueued || update.UpdateKind == StreamingUpdateReason.RunInProgress)
+                    timestamp = runUpdate.Value.StartedOn.ToString();
+                else if (update.UpdateKind == StreamingUpdateReason.RunCompleted)
+                    timestamp = runUpdate.Value.CompletedOn.ToString();
+                else
+                    timestamp = "???";
+                message += $"at {timestamp}";
             }
             if (update is MessageContentUpdate contentUpdate)
             {
