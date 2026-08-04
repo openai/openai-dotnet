@@ -81,6 +81,8 @@ using TypeSpec.HttpClient.CSharp;
 
 // ------------ Tools ------------
 
+@@alternateType(CodeInterpreterTool.container, DotNetCodeInterpreterToolContainer);
+
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
 
 @@clientName(FunctionTool.name, "FunctionName");
