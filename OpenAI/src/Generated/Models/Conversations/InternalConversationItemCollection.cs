@@ -45,7 +45,7 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal string Object { get; set; }
+        internal string Object { get; set; } = "list";
 
         public IList<ResponseItem> Data { get; }
 

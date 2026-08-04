@@ -23,7 +23,7 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Object { get; set; }
+        internal string Object { get; set; } = "response.input_tokens";
 
         public int InputTokens { get; set; }
 

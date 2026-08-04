@@ -2,6 +2,7 @@ using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Input;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
+using Microsoft.TypeSpec.Generator.Snippets;
 using NUnit.Framework;
 using OpenAILibraryPlugin.Tests.Common;
 using OpenAILibraryPlugin.Tests.TestHelpers;
@@ -39,6 +40,21 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             var result = new TestProtocolModelVisitor().InvokePreVisitProperty(inputProperty, property);
 
             Assert.That(result!.Body, Is.SameAs(originalBody));
+        }
+
+        [Test]
+        public void PreVisitProperty_PreservesInitializationExpression()
+        {
+            var (inputProperty, property) = CreateProperty("OpenAI.Responses");
+            var initializationExpression = Snippet.Literal("exec");
+            property.Update(body: new AutoPropertyBody(HasSetter: false, InitializationExpression: initializationExpression));
+
+            var result = new TestProtocolModelVisitor().InvokePreVisitProperty(inputProperty, property);
+
+            var body = result!.Body as AutoPropertyBody;
+            Assert.That(body, Is.Not.Null);
+            Assert.That(body!.HasSetter, Is.True);
+            Assert.That(body.InitializationExpression, Is.SameAs(initializationExpression));
         }
 
         private static (InputModelProperty InputProperty, PropertyProvider Property) CreateProperty(string modelNamespace)

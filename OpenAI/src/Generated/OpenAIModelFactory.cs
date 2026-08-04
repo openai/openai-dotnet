@@ -314,7 +314,7 @@ namespace OpenAI
         {
             return new ContainerResource(
                 id,
-                default,
+                "container",
                 name,
                 createdAt,
                 status,
@@ -347,7 +347,7 @@ namespace OpenAI
         {
             return new ContainerFileResource(
                 id,
-                default,
+                "container.file",
                 containerId,
                 createdAt,
                 sizeInBytes,
@@ -358,7 +358,7 @@ namespace OpenAI
 
         public static ContainerFileDeletionResult ContainerFileDeletionResult(string containerFileId = default)
         {
-            return new ContainerFileDeletionResult(containerFileId, default, default, default);
+            return new ContainerFileDeletionResult(containerFileId, default, true, default);
         }
 
         public static ContainerFileCollectionPage ContainerFileCollectionPage(IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)

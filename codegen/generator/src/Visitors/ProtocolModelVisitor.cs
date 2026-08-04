@@ -29,7 +29,12 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
             && !propertyProvider.Type.IsCollection
             && _protocolModelNamespaces.Contains(propertyProvider.EnclosingType.Type.Namespace))
         {
-            propertyProvider.Update(body: new AutoPropertyBody(HasSetter: true));
+            // Preserve the existing initialization expression, if any, so that default values are not lost.
+            AutoPropertyBody? existingBody = propertyProvider.Body as AutoPropertyBody;
+            propertyProvider.Update(body: new AutoPropertyBody(
+                HasSetter: true,
+                SetterModifiers: existingBody?.SetterModifiers ?? MethodSignatureModifiers.None,
+                InitializationExpression: existingBody?.InitializationExpression));
         }
 
         return propertyProvider;

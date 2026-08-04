@@ -43,7 +43,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Kind { get; set; }
+        public string Kind { get; set; } = "exec";
 
         public IList<string> Command { get; }
 

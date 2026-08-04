@@ -34,7 +34,7 @@ namespace OpenAI.Responses
 
         public string Id { get; set; }
 
-        internal string Object { get; set; }
+        internal string Object { get; set; } = "response.compaction";
 
         public IList<ResponseItem> Output { get; }
 
