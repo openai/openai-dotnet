@@ -132,7 +132,7 @@ namespace OpenAI.Responses {
     public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
         public CodeInterpreterTool() : base(default);
         public CodeInterpreterTool(CodeInterpreterToolContainer container) : base(default);
-        public CodeInterpreterToolContainer Container { get; }
+        public CodeInterpreterToolContainer Container { get; set; }
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterToolContainer : IJsonModel<CodeInterpreterToolContainer>, IPersistableModel<CodeInterpreterToolContainer> {
