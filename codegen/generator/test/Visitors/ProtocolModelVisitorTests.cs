@@ -54,7 +54,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             var body = result!.Body as AutoPropertyBody;
             Assert.That(body, Is.Not.Null);
             Assert.That(body!.HasSetter, Is.True);
-            Assert.That(body.InitializationExpression, Is.SameAs(initializationExpression));
+            Assert.That(body!.InitializationExpression, Is.SameAs(initializationExpression));
         }
 
         private static (InputModelProperty InputProperty, PropertyProvider Property) CreateProperty(string modelNamespace)
