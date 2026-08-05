@@ -1,5 +1,12 @@
 # Release History
 
+## (Unreleased)
+
+### Bugs Fixed
+
+- OpenAI.Assistants:
+  - Fixed the synchronous `AssistantClient.ModifyAssistant` ignoring the `CancellationToken` it was given. The token was dropped before the request was sent, so the call could not be cancelled. It is now forwarded the same way the asynchronous `ModifyAssistantAsync` overload and the rest of the client already forward it.
+
 ## 2.13.0 (2026-08-10)
 
 ### Acknowledgments
