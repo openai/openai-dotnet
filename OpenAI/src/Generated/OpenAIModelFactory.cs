@@ -265,11 +265,6 @@ namespace OpenAI
             return new RunStepFileSearchResult(fileId, fileName, score, content.ToList(), additionalBinaryDataProperties: null);
         }
 
-        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default)
-        {
-            return new RunStepFileSearchResultContent("RunStepFileSearchResultContentKind.Text", text, additionalBinaryDataProperties: null);
-        }
-
         public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
         {
             return new RunStepError(code, message, additionalBinaryDataProperties: null);
