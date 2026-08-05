@@ -49,10 +49,14 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
             adjustmentPerformed |= TryUpdateConstructorForCollectionInitialization(constructor);
         }
 
-        // If any generated constructors were updated to perform additional initialization, OR if the type uses a discriminator, adjust the
-        // default constructor to chain to the serialization constructor that will produce an independently valid instance state.
+        // If any generated constructors were updated to perform additional initialization, OR if the type uses a discriminator, OR if the
+        // serialization constructor carries a JsonPatch parameter (used for mutation tracking), adjust the default constructor to chain to
+        // the serialization constructor that will produce an independently valid instance state.
+        bool serializationConstructorHasJsonPatchParameter
+            = serializationConstructor?.Signature.Parameters.Any(parameter => parameter.Type.Name == "JsonPatch") == true;
+
         if (generatedDefaultConstructor is not null
-            && (adjustmentPerformed || modelProvider?.DiscriminatorValueExpression is not null))
+            && (adjustmentPerformed || modelProvider?.DiscriminatorValueExpression is not null || serializationConstructorHasJsonPatchParameter))
         {
             CSharpType? discriminatorType = modelProvider?.DiscriminatorValueExpression is MemberExpression enclosingDiscriminatorValueExpression
                 && enclosingDiscriminatorValueExpression.Inner is TypeReferenceExpression enclosingDiscriminatorTypeReferenceExpression
