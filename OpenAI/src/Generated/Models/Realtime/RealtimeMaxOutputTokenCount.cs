@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeMaxOutputTokenCount()
+        internal RealtimeMaxOutputTokenCount() : this(default, default, default)
         {
         }
 

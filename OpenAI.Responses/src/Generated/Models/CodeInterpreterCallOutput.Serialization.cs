@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [PersistableModelProxy(typeof(InternalUnknownCodeInterpreterToolOutput))]
     public partial class CodeInterpreterCallOutput : IJsonModel<CodeInterpreterCallOutput>
     {
-        internal CodeInterpreterCallOutput()
+        internal CodeInterpreterCallOutput() : this(default, default)
         {
         }
 

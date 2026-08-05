@@ -13,7 +13,7 @@ namespace OpenAI.Embeddings
 {
     public partial class OpenAIEmbedding : IJsonModel<OpenAIEmbedding>
     {
-        internal OpenAIEmbedding()
+        internal OpenAIEmbedding() : this(default, null, null, default)
         {
         }
 

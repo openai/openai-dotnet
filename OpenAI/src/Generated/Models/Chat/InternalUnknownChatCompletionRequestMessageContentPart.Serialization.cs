@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalUnknownChatCompletionRequestMessageContentPart : ChatMessageContentPart, IJsonModel<ChatMessageContentPart>
     {
-        internal InternalUnknownChatCompletionRequestMessageContentPart()
+        internal InternalUnknownChatCompletionRequestMessageContentPart() : this(default)
         {
         }
 

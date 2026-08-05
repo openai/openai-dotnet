@@ -16,7 +16,7 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ContainerExpirationPolicy()
+        public ContainerExpirationPolicy() : this(default, default, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [PersistableModelProxy(typeof(InternalUnknownRealtimeSessionCreateResponseBaseGA))]
     public partial class RealtimeSession : IJsonModel<RealtimeSession>
     {
-        internal RealtimeSession()
+        internal RealtimeSession() : this(default, default)
         {
         }
 

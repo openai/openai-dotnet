@@ -12,7 +12,7 @@ namespace OpenAI.Containers
 {
     public partial class ContainerNetworkPolicyDomainSecret : IJsonModel<ContainerNetworkPolicyDomainSecret>
     {
-        public ContainerNetworkPolicyDomainSecret()
+        public ContainerNetworkPolicyDomainSecret() : this(null, null, null, default)
         {
         }
 

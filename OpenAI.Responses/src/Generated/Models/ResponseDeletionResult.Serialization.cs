@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>
     {
-        public ResponseDeletionResult()
+        public ResponseDeletionResult() : this(null, null, default, default)
         {
         }
 

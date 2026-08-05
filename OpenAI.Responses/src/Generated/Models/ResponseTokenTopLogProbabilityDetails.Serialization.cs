@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseTokenTopLogProbabilityDetails : IJsonModel<ResponseTokenTopLogProbabilityDetails>
     {
-        public ResponseTokenTopLogProbabilityDetails()
+        public ResponseTokenTopLogProbabilityDetails() : this(null, default, default, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [PersistableModelProxy(typeof(InternalUnknownToolChoiceObject))]
     internal abstract partial class InternalToolChoiceObject : IJsonModel<InternalToolChoiceObject>
     {
-        internal InternalToolChoiceObject()
+        internal InternalToolChoiceObject() : this(default, default)
         {
         }
 

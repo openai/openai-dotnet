@@ -15,7 +15,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal StreamingChatFunctionCallUpdate()
+        internal StreamingChatFunctionCallUpdate() : this(null, null, default)
         {
         }
 

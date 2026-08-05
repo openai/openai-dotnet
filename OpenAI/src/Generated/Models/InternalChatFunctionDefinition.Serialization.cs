@@ -11,7 +11,7 @@ namespace OpenAI
 {
     internal partial class InternalChatFunctionDefinition : IJsonModel<InternalChatFunctionDefinition>
     {
-        internal InternalChatFunctionDefinition()
+        internal InternalChatFunctionDefinition() : this(null, null, null, default, default)
         {
         }
 

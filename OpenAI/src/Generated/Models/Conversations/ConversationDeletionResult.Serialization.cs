@@ -13,7 +13,7 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationDeletionResult : IJsonModel<ConversationDeletionResult>
     {
-        public ConversationDeletionResult()
+        public ConversationDeletionResult() : this(null, default, null, default)
         {
         }
 

@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ResponseIncompleteStatusDetails()
+        public ResponseIncompleteStatusDetails() : this(default, default)
         {
         }
 

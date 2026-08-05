@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 : IJsonModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>
     {
-        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1()
+        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1() : this(null, null, default)
         {
         }
 

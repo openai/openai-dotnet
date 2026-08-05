@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl : IJsonModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>
     {
-        internal InternalChatCompletionRequestMessageContentPartImageImageUrl()
+        internal InternalChatCompletionRequestMessageContentPartImageImageUrl() : this(null, default, default)
         {
         }
 

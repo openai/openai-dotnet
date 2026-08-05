@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponseErrorResponse : IJsonModel<InternalResponseErrorResponse>
     {
-        public InternalResponseErrorResponse()
+        public InternalResponseErrorResponse() : this(null, default)
         {
         }
 

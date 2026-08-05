@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalDotNetChatResponseFormatJsonSchemaJsonSchema : IJsonModel<InternalDotNetChatResponseFormatJsonSchemaJsonSchema>
     {
-        internal InternalDotNetChatResponseFormatJsonSchemaJsonSchema()
+        internal InternalDotNetChatResponseFormatJsonSchemaJsonSchema() : this(null, null, null, default, default)
         {
         }
 

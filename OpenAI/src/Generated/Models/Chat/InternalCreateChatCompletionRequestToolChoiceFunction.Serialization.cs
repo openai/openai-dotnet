@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionRequestToolChoiceFunction : IJsonModel<InternalCreateChatCompletionRequestToolChoiceFunction>
     {
-        internal InternalCreateChatCompletionRequestToolChoiceFunction()
+        internal InternalCreateChatCompletionRequestToolChoiceFunction() : this(null, default)
         {
         }
 

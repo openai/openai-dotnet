@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class CreateClientSecretResult : IJsonModel<CreateClientSecretResult>
     {
-        internal CreateClientSecretResult()
+        internal CreateClientSecretResult() : this(null, default, null, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatMessageAnnotation : IJsonModel<ChatMessageAnnotation>
     {
-        internal ChatMessageAnnotation()
+        internal ChatMessageAnnotation() : this(null, default)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.Embeddings
 {
     public partial class EmbeddingTokenUsage : IJsonModel<EmbeddingTokenUsage>
     {
-        internal EmbeddingTokenUsage()
+        internal EmbeddingTokenUsage() : this(default, default, default)
         {
         }
 

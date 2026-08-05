@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionResponseChoice : IJsonModel<InternalCreateChatCompletionResponseChoice>
     {
-        internal InternalCreateChatCompletionResponseChoice()
+        internal InternalCreateChatCompletionResponseChoice() : this(default, default, null, null, default)
         {
         }
 

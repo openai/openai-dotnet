@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [PersistableModelProxy(typeof(InternalUnknownRealtimeTurnDetectionBaseGA))]
     public partial class RealtimeTurnDetection : IJsonModel<RealtimeTurnDetection>
     {
-        internal RealtimeTurnDetection()
+        internal RealtimeTurnDetection() : this(default, default)
         {
         }
 

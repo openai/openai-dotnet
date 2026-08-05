@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatTokenTopLogProbabilityDetails : IJsonModel<ChatTokenTopLogProbabilityDetails>
     {
-        internal ChatTokenTopLogProbabilityDetails()
+        internal ChatTokenTopLogProbabilityDetails() : this(null, default, default, default)
         {
         }
 

@@ -8,7 +8,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartRefusal : ChatMessageContentPart
     {
-        public InternalChatCompletionRequestMessageContentPartRefusal()
+        public InternalChatCompletionRequestMessageContentPartRefusal() : this(default)
         {
         }
 

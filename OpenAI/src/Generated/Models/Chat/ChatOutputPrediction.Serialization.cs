@@ -12,7 +12,7 @@ namespace OpenAI.Chat
     [PersistableModelProxy(typeof(InternalUnknownChatOutputPrediction))]
     public partial class ChatOutputPrediction : IJsonModel<ChatOutputPrediction>
     {
-        internal ChatOutputPrediction()
+        internal ChatOutputPrediction() : this(default, default)
         {
         }
 

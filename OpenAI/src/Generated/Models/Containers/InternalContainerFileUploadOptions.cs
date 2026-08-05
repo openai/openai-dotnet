@@ -15,7 +15,7 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalContainerFileUploadOptions()
+        public InternalContainerFileUploadOptions() : this(null, null, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [PersistableModelProxy(typeof(InternalUnknownComputerToolCallOutputItemOutput))]
     public partial class ComputerCallOutput : IJsonModel<ComputerCallOutput>
     {
-        internal ComputerCallOutput()
+        internal ComputerCallOutput() : this(default, default)
         {
         }
 

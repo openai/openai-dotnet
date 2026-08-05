@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [PersistableModelProxy(typeof(InternalUnknownRealtimeTruncationBaseGA))]
     public partial class RealtimeCustomTruncation : IJsonModel<RealtimeCustomTruncation>
     {
-        internal RealtimeCustomTruncation()
+        internal RealtimeCustomTruncation() : this(default, default)
         {
         }
 

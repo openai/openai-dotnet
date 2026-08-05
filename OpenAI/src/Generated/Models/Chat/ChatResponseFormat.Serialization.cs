@@ -13,7 +13,7 @@ namespace OpenAI.Chat
     [PersistableModelProxy(typeof(InternalUnknownChatResponseFormat))]
     public partial class ChatResponseFormat : IJsonModel<ChatResponseFormat>
     {
-        internal ChatResponseFormat()
+        internal ChatResponseFormat() : this(default, default)
         {
         }
 

@@ -14,7 +14,7 @@ namespace OpenAI.Internal
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalWebSearchLocation()
+        public InternalWebSearchLocation() : this(null, null, null, null, default)
         {
         }
 

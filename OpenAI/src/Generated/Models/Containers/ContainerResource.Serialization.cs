@@ -13,7 +13,7 @@ namespace OpenAI.Containers
 {
     public partial class ContainerResource : IJsonModel<ContainerResource>
     {
-        public ContainerResource()
+        public ContainerResource() : this(null, null, null, default, null, default, null, default, null, default)
         {
         }
 

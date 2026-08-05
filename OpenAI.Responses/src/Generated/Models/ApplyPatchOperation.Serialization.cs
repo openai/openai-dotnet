@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [PersistableModelProxy(typeof(InternalUnknownApplyPatchOperation))]
     public partial class ApplyPatchOperation : IJsonModel<ApplyPatchOperation>
     {
-        internal ApplyPatchOperation()
+        internal ApplyPatchOperation() : this(default, default)
         {
         }
 

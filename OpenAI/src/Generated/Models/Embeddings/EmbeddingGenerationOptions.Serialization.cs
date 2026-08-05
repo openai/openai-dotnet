@@ -13,7 +13,7 @@ namespace OpenAI.Embeddings
 {
     public partial class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>
     {
-        public EmbeddingGenerationOptions()
+        public EmbeddingGenerationOptions() : this(null, default, default, default, null, default)
         {
         }
 

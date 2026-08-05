@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeLogProbabilityDetails : IJsonModel<RealtimeLogProbabilityDetails>
     {
-        internal RealtimeLogProbabilityDetails()
+        internal RealtimeLogProbabilityDetails() : this(null, default, default, default)
         {
         }
 

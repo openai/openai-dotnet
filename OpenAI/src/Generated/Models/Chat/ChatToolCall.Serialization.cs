@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatToolCall : IJsonModel<ChatToolCall>
     {
-        internal ChatToolCall()
+        internal ChatToolCall() : this(null, default, null, default)
         {
         }
 

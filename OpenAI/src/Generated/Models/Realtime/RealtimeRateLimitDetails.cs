@@ -16,7 +16,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeRateLimitDetails()
+        internal RealtimeRateLimitDetails() : this(default, default, default, default, default)
         {
         }
 

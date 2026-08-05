@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessageAnnotationUrlCitation : IJsonModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>
     {
-        internal InternalChatCompletionResponseMessageAnnotationUrlCitation()
+        internal InternalChatCompletionResponseMessageAnnotationUrlCitation() : this(default, default, null, null, default)
         {
         }
 

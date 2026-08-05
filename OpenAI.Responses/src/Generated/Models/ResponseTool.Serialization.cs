@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [PersistableModelProxy(typeof(InternalUnknownTool))]
     public partial class ResponseTool : IJsonModel<ResponseTool>
     {
-        internal ResponseTool()
+        internal ResponseTool() : this(default, default)
         {
         }
 

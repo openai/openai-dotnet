@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseConversationOptions : IJsonModel<ResponseConversationOptions>
     {
-        public ResponseConversationOptions()
+        public ResponseConversationOptions() : this(null, default)
         {
         }
 

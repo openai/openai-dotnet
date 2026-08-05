@@ -13,7 +13,7 @@ namespace OpenAI.Containers
 {
     public partial class ContainerFileDeletionResult : IJsonModel<ContainerFileDeletionResult>
     {
-        public ContainerFileDeletionResult()
+        public ContainerFileDeletionResult() : this(null, null, default, default)
         {
         }
 

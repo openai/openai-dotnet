@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public RealtimeConversationSessionInputAudioOptions()
+        public RealtimeConversationSessionInputAudioOptions() : this(null, null, null, null, default)
         {
         }
 

@@ -14,7 +14,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalMCPToolRequireApproval1()
+        public InternalMCPToolRequireApproval1() : this(null, null, default)
         {
         }
 

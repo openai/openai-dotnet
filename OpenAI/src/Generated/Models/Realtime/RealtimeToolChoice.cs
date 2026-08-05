@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeToolChoice()
+        internal RealtimeToolChoice() : this(default, null, default)
         {
         }
 

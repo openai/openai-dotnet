@@ -12,7 +12,7 @@ namespace OpenAI.Containers
     [PersistableModelProxy(typeof(InternalUnknownContainerNetworkPolicy))]
     public partial class ContainerNetworkPolicy : IJsonModel<ContainerNetworkPolicy>
     {
-        internal ContainerNetworkPolicy()
+        internal ContainerNetworkPolicy() : this(default, default)
         {
         }
 

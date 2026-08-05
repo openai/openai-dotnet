@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionDeletionResult : IJsonModel<ChatCompletionDeletionResult>
     {
-        internal ChatCompletionDeletionResult()
+        internal ChatCompletionDeletionResult() : this(null, null, default, default)
         {
         }
 

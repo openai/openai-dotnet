@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatOutputAudioReference : IJsonModel<ChatOutputAudioReference>
     {
-        internal ChatOutputAudioReference()
+        internal ChatOutputAudioReference() : this(null, default)
         {
         }
 

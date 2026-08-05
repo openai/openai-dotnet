@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeResponseStatusDetails()
+        internal RealtimeResponseStatusDetails() : this(default, default, null, default)
         {
         }
 

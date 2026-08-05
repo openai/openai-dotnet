@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ResponseReasoningOptions()
+        public ResponseReasoningOptions() : this(default, default, default, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [PersistableModelProxy(typeof(InternalUnknownRealtimeAudioFormatGA))]
     public partial class RealtimeAudioFormat : IJsonModel<RealtimeAudioFormat>
     {
-        internal RealtimeAudioFormat()
+        internal RealtimeAudioFormat() : this(default, default)
         {
         }
 

@@ -14,7 +14,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public InternalChatCompletionStreamOptions()
+        public InternalChatCompletionStreamOptions() : this(default, default)
         {
         }
 

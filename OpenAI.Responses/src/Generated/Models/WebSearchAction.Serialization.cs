@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [PersistableModelProxy(typeof(InternalUnknownWebSearchActionBase))]
     public partial class WebSearchAction : IJsonModel<WebSearchAction>
     {
-        internal WebSearchAction()
+        internal WebSearchAction() : this(default, default)
         {
         }
 

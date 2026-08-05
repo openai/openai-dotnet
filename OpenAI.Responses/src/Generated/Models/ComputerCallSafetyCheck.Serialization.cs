@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallSafetyCheck : IJsonModel<ComputerCallSafetyCheck>
     {
-        public ComputerCallSafetyCheck()
+        public ComputerCallSafetyCheck() : this(null, null, null, default)
         {
         }
 

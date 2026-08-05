@@ -8,7 +8,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartText : ChatMessageContentPart
     {
-        public InternalChatCompletionRequestMessageContentPartText()
+        public InternalChatCompletionRequestMessageContentPartText() : this(default)
         {
         }
 

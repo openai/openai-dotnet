@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class StreamingChatToolCallUpdate : IJsonModel<StreamingChatToolCallUpdate>
     {
-        internal StreamingChatToolCallUpdate()
+        internal StreamingChatToolCallUpdate() : this(default, null, default, null, default)
         {
         }
 

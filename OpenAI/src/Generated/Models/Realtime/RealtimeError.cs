@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public RealtimeError()
+        public RealtimeError() : this(null, null, null, null, null, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [PersistableModelProxy(typeof(InternalUnknownToolChoiceBaseGA))]
     public partial class RealtimeCustomToolChoice : IJsonModel<RealtimeCustomToolChoice>
     {
-        internal RealtimeCustomToolChoice()
+        internal RealtimeCustomToolChoice() : this(default, default)
         {
         }
 

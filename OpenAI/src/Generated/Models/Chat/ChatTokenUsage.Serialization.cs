@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatTokenUsage : IJsonModel<ChatTokenUsage>
     {
-        internal ChatTokenUsage()
+        internal ChatTokenUsage() : this(default, default, default, null, null, default)
         {
         }
 

@@ -14,7 +14,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatOutputTokenUsageDetails()
+        internal ChatOutputTokenUsageDetails() : this(default, default, default, default, default)
         {
         }
 
