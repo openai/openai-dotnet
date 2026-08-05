@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownTool : ResponseTool, IJsonModel<ResponseTool>
     {
-        internal InternalUnknownTool() : this(default, default)
+        public InternalUnknownTool() : this(default, default)
         {
         }
 

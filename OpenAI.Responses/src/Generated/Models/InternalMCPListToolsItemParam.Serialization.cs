@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPListToolsItemParam : InternalItemParam, IJsonModel<InternalMCPListToolsItemParam>
     {
-        internal InternalMCPListToolsItemParam() : this(ResponseItemKind.McpListTools, default, null, null, null)
+        public InternalMCPListToolsItemParam() : this(ResponseItemKind.McpListTools, default, null, null, null)
         {
         }
 

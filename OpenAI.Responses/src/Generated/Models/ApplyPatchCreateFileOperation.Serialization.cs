@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchCreateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchCreateFileOperation>
     {
-        internal ApplyPatchCreateFileOperation() : this(InternalApplyPatchOperationType.CreateFile, default, null, null)
+        public ApplyPatchCreateFileOperation() : this(InternalApplyPatchOperationType.CreateFile, default, null, null)
         {
         }
 

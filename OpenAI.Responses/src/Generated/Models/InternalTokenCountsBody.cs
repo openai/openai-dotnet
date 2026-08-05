@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalTokenCountsBody() : this(null, null, null, null, null, null, default, null, null, null, default, null)
+        public InternalTokenCountsBody() : this(null, null, null, null, null, null, default, null, null, null, default, null)
         {
         }
 
@@ -33,27 +33,27 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Model { get; }
+        public string Model { get; set; }
 
-        public BinaryData Input { get; }
+        public BinaryData Input { get; set; }
 
-        public string PreviousResponseId { get; }
+        public string PreviousResponseId { get; set; }
 
         public IList<ResponseTool> Tools { get; }
 
-        internal InternalResponseTextParam Text { get; }
+        internal InternalResponseTextParam Text { get; set; }
 
-        public ResponseReasoningOptions Reasoning { get; }
+        public ResponseReasoningOptions Reasoning { get; set; }
 
-        internal InternalTruncationEnum? Truncation { get; }
+        internal InternalTruncationEnum? Truncation { get; set; }
 
-        public string Instructions { get; }
+        public string Instructions { get; set; }
 
-        public BinaryData Conversation { get; }
+        public BinaryData Conversation { get; set; }
 
-        public BinaryData ToolChoice { get; }
+        public BinaryData ToolChoice { get; set; }
 
-        public bool? ParallelToolCalls { get; }
+        public bool? ParallelToolCalls { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

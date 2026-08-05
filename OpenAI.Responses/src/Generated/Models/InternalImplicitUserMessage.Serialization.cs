@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalImplicitUserMessage : IJsonModel<InternalImplicitUserMessage>
     {
-        internal InternalImplicitUserMessage()
+        public InternalImplicitUserMessage()
         {
         }
 

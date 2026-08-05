@@ -15,7 +15,7 @@ namespace OpenAI.Conversations
 {
     internal partial class InternalConversationItemCollection : IJsonModel<InternalConversationItemCollection>
     {
-        internal InternalConversationItemCollection() : this(null, null, null, null, default, default)
+        public InternalConversationItemCollection() : this(null, null, null, null, default, default)
         {
         }
 

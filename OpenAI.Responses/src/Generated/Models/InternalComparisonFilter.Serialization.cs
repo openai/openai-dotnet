@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComparisonFilter : IJsonModel<InternalComparisonFilter>
     {
-        internal InternalComparisonFilter()
+        public InternalComparisonFilter()
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesAssistantMessageItemParam : InternalResponsesMessageItemParam, IJsonModel<InternalResponsesAssistantMessageItemParam>
     {
-        internal InternalResponsesAssistantMessageItemParam() : this(default, default, InternalResponsesMessageRole.Assistant, null)
+        public InternalResponsesAssistantMessageItemParam() : this(default, default, InternalResponsesMessageRole.Assistant, null)
         {
         }
 

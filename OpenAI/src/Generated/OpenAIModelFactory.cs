@@ -314,7 +314,7 @@ namespace OpenAI
         {
             return new ContainerResource(
                 id,
-                default,
+                "container",
                 name,
                 createdAt,
                 status,
@@ -347,7 +347,7 @@ namespace OpenAI
         {
             return new ContainerFileResource(
                 id,
-                default,
+                "container.file",
                 containerId,
                 createdAt,
                 sizeInBytes,
@@ -358,7 +358,7 @@ namespace OpenAI
 
         public static ContainerFileDeletionResult ContainerFileDeletionResult(string containerFileId = default)
         {
-            return new ContainerFileDeletionResult(containerFileId, default, default, default);
+            return new ContainerFileDeletionResult(containerFileId, default, true, default);
         }
 
         public static ContainerFileCollectionPage ContainerFileCollectionPage(IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
@@ -498,16 +498,21 @@ namespace OpenAI
             return new CodeInterpreterTool(ResponseToolKind.CodeInterpreter, default, container);
         }
 
-        public static AutomaticCodeInterpreterToolContainerConfiguration AutomaticCodeInterpreterToolContainerConfiguration(IEnumerable<string> fileIds = default)
+        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
         {
-            fileIds ??= new ChangeTrackingList<string>();
-
-            return new AutomaticCodeInterpreterToolContainerConfiguration(InternalCodeInterpreterContainerConfigurationType.Auto, default, fileIds.ToList());
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
         public static CodeInterpreterToolContainerConfiguration CodeInterpreterToolContainerConfiguration(string kind = default)
         {
             return new InternalUnknownCodeInterpreterContainerConfiguration(new InternalCodeInterpreterContainerConfigurationType(kind), default);
+        }
+
+        public static AutomaticCodeInterpreterToolContainerConfiguration AutomaticCodeInterpreterToolContainerConfiguration(IEnumerable<string> fileIds = default)
+        {
+            fileIds ??= new ChangeTrackingList<string>();
+
+            return new AutomaticCodeInterpreterToolContainerConfiguration(InternalCodeInterpreterContainerConfigurationType.Auto, default, fileIds.ToList());
         }
 
         public static ImageGenerationTool ImageGenerationTool(string model = default, ImageGenerationToolQuality? quality = default, ImageGenerationToolSize? size = default, ImageGenerationToolOutputFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, ImageGenerationToolModerationLevel? moderationLevel = default, ImageGenerationToolBackground? background = default, ImageGenerationToolInputFidelity? inputFidelity = default, ImageGenerationToolInputImageMask inputImageMask = default, int? partialImageCount = default, ImageGenerationToolAction? action = default)
@@ -2616,11 +2621,6 @@ namespace OpenAI
         public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
         {
             return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
-        }
-
-        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
-        {
-            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
         public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)

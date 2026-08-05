@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionTypeKeys : ComputerCallAction, IJsonModel<InternalComputerActionTypeKeys>
     {
-        internal InternalComputerActionTypeKeys() : this(ComputerCallActionKind.Type, default, null)
+        public InternalComputerActionTypeKeys() : this(ComputerCallActionKind.Type, default, null)
         {
         }
 

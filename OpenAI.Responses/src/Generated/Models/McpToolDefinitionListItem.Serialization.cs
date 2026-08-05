@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>
     {
-        internal McpToolDefinitionListItem() : this(ResponseItemKind.McpListTools, null, default, null, null, null)
+        public McpToolDefinitionListItem() : this(ResponseItemKind.McpListTools, null, default, null, null, null)
         {
         }
 

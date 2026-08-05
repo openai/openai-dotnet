@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterCallLogsOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallLogsOutput>
     {
-        internal CodeInterpreterCallLogsOutput() : this(InternalCodeInterpreterToolOutputType.Logs, default, null)
+        public CodeInterpreterCallLogsOutput() : this(InternalCodeInterpreterToolOutputType.Logs, default, null)
         {
         }
 

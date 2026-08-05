@@ -45,14 +45,14 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal string Object { get; } = "list";
+        internal string Object { get; set; } = "list";
 
         public IList<ResponseItem> Data { get; }
 
-        public string FirstId { get; }
+        public string FirstId { get; set; }
 
-        public string LastId { get; }
+        public string LastId { get; set; }
 
-        public bool HasMore { get; }
+        public bool HasMore { get; set; }
     }
 }

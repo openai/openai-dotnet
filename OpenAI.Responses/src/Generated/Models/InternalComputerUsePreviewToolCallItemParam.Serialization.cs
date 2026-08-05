@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerUsePreviewToolCallItemParam : InternalItemParam, IJsonModel<InternalComputerUsePreviewToolCallItemParam>
     {
-        internal InternalComputerUsePreviewToolCallItemParam() : this(ResponseItemKind.ComputerCall, default, null, null, null)
+        public InternalComputerUsePreviewToolCallItemParam() : this(ResponseItemKind.ComputerCall, default, null, null, null)
         {
         }
 

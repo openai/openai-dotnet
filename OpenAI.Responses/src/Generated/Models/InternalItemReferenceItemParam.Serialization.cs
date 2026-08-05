@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemReferenceItemParam : InternalItemParam, IJsonModel<InternalItemReferenceItemParam>
     {
-        internal InternalItemReferenceItemParam() : this(ResponseItemKind.ItemReference, default, null)
+        public InternalItemReferenceItemParam() : this(ResponseItemKind.ItemReference, default, null)
         {
         }
 

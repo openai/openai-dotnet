@@ -48,6 +48,15 @@ namespace OpenAI.Containers
 
         string IPersistableModel<InternalContainerFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
+        public static implicit operator BinaryContent(InternalContainerFileUploadOptions internalContainerFileUploadOptions)
+        {
+            if (internalContainerFileUploadOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(internalContainerFileUploadOptions, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalContainerFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

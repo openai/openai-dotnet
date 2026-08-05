@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>
     {
-        internal FunctionCallOutputResponseItem() : this(ResponseItemKind.FunctionCallOutput, null, default, default, null, null)
+        public FunctionCallOutputResponseItem() : this(ResponseItemKind.FunctionCallOutput, null, default, default, null, null)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>
     {
-        internal ReasoningResponseItem() : this(ResponseItemKind.Reasoning, null, default, default, null, null)
+        public ReasoningResponseItem() : this(ResponseItemKind.Reasoning, null, default, default, null, null)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalCoordinate : IJsonModel<InternalCoordinate>
     {
-        internal InternalCoordinate()
+        public InternalCoordinate()
         {
         }
 

@@ -23,9 +23,9 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Object { get; } = "response.input_tokens";
+        internal string Object { get; set; } = "response.input_tokens";
 
-        public int InputTokens { get; }
+        public int InputTokens { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

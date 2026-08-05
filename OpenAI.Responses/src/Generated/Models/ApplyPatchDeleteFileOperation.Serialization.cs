@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchDeleteFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchDeleteFileOperation>
     {
-        internal ApplyPatchDeleteFileOperation() : this(InternalApplyPatchOperationType.DeleteFile, default, null)
+        public ApplyPatchDeleteFileOperation() : this(InternalApplyPatchOperationType.DeleteFile, default, null)
         {
         }
 

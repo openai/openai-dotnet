@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownCodeInterpreterContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<CodeInterpreterToolContainerConfiguration>
     {
-        internal InternalUnknownCodeInterpreterContainerConfiguration() : this(default, default)
+        public InternalUnknownCodeInterpreterContainerConfiguration() : this(default, default)
         {
         }
 

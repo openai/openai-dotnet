@@ -14,7 +14,7 @@ namespace OpenAI.Conversations
 {
     internal partial class InternalCreateConversationItemsParametersBody : IJsonModel<InternalCreateConversationItemsParametersBody>
     {
-        internal InternalCreateConversationItemsParametersBody() : this(null, default)
+        public InternalCreateConversationItemsParametersBody() : this(null, default)
         {
         }
 

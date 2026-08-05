@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>
     {
-        internal WebSearchFindInPageAction() : this(InternalWebSearchActionType.FindInPage, default, null, null)
+        public WebSearchFindInPageAction() : this(InternalWebSearchActionType.FindInPage, default, null, null)
         {
         }
 

@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseIncompleteStatusDetails()
+        public ResponseIncompleteStatusDetails()
         {
         }
 
@@ -32,6 +32,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public ResponseIncompleteStatusReason? Reason { get; }
+        public ResponseIncompleteStatusReason? Reason { get; set; }
     }
 }

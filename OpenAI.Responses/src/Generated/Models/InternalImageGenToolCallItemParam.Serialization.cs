@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalImageGenToolCallItemParam : InternalItemParam, IJsonModel<InternalImageGenToolCallItemParam>
     {
-        internal InternalImageGenToolCallItemParam() : this(ResponseItemKind.ImageGenerationCall, default, null)
+        public InternalImageGenToolCallItemParam() : this(ResponseItemKind.ImageGenerationCall, default, null)
         {
         }
 

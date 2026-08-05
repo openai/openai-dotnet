@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownApplyPatchOperation : ApplyPatchOperation, IJsonModel<ApplyPatchOperation>
     {
-        internal InternalUnknownApplyPatchOperation() : this(default, default)
+        public InternalUnknownApplyPatchOperation() : this(default, default)
         {
         }
 

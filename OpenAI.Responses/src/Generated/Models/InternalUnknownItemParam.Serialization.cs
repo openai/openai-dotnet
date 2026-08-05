@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownItemParam : InternalItemParam, IJsonModel<InternalItemParam>
     {
-        internal InternalUnknownItemParam() : this(default, default)
+        public InternalUnknownItemParam() : this(default, default)
         {
         }
 

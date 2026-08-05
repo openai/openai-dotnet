@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>
     {
-        internal FilePathMessageAnnotation() : this(ResponseMessageAnnotationKind.FilePath, default, null, default)
+        public FilePathMessageAnnotation() : this(ResponseMessageAnnotationKind.FilePath, default, null, default)
         {
         }
 

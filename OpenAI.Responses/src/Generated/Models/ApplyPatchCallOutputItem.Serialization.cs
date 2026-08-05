@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>
     {
-        internal ApplyPatchCallOutputItem() : this(ResponseItemKind.ApplyPatchCallOutput, null, default, null, default, null, null)
+        public ApplyPatchCallOutputItem() : this(ResponseItemKind.ApplyPatchCallOutput, null, default, null, default, null, null)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputText : ResponseContentPart, IJsonModel<InternalItemContentInputText>
     {
-        internal InternalItemContentInputText() : this(InternalItemContentType.InputText, default, null)
+        public InternalItemContentInputText() : this(InternalItemContentType.InputText, default, null)
         {
         }
 

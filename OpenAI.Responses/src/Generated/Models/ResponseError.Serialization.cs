@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseError : IJsonModel<ResponseError>
     {
-        internal ResponseError()
+        public ResponseError()
         {
         }
 

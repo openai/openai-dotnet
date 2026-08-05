@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputAudio : ResponseContentPart, IJsonModel<InternalItemContentOutputAudio>
     {
-        internal InternalItemContentOutputAudio() : this(InternalItemContentType.OutputAudio, default, null, null)
+        public InternalItemContentOutputAudio() : this(InternalItemContentType.OutputAudio, default, null, null)
         {
         }
 

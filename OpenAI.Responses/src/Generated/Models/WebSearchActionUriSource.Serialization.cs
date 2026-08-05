@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>
     {
-        internal WebSearchActionUriSource() : this(InternalWebSearchActionSearchSourcesType.Url, default, null)
+        public WebSearchActionUriSource() : this(InternalWebSearchActionSearchSourcesType.Url, default, null)
         {
         }
 

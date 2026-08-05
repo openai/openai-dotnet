@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>
     {
-        internal ResponseItemCollectionOptions()
+        public ResponseItemCollectionOptions()
         {
         }
 

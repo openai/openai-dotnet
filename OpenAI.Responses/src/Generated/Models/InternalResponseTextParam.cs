@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalResponseTextParam()
+        public InternalResponseTextParam()
         {
         }
 
@@ -22,9 +22,9 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public ResponseTextFormat Format { get; }
+        public ResponseTextFormat Format { get; set; }
 
-        internal InternalTokenCountsBodyTextVerbosity? Verbosity { get; }
+        internal InternalTokenCountsBodyTextVerbosity? Verbosity { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -7,6 +7,7 @@
 //------------------------------------------------------------------------------
 namespace OpenAI.Responses {
     public class ApplyPatchCallItem : ResponseItem, IJsonModel<ApplyPatchCallItem>, IPersistableModel<ApplyPatchCallItem> {
+        public ApplyPatchCallItem() : base(default);
         public ApplyPatchCallItem(string callId, ApplyPatchOperation operation) : base(default);
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
@@ -14,6 +15,7 @@ namespace OpenAI.Responses {
         public ApplyPatchCallStatus? Status { get; set; }
     }
     public class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>, IPersistableModel<ApplyPatchCallOutputItem> {
+        public ApplyPatchCallOutputItem() : base(default);
         public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status) : base(default);
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
@@ -51,11 +53,13 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ApplyPatchCreateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchCreateFileOperation>, IPersistableModel<ApplyPatchCreateFileOperation> {
+        public ApplyPatchCreateFileOperation();
         public ApplyPatchCreateFileOperation(string filePath, string diff);
         public string Diff { get; set; }
         public string FilePath { get; set; }
     }
     public class ApplyPatchDeleteFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchDeleteFileOperation>, IPersistableModel<ApplyPatchDeleteFileOperation> {
+        public ApplyPatchDeleteFileOperation();
         public ApplyPatchDeleteFileOperation(string filePath);
         public string FilePath { get; set; }
     }
@@ -68,6 +72,7 @@ namespace OpenAI.Responses {
         public ApplyPatchTool() : base(default);
     }
     public class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>, IPersistableModel<ApplyPatchUpdateFileOperation> {
+        public ApplyPatchUpdateFileOperation();
         public ApplyPatchUpdateFileOperation(string filePath, string diff);
         public string Diff { get; set; }
         public string FilePath { get; set; }
@@ -77,10 +82,12 @@ namespace OpenAI.Responses {
         public IList<string> FileIds { get; }
     }
     public class CodeInterpreterCallImageOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallImageOutput>, IPersistableModel<CodeInterpreterCallImageOutput> {
+        public CodeInterpreterCallImageOutput();
         public CodeInterpreterCallImageOutput(Uri imageUri);
         public Uri ImageUri { get; set; }
     }
     public class CodeInterpreterCallLogsOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallLogsOutput>, IPersistableModel<CodeInterpreterCallLogsOutput> {
+        public CodeInterpreterCallLogsOutput();
         public CodeInterpreterCallLogsOutput(string logs);
         public string Logs { get; set; }
     }
@@ -90,6 +97,7 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     public class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>, IPersistableModel<CodeInterpreterCallResponseItem> {
+        public CodeInterpreterCallResponseItem() : base(default);
         public CodeInterpreterCallResponseItem(string code) : base(default);
         public string Code { get; set; }
         public string ContainerId { get; set; }
@@ -104,8 +112,9 @@ namespace OpenAI.Responses {
         Failed = 4
     }
     public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
+        public CodeInterpreterTool() : base(default);
         public CodeInterpreterTool(CodeInterpreterToolContainer container) : base(default);
-        public CodeInterpreterToolContainer Container { get; }
+        public CodeInterpreterToolContainer Container { get; set; }
     }
     public class CodeInterpreterToolContainer : IJsonModel<CodeInterpreterToolContainer>, IPersistableModel<CodeInterpreterToolContainer> {
         public CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration);
@@ -174,6 +183,7 @@ namespace OpenAI.Responses {
         public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri);
     }
     public class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>, IPersistableModel<ComputerCallOutputResponseItem> {
+        public ComputerCallOutputResponseItem() : base(default);
         public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output) : base(default);
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
         public string CallId { get; set; }
@@ -186,6 +196,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
+        public ComputerCallResponseItem() : base(default);
         public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(default);
         public ComputerCallAction Action { get; set; }
         public string CallId { get; set; }
@@ -193,6 +204,7 @@ namespace OpenAI.Responses {
         public ComputerCallStatus? Status { get; set; }
     }
     public class ComputerCallSafetyCheck : IJsonModel<ComputerCallSafetyCheck>, IPersistableModel<ComputerCallSafetyCheck> {
+        public ComputerCallSafetyCheck();
         public ComputerCallSafetyCheck(string id, string code, string message);
         public string Code { get; set; }
         public string Id { get; set; }
@@ -207,6 +219,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class ComputerTool : ResponseTool, IJsonModel<ComputerTool>, IPersistableModel<ComputerTool> {
+        public ComputerTool() : base(default);
         public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(default);
         public int DisplayHeight { get; set; }
         public int DisplayWidth { get; set; }
@@ -231,6 +244,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ContainerFileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<ContainerFileCitationMessageAnnotation>, IPersistableModel<ContainerFileCitationMessageAnnotation> {
+        public ContainerFileCitationMessageAnnotation();
         public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename);
         public string ContainerId { get; set; }
         public int EndIndex { get; set; }
@@ -280,17 +294,20 @@ namespace OpenAI.Responses {
         public McpToolFilter ToolsNeverRequiringApproval { get; set; }
     }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
+        public FileCitationMessageAnnotation();
         public FileCitationMessageAnnotation(string fileId, int index, string filename);
         public string FileId { get; set; }
         public string Filename { get; set; }
         public int Index { get; set; }
     }
     public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
+        public FilePathMessageAnnotation();
         public FilePathMessageAnnotation(string fileId, int index);
         public string FileId { get; set; }
         public int Index { get; set; }
     }
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
+        public FileSearchCallResponseItem() : base(default);
         public FileSearchCallResponseItem(IEnumerable<string> queries) : base(default);
         public IList<string> Queries { get; }
         public IList<FileSearchCallResult> Results { get; set; }
@@ -314,6 +331,7 @@ namespace OpenAI.Responses {
         Failed = 4
     }
     public class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>, IPersistableModel<FileSearchTool> {
+        public FileSearchTool() : base(default);
         public FileSearchTool(IEnumerable<string> vectorStoreIds) : base(default);
         public BinaryData Filters { get; set; }
         public int? MaxResultCount { get; set; }
@@ -343,6 +361,7 @@ namespace OpenAI.Responses {
         public float? ScoreThreshold { get; set; }
     }
     public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
+        public FunctionCallOutputResponseItem() : base(default);
         public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(default);
         public string CallId { get; set; }
         public string FunctionOutput { get; set; }
@@ -354,6 +373,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
+        public FunctionCallResponseItem() : base(default);
         public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments) : base(default);
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
@@ -366,6 +386,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class FunctionTool : ResponseTool, IJsonModel<FunctionTool>, IPersistableModel<FunctionTool> {
+        public FunctionTool() : base(default);
         public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(default);
         public string FunctionDescription { get; set; }
         public string FunctionName { get; set; }
@@ -373,13 +394,14 @@ namespace OpenAI.Responses {
         public bool? StrictModeEnabled { get; set; }
     }
     public class GetResponseOptions : IJsonModel<GetResponseOptions>, IPersistableModel<GetResponseOptions> {
+        public GetResponseOptions();
         public GetResponseOptions(string responseId);
         public IList<IncludedResponseProperty> IncludedProperties { get; set; }
         public bool? IncludeObfuscation { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
         public int? StartingAfter { get; set; }
         public bool? StreamingEnabled { get; set; }
     }
@@ -399,6 +421,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
+        public ImageGenerationCallResponseItem() : base(default);
         public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(default);
         public ImageGenerationToolAction? Action { get; set; }
         public ImageGenerationToolBackground? Background { get; set; }
@@ -571,6 +594,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
+        public McpTool() : base(default);
         public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(default);
         public McpTool(string serverLabel, Uri serverUri) : base(default);
         public McpToolFilter AllowedTools { get; set; }
@@ -594,18 +618,21 @@ namespace OpenAI.Responses {
         public static implicit operator McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy);
     }
     public class McpToolCallApprovalRequestItem : ResponseItem, IJsonModel<McpToolCallApprovalRequestItem>, IPersistableModel<McpToolCallApprovalRequestItem> {
+        public McpToolCallApprovalRequestItem() : base(default);
         public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(default);
         public string ServerLabel { get; set; }
         public BinaryData ToolArguments { get; set; }
         public string ToolName { get; set; }
     }
     public class McpToolCallApprovalResponseItem : ResponseItem, IJsonModel<McpToolCallApprovalResponseItem>, IPersistableModel<McpToolCallApprovalResponseItem> {
+        public McpToolCallApprovalResponseItem() : base(default);
         public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(default);
         public string ApprovalRequestId { get; set; }
         public bool Approved { get; set; }
         public string Reason { get; set; }
     }
     public class McpToolCallItem : ResponseItem, IJsonModel<McpToolCallItem>, IPersistableModel<McpToolCallItem> {
+        public McpToolCallItem() : base(default);
         public McpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(default);
         public BinaryData Error { get; set; }
         public string ServerLabel { get; set; }
@@ -635,6 +662,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class McpToolDefinition : IJsonModel<McpToolDefinition>, IPersistableModel<McpToolDefinition> {
+        public McpToolDefinition();
         public McpToolDefinition(string name, BinaryData inputSchema);
         public BinaryData Annotations { get; set; }
         public string Description { get; set; }
@@ -645,6 +673,7 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     public class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>, IPersistableModel<McpToolDefinitionListItem> {
+        public McpToolDefinitionListItem() : base(default);
         public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(default);
         public BinaryData Error { get; set; }
         public string ServerLabel { get; set; }
@@ -679,6 +708,7 @@ namespace OpenAI.Responses {
         public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
+        public ReasoningResponseItem() : base(default);
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(default);
         public ReasoningResponseItem(string summaryText) : base(default);
         public string EncryptedContent { get; set; }
@@ -698,6 +728,7 @@ namespace OpenAI.Responses {
         public static ReasoningSummaryTextPart CreateTextPart(string text);
     }
     public class ReasoningSummaryTextPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryTextPart>, IPersistableModel<ReasoningSummaryTextPart> {
+        public ReasoningSummaryTextPart();
         public ReasoningSummaryTextPart(string text);
         public string Text { get; set; }
     }
@@ -740,6 +771,7 @@ namespace OpenAI.Responses {
         Refusal = 5
     }
     public class ResponseConversationOptions : IJsonModel<ResponseConversationOptions>, IPersistableModel<ResponseConversationOptions> {
+        public ResponseConversationOptions();
         public ResponseConversationOptions(string conversationId);
         public string ConversationId { get; set; }
         [Serialization.JsonIgnore]
@@ -757,10 +789,10 @@ namespace OpenAI.Responses {
         public static explicit operator ResponseDeletionResult(ClientResult result);
     }
     public class ResponseError : IJsonModel<ResponseError>, IPersistableModel<ResponseError> {
-        public ResponseErrorCode Code { get; }
-        public string Kind { get; }
-        public string Message { get; }
-        public string Param { get; }
+        public ResponseErrorCode Code { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        public string Param { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -816,7 +848,7 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public ResponseIncompleteStatusReason? Reason { get; }
+        public ResponseIncompleteStatusReason? Reason { get; set; }
     }
     public readonly partial struct ResponseIncompleteStatusReason : IEquatable<ResponseIncompleteStatusReason> {
         public ResponseIncompleteStatusReason(string value);
@@ -872,12 +904,13 @@ namespace OpenAI.Responses {
         public static explicit operator ResponseItem(ClientResult result);
     }
     public class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>, IPersistableModel<ResponseItemCollectionOptions> {
+        public ResponseItemCollectionOptions();
         public ResponseItemCollectionOptions(string responseId);
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public ResponseItemCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
     }
     public readonly partial struct ResponseItemCollectionOrder : IEquatable<ResponseItemCollectionOrder> {
         public ResponseItemCollectionOrder(string value);
@@ -1609,6 +1642,7 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
+        public UriCitationMessageAnnotation();
         public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
@@ -1626,6 +1660,7 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     public class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>, IPersistableModel<WebSearchActionUriSource> {
+        public WebSearchActionUriSource();
         public WebSearchActionUriSource(Uri uri);
         public Uri Uri { get; set; }
     }
@@ -1641,6 +1676,7 @@ namespace OpenAI.Responses {
         Failed = 3
     }
     public class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>, IPersistableModel<WebSearchFindInPageAction> {
+        public WebSearchFindInPageAction();
         public WebSearchFindInPageAction(Uri uri, string pattern);
         public string Pattern { get; set; }
         public Uri Uri { get; set; }

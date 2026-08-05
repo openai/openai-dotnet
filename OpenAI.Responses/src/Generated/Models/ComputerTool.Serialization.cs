@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ComputerTool : ResponseTool, IJsonModel<ComputerTool>
     {
-        internal ComputerTool() : this(ResponseToolKind.ComputerUsePreview, default, default, default, default)
+        public ComputerTool() : this(ResponseToolKind.ComputerUsePreview, default, default, default, default)
         {
         }
 

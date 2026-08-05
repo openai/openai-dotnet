@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownLocation : WebSearchToolLocation, IJsonModel<WebSearchToolLocation>
     {
-        internal InternalUnknownLocation() : this(default, default)
+        public InternalUnknownLocation() : this(default, default)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownReasoningItemSummaryPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryPart>
     {
-        internal InternalUnknownReasoningItemSummaryPart() : this(default, default)
+        public InternalUnknownReasoningItemSummaryPart() : this(default, default)
         {
         }
 

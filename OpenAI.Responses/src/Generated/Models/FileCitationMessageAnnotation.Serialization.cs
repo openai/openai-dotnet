@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>
     {
-        internal FileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.FileCitation, default, null, default, null)
+        public FileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.FileCitation, default, null, default, null)
         {
         }
 

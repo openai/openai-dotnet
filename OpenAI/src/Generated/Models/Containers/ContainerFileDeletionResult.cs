@@ -35,6 +35,6 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public bool Deleted { get; set; }
+        public bool Deleted { get; set; } = true;
     }
 }

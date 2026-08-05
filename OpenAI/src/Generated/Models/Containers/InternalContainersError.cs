@@ -38,12 +38,12 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Code { get; }
+        public string Code { get; set; }
 
-        public string Message { get; }
+        public string Message { get; set; }
 
-        public string Param { get; }
+        public string Param { get; set; }
 
-        public string Kind { get; }
+        public string Kind { get; set; }
     }
 }

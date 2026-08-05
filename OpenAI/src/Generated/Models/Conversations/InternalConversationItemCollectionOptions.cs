@@ -29,7 +29,7 @@ namespace OpenAI.Conversations
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string ConversationId { get; }
+        public string ConversationId { get; set; }
 
         public int? Limit { get; set; }
 

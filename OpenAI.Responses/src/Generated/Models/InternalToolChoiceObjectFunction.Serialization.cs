@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectFunction : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObjectFunction>
     {
-        internal InternalToolChoiceObjectFunction() : this(InternalToolChoiceObjectType.Function, default, null)
+        public InternalToolChoiceObjectFunction() : this(InternalToolChoiceObjectType.Function, default, null)
         {
         }
 

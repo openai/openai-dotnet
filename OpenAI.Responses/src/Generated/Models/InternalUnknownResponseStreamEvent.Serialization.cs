@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownResponseStreamEvent : StreamingResponseUpdate, IJsonModel<StreamingResponseUpdate>
     {
-        internal InternalUnknownResponseStreamEvent() : this(default, default, default)
+        public InternalUnknownResponseStreamEvent() : this(default, default, default)
         {
         }
 

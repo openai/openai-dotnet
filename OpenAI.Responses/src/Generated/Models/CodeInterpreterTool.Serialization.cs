@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>
     {
-        internal CodeInterpreterTool() : this(ResponseToolKind.CodeInterpreter, default, null)
+        public CodeInterpreterTool() : this(ResponseToolKind.CodeInterpreter, default, null)
         {
         }
 

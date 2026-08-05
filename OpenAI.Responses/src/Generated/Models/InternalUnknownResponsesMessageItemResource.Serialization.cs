@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownResponsesMessageItemResource : MessageResponseItem, IJsonModel<MessageResponseItem>
     {
-        internal InternalUnknownResponsesMessageItemResource() : this(default, null, default, default, default)
+        public InternalUnknownResponsesMessageItemResource() : this(default, null, default, default, default)
         {
         }
 

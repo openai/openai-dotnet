@@ -31,7 +31,7 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
         public string AfterId { get; set; }
 

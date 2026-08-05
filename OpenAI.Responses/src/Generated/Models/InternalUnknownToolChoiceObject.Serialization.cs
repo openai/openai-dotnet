@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownToolChoiceObject : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObject>
     {
-        internal InternalUnknownToolChoiceObject() : this(default, default)
+        public InternalUnknownToolChoiceObject() : this(default, default)
         {
         }
 

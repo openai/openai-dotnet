@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPCallItemParam : InternalItemParam, IJsonModel<InternalMCPCallItemParam>
     {
-        internal InternalMCPCallItemParam() : this(ResponseItemKind.McpCall, default, null, null, null, null, null)
+        public InternalMCPCallItemParam() : this(ResponseItemKind.McpCall, default, null, null, null, null, null)
         {
         }
 

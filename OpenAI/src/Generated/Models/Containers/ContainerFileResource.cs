@@ -47,7 +47,7 @@ namespace OpenAI.Containers
 
         public string Id { get; set; }
 
-        public string Object { get; set; }
+        public string Object { get; set; } = "container.file";
 
         public string ContainerId { get; set; }
 
