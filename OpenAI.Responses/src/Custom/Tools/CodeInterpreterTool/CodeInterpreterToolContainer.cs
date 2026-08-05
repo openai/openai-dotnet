@@ -9,13 +9,10 @@ namespace OpenAI.Responses;
 /// Represents a container for the code interpreter tool.
 /// </summary>
 [CodeGenType("DotNetCodeInterpreterToolContainer")]
+[CodeGenVisibility(nameof(CodeInterpreterToolContainer), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class CodeInterpreterToolContainer
 {
-    // CUSTOM: Made internal.
-    internal CodeInterpreterToolContainer()
-    {
-    }
-
     // CUSTOM: Added to support the corresponding component of the union.
     /// <summary>
     /// Initializes a new instance of the <see cref="CodeInterpreterToolContainer"/> class.
@@ -26,6 +23,9 @@ public partial class CodeInterpreterToolContainer
         Argument.AssertNotNull(containerId, nameof(containerId));
 
         ContainerId = containerId;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
@@ -38,6 +38,9 @@ public partial class CodeInterpreterToolContainer
         Argument.AssertNotNull(containerConfiguration, nameof(containerConfiguration));
 
         ContainerConfiguration = containerConfiguration;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Removed setter.

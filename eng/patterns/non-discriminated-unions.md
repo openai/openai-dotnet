@@ -130,7 +130,21 @@ The union class is a .NET representation of multiple possible JSON values; it is
 - Dispatch deserialization according to the JSON value shape and populate only the matching component property.
 - Handle JSON `null` as nullability of the containing property rather than as an initialized union instance.
 - Preserve unknown properties associated with an object component according to the library's normal model round-trip behavior.
-- Preserve `JsonPatch` behavior. When deserializing, create the `JsonPatch` from the source payload and pass it to the generated model constructor. When serializing, do not write a component directly when its corresponding patch path is present; this preserves the generated model's patch propagation and round-trip behavior.
+
+#### `JsonPatch` implementation
+
+A union wrapper is a JSON value, not a JSON object with properties corresponding to its .NET component properties. Callers therefore patch the property on the containing model, not the wrapper directly. The wrapper still needs an internal `JsonPatch` to receive those delegated paths, preserve a replacement for the complete union value, and forward nested paths to an active object component.
+
+The union wrapper's patch support must follow these rules:
+
+1. Make the generated `Patch` property internal by applying `[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]` to the customization class. Do not expose synthetic component paths such as `$.global_policy` or `$.custom_policy` to callers.
+2. Implement the patch propagators `PropagateSet` and `PropagateGet` to reflect the union's wire representation rather than the synthetic TypeSpec model.
+3. Initialize the propagators along all valid construction paths. Call `_patch.SetPropagators(PropagateSet, PropagateGet)` in each component constructor because those constructors initialize their components directly.
+4. Keep a patch for `$` on the wrapper by returning `false` from both propagators for that path. Before normal serialization, write the raw root patch when `Patch.Contains("$"u8)` is true. This supports replacing the complete union value through a containing model, such as patching `$.require_approval` from an object to a string.
+5. For any non-root path, forward the path unchanged to the active object component's `Patch`. The object component owns its properties, nested model propagation, and additional-property round-tripping. For example, forward `$.always.tool_names` to the custom policy as `$.always.tool_names`, not through `$.custom_policy`.
+6. Return `false` for non-root paths when the active component is a scalar. A scalar has no nested properties to patch; callers can replace the complete union value through the containing model's property path instead.
+7. During normal serialization, select and write the active component without consulting patch paths for the wrapper's synthetic .NET component properties. Additional properties for an object component are emitted by that component's serializer.
+8. During deserialization, create the wrapper's `JsonPatch` from the source `data` and pass it to the generated constructor together with the active component. Deserialize an object component with its own source data so its `Patch` independently preserves unknown object properties.
 
 ### Test requirements
 
@@ -143,6 +157,8 @@ Tests for a conventional non-discriminated union must cover:
 - Preserving additional properties when the object model supports them.
 - Confirming that only one component property is populated.
 - Confirming that implicitly converting a nullable component with a `null` value produces a `null` union.
+- Patching a nested path through a containing model and confirming that it reaches the active object component.
+- Patching the complete union-valued property on a containing model and confirming that the raw replacement value is serialized.
 
 ## Pattern 2: Normalize shorthand to longhand
 

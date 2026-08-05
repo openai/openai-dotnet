@@ -618,6 +618,52 @@ public partial class ResponsesSmokeTests
         }
     }
 
+    [Test]
+    public void MCPToolCallApprovalPolicyPropagatesJsonPatchToObjectComponent()
+    {
+        CustomMcpToolCallApprovalPolicy customPolicy = new()
+        {
+            ToolsAlwaysRequiringApproval = new McpToolFilter()
+        };
+        McpTool tool = ResponseTool.CreateMcpTool(
+            "test",
+            new Uri("https://example.com"),
+            toolCallApprovalPolicy: new McpToolCallApprovalPolicy(customPolicy));
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.Patch.Set("$.require_approval.always.additional_property"u8, "patched");
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement additionalProperty = json.RootElement
+            .GetProperty("require_approval")
+            .GetProperty("always")
+            .GetProperty("additional_property");
+        Assert.That(additionalProperty.GetString(), Is.EqualTo("patched"));
+    }
+
+    [Test]
+    public void MCPToolCallApprovalPolicySupportsRootJsonPatchFromContainingModel()
+    {
+        BinaryData data = BinaryData.FromString("""
+        {
+            "type": "mcp",
+            "server_label": "test",
+            "require_approval": {
+                "always": {}
+            }
+        }
+        """);
+        McpTool tool = ModelReaderWriter.Read<McpTool>(data);
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.Patch.Set("$.require_approval"u8, "\"never\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        Assert.That(json.RootElement.GetProperty("require_approval").GetString(), Is.EqualTo("never"));
+    }
+
     [TestCase("[]")]
     [TestCase("42")]
     [TestCase("true")]
@@ -810,6 +856,41 @@ public partial class ResponsesSmokeTests
             Assert.That(additionalPropertyProperty, Is.Not.Null);
             Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
         }
+    }
+
+    [Test]
+    public void CodeInterpreterToolContainerPropagatesJsonPatchToObjectComponent()
+    {
+        ResponseTool tool = ResponseTool.CreateCodeInterpreterTool(
+            new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.Patch.Set("$.container.additional_property"u8, "patched");
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        Assert.That(json.RootElement.GetProperty("container").GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+    }
+
+    [Test]
+    public void CodeInterpreterToolContainerSupportsRootJsonPatchFromContainingModel()
+    {
+        BinaryData data = BinaryData.FromString("""
+        {
+            "type": "code_interpreter",
+            "container": {
+                "type": "auto"
+            }
+        }
+        """);
+        CodeInterpreterTool tool = ModelReaderWriter.Read<CodeInterpreterTool>(data);
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.Patch.Set("$.container"u8, "\"container_123\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        Assert.That(json.RootElement.GetProperty("container").GetString(), Is.EqualTo("container_123"));
     }
 
     [TestCase("[]")]
