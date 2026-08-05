@@ -29,7 +29,7 @@ public partial class McpToolCallApprovalPolicy
         {
             writer.WriteStringValue(GlobalPolicy.Value.ToString());
         }
-        if (Optional.IsDefined(CustomPolicy) && _patch.Contains("$.custom_policy"u8) != true)
+        else if (Optional.IsDefined(CustomPolicy) && _patch.Contains("$.custom_policy"u8) != true)
         {
             writer.WriteObjectValue(CustomPolicy, options);
         }

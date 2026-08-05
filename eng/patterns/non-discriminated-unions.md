@@ -97,18 +97,20 @@ The union class must follow these rules:
 6. Keep collection component properties nullable as an exception to the library's usual collection-property convention. A `null` collection is necessary to indicate that another component is active.
 7. Provide implicit conversions from each component type to the union type. When a component parameter can be `null`, the conversion must return `null` rather than call the constructor. This keeps implicit conversions from throwing when constructors reject `null`. Components that cannot be `null`, such as non-nullable value types, do not need this check.
 
-## Usage
+See the implementation of `McpToolCallApprovalPolicy` and the associated tests for a reference implementation of this pattern.
+
+### Usage
 
 Callers determine the active component by checking the properties for `null`:
 
 ```csharp
-if (policy.GlobalPolicy is not null)
+if (policy.CustomPolicy is not null)
 {
-    Console.WriteLine(policy.GlobalPolicy.Value);
+    // ...
 }
-else if (policy.CustomPolicy is not null)
+else if (policy.GlobalPolicy is not null)
 {
-    Console.WriteLine(policy.CustomPolicy.ToolsAlwaysRequiringApproval);
+    // ...
 }
 ```
 
@@ -118,7 +120,7 @@ Implicit conversions allow callers to assign a component without explicitly cons
 McpToolCallApprovalPolicy policy = GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval;
 ```
 
-## Serialization requirements
+### Serialization requirements
 
 The union class is a .NET representation of multiple possible JSON values; it is not an additional JSON object. Its custom serialization must directly write the active component:
 
@@ -128,6 +130,9 @@ The union class is a .NET representation of multiple possible JSON values; it is
 - Dispatch deserialization according to the JSON value shape and populate only the matching component property.
 - Handle JSON `null` as nullability of the containing property rather than as an initialized union instance.
 - Preserve unknown properties associated with an object component according to the library's normal model round-trip behavior.
+- Preserve `JsonPatch` behavior. When deserializing, create the `JsonPatch` from the source payload and pass it to the generated model constructor. When serializing, do not write a component directly when its corresponding patch path is present; this preserves the generated model's patch propagation and round-trip behavior.
+
+### Test requirements
 
 Tests for a conventional non-discriminated union must cover:
 
@@ -139,9 +144,7 @@ Tests for a conventional non-discriminated union must cover:
 - Confirming that only one component property is populated.
 - Confirming that implicitly converting a nullable component with a `null` value produces a `null` union.
 
-See the `McpToolCallApprovalPolicy` customizations and the associated tests for a reference implementation of this pattern.
-
-## Shorthand notation
+## Pattern 2: Normalize shorthand to longhand
 
 Some non-discriminated unions use one component only as shorthand for another. For example, the `allowed_tools` property of the MCP tool of the Responses API accepts either a list of tool names or a complete filter:
 
@@ -160,8 +163,6 @@ model MCPToolFilter {
 
 The shorthand is a logical subset of the longhand representation. These components do not represent distinct concepts, so exposing both through a union wrapper as described in the pattern above would add another type and two properties to represent the same single concept. It would also make callers decide between forms that are functionally equivalent.
 
-## Pattern 2: Normalize shorthand to longhand
-
 When one component is strictly shorthand for another, expose only the longhand type in the public .NET API:
 
 ```csharp
@@ -171,6 +172,8 @@ public partial class McpTool
 }
 ```
 
+### Serialization requirements
+
 Customize deserialization for the property so that it accepts both wire representations:
 
 - Deserialize the longhand object normally.
@@ -178,7 +181,7 @@ Customize deserialization for the property so that it accepts both wire represen
 - Store only the longhand object in the public property.
 - Continue to reject JSON shapes that are not members of the service-defined union.
 
-For `allowed_tools`, an incoming array is normalized into an `McpToolFilter` whose `ToolNames` collection contains the array values. Serialization then uses the longhand object form:
+For `allowed_tools` in the example above, an incoming array is normalized into an `McpToolFilter` whose `ToolNames` collection contains the array values. Serialization then uses the longhand object form:
 
 ```json
 {
@@ -188,6 +191,8 @@ For `allowed_tools`, an incoming array is normalized into an `McpToolFilter` who
 }
 ```
 
+### Test requirements
+
 Tests for shorthand normalization must cover:
 
 - Deserializing shorthand and longhand inputs.
@@ -196,7 +201,7 @@ Tests for shorthand normalization must cover:
 - Preserving longhand-only fields when the longhand form is received.
 - Handling `null` and rejecting unsupported JSON shapes.
 
-## Limitations of shorthand normalization
+### Limitations of shorthand normalization
 
 Normalization deliberately does not preserve the original wire representation:
 

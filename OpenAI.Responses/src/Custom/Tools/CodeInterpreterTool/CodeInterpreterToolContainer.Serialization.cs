@@ -28,7 +28,7 @@ public partial class CodeInterpreterToolContainer
         {
             writer.WriteStringValue(ContainerId);
         }
-        if (Optional.IsDefined(ContainerConfiguration) && _patch.Contains("$.container"u8) != true)
+        else if (Optional.IsDefined(ContainerConfiguration) && _patch.Contains("$.container"u8) != true)
         {
             writer.WriteObjectValue(ContainerConfiguration, options);
         }

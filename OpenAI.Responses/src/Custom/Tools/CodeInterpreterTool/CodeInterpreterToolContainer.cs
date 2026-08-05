@@ -18,7 +18,7 @@ public partial class CodeInterpreterToolContainer
 
     // CUSTOM: Added to support the corresponding component of the union.
     /// <summary>
-    /// Initializes a new instance of the <see cref="CodeInterpreterContainer"/> class.
+    /// Initializes a new instance of the <see cref="CodeInterpreterToolContainer"/> class.
     /// </summary>
     /// <param name="containerId">The ID of the container.</param>
     public CodeInterpreterToolContainer(string containerId)
@@ -30,7 +30,7 @@ public partial class CodeInterpreterToolContainer
 
     // CUSTOM: Added to support the corresponding component of the union.
     /// <summary>
-    /// Initializes a new instance of the <see cref="CodeInterpreterContainer"/> class.
+    /// Initializes a new instance of the <see cref="CodeInterpreterToolContainer"/> class.
     /// </summary>
     /// <param name="containerConfiguration">The configuration of the container.</param>
     public CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration)
