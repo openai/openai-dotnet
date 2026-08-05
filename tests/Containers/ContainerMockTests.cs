@@ -32,4 +32,33 @@ public partial class ContainerMockTests
         Assert.That(deserializedPolicy.Anchor, Is.EqualTo(ContainerExpirationPolicyAnchor.LastActiveAt));
         Assert.That(deserializedPolicy.Duration, Is.EqualTo(TimeSpan.FromMinutes(20)));
     }
+
+    [Test]
+    public void ContainerCreationOptionsPublicConstructorDoesNotPropagatePatch()
+    {
+        ContainerCreationOptions options = new("test-container")
+        {
+            ExpirationPolicy = new ContainerExpirationPolicy(),
+        };
+
+        options.Patch.Set("$.expires_after.custom_property"u8, "custom_value");
+
+        Assert.That(options.ExpirationPolicy.Patch.Contains("$.custom_property"u8), Is.False);
+    }
+
+    [Test]
+    public void ContainerCreationOptionsModelReaderWriterReadPropagatesPatch()
+    {
+        ContainerCreationOptions options = ModelReaderWriter.Read<ContainerCreationOptions>(
+            BinaryData.FromString("""
+                {
+                  "name": "test-container",
+                  "expires_after": {}
+                }
+                """));
+
+        options.Patch.Set("$.expires_after.custom_property"u8, "custom_value");
+
+        Assert.That(options.ExpirationPolicy.Patch.Contains("$.custom_property"u8), Is.True);
+    }
 }
