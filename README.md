@@ -30,6 +30,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [How to use assistants with streaming and vision](#how-to-use-assistants-with-streaming-and-vision)
 - [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
 - [Advanced scenarios](#advanced-scenarios)
+  - [Using mutual TLS](#using-mutual-tls)
   - [Using protocol methods](#using-protocol-methods)
   - [Mock a client for testing](#mock-a-client-for-testing)
   - [Automatically retrying errors](#automatically-retrying-errors)
@@ -987,6 +988,86 @@ Console.WriteLine(response.Value.GetOutputText());
 - Drop‑in model switching: Swap "gpt-5-mini" or any other model as long as the Azure model deployment has the same name as the model.
 
 ## Advanced scenarios
+
+### Using mutual TLS
+
+The API mTLS beta combines your API key with a client certificate. For how request authentication works, certificate requirements, activation, and supported API operations, see the [OpenAI Mutual TLS Beta Program](https://help.openai.com/en/articles/10876024-openai-mutual-tls-beta-program). To upload and activate the issuing CA programmatically, see the [Certificates API reference](https://developers.openai.com/api/reference/resources/admin/subresources/organization/subresources/certificates/).
+
+Upload and activate the CA certificate that signs the client leaf; keep the leaf certificate and its private key in the PFX used by the application. Certificate-chain support is available by request and must be enabled for your organization. Without it, the leaf must be signed directly by the uploaded CA. When chain support is enabled, the PFX/PKCS#12 file must contain exactly one certificate with a private key—the leaf—and every intermediate certificate needed to build a chain to the uploaded CA.
+
+Configure that bundle on a `SocketsHttpHandler`, then provide its `HttpClient` to the SDK through `HttpClientPipelineTransport`. This example uses `X509CertificateLoader`, available in .NET 9 and later.
+
+Choose the base URL that matches your data residency:
+
+| Scope | Base URL |
+| --- | --- |
+| Global | `https://mtls.api.openai.com/v1` |
+| EU Data Residency | `https://mtls-eu.api.openai.com/v1` |
+
+```C# Snippet:ReadMe_MutualTls
+string pfxPath = Environment.GetEnvironmentVariable("OPENAI_CLIENT_PFX_PATH")
+    ?? throw new InvalidOperationException("OPENAI_CLIENT_PFX_PATH is required.");
+string apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")
+    ?? throw new InvalidOperationException("OPENAI_API_KEY is required.");
+
+X509Certificate2Collection certificates =
+    X509CertificateLoader.LoadPkcs12CollectionFromFile(
+        pfxPath,
+        Environment.GetEnvironmentVariable("OPENAI_CLIENT_PFX_PASSWORD"));
+
+try
+{
+    X509Certificate2 clientCertificate =
+        certificates.Single(certificate => certificate.HasPrivateKey);
+    X509Certificate2Collection intermediateCertificates = new(
+        certificates
+            .Where(certificate => !certificate.HasPrivateKey)
+            .ToArray());
+    SslStreamCertificateContext certificateContext =
+        SslStreamCertificateContext.Create(
+            clientCertificate,
+            intermediateCertificates,
+            // Build the local chain without revocation network lookups.
+            offline: true);
+
+    SocketsHttpHandler handler = new()
+    {
+        // Do not automatically follow a redirect with a certificate-bearing handler.
+        AllowAutoRedirect = false,
+    };
+    handler.SslOptions.ClientCertificateContext = certificateContext;
+
+    using HttpClient httpClient = new(handler)
+    {
+        // Let the SDK pipeline enforce OpenAIClientOptions.NetworkTimeout.
+        Timeout = System.Threading.Timeout.InfiniteTimeSpan,
+    };
+    OpenAIClientOptions options = new()
+    {
+        Endpoint = new Uri("https://mtls.api.openai.com/v1"),
+        Transport = new HttpClientPipelineTransport(httpClient),
+    };
+
+    OpenAIClient client = new(
+        new ApiKeyCredential(apiKey),
+        options);
+
+    ChatCompletion completion = await client
+        .GetChatClient("gpt-4o-mini")
+        .CompleteChatAsync("Reply with exactly: mTLS request succeeded.");
+}
+finally
+{
+    foreach (X509Certificate2 certificate in certificates)
+    {
+        certificate.Dispose();
+    }
+}
+```
+
+Keep the `HttpClient` alive for as long as the OpenAI client uses it, and create a new handler, transport, and client when rotating the certificate so new TLS connections use the replacement credentials. This transport recipe applies to HTTP clients created from `OpenAIClient`; it does not configure Realtime WebSocket connections.
+
+See the [complete mTLS example](examples/MutualTls/README.md) for setup and a runnable end-to-end request.
 
 ### Using protocol methods
 

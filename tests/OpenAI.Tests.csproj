@@ -36,6 +36,11 @@
     <Compile Include="..\OpenAI\src\Generated\Internal\Argument.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+    <!-- The mTLS sample uses X509CertificateLoader, which is available in .NET 9 and later. -->
+    <Compile Include="..\examples\MutualTls\Example01_MutualTlsAsync.cs" LinkBase="Shared\Examples" />
+  </ItemGroup>
+
   <ItemGroup>
     <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
       <_Parameter1>SourcePath</_Parameter1>
