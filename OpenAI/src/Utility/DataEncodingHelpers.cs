@@ -1,6 +1,9 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+
+#if !NET8_0_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
 
 #nullable enable
 
