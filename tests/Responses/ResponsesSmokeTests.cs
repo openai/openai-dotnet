@@ -297,7 +297,10 @@ public partial class ResponsesSmokeTests
         }
 
         string imageMediaType = "image/png";
-        BinaryData imageBytes = BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data"), imageMediaType);
+        byte[] imageBuffer = Encoding.UTF8.GetBytes("prefiximage datasuffix");
+        BinaryData imageBytes = BinaryData.FromBytes(
+            imageBuffer.AsMemory("prefix".Length, "image data".Length),
+            imageMediaType);
 
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
             imageBytes,
