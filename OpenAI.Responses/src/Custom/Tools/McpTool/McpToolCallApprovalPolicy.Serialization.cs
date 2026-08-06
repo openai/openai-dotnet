@@ -11,6 +11,14 @@ public partial class McpToolCallApprovalPolicy
     // CUSTOM: Edited to remove calls to WriteStartObject() and WriteEndObject(). 
     void IJsonModel<McpToolCallApprovalPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
         JsonModelWriteCore(writer, options);
     }
 
@@ -25,11 +33,11 @@ public partial class McpToolCallApprovalPolicy
         {
             throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support writing '{format}' format.");
         }
-        if (Optional.IsDefined(GlobalPolicy) && _patch.Contains("$.global_policy"u8) != true)
+        if (Optional.IsDefined(GlobalPolicy))
         {
             writer.WriteStringValue(GlobalPolicy.Value.ToString());
         }
-        if (Optional.IsDefined(CustomPolicy) && _patch.Contains("$.custom_policy"u8) != true)
+        else if (Optional.IsDefined(CustomPolicy))
         {
             writer.WriteObjectValue(CustomPolicy, options);
         }
@@ -55,11 +63,36 @@ public partial class McpToolCallApprovalPolicy
         {
             globalPolicy = new GlobalMcpToolCallApprovalPolicy(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             customPolicy = CustomMcpToolCallApprovalPolicy.DeserializeCustomMcpToolCallApprovalPolicy(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected MCP tool call approval policy to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return CustomPolicy is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && CustomPolicy.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (CustomPolicy is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        CustomPolicy.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }
