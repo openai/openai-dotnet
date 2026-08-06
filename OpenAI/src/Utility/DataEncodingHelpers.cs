@@ -1,6 +1,10 @@
 using System;
 using System.Text.RegularExpressions;
 
+#if !NET8_0_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
+
 #nullable enable
 
 namespace OpenAI;
@@ -46,7 +50,24 @@ internal static partial class DataEncodingHelpers
 
     public static string CreateDataUri(BinaryData bytes, string bytesMediaType)
     {
-        string base64Bytes = Convert.ToBase64String(bytes.ToArray());
+        ReadOnlyMemory<byte> memory = bytes.ToMemory();
+#if NET8_0_OR_GREATER
+        string base64Bytes = Convert.ToBase64String(memory.Span);
+#else
+        string base64Bytes;
+        if (MemoryMarshal.TryGetArray(memory, out ArraySegment<byte> segment)
+            && segment.Array is not null)
+        {
+            base64Bytes = Convert.ToBase64String(
+                segment.Array,
+                segment.Offset,
+                segment.Count);
+        }
+        else
+        {
+            base64Bytes = Convert.ToBase64String(memory.ToArray());
+        }
+#endif
         return $"data:{bytesMediaType};base64,{base64Bytes}";
     }
 }
