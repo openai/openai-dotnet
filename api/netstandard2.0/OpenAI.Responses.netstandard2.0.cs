@@ -310,9 +310,9 @@ namespace OpenAI.Responses {
     }
     public class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>, IPersistableModel<CustomToolCallOutputItem> {
         public CustomToolCallOutputItem() : base(default);
-        public CustomToolCallOutputItem(string callId, BinaryData output) : base(default);
+        public CustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output) : base(default);
         public string CallId { get; set; }
-        public BinaryData Output { get; set; }
+        public IList<ResponseContentPart> Output { get; }
         public CustomToolCallOutputStatus? Status { get; set; }
     }
     public readonly partial struct CustomToolCallOutputStatus : IEquatable<CustomToolCallOutputStatus> {
@@ -982,7 +982,7 @@ namespace OpenAI.Responses {
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
         public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName);
-        public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output);
+        public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);

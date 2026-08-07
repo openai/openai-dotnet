@@ -158,12 +158,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    List<ResponseContentPart> array = new List<ResponseContentPart>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ResponseContentPart.DeserializeResponseContentPart(item, item.GetUtf8Bytes(), options));
-                    }
-                    output = array;
+                    DeserializeOutputValue(prop, ref output, options);
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
