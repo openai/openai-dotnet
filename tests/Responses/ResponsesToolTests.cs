@@ -1431,7 +1431,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 """
                 The user has the following files:
                 < BEGIN_FILES >
-                ===== lib / fib.py
+                ===== lib/fib.py
                 def fib(n):
                     if n <= 1:
                         return n
@@ -1446,7 +1446,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 < BEGIN_FILES >
                 ===== obsolete.txt
                 This file is obsolete and can be removed.
-                ===== src / app.py
+                ===== src/app.py
                 print("hello")
                 < END_FILES >
 
