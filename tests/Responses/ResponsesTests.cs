@@ -896,6 +896,160 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task CustomToolCallWorks()
+    {
+        const string toolName = "code_exec";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+        CustomTool customTool = new(toolName)
+        {
+            ToolDescription = "Executes arbitrary Python code.",
+            ToolFormat = new CustomToolTextFormat(),
+        };
+        CreateResponseOptions options = new(
+            "gpt-5.6",
+            [ResponseItem.CreateUserMessageItem("Use the code_exec tool to print hello world to the console.")])
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        CustomTool responseTool = response.Tools.Single() as CustomTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.ToolName, Is.EqualTo(toolName));
+        Assert.That(responseTool.ToolDescription, Is.EqualTo(customTool.ToolDescription));
+        Assert.That(responseTool.ToolFormat, Is.TypeOf<CustomToolTextFormat>());
+
+        CustomToolCallItem customToolCall = response.OutputItems.OfType<CustomToolCallItem>().Single();
+        Assert.That(customToolCall.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(customToolCall.CallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(customToolCall.ToolName, Is.EqualTo(toolName));
+        Assert.That(customToolCall.Input, Does.Contain("hello").IgnoreCase);
+        Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+
+        ResponseItem customToolOutput = ResponseItem.CreateCustomToolCallOutputItem(
+            customToolCall.CallId,
+            BinaryData.FromObjectAsJson("hello world"));
+        CreateResponseOptions turn2Options = new("gpt-5.6", [customToolOutput])
+        {
+            PreviousResponseId = response.Id,
+            Tools = { customTool },
+        };
+
+        ResponseResult turn2Response = await client.CreateResponseAsync(turn2Options);
+
+        Assert.That(turn2Response.GetOutputText(), Does.Contain("hello world").IgnoreCase);
+        List<ResponseItem> turn2InputItems = [];
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(turn2Response.Id))
+        {
+            turn2InputItems.Add(item);
+        }
+
+        CustomToolCallOutputItem recordedOutput = turn2InputItems.OfType<CustomToolCallOutputItem>().Single();
+        Assert.That(recordedOutput.CallId, Is.EqualTo(customToolCall.CallId));
+        Assert.That(recordedOutput.Output.ToObjectFromJson<string>(), Is.EqualTo("hello world"));
+    }
+
+    [RecordedTest]
+    public async Task CustomToolCallStreamingWorks()
+    {
+        const string toolName = "code_exec";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+        CreateResponseOptions options = new(
+            "gpt-5.6",
+            [ResponseItem.CreateUserMessageItem("Use the code_exec tool to print hello world to the console.")])
+        {
+            Tools =
+            {
+                new CustomTool(toolName)
+                {
+                    ToolDescription = "Executes arbitrary Python code.",
+                    ToolFormat = new CustomToolTextFormat(),
+                }
+            },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            StreamingEnabled = true,
+        };
+
+        StringBuilder inputBuilder = new();
+        int inputDeltaCount = 0;
+        int inputDoneCount = 0;
+        string customToolCallItemId = null;
+        CustomToolCallItem completedCustomToolCall = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseCustomToolCallInputDeltaUpdate inputDeltaUpdate)
+            {
+                Assert.That(inputDeltaUpdate.InputDelta, Is.Not.Null);
+                Assert.That(inputDeltaUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                Assert.That(inputDeltaUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                customToolCallItemId ??= inputDeltaUpdate.ItemId;
+                Assert.That(inputDeltaUpdate.ItemId, Is.EqualTo(customToolCallItemId));
+                inputBuilder.Append(inputDeltaUpdate.InputDelta);
+                inputDeltaCount++;
+            }
+            else if (update is StreamingResponseCustomToolCallInputDoneUpdate inputDoneUpdate)
+            {
+                Assert.That(inputDoneUpdate.ItemId, Is.EqualTo(customToolCallItemId));
+                Assert.That(inputDoneUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                Assert.That(inputDoneUpdate.Input, Is.EqualTo(inputBuilder.ToString()));
+                inputDoneCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate
+                && outputItemDoneUpdate.Item is CustomToolCallItem customToolCall)
+            {
+                completedCustomToolCall = customToolCall;
+            }
+        }
+
+        Assert.That(inputDeltaCount, Is.GreaterThan(0));
+        Assert.That(inputDoneCount, Is.EqualTo(1));
+        Assert.That(completedCustomToolCall, Is.Not.Null);
+        Assert.That(completedCustomToolCall.Id, Is.EqualTo(customToolCallItemId));
+        Assert.That(completedCustomToolCall.ToolName, Is.EqualTo(toolName));
+        Assert.That(completedCustomToolCall.Input, Is.EqualTo(inputBuilder.ToString()));
+        Assert.That(completedCustomToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+    }
+
+    [RecordedTest]
+    public async Task CustomToolCallWithGrammarWorks()
+    {
+        const string grammarDefinition = "^[0-9]+ \\+ [0-9]+$";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+        CustomTool customTool = new("math_exp")
+        {
+            ToolDescription = "Creates a mathematical addition expression.",
+            ToolFormat = new CustomToolGrammarFormat(CustomToolGrammarFormatSyntax.Regex, grammarDefinition),
+        };
+        CreateResponseOptions options = new(
+            "gpt-5.6",
+            [ResponseItem.CreateUserMessageItem("Use the math_exp tool to add four plus four.")])
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        CustomTool responseTool = response.Tools.Single() as CustomTool;
+        Assert.That(responseTool, Is.Not.Null);
+        CustomToolGrammarFormat responseFormat = responseTool.ToolFormat as CustomToolGrammarFormat;
+        Assert.That(responseFormat, Is.Not.Null);
+        Assert.That(responseFormat.Syntax, Is.EqualTo(CustomToolGrammarFormatSyntax.Regex));
+        Assert.That(responseFormat.Definition, Is.EqualTo(grammarDefinition));
+
+        CustomToolCallItem customToolCall = response.OutputItems.OfType<CustomToolCallItem>().Single();
+        Assert.That(customToolCall.ToolName, Is.EqualTo(customTool.ToolName));
+        Assert.That(customToolCall.Input, Does.Match(grammarDefinition));
+        Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+    }
+
+    [RecordedTest]
     public async Task MaxTokens()
     {
         ResponsesClient client = GetProxiedResponsesClient();
