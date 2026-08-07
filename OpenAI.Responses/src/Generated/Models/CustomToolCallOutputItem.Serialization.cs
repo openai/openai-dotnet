@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
@@ -78,17 +79,28 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.output"u8))
+            if (Patch.Contains("$.output"u8))
+            {
+                if (!Patch.IsRemoved("$.output"u8))
+                {
+                    writer.WritePropertyName("output"u8);
+                    Patch.WriteTo(writer, "$.output"u8);
+                }
+            }
+            else
             {
                 writer.WritePropertyName("output"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Output);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Output))
+                writer.WriteStartArray();
+                for (int i = 0; i < Output.Count; i++)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    if (Output[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Output[i], options);
                 }
-#endif
+                Patch.WriteTo(writer, "$.output"u8);
+                writer.WriteEndArray();
             }
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
@@ -125,7 +137,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
-            BinaryData output = default;
+            IList<ResponseContentPart> output = default;
             CustomToolCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -146,7 +158,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    output = BinaryData.FromString(prop.Value.GetRawText());
+                    List<ResponseContentPart> array = new List<ResponseContentPart>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseContentPart.DeserializeResponseContentPart(item, item.GetUtf8Bytes(), options));
+                    }
+                    output = array;
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -168,5 +185,77 @@ namespace OpenAI.Responses
                 output,
                 status);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("output"u8))
+            {
+                int propertyLength = "output"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveOutputArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Output[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("output"u8))
+            {
+                int propertyLength = "output"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Output[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveOutputArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveOutput(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<ResponseContentPart> ActiveOutput()
+        {
+            if (!Optional.IsCollectionDefined(Output))
+            {
+                yield break;
+            }
+            for (int i = 0; i < Output.Count; i++)
+            {
+                if (!Output[i].Patch.IsRemoved("$"u8))
+                {
+                    yield return Output[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

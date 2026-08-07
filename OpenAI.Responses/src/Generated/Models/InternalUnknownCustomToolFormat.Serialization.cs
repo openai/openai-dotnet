@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownCustomToolFormat : CustomToolFormat, IJsonModel<CustomToolFormat>
     {
-        internal InternalUnknownCustomToolFormat() : this(default, default)
+        public InternalUnknownCustomToolFormat() : this(default, default)
         {
         }
 
