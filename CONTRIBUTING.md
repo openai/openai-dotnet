@@ -102,6 +102,12 @@ This script:
 2. Builds the TypeSpec emitter and generator in `codegen/`
 3. Compiles the TypeSpec specification and generates C# code into `src/Generated/`
 
+### Refreshing the OpenAI Specification
+
+> **Maintainers:** Refreshing the OpenAI REST API specification snapshots is a repository maintenance workflow, not a normal prerequisite for contributing code or regenerating the client.
+
+The monthly automation and any manual snapshot refreshes use the tooling under `specification/tools/`. See the [OpenAI specification tooling guide](specification/tools/README.md) for the supported commands, validation and publication gates, and rules for updating `specification/openai/`.
+
 ## API Surface and Compatibility
 
 ### Exporting the Public API
