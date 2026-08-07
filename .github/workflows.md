@@ -41,7 +41,7 @@ started manually from the Actions tab.
 
 Manual runs accept `source_ref` to snapshot a specific upstream ref, `force` to process even when
 the content is unchanged, and `dry_run` to publish the results as an artifact without opening a
-pull request.  The same script backs local runs; see `CONTRIBUTING.md`.
+pull request.  The same script backs local runs; see `specification/tools/README.md`.
 
 Editing this workflow means editing the markdown and re-running `gh aw compile`; the `.lock.yml`
 is generated and should not be hand-edited.  Compiling also emits `agentics-maintenance.yml`, a
