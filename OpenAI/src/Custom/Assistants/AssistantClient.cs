@@ -690,10 +690,15 @@ public partial class AssistantClient
 
         runOptions ??= new();
         runOptions.Stream = true;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-
+        BinaryData protocolData = CreateThreadAndRunProtocolData(assistantId, threadOptions, runOptions);
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingUpdate>(
-            async () => await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async protocolData =>
+            {
+                using BinaryContent protocolContent = BinaryContent.Create(protocolData);
+                return await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+            },
+            protocolData,
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -715,10 +720,15 @@ public partial class AssistantClient
 
         runOptions ??= new();
         runOptions.Stream = true;
-        BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
-
+        BinaryData protocolData = CreateThreadAndRunProtocolData(assistantId, threadOptions, runOptions);
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingUpdate>(
-            () => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true)),
+            protocolData =>
+            {
+                using BinaryContent protocolContent = BinaryContent.Create(protocolData);
+                return CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
+            },
+            protocolData,
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -837,12 +847,17 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
-        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
+        BinaryData requestData = ModelReaderWriter.Write(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingUpdate>(
-            async () => await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async requestData =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+            },
+            requestData,
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -864,12 +879,17 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
         Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
-        using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
+        BinaryData requestData = ModelReaderWriter.Write(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingUpdate>(
-            () => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)),
+            requestData =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
+            },
+            requestData,
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -962,6 +982,12 @@ public partial class AssistantClient
         string assistantId,
         ThreadCreationOptions threadOptions,
         RunCreationOptions runOptions)
+        => BinaryContent.Create(CreateThreadAndRunProtocolData(assistantId, threadOptions, runOptions));
+
+    private static BinaryData CreateThreadAndRunProtocolData(
+        string assistantId,
+        ThreadCreationOptions threadOptions,
+        RunCreationOptions runOptions)
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
         InternalCreateThreadAndRunRequest internalRequest = new(
@@ -979,11 +1005,11 @@ public partial class AssistantClient
             truncationStrategy: runOptions.TruncationStrategy,
             parallelToolCalls: runOptions.AllowParallelToolCalls,
             model: runOptions.ModelOverride,
-            toolResources: threadOptions.ToolResources,
+            toolResources: threadOptions?.ToolResources,
             responseFormat: runOptions.ResponseFormat,
             toolChoice: runOptions.ToolConstraint,
             additionalBinaryDataProperties: null);
-        return BinaryContent.Create(internalRequest, ModelSerializationExtensions.WireOptions);
+        return ModelReaderWriter.Write(internalRequest, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
