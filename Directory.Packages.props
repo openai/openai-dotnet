@@ -41,6 +41,14 @@
     <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260717.13" />
   </ItemGroup>
 
+  <!-- Specification Tooling Dependencies -->
+  <ItemGroup Condition="$(MSBuildProjectName.StartsWith('OpenAI.SpecProcessor'))">
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.4" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.4" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.3" />
+    <PackageVersion Include="YamlDotNet" Version="16.3.0" />
+  </ItemGroup>
+
   <!-- Transitive Dependency Overrides: https://github.com/advisories/GHSA-g4vj-cjjj-v7hg -->
   <ItemGroup>
     <PackageVersion Include="NuGet.Packaging" Version="6.14.3" />

@@ -11,7 +11,7 @@ Thank you for your interest in contributing to the OpenAI .NET library! This gui
 | `docs/` | Guides and documentation. |
 | `examples/` | Usage examples organized by feature area (Chat, Audio, Images, Assistants, etc.). |
 | `scripts/` | PowerShell scripts for development workflows (code generation, API export, testing). |
-| `specification/` | TypeSpec definitions from which the client library is generated — `base/` contains the base API definitions and `client/` contains client-specific customizations. |
+| `specification/` | TypeSpec definitions from which the client library is generated — `base/` contains the base API definitions and `client/` contains client-specific customizations. The `openai/` folder holds the monthly snapshots of the OpenAI REST specification and `tools/` holds the tooling that produces them. |
 | `src/` | Library source code — `Generated/` contains generated code and `Custom/` contains hand-written customizations. |
 | `tests/` | NUnit tests with `SessionRecords/` for recorded playback mode. |
 
@@ -101,6 +101,12 @@ This script:
 1. Installs npm dependencies (`npm ci`)
 2. Builds the TypeSpec emitter and generator in `codegen/`
 3. Compiles the TypeSpec specification and generates C# code into `src/Generated/`
+
+### Refreshing the OpenAI Specification
+
+> **Maintainers:** Refreshing the OpenAI REST API specification snapshots is a repository maintenance workflow, not a normal prerequisite for contributing code or regenerating the client.
+
+The monthly automation and any manual snapshot refreshes use the tooling under `specification/tools/`. See the [OpenAI specification tooling guide](specification/tools/README.md) for the supported commands, validation and publication gates, and rules for updating `specification/openai/`.
 
 ## API Surface and Compatibility
 
