@@ -1,11 +1,29 @@
 # Release History
 
-## (Unreleased)
+## 2.13.0 (2026-08-07)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- [@fallintoplace](https://github.com/fallintoplace)
+- [@hogeheer499](https://github.com/hogeheer499)
 
 ### Features Added
 
 - Requests now include structured SDK platform metadata headers (`X-Stainless-Lang`, `X-Stainless-Package-Version`, `X-Stainless-Runtime`, `X-Stainless-Runtime-Version`, `X-Stainless-OS`, and `X-Stainless-Arch`), bringing the .NET library to parity with the other official OpenAI SDKs. These restate information already present in the `User-Agent` header in a machine-parseable form, plus the process CPU architecture, so consumers no longer need to parse the user agent string. Any value you set yourself is preserved. The `User-Agent` header itself is unchanged.
 - Added an opt-out for SDK telemetry, via the `OpenAI.DisableTelemetry` `AppContext` switch or the `OPENAI_DISABLE_TELEMETRY` environment variable. When enabled, the library sends neither the `X-Stainless-*` headers nor the `User-Agent` header that it would otherwise add. See [Telemetry and privacy](https://github.com/openai/openai-dotnet/blob/main/docs/Observability.md#telemetry-and-privacy) for details.
+
+### Bugs Fixed
+
+- OpenAI.Chat:
+  - Fixed an issue where creating Base64 data URIs from large image and file payloads could cause unnecessary memory pressure by copying the entire payload before encoding.
+- OpenAI.Conversations:
+  - Fixed an issue where multiple `include` values on conversation item list, create, and retrieve requests were incorrectly serialized as a single comma-delimited query value instead of repeated `include[]` parameters, causing requests to fail with HTTP 400 responses.
+- OpenAI.Responses:
+  - Fixed an issue where the `Kind` property of `ResponseContentPart` could not be set correctly.
+  - Fixed an issue where creating Base64 data URIs from large image and file payloads could cause unnecessary memory pressure by copying the entire payload before encoding.
+  - Fixed an issue where `Patch` would not propagate correctly through the `McpToolCallApprovalPolicy` and `CodeInterpreterToolContainer` types.
 
 ### Other Changes
 

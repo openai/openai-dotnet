@@ -274,7 +274,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
     [RecordedTest]
     [TestCase("gpt-4o-mini")]
-    [TestCase("computer-use-preview")]
     public async Task ResponsesHelloWorldWithTool(string model)
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -402,7 +401,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    [TestCase("computer-use-preview-2025-03-11")]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
