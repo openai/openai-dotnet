@@ -127,4 +127,67 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(updates, Has.Count.EqualTo(1));
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
     }
+
+    [Test]
+    public async Task StreamingRunContinuesAfterBenignUnknownEvent()
+    {
+        // An unmodeled event yields zero updates. When such an event appears in the
+        // middle of a stream, the enumerator must skip it and keep reading, so that
+        // every later modeled event still surfaces. Placing the unknown event last
+        // cannot detect this, because there is nothing after it to lose.
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(
+            """
+            event: thread.run.created
+            data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+            event: thread.run.some_future_event
+            data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+            event: thread.run.in_progress
+            data: {"id":"run_abc","object":"thread.run","status":"in_progress"}
+
+            event: thread.run.another_future_event
+            data: {"id":"run_abc","object":"thread.run","status":"in_progress"}
+
+            event: thread.run.completed
+            data: {"id":"run_abc","object":"thread.run","status":"completed"}
+
+            event: done
+            data: [DONE]
+            """);
+
+        OpenAIClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        AssistantClient client = new(s_fakeCredential, options);
+
+        List<StreamingUpdate> updates = new();
+
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+
+        // All three modeled events must arrive. Before the fix, the stream ended at the
+        // first unmodeled event and only the run.created update was ever produced.
+        Assert.That(updates, Has.Count.EqualTo(3));
+        Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
+        Assert.That(updates[1].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunInProgress));
+        Assert.That(updates[2].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCompleted));
+    }
 }
