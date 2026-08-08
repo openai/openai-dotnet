@@ -67,6 +67,64 @@ public class SseUpdateCollectionTests
         Assert.That(updates, Is.EqualTo(new[] { "A", "B" }));
     }
 
+    // A run of events that yield no updates, so that the skip loop stays inside a single
+    // MoveNext call across several events.
+    private const string StreamContentWithConsecutiveUnknownEvents =
+        "event: modeled\ndata: {\"value\":\"A\"}\n\n" +
+        "event: " + UnknownEventType + "\ndata: {\"value\":\"skipped\"}\n\n" +
+        "event: " + UnknownEventType + "\ndata: {\"value\":\"skipped\"}\n\n" +
+        "event: modeled\ndata: {\"value\":\"B\"}\n\n" +
+        "data: [DONE]\n\n";
+
+    [Test]
+    public void SkippingEventsWithNoUpdatesObservesCancellation()
+    {
+        using CancellationTokenSource source = new();
+
+        SseUpdateCollection<string> collection = new(
+            () => CreatePage(StreamContentWithConsecutiveUnknownEvents),
+            item => DeserializeEventAndCancelOnUnknown(item, source),
+            source.Token);
+
+        using IEnumerator<string> enumerator = collection.GetEnumerator();
+
+        Assert.That(enumerator.MoveNext(), Is.True);
+        Assert.That(enumerator.Current, Is.EqualTo("A"));
+
+        // The token is canceled while the second call is already inside the skip loop.
+        Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
+    }
+
+    [Test]
+    public void SkippingEventsWithNoUpdatesObservesCancellationAsync()
+    {
+        using CancellationTokenSource source = new();
+
+        AsyncSseUpdateCollection<string> collection = new(
+            () => Task.FromResult(CreatePage(StreamContentWithConsecutiveUnknownEvents)),
+            item => DeserializeEventAndCancelOnUnknown(item, source),
+            source.Token);
+
+        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await foreach (string _ in collection)
+            {
+            }
+        });
+    }
+
+    private static IEnumerable<string> DeserializeEventAndCancelOnUnknown(
+        SseItem<byte[]> item,
+        CancellationTokenSource source)
+    {
+        if (item.EventType == UnknownEventType)
+        {
+            source.Cancel();
+        }
+
+        return DeserializeEvent(item);
+    }
+
     private static IEnumerable<string> DeserializeEvent(SseItem<byte[]> item)
     {
         if (item.EventType == UnknownEventType)
@@ -78,11 +136,13 @@ public class SseUpdateCollectionTests
         return [document.RootElement.GetProperty("value").GetString()!];
     }
 
-    private static ClientResult CreatePage()
+    private static ClientResult CreatePage() => CreatePage(StreamContent);
+
+    private static ClientResult CreatePage(string content)
     {
         MockPipelineResponse response = new(200, "OK")
         {
-            ContentStream = new MemoryStream(Encoding.UTF8.GetBytes(StreamContent)),
+            ContentStream = new MemoryStream(Encoding.UTF8.GetBytes(content)),
         };
 
         return ClientResult.FromResponse(response);
