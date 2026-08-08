@@ -170,11 +170,18 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             // must be skipped so that later events still surface, otherwise a single
             // unrecognized event in the middle of a stream would end the whole stream and
             // look like a clean, early completion.
-            while (_events.MoveNext())
+            while (true)
             {
-                // Cancellation is observed per event rather than only on entry, because a
-                // run of events that yield no updates is consumed inside a single call.
+                // Cancellation is observed once per event rather than only on entry, because
+                // a run of events that yield no updates is consumed inside a single call.
+                // The check sits ahead of the read so that a canceled token does not have to
+                // wait for the server to send another event before it is noticed.
                 _cancellationToken.ThrowIfCancellationRequested();
+
+                if (!_events.MoveNext())
+                {
+                    break;
+                }
 
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {

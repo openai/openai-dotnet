@@ -199,8 +199,19 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             // must be skipped so that later events still surface, otherwise a single
             // unrecognized event in the middle of a stream would end the whole stream and
             // look like a clean, early completion.
-            while (await _events.MoveNextAsync().ConfigureAwait(false))
+            while (true)
             {
+                // Cancellation is observed once per event rather than only on entry, because
+                // a run of events that yield no updates is consumed inside a single call.
+                // Passing the token to the event enumerator is not enough on its own, since
+                // events the parser has already buffered are returned without a read.
+                _cancellationToken.ThrowIfCancellationRequested();
+
+                if (!await _events.MoveNextAsync().ConfigureAwait(false))
+                {
+                    break;
+                }
+
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
