@@ -172,6 +172,10 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             // look like a clean, early completion.
             while (_events.MoveNext())
             {
+                // Cancellation is observed per event rather than only on entry, because a
+                // run of events that yield no updates is consumed inside a single call.
+                _cancellationToken.ThrowIfCancellationRequested();
+
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
