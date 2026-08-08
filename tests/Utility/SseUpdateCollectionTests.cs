@@ -113,6 +113,127 @@ public class SseUpdateCollectionTests
         });
     }
 
+    // The terminal event is the next frame after the one that cancels, so the parser has it
+    // buffered and can return it without another read.
+    private const string StreamContentUnknownThenTerminal =
+        "event: modeled\ndata: {\"value\":\"A\"}\n\n" +
+        "event: " + UnknownEventType + "\ndata: {\"value\":\"skipped\"}\n\n" +
+        "data: [DONE]\n\n";
+
+    [Test]
+    public void CancellationIsNotOvertakenByABufferedTerminalEvent()
+    {
+        using CancellationTokenSource source = new();
+
+        SseUpdateCollection<string> collection = new(
+            () => CreatePage(StreamContentUnknownThenTerminal),
+            item => DeserializeEventAndCancelOnUnknown(item, source),
+            source.Token);
+
+        using IEnumerator<string> enumerator = collection.GetEnumerator();
+
+        Assert.That(enumerator.MoveNext(), Is.True);
+        Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
+    }
+
+    [Test]
+    public void CancellationIsNotOvertakenByABufferedTerminalEventAsync()
+    {
+        using CancellationTokenSource source = new();
+
+        AsyncSseUpdateCollection<string> collection = new(
+            () => Task.FromResult(CreatePage(StreamContentUnknownThenTerminal)),
+            item => DeserializeEventAndCancelOnUnknown(item, source),
+            source.Token);
+
+        // Without the check ahead of the read, the buffered terminal event is reached first
+        // and enumeration ends normally having produced only "A".
+        Assert.ThrowsAsync<OperationCanceledException>(async () =>
+        {
+            await foreach (string _ in collection)
+            {
+            }
+        });
+    }
+
+    [Test]
+    public void CancellationDoesNotWaitForTheNextEvent()
+    {
+        using CancellationTokenSource source = new();
+        using ManualResetEventSlim neverSignaled = new(initialState: false);
+
+        // The stream serves the first two events and then blocks forever, standing in for a
+        // server that has gone quiet. Cancellation has to be seen without another event.
+        Stream content = new BlockingStream(
+            Encoding.UTF8.GetBytes(
+                "event: modeled\ndata: {\"value\":\"A\"}\n\n" +
+                "event: " + UnknownEventType + "\ndata: {\"value\":\"skipped\"}\n\n"),
+            neverSignaled);
+
+        MockPipelineResponse response = new(200, "OK") { ContentStream = content };
+
+        SseUpdateCollection<string> collection = new(
+            () => ClientResult.FromResponse(response),
+            item => DeserializeEventAndCancelOnUnknown(item, source),
+            source.Token);
+
+        using IEnumerator<string> enumerator = collection.GetEnumerator();
+        Assert.That(enumerator.MoveNext(), Is.True);
+
+        Task<Exception> attempt = Task.Run(() =>
+        {
+            try
+            {
+                enumerator.MoveNext();
+                return (Exception)null;
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
+        });
+
+        Assert.That(attempt.Wait(TimeSpan.FromSeconds(10)), Is.True,
+            "MoveNext blocked on a read instead of observing the canceled token.");
+        Assert.That(attempt.Result, Is.InstanceOf<OperationCanceledException>());
+    }
+
+    /// <summary>
+    /// Serves <paramref name="content"/> once and then blocks until the gate is set.
+    /// </summary>
+    private sealed class BlockingStream(byte[] content, ManualResetEventSlim gate) : Stream
+    {
+        private int _position;
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            if (_position < content.Length)
+            {
+                int copied = Math.Min(count, content.Length - _position);
+                Array.Copy(content, _position, buffer, offset, copied);
+                _position += copied;
+                return copied;
+            }
+
+            gate.Wait();
+            return 0;
+        }
+
+        public override bool CanRead => true;
+        public override bool CanSeek => false;
+        public override bool CanWrite => false;
+        public override long Length => throw new NotSupportedException();
+        public override long Position
+        {
+            get => _position;
+            set => throw new NotSupportedException();
+        }
+        public override void Flush() { }
+        public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+        public override void SetLength(long value) => throw new NotSupportedException();
+        public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+    }
+
     private static IEnumerable<string> DeserializeEventAndCancelOnUnknown(
         SseItem<byte[]> item,
         CancellationTokenSource source)
