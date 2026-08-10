@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
 using System;
@@ -13,7 +14,7 @@ public partial class ChatExamples
     {
         ChatClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync("Say 'this is a test.'");
+        AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = await client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
         await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)

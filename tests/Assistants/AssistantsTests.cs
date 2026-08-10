@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Assistants;
@@ -544,8 +545,8 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Stopwatch stopwatch = Stopwatch.StartNew();
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
-        AsyncCollectionResult<StreamingUpdate> streamingResult
-            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        AsyncStreamingClientResult<StreamingUpdate> streamingResult
+            = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         Print(">>> Connected <<<");
 
@@ -594,7 +595,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
 
         Print(" >>> Beginning call ... ");
-        AsyncCollectionResult<StreamingUpdate> asyncResults = client.CreateThreadAndRunStreamingAsync(
+        AsyncStreamingClientResult<StreamingUpdate> asyncResults = await client.CreateThreadAndRunStreamingAsync(
             assistant.Id,
             new()
             {
@@ -632,7 +633,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
             }
             if (toolOutputs.Count > 0)
             {
-                asyncResults = client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
+                asyncResults = await client.SubmitToolOutputsToRunStreamingAsync(run.ThreadId, run.Id, toolOutputs);
             }
         } while (run?.Status.IsTerminal == false);
     }
@@ -936,7 +937,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         string message = string.Empty;
 
         // Create run and stream the results.
-        AsyncCollectionResult<StreamingUpdate> streamingResult = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        AsyncStreamingClientResult<StreamingUpdate> streamingResult = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         await foreach (StreamingUpdate update in streamingResult)
         {
