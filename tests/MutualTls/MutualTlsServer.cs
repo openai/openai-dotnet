@@ -203,6 +203,7 @@ internal sealed class MutualTlsServer : IAsyncDisposable
         validationChain.ChainPolicy.ApplicationPolicy.Add(
             new Oid(ClientAuthenticationOid));
         validationChain.ChainPolicy.CustomTrustStore.Add(_trustedClientRoot);
+        validationChain.ChainPolicy.ExtraStore.AddRange(chain.ChainPolicy.ExtraStore);
         validationChain.ChainPolicy.DisableCertificateDownloads = true;
         validationChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
         validationChain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
