@@ -31,7 +31,7 @@
     "@azure-tools/typespec-client-generator-core": "0.70.0",
     "@open-ai/plugin": "file:",
     "@typespec/http": "1.14.0",
-    "@typespec/http-client-csharp": "1.0.0-alpha.20260717.13",
+    "@typespec/http-client-csharp": "1.0.0-alpha.20260807.5",
     "@typespec/openapi": "1.14.0"
   },
   "devDependencies": {
