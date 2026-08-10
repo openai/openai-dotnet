@@ -585,7 +585,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateRunStreamingAsync(
+    public virtual async Task<AsyncStreamingClientResult<StreamingUpdate>> CreateRunStreamingAsync(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -598,8 +598,9 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        return new AsyncSseUpdateCollection<StreamingUpdate>(
-            async () => await CreateRunAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        ClientResult result = await CreateRunAsync(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingClientResult.Create(
+            result.GetRawResponse(),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -612,7 +613,7 @@ public partial class AssistantClient
     /// <param name="assistantId"> The ID of the assistant that should be used when evaluating the thread. </param>
     /// <param name="options"> Additional options for the run. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateRunStreaming(
+    public virtual AsyncStreamingClientResult<StreamingUpdate> CreateRunStreaming(
         string threadId,
         string assistantId,
         RunCreationOptions options = null,
@@ -625,8 +626,9 @@ public partial class AssistantClient
         options.AssistantId = assistantId;
         options.Stream = true;
 
-        return new SseUpdateCollection<StreamingUpdate>(
-            () => CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true)),
+        ClientResult result = CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions(streaming: true));
+        return SseStreamingClientResult.Create(
+            result.GetRawResponse(),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -680,7 +682,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> CreateThreadAndRunStreamingAsync(
+    public virtual async Task<AsyncStreamingClientResult<StreamingUpdate>> CreateThreadAndRunStreamingAsync(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -692,8 +694,9 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        return new AsyncSseUpdateCollection<StreamingUpdate>(
-            async () => await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        ClientResult result = await CreateThreadAndRunAsync(protocolContent, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingClientResult.Create(
+            result.GetRawResponse(),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -705,7 +708,7 @@ public partial class AssistantClient
     /// <param name="threadOptions"> Options for the new thread that will be created. </param>
     /// <param name="runOptions"> Additional options to apply to the run that will begin. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> CreateThreadAndRunStreaming(
+    public virtual AsyncStreamingClientResult<StreamingUpdate> CreateThreadAndRunStreaming(
         string assistantId,
         ThreadCreationOptions threadOptions = null,
         RunCreationOptions runOptions = null,
@@ -717,8 +720,9 @@ public partial class AssistantClient
         runOptions.Stream = true;
         BinaryContent protocolContent = CreateThreadAndRunProtocolContent(assistantId, threadOptions, runOptions);
 
-        return new SseUpdateCollection<StreamingUpdate>(
-            () => CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true)),
+        ClientResult result = CreateThreadAndRun(protocolContent, cancellationToken.ToRequestOptions(streaming: true));
+        return SseStreamingClientResult.Create(
+            result.GetRawResponse(),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -829,7 +833,7 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual AsyncCollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreamingAsync(
+    public virtual async Task<AsyncStreamingClientResult<StreamingUpdate>> SubmitToolOutputsToRunStreamingAsync(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -841,8 +845,9 @@ public partial class AssistantClient
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
         using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
 
-        return new AsyncSseUpdateCollection<StreamingUpdate>(
-            async () => await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        ClientResult result = await SubmitToolOutputsToRunAsync(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
+        return SseStreamingClientResult.Create(
+            result.GetRawResponse(),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }
@@ -856,7 +861,7 @@ public partial class AssistantClient
     /// The tool outputs, corresponding to <see cref="InternalRequiredToolCall"/> instances from the run.
     /// </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    public virtual CollectionResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
+    public virtual AsyncStreamingClientResult<StreamingUpdate> SubmitToolOutputsToRunStreaming(
         string threadId,
         string runId,
         IEnumerable<ToolOutput> toolOutputs,
@@ -868,8 +873,9 @@ public partial class AssistantClient
         var submitToolOutputsRunRequest = new InternalSubmitToolOutputsRunRequest(toolOutputs.ToList(), stream: true, null);
         using BinaryContent content = BinaryContent.Create(submitToolOutputsRunRequest, ModelSerializationExtensions.WireOptions);
 
-        return new SseUpdateCollection<StreamingUpdate>(
-            () => SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true)),
+        ClientResult result = SubmitToolOutputsToRun(threadId, runId, content, cancellationToken.ToRequestOptions(streaming: true));
+        return SseStreamingClientResult.Create(
+            result.GetRawResponse(),
             StreamingUpdate.FromSseItem,
             cancellationToken);
     }

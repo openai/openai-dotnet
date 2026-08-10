@@ -8,11 +8,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallItemParam : InternalItemParam
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalLocalShellToolCallItemParam(string callId, InternalLocalShellExecAction action) : base(ResponseItemKind.LocalShellCall)
         {
             CallId = callId;
             Action = action;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalLocalShellToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, InternalLocalShellExecAction action) : base(kind, patch)

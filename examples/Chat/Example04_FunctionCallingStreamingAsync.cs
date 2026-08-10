@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
 using System;
@@ -39,7 +40,7 @@ public partial class ChatExamples
             StringBuilder contentBuilder = new();
             StreamingChatToolCallsBuilder toolCallsBuilder = new();
 
-            AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync(messages, options);
+            AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = await client.CompleteChatStreamingAsync(messages, options);
 
             await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
             {

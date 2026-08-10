@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
@@ -194,43 +195,14 @@ public class ChatMockTests : ClientTestBase
     }
 
     [Test]
-    public void CompleteChatStreamingAsyncRespectsTheCancellationToken()
+    public async Task CompleteChatStreamingAsyncRespectsTheCancellationToken()
     {
         ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        IAsyncEnumerator<StreamingChatCompletionUpdate> enumerator = client
-            .CompleteChatStreamingAsync(s_messages, cancellationToken: cancellationSource.Token)
-            .GetAsyncEnumerator();
-
-        Assert.That(async () => await enumerator.MoveNextAsync(), Throws.InstanceOf<OperationCanceledException>());
-    }
-
-    [SyncOnly]
-    [Test]
-    public void StreamingChatCanBeCancelled()
-    {
-        MockPipelineResponse response = CreateStreamingChatResponse();
-        OpenAIClientOptions options = GetClientOptionsWithMockResponse(response);
-        ChatClient client = CreateProxyFromClient(new ChatClient("model", s_fakeCredential, options));
-        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
-
-        using CancellationTokenSource cancellationTokenSource = new();
-        CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages, cancellationToken: cancellationTokenSource.Token);
-        using IEnumerator<StreamingChatCompletionUpdate> enumerator = streamingResult.GetEnumerator();
-
-        Assert.That(enumerator.MoveNext(), Is.True);
-        StreamingChatCompletionUpdate firstUpdate = enumerator.Current;
-
-        Assert.That(firstUpdate, Is.Not.Null);
-        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
-
-        cancellationTokenSource.Cancel();
-
-        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.True);
-        Assert.That(cancellationTokenSource.Token.IsCancellationRequested, Is.True);
-        Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
+        Assert.That(async () => await client.CompleteChatStreamingAsync(s_messages, cancellationToken: cancellationSource.Token),
+            Throws.InstanceOf<OperationCanceledException>());
     }
 
     [AsyncOnly]
@@ -243,8 +215,8 @@ public class ChatMockTests : ClientTestBase
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         using CancellationTokenSource cancellationTokenSource = new();
-        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages, cancellationToken: cancellationTokenSource.Token);
-        await using IAsyncEnumerator<StreamingChatCompletionUpdate> enumerator = streamingResult.GetAsyncEnumerator();
+        await using AsyncStreamingClientResult<StreamingChatCompletionUpdate> streamingResult = await client.CompleteChatStreamingAsync(messages, cancellationToken: cancellationTokenSource.Token);
+        await using IAsyncEnumerator<StreamingChatCompletionUpdate> enumerator = ((IAsyncEnumerable<StreamingChatCompletionUpdate>)streamingResult).GetAsyncEnumerator();
 
         Assert.That(await enumerator.MoveNextAsync(), Is.True);
         StreamingChatCompletionUpdate firstUpdate = enumerator.Current;
@@ -259,6 +231,7 @@ public class ChatMockTests : ClientTestBase
         Assert.ThrowsAsync<OperationCanceledException>(async () => await enumerator.MoveNextAsync());
     }
 
+    [AsyncOnly]
     [Test]
     public async Task CompleteChatStreamingClosesNetworkStream()
     {
@@ -271,9 +244,9 @@ public class ChatMockTests : ClientTestBase
         TimeSpan? firstTokenReceiptTime = null;
         TimeSpan? latestTokenReceiptTime = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
-        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
+        await using AsyncStreamingClientResult<StreamingChatCompletionUpdate> streamingResult = await client.CompleteChatStreamingAsync(messages);
 
-        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
+        Assert.That(streamingResult, Is.InstanceOf<AsyncStreamingClientResult<StreamingChatCompletionUpdate>>());
         Assert.That(response.IsDisposed, Is.False);
 
         await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)

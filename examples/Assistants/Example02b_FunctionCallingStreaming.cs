@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using System;
@@ -92,8 +93,8 @@ public partial class AssistantExamples
         #endregion
 
         #region Step 3 - Initiate a streaming run
-        AsyncCollectionResult<StreamingUpdate> asyncUpdates
-            = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
+        AsyncStreamingClientResult<StreamingUpdate> asyncUpdates
+            = await client.CreateRunStreamingAsync(thread.Id, assistant.Id);
 
         ThreadRun currentRun = null;
         do
@@ -124,7 +125,7 @@ public partial class AssistantExamples
             }
             if (outputsToSubmit.Count > 0)
             {
-                asyncUpdates = client.SubmitToolOutputsToRunStreamingAsync(currentRun.ThreadId, currentRun.Id, outputsToSubmit);
+                asyncUpdates = await client.SubmitToolOutputsToRunStreamingAsync(currentRun.ThreadId, currentRun.Id, outputsToSubmit);
             }
         }
         while (currentRun?.Status.IsTerminal == false);

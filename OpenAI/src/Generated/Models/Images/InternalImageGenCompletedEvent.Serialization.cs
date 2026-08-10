@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -48,6 +49,13 @@ namespace OpenAI.Images
         InternalImageGenCompletedEvent IPersistableModel<InternalImageGenCompletedEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
         string IPersistableModel<InternalImageGenCompletedEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalImageGenCompletedEvent(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalImageGenCompletedEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
 
         void IJsonModel<InternalImageGenCompletedEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

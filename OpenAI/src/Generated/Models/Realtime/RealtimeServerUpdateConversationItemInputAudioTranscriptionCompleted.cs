@@ -12,6 +12,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : RealtimeServerUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(string eventId, string itemId, int contentIndex, string transcript, RealtimeTranscriptionUsage usage) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionCompleted)
         {
             EventId = eventId;
@@ -20,7 +21,9 @@ namespace OpenAI.Realtime
             Transcript = transcript;
             Logprobs = new ChangeTrackingList<RealtimeLogProbabilityDetails>();
             Usage = usage;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, string transcript, IList<RealtimeLogProbabilityDetails> logprobs, RealtimeTranscriptionUsage usage) : base(kind, patch)

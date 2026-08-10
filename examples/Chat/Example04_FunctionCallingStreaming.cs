@@ -1,6 +1,8 @@
+#pragma warning disable SCME0005
 ﻿using NUnit.Framework;
 using OpenAI.Chat;
 using System;
+using System.Threading.Tasks;
 using System.Buffers;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -133,7 +135,7 @@ public partial class ChatExamples
     #endregion
 
     [Test]
-    public void Example04_FunctionCallingStreaming()
+    public async Task Example04_FunctionCallingStreaming()
     {
         ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -158,9 +160,9 @@ public partial class ChatExamples
             StringBuilder contentBuilder = new();
             StreamingChatToolCallsBuilder toolCallsBuilder = new();
 
-            CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming(messages, options);
+            AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming(messages, options);
 
-            foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
+            await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
             {
                 // Accumulate the text content as new updates arrive.
                 foreach (ChatMessageContentPart contentPart in completionUpdate.ContentUpdate)
