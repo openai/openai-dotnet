@@ -1234,12 +1234,12 @@ namespace OpenAI.Responses {
         public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> CreateResponseStreaming(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> CreateResponseStreaming(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
@@ -1260,10 +1260,10 @@ namespace OpenAI.Responses {
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI001")]
     public class ResponsesClientOptions : ClientPipelineOptions {
