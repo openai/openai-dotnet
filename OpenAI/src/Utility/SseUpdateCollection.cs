@@ -164,8 +164,25 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 return true;
             }
 
-            if (_events.MoveNext())
+            // Keep advancing the outer event enumerator instead of stopping at the first
+            // event. An event can legitimately deserialize to zero updates, for example an
+            // unmodeled event that the deserializer maps to an empty sequence. Such an event
+            // must be skipped so that later events still surface, otherwise a single
+            // unrecognized event in the middle of a stream would end the whole stream and
+            // look like a clean, early completion.
+            while (true)
             {
+                // Cancellation is observed once per event rather than only on entry, because
+                // a run of events that yield no updates is consumed inside a single call.
+                // The check sits ahead of the read so that a canceled token does not have to
+                // wait for the server to send another event before it is noticed.
+                _cancellationToken.ThrowIfCancellationRequested();
+
+                if (!_events.MoveNext())
+                {
+                    break;
+                }
+
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
