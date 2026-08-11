@@ -121,7 +121,7 @@ model ComputerActionClick extends ComputerAction {
   @doc("""
     Indicates which mouse button was pressed during the click. One of `left`, `right`, `wheel`, `back`, or `forward`.
     """)
-  button: "left" | "right" | "wheel" | "back" | "forward";
+  button: ComputerCallActionMouseButton;
 
   /** The x-coordinate where the click occurred. */
   x: int32;
@@ -775,7 +775,7 @@ model FileSearchToolCallItemResource extends ItemResource {
     The status of the file search tool call. One of `in_progress`,
     `searching`, `completed`, `incomplete`, or `failed`.
     """)
-  status: "in_progress" | "searching" | "completed" | "incomplete" | "failed";
+  status: FileSearchCallStatus;
 
   ...FileSearchToolCallItemBase;
 }
@@ -792,7 +792,7 @@ model ComputerToolCallItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status: ComputerCallStatus;
 
   ...ComputerToolCallItemBase;
 }
@@ -809,7 +809,7 @@ model ComputerToolCallOutputItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status: ComputerCallOutputStatus;
 
   ...ComputerToolCallOutputItemBase;
 }
@@ -822,7 +822,7 @@ model WebSearchToolCallItemResource extends ItemResource {
   type: ItemType.web_search_call;
 
   /** The status of the web search tool call. */
-  status: "in_progress" | "searching" | "completed" | "failed";
+  status: WebSearchCallStatus;
 
   // CUSTOM: Based on service behavior, "action" is optional.
   /**An object describing the specific action taken in this web search call.
@@ -914,7 +914,7 @@ model FunctionToolCallItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status: FunctionCallStatus;
 
   ...FunctionToolCallItemBase;
 }
@@ -931,7 +931,7 @@ model FunctionToolCallOutputItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status: FunctionCallOutputStatus;
 
   ...FunctionToolCallOutputItemBase;
 }
@@ -948,7 +948,7 @@ model ReasoningItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status: ReasoningStatus;
 
   ...ReasoningItemBase;
 }
@@ -971,7 +971,7 @@ model ImageGenToolCallItemParam extends ItemParam {
 
 model ImageGenToolCallItemResource extends ItemResource {
   type: ItemType.image_generation_call;
-  status: "in_progress" | "completed" | "generating" | "failed";
+  status: ImageGenerationCallStatus;
   action?: ImageGenerationToolAction;
   background?: ImageGenerationBackground;
   output_format?: ImageGenerationOutputFormat | null;
@@ -988,7 +988,7 @@ model CodeInterpreterToolCallItemParam extends ItemParam {
 
 model CodeInterpreterToolCallItemResource extends ItemResource {
   type: ItemType.code_interpreter_call;
-  status: "in_progress" | "interpreting" | "completed";
+  status: CodeInterpreterCallStatus;
   ...CodeInterpreterToolCallItemBase;
 }
 
@@ -1224,7 +1224,7 @@ model ResponsesMessageItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status: MessageStatus;
 
   /** The role associated with the message. */
   role: ResponsesMessageRole;
@@ -1383,5 +1383,98 @@ union CustomToolCallOutputStatus {
   string,
   completed: "completed",
   in_progress: "in_progress",
+  incomplete: "incomplete",
+}
+
+union ResponseStatus {
+  string,
+  completed: "completed",
+  failed: "failed",
+  in_progress: "in_progress",
+  cancelled: "cancelled",
+  queued: "queued",
+  incomplete: "incomplete",
+}
+
+union MessageStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  incomplete: "incomplete",
+}
+
+union FunctionCallStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  incomplete: "incomplete",
+}
+
+union FileSearchCallStatus {
+  string,
+  in_progress: "in_progress",
+  searching: "searching",
+  completed: "completed",
+  incomplete: "incomplete",
+  failed: "failed",
+}
+
+union WebSearchCallStatus {
+  string,
+  in_progress: "in_progress",
+  searching: "searching",
+  completed: "completed",
+  failed: "failed",
+}
+
+union CodeInterpreterCallStatus {
+  string,
+  in_progress: "in_progress",
+  interpreting: "interpreting",
+  completed: "completed",
+}
+
+union ImageGenerationCallStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  generating: "generating",
+  failed: "failed",
+}
+
+union ReasoningStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  incomplete: "incomplete",
+}
+
+union ComputerCallActionMouseButton {
+  string,
+  left: "left",
+  right: "right",
+  wheel: "wheel",
+  back: "back",
+  forward: "forward",
+}
+
+union ComputerCallOutputStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  incomplete: "incomplete",
+}
+
+union ComputerCallStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  incomplete: "incomplete",
+}
+
+union FunctionCallOutputStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
   incomplete: "incomplete",
 }
