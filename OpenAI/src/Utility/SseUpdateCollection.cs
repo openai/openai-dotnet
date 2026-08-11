@@ -48,6 +48,20 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     }
 
     public SseUpdateCollection(
+        Func<BinaryData, ClientResult> sendRequestFunc,
+        BinaryData requestData,
+        Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestFunc,
+                  requestData,
+                  AsyncSseUpdateCollection<T>.DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public SseUpdateCollection(
         Func<ClientResult> sendRequestFunc,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
         CancellationToken cancellationToken)
@@ -73,6 +87,20 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     }
 
     public SseUpdateCollection(
+        Func<BinaryData, ClientResult> sendRequestFunc,
+        BinaryData requestData,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestFunc,
+                  requestData,
+                  AsyncSseUpdateCollection<T>.DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public SseUpdateCollection(
         Func<ClientResult> sendRequestFunc,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken)
@@ -83,6 +111,20 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         _sendRequestFunc = sendRequestFunc;
         _eventDeserializerFunc = eventDeserializerFunc;
         _cancellationToken = cancellationToken;
+    }
+
+    public SseUpdateCollection(
+        Func<BinaryData, ClientResult> sendRequestFunc,
+        BinaryData requestData,
+        Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  () => sendRequestFunc(requestData),
+                  eventDeserializerFunc,
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(sendRequestFunc, nameof(sendRequestFunc));
+        Argument.AssertNotNull(requestData, nameof(requestData));
     }
 
     public override ContinuationToken? GetContinuationToken(ClientResult page)

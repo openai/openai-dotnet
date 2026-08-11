@@ -250,10 +250,16 @@ public partial class ChatClient
 
         options ??= new();
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
+        BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
-        using BinaryContent content = clonedOptions.ToBinaryContent();
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
-            async () => await CompleteChatAsync(content, requestOptions).ConfigureAwait(false),
+            async requestData =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
+            },
+            requestData,
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
             requestOptions.CancellationToken);
     }
@@ -277,10 +283,16 @@ public partial class ChatClient
 
         options ??= new();
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
+        BinaryData requestData = ModelReaderWriter.Write(clonedOptions, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
 
-        using BinaryContent content = clonedOptions.ToBinaryContent();
+        // CUSTOM: Defer BinaryContent creation to ensure it is not disposed before enumeration begins.
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
-            () => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true)),
+            requestData =>
+            {
+                using BinaryContent content = BinaryContent.Create(requestData);
+                return CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true));
+            },
+            requestData,
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
             cancellationToken);
     }

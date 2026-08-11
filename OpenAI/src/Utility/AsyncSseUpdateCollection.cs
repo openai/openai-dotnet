@@ -48,6 +48,20 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     }
 
     public AsyncSseUpdateCollection(
+        Func<BinaryData, Task<ClientResult>> sendRequestAsync,
+        BinaryData requestData,
+        Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestAsync,
+                  requestData,
+                  DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public AsyncSseUpdateCollection(
         Func<Task<ClientResult>> sendRequestAsync,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
         CancellationToken cancellationToken)
@@ -72,6 +86,20 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     }
 
     public AsyncSseUpdateCollection(
+        Func<BinaryData, Task<ClientResult>> sendRequestAsync,
+        BinaryData requestData,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestAsync,
+                  requestData,
+                  DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public AsyncSseUpdateCollection(
         Func<Task<ClientResult>> sendRequestAsync,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken)
@@ -82,6 +110,20 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         _sendRequestAsync = sendRequestAsync;
         _eventDeserializerFunc = eventDeserializerFunc;
         _cancellationToken = cancellationToken;
+    }
+
+    public AsyncSseUpdateCollection(
+        Func<BinaryData, Task<ClientResult>> sendRequestAsync,
+        BinaryData requestData,
+        Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  () => sendRequestAsync(requestData),
+                  eventDeserializerFunc,
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(sendRequestAsync, nameof(sendRequestAsync));
+        Argument.AssertNotNull(requestData, nameof(requestData));
     }
 
     public override ContinuationToken? GetContinuationToken(ClientResult page)
