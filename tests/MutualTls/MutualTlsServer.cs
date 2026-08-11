@@ -203,7 +203,12 @@ internal sealed class MutualTlsServer : IAsyncDisposable
         validationChain.ChainPolicy.ApplicationPolicy.Add(
             new Oid(ClientAuthenticationOid));
         validationChain.ChainPolicy.CustomTrustStore.Add(_trustedClientRoot);
+
+        // Carry peer-supplied intermediates into the fresh chain explicitly. Windows may
+        // rediscover them from its certificate cache, while OpenSSL requires ExtraStore.
+        // These remain untrusted candidates; trust is anchored to the custom root.
         validationChain.ChainPolicy.ExtraStore.AddRange(chain.ChainPolicy.ExtraStore);
+
         validationChain.ChainPolicy.DisableCertificateDownloads = true;
         validationChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
         validationChain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
