@@ -1,5 +1,4 @@
 import "../base/typespec/vector-stores/main.tsp";
-import "./models/vector-stores-enums.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 import "@typespec/http-client-csharp";
 
@@ -15,11 +14,8 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(CreateVectorStoreRequest.metadata, Record<string>);
 @@alternateType(UpdateVectorStoreRequest.metadata, Record<string>);
 @@alternateType(VectorStoreObject.metadata, Record<string> | null);
-@@alternateType(VectorStoreObject.status, VectorStoreStatus);
 
 @@alternateType(VectorStoreExpirationAfter.anchor, VectorStoreExpirationAnchor);
-
-@@alternateType(VectorStoreFileObject.status, VectorStoreFileStatus);
 
 @@clientName(VectorStoreFileObject.usage_bytes, "UsageInBytes");
 @@alternateType(VectorStoreFileObject.usage_bytes, int64 | null);

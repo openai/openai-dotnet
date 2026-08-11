@@ -277,13 +277,7 @@ model Response {
     The status of the response generation. One of `completed`, `failed`,
     `in_progress`, `cancelled`, `queued`, or `incomplete`.
     """)
-  status?:
-    | "completed"
-    | "failed"
-    | "in_progress"
-    | "cancelled"
-    | "queued"
-    | "incomplete";
+  status?: ResponseStatus;
 
   // Tool customization: Fully qualify as an integer-based unix timestamp
   /** Unix timestamp (in seconds) of when this Response was created. */

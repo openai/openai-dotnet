@@ -291,7 +291,7 @@ model VectorStoreFileObject {
   /** The status of the vector store file, which can be either `in_progress`, `completed`, `cancelled`, or `failed`. The status `completed` indicates that the vector store file is ready for use. */
   #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
-  status: "in_progress" | "completed" | "cancelled" | "failed";
+  status: VectorStoreFileStatus;
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -426,7 +426,7 @@ model VectorStoreObject {
   /** The status of the vector store, which can be either `expired`, `in_progress`, or `completed`. A status of `completed` indicates that the vector store is ready for use. */
   #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
-  status: "expired" | "in_progress" | "completed";
+  status: VectorStoreStatus;
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -816,4 +816,19 @@ model VectorStoreFileCollectionOptions {
 
 enum VectorStoreExpirationAnchor {
   last_active_at,
+}
+
+union VectorStoreStatus {
+  string,
+  expired: "expired",
+  in_progress: "in_progress",
+  completed: "completed",
+}
+
+union VectorStoreFileStatus {
+  string,
+  in_progress: "in_progress",
+  completed: "completed",
+  cancelled: "cancelled",
+  failed: "failed",
 }
