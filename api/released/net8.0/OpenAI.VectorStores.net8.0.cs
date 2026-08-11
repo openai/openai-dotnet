@@ -157,9 +157,19 @@ namespace OpenAI.VectorStores {
         public static explicit operator VectorStoreDeletionResult(ClientResult result);
     }
     [Experimental("OPENAI001")]
-    public enum VectorStoreExpirationAnchor {
-        Unknown = 0,
-        LastActiveAt = 1
+    public readonly partial struct VectorStoreExpirationAnchor : IEquatable<VectorStoreExpirationAnchor> {
+        public VectorStoreExpirationAnchor(string value);
+        public static VectorStoreExpirationAnchor LastActiveAt { get; }
+        public readonly bool Equals(VectorStoreExpirationAnchor other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreExpirationAnchor left, VectorStoreExpirationAnchor right);
+        public static implicit operator VectorStoreExpirationAnchor(string value);
+        public static implicit operator VectorStoreExpirationAnchor?(string value);
+        public static bool operator !=(VectorStoreExpirationAnchor left, VectorStoreExpirationAnchor right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class VectorStoreExpirationPolicy : IJsonModel<VectorStoreExpirationPolicy>, IPersistableModel<VectorStoreExpirationPolicy> {
@@ -261,12 +271,22 @@ namespace OpenAI.VectorStores {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
-    public enum VectorStoreFileStatus {
-        Unknown = 0,
-        InProgress = 1,
-        Completed = 2,
-        Cancelled = 3,
-        Failed = 4
+    public readonly partial struct VectorStoreFileStatus : IEquatable<VectorStoreFileStatus> {
+        public VectorStoreFileStatus(string value);
+        public static VectorStoreFileStatus Cancelled { get; }
+        public static VectorStoreFileStatus Completed { get; }
+        public static VectorStoreFileStatus Failed { get; }
+        public static VectorStoreFileStatus InProgress { get; }
+        public readonly bool Equals(VectorStoreFileStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileStatus left, VectorStoreFileStatus right);
+        public static implicit operator VectorStoreFileStatus(string value);
+        public static implicit operator VectorStoreFileStatus?(string value);
+        public static bool operator !=(VectorStoreFileStatus left, VectorStoreFileStatus right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter> {
@@ -293,10 +313,20 @@ namespace OpenAI.VectorStores {
         public string Name { get; set; }
     }
     [Experimental("OPENAI001")]
-    public enum VectorStoreStatus {
-        Unknown = 0,
-        InProgress = 1,
-        Completed = 2,
-        Expired = 3
+    public readonly partial struct VectorStoreStatus : IEquatable<VectorStoreStatus> {
+        public VectorStoreStatus(string value);
+        public static VectorStoreStatus Completed { get; }
+        public static VectorStoreStatus Expired { get; }
+        public static VectorStoreStatus InProgress { get; }
+        public readonly bool Equals(VectorStoreStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreStatus left, VectorStoreStatus right);
+        public static implicit operator VectorStoreStatus(string value);
+        public static implicit operator VectorStoreStatus?(string value);
+        public static bool operator !=(VectorStoreStatus left, VectorStoreStatus right);
+        public override readonly string ToString();
     }
 }
