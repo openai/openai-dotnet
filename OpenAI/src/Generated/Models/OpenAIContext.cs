@@ -28,53 +28,127 @@ using OpenAI.Videos;
 
 namespace OpenAI
 {
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchCallItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchCallItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchCallItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchCallOutputItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchCallOutputItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchCallOutputItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchCreateFileOperation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchCreateFileOperation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchCreateFileOperation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchDeleteFileOperation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchDeleteFileOperation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchDeleteFileOperation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchOperation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchOperation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchOperation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchUpdateFileOperation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchUpdateFileOperation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchUpdateFileOperation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.Assistant is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(Assistant))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.Assistant is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantChatMessage))]
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.AssistantCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.AssistantCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.AssistantCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.AssistantCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.AssistantDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.AssistantDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.AssistantModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantModificationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.AssistantModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.AssistantResponseFormat is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantResponseFormat))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.AssistantResponseFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.AssistantThread is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AssistantThread))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.AssistantThread is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTokenLogProbabilityDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTokenLogProbabilityDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTokenLogProbabilityDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscription))]
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionChunkingStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionChunkingStrategy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionChunkingStrategy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionCustomChunkingStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionCustomChunkingStrategy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionCustomChunkingStrategy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionCustomServerVadChunkingStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionCustomServerVadChunkingStrategy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionCustomServerVadChunkingStrategy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionDurationUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionDurationUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionDurationUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionInputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionInputTokenUsageDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionInputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionTokenUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionTokenUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.AudioTranscriptionUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranscriptionUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.AudioTranscriptionUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AudioTranslation))]
     [ModelReaderWriterBuildable(typeof(AudioTranslationOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.AutomaticCodeInterpreterToolContainerConfiguration is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AutomaticCodeInterpreterToolContainerConfiguration))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.AutomaticCodeInterpreterToolContainerConfiguration is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Batch.BatchCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(BatchCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Batch.BatchCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Batch.BatchJob is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(BatchJob))]
+#pragma warning restore OPENAI001 // global::OpenAI.Batch.BatchJob is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatAudioOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatCompletion))]
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatCompletionCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatCompletionCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatCompletionCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatCompletionDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatCompletionDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatCompletionDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatCompletionMessageCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatCompletionMessageCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatCompletionMessageCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatCompletionMessageListDatum is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatCompletionMessageListDatum))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatCompletionMessageListDatum is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatCompletionOptions))]
+#pragma warning disable CS0618 // global::OpenAI.Chat.ChatFunction is obsolete and may be removed in future versions.
     [ModelReaderWriterBuildable(typeof(ChatFunction))]
+#pragma warning restore CS0618 // global::OpenAI.Chat.ChatFunction is obsolete and may be removed in future versions.
+#pragma warning disable CS0618 // global::OpenAI.Chat.ChatFunctionCall is obsolete and may be removed in future versions.
     [ModelReaderWriterBuildable(typeof(ChatFunctionCall))]
+#pragma warning restore CS0618 // global::OpenAI.Chat.ChatFunctionCall is obsolete and may be removed in future versions.
+#pragma warning disable CS0618 // global::OpenAI.Chat.ChatFunctionChoice is obsolete and may be removed in future versions.
     [ModelReaderWriterBuildable(typeof(ChatFunctionChoice))]
+#pragma warning restore CS0618 // global::OpenAI.Chat.ChatFunctionChoice is obsolete and may be removed in future versions.
     [ModelReaderWriterBuildable(typeof(ChatInputTokenUsageDetails))]
     [ModelReaderWriterBuildable(typeof(ChatMessage))]
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatMessageAnnotation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatMessageContentPart))]
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatOutputAudio is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatOutputAudio))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatOutputAudio is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatOutputAudioReference is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatOutputAudioReference))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatOutputAudioReference is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatOutputPrediction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatOutputPrediction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatOutputPrediction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatOutputTokenUsageDetails))]
     [ModelReaderWriterBuildable(typeof(ChatResponseFormat))]
     [ModelReaderWriterBuildable(typeof(ChatTokenLogProbabilityDetails))]
@@ -83,97 +157,265 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ChatTool))]
     [ModelReaderWriterBuildable(typeof(ChatToolCall))]
     [ModelReaderWriterBuildable(typeof(ChatToolChoice))]
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.ChatWebSearchOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ChatWebSearchOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.ChatWebSearchOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallImageOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterCallImageOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallImageOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallLogsOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterCallLogsOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallLogsOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterCallOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterCallResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterCallResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterToolContainer is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterToolContainer))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterToolContainer is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CodeInterpreterToolContainerConfiguration is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterToolContainerConfiguration))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CodeInterpreterToolContainerConfiguration is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.CodeInterpreterToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterToolDefinition))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.CodeInterpreterToolDefinition is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.CodeInterpreterToolResources is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CodeInterpreterToolResources))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.CodeInterpreterToolResources is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ComputerCallAction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ComputerCallAction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ComputerCallAction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ComputerCallOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ComputerCallOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ComputerCallOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ComputerCallOutputResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ComputerCallOutputResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ComputerCallOutputResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ComputerCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ComputerCallResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ComputerCallResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ComputerCallSafetyCheck is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ComputerCallSafetyCheck))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ComputerCallSafetyCheck is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ComputerTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ComputerTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ComputerTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerAllowlistNetworkPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerAllowlistNetworkPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerAllowlistNetworkPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerCollectionPage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerDisabledNetworkPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerDisabledNetworkPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerDisabledNetworkPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerExpirationPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerExpirationPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerExpirationPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ContainerFileCitationMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerFileCitationMessageAnnotation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ContainerFileCitationMessageAnnotation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerFileCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerFileCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerFileCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerFileCollectionPage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerFileCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerFileCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerFileDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerFileDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerFileDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerFileResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerFileResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerFileResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerNetworkPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerNetworkPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerNetworkPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerNetworkPolicyDomainSecret is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerNetworkPolicyDomainSecret))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerNetworkPolicyDomainSecret is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Containers.ContainerResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ContainerResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Containers.ContainerResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Conversations.ConversationCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ConversationCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Conversations.ConversationCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Conversations.ConversationDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ConversationDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Conversations.ConversationDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Conversations.ConversationResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ConversationResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Conversations.ConversationResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Conversations.ConversationUpdateOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ConversationUpdateOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Conversations.ConversationUpdateOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.CreateClientSecretOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateClientSecretOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.CreateClientSecretOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.CreateClientSecretResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateClientSecretResult))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.CreateClientSecretResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CreateResponseOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateResponseOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CreateResponseOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CustomMcpToolCallApprovalPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.DeveloperChatMessage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DeveloperChatMessage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.DeveloperChatMessage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.DiarizedAudioTranscription is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DiarizedAudioTranscription))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.DiarizedAudioTranscription is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.DiarizedTranscriptionSegment is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DiarizedTranscriptionSegment))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.DiarizedTranscriptionSegment is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(EmbeddingGenerationOptions))]
     [ModelReaderWriterBuildable(typeof(EmbeddingTokenUsage))]
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.FileChunkingStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileChunkingStrategy))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.FileChunkingStrategy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FileCitationMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileCitationMessageAnnotation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FileCitationMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileDeletionResult))]
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.FileFromStoreRemovalResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileFromStoreRemovalResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.FileFromStoreRemovalResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FilePathMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FilePathMessageAnnotation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FilePathMessageAnnotation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FileSearchCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchCallResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FileSearchCallResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FileSearchCallResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchCallResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FileSearchCallResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.FileSearchRankingOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchRankingOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.FileSearchRankingOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FileSearchTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FileSearchTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.FileSearchToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchToolDefinition))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.FileSearchToolDefinition is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FileSearchToolRankingOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchToolRankingOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FileSearchToolRankingOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.FileSearchToolResources is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileSearchToolResources))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.FileSearchToolResources is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.FineTuneReinforcementHyperparameters is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuneReinforcementHyperparameters))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.FineTuneReinforcementHyperparameters is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningCheckpoint is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningCheckpoint))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningCheckpoint is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningCheckpointMetrics is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningCheckpointMetrics))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningCheckpointMetrics is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningError))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningError is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningEvent is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningEvent))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningEvent is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningHyperparameters is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningHyperparameters))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningHyperparameters is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningIntegration is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningIntegration))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningIntegration is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.FineTuningTrainingMethod is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FineTuningTrainingMethod))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.FineTuningTrainingMethod is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FunctionCallOutputResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FunctionCallOutputResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FunctionCallOutputResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FunctionCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FunctionCallResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FunctionCallResponseItem is experimental and may change in future versions.
+#pragma warning disable CS0618 // global::OpenAI.Chat.FunctionChatMessage is obsolete and may be removed in future versions.
     [ModelReaderWriterBuildable(typeof(FunctionChatMessage))]
+#pragma warning restore CS0618 // global::OpenAI.Chat.FunctionChatMessage is obsolete and may be removed in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.FunctionTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FunctionTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.FunctionTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.FunctionToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FunctionToolDefinition))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.FunctionToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GeneratedImage))]
     [ModelReaderWriterBuildable(typeof(GeneratedImageCollection))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.GetResponseOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GetResponseOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.GetResponseOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.Grader is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(Grader))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.Grader is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.GraderLabelModel is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GraderLabelModel))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.GraderLabelModel is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.GraderMulti is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GraderMulti))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.GraderMulti is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.GraderPython is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GraderPython))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.GraderPython is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.GraderScoreModel is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GraderScoreModel))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.GraderScoreModel is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.GraderStringCheck is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GraderStringCheck))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.GraderStringCheck is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.GraderTextSimilarity is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(GraderTextSimilarity))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.GraderTextSimilarity is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.HyperparameterOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(HyperparameterOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.HyperparameterOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.HyperparametersForDPO is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(HyperparametersForDPO))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.HyperparametersForDPO is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.HyperparametersForSupervised is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(HyperparametersForSupervised))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.HyperparametersForSupervised is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageEditOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ImageGenerationCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageGenerationCallResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ImageGenerationCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageGenerationOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ImageGenerationTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageGenerationTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ImageGenerationTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ImageGenerationToolInputImageMask is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageGenerationToolInputImageMask))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ImageGenerationToolInputImageMask is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Images.ImageInputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageInputTokenUsageDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Images.ImageInputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Images.ImageOutputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageOutputTokenUsageDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Images.ImageOutputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Images.ImageTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageTokenUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Images.ImageTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageVariationOptions))]
     [ModelReaderWriterBuildable(typeof(InternalAddUploadPartRequest))]
     [ModelReaderWriterBuildable(typeof(InternalAssistantsError))]
@@ -368,10 +610,14 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalFineTuningCheckpointCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(InternalFineTuningCheckpointPermission))]
     [ModelReaderWriterBuildable(typeof(InternalFineTuningErrorResponse))]
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.InternalFineTuningJob is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(InternalFineTuningJob))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.InternalFineTuningJob is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(InternalFineTuningJobRequestMethodDpo))]
     [ModelReaderWriterBuildable(typeof(InternalFineTuningJobRequestMethodSupervised))]
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.InternalFineTuningJobsPageToken is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(InternalFineTuningJobsPageToken))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.InternalFineTuningJobsPageToken is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(InternalFunctionToolCallItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalFunctionToolCallOutputItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalImageEditCompletedEvent))]
@@ -627,24 +873,58 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalVoiceResource))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchLocation))]
     [ModelReaderWriterBuildable(typeof(InternaVideoCollectionOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolCallApprovalPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolCallApprovalPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolCallApprovalPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolCallApprovalRequestItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolCallApprovalRequestItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolCallApprovalRequestItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolCallApprovalResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolCallApprovalResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolCallApprovalResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolCallItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolCallItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolCallItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolDefinition))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolDefinition is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolDefinitionListItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolDefinitionListItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolDefinitionListItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolFilter is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolFilter))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolFilter is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageContent is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageContent))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageContent is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageCreationAttachment is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageCreationAttachment))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageCreationAttachment is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageFailureDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageFailureDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageFailureDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageModificationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.MessageResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.MessageResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ModelDeletionResult))]
+#pragma warning disable OPENAI001 // global::OpenAI.Moderations.ModerationInputPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ModerationInputPart))]
+#pragma warning restore OPENAI001 // global::OpenAI.Moderations.ModerationInputPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ModerationOptions))]
     [ModelReaderWriterBuildable(typeof(ModerationResult))]
     [ModelReaderWriterBuildable(typeof(ModerationResultCollection))]
@@ -654,265 +934,753 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(OpenAIFileCollection))]
     [ModelReaderWriterBuildable(typeof(OpenAIModel))]
     [ModelReaderWriterBuildable(typeof(OpenAIModelCollection))]
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeAudioFormat is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeAudioFormat))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeAudioFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeAudioTranscriptionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeAudioTranscriptionOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeAudioTranscriptionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommand is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommand))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommand is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemCreate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandConversationItemCreate))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemCreate is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemDelete is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandConversationItemDelete))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemDelete is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemRetrieve is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandConversationItemRetrieve))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemRetrieve is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemTruncate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandConversationItemTruncate))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandConversationItemTruncate is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandInputAudioBufferAppend is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandInputAudioBufferAppend))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandInputAudioBufferAppend is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandInputAudioBufferClear is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandInputAudioBufferClear))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandInputAudioBufferClear is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandInputAudioBufferCommit is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandInputAudioBufferCommit))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandInputAudioBufferCommit is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandOutputAudioBufferClear is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandOutputAudioBufferClear))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandOutputAudioBufferClear is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandResponseCancel is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandResponseCancel))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandResponseCancel is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandResponseCreate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandResponseCreate))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandResponseCreate is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandSessionUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientCommandSessionUpdate))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientCommandSessionUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientSecret is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientSecret))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientSecret is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeClientSecretExpirationPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeClientSecretExpirationPolicy))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeClientSecretExpirationPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeConversation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeConversation))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeConversation is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSession is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeConversationSession))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSession is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeConversationSessionAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionInputAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeConversationSessionInputAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionInputAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeConversationSessionOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionOutputAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeConversationSessionOutputAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeConversationSessionOutputAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomFunctionToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomFunctionToolChoice))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomFunctionToolChoice is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomMcpToolCallApprovalPolicy))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomMcpToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomMcpToolChoice))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomMcpToolChoice is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomRetentionRatioTruncation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomRetentionRatioTruncation))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomRetentionRatioTruncation is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomToolChoice))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomToolChoice is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomTracing is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomTracing))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomTracing is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeCustomTruncation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeCustomTruncation))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeCustomTruncation is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeError))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeError is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeFunctionCallItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeFunctionCallItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeFunctionCallItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeFunctionCallOutputItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeFunctionCallOutputItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeFunctionCallOutputItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeFunctionTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeFunctionTool))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeFunctionTool is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeInputAudioMessageContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeInputAudioMessageContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeInputAudioMessageContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeInputImageMessageContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeInputImageMessageContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeInputImageMessageContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeInputTextMessageContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeInputTextMessageContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeInputTextMessageContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeLogProbabilityDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeLogProbabilityDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeLogProbabilityDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMaxOutputTokenCount is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMaxOutputTokenCount))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMaxOutputTokenCount is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpTool))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpTool is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallApprovalPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolCallApprovalPolicy))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallApprovalPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallApprovalRequestItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolCallApprovalRequestItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallApprovalRequestItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallApprovalResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolCallApprovalResponseItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallApprovalResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolCallItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolCallItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolDefinition))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolDefinition is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolDefinitionListItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolDefinitionListItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolDefinitionListItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolFilter is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMcpToolFilter))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMcpToolFilter is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMessageContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMessageContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMessageContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMessageItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMessageItem))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMessageItem is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeNoiseReduction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeNoiseReduction))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeNoiseReduction is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeOutputAudioMessageContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeOutputAudioMessageContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeOutputAudioMessageContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeOutputTextMessageContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeOutputTextMessageContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeOutputTextMessageContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimePcmaAudioFormat is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimePcmaAudioFormat))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimePcmaAudioFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimePcmAudioFormat is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimePcmAudioFormat))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimePcmAudioFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimePcmuAudioFormat is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimePcmuAudioFormat))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimePcmuAudioFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeRateLimitDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeRateLimitDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeRateLimitDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponse is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponse))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponse is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseContentPart))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseInputCachedTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseInputCachedTokenUsageDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseInputCachedTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseInputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseInputTokenUsageDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseInputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseOutputAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseOutputAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseOutputAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseOutputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseOutputTokenUsageDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseOutputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseStatusDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseStatusDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseStatusDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeResponseUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeResponseUsage))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeResponseUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeRetentionRatioTokenLimitDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeRetentionRatioTokenLimitDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeRetentionRatioTokenLimitDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeSemanticVadTurnDetection is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeSemanticVadTurnDetection))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeSemanticVadTurnDetection is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdate))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationCreated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationCreated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemAdded is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemAdded))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemAdded is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemCreated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemCreated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemDeleted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemDeleted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemDeleted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemRetrieved is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemRetrieved))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemRetrieved is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemTruncated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateConversationItemTruncated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateConversationItemTruncated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateError))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateError is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferCleared is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateInputAudioBufferCleared))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferCleared is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferCommitted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateInputAudioBufferCommitted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferCommitted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferDtmfEventReceived is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateInputAudioBufferDtmfEventReceived))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferDtmfEventReceived is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferSpeechStarted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateInputAudioBufferSpeechStarted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferSpeechStarted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferSpeechStopped is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateInputAudioBufferSpeechStopped))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferSpeechStopped is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferTimeoutTriggered is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateInputAudioBufferTimeoutTriggered))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateInputAudioBufferTimeoutTriggered is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateMcpListToolsCompleted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateMcpListToolsCompleted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateMcpListToolsCompleted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateMcpListToolsFailed is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateMcpListToolsFailed))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateMcpListToolsFailed is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateMcpListToolsInProgress is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateMcpListToolsInProgress))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateMcpListToolsInProgress is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateOutputAudioBufferCleared is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateOutputAudioBufferCleared))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateOutputAudioBufferCleared is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateOutputAudioBufferStarted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateOutputAudioBufferStarted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateOutputAudioBufferStarted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateOutputAudioBufferStopped is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateOutputAudioBufferStopped))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateOutputAudioBufferStopped is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateRateLimitsUpdated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateRateLimitsUpdated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateRateLimitsUpdated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseContentPartAdded is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseContentPartAdded))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseContentPartAdded is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseContentPartDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseContentPartDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseContentPartDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseCreated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseCreated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseFunctionCallArgumentsDelta is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseFunctionCallArgumentsDelta))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseFunctionCallArgumentsDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseFunctionCallArgumentsDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseFunctionCallArgumentsDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseFunctionCallArgumentsDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallArgumentsDelta is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseMcpCallArgumentsDelta))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallArgumentsDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallArgumentsDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseMcpCallArgumentsDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallArgumentsDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallCompleted is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseMcpCallCompleted))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallCompleted is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallFailed is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseMcpCallFailed))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallFailed is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallInProgress is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseMcpCallInProgress))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseMcpCallInProgress is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioDelta is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputAudioDelta))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputAudioDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioTranscriptDelta is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputAudioTranscriptDelta))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioTranscriptDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioTranscriptDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputAudioTranscriptDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputAudioTranscriptDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputItemAdded is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputItemAdded))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputItemAdded is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputItemDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputItemDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputItemDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputTextDelta is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputTextDelta))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputTextDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputTextDone is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateResponseOutputTextDone))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateResponseOutputTextDone is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateSessionCreated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateSessionCreated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateSessionCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateSessionUpdated is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerUpdateSessionUpdated))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerUpdateSessionUpdated is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeServerVadTurnDetection is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeServerVadTurnDetection))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeServerVadTurnDetection is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeSession is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeSession))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeSession is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeSessionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeSessionOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeSessionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTool))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTool is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeToolChoice is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeToolChoice))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeToolChoice is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTracing is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTracing))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTracing is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionDurationUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionDurationUsage))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionDurationUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionInputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionInputTokenUsageDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionInputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSession is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionSession))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSession is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSessionAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionSessionAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSessionAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSessionInputAudioOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionSessionInputAudioOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSessionInputAudioOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSessionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionSessionOptions))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionSessionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionTokenUsage))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionTokenUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTranscriptionUsage))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTranscriptionUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTruncation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTruncation))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTruncation is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTurnDetection is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTurnDetection))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTurnDetection is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ReasoningResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ReasoningResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ReasoningResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ReasoningSummaryPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ReasoningSummaryPart))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ReasoningSummaryPart is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ReasoningSummaryTextPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ReasoningSummaryTextPart))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ReasoningSummaryTextPart is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ReferenceResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ReferenceResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ReferenceResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseContentPart is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseContentPart))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseContentPart is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseConversationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseConversationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseConversationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseError))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseError is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseIncompleteStatusDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseIncompleteStatusDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseIncompleteStatusDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseInputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseInputTokenUsageDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseInputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseItemCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseItemCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseItemCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseItemCollectionPage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseItemCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseItemCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseMessageAnnotation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseMessageAnnotation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseOutputTokenUsageDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseOutputTokenUsageDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseOutputTokenUsageDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseReasoningOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseReasoningOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseReasoningOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTextFormat is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTextFormat))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTextFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTextOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTextOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTextOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTokenLogProbabilityDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTokenLogProbabilityDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTokenLogProbabilityDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTokenTopLogProbabilityDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTokenTopLogProbabilityDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTokenTopLogProbabilityDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTokenUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTokenUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunError))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunError is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.RunGraderRequest is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunGraderRequest))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.RunGraderRequest is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.RunGraderResponse is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunGraderResponse))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.RunGraderResponse is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.RunGraderResponseMetadata is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunGraderResponseMetadata))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.RunGraderResponseMetadata is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.RunGraderResponseMetadataErrors is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunGraderResponseMetadataErrors))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.RunGraderResponseMetadataErrors is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunIncompleteDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunIncompleteDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunIncompleteDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunModificationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStep is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStep))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStep is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepCodeInterpreterOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepCodeInterpreterOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepCodeInterpreterOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepDetails is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepError))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepError is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepFileSearchResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepFileSearchResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepFileSearchResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepFileSearchResultContent is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepFileSearchResultContent))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepFileSearchResultContent is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepTokenUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepTokenUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepToolCall is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepToolCall))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepToolCall is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunStepUpdateCodeInterpreterOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunStepUpdateCodeInterpreterOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunStepUpdateCodeInterpreterOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunTokenUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunTokenUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunTruncationStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunTruncationStrategy))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunTruncationStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SpeechGenerationOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.SpeechTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SpeechTokenUsage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.SpeechTokenUsage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.StaticFileChunkingStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StaticFileChunkingStrategy))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.StaticFileChunkingStrategy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionTextDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingAudioTranscriptionTextDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionTextDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionTextDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingAudioTranscriptionTextDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionTextDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionTextSegmentUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingAudioTranscriptionTextSegmentUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionTextSegmentUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingAudioTranscriptionUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingAudioTranscriptionUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingChatCompletionUpdate))]
+#pragma warning disable CS0618 // global::OpenAI.Chat.StreamingChatFunctionCallUpdate is obsolete and may be removed in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingChatFunctionCallUpdate))]
+#pragma warning restore CS0618 // global::OpenAI.Chat.StreamingChatFunctionCallUpdate is obsolete and may be removed in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Chat.StreamingChatOutputAudioUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingChatOutputAudioUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Chat.StreamingChatOutputAudioUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingChatToolCallUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseAudioDeltaUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseAudioDoneUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseAudioTranscriptDeltaUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseAudioTranscriptDoneUpdate))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCodeInterpreterCallCodeDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCodeInterpreterCallCodeDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCodeInterpreterCallCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCodeInterpreterCallInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallInterpretingUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCodeInterpreterCallInterpretingUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCodeInterpreterCallInterpretingUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseContentPartAddedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseContentPartAddedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseContentPartAddedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseContentPartDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseContentPartDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseContentPartDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCreatedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCreatedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCreatedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCustomToolCallInputDeltaUpdate))]
     [ModelReaderWriterBuildable(typeof(StreamingResponseCustomToolCallInputDoneUpdate))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseErrorUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseErrorUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseErrorUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseFailedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseFailedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseFailedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseFileSearchCallCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseFileSearchCallCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseFileSearchCallCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseFileSearchCallInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseFileSearchCallInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseFileSearchCallInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseFileSearchCallSearchingUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseFileSearchCallSearchingUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseFileSearchCallSearchingUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseFunctionCallArgumentsDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseFunctionCallArgumentsDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseFunctionCallArgumentsDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseFunctionCallArgumentsDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseFunctionCallArgumentsDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseFunctionCallArgumentsDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseImageGenerationCallCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallGeneratingUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseImageGenerationCallGeneratingUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallGeneratingUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseImageGenerationCallInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallPartialImageUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseImageGenerationCallPartialImageUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseImageGenerationCallPartialImageUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseIncompleteUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseIncompleteUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseIncompleteUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallArgumentsDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpCallArgumentsDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallArgumentsDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallArgumentsDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpCallArgumentsDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallArgumentsDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpCallCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallFailedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpCallFailedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallFailedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpCallInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpCallInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpListToolsCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpListToolsCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpListToolsCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpListToolsFailedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpListToolsFailedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpListToolsFailedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpListToolsInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseMcpListToolsInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseMcpListToolsInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputItemAddedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseOutputItemAddedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputItemAddedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputItemDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseOutputItemDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputItemDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputTextAnnotationAddedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseOutputTextAnnotationAddedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputTextAnnotationAddedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputTextDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseOutputTextDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputTextDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputTextDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseOutputTextDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseOutputTextDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseQueuedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseQueuedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseQueuedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryPartAddedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseReasoningSummaryPartAddedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryPartAddedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryPartDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseReasoningSummaryPartDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryPartDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryTextDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseReasoningSummaryTextDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryTextDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryTextDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseReasoningSummaryTextDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningSummaryTextDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningTextDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseReasoningTextDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningTextDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningTextDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseReasoningTextDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseReasoningTextDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseRefusalDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseRefusalDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseRefusalDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseRefusalDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseRefusalDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseRefusalDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseWebSearchCallCompletedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseWebSearchCallCompletedUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseWebSearchCallCompletedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseWebSearchCallInProgressUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseWebSearchCallInProgressUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseWebSearchCallInProgressUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseWebSearchCallSearchingUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseWebSearchCallSearchingUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseWebSearchCallSearchingUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingSpeechAudioDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingSpeechAudioDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingSpeechAudioDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingSpeechAudioDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingSpeechAudioDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingSpeechAudioDoneUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Audio.StreamingSpeechUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingSpeechUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Audio.StreamingSpeechUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SystemChatMessage))]
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ThreadCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ThreadCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ThreadCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ThreadDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ThreadDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ThreadDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ThreadMessage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ThreadMessage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ThreadMessage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ThreadModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ThreadModificationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ThreadModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ThreadRun is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ThreadRun))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ThreadRun is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolChatMessage))]
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ToolConstraint is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolConstraint))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ToolConstraint is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ToolDefinition is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolDefinition))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ToolDefinition is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ToolOutput is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolOutput))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ToolOutput is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.ToolResources is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolResources))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.ToolResources is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(TranscribedSegment))]
     [ModelReaderWriterBuildable(typeof(TranscribedWord))]
     [ModelReaderWriterBuildable(typeof(UnknownAssistantToolDefinition))]
     [ModelReaderWriterBuildable(typeof(UnknownCreateFineTuningJobRequestIntegration))]
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.UnknownGrader is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(UnknownGrader))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.UnknownGrader is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(UnknownMessageContentTextObjectAnnotation))]
     [ModelReaderWriterBuildable(typeof(UnknownMessageDeltaContent))]
     [ModelReaderWriterBuildable(typeof(UnknownMessageDeltaTextContentAnnotation))]
@@ -922,35 +1690,91 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject))]
     [ModelReaderWriterBuildable(typeof(UnknownRunStepDetailsToolCallsObjectToolCallsObject))]
     [ModelReaderWriterBuildable(typeof(UnknownRunStepObjectStepDetails))]
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.UriCitationMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(UriCitationMessageAnnotation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.UriCitationMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(UserChatMessage))]
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.ValidateGraderRequest is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ValidateGraderRequest))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.ValidateGraderRequest is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Graders.ValidateGraderResponse is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ValidateGraderResponse))]
+#pragma warning restore OPENAI001 // global::OpenAI.Graders.ValidateGraderResponse is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStore is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStore))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStore is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Assistants.VectorStoreCreationHelper is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreCreationHelper))]
+#pragma warning restore OPENAI001 // global::OpenAI.Assistants.VectorStoreCreationHelper is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreDeletionResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreExpirationPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreExpirationPolicy))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreExpirationPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreFile is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreFile))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreFile is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileBatch is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreFileBatch))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileBatch is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreFileCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileCounts is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreFileCounts))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileCounts is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileError is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreFileError))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreFileError is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStoreModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStoreModificationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStoreModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchAction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchAction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchAction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchActionSource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchActionSource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchActionSource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchActionUriSource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchActionUriSource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchActionUriSource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchCallResponseItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchCallResponseItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchCallResponseItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchFindInPageAction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchFindInPageAction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchFindInPageAction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchOpenPageAction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchOpenPageAction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchOpenPageAction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchPreviewTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchPreviewTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchPreviewTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchSearchAction is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchSearchAction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchSearchAction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchToolApproximateLocation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchToolApproximateLocation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchToolApproximateLocation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchToolFilters is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchToolFilters))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchToolFilters is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.WebSearchToolLocation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WebSearchToolLocation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.WebSearchToolLocation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.FineTuning.WeightsAndBiasesIntegration is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(WeightsAndBiasesIntegration))]
+#pragma warning restore OPENAI001 // global::OpenAI.FineTuning.WeightsAndBiasesIntegration is experimental and may change in future versions.
     [Experimental("OPENAI001")]
     public partial class OpenAIContext : ModelReaderWriterContext
     {
