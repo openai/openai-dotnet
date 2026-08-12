@@ -100,6 +100,8 @@ internal static class SseStreamingClientResult
         {
             await foreach (SseItem<byte[]> item in SseParser.Create(stream, (_, bytes) => bytes.ToArray()).EnumerateAsync(cancellationToken))
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (item.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     yield break;
