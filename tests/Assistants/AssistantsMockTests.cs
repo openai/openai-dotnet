@@ -107,6 +107,7 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingRunContinuesAfterBenignUnknownEvent()
     {
@@ -139,7 +140,7 @@ public class AssistantsMockTests : ClientTestBase
         {
             Transport = new MockPipelineTransport(_ => response)
             {
-                ExpectSyncPipeline = !IsAsync
+                ExpectSyncPipeline = false
             }
         };
 
@@ -147,19 +148,9 @@ public class AssistantsMockTests : ClientTestBase
 
         List<StreamingUpdate> updates = new();
 
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
         {
-            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         // All three modeled events must arrive. Before the fix, the stream ended at the

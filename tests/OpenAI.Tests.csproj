@@ -41,11 +41,9 @@
     <Compile Include="..\examples\MutualTls\Example01_MutualTlsAsync.cs" LinkBase="Shared\Examples" />
   </ItemGroup>
 
-  <!-- The SSE collections are internal and the library is signed, so they are linked
-       in rather than exposed through InternalsVisibleTo. -->
+  <!-- Internal utilities linked in because the library is signed. -->
   <ItemGroup>
-    <Compile Include="..\OpenAI\src\Utility\SseUpdateCollection.cs" LinkBase="Utility\Shared" />
-    <Compile Include="..\OpenAI\src\Utility\AsyncSseUpdateCollection.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\SseStreamingClientResult.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Generated\Internal\ModelSerializationExtensions.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Generated\Internal\TypeFormatters.cs" LinkBase="Utility\Shared" />
     <Compile Include="..\OpenAI\src\Generated\Internal\SerializationFormat.cs" LinkBase="Utility\Shared" />
