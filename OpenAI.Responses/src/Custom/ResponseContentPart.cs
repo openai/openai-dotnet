@@ -76,11 +76,12 @@ public partial class ResponseContentPart
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
         Argument.AssertNotNullOrEmpty(imageBytes.MediaType, nameof(imageBytes.MediaType));
 
-        return new InternalItemContentInputImage()
+        InternalItemContentInputImage imagePart = new()
         {
-            ImageUri = DataEncodingHelpers.CreateDataUri(imageBytes, imageBytes.MediaType),
             Detail = imageDetailLevel,
         };
+        imagePart.SetImageBytes(imageBytes, imageBytes.MediaType);
+        return imagePart;
     }
 
     public static ResponseContentPart CreateInputFilePart(string fileId)

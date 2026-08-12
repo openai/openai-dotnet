@@ -9,6 +9,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -452,9 +453,14 @@ public class ChatSmokeTests : ClientTestBase
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
             part = ChatMessageContentPart.CreateImagePart(imageData, imageMediaType, ChatImageDetailLevel.Auto);
+            Assert.That(GetCachedDataUri(GetFieldValue(part, "_imageUri"), "_imageValue"), Is.Null);
         }
 
         BinaryData serializedPart = ModelReaderWriter.Write(part);
+        if (!fromRawJson)
+        {
+            Assert.That(GetCachedDataUri(GetFieldValue(part, "_imageUri"), "_imageValue"), Is.Null);
+        }
         using JsonDocument partAsJson = JsonDocument.Parse(serializedPart);
         Assert.That(partAsJson.RootElement, Is.Not.Null);
         Assert.That(partAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.Object));
@@ -485,6 +491,24 @@ public class ChatSmokeTests : ClientTestBase
             Assert.That(additionalPropertyProperty, Is.Not.Null);
             Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
         }
+    }
+
+    private static object GetFieldValue(object instance, string fieldName)
+    {
+        FieldInfo field = instance.GetType().GetField(
+            fieldName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.That(field, Is.Not.Null);
+        return field.GetValue(instance);
+    }
+
+    private static string GetCachedDataUri(object instance, string fieldName)
+    {
+        object dataUriValue = GetFieldValue(instance, fieldName);
+        return dataUriValue is null
+            ? null
+            : (string)GetFieldValue(dataUriValue, "_value");
     }
 
     [Test]

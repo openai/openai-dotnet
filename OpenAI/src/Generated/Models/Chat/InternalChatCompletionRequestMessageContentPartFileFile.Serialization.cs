@@ -60,34 +60,6 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartFileFile)} does not support writing '{format}' format.");
-            }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
-            {
-                writer.WritePropertyName("filename"u8);
-                writer.WriteStringValue(Filename);
-            }
-            if (Optional.IsDefined(InternalFileData) && !Patch.Contains("$.file_data"u8))
-            {
-                writer.WritePropertyName("file_data"u8);
-                writer.WriteStringValue(InternalFileData);
-            }
-            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
-            {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-
-            Patch.WriteTo(writer);
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        }
-
         InternalChatCompletionRequestMessageContentPartFileFile IJsonModel<InternalChatCompletionRequestMessageContentPartFileFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
         protected virtual InternalChatCompletionRequestMessageContentPartFileFile JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
