@@ -26,6 +26,14 @@ public partial class ImageGenerationToolInputImageMask
         ImageUri = imageUri.AbsoluteUri;
     }
 
+    /// <summary> Initializes a mask from binary image data. </summary>
+    /// <param name="imageBytes">
+    /// The image bytes.
+    ///
+    /// No copy of the memory is made. If a mutable buffer is used,
+    /// it must remain unaltered until the operation is complete. The
+    /// caller retains ownership of the memory backing this value.
+    /// </param>
     public ImageGenerationToolInputImageMask(BinaryData imageBytes)
     {
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));

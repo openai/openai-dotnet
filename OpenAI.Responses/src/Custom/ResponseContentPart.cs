@@ -71,6 +71,15 @@ public partial class ResponseContentPart
         };
     }
     
+    /// <summary> Creates an input image content part from binary image data. </summary>
+    /// <param name="imageBytes">
+    /// The image bytes.
+    ///
+    /// No copy of the memory is made. If a mutable buffer is used,
+    /// it must remain unaltered until the operation is complete. The
+    /// caller retains ownership of the memory backing this value.
+    /// </param>
+    /// <param name="imageDetailLevel"> The detail level to use when processing the image. </param>
     public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, ResponseImageDetailLevel? imageDetailLevel = null)
     {
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
@@ -92,6 +101,16 @@ public partial class ResponseContentPart
         };
     }
 
+    /// <summary> Creates an input file content part from binary file data. </summary>
+    /// <param name="fileBytes">
+    /// The binary content of the file.
+    ///
+    /// No copy of the memory is made. If a mutable buffer is used,
+    /// it must remain unaltered until the operation is complete. The
+    /// caller retains ownership of the memory backing this value.
+    /// </param>
+    /// <param name="fileBytesMediaType"> The MIME type of the file. </param>
+    /// <param name="filename"> The filename to use for the file. </param>
     public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename)
     {
         Argument.AssertNotNull(fileBytes, nameof(fileBytes));
