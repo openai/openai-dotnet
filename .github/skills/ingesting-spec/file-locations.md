@@ -46,9 +46,9 @@ Quick reference for all paths involved in spec ingestion.
 
 | What | Path |
 |------|------|
-| .NET 8.0 API surface | `api/net8.0/` |
-| .NET 10.0 API surface | `api/net10.0/` |
-| .NET Standard 2.0 API surface | `api/netstandard2.0/` |
+| .NET 8.0 API surface | `api/wip/net8.0/` |
+| .NET 10.0 API surface | `api/wip/net10.0/` |
+| .NET Standard 2.0 API surface | `api/wip/netstandard2.0/` |
 
 ## Local Repository — Codegen Plugin
 

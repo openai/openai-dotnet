@@ -112,7 +112,7 @@ When making changes that affect the public API surface, run the export script to
 ./scripts/Export-Api.ps1
 ```
 
-This generates API listing files under `api/<tfm>/` (for example, `api/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`) that document the public API for each target framework.
+This generates API listing files under `api/wip/<tfm>/` (for example, `api/wip/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`) that document the public API for each target framework.
 
 ### API Compatibility Check
 
