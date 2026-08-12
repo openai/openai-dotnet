@@ -236,9 +236,10 @@ public partial class ResponsesClient
                 + $"For non-streaming scenarios, call {nameof(CreateResponse)} instead.");
         }
 
-        using PipelineMessage message = CreateCreateResponseRequest((BinaryContent)options, cancellationToken.ToRequestOptions(streaming: true));
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateCreateResponseRequest((BinaryContent)options, requestOptions);
         message.BufferResponse = false;
-        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions(streaming: true));
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
         return SseStreamingClientResult.Create(
             response,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
@@ -449,15 +450,16 @@ public partial class ResponsesClient
                 + $"For non-streaming scenarios, call {nameof(GetResponse)} instead.");
         }
 
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
         using PipelineMessage message = CreateGetResponseRequest(
             responseId: options.ResponseId,
             include: options.IncludedProperties,
             stream: options.StreamingEnabled,
             startingAfter: options.StartingAfter,
             includeObfuscation: options.IncludeObfuscation,
-            cancellationToken.ToRequestOptions(streaming: true));
+            requestOptions);
         message.BufferResponse = false;
-        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions(streaming: true));
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
         return SseStreamingClientResult.Create(
             response,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
