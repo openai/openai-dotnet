@@ -19,7 +19,7 @@ internal partial class InternalItemContentInputFile
             _fileValue = value is null ? null : new DataUriValue(value, parseDataUri: true);
             if (value is not null && !_fileValue.IsDataUri)
             {
-                throw new ArgumentException($"Input did not parse a valid data URI.");
+                throw new ArgumentException("Input did not parse a valid data URI.", nameof(value));
             }
         }
     }
