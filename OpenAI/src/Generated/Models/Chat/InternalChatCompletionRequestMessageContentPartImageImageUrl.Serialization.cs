@@ -64,6 +64,29 @@ namespace OpenAI.Chat
             writer.WriteEndObject();
         }
 
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support writing '{format}' format.");
+            }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.url"u8))
+            {
+                writer.WritePropertyName("url"u8);
+                writer.WriteStringValue(InternalUrl);
+            }
+            if (Optional.IsDefined(Detail) && !Patch.Contains("$.detail"u8))
+            {
+                writer.WritePropertyName("detail"u8);
+                writer.WriteStringValue(Detail.Value.ToString());
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        }
+
         InternalChatCompletionRequestMessageContentPartImageImageUrl IJsonModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
         protected virtual InternalChatCompletionRequestMessageContentPartImageImageUrl JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)

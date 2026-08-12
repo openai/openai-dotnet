@@ -317,64 +317,6 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
-    public void BinaryDataUriModelsDoNotRetainSerializedValue()
-    {
-        const string mediaType = "image/png";
-        const string expectedDataUri = "data:image/png;base64,aW1hZ2UgZGF0YQ==";
-        byte[] buffer = Encoding.UTF8.GetBytes("prefiximage datasuffix");
-        BinaryData bytes = BinaryData.FromBytes(
-            buffer.AsMemory("prefix".Length, "image data".Length),
-            mediaType);
-
-        ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(bytes);
-        ResponseContentPart filePart = ResponseContentPart.CreateInputFilePart(bytes, mediaType, "image.png");
-        ImageGenerationToolInputImageMask mask = new(bytes);
-        ComputerCallOutput screenshot = ComputerCallOutput.CreateScreenshotOutput(bytes, mediaType);
-
-        Assert.That(GetCachedDataUri(imagePart, "_imageValue"), Is.Null);
-        Assert.That(GetCachedDataUri(filePart, "_fileValue"), Is.Null);
-        Assert.That(GetCachedDataUri(mask, "_imageValue"), Is.Null);
-        Assert.That(GetCachedDataUri(screenshot, "_imageValue"), Is.Null);
-
-        BinaryData serializedImagePart = ModelReaderWriter.Write(imagePart);
-        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
-        BinaryData serializedMask = ModelReaderWriter.Write(mask);
-        BinaryData serializedScreenshot = ModelReaderWriter.Write(screenshot);
-
-        Assert.That(serializedImagePart.ToString(), Does.Contain(expectedDataUri));
-        Assert.That(serializedFilePart.ToString(), Does.Contain(expectedDataUri));
-        Assert.That(serializedMask.ToString(), Does.Contain(expectedDataUri));
-        Assert.That(serializedScreenshot.ToString(), Does.Contain(expectedDataUri));
-
-        Assert.That(GetCachedDataUri(imagePart, "_imageValue"), Is.Null);
-        Assert.That(GetCachedDataUri(filePart, "_fileValue"), Is.Null);
-        Assert.That(GetCachedDataUri(mask, "_imageValue"), Is.Null);
-        Assert.That(GetCachedDataUri(screenshot, "_imageValue"), Is.Null);
-
-        Assert.That(imagePart.InputImageUri, Is.EqualTo(expectedDataUri));
-        Assert.That(mask.ImageUri, Is.EqualTo(expectedDataUri));
-        Assert.That(
-            screenshot.GetType().GetProperty("ImageUrl").GetValue(screenshot),
-            Is.EqualTo(expectedDataUri));
-
-        Assert.That(GetCachedDataUri(imagePart, "_imageValue"), Is.EqualTo(expectedDataUri));
-        Assert.That(GetCachedDataUri(mask, "_imageValue"), Is.EqualTo(expectedDataUri));
-        Assert.That(GetCachedDataUri(screenshot, "_imageValue"), Is.EqualTo(expectedDataUri));
-
-        ImageGenerationToolInputImageMask deserializedMask =
-            ModelReaderWriter.Read<ImageGenerationToolInputImageMask>(serializedMask);
-        ComputerCallOutput deserializedScreenshot =
-            ModelReaderWriter.Read<ComputerCallOutput>(serializedScreenshot);
-
-        Assert.That(deserializedMask.ImageUri, Is.EqualTo(expectedDataUri));
-        Assert.That(
-            deserializedScreenshot.GetType().GetProperty("ImageUrl").GetValue(deserializedScreenshot),
-            Is.EqualTo(expectedDataUri));
-        Assert.That(GetCachedDataUri(deserializedMask, "_imageValue"), Is.EqualTo(expectedDataUri));
-        Assert.That(GetCachedDataUri(deserializedScreenshot, "_imageValue"), Is.EqualTo(expectedDataUri));
-    }
-
-    [Test]
     public void StableInputImageFileContentPartSerialization()
     {
         static void AssertExpectedImagePart(ResponseContentPart filePart)
@@ -397,27 +339,6 @@ public partial class ResponsesSmokeTests
         ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
 
         AssertExpectedImagePart(deserializedFilePart);
-    }
-
-    private static string GetCachedDataUri(object instance, string fieldName)
-    {
-        FieldInfo field = instance.GetType().GetField(
-            fieldName,
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        Assert.That(field, Is.Not.Null);
-        object dataUriValue = field.GetValue(instance);
-        if (dataUriValue is null)
-        {
-            return null;
-        }
-
-        FieldInfo cachedValueField = dataUriValue.GetType().GetField(
-            "_value",
-            BindingFlags.Instance | BindingFlags.NonPublic);
-
-        Assert.That(cachedValueField, Is.Not.Null);
-        return (string)cachedValueField.GetValue(dataUriValue);
     }
 
     [Test]

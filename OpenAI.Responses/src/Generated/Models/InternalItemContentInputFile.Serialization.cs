@@ -60,6 +60,40 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputFile>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(InternalItemContentInputFile)} does not support writing '{format}' format.");
+            }
+            base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
+            }
+            if (Optional.IsDefined(FileUrl) && !Patch.Contains("$.file_url"u8))
+            {
+                writer.WritePropertyName("file_url"u8);
+                writer.WriteStringValue(FileUrl.AbsoluteUri);
+            }
+            if (Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
+            {
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(Filename);
+            }
+            if (Optional.IsDefined(InternalFileData) && !Patch.Contains("$.file_data"u8))
+            {
+                writer.WritePropertyName("file_data"u8);
+                writer.WriteStringValue(InternalFileData);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        }
+
         InternalItemContentInputFile IJsonModel<InternalItemContentInputFile>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentInputFile)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)

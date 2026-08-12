@@ -60,6 +60,29 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationToolInputImageMask>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support writing '{format}' format.");
+            }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(ImageUri) && !Patch.Contains("$.image_url"u8))
+            {
+                writer.WritePropertyName("image_url"u8);
+                writer.WriteStringValue(ImageUri);
+            }
+            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        }
+
         ImageGenerationToolInputImageMask IJsonModel<ImageGenerationToolInputImageMask>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
         protected virtual ImageGenerationToolInputImageMask JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)

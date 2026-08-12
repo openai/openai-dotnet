@@ -184,13 +184,7 @@ public partial class ChatMessageContentPart
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates an image. </summary>
-    /// <param name="imageBytes">
-    /// The image bytes.
-    ///
-    /// No copy of the memory is made. If a mutable buffer is used,
-    /// it must remain unaltered until the operation is complete. The
-    /// caller retains ownership of the memory backing this value.
-    /// </param>
+    /// <param name="imageBytes"> The image bytes. </param>
     /// <param name="imageBytesMediaType"> The MIME type of the image, e.g., <c>image/png</c>. </param>
     /// <param name="imageDetailLevel">
     ///     The level of detail with which the model should process the image and generate its textual understanding of
@@ -253,13 +247,7 @@ public partial class ChatMessageContentPart
     }
 
     /// <summary> Creates a new <see cref="ChatMessageContentPart"/> that encapsulates new file data to upload. </summary>
-    /// <param name="fileBytes">
-    /// The binary content of the file.
-    ///
-    /// No copy of the memory is made. If a mutable buffer is used,
-    /// it must remain unaltered until the operation is complete. The
-    /// caller retains ownership of the memory backing this value.
-    /// </param>
+    /// <param name="fileBytes"> The binary content of the file. </param>
     /// <param name="fileBytesMediaType"> The MIME type of the file, e.g., <c>application/pdf</c>. </param>
     /// <param name="filename"> The filename to use for the file that will be created. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="fileBytes"/> or <paramref name="fileBytesMediaType"/> is null. </exception>

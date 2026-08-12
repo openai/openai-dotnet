@@ -60,6 +60,30 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support writing '{format}' format.");
+            }
+            base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
+            {
+                writer.WritePropertyName("image_url"u8);
+                writer.WriteStringValue(ImageUrl);
+            }
+            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        }
+
         InternalComputerToolCallOutputItemOutputComputerScreenshot IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)JsonModelCreateCore(ref reader, options);
 
         protected override ComputerCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
