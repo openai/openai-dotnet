@@ -6,8 +6,8 @@
     This script invokes the MSBuild GenerateApi target to produce C# source files
     representing the public API contract of the OpenAI library. GenAPI writes one
     intermediate file per target framework, and this script splits those files by
-    namespace into target framework subdirectories under the 'api' folder at the
-    repository root.
+    namespace into target framework subdirectories under the 'api/wip' folder at
+    the repository root.
 
 .EXAMPLE
     .\Export-Api.ps1
@@ -15,7 +15,7 @@
     ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
 
 .NOTES
-    Outputs are written to api/<TargetFramework>/<Namespace>.<TargetFramework>.cs
+    Outputs are written to api/wip/<TargetFramework>/<Namespace>.<TargetFramework>.cs
 #>
 
 [CmdletBinding()]
@@ -159,7 +159,7 @@ $configuration = "Release"
 
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$outputDirectory = Join-Path $repoRootPath "api"
+$outputDirectory = Join-Path $repoRootPath "api" "wip"
 $intermediateDirectory = Join-Path $repoRootPath "artifacts" "api"
 
 # Projects to export. Each entry has a project file path and the library name
