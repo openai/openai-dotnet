@@ -1016,8 +1016,10 @@ namespace OpenAI.Responses {
     }
     public readonly partial struct ResponseReasoningEffortLevel : IEquatable<ResponseReasoningEffortLevel> {
         public ResponseReasoningEffortLevel(string value);
+        public static ResponseReasoningEffortLevel ExtraHigh { get; }
         public static ResponseReasoningEffortLevel High { get; }
         public static ResponseReasoningEffortLevel Low { get; }
+        public static ResponseReasoningEffortLevel Max { get; }
         public static ResponseReasoningEffortLevel Medium { get; }
         public static ResponseReasoningEffortLevel Minimal { get; }
         public static ResponseReasoningEffortLevel None { get; }

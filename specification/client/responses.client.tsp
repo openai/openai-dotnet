@@ -129,6 +129,7 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(CreateResponse.prompt_cache_retention, "PromptCacheRetentionPolicy");
 @@clientName(Response.prompt_cache_retention, "PromptCacheRetentionPolicy");
 @@clientName(PromptCacheRetention.`24h`, "Max24Hours");
+@@clientName(ResponsesReasoningEffort.xhigh, "ExtraHigh");
 
 // ------------ JsonPatch ------------
 

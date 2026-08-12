@@ -1,8 +1,3 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
-
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -16,16 +11,18 @@ namespace OpenAI;
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
+  Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`. Reducing
   reasoning effort can result in faster responses and fewer tokens used
   on reasoning in a response.
   """)
 union ResponsesReasoningEffort {
-  "none",
-  "minimal",
-  "low",
-  "medium",
-  "high",
+  none: "none",
+  minimal: "minimal",
+  low: "low",
+  medium: "medium",
+  high: "high",
+  xhigh: "xhigh",
+  max: "max"
 }
 
 /** Controls how much reasoning context is preserved across turns. */
