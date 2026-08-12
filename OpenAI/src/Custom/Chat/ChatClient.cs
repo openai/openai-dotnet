@@ -284,9 +284,10 @@ public partial class ChatClient
         var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
 
         using BinaryContent content = clonedOptions.ToBinaryContent();
-        using PipelineMessage message = CreateCompleteChatRequest(content, cancellationToken.ToRequestOptions(streaming: true));
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateCompleteChatRequest(content, requestOptions);
         message.BufferResponse = false;
-        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions(streaming: true));
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
         return SseStreamingClientResult.Create(
             response,
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
