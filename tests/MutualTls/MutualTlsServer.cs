@@ -197,14 +197,24 @@ internal sealed class MutualTlsServer : IAsyncDisposable
             return false;
         }
 
-        chain.ChainPolicy.ApplicationPolicy.Add(new Oid(ClientAuthenticationOid));
-        chain.ChainPolicy.CustomTrustStore.Add(_trustedClientRoot);
-        chain.ChainPolicy.DisableCertificateDownloads = true;
-        chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-        chain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+        // The callback-provided chain may retain platform TLS policy. Use a fresh
+        // chain so this validation applies only our client-auth and trust settings.
+        using X509Chain validationChain = new();
+        validationChain.ChainPolicy.ApplicationPolicy.Add(
+            new Oid(ClientAuthenticationOid));
+        validationChain.ChainPolicy.CustomTrustStore.Add(_trustedClientRoot);
 
-        bool chainWasTrusted = chain.Build(clientCertificate);
-        PresentedClientChainThumbprints = chain.ChainElements
+        // Carry peer-supplied intermediates into the fresh chain explicitly. Windows may
+        // rediscover them from its certificate cache, while OpenSSL requires ExtraStore.
+        // These remain untrusted candidates; trust is anchored to the custom root.
+        validationChain.ChainPolicy.ExtraStore.AddRange(chain.ChainPolicy.ExtraStore);
+
+        validationChain.ChainPolicy.DisableCertificateDownloads = true;
+        validationChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+        validationChain.ChainPolicy.TrustMode = X509ChainTrustMode.CustomRootTrust;
+
+        bool chainWasTrusted = validationChain.Build(clientCertificate);
+        PresentedClientChainThumbprints = validationChain.ChainElements
             .Cast<X509ChainElement>()
             .Select(element => element.Certificate.Thumbprint)
             .ToArray();
