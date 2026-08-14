@@ -212,8 +212,19 @@ public partial class RealtimeExamples
 
                             Console.WriteLine($">> Calling {functionCallItem.FunctionName} function with arguments...");
 
+                            if (!string.Equals(functionCallItem.FunctionName, nameof(GetCurrentWeather), StringComparison.Ordinal))
+                            {
+                                throw new InvalidOperationException($"Unsupported tool call: {functionCallItem.FunctionName}.");
+                            }
+
                             using JsonDocument argumentsJson = JsonDocument.Parse(functionCallItem.FunctionArguments);
-                            string location = argumentsJson.RootElement.GetProperty("location").GetString()
+                            if (!argumentsJson.RootElement.TryGetProperty("location", out JsonElement locationElement)
+                                || locationElement.ValueKind != JsonValueKind.String)
+                            {
+                                throw new InvalidOperationException("Tool call is missing a location.");
+                            }
+
+                            string location = locationElement.GetString()
                                 ?? throw new InvalidOperationException("Tool call is missing a location.");
                             string unit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unitElement)
                                 ? unitElement.GetString() ?? "celsius"
