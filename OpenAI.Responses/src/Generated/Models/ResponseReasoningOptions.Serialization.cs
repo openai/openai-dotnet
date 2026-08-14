@@ -73,6 +73,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("effort"u8);
                 writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
+            if (Optional.IsDefined(Context) && !Patch.Contains("$.context"u8))
+            {
+                writer.WritePropertyName("context"u8);
+                writer.WriteStringValue(Context.Value.ToString());
+            }
             if (Optional.IsDefined(ReasoningSummaryVerbosity) && !Patch.Contains("$.summary"u8))
             {
                 writer.WritePropertyName("summary"u8);
@@ -108,6 +113,7 @@ namespace OpenAI.Responses
                 return null;
             }
             ResponseReasoningEffortLevel? reasoningEffortLevel = default;
+            ResponseReasoningContext? context = default;
             ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity = default;
             InternalCreateResponseReasoningGenerateSummary? generateSummary = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -123,6 +129,16 @@ namespace OpenAI.Responses
                         continue;
                     }
                     reasoningEffortLevel = new ResponseReasoningEffortLevel(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("context"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        context = null;
+                        continue;
+                    }
+                    context = new ResponseReasoningContext(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("summary"u8))
@@ -147,7 +163,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseReasoningOptions(reasoningEffortLevel, reasoningSummaryVerbosity, generateSummary, patch);
+            return new ResponseReasoningOptions(reasoningEffortLevel, context, reasoningSummaryVerbosity, generateSummary, patch);
         }
     }
 }

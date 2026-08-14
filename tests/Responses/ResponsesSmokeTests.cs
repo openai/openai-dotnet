@@ -462,6 +462,34 @@ public partial class ResponsesSmokeTests
         AssertExpectedRefusalPart(deserializedFilePart);
     }
 
+    [TestCase("auto")]
+    [TestCase("current_turn")]
+    [TestCase("all_turns")]
+    public void ReasoningContextSerialization(string context)
+    {
+        ResponseReasoningOptions options = new()
+        {
+            Context = new ResponseReasoningContext(context),
+        };
+
+        BinaryData serializedOptions = ModelReaderWriter.Write(options);
+        Assert.That(serializedOptions.ToString(), Is.EqualTo($$"""{"context":"{{context}}"}"""));
+
+        ResponseReasoningOptions deserializedOptions =
+            ModelReaderWriter.Read<ResponseReasoningOptions>(serializedOptions);
+        Assert.That(deserializedOptions.Context?.ToString(), Is.EqualTo(context));
+    }
+
+    [Test]
+    public void ResponseResultDeserializesReasoningContext()
+    {
+        ResponseResult response = ModelReaderWriter.Read<ResponseResult>(
+            BinaryData.FromString("""{"id":"resp_123","reasoning":{"context":"all_turns"}}"""));
+
+        Assert.That(response.ReasoningOptions, Is.Not.Null);
+        Assert.That(response.ReasoningOptions.Context, Is.EqualTo(ResponseReasoningContext.AllTurns));
+    }
+
     private static void AssertSerializationRoundTrip<T>(
         string serializedJson,
         Action<T> instanceAssertionsAction)
