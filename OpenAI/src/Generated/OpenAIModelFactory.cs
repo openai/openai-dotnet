@@ -1022,14 +1022,16 @@ namespace OpenAI
                 status);
         }
 
-        public static CustomToolCallOutputItem CustomToolCallOutputItem(string id = default, string callId = default, BinaryData output = default, CustomToolCallOutputStatus? status = default)
+        public static CustomToolCallOutputItem CustomToolCallOutputItem(string id = default, string callId = default, IEnumerable<ResponseContentPart> output = default, CustomToolCallOutputStatus? status = default)
         {
+            output ??= new ChangeTrackingList<ResponseContentPart>();
+
             return new CustomToolCallOutputItem(
                 ResponseItemKind.CustomToolCallOutput,
                 id,
                 default,
                 callId,
-                output,
+                output.ToList(),
                 status);
         }
 

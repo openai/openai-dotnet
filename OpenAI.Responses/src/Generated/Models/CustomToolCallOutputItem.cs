@@ -2,9 +2,10 @@
 
 #nullable disable
 
-using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -12,27 +13,29 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomToolCallOutputItem : ResponseItem
     {
-        public CustomToolCallOutputItem(string callId, BinaryData output) : base(ResponseItemKind.CustomToolCallOutput)
+        public CustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output) : base(ResponseItemKind.CustomToolCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(output, nameof(output));
 
             CallId = callId;
-            Output = output;
+            Output = output.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, BinaryData output, CustomToolCallOutputStatus? status) : base(kind, id, patch)
+        internal CustomToolCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, IList<ResponseContentPart> output, CustomToolCallOutputStatus? status) : base(kind, id, patch)
         {
+            // Plugin customization: ensure initialization of collections
             CallId = callId;
-            Output = output;
+            Output = output ?? new ChangeTrackingList<ResponseContentPart>();
             Status = status;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; set; }
 
-        public BinaryData Output { get; set; }
+        public IList<ResponseContentPart> Output { get; }
 
         public CustomToolCallOutputStatus? Status { get; set; }
     }

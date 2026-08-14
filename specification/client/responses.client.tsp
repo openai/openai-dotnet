@@ -91,6 +91,7 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(CustomToolCallItem.name, "ToolName");
 @@clientName(CustomToolCallItem.`namespace`, "ToolNamespace");
+@@alternateType(CustomToolCallOutputItem.output, ItemContent[]);
 
 @@clientName(ResponseCustomToolCallInputDeltaEvent.delta, "InputDelta");
 
