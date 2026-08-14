@@ -156,7 +156,7 @@ public partial class ResponseItem
     }
 
     [Experimental("OPENAI001")]
-    public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, BinaryData output)
+    public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output)
     {
         return new CustomToolCallOutputItem(callId, output);
     }

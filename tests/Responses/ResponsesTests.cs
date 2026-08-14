@@ -931,7 +931,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponseItem customToolOutput = ResponseItem.CreateCustomToolCallOutputItem(
             customToolCall.CallId,
-            BinaryData.FromObjectAsJson("hello world"));
+            [ResponseContentPart.CreateInputTextPart("hello world")]);
         CreateResponseOptions turn2Options = new("gpt-5.6", [customToolOutput])
         {
             PreviousResponseId = response.Id,
@@ -949,7 +949,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CustomToolCallOutputItem recordedOutput = turn2InputItems.OfType<CustomToolCallOutputItem>().Single();
         Assert.That(recordedOutput.CallId, Is.EqualTo(customToolCall.CallId));
-        Assert.That(recordedOutput.Output.ToObjectFromJson<string>(), Is.EqualTo("hello world"));
+        Assert.That(recordedOutput.Output, Has.Count.EqualTo(1));
+        Assert.That(recordedOutput.Output[0].Kind, Is.EqualTo(ResponseContentPartKind.InputText));
+        Assert.That(recordedOutput.Output[0].Text, Is.EqualTo("hello world"));
     }
 
     [RecordedTest]
