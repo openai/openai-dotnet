@@ -9,9 +9,9 @@
 
   <!-- General Dependencies -->
   <ItemGroup>
-    <PackageVersion Include="System.ClientModel" Version="1.14.0" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.3" />
-    <PackageVersion Include="System.Net.ServerSentEvents" Version="10.0.2" />
+    <PackageVersion Include="System.ClientModel" Version="1.15.0" />
+    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.9" />
+    <PackageVersion Include="System.Net.ServerSentEvents" Version="10.0.9" />
   </ItemGroup>
 
   <!-- Build-only Dependencies -->
@@ -38,7 +38,7 @@
 
   <!-- Generator-Only Dependencies -->
   <ItemGroup Condition="'$(IsGeneratorProject)' == 'true' or $(MSBuildProjectName.EndsWith('Plugin'))">
-    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260731.7" />
+    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260806.6" />
   </ItemGroup>
 
   <!-- Transitive Dependency Overrides: https://github.com/advisories/GHSA-g4vj-cjjj-v7hg -->

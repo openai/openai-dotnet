@@ -21,8 +21,9 @@ public class AssistantsMockTests : ClientTestBase
     {
     }
 
+    [AsyncOnly]
     [Test]
-    public void StreamingRunSurfacesErrorEventAsException()
+    public async Task StreamingRunSurfacesErrorEventAsException()
     {
         // The service can emit an "error" event mid-stream (for example, when an
         // account is out of quota or the server fails while generating). The SDK
@@ -47,7 +48,7 @@ public class AssistantsMockTests : ClientTestBase
         {
             Transport = new MockPipelineTransport(_ => response)
             {
-                ExpectSyncPipeline = !IsAsync
+                ExpectSyncPipeline = false
             }
         };
 
@@ -55,18 +56,9 @@ public class AssistantsMockTests : ClientTestBase
 
         int updateCount = 0;
 
-        // The run.created event surfaces normally, then the error event throws.
-        ClientResultException exception = IsAsync
-            ? Assert.ThrowsAsync<ClientResultException>(async () =>
+        ClientResultException exception = Assert.ThrowsAsync<ClientResultException>(async () =>
             {
-                await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-                {
-                    updateCount++;
-                }
-            })
-            : Assert.Throws<ClientResultException>(() =>
-            {
-                foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+                await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
                 {
                     updateCount++;
                 }
@@ -78,13 +70,10 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(exception.Message, Does.Contain("The server had an error processing your request."));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingRunIgnoresBenignUnknownEvent()
     {
-        // An unmodeled but benign event (one the SDK does not recognize and that is
-        // not the error channel) must not throw and must not cause a
-        // NullReferenceException. It simply yields no updates, so only the modeled
-        // run.created event surfaces.
         MockPipelineResponse response = new MockPipelineResponse(200).WithContent(
             """
             event: thread.run.created
@@ -101,7 +90,7 @@ public class AssistantsMockTests : ClientTestBase
         {
             Transport = new MockPipelineTransport(_ => response)
             {
-                ExpectSyncPipeline = !IsAsync
+                ExpectSyncPipeline = false
             }
         };
 
@@ -109,25 +98,16 @@ public class AssistantsMockTests : ClientTestBase
 
         List<StreamingUpdate> updates = new();
 
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
         {
-            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         Assert.That(updates, Has.Count.EqualTo(1));
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingRunContinuesAfterBenignUnknownEvent()
     {
@@ -160,7 +140,7 @@ public class AssistantsMockTests : ClientTestBase
         {
             Transport = new MockPipelineTransport(_ => response)
             {
-                ExpectSyncPipeline = !IsAsync
+                ExpectSyncPipeline = false
             }
         };
 
@@ -168,19 +148,9 @@ public class AssistantsMockTests : ClientTestBase
 
         List<StreamingUpdate> updates = new();
 
-        if (IsAsync)
+        await foreach (StreamingUpdate update in await client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
         {
-            await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
-        }
-        else
-        {
-            foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
-            {
-                updates.Add(update);
-            }
+            updates.Add(update);
         }
 
         // All three modeled events must arrive. Before the fix, the stream ended at the

@@ -108,7 +108,7 @@ public class ChatSmokeTests : ClientTestBase
         Exception caughtException = null;
         try
         {
-            await foreach (var _ in client.CompleteChatStreamingAsync(
+            await foreach (var _ in await client.CompleteChatStreamingAsync(
                 [new UserChatMessage("Uh oh, this isn't going to work with that key")]))
             { }
         }

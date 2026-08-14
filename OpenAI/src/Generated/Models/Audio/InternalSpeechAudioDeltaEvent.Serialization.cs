@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -48,6 +49,13 @@ namespace OpenAI.Audio
         InternalSpeechAudioDeltaEvent IPersistableModel<InternalSpeechAudioDeltaEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
         string IPersistableModel<InternalSpeechAudioDeltaEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalSpeechAudioDeltaEvent(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalSpeechAudioDeltaEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
 
         void IJsonModel<InternalSpeechAudioDeltaEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

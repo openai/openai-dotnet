@@ -13,12 +13,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeTranscriptionSession : RealtimeSession
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeTranscriptionSession(string id, string @object) : base(InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription)
         {
             Id = id;
             Object = @object;
             IncludedProperties = new ChangeTrackingList<RealtimeIncludedProperty>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeTranscriptionSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, string id, string @object, DateTimeOffset? expiresAt, IList<RealtimeIncludedProperty> includedProperties, RealtimeTranscriptionSessionAudioOptions audioOptions) : base(kind, patch)

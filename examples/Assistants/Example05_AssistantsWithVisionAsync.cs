@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Files;
@@ -49,7 +50,7 @@ public partial class AssistantExamples
                 }
         });
 
-        AsyncCollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreamingAsync(
+        AsyncStreamingClientResult<StreamingUpdate> streamingUpdates = await assistantClient.CreateRunStreamingAsync(
             thread.Id,
             assistant.Id,
             new RunCreationOptions()

@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 ﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -143,20 +144,20 @@ public class ReadMeSnippets
         var client = Mock.Of<ChatClient>();
 
         #region Snippet:ReadMe_Streaming_Sync
-        CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
+        AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
         #endregion
     }
 
     [Test]
-    public void Streaming_Enumerate()
+    public async Task Streaming_Enumerate()
     {
-         var resultMock = new Mock<CollectionResult<StreamingChatCompletionUpdate>>();
+         var resultMock = new Mock<AsyncStreamingClientResult<StreamingChatCompletionUpdate>>();
          var clientMock = new Mock<ChatClient>();
 
          resultMock
-            .Protected()
-            .Setup<IEnumerable<StreamingChatCompletionUpdate>>("GetValuesFromPage", ItExpr.IsAny<ClientResult>())
-            .Returns(Enumerable.Empty<StreamingChatCompletionUpdate>());
+            .As<IAsyncEnumerable<StreamingChatCompletionUpdate>>()
+            .Setup(r => r.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+            .Returns(AsyncEnumerable.Empty<StreamingChatCompletionUpdate>().GetAsyncEnumerator());
 
          clientMock
             .Setup(c => c.CompleteChatStreaming(It.IsAny<ChatMessage[]>()))
@@ -169,10 +170,10 @@ public class ReadMeSnippets
 #endif
 
         #region Snippet:ReadMe_Streaming_Enumerate
-        CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
+        AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
-        foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
+        await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
         {
             if (completionUpdate.ContentUpdate.Count > 0)
             {
@@ -185,16 +186,17 @@ public class ReadMeSnippets
     [Test]
     public async Task Streaming_Async()
     {
-        var resultMock = new Mock<AsyncCollectionResult<StreamingChatCompletionUpdate>>();
+        var resultMock = new Mock<AsyncStreamingClientResult<StreamingChatCompletionUpdate>>();
         var clientMock = new Mock<ChatClient>();
 
         resultMock
-            .Setup(r => r.GetRawPagesAsync())
-            .Returns(AsyncEnumerable.Empty<ClientResult>());
+            .As<IAsyncEnumerable<StreamingChatCompletionUpdate>>()
+            .Setup(r => r.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+            .Returns(AsyncEnumerable.Empty<StreamingChatCompletionUpdate>().GetAsyncEnumerator());
 
         clientMock
             .Setup(c => c.CompleteChatStreamingAsync(It.IsAny<ChatMessage[]>()))
-            .Returns(resultMock.Object);
+            .ReturnsAsync(resultMock.Object);
 
 #if SNIPPET
         ChatClient client = new(model: "gpt-5.1", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
@@ -203,7 +205,7 @@ public class ReadMeSnippets
 #endif
 
         #region Snippet:ReadMe_Streaming_Async
-        AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync("Say 'this is a test.'");
+        AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = await client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
         await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
@@ -527,7 +529,7 @@ public class ReadMeSnippets
     public async Task ResponsesStreaming()
     {
         var clientMock = new Mock<ResponsesClient>();
-        var streamingResultMock = new Mock<AsyncCollectionResult<StreamingResponseUpdate>>();
+        var streamingResultMock = new Mock<AsyncStreamingClientResult<StreamingResponseUpdate>>();
 
         clientMock
             .Setup(c => c.CreateResponseAsync(
@@ -536,14 +538,15 @@ public class ReadMeSnippets
             .ReturnsAsync(ClientResult.FromValue(new ResponseResult(), new MockPipelineResponse()));
 
         streamingResultMock
-            .Setup(r => r.GetRawPagesAsync())
-            .Returns(AsyncEnumerable.Empty<ClientResult>());
+            .As<IAsyncEnumerable<StreamingResponseUpdate>>()
+            .Setup(r => r.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+            .Returns(AsyncEnumerable.Empty<StreamingResponseUpdate>().GetAsyncEnumerator());
 
         clientMock
             .Setup(c => c.CreateResponseStreamingAsync(
                 It.IsAny<CreateResponseOptions>(),
                 It.IsAny<CancellationToken>()))
-            .Returns(streamingResultMock.Object);
+            .ReturnsAsync(streamingResultMock.Object);
 
         #region Snippet:ReadMe_ResponsesStreaming
 #if SNIPPET
@@ -578,7 +581,7 @@ public class ReadMeSnippets
         streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
         await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(streamingOptions))
+            in await client.CreateResponseStreamingAsync(streamingOptions))
         {
             if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
                 && itemUpdate.Item is ReasoningResponseItem reasoningItem)
@@ -1048,17 +1051,17 @@ public class ReadMeSnippets
     }
 
     [Test]
-    public void Assistants_Vision()
+    public async Task Assistants_Vision()
     {
         // Setup mocks
-        var streamingUpdatesMock = new Mock<CollectionResult<StreamingUpdate>>();
+        var streamingUpdatesMock = new Mock<AsyncStreamingClientResult<StreamingUpdate>>();
         var fileClientMock = new Mock<OpenAIFileClient>();
         var assistantClientMock = new Mock<AssistantClient>();
 
         streamingUpdatesMock
-            .Protected()
-            .Setup<IEnumerable<StreamingUpdate>>("GetValuesFromPage", ItExpr.IsAny<ClientResult>())
-            .Returns(Enumerable.Empty<StreamingUpdate>());
+            .As<IAsyncEnumerable<StreamingUpdate>>()
+            .Setup(r => r.GetAsyncEnumerator(It.IsAny<CancellationToken>()))
+            .Returns(AsyncEnumerable.Empty<StreamingUpdate>().GetAsyncEnumerator());
 
         fileClientMock
             .Setup(c => c.UploadFile(
@@ -1137,7 +1140,7 @@ public class ReadMeSnippets
         #endregion
 
         #region Snippet:ReadMe_Assistants_Vision_CreateRunStreaming
-        CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+        AsyncStreamingClientResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
             thread.Id,
             assistant.Id,
             new RunCreationOptions()
@@ -1147,7 +1150,7 @@ public class ReadMeSnippets
         #endregion
 
         #region Snippet:ReadMe_Assistants_Vision_HandleStreamingUpdates
-        foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+        await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
         {
             if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
             {
