@@ -7,6 +7,12 @@
 Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
 
 - Aditya Singh _([GitHub](https://github.com/adityasingh2400))_
+- JS van Dijk _([GitHub](https://github.com/hogeheer499-commits))_
+
+### Features Added
+
+- OpenAI.Responses:
+  - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, or `AllTurns`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
 
 ### Bugs Fixed
 
