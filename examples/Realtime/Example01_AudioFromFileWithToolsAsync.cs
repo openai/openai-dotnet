@@ -226,9 +226,19 @@ public partial class RealtimeExamples
 
                             string location = locationElement.GetString()
                                 ?? throw new InvalidOperationException("Tool call is missing a location.");
-                            string unit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unitElement)
-                                ? unitElement.GetString() ?? "celsius"
-                                : "celsius";
+
+                            string unit = "celsius";
+                            if (argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unitElement))
+                            {
+                                if (unitElement.ValueKind != JsonValueKind.String
+                                    || unitElement.GetString() is not string requestedUnit
+                                    || (requestedUnit != "celsius" && requestedUnit != "fahrenheit"))
+                                {
+                                    throw new InvalidOperationException("Tool call has an invalid unit.");
+                                }
+
+                                unit = requestedUnit;
+                            }
 
                             string output = GetCurrentWeather(location: location, unit: unit);
 
