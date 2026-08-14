@@ -295,10 +295,10 @@ Compare old generated code (`src/Generated/`) with new generated code:
 - **Changed files** — summarize significant changes (new properties, renamed types, changed method signatures)
 
 ### 9c. API Surface Changes
-Run `./scripts/Export-Api.ps1` and diff the `api/wip/` listings:
-- `api/wip/net8.0/`
-- `api/wip/net10.0/`
-- `api/wip/netstandard2.0/`
+Run `./scripts/Export-Api.ps1` and diff the `api/in-progress/` listings:
+- `api/in-progress/net8.0/`
+- `api/in-progress/net10.0/`
+- `api/in-progress/netstandard2.0/`
 
 List any breaking changes (removed or renamed public API members).
 

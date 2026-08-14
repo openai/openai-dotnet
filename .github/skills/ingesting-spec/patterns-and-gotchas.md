@@ -167,4 +167,4 @@ Expect test updates after spec ingestion:
 
 ## 10. API Export After Ingestion
 
-Always run `./scripts/Export-Api.ps1` after successful code generation to update the API surface files under `api/wip/<tfm>/` (for example, `api/wip/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`). These files are used for API compatibility checks and should be committed as part of the PR.
+Always run `./scripts/Export-Api.ps1` after successful code generation to update the API surface files under `api/in-progress/<tfm>/` (for example, `api/in-progress/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`). These files are used for API compatibility checks and should be committed as part of the PR.

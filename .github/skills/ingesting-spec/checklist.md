@@ -57,7 +57,7 @@ Use this checklist when performing a spec ingestion for any area.
 ## Post-Generation Review
 
 - [ ] Diff generated code (`src/Generated/`) — list new, removed, and changed files
-- [ ] Diff API surface (`api/wip/`) — identify breaking changes
+- [ ] Diff API surface (`api/in-progress/`) — identify breaking changes
 - [ ] List compile issues in generated code
 - [ ] List items needing discriminator patterns
 - [ ] Identify features needing follow-up work
