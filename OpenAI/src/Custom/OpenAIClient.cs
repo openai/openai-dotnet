@@ -134,19 +134,19 @@ public partial class OpenAIClient
     }
 
     /// <summary>Initializes an HTTP client authenticated with X.509 workload identity.</summary>
-    /// <param name="credential">The X.509 workload identity credential.</param>
-    public OpenAIClient(X509WorkloadIdentityCredential credential)
-        : this(credential, new OpenAIClientOptions())
+    /// <param name="workloadIdentityCredential">The X.509 workload identity credential.</param>
+    public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential)
+        : this(workloadIdentityCredential, new OpenAIClientOptions())
     {
     }
 
     /// <summary>Initializes an HTTP client authenticated with X.509 workload identity.</summary>
-    /// <param name="credential">The X.509 workload identity credential.</param>
+    /// <param name="workloadIdentityCredential">The X.509 workload identity credential.</param>
     /// <param name="options">The client options, which must not specify a separate transport.</param>
-    public OpenAIClient(X509WorkloadIdentityCredential credential, OpenAIClientOptions options)
-        : this(new WorkloadIdentityAuthenticationPolicy(credential), ConfigureWorkloadIdentityOptions(credential, options))
+    public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential, OpenAIClientOptions options)
+        : this(new WorkloadIdentityAuthenticationPolicy(workloadIdentityCredential, options?.NetworkTimeout), ConfigureWorkloadIdentityOptions(workloadIdentityCredential, options))
     {
-        _workloadIdentityCredential = credential;
+        _workloadIdentityCredential = workloadIdentityCredential;
     }
 
     // CUSTOM: Added as a convenience.
@@ -425,6 +425,12 @@ public partial class OpenAIClient
     {
         Argument.AssertNotNull(credential, nameof(credential));
         options ??= new OpenAIClientOptions();
+
+        if (options.Endpoint is Uri endpoint
+            && (!endpoint.IsAbsoluteUri || !string.Equals(endpoint.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new ArgumentException("X.509 workload identity requires an HTTPS API endpoint.", nameof(options));
+        }
 
         if (options.Transport is not null)
         {

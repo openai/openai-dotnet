@@ -8,8 +8,8 @@
 namespace OpenAI {
     public class OpenAIClient {
         protected OpenAIClient();
-        public OpenAIClient(X509WorkloadIdentityCredential credential, OpenAIClientOptions options);
-        public OpenAIClient(X509WorkloadIdentityCredential credential);
+        public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential, OpenAIClientOptions options);
+        public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential);
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIClient(ApiKeyCredential credential);
         [Experimental("OPENAI001")]

@@ -1095,7 +1095,7 @@ ChatCompletion completion = await client.GetChatClient("gpt-4o-mini")
     .CompleteChatAsync("Hello");
 ```
 
-The credential creates one `HttpClient` from the supplied handler and shares that exact client between the fixed `https://mtls.auth.openai.com/oauth/token` exchange endpoint and the SDK pipeline. It does not accept an independently configured `OpenAIClientOptions.Transport`, follow redirects, or expose a custom token endpoint. When no endpoint is configured, X.509 clients default to `https://mtls.api.openai.com/v1`; API-key clients retain their existing endpoint.
+The credential creates one `HttpClient` from the supplied handler and shares that exact client between the fixed `https://mtls.auth.openai.com/oauth/token` exchange endpoint and the SDK pipeline. It does not accept an independently configured `OpenAIClientOptions.Transport`, follow redirects, or expose a custom token endpoint. When no endpoint is configured, X.509 clients default to `https://mtls.api.openai.com/v1`; any explicitly configured X.509 endpoint must also use HTTPS. API-key clients retain their existing endpoint behavior.
 
 Token exchange is lazy, concurrent requests share cached credentials, and rejected bearer tokens are refreshed and retried once only for known replayable HTTP request content. X.509 workload identity does not configure Realtime or WebSocket clients.
 

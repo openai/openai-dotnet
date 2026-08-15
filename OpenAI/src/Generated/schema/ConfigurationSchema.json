@@ -16,6 +16,9 @@
             "ApiKey": {
               "type": "string"
             },
+            "WorkloadIdentityCredential": {
+              "type": "object"
+            },
             "AuthenticationPolicy": {
               "type": "object"
             },

@@ -12,16 +12,18 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 {
     private static readonly object s_replayMarker = new();
     private readonly X509WorkloadIdentityCredential _credential;
+    private readonly TimeSpan _networkTimeout;
 
-    internal WorkloadIdentityAuthenticationPolicy(X509WorkloadIdentityCredential credential)
+    internal WorkloadIdentityAuthenticationPolicy(X509WorkloadIdentityCredential credential, TimeSpan? networkTimeout)
     {
         Argument.AssertNotNull(credential, nameof(credential));
         _credential = credential;
+        _networkTimeout = networkTimeout ?? TimeSpan.FromSeconds(100);
     }
 
     public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        string token = _credential.GetToken(message.CancellationToken);
+        string token = _credential.GetToken(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken);
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         ProcessNext(message, pipeline, currentIndex);
 
@@ -38,7 +40,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 
         message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
         message.ExtractResponse()?.Dispose();
-        token = _credential.GetToken(message.CancellationToken);
+        token = _credential.GetToken(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken);
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         ProcessNext(message, pipeline, currentIndex);
 
@@ -53,7 +55,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         IReadOnlyList<PipelinePolicy> pipeline,
         int currentIndex)
     {
-        string token = await _credential.GetTokenAsync(message.CancellationToken).ConfigureAwait(false);
+        string token = await _credential.GetTokenAsync(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken).ConfigureAwait(false);
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
 
@@ -70,7 +72,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 
         message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
         message.ExtractResponse()?.Dispose();
-        token = await _credential.GetTokenAsync(message.CancellationToken).ConfigureAwait(false);
+        token = await _credential.GetTokenAsync(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken).ConfigureAwait(false);
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
 

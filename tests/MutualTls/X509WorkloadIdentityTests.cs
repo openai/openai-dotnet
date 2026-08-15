@@ -28,7 +28,7 @@ namespace OpenAI.Tests.MutualTls;
 
 [Category("MutualTls")]
 [NonParallelizable]
-public sealed class X509WorkloadIdentityTests
+public sealed partial class X509WorkloadIdentityTests
 {
     [Test]
     public void ConstructorRejectsAutomaticRedirects()

@@ -71,7 +71,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
     internal HttpClientPipelineTransport Transport { get; }
 
-    internal string GetToken(CancellationToken cancellationToken)
+    internal string GetToken(TimeSpan networkTimeout, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
         ValidateHandler(_handler);
@@ -91,7 +91,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 return token.Value;
             }
 
-            token = ExchangeTokenAsync(async: false, cancellationToken).GetAwaiter().GetResult();
+            token = ExchangeWithTimeoutAsync(async: false, networkTimeout, cancellationToken).GetAwaiter().GetResult();
             Volatile.Write(ref _cachedToken, token);
             return token.Value;
         }
@@ -101,7 +101,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
     }
 
-    internal async ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
+    internal async ValueTask<string> GetTokenAsync(TimeSpan networkTimeout, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
         ValidateHandler(_handler);
@@ -121,7 +121,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 return token.Value;
             }
 
-            token = await ExchangeTokenAsync(async: true, cancellationToken).ConfigureAwait(false);
+            token = await ExchangeWithTimeoutAsync(async: true, networkTimeout, cancellationToken).ConfigureAwait(false);
             Volatile.Write(ref _cachedToken, token);
             return token.Value;
         }
@@ -150,6 +150,27 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
     }
 
+    private async ValueTask<CachedToken> ExchangeWithTimeoutAsync(
+        bool async,
+        TimeSpan networkTimeout,
+        CancellationToken cancellationToken)
+    {
+        using CancellationTokenSource exchangeCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        exchangeCancellation.CancelAfter(networkTimeout);
+
+        try
+        {
+            return await ExchangeTokenAsync(async, exchangeCancellation.Token).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException exception) when (
+            exchangeCancellation.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            throw new InvalidOperationException(
+                "X.509 workload identity token exchange exceeded the configured network timeout.",
+                exception);
+        }
+    }
+
     private async ValueTask<CachedToken> ExchangeTokenAsync(bool async, CancellationToken cancellationToken)
     {
         ValidateHandler(_handler);
@@ -158,33 +179,15 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         {
             cancellationToken.ThrowIfCancellationRequested();
             using HttpRequestMessage request = CreateExchangeRequest();
-            HttpResponseMessage response;
-
             try
             {
 #if NET8_0_OR_GREATER
-                response = async
+                using HttpResponseMessage response = async
                     ? await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false)
                     : _httpClient.Send(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
 #else
-                response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                using HttpResponseMessage response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 #endif
-            }
-            catch (HttpRequestException exception)
-            {
-                if (attempt + 1 >= MaximumExchangeAttempts)
-                {
-                    throw new InvalidOperationException(
-                        "X.509 workload identity token exchange exhausted its retry attempts.",
-                        exception);
-                }
-
-                await DelayAsync(GetRetryDelay(attempt, retryAfter: null), async, cancellationToken).ConfigureAwait(false);
-                continue;
-            }
-
-            using (response)
-            {
                 if (IsTransient(response.StatusCode) && attempt + 1 < MaximumExchangeAttempts)
                 {
                     TimeSpan delay = GetRetryDelay(attempt, response.Headers.RetryAfter);
@@ -201,6 +204,28 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 }
 
                 return await ReadTokenAsync(response, async, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception exception) when (
+                cancellationToken.IsCancellationRequested
+                && exception is IOException or ObjectDisposedException or JsonException or NotSupportedException)
+            {
+                throw new OperationCanceledException(
+                    "X.509 workload identity token exchange was canceled.",
+                    exception,
+                    cancellationToken);
+            }
+            catch (Exception exception) when (
+                exception is HttpRequestException or IOException
+                || exception is OperationCanceledException && !cancellationToken.IsCancellationRequested)
+            {
+                if (attempt + 1 >= MaximumExchangeAttempts)
+                {
+                    throw new InvalidOperationException(
+                        "X.509 workload identity token exchange exhausted its retry attempts.",
+                        exception);
+                }
+
+                await DelayAsync(GetRetryDelay(attempt, retryAfter: null), async, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -237,6 +262,10 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 #else
         using Stream stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
+        using CancellationTokenRegistration registration = RegisterSynchronousStreamCancellation(
+            stream,
+            async,
+            cancellationToken);
         using JsonDocument document = async
             ? await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false)
             : JsonDocument.Parse(stream);
@@ -293,6 +322,10 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 #else
         using Stream stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
+        using CancellationTokenRegistration registration = RegisterSynchronousStreamCancellation(
+            stream,
+            async,
+            cancellationToken);
         byte[] buffer = new byte[1024];
         int remaining = MaximumErrorBodyBytes;
         while (remaining > 0)
@@ -307,6 +340,16 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
             remaining -= count;
         }
+    }
+
+    private static CancellationTokenRegistration RegisterSynchronousStreamCancellation(
+        Stream stream,
+        bool async,
+        CancellationToken cancellationToken)
+    {
+        return async
+            ? default
+            : cancellationToken.Register(static value => ((Stream)value!).Dispose(), stream);
     }
 
     private static TimeSpan GetRetryDelay(int attempt, RetryConditionHeaderValue? retryAfter)
