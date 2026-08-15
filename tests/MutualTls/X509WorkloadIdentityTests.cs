@@ -63,6 +63,28 @@ public sealed class X509WorkloadIdentityTests
     }
 
     [Test]
+    public async Task UsedHandlerCannotEnableRedirectsWhileTokenIsCached()
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        using PipelineMessage first = await SendAsync(client);
+
+        Assert.Throws<InvalidOperationException>(() => handler.AllowAutoRedirect = true);
+
+        using PipelineMessage second = await SendAsync(client);
+        using PipelineMessage third = client.Pipeline.CreateMessage();
+        third.Request.Method = "GET";
+        third.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+        client.Pipeline.Send(third);
+
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.EqualTo(3));
+        Assert.That(handler.AllowAutoRedirect, Is.False);
+    }
+
+    [Test]
     public void ConstructorRejectsUnsupportedHandler()
     {
         using UnsupportedHandler handler = new();
@@ -81,8 +103,9 @@ public sealed class X509WorkloadIdentityTests
                 " ", "service", new() { Handler = handler }));
             Assert.Throws<ArgumentException>(() => new X509WorkloadIdentityCredential(
                 "provider", " ", new() { Handler = handler }));
-            Assert.Throws<ArgumentOutOfRangeException>(() => new X509WorkloadIdentityCredential(
+            ArgumentOutOfRangeException invalidBuffer = Assert.Throws<ArgumentOutOfRangeException>(() => new X509WorkloadIdentityCredential(
                 "provider", "service", new() { Handler = handler, RefreshBuffer = TimeSpan.FromSeconds(-1) }));
+            Assert.That(invalidBuffer.ParamName, Is.EqualTo(nameof(X509WorkloadIdentityCredentialOptions.RefreshBuffer)));
         });
     }
 
@@ -91,10 +114,11 @@ public sealed class X509WorkloadIdentityTests
     {
         using HttpClientHandler handler = new() { AllowAutoRedirect = false };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        using HttpClientPipelineTransport transport = new();
 
         Assert.Throws<ArgumentException>(() => new OpenAIClient(credential, new()
         {
-            Transport = new HttpClientPipelineTransport(),
+            Transport = transport,
         }));
     }
 
@@ -393,6 +417,36 @@ public sealed class X509WorkloadIdentityTests
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
         Assert.That(server.ApiCount, Is.EqualTo(1));
         Assert.That(content.WriteCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task UnauthorizedNonReplayableRequestInvalidatesTokenForNextRequest()
+    {
+        await using TestServer server = await TestServer.StartAsync((context, exchange) =>
+        {
+            if (!exchange && context.Request.Headers.Authorization == "Bearer token-1")
+            {
+                context.Response.StatusCode = 401;
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        using NonReplayableContent firstContent = new();
+        using NonReplayableContent secondContent = new();
+
+        using PipelineMessage first = await SendAsync(client, firstContent);
+        using PipelineMessage second = await SendAsync(client, secondContent);
+
+        Assert.That(first.Response.Status, Is.EqualTo(401));
+        Assert.That(second.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(2));
+        Assert.That(server.ApiCount, Is.EqualTo(2));
+        Assert.That(firstContent.WriteCount, Is.EqualTo(1));
+        Assert.That(secondContent.WriteCount, Is.EqualTo(1));
     }
 
     [Test]
@@ -769,8 +823,16 @@ public sealed class X509WorkloadIdentityTests
                 ConnectCallback = async (_, cancellationToken) =>
                 {
                     TcpClient client = new();
-                    await client.ConnectAsync(IPAddress.Loopback, port, cancellationToken);
-                    return client.GetStream();
+                    try
+                    {
+                        await client.ConnectAsync(IPAddress.Loopback, port, cancellationToken);
+                        return client.GetStream();
+                    }
+                    catch
+                    {
+                        client.Dispose();
+                        throw;
+                    }
                 },
             };
         }

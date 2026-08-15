@@ -25,15 +25,22 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         ProcessNext(message, pipeline, currentIndex);
 
-        if (ShouldReplay(message))
+        if (message.Response?.Status != 401)
         {
-            message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
-            _credential.Invalidate(token);
-            message.ExtractResponse()?.Dispose();
-            token = _credential.GetToken(message.CancellationToken);
-            message.Request.Headers.Set("Authorization", "Bearer " + token);
-            ProcessNext(message, pipeline, currentIndex);
+            return;
         }
+
+        _credential.Invalidate(token);
+        if (!ShouldReplay(message))
+        {
+            return;
+        }
+
+        message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
+        message.ExtractResponse()?.Dispose();
+        token = _credential.GetToken(message.CancellationToken);
+        message.Request.Headers.Set("Authorization", "Bearer " + token);
+        ProcessNext(message, pipeline, currentIndex);
     }
 
     public override async ValueTask ProcessAsync(
@@ -45,21 +52,27 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
 
-        if (ShouldReplay(message))
+        if (message.Response?.Status != 401)
         {
-            message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
-            _credential.Invalidate(token);
-            message.ExtractResponse()?.Dispose();
-            token = await _credential.GetTokenAsync(message.CancellationToken).ConfigureAwait(false);
-            message.Request.Headers.Set("Authorization", "Bearer " + token);
-            await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
+            return;
         }
+
+        _credential.Invalidate(token);
+        if (!ShouldReplay(message))
+        {
+            return;
+        }
+
+        message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
+        message.ExtractResponse()?.Dispose();
+        token = await _credential.GetTokenAsync(message.CancellationToken).ConfigureAwait(false);
+        message.Request.Headers.Set("Authorization", "Bearer " + token);
+        await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
     }
 
     private static bool ShouldReplay(PipelineMessage message)
     {
-        return message.Response?.Status == 401
-            && !message.TryGetProperty(typeof(WorkloadIdentityAuthenticationPolicy), out _)
+        return !message.TryGetProperty(typeof(WorkloadIdentityAuthenticationPolicy), out _)
             && IsReplayable(message.Request.Content);
     }
 

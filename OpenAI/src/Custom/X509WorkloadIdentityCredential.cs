@@ -53,7 +53,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
         if (options.RefreshBuffer < TimeSpan.Zero)
         {
-            throw new ArgumentOutOfRangeException(nameof(options), "The refresh buffer cannot be negative.");
+            throw new ArgumentOutOfRangeException(nameof(options.RefreshBuffer), "The refresh buffer cannot be negative.");
         }
 
         ValidateHandler(handler);
@@ -74,6 +74,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     internal string GetToken(CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
+        ValidateHandler(_handler);
         CachedToken? token = Volatile.Read(ref _cachedToken);
         if (token is not null && IsFresh(token))
         {
@@ -103,6 +104,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     internal async ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
+        ValidateHandler(_handler);
         CachedToken? token = Volatile.Read(ref _cachedToken);
         if (token is not null && IsFresh(token))
         {
