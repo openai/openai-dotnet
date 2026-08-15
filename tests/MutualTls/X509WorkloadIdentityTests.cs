@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 namespace OpenAI.Tests.MutualTls;
 
 [Category("MutualTls")]
+[NonParallelizable]
 public sealed class X509WorkloadIdentityTests
 {
     [Test]
