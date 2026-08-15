@@ -170,8 +170,15 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 #endif
             }
-            catch (HttpRequestException) when (attempt + 1 < MaximumExchangeAttempts)
+            catch (HttpRequestException exception)
             {
+                if (attempt + 1 >= MaximumExchangeAttempts)
+                {
+                    throw new InvalidOperationException(
+                        "X.509 workload identity token exchange exhausted its retry attempts.",
+                        exception);
+                }
+
                 await DelayAsync(GetRetryDelay(attempt, retryAfter: null), async, cancellationToken).ConfigureAwait(false);
                 continue;
             }

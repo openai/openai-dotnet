@@ -428,6 +428,11 @@ public partial class OpenAIClient
 
         if (options.Transport is not null)
         {
+            if (ReferenceEquals(options.Transport, credential.Transport))
+            {
+                return options;
+            }
+
             throw new ArgumentException(
                 "X.509 workload identity must use the transport created from its credential's handler.",
                 nameof(options));

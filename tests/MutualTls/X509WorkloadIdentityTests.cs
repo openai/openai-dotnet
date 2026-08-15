@@ -123,6 +123,24 @@ public sealed class X509WorkloadIdentityTests
     }
 
     [Test]
+    public async Task ClientOptionsCanBeReusedWithTheSameCredential()
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClientOptions options = new();
+        OpenAIClient first = new(credential, options);
+        OpenAIClient second = new(credential, options);
+
+        using PipelineMessage firstMessage = await SendAsync(first);
+        using PipelineMessage secondMessage = await SendAsync(second);
+
+        Assert.That(options.IsReadOnly, Is.True);
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.EqualTo(2));
+    }
+
+    [Test]
     public void ExistingApiKeyAuthenticationKeepsOrdinaryEndpoint()
     {
         OpenAIClient client = new(new ApiKeyCredential("api-key"));
@@ -474,6 +492,33 @@ public sealed class X509WorkloadIdentityTests
     }
 
     [Test]
+    public async Task UnauthorizedReplayInvalidatesReplacementTokenForNextRequest()
+    {
+        await using TestServer server = await TestServer.StartAsync((context, exchange) =>
+        {
+            if (!exchange && context.Request.Headers.Authorization != "Bearer token-3")
+            {
+                context.Response.StatusCode = 401;
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        using PipelineMessage rejected = await SendAsync(client);
+        using NonReplayableContent nextContent = new();
+        using PipelineMessage next = await SendAsync(client, nextContent);
+
+        Assert.That(rejected.Response.Status, Is.EqualTo(401));
+        Assert.That(next.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(3));
+        Assert.That(server.ApiCount, Is.EqualTo(3));
+        Assert.That(nextContent.WriteCount, Is.EqualTo(1));
+    }
+
+    [Test]
     public async Task TransientExchangeErrorsAreRetried()
     {
         int exchangeAttempts = 0;
@@ -519,6 +564,30 @@ public sealed class X509WorkloadIdentityTests
 
         Assert.That(server.ExchangeCount, Is.EqualTo(3));
         Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [Test]
+    public void NetworkExchangeRetriesAreNotMultipliedByPipelineRetries()
+    {
+        int connectionAttempts = 0;
+        using SocketsHttpHandler handler = new()
+        {
+            AllowAutoRedirect = false,
+            UseProxy = false,
+            ConnectCallback = (_, _) =>
+            {
+                Interlocked.Increment(ref connectionAttempts);
+                throw new HttpRequestException("simulated token endpoint connection failure");
+            },
+        };
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential, new() { RetryPolicy = new ClientRetryPolicy(2) });
+
+        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await SendAsync(client));
+
+        Assert.That(exception.Message, Does.Contain("exhausted"));
+        Assert.That(connectionAttempts, Is.EqualTo(3));
     }
 
     [TestCase(408)]

@@ -41,6 +41,11 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         token = _credential.GetToken(message.CancellationToken);
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         ProcessNext(message, pipeline, currentIndex);
+
+        if (message.Response?.Status == 401)
+        {
+            _credential.Invalidate(token);
+        }
     }
 
     public override async ValueTask ProcessAsync(
@@ -68,6 +73,11 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         token = await _credential.GetTokenAsync(message.CancellationToken).ConfigureAwait(false);
         message.Request.Headers.Set("Authorization", "Bearer " + token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
+
+        if (message.Response?.Status == 401)
+        {
+            _credential.Invalidate(token);
+        }
     }
 
     private static bool ShouldReplay(PipelineMessage message)
