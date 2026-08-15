@@ -101,6 +101,7 @@ public partial class OpenAIClient
 
     private readonly OpenAIClientOptions _options;
     private readonly ApiKeyCredential _keyCredential;
+    private readonly X509WorkloadIdentityCredential _workloadIdentityCredential;
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
@@ -130,6 +131,22 @@ public partial class OpenAIClient
     public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
     {
         _keyCredential = credential;
+    }
+
+    /// <summary>Initializes an HTTP client authenticated with X.509 workload identity.</summary>
+    /// <param name="credential">The X.509 workload identity credential.</param>
+    public OpenAIClient(X509WorkloadIdentityCredential credential)
+        : this(credential, new OpenAIClientOptions())
+    {
+    }
+
+    /// <summary>Initializes an HTTP client authenticated with X.509 workload identity.</summary>
+    /// <param name="credential">The X.509 workload identity credential.</param>
+    /// <param name="options">The client options, which must not specify a separate transport.</param>
+    public OpenAIClient(X509WorkloadIdentityCredential credential, OpenAIClientOptions options)
+        : this(new WorkloadIdentityAuthenticationPolicy(credential), ConfigureWorkloadIdentityOptions(credential, options))
+    {
+        _workloadIdentityCredential = credential;
     }
 
     // CUSTOM: Added as a convenience.
@@ -338,13 +355,21 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns></returns>
     [Experimental("OPENAI002")]
-    public virtual RealtimeClient GetRealtimeClient() => new(Pipeline, new RealtimeClientOptions
+    public virtual RealtimeClient GetRealtimeClient()
     {
-        Endpoint = _options.Endpoint,
-        OrganizationId = _options.OrganizationId,
-        ProjectId = _options.ProjectId,
-        UserAgentApplicationId = _options.UserAgentApplicationId,
-    });
+        if (_workloadIdentityCredential is not null)
+        {
+            throw new NotSupportedException("X.509 workload identity currently supports HTTP clients only.");
+        }
+
+        return new(Pipeline, new RealtimeClientOptions
+        {
+            Endpoint = _options.Endpoint,
+            OrganizationId = _options.OrganizationId,
+            ProjectId = _options.ProjectId,
+            UserAgentApplicationId = _options.UserAgentApplicationId,
+        });
+    }
 
     /// <summary>
     /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
@@ -393,6 +418,25 @@ public partial class OpenAIClient
 
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
         => OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential);
+
+    private static OpenAIClientOptions ConfigureWorkloadIdentityOptions(
+        X509WorkloadIdentityCredential credential,
+        OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(credential, nameof(credential));
+        options ??= new OpenAIClientOptions();
+
+        if (options.Transport is not null)
+        {
+            throw new ArgumentException(
+                "X.509 workload identity must use the transport created from its credential's handler.",
+                nameof(options));
+        }
+
+        options.Transport = credential.Transport;
+        options.Endpoint ??= new Uri("https://mtls.api.openai.com/v1");
+        return options;
+    }
 
     internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
         => OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options?.UserAgentApplicationId, options?.OrganizationId, options?.ProjectId);

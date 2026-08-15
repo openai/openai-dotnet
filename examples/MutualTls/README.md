@@ -70,4 +70,22 @@ requires an API key and a client certificate whose CA has been uploaded and
 activated for the same organization or project, so it is not suitable for
 credential-free pull request CI.
 
-This example covers API-key + HTTP mTLS only. It does not configure Realtime WebSocket connections or X.509 workload identity federation.
+## X.509 workload identity federation
+
+`Example02_X509WorkloadIdentityAsync` demonstrates an application-owned rollout toggle between API-key authentication and X.509 workload identity federation:
+
+```powershell
+$env:OPENAI_AUTH_MODE = "x509"
+$env:OPENAI_IDENTITY_PROVIDER_ID = "idp_..."
+$env:OPENAI_SERVICE_ACCOUNT_ID = "svc_acct_..."
+$env:OPENAI_MTLS_PFX_PATH = "C:\path\to\client-chain.pfx"
+$env:OPENAI_MTLS_PFX_PASSWORD = "optional-password"
+
+dotnet test .\examples\OpenAI.Examples.csproj `
+  --framework net10.0 `
+  -- NUnit.Where="test == 'OpenAI.Examples.MutualTlsExamples.Example02_X509WorkloadIdentityAsync'"
+```
+
+Set `OPENAI_AUTH_MODE=api_key` and provide `OPENAI_API_KEY` to keep the existing API-key path. The application loads the PFX and configures a caller-owned `SocketsHttpHandler`; the credential accepts that handler as its only transport input, verifies redirects are disabled, and constructs one shared HTTP client for token exchange and HTTP API calls. Do not provide a separate SDK transport.
+
+Keep the handler, credential, and OpenAI clients alive together. The credential disposes only the HTTP-client wrapper it creates, never the application's certificate-bearing handler. Rotate the group together to establish new TLS connections with the replacement certificate. X.509 workload identity supports HTTP APIs only; Realtime WebSockets require separate support.

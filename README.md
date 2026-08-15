@@ -31,6 +31,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [How to work with Azure OpenAI](#how-to-work-with-azure-openai)
 - [Advanced scenarios](#advanced-scenarios)
   - [Using mutual TLS](#using-mutual-tls)
+  - [Using X.509 workload identity federation](#using-x509-workload-identity-federation)
   - [Using protocol methods](#using-protocol-methods)
   - [Mock a client for testing](#mock-a-client-for-testing)
   - [Automatically retrying errors](#automatically-retrying-errors)
@@ -1068,6 +1069,39 @@ finally
 Keep the `HttpClient` alive for as long as the OpenAI client uses it, and create a new handler, transport, and client when rotating the certificate so new TLS connections use the replacement credentials. This transport recipe applies to HTTP clients created from `OpenAIClient`; it does not configure Realtime WebSocket connections.
 
 See the [complete mTLS example](examples/MutualTls/README.md) for setup and a runnable end-to-end request.
+
+### Using X.509 workload identity federation
+
+X.509 workload identity federation replaces an API key with a short-lived access token obtained using the client certificate already configured on a native .NET HTTP handler. The handler presents the same certificate during token exchange and subsequent HTTP API requests. Certificates, private keys, proxies, server trust, connection pools, and certificate rotation remain application-owned handler configuration.
+
+Configure a `SocketsHttpHandler` (.NET 8 or later) or an `HttpClientHandler` (all supported target frameworks) with automatic redirects disabled, then provide that single handler to the credential:
+
+```csharp
+using SocketsHttpHandler handler = new() { AllowAutoRedirect = false };
+handler.SslOptions.ClientCertificateContext =
+    SslStreamCertificateContext.Create(clientCertificate, intermediates, offline: true);
+
+using X509WorkloadIdentityCredential credential = new(
+    identityProviderId: Environment.GetEnvironmentVariable("OPENAI_IDENTITY_PROVIDER_ID"),
+    serviceAccountId: Environment.GetEnvironmentVariable("OPENAI_SERVICE_ACCOUNT_ID"),
+    options: new X509WorkloadIdentityCredentialOptions
+    {
+        Handler = handler,
+        RefreshBuffer = TimeSpan.FromMinutes(5),
+    });
+
+OpenAIClient client = new(credential);
+ChatCompletion completion = await client.GetChatClient("gpt-4o-mini")
+    .CompleteChatAsync("Hello");
+```
+
+The credential creates one `HttpClient` from the supplied handler and shares that exact client between the fixed `https://mtls.auth.openai.com/oauth/token` exchange endpoint and the SDK pipeline. It does not accept an independently configured `OpenAIClientOptions.Transport`, follow redirects, or expose a custom token endpoint. When no endpoint is configured, X.509 clients default to `https://mtls.api.openai.com/v1`; API-key clients retain their existing endpoint.
+
+Token exchange is lazy, concurrent requests share cached credentials, and rejected bearer tokens are refreshed and retried once only for known replayable HTTP request content. X.509 workload identity does not configure Realtime or WebSocket clients.
+
+For dependency injection, register the configured handler, X.509 credential, and `OpenAIClient` with matching long-lived lifetimes. The application owns and disposes the handler; disposing the credential disposes only its SDK-created `HttpClient` wrapper. Keep both alive while any child client uses the shared pipeline. Replace the handler, credential, and clients together when rotating certificates so pooled connections cannot continue using old TLS state.
+
+The [X.509 workload identity example](examples/MutualTls/Example02_X509WorkloadIdentityAsync.cs) uses the application-owned `OPENAI_AUTH_MODE=api_key|x509` rollout toggle and loads certificate material explicitly in application code.
 
 ### Using protocol methods
 

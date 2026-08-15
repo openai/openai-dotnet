@@ -8,6 +8,8 @@
 namespace OpenAI {
     public class OpenAIClient {
         protected OpenAIClient();
+        public OpenAIClient(X509WorkloadIdentityCredential credential, OpenAIClientOptions options);
+        public OpenAIClient(X509WorkloadIdentityCredential credential);
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIClient(ApiKeyCredential credential);
         [Experimental("OPENAI001")]
@@ -100,5 +102,15 @@ namespace OpenAI {
         public static IClientBuilder AddSkillClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
+    [Experimental("OPENAI001")]
+    public sealed class X509WorkloadIdentityCredential : IDisposable {
+        public X509WorkloadIdentityCredential(string identityProviderId, string serviceAccountId, X509WorkloadIdentityCredentialOptions options);
+        public void Dispose();
+    }
+    [Experimental("OPENAI001")]
+    public sealed class X509WorkloadIdentityCredentialOptions {
+        public Net.Http.HttpMessageHandler? Handler { get; set; }
+        public TimeSpan RefreshBuffer { get; set; }
     }
 }
