@@ -79,7 +79,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (!Patch.Contains("$.call_id"u8))
             {
@@ -161,7 +161,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = prop.Value.GetString().ToComputerCallOutputStatus();
+                    status = new ComputerCallOutputStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("call_id"u8))

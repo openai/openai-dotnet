@@ -621,7 +621,7 @@ model RunStepObject {
   @doc("""
     The type of run step, which can be either `message_creation` or `tool_calls`.
     """)
-  type: "message_creation" | "tool_calls";
+  type: RunStepKind;
 
   @doc("""
     The status of the run step, which can be either `in_progress`, `cancelled`, `failed`, `completed`, or `expired`.
@@ -949,4 +949,10 @@ union IncludedRunStepProperty {
 
 enum RunStepDetailsToolCallsFileSearchResultObjectContentType {
   text,
+}
+
+union RunStepKind {
+  string,
+  message_creation: "message_creation",
+  tool_calls: "tool_calls",
 }

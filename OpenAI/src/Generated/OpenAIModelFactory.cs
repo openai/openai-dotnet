@@ -574,7 +574,7 @@ namespace OpenAI
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
-            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
+            return new InternalUnknownAnnotation(new ResponseMessageAnnotationKind(kind), default);
         }
 
         public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default, string filename = default)
@@ -637,7 +637,7 @@ namespace OpenAI
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
         {
-            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), default);
+            return new InternalUnknownComputerAction(new ComputerCallActionKind(kind), default);
         }
 
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
@@ -1973,7 +1973,7 @@ namespace OpenAI
 
         public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
         {
-            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
+            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(new RunStepToolCallKind(kind), id, additionalBinaryDataProperties: null);
         }
 
         public static RunStepCodeInterpreterOutput RunStepCodeInterpreterOutput(string kind = default)
@@ -1986,11 +1986,6 @@ namespace OpenAI
             content ??= new ChangeTrackingList<RunStepFileSearchResultContent>();
 
             return new RunStepFileSearchResult(fileId, fileName, score, content.ToList(), additionalBinaryDataProperties: null);
-        }
-
-        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default)
-        {
-            return new RunStepFileSearchResultContent(RunStepFileSearchResultContentKind.Text, text, additionalBinaryDataProperties: null);
         }
 
         public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
@@ -2311,7 +2306,7 @@ namespace OpenAI
 
         public static ModerationInputPart ModerationInputPart(string kind = default)
         {
-            return new InternalUnknownModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownModerationInputPart(new ModerationInputPartKind(kind), additionalBinaryDataProperties: null);
         }
 
         public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
