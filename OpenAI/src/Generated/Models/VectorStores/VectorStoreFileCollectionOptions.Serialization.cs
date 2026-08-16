@@ -100,10 +100,10 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            string afterId = default;
-            string beforeId = default;
             int? pageSizeLimit = default;
             VectorStoreFileCollectionOrder? order = default;
+            string afterId = default;
+            string beforeId = default;
             VectorStoreFileStatusFilter? filter = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -112,10 +112,10 @@ namespace OpenAI.VectorStores
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreFileCollectionOptions(
-                afterId,
-                beforeId,
                 pageSizeLimit,
                 order,
+                afterId,
+                beforeId,
                 filter,
                 additionalBinaryDataProperties);
         }

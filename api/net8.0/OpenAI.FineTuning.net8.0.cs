@@ -49,8 +49,8 @@ namespace OpenAI.FineTuning {
         public virtual FineTuningJob FineTune(string baseModel, string trainingFileId, bool waitUntilCompleted, FineTuningOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<FineTuningJob> FineTuneAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options);
         public virtual Task<FineTuningJob> FineTuneAsync(string baseModel, string trainingFileId, bool waitUntilCompleted, FineTuningOptions options = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetFineTuningCheckpointPermissions(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options);
-        public virtual Task<ClientResult> GetFineTuningCheckpointPermissionsAsync(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options);
+        public virtual ClientResult GetFineTuningCheckpointPermissions(string fineTunedModelCheckpoint, string afterId, int? pageSizeLimit, string order, string projectId, RequestOptions options);
+        public virtual Task<ClientResult> GetFineTuningCheckpointPermissionsAsync(string fineTunedModelCheckpoint, string afterId, int? pageSizeLimit, string order, string projectId, RequestOptions options);
         public virtual FineTuningJob GetJob(string jobId, CancellationToken cancellationToken = default);
         public virtual Task<FineTuningJob> GetJobAsync(string jobId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<FineTuningJob> GetJobs(FineTuningJobCollectionOptions options = null, CancellationToken cancellationToken = default);

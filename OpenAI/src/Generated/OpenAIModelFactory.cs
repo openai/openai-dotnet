@@ -2427,29 +2427,29 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
+        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
+        {
+            return new AssistantCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
+        }
+
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)
         {
             return new InternalUnknownDotNetAssistantResponseFormat(new InternalAssistantsResponseFormatType(kind), additionalBinaryDataProperties: null);
         }
 
-        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
-        {
-            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
-        }
-
         public static MessageCollectionOptions MessageCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, MessageCollectionOrder? order = default)
         {
-            return new MessageCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new MessageCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
         public static RunCollectionOptions RunCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunCollectionOrder? order = default)
         {
-            return new RunCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new RunCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
         public static RunStepCollectionOptions RunStepCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunStepCollectionOrder? order = default)
         {
-            return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new RunStepCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
         public static FileChunkingStrategy FileChunkingStrategy(string kind = default)
@@ -2459,16 +2459,16 @@ namespace OpenAI
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
         {
-            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new VectorStoreCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
         }
 
         public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
         {
             return new VectorStoreFileCollectionOptions(
-                afterId,
-                beforeId,
                 pageSizeLimit,
                 order,
+                afterId,
+                beforeId,
                 filter,
                 additionalBinaryDataProperties: null);
         }
@@ -2551,6 +2551,19 @@ namespace OpenAI
             return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);
         }
 
+        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ChatCompletionCollectionOptions(
+                afterId,
+                pageSizeLimit,
+                order,
+                metadata,
+                model,
+                default);
+        }
+
         public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, default);
@@ -2564,19 +2577,6 @@ namespace OpenAI
         public static ChatToolChoice ChatToolChoice()
         {
             return new ChatToolChoice(default);
-        }
-
-        public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new ChatCompletionCollectionOptions(
-                afterId,
-                pageSizeLimit,
-                order,
-                metadata,
-                model,
-                default);
         }
 
         public static ContainerCollectionOptions ContainerCollectionOptions(int? pageSizeLimit = default, ContainerCollectionOrder? order = default, string afterId = default, string name = default)
@@ -2593,10 +2593,10 @@ namespace OpenAI
         {
             return new ResponseItemCollectionOptions(
                 responseId,
-                afterId,
-                beforeId,
                 pageSizeLimit,
                 order,
+                afterId,
+                beforeId,
                 additionalBinaryDataProperties: null);
         }
 

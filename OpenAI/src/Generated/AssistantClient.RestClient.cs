@@ -15,26 +15,26 @@ namespace OpenAI.Assistants
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetAssistantsRequest(int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateGetAssistantsRequest(int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/assistants", false);
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {
                 uri.AppendQuery("order", order, true);
             }
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (before != null)
+            if (beforeId != null)
             {
-                uri.AppendQuery("before", before, true);
+                uri.AppendQuery("before", beforeId, true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
