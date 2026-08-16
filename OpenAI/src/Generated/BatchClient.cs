@@ -23,14 +23,14 @@ namespace OpenAI.Batch
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options)
+        public virtual CollectionResult GetBatches(string afterId, int? pageSizeLimit, RequestOptions options)
         {
-            return new BatchClientGetBatchesCollectionResult(this, after, limit, options);
+            return new BatchClientGetBatchesCollectionResult(this, afterId, pageSizeLimit, options);
         }
 
-        public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options)
+        public virtual AsyncCollectionResult GetBatchesAsync(string afterId, int? pageSizeLimit, RequestOptions options)
         {
-            return new BatchClientGetBatchesAsyncCollectionResult(this, after, limit, options);
+            return new BatchClientGetBatchesAsyncCollectionResult(this, afterId, pageSizeLimit, options);
         }
 
         public virtual CollectionResult<BatchJob> GetBatches(BatchCollectionOptions options = default, CancellationToken cancellationToken = default)

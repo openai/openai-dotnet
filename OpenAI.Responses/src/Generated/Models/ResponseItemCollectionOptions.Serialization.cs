@@ -105,10 +105,10 @@ namespace OpenAI.Responses
                 return null;
             }
             string responseId = default;
-            string afterId = default;
-            string beforeId = default;
             int? pageSizeLimit = default;
             ResponseItemCollectionOrder? order = default;
+            string afterId = default;
+            string beforeId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -117,10 +117,10 @@ namespace OpenAI.Responses
             }
             return new ResponseItemCollectionOptions(
                 responseId,
-                afterId,
-                beforeId,
                 pageSizeLimit,
                 order,
+                afterId,
+                beforeId,
                 additionalBinaryDataProperties);
         }
     }

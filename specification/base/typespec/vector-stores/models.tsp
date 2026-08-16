@@ -757,61 +757,86 @@ model DotNetCombinedOtherChunkingStrategyParam
 @usage(Usage.input)
 model VectorStoreCollectionOptions {
   /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  limit?: integer = 20;
+
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  order?: VectorStoreCollectionOrder = VectorStoreCollectionOrder.Descending;
+
+  /**
    * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
    * subsequent call can include after=obj_foo in order to fetch the next page of the list.
    */
-  @query @continuationToken afterId?: string;
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  @continuationToken
+  @extension("x-ms-list-continuation-token", true)
+  after?: string;
 
   /**
    * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
    * For instance, if you make a list request and receive 100 objects, starting with obj_foo, your
    * subsequent call can include before=obj_foo in order to fetch the previous page of the list.
    */
-  @query beforeId?: string;
-
-  /**
-   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-   * default is 20.
-   */
-  @query pageSizeLimit?: int32 = 20;
-
-  /**
-   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-   * for descending order.
-   */
-  @query order?: VectorStoreCollectionOrder;
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  before?: string;
 }
 
 @access(Access.public)
 @usage(Usage.input)
 model VectorStoreFileCollectionOptions {
   /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  limit?: integer = 20;
+
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  order?: VectorStoreFileCollectionOrder = VectorStoreFileCollectionOrder.Descending;
+
+  /**
    * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
    * subsequent call can include after=obj_foo in order to fetch the next page of the list.
    */
-  @query @continuationToken afterId?: string;
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  @continuationToken
+  @extension("x-ms-list-continuation-token", true)
+  after?: string;
 
   /**
    * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
    * For instance, if you make a list request and receive 100 objects, starting with obj_foo, your
    * subsequent call can include before=obj_foo in order to fetch the previous page of the list.
    */
-  @query beforeId?: string;
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  before?: string;
 
-  /**
-   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
-   * default is 20.
-   */
-  @query pageSizeLimit?: int32 = 20;
-
-  /**
-   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
-   * for descending order.
-   */
-  @query order?: VectorStoreFileCollectionOrder;
-  @query filter?: ListVectorStoreFilesFilter;
+  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  @query(#{ explode: true })
+  filter?: ListVectorStoreFilesFilter;
 }
 
 enum VectorStoreExpirationAnchor {

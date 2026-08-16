@@ -30,8 +30,8 @@ namespace OpenAI.Videos {
         public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
         public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
-        public virtual CollectionResult GetVideos(int? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual AsyncCollectionResult GetVideosAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual CollectionResult GetVideos(int? pageSizeLimit = null, string order = null, string afterId = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetVideosAsync(int? pageSizeLimit = null, string order = null, string afterId = null, RequestOptions options = null);
     }
     [Experimental("SCME0002")]
     public sealed class VideoClientSettings : ClientSettings {
