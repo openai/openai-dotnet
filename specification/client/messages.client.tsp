@@ -63,3 +63,7 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(MessageObject.content, Lifecycle.Read);
 @@visibility(MessageObject.metadata, Lifecycle.Read);
+
+@@clientName(MessageCollectionOptions.after, "AfterId");
+@@clientName(MessageCollectionOptions.before, "BeforeId");
+@@clientName(MessageCollectionOptions.limit, "PageSizeLimit");

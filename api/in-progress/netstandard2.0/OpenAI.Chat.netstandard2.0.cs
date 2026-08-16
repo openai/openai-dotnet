@@ -61,13 +61,13 @@ namespace OpenAI.Chat {
         public virtual Task<ClientResult> GetChatCompletionAsync(string completionId, RequestOptions options);
         public virtual Task<ClientResult<ChatCompletion>> GetChatCompletionAsync(string completionId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionMessageCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options);
+        public virtual CollectionResult GetChatCompletionMessages(string completionId, string afterId, int? pageSizeLimit, string order, RequestOptions options);
         public virtual AsyncCollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessagesAsync(string completionId, ChatCompletionMessageCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options);
+        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string afterId, int? pageSizeLimit, string order, RequestOptions options);
         public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        public virtual CollectionResult GetChatCompletions(string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
         public virtual AsyncCollectionResult<ChatCompletion> GetChatCompletionsAsync(ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
+        public virtual AsyncCollectionResult GetChatCompletionsAsync(string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options);
         public virtual ClientResult UpdateChatCompletion(string completionId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ChatCompletion> UpdateChatCompletion(string completionId, IDictionary<string, string> metadata, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateChatCompletionAsync(string completionId, BinaryContent content, RequestOptions options = null);
