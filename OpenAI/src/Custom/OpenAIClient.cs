@@ -135,6 +135,7 @@ public partial class OpenAIClient
 
     /// <summary>Initializes an HTTP client authenticated with X.509 workload identity.</summary>
     /// <param name="workloadIdentityCredential">The X.509 workload identity credential.</param>
+    [Experimental("OPENAI001")]
     public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential)
         : this(workloadIdentityCredential, new OpenAIClientOptions())
     {
@@ -143,13 +144,11 @@ public partial class OpenAIClient
     /// <summary>Initializes an HTTP client authenticated with X.509 workload identity.</summary>
     /// <param name="workloadIdentityCredential">The X.509 workload identity credential.</param>
     /// <param name="options">The client options, which must not specify a separate transport.</param>
+    [Experimental("OPENAI001")]
     public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential, OpenAIClientOptions options)
         : this(
-            new WorkloadIdentityAuthenticationPolicy(
-                workloadIdentityCredential,
-                options?.Endpoint ?? X509WorkloadIdentityCredential.DefaultApiEndpoint,
-                options?.NetworkTimeout),
-            ConfigureWorkloadIdentityOptions(workloadIdentityCredential, options))
+            CreateWorkloadIdentityPipeline(workloadIdentityCredential, options),
+            CreateWorkloadIdentityOptions(options))
     {
         _workloadIdentityCredential = workloadIdentityCredential;
     }
@@ -424,7 +423,7 @@ public partial class OpenAIClient
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
         => OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential);
 
-    private static OpenAIClientOptions ConfigureWorkloadIdentityOptions(
+    private static ClientPipeline CreateWorkloadIdentityPipeline(
         X509WorkloadIdentityCredential credential,
         OpenAIClientOptions options)
     {
@@ -449,19 +448,30 @@ public partial class OpenAIClient
 
         if (options.Transport is not null)
         {
-            if (ReferenceEquals(options.Transport, credential.Transport))
-            {
-                return options;
-            }
-
             throw new ArgumentException(
                 "X.509 workload identity must use the transport created from its credential's handler.",
                 nameof(options));
         }
 
-        options.Transport = credential.Transport;
-        options.Endpoint ??= X509WorkloadIdentityCredential.DefaultApiEndpoint;
-        return options;
+        ClientPipelineOptions pipelineOptions = options.Clone();
+        pipelineOptions.Transport = credential.Transport;
+        return OpenAIClientUtilities.CreatePipeline(
+            new WorkloadIdentityAuthenticationPolicy(credential, endpoint, options.NetworkTimeout),
+            pipelineOptions,
+            options.UserAgentApplicationId,
+            options.OrganizationId,
+            options.ProjectId);
+    }
+
+    private static OpenAIClientOptions CreateWorkloadIdentityOptions(OpenAIClientOptions options)
+    {
+        return new OpenAIClientOptions
+        {
+            Endpoint = options?.Endpoint ?? X509WorkloadIdentityCredential.DefaultApiEndpoint,
+            OrganizationId = options?.OrganizationId,
+            ProjectId = options?.ProjectId,
+            UserAgentApplicationId = options?.UserAgentApplicationId,
+        };
     }
 
     internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)

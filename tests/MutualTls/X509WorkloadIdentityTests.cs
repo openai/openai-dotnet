@@ -135,7 +135,9 @@ public sealed partial class X509WorkloadIdentityTests
         using PipelineMessage firstMessage = await SendAsync(first);
         using PipelineMessage secondMessage = await SendAsync(second);
 
-        Assert.That(options.IsReadOnly, Is.True);
+        Assert.That(options.IsReadOnly, Is.False);
+        Assert.That(options.Endpoint, Is.Null);
+        Assert.That(options.Transport, Is.Null);
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
         Assert.That(server.ApiCount, Is.EqualTo(2));
     }

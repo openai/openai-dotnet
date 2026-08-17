@@ -3,9 +3,11 @@ using NUnit.Framework;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +16,67 @@ namespace OpenAI.Tests.MutualTls;
 
 public sealed partial class X509WorkloadIdentityTests
 {
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task SharedOptionsKeepApiKeyAndWorkloadIdentityAuthenticationIndependent(bool createApiKeyFirst)
+    {
+        string customHeader = null;
+        await using TestServer server = await TestServer.StartAsync((context, exchange) =>
+        {
+            if (!exchange)
+            {
+                customHeader = context.Request.Headers["X-Customer-Request"];
+            }
+
+            return Task.FromResult(false);
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClientOptions options = new()
+        {
+            OrganizationId = "customer-organization",
+            ProjectId = "customer-project",
+            NetworkTimeout = TimeSpan.FromSeconds(20),
+        };
+        options.AddPolicy(new SecurityMutationPolicy(message =>
+            message.Request.Headers.Set("X-Customer-Request", "preserved")),
+            PipelinePosition.BeforeTransport);
+
+        OpenAIClient apiKeyClient = createApiKeyFirst
+            ? new OpenAIClient(new System.ClientModel.ApiKeyCredential("existing-api-key"), options)
+            : null;
+        OpenAIClient workloadClient = new(credential, options);
+        apiKeyClient ??= new OpenAIClient(
+            new System.ClientModel.ApiKeyCredential("existing-api-key"), options);
+
+        using PipelineMessage message = await SendAsync(workloadClient);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(options.Endpoint, Is.Null);
+            Assert.That(options.Transport, Is.Null);
+            Assert.That(apiKeyClient.Endpoint, Is.EqualTo(new Uri("https://api.openai.com/v1")));
+            Assert.That(workloadClient.Endpoint, Is.EqualTo(new Uri("https://mtls.api.openai.com/v1")));
+            Assert.That(customHeader, Is.EqualTo("preserved"));
+            Assert.That(server.ExchangeCount, Is.EqualTo(1));
+            Assert.That(server.ApiCount, Is.EqualTo(1));
+        });
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void WorkloadIdentityConstructorsAreExplicitlyExperimental(bool hasOptions)
+    {
+        Type[] parameters = hasOptions
+            ? [typeof(X509WorkloadIdentityCredential), typeof(OpenAIClientOptions)]
+            : [typeof(X509WorkloadIdentityCredential)];
+        ConstructorInfo constructor = typeof(OpenAIClient).GetConstructor(parameters);
+        ExperimentalAttribute attribute = constructor.GetCustomAttribute<ExperimentalAttribute>();
+
+        Assert.That(attribute, Is.Not.Null);
+        Assert.That(attribute.DiagnosticId, Is.EqualTo("OPENAI001"));
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void ConstructorRejectsAutomaticCookieHandling(bool useSocketsHandler)
