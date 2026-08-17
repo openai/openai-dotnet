@@ -1,0 +1,93 @@
+version: 2
+
+# Cooldowns apply only to version updates; security updates are not delayed.
+# Run after the existing Monday TypeSpec generator update workflow.
+updates:
+  - package-ecosystem: nuget
+    directories:
+      - /
+      - /codegen/generator
+      - /examples/aspnet-core
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "09:00"
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 8
+    open-pull-requests-limit: 5
+    groups:
+      nuget-dependencies:
+        # Keep centrally managed versions consistent across both solutions.
+        group-by: dependency-name
+        patterns:
+          - "*"
+    ignore:
+      # This dependency requires explicit approval from the legal team.
+      - dependency-name: Moq
+      # update-generator.yml updates this with its matching npm packages.
+      - dependency-name: Microsoft.TypeSpec.Generator.ClientModel
+
+  - package-ecosystem: npm
+    # The root package-lock.json owns the codegen npm workspace as well.
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "09:15"
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 8
+    open-pull-requests-limit: 5
+    groups:
+      npm-development-dependencies:
+        dependency-type: development
+        update-types:
+          - minor
+          - patch
+    ignore:
+      # update-generator.yml updates these packages and the matching NuGet
+      # generator together, then regenerates the library and npm lockfile.
+      - dependency-name: "@azure-tools/typespec-client-generator-core"
+      - dependency-name: "@typespec/http"
+      - dependency-name: "@typespec/http-client-csharp"
+      - dependency-name: "@typespec/openapi"
+
+  - package-ecosystem: dotnet-sdk
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "09:30"
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 8
+    open-pull-requests-limit: 1
+    ignore:
+      # Major SDK upgrades must stay coordinated with CI and the dev container.
+      - dependency-name: dotnet-sdk
+        update-types:
+          - version-update:semver-major
+
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "09:45"
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 8
+    open-pull-requests-limit: 2
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+      time: "10:00"
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 8
+    # Review each third-party action and pinned SHA independently.
+    open-pull-requests-limit: 3
