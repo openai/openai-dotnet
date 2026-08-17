@@ -393,8 +393,10 @@ public sealed partial class X509WorkloadIdentityTests
     {
         using NonSeekableMemoryStream stream = new(Encoding.UTF8.GetBytes("single-use payload"));
 
-        ArgumentException exception = Assert.Throws<ArgumentException>(
-            () => System.ClientModel.BinaryContent.Create(stream));
+        ArgumentException exception = Assert.Throws<ArgumentException>(() =>
+        {
+            using System.ClientModel.BinaryContent content = System.ClientModel.BinaryContent.Create(stream);
+        });
 
         Assert.That(exception.Message, Does.Contain("seekable").IgnoreCase);
     }
