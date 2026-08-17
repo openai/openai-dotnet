@@ -81,11 +81,11 @@ Then run the tests:
 dotnet test OpenAI.slnx
 ```
 
-The recorded-test base disables most default sanitizers, so sensitive headers,
-payloads, and other fields must be explicitly sanitized. Inspect every new file
-in `tests/SessionRecords/` for API keys, authorization headers, cookies, customer
-data, prompts, model responses, and other sensitive content before committing.
-Never commit raw or unsanitized recordings.
+`OpenAIRecordedTestBase` disables most default sanitizers, so sensitive headers,
+payloads, and other fields must be explicitly sanitized. Inspect every new
+file in `tests/SessionRecords/` for API keys, authorization headers, cookies,
+customer data, prompts, model responses, and other sensitive content before
+committing. Never commit raw or unsanitized recordings.
 
 ## Code Generation
 

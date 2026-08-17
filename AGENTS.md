@@ -1,4 +1,4 @@
-# Agent instructions
+# Agent Instructions
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the
 [repository testing instructions](.github/skills/running-tests/SKILL.md) before
@@ -12,7 +12,7 @@ This SDK is generated in collaboration with Microsoft. Treat
 required, and keep generated source, documentation snippets, and `api/` listings
 consistent with their authoritative inputs.
 
-## Security requirements
+## Security Requirements
 
 - **Secrets and fixtures:** Never commit, print, or embed API keys, access
   tokens, connection secrets, signing credentials, or NuGet publishing tokens.
