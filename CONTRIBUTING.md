@@ -81,7 +81,11 @@ Then run the tests:
 dotnet test OpenAI.slnx
 ```
 
-When recording tests, sensitive data such as API keys and other secrets are automatically sanitized before being saved to session files. This ensures that session recordings can be safely committed to the repository. Always verify that new recordings do not contain sensitive information before committing.
+The recorded-test base disables most default sanitizers, so sensitive headers,
+payloads, and other fields must be explicitly sanitized. Inspect every new file
+in `tests/SessionRecords/` for API keys, authorization headers, cookies, customer
+data, prompts, model responses, and other sensitive content before committing.
+Never commit raw or unsanitized recordings.
 
 ## Code Generation
 
@@ -144,6 +148,49 @@ Code snippets in documentation are synchronized from actual test code. After mod
 
 This updates the corresponding snippets in markdown documentation files.
 
+## Security Requirements
+
+- **Secrets and fixtures:** Load `OPENAI_API_KEY` and other credentials from
+  environment variables or an approved secrets manager. Never commit real API
+  keys, access tokens, signing credentials, or NuGet publishing secrets; use
+  synthetic data, safe placeholders, and mocked transports in examples, fixtures,
+  tests, and generated artifacts.
+- **Logs and recordings:** Redact authorization headers, credentials, signed
+  URLs, and customer data from diagnostics, exceptions, telemetry, and build
+  artifacts. Use synthetic prompts/model responses and sanitize sensitive
+  request/response content in `tests/SessionRecords/`. Most default recording
+  sanitizers are disabled; explicitly sanitize sensitive fields and inspect
+  every new recording. Agents and ordinary CI test runs must explicitly set
+  `CLIENTMODEL_TEST_MODE=Playback` and
+  `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`. Only authorized humans may run
+  `Record` or `Live` tests; create recordings through the protected recording
+  workflow or an approved local process.
+- **Dependencies and generators:** Review direct and transitive changes in
+  `Directory.Packages.props`, trusted `nuget.config` feeds and mappings,
+  `.config/dotnet-tools.json`, `package.json`, `codegen/package.json`, and the
+  shared root `package-lock.json`. Use `npm ci` for reproducible installs and
+  preserve security-related overrides. The `Moq` dependency is pinned to
+  `[4.18.2]` and requires legal approval before any change. Coordinate
+  `@typespec/http-client-csharp` and
+  `Microsoft.TypeSpec.Generator.ClientModel` upgrades through the existing
+  generator-update workflow, and preserve Microsoft-owned upstream
+  specifications and generated source boundaries.
+- **CI and publishing:** Pin external GitHub Actions to full immutable commit
+  SHAs, review Action updates, and grant only the workflow permissions required.
+  Never expose credentials to untrusted pull requests. Preserve protected
+  release/publish environments, OIDC and Azure Key Vault package signing,
+  scoped `GITHUB_TOKEN` permissions, and NuGet publishing credentials.
+- **Sensitive changes:** Request focused maintainer review and add offline
+  regression tests for authentication, endpoint/redirect handling, TLS,
+  serialization, streaming, file uploads, logging, dependency resolution,
+  generated source, and release/signing changes. Follow the existing API export,
+  code-generation, and playback-test workflows when they apply.
+- **Vulnerability reports:** Follow [SECURITY.md](SECURITY.md) and report
+  suspected vulnerabilities privately through the existing
+  [OpenAI Bugcrowd program](https://bugcrowd.com/engagements/openai). Do not
+  disclose vulnerabilities, proof-of-concept secrets, or customer data in public
+  GitHub issues, pull requests, or discussions.
+
 ## Pull Request Checklist
 
 Before submitting a pull request, please ensure:
@@ -152,3 +199,5 @@ Before submitting a pull request, please ensure:
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
+- [ ] Examples, fixtures, recordings, diagnostics, and generated artifacts contain no real credentials or customer data
+- [ ] Security-sensitive changes include focused regression coverage and appropriate maintainer review
