@@ -178,6 +178,12 @@ public sealed partial class X509WorkloadIdentityTests
 
         Assert.That(client.Endpoint, Is.EqualTo(new Uri("https://mtls.api.openai.com/v1")));
         Assert.That(protectedProxy.Credentials, Is.SameAs(proxy.Credentials));
+
+        NetworkCredential replacement = new("updated-proxy-user", "updated-proxy-secret");
+        protectedProxy.Credentials = replacement;
+
+        Assert.That(proxy.Credentials, Is.SameAs(replacement),
+            "Explicit caller-owned proxies must retain their normal credential ownership.");
     }
 
     [TestCase(false)]
@@ -208,7 +214,11 @@ public sealed partial class X509WorkloadIdentityTests
         IWebProxy previous = HttpClient.DefaultProxy;
         try
         {
-            HttpClient.DefaultProxy = new WebProxy("http://proxy.example.test:8080");
+            NetworkCredential sharedCredentials = new("shared-proxy-user", "shared-proxy-secret");
+            HttpClient.DefaultProxy = new WebProxy("http://proxy.example.test:8080")
+            {
+                Credentials = sharedCredentials,
+            };
             NetworkCredential credentials = new("proxy-user", "proxy-secret");
             using HttpMessageHandler handler = useSocketsHandler
                 ? new SocketsHttpHandler
@@ -234,6 +244,13 @@ public sealed partial class X509WorkloadIdentityTests
             protectedProxy.Credentials = replacement;
 
             Assert.That(protectedProxy.Credentials, Is.SameAs(replacement));
+            Assert.That(HttpClient.DefaultProxy.Credentials, Is.SameAs(sharedCredentials),
+                "Rotating handler-scoped credentials must not modify the shared system proxy.");
+
+            using HttpClientHandler unrelatedHandler = new();
+            Assert.That(unrelatedHandler.Proxy, Is.Null);
+            Assert.That(HttpClient.DefaultProxy.Credentials, Is.SameAs(sharedCredentials),
+                "An unrelated HTTP client must not observe workload proxy credentials.");
         }
         finally
         {

@@ -607,7 +607,10 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 #else
             ICredentials? defaultCredentials = null;
 #endif
-            clientHandler.Proxy = new ValidatingProxy(proxy, defaultCredentials);
+            clientHandler.Proxy = new ValidatingProxy(
+                proxy,
+                configuredProxy,
+                defaultCredentials ?? proxy.Credentials);
             return;
         }
 
@@ -620,7 +623,10 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             ICredentials? defaultCredentials = configuredProxy is null
                 ? socketsHandler.DefaultProxyCredentials
                 : null;
-            socketsHandler.Proxy = new ValidatingProxy(proxy, defaultCredentials);
+            socketsHandler.Proxy = new ValidatingProxy(
+                proxy,
+                configuredProxy,
+                defaultCredentials ?? proxy.Credentials);
         }
 #endif
     }
@@ -658,15 +664,24 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         internal TimeSpan RefreshAfter { get; }
     }
 
-    private sealed class ValidatingProxy(IWebProxy proxy, ICredentials? defaultCredentials) : IWebProxy
+    private sealed class ValidatingProxy(
+        IWebProxy proxy,
+        IWebProxy? credentialOwner,
+        ICredentials? credentials) : IWebProxy
     {
         public ICredentials? Credentials
         {
-            get => defaultCredentials ?? proxy.Credentials;
+            get => credentialOwner is null ? credentials : credentialOwner.Credentials;
             set
             {
-                defaultCredentials = null;
-                proxy.Credentials = value;
+                if (credentialOwner is null)
+                {
+                    credentials = value;
+                }
+                else
+                {
+                    credentialOwner.Credentials = value;
+                }
             }
         }
 
