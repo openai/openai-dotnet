@@ -1,5 +1,4 @@
-# Coordinate switching GitHub's existing CodeQL default setup to advanced setup;
-# GitHub rejects advanced CodeQL uploads while default setup remains active.
+# Preserve GitHub's existing default setup and gate on real local CodeQL results.
 name: CodeQL
 
 on:
@@ -26,7 +25,6 @@ jobs:
     permissions:
       actions: read
       contents: read
-      security-events: write
     strategy:
       fail-fast: false
       matrix:
@@ -48,6 +46,40 @@ jobs:
           build-mode: none
 
       - name: Perform CodeQL analysis
+        id: analyze
         uses: github/codeql-action/analyze@ff2f1c621b7f889edc0d3c761ac2e6a3f8cdb0dd # v4.37.7
         with:
           category: /language:${{ matrix.language }}
+          output: ${{ runner.temp }}/codeql-results/${{ matrix.language }}
+          upload: never
+          upload-database: false
+
+      - name: Reject CodeQL findings
+        env:
+          CODEQL_LANGUAGE: ${{ matrix.language }}
+          SARIF_DIRECTORY: ${{ steps.analyze.outputs.sarif-output }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          sarif_files=("${SARIF_DIRECTORY}"/*.sarif)
+          if [[ ${#sarif_files[@]} -eq 0 ]]; then
+            echo "::error::CodeQL produced no SARIF results for ${CODEQL_LANGUAGE}."
+            exit 1
+          fi
+
+          for sarif_file in "${sarif_files[@]}"; do
+            if ! jq -e \
+              '(.runs | type == "array" and length > 0) and all(.runs[]; .results | type == "array")' \
+              "${sarif_file}" > /dev/null; then
+              echo "::error::CodeQL produced invalid SARIF for ${CODEQL_LANGUAGE}."
+              exit 1
+            fi
+
+            finding_count="$(jq '[.runs[] | .results // [] | .[]] | length' "${sarif_file}")"
+            if [[ ${finding_count} -ne 0 ]]; then
+              jq -r '.runs[] | .results[] | "::error::CodeQL finding: \(.ruleId // "unknown")"' "${sarif_file}"
+              exit 1
+            fi
+          done
