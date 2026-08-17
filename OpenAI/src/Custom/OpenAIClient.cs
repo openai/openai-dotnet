@@ -22,6 +22,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace OpenAI;
 
@@ -491,16 +492,9 @@ public partial class OpenAIClient
     private static bool IsExternalProviderEndpoint(Uri endpoint)
     {
         string host = endpoint.IdnHost.TrimEnd('.');
-        foreach (string domain in s_externalProviderDomains)
-        {
-            if (string.Equals(host, domain, StringComparison.OrdinalIgnoreCase)
-                || host.EndsWith("." + domain, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return s_externalProviderDomains.Any(domain =>
+            string.Equals(host, domain, StringComparison.OrdinalIgnoreCase)
+                || host.EndsWith("." + domain, StringComparison.OrdinalIgnoreCase));
     }
 
     private static OpenAIClientOptions CreateWorkloadIdentityOptions(OpenAIClientOptions options)
