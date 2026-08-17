@@ -28,7 +28,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 
     public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
-        WorkloadIdentityPipelineTransport.ValidateDestination(message.Request.Uri, _endpoint);
+        WorkloadIdentityPipelineTransport.ValidateBeforeAuthorization(message, _endpoint);
         string token = _credential.GetToken(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken);
         _credential.Transport.Authorize(message, _endpoint, token);
         ProcessNext(message, pipeline, currentIndex);
@@ -46,6 +46,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 
         message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
         message.ExtractResponse()?.Dispose();
+        WorkloadIdentityPipelineTransport.ValidateBeforeAuthorization(message, _endpoint);
         token = _credential.GetToken(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken);
         _credential.Transport.Authorize(message, _endpoint, token);
         ProcessNext(message, pipeline, currentIndex);
@@ -61,7 +62,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         IReadOnlyList<PipelinePolicy> pipeline,
         int currentIndex)
     {
-        WorkloadIdentityPipelineTransport.ValidateDestination(message.Request.Uri, _endpoint);
+        WorkloadIdentityPipelineTransport.ValidateBeforeAuthorization(message, _endpoint);
         string token = await _credential.GetTokenAsync(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken).ConfigureAwait(false);
         _credential.Transport.Authorize(message, _endpoint, token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
@@ -79,6 +80,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 
         message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
         message.ExtractResponse()?.Dispose();
+        WorkloadIdentityPipelineTransport.ValidateBeforeAuthorization(message, _endpoint);
         token = await _credential.GetTokenAsync(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken).ConfigureAwait(false);
         _credential.Transport.Authorize(message, _endpoint, token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);

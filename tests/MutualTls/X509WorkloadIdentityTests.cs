@@ -95,7 +95,7 @@ public sealed partial class X509WorkloadIdentityTests
     [Test]
     public void ConstructorRejectsInvalidConfiguration()
     {
-        using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+        using HttpClientHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
 
         Assert.Multiple(() =>
         {
@@ -112,7 +112,7 @@ public sealed partial class X509WorkloadIdentityTests
     [Test]
     public void ClientRejectsIndependentTransport()
     {
-        using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+        using HttpClientHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         using HttpClientPipelineTransport transport = new();
 
@@ -169,7 +169,7 @@ public sealed partial class X509WorkloadIdentityTests
     [Test]
     public void RealtimeIsExplicitlyUnsupported()
     {
-        using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+        using HttpClientHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClient client = new(credential);
 
@@ -573,6 +573,7 @@ public sealed partial class X509WorkloadIdentityTests
         using SocketsHttpHandler handler = new()
         {
             AllowAutoRedirect = false,
+            UseCookies = false,
             UseProxy = false,
             ConnectCallback = (_, _) =>
             {
@@ -882,6 +883,7 @@ public sealed partial class X509WorkloadIdentityTests
             return new SocketsHttpHandler
             {
                 AllowAutoRedirect = false,
+                UseCookies = false,
                 UseProxy = false,
                 SslOptions = new SslClientAuthenticationOptions
                 {

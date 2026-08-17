@@ -27,7 +27,7 @@ public sealed partial class X509WorkloadIdentityTests
     [Test]
     public void WorkloadIdentityConstructorSupportsUnambiguousNamedCredential()
     {
-        using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+        using HttpClientHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
 
         OpenAIClient first = new(workloadIdentityCredential: credential);
@@ -49,7 +49,7 @@ public sealed partial class X509WorkloadIdentityTests
     [TestCase("ftp://insecure.example.test/v1")]
     public void WorkloadIdentityRejectsNonHttpsApiEndpoints(string endpoint)
     {
-        using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+        using HttpClientHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClientOptions options = new() { Endpoint = new Uri(endpoint) };
 
@@ -187,6 +187,7 @@ public sealed partial class X509WorkloadIdentityTests
         using SocketsHttpHandler handler = new()
         {
             AllowAutoRedirect = false,
+            UseCookies = false,
             UseProxy = false,
             ConnectCallback = (_, _) =>
             {

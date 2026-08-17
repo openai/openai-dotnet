@@ -25,6 +25,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 {
     private const int MaximumExchangeAttempts = 3;
     private const int MaximumErrorBodyBytes = 4096;
+    private const int MaximumTokenResponseBytes = 1024 * 1024;
     private static readonly Uri s_exchangeEndpoint = new("https://mtls.auth.openai.com/oauth/token");
 
     internal static Uri DefaultApiEndpoint { get; } = new("https://mtls.api.openai.com/v1");
@@ -260,11 +261,17 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             stream,
             async,
             cancellationToken);
-        using JsonDocument document = async
-            ? await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false)
-            : JsonDocument.Parse(stream);
+        using JsonDocument document = await ParseBoundedResponseAsync(stream, async, cancellationToken)
+            .ConfigureAwait(false);
 
         JsonElement body = document.RootElement;
+        if (body.TryGetProperty("token_type", out JsonElement tokenType)
+            && (tokenType.ValueKind != JsonValueKind.String
+                || !string.Equals(tokenType.GetString(), "Bearer", StringComparison.OrdinalIgnoreCase)))
+        {
+            throw new InvalidOperationException("X.509 workload identity token exchange returned an invalid token type.");
+        }
+
         if (!body.TryGetProperty("access_token", out JsonElement tokenElement)
             || tokenElement.ValueKind != JsonValueKind.String)
         {
@@ -272,7 +279,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
 
         string? accessToken = tokenElement.GetString();
-        if (accessToken is null || string.IsNullOrWhiteSpace(accessToken))
+        if (accessToken is null || !IsValidBearerToken(accessToken))
         {
             throw new InvalidOperationException("X.509 workload identity token exchange returned an invalid access token.");
         }
@@ -297,6 +304,68 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         TimeSpan maximumBuffer = TimeSpan.FromTicks(lifetime.Ticks / 2);
         TimeSpan effectiveBuffer = _refreshBuffer < maximumBuffer ? _refreshBuffer : maximumBuffer;
         return new CachedToken(accessToken, GetTimestamp(), lifetime - effectiveBuffer);
+    }
+
+    private static async ValueTask<JsonDocument> ParseBoundedResponseAsync(
+        Stream stream,
+        bool async,
+        CancellationToken cancellationToken)
+    {
+        using MemoryStream response = new();
+        byte[] buffer = new byte[8192];
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int count = async
+                ? await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken).ConfigureAwait(false)
+                : stream.Read(buffer, 0, buffer.Length);
+            if (count == 0)
+            {
+                break;
+            }
+
+            if (response.Length > MaximumTokenResponseBytes - count)
+            {
+                throw new InvalidOperationException(
+                    "X.509 workload identity token exchange exceeded the maximum response size.");
+            }
+
+            response.Write(buffer, 0, count);
+        }
+
+        return JsonDocument.Parse(new ReadOnlyMemory<byte>(response.GetBuffer(), 0, (int)response.Length));
+    }
+
+    private static bool IsValidBearerToken(string token)
+    {
+        if (token.Length == 0)
+        {
+            return false;
+        }
+
+        bool paddingStarted = false;
+        bool containsTokenCharacter = false;
+        foreach (char character in token)
+        {
+            if (character == '=')
+            {
+                paddingStarted = true;
+                continue;
+            }
+
+            if (paddingStarted
+                || !(character is >= 'A' and <= 'Z'
+                    or >= 'a' and <= 'z'
+                    or >= '0' and <= '9'
+                    or '-' or '.' or '_' or '~' or '+' or '/'))
+            {
+                return false;
+            }
+
+            containsTokenCharacter = true;
+        }
+
+        return containsTokenCharacter;
     }
 
     private static async ValueTask DrainErrorBodyAsync(
@@ -416,7 +485,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 destination,
                 native.AllowAutoRedirect,
                 native.Credentials,
-                native.UseCookies ? native.CookieContainer : null,
+                native.UseCookies,
                 native.UseProxy,
                 native.Proxy);
             return;
@@ -431,7 +500,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 destination,
                 native.AllowAutoRedirect,
                 native.Credentials,
-                native.UseCookies ? native.CookieContainer : null,
+                native.UseCookies,
                 native.UseProxy,
                 native.Proxy);
             return;
@@ -448,7 +517,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         Uri destination,
         bool allowsRedirects,
         ICredentials? credentials,
-        CookieContainer? cookies,
+        bool usesCookies,
         bool usesProxy,
         IWebProxy? configuredProxy)
     {
@@ -464,10 +533,10 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 nameof(handler));
         }
 
-        if (cookies?.GetCookies(s_exchangeEndpoint).Count > 0)
+        if (usesCookies)
         {
             throw new ArgumentException(
-                "The workload identity HTTP handler must not send cookies to the token endpoint.",
+                "The workload identity HTTP handler must disable automatic cookies.",
                 nameof(handler));
         }
 

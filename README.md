@@ -1074,10 +1074,10 @@ See the [complete mTLS example](examples/MutualTls/README.md) for setup and a ru
 
 X.509 workload identity federation replaces an API key with a short-lived access token obtained using the client certificate already configured on a native .NET HTTP handler. The handler presents the same certificate during token exchange and subsequent HTTP API requests. Certificates, private keys, proxies, server trust, connection pools, and certificate rotation remain application-owned handler configuration.
 
-Configure a `SocketsHttpHandler` (.NET 8 or later) or an `HttpClientHandler` (all supported target frameworks) with automatic redirects disabled, then provide that single handler to the credential:
+Configure a `SocketsHttpHandler` (.NET 8 or later) or an `HttpClientHandler` (all supported target frameworks) with automatic redirects and cookies disabled, then provide that single handler to the credential:
 
 ```csharp
-using SocketsHttpHandler handler = new() { AllowAutoRedirect = false };
+using SocketsHttpHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
 handler.SslOptions.ClientCertificateContext =
     SslStreamCertificateContext.Create(clientCertificate, intermediates, offline: true);
 
@@ -1097,7 +1097,7 @@ ChatCompletion completion = await client.GetChatClient("gpt-4o-mini")
 
 The credential creates one `HttpClient` from the supplied handler and shares that exact client between the fixed `https://mtls.auth.openai.com/oauth/token` exchange endpoint and the SDK pipeline. It does not accept an independently configured `OpenAIClientOptions.Transport`, follow redirects, or expose a custom token endpoint. When no endpoint is configured, X.509 clients default to `https://mtls.api.openai.com/v1`; explicitly configured endpoints must use HTTPS and cannot include userinfo. The SDK verifies the final API origin and exchanged bearer immediately before sending, including after custom request policies run. API-key clients retain their existing endpoint behavior.
 
-To keep the workload certificate and authentication domains isolated, X.509 handlers cannot contain destination-server credentials or cookies scoped to the token endpoint. Standard HTTP CONNECT proxies and separately scoped proxy credentials are supported; HTTPS proxies are rejected because .NET can present the workload client certificate while establishing the outer proxy connection.
+To keep the workload certificate and authentication domains isolated, X.509 handlers must disable automatic cookies and cannot contain destination-server credentials. Explicit API-request cookies remain supported. Standard HTTP CONNECT proxies and separately scoped proxy credentials are supported; HTTPS proxies are rejected because .NET can present the workload client certificate while establishing the outer proxy connection.
 
 Token exchange is lazy, concurrent requests share cached credentials, and rejected bearer tokens are refreshed and retried once only for known replayable HTTP request content. X.509 workload identity does not configure Realtime or WebSocket clients.
 

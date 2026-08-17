@@ -34,7 +34,7 @@ public partial class MutualTlsExamples
             X509Certificate2Collection intermediates = new(
                 certificates.Where(certificate => !certificate.HasPrivateKey).ToArray());
 
-            using SocketsHttpHandler handler = new() { AllowAutoRedirect = false };
+            using SocketsHttpHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
             handler.SslOptions.ClientCertificateContext =
                 SslStreamCertificateContext.Create(leaf, intermediates, offline: true);
 

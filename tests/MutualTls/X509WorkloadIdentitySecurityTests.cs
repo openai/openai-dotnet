@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Http;
 using NUnit.Framework;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,12 +17,25 @@ public sealed partial class X509WorkloadIdentityTests
 {
     [TestCase(false)]
     [TestCase(true)]
+    public void ConstructorRejectsAutomaticCookieHandling(bool useSocketsHandler)
+    {
+        using HttpMessageHandler handler = useSocketsHandler
+            ? new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = true }
+            : new HttpClientHandler { AllowAutoRedirect = false, UseCookies = true };
+
+        ArgumentException exception = Assert.Throws<ArgumentException>(() => CreateCredential(handler));
+
+        Assert.That(exception.Message, Does.Contain("cookies").IgnoreCase);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
     public void ConstructorRejectsDestinationServerCredentials(bool useSocketsHandler)
     {
         NetworkCredential credentials = new("api-user", "api-secret");
         using HttpMessageHandler handler = useSocketsHandler
-            ? new SocketsHttpHandler { AllowAutoRedirect = false, Credentials = credentials }
-            : new HttpClientHandler { AllowAutoRedirect = false, Credentials = credentials };
+            ? new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false, Credentials = credentials }
+            : new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, Credentials = credentials };
 
         ArgumentException exception = Assert.Throws<ArgumentException>(() => CreateCredential(handler));
 
@@ -33,8 +49,8 @@ public sealed partial class X509WorkloadIdentityTests
     {
         WebProxy proxy = new("https://proxy.example.test:8443");
         using HttpMessageHandler handler = useSocketsHandler
-            ? new SocketsHttpHandler { AllowAutoRedirect = false, Proxy = proxy }
-            : new HttpClientHandler { AllowAutoRedirect = false, Proxy = proxy };
+            ? new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = proxy }
+            : new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = proxy };
 
         ArgumentException exception = Assert.Throws<ArgumentException>(() => CreateCredential(handler));
 
@@ -48,7 +64,12 @@ public sealed partial class X509WorkloadIdentityTests
         try
         {
             HttpClient.DefaultProxy = new WebProxy("https://proxy.example.test:8443");
-            using SocketsHttpHandler handler = new() { AllowAutoRedirect = false, Proxy = null };
+            using SocketsHttpHandler handler = new()
+            {
+                AllowAutoRedirect = false,
+                UseCookies = false,
+                Proxy = null,
+            };
 
             Assert.Throws<ArgumentException>(() => CreateCredential(handler));
         }
@@ -64,6 +85,7 @@ public sealed partial class X509WorkloadIdentityTests
         using SocketsHttpHandler handler = new()
         {
             AllowAutoRedirect = false,
+            UseCookies = false,
             Proxy = new DestinationSelectiveProxy(),
         };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
@@ -83,8 +105,8 @@ public sealed partial class X509WorkloadIdentityTests
             Credentials = new NetworkCredential("proxy-user", "proxy-secret"),
         };
         using HttpMessageHandler handler = useSocketsHandler
-            ? new SocketsHttpHandler { AllowAutoRedirect = false, Proxy = proxy }
-            : new HttpClientHandler { AllowAutoRedirect = false, Proxy = proxy };
+            ? new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = proxy }
+            : new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = proxy };
 
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClient client = new(credential);
@@ -128,21 +150,49 @@ public sealed partial class X509WorkloadIdentityTests
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClient client = new(credential);
 
-        ArgumentException exception = Assert.ThrowsAsync<ArgumentException>(
-            async () => await SendAsync(client));
+        using PipelineMessage message = await SendAsync(client);
 
-        Assert.That(exception.Message, Does.Not.Contain("cookie-secret"));
+        Assert.That(message.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(2));
+        Assert.That(server.ApiCount, Is.EqualTo(2));
+        Assert.That(handler.CookieContainer.GetCookies(new Uri("https://mtls.auth.openai.com")),
+            Is.Empty);
+    }
+
+    [Test]
+    public async Task ExplicitCookiesScopedOnlyToTheApiRequestRemainSupported()
+    {
+        string apiCookie = null;
+        await using TestServer server = await TestServer.StartAsync((context, exchange) =>
+        {
+            if (!exchange)
+            {
+                apiCookie = context.Request.Headers.Cookie.ToString();
+            }
+
+            return Task.FromResult(false);
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClientOptions options = new();
+        options.AddPolicy(new SecurityMutationPolicy(message =>
+            message.Request.Headers.Set("Cookie", "api-session=api-only-value")),
+            PipelinePosition.BeforeTransport);
+        OpenAIClient client = new(credential, options);
+
+        using PipelineMessage message = await SendAsync(client);
+
+        Assert.That(message.Response.Status, Is.EqualTo(200));
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
         Assert.That(server.ApiCount, Is.EqualTo(1));
-        Assert.That(handler.CookieContainer.GetCookies(new Uri("https://mtls.auth.openai.com")),
-            Has.Count.EqualTo(1));
+        Assert.That(apiCookie, Is.EqualTo("api-session=api-only-value"));
     }
 
     [TestCase("https://mtls.api.openai.com@attacker.example.test/v1")]
     [TestCase("https://user:password@mtls.api.openai.com/v1")]
     public void ClientRejectsApiEndpointsContainingUserInfo(string endpoint)
     {
-        using HttpClientHandler handler = new() { AllowAutoRedirect = false };
+        using HttpClientHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClientOptions options = new() { Endpoint = new Uri(endpoint) };
 
@@ -171,6 +221,49 @@ public sealed partial class X509WorkloadIdentityTests
         Assert.ThrowsAsync<InvalidOperationException>(
             async () => await client.Pipeline.SendAsync(message));
 
+        Assert.That(server.Requests, Is.Empty);
+    }
+
+    [TestCase("attacker.example.test")]
+    [TestCase("mtls.api.openai.com:8443")]
+    public async Task PublicPipelineRejectsSpoofedHostAuthorityBeforeTokenAcquisition(string authority)
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        using PipelineMessage message = client.Pipeline.CreateMessage();
+        message.Request.Method = "GET";
+        message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+        message.Request.Headers.Set("Host", authority);
+
+        Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await client.Pipeline.SendAsync(message));
+
+        Assert.That(server.Requests, Is.Empty);
+    }
+
+    [TestCase("api-key")]
+    [TestCase("api_key")]
+    [TestCase("x-api-key")]
+    [TestCase("x_api_key")]
+    [TestCase("proxy-authorization")]
+    [TestCase("proxy_authorization")]
+    public async Task PublicPipelineRejectsOtherCredentialHeaderAliasesBeforeTokenAcquisition(string header)
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        using PipelineMessage message = client.Pipeline.CreateMessage();
+        message.Request.Method = "GET";
+        message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+        message.Request.Headers.Set(header, "different-credential-secret");
+
+        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await client.Pipeline.SendAsync(message));
+
+        Assert.That(exception.Message, Does.Not.Contain("different-credential-secret"));
         Assert.That(server.Requests, Is.Empty);
     }
 
@@ -229,6 +322,136 @@ public sealed partial class X509WorkloadIdentityTests
             await client.GetOpenAIModelClient().GetModelsAsync(requestOptions));
 
         Assert.That(exception.Message, Does.Not.Contain("legacy-api-key-secret"));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [TestCase("attacker.example.test")]
+    [TestCase("mtls.api.openai.com:8443")]
+    public async Task BeforeTransportPoliciesCannotSpoofTheOutgoingHostAuthority(string authority)
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        RequestOptions options = new();
+        options.AddPolicy(new SecurityMutationPolicy(message =>
+            message.Request.Headers.Set("Host", authority)), PipelinePosition.BeforeTransport);
+
+        Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await client.GetOpenAIModelClient().GetModelsAsync(options));
+
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [TestCase("api-key")]
+    [TestCase("api_key")]
+    [TestCase("x-api-key")]
+    [TestCase("x_api_key")]
+    [TestCase("proxy-authorization")]
+    [TestCase("proxy_authorization")]
+    public async Task BeforeTransportPoliciesCannotAddOtherCredentialHeaderAliases(string header)
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        RequestOptions options = new();
+        options.AddPolicy(new SecurityMutationPolicy(message =>
+            message.Request.Headers.Set(header, "different-credential-secret")),
+            PipelinePosition.BeforeTransport);
+
+        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await client.GetOpenAIModelClient().GetModelsAsync(options));
+
+        Assert.That(exception.Message, Does.Not.Contain("different-credential-secret"));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [Test]
+    public async Task AnExplicitMatchingHostAuthorityRemainsSupported()
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClientOptions options = new();
+        options.AddPolicy(new SecurityMutationPolicy(message =>
+            message.Request.Headers.Set("Host", "mtls.api.openai.com")),
+            PipelinePosition.BeforeTransport);
+        OpenAIClient client = new(credential, options);
+
+        using PipelineMessage message = await SendAsync(client);
+
+        Assert.That(message.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ApiCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void FrameworkRejectsNonSeekableStreamsBeforeWorkloadIdentityCanSendThem()
+    {
+        using NonSeekableMemoryStream stream = new(Encoding.UTF8.GetBytes("single-use payload"));
+
+        ArgumentException exception = Assert.Throws<ArgumentException>(
+            () => System.ClientModel.BinaryContent.Create(stream));
+
+        Assert.That(exception.Message, Does.Contain("seekable").IgnoreCase);
+    }
+
+    [TestCase("{\"access_token\":\"token\",\"expires_in\":3600,\"token_type\":\"MAC\"}")]
+    [TestCase("{\"access_token\":\"token\",\"expires_in\":3600,\"token_type\":7}")]
+    [TestCase("{\"access_token\":\"token\",\"expires_in\":3600,\"token_type\":null}")]
+    [TestCase("{\"access_token\":\"invalid token\",\"expires_in\":3600,\"token_type\":\"Bearer\"}")]
+    [TestCase("{\"access_token\":\"invalid=middle\",\"expires_in\":3600,\"token_type\":\"Bearer\"}")]
+    public async Task ExchangeRejectsNonBearerTokenTypesAndInvalidBearerTokens(string response)
+    {
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(response);
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await SendAsync(client));
+
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [Test]
+    public async Task ExchangeRejectsSuccessBodiesOverOneMebibyte()
+    {
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.WriteAsync(
+                "{\"access_token\":\"token\",\"expires_in\":3600,\"token_type\":\"Bearer\",\"padding\":\""
+                + new string('a', 1024 * 1024)
+                + "\"}");
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+
+        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await SendAsync(client));
+
+        Assert.That(exception.Message, Does.Contain("response size").IgnoreCase);
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
         Assert.That(server.ApiCount, Is.Zero);
     }
@@ -322,6 +545,41 @@ public sealed partial class X509WorkloadIdentityTests
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
     }
 
+    [Test]
+    public async Task ASynchronousRefreshWaiterHonorsItsOwnNetworkTimeout()
+    {
+        TaskCompletionSource exchangeStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        await using TestServer server = await TestServer.StartAsync(async (_, exchange) =>
+        {
+            if (exchange)
+            {
+                exchangeStarted.TrySetResult();
+                await Task.Delay(700);
+            }
+
+            return false;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient owner = new(credential, new() { NetworkTimeout = TimeSpan.FromSeconds(5) });
+        OpenAIClient waiter = new(credential, new() { NetworkTimeout = TimeSpan.FromMilliseconds(100) });
+        Task<PipelineMessage> pending = SendAsync(owner);
+        await exchangeStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        using PipelineMessage message = waiter.Pipeline.CreateMessage();
+        message.Request.Method = "GET";
+        message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+        Stopwatch elapsed = Stopwatch.StartNew();
+
+        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(
+            () => waiter.Pipeline.Send(message));
+
+        Assert.That(exception.Message, Does.Contain("network timeout"));
+        Assert.That(elapsed.Elapsed, Is.LessThan(TimeSpan.FromMilliseconds(500)));
+        using PipelineMessage completed = await pending;
+        Assert.That(completed.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+    }
+
     private sealed class DestinationSelectiveProxy : IWebProxy
     {
         public ICredentials Credentials { get; set; }
@@ -370,5 +628,15 @@ public sealed partial class X509WorkloadIdentityTests
         }
 
         public bool IsBypassed(Uri host) => host.Host == "mtls.auth.openai.com";
+    }
+
+    private sealed class NonSeekableMemoryStream(byte[] content) : MemoryStream(content)
+    {
+        public override bool CanSeek => false;
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

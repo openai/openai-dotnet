@@ -9,7 +9,7 @@ namespace OpenAI;
 /// <summary>Configures X.509 workload identity authentication.</summary>
 /// <remarks>
 /// The application owns the handler, its client certificates, and its connection pool. Automatic
-/// redirects must be disabled before the handler is provided to the credential.
+/// redirects and automatic cookies must be disabled before the handler is provided to the credential.
 /// </remarks>
 [Experimental("OPENAI001")]
 public sealed class X509WorkloadIdentityCredentialOptions
