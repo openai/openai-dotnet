@@ -86,6 +86,24 @@ namespace OpenAI;
 [CodeGenSuppress("GetInternalUploadsClient")]
 public partial class OpenAIClient
 {
+    private static readonly string[] s_externalProviderDomains =
+    [
+        "azure.com",
+        "azure.cn",
+        "azure.us",
+        "azure-api.net",
+        "azurewebsites.net",
+        "chinacloudapi.cn",
+        "usgovcloudapi.net",
+        "microsoft.com",
+        "microsoftonline.com",
+        "amazonaws.com",
+        "amazonaws.com.cn",
+        "googleapis.com",
+        "googleapis.cn",
+        "googleusercontent.com",
+    ];
+
     // `ResponsesClient` exposes its shared-pipeline constructor as `protected internal`.
     // `OpenAIClient` is in a different assembly and does not derive from `ResponsesClient`,
     // so it cannot directly call that constructor. This derived type is the accessibility
@@ -444,6 +462,13 @@ public partial class OpenAIClient
                 nameof(options));
         }
 
+        if (IsExternalProviderEndpoint(endpoint))
+        {
+            throw new ArgumentException(
+                "X.509 workload identity credentials cannot be used with another provider's API endpoint.",
+                nameof(options));
+        }
+
         credential.ValidateEndpoint(endpoint);
 
         if (options.Transport is not null)
@@ -461,6 +486,21 @@ public partial class OpenAIClient
             options.UserAgentApplicationId,
             options.OrganizationId,
             options.ProjectId);
+    }
+
+    private static bool IsExternalProviderEndpoint(Uri endpoint)
+    {
+        string host = endpoint.IdnHost.TrimEnd('.');
+        foreach (string domain in s_externalProviderDomains)
+        {
+            if (string.Equals(host, domain, StringComparison.OrdinalIgnoreCase)
+                || host.EndsWith("." + domain, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static OpenAIClientOptions CreateWorkloadIdentityOptions(OpenAIClientOptions options)

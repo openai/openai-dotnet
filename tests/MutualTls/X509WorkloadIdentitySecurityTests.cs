@@ -238,7 +238,8 @@ public sealed partial class X509WorkloadIdentityTests
                 ? ((SocketsHttpHandler)handler).Proxy
                 : ((HttpClientHandler)handler).Proxy;
 
-            Assert.That(protectedProxy.Credentials, Is.SameAs(credentials));
+            Assert.That(protectedProxy.Credentials, Is.SameAs(sharedCredentials),
+                "Native handlers prefer the default proxy's credentials over handler defaults.");
 
             NetworkCredential replacement = new("updated-proxy-user", "updated-proxy-secret");
             protectedProxy.Credentials = replacement;

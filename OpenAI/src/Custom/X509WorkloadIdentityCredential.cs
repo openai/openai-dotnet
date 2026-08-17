@@ -519,6 +519,8 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             ValidateHandlerConfiguration(
                 handler,
                 destination,
+                native.ClientCertificateOptions != ClientCertificateOption.Manual
+                    || native.ClientCertificates.Count > 1,
                 native.AllowAutoRedirect,
                 native.Credentials,
                 native.UseCookies,
@@ -534,6 +536,8 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             ValidateHandlerConfiguration(
                 handler,
                 destination,
+                native.SslOptions.LocalCertificateSelectionCallback is not null
+                    || native.SslOptions.ClientCertificates is { Count: > 1 },
                 native.AllowAutoRedirect,
                 native.Credentials,
                 native.UseCookies,
@@ -551,12 +555,20 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     private static void ValidateHandlerConfiguration(
         HttpMessageHandler handler,
         Uri destination,
+        bool usesDynamicClientCertificates,
         bool allowsRedirects,
         ICredentials? credentials,
         bool usesCookies,
         bool usesProxy,
         IWebProxy? configuredProxy)
     {
+        if (usesDynamicClientCertificates)
+        {
+            throw new ArgumentException(
+                "The workload identity HTTP handler must use one stable client certificate without dynamic selection.",
+                nameof(handler));
+        }
+
         if (allowsRedirects)
         {
             throw new ArgumentException("The workload identity HTTP handler must disable automatic redirects.", nameof(handler));
@@ -607,10 +619,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 #else
             ICredentials? defaultCredentials = null;
 #endif
-            clientHandler.Proxy = new ValidatingProxy(
-                proxy,
-                configuredProxy,
-                defaultCredentials ?? proxy.Credentials);
+            clientHandler.Proxy = new ValidatingProxy(proxy, configuredProxy, defaultCredentials);
             return;
         }
 
@@ -623,10 +632,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             ICredentials? defaultCredentials = configuredProxy is null
                 ? socketsHandler.DefaultProxyCredentials
                 : null;
-            socketsHandler.Proxy = new ValidatingProxy(
-                proxy,
-                configuredProxy,
-                defaultCredentials ?? proxy.Credentials);
+            socketsHandler.Proxy = new ValidatingProxy(proxy, configuredProxy, defaultCredentials);
         }
 #endif
     }
@@ -667,16 +673,18 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     private sealed class ValidatingProxy(
         IWebProxy proxy,
         IWebProxy? credentialOwner,
-        ICredentials? credentials) : IWebProxy
+        ICredentials? defaultCredentials) : IWebProxy
     {
+        private ICredentials? _credentials = proxy.Credentials ?? defaultCredentials;
+
         public ICredentials? Credentials
         {
-            get => credentialOwner is null ? credentials : credentialOwner.Credentials;
+            get => credentialOwner is null ? _credentials : credentialOwner.Credentials;
             set
             {
                 if (credentialOwner is null)
                 {
-                    credentials = value;
+                    _credentials = value;
                 }
                 else
                 {
