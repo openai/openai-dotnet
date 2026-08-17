@@ -46,12 +46,9 @@ updates:
           - minor
           - patch
     ignore:
-      # update-generator.yml updates these packages and the matching NuGet
-      # generator together, then regenerates the library and npm lockfile.
-      - dependency-name: "@azure-tools/typespec-client-generator-core"
-      - dependency-name: "@typespec/http"
+      # Keep the C# emitter paired with its NuGet generator; companion
+      # packages must remain eligible for independent security updates.
       - dependency-name: "@typespec/http-client-csharp"
-      - dependency-name: "@typespec/openapi"
 
   - package-ecosystem: dotnet-sdk
     directory: /

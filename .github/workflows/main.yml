@@ -44,6 +44,9 @@ jobs:
           --output "${{github.workspace}}/artifacts/packages"
           ${{ env.version_suffix_args}}
 
+      - name: Build standalone ASP.NET Core sample
+        run: dotnet build examples/aspnet-core/DependencyInjection.csproj --configuration Release
+
       - name: Restore tools
         run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
 
