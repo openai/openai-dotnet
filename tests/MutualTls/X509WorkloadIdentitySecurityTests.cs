@@ -172,8 +172,117 @@ public sealed partial class X509WorkloadIdentityTests
 
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClient client = new(credential);
+        IWebProxy protectedProxy = useSocketsHandler
+            ? ((SocketsHttpHandler)handler).Proxy
+            : ((HttpClientHandler)handler).Proxy;
 
         Assert.That(client.Endpoint, Is.EqualTo(new Uri("https://mtls.api.openai.com/v1")));
+        Assert.That(protectedProxy.Credentials, Is.SameAs(proxy.Credentials));
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void HandlerRejectsAProxyThatChangesAfterItsConfigurationWasValidated(bool useSocketsHandler)
+    {
+        MutableApiProxy proxy = new();
+        using HttpMessageHandler handler = useSocketsHandler
+            ? new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = proxy }
+            : new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = proxy };
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+
+        proxy.UseHttps = true;
+        IWebProxy actualProxy = useSocketsHandler
+            ? ((SocketsHttpHandler)handler).Proxy
+            : ((HttpClientHandler)handler).Proxy;
+
+        ArgumentException exception = Assert.Throws<ArgumentException>(() =>
+            actualProxy.GetProxy(new Uri("https://mtls.api.openai.com/v1")));
+
+        Assert.That(exception.Message, Does.Contain("proxy").IgnoreCase);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ImplicitProxyPreservesHandlerScopedDefaultProxyCredentials(bool useSocketsHandler)
+    {
+        IWebProxy previous = HttpClient.DefaultProxy;
+        try
+        {
+            HttpClient.DefaultProxy = new WebProxy("http://proxy.example.test:8080");
+            NetworkCredential credentials = new("proxy-user", "proxy-secret");
+            using HttpMessageHandler handler = useSocketsHandler
+                ? new SocketsHttpHandler
+                {
+                    AllowAutoRedirect = false,
+                    UseCookies = false,
+                    DefaultProxyCredentials = credentials,
+                }
+                : new HttpClientHandler
+                {
+                    AllowAutoRedirect = false,
+                    UseCookies = false,
+                    DefaultProxyCredentials = credentials,
+                };
+            using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+            IWebProxy protectedProxy = useSocketsHandler
+                ? ((SocketsHttpHandler)handler).Proxy
+                : ((HttpClientHandler)handler).Proxy;
+
+            Assert.That(protectedProxy.Credentials, Is.SameAs(credentials));
+
+            NetworkCredential replacement = new("updated-proxy-user", "updated-proxy-secret");
+            protectedProxy.Credentials = replacement;
+
+            Assert.That(protectedProxy.Credentials, Is.SameAs(replacement));
+        }
+        finally
+        {
+            HttpClient.DefaultProxy = previous;
+        }
+    }
+
+    [Test]
+    public async Task HandlerRejectsAProxyThatChangesBetweenPreflightAndActualResolution()
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        LateSwitchingProxy proxy = new();
+        handler.UseProxy = true;
+        handler.Proxy = proxy;
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+
+        Exception exception = Assert.CatchAsync(async () => await SendAsync(client));
+
+        Assert.That(exception.ToString(), Does.Contain("proxy").IgnoreCase);
+        Assert.That(proxy.UnsafeSelections, Is.GreaterThanOrEqualTo(1));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public void ClientRejectsHandlerProxyReplacementAfterCredentialConstruction(bool useSocketsHandler)
+    {
+        MutableApiProxy original = new();
+        MutableApiProxy replacement = new();
+        using HttpMessageHandler handler = useSocketsHandler
+            ? new SocketsHttpHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = original }
+            : new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, Proxy = original };
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        if (useSocketsHandler)
+        {
+            ((SocketsHttpHandler)handler).Proxy = replacement;
+        }
+        else
+        {
+            ((HttpClientHandler)handler).Proxy = replacement;
+        }
+
+        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(() =>
+            new OpenAIClient(credential));
+
+        Assert.That(exception.Message, Does.Contain("proxy").IgnoreCase);
     }
 
     [TestCase(false)]
@@ -689,6 +798,27 @@ public sealed partial class X509WorkloadIdentityTests
         }
 
         public bool IsBypassed(Uri host) => host.Host == "mtls.auth.openai.com";
+    }
+
+    private sealed class LateSwitchingProxy : IWebProxy
+    {
+        private int _apiBypassChecks;
+        private int _unsafeSelections;
+
+        internal int UnsafeSelections => Volatile.Read(ref _unsafeSelections);
+        public ICredentials Credentials { get; set; }
+
+        public Uri GetProxy(Uri destination)
+        {
+            Interlocked.Increment(ref _unsafeSelections);
+            return new Uri("https://proxy.example.test:8443");
+        }
+
+        public bool IsBypassed(Uri host)
+        {
+            return host.Host == "mtls.auth.openai.com"
+                || Interlocked.Increment(ref _apiBypassChecks) < 2;
+        }
     }
 
     private sealed class NonSeekableMemoryStream(byte[] content) : MemoryStream(content)

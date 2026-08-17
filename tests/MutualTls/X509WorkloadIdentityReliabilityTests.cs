@@ -332,4 +332,55 @@ public sealed partial class X509WorkloadIdentityTests
         Assert.That(server.ExchangeCount, Is.EqualTo(3));
         Assert.That(server.ApiCount, Is.Zero);
     }
+
+    [TestCase(StatusCodes.Status400BadRequest, false)]
+    [TestCase(StatusCodes.Status400BadRequest, true)]
+    [TestCase(StatusCodes.Status403Forbidden, false)]
+    [TestCase(StatusCodes.Status403Forbidden, true)]
+    public async Task TruncatedNonTransientExchangeResponsesPreserveStatusWithoutRetry(
+        int responseStatus,
+        bool async)
+    {
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            context.Response.StatusCode = responseStatus;
+            context.Response.ContentType = "application/json";
+            context.Response.ContentLength = 2048;
+            await context.Response.StartAsync();
+            await context.Response.WriteAsync("{\"error\":\"truncated");
+            await context.Response.Body.FlushAsync();
+            await Task.Delay(TimeSpan.FromMilliseconds(50), context.RequestAborted);
+            context.Abort();
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential, new()
+        {
+            RetryPolicy = new ClientRetryPolicy(4),
+        });
+
+        InvalidOperationException exception;
+        if (async)
+        {
+            exception = Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await SendAsync(client));
+        }
+        else
+        {
+            using PipelineMessage message = client.Pipeline.CreateMessage();
+            message.Request.Method = "GET";
+            message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+            exception = Assert.Throws<InvalidOperationException>(() => client.Pipeline.Send(message));
+        }
+
+        Assert.That(exception.Message, Does.Contain(responseStatus.ToString()));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
 }

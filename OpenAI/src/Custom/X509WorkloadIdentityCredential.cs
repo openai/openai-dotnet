@@ -60,6 +60,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
 
         ValidateHandler(handler, s_exchangeEndpoint);
+        ProtectHandlerProxy(handler);
 
         _identityProviderId = identityProviderId;
         _serviceAccountId = serviceAccountId;
@@ -88,6 +89,16 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     {
         ThrowIfDisposed();
         ValidateHandler(_handler, endpoint);
+
+        if (_handler is HttpClientHandler { UseProxy: true, Proxy: not ValidatingProxy }
+#if NET8_0_OR_GREATER
+            || _handler is SocketsHttpHandler { UseProxy: true, Proxy: not ValidatingProxy }
+#endif
+            )
+        {
+            throw new InvalidOperationException(
+                "The workload identity HTTP handler proxy configuration cannot change after credential creation.");
+        }
     }
 
     private async ValueTask<string> GetTokenCoreAsync(
@@ -96,8 +107,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        ThrowIfDisposed();
-        ValidateHandler(_handler, s_exchangeEndpoint);
+        ValidateEndpoint(s_exchangeEndpoint);
         CachedToken? token = Volatile.Read(ref _cachedToken);
         if (token is not null && IsFresh(token))
         {
@@ -119,8 +129,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             }
 
             acquired = true;
-            ThrowIfDisposed();
-            ValidateHandler(_handler, s_exchangeEndpoint);
+            ValidateEndpoint(s_exchangeEndpoint);
             token = Volatile.Read(ref _cachedToken);
             if (token is not null && IsFresh(token))
             {
@@ -174,7 +183,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
     private async ValueTask<CachedToken> ExchangeTokenAsync(bool async, CancellationToken cancellationToken)
     {
-        ValidateHandler(_handler, s_exchangeEndpoint);
+        ValidateEndpoint(s_exchangeEndpoint);
 
         for (int attempt = 0; attempt < MaximumExchangeAttempts; attempt++)
         {
@@ -200,9 +209,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    await DrainErrorBodyAsync(response, async, cancellationToken).ConfigureAwait(false);
-                    throw new InvalidOperationException(
-                        $"X.509 workload identity token exchange failed with HTTP status {(int)response.StatusCode}.");
+                    await ThrowForFailedExchangeAsync(response, async, cancellationToken).ConfigureAwait(false);
                 }
 
                 return await ReadTokenAsync(response, issuedAt, async, cancellationToken).ConfigureAwait(false);
@@ -413,6 +420,27 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
     }
 
+    private static async ValueTask ThrowForFailedExchangeAsync(
+        HttpResponseMessage response,
+        bool async,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await DrainErrorBodyAsync(response, async, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception exception) when (
+            exception is IOException or HttpRequestException
+            && !IsTransient(response.StatusCode)
+            && !cancellationToken.IsCancellationRequested)
+        {
+            // The received HTTP status remains authoritative when its error body cannot be drained.
+        }
+
+        throw new InvalidOperationException(
+            $"X.509 workload identity token exchange failed with HTTP status {(int)response.StatusCode}.");
+    }
+
     private static CancellationTokenRegistration RegisterSynchronousStreamCancellation(
         Stream stream,
         bool async,
@@ -553,13 +581,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             return;
         }
 
-#if NET8_0_OR_GREATER
-        IWebProxy? proxy = configuredProxy ?? HttpClient.DefaultProxy;
-#else
-        IWebProxy? proxy = configuredProxy
-            ?? typeof(HttpClient).GetProperty("DefaultProxy")?.GetValue(null) as IWebProxy
-            ?? WebRequest.DefaultWebProxy;
-#endif
+        IWebProxy? proxy = GetEffectiveProxy(configuredProxy);
         if (proxy is not null
             && !proxy.IsBypassed(destination)
             && proxy.GetProxy(destination) is Uri proxyEndpoint
@@ -569,6 +591,49 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 "The workload identity HTTP handler must use an HTTP CONNECT proxy rather than a TLS proxy.",
                 nameof(handler));
         }
+    }
+
+    private static void ProtectHandlerProxy(HttpMessageHandler handler)
+    {
+        if (handler is HttpClientHandler { UseProxy: true } clientHandler)
+        {
+            IWebProxy? configuredProxy = clientHandler.Proxy;
+            IWebProxy proxy = GetEffectiveProxy(configuredProxy)
+                ?? throw new ArgumentException("The workload identity HTTP handler proxy is unavailable.", nameof(handler));
+#if NET8_0_OR_GREATER
+            ICredentials? defaultCredentials = configuredProxy is null
+                ? clientHandler.DefaultProxyCredentials
+                : null;
+#else
+            ICredentials? defaultCredentials = null;
+#endif
+            clientHandler.Proxy = new ValidatingProxy(proxy, defaultCredentials);
+            return;
+        }
+
+#if NET8_0_OR_GREATER
+        if (handler is SocketsHttpHandler { UseProxy: true } socketsHandler)
+        {
+            IWebProxy? configuredProxy = socketsHandler.Proxy;
+            IWebProxy proxy = GetEffectiveProxy(configuredProxy)
+                ?? throw new ArgumentException("The workload identity HTTP handler proxy is unavailable.", nameof(handler));
+            ICredentials? defaultCredentials = configuredProxy is null
+                ? socketsHandler.DefaultProxyCredentials
+                : null;
+            socketsHandler.Proxy = new ValidatingProxy(proxy, defaultCredentials);
+        }
+#endif
+    }
+
+    private static IWebProxy? GetEffectiveProxy(IWebProxy? configuredProxy)
+    {
+#if NET8_0_OR_GREATER
+        return configuredProxy ?? HttpClient.DefaultProxy;
+#else
+        return configuredProxy
+            ?? typeof(HttpClient).GetProperty("DefaultProxy")?.GetValue(null) as IWebProxy
+            ?? WebRequest.DefaultWebProxy;
+#endif
     }
 
     private void ThrowIfDisposed()
@@ -591,5 +656,34 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         internal string Value { get; }
         internal long IssuedAt { get; }
         internal TimeSpan RefreshAfter { get; }
+    }
+
+    private sealed class ValidatingProxy(IWebProxy proxy, ICredentials? defaultCredentials) : IWebProxy
+    {
+        public ICredentials? Credentials
+        {
+            get => defaultCredentials ?? proxy.Credentials;
+            set
+            {
+                defaultCredentials = null;
+                proxy.Credentials = value;
+            }
+        }
+
+        public Uri GetProxy(Uri destination)
+        {
+            Uri? endpoint = proxy.GetProxy(destination);
+            if (endpoint is null
+                || !string.Equals(endpoint.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException(
+                    "The workload identity HTTP handler must use an HTTP CONNECT proxy rather than a TLS proxy.",
+                    nameof(proxy));
+            }
+
+            return endpoint;
+        }
+
+        public bool IsBypassed(Uri host) => proxy.IsBypassed(host);
     }
 }
