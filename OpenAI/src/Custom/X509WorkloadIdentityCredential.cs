@@ -128,6 +128,12 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             }
 
             token = await ExchangeTokenAsync(async, deadline.Token).ConfigureAwait(false);
+            if (!IsFresh(token))
+            {
+                throw new InvalidOperationException(
+                    "X.509 workload identity token exchange returned a token that expired before it could be used.");
+            }
+
             Volatile.Write(ref _cachedToken, token);
             return token.Value;
         }
@@ -183,6 +189,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 #else
                 using HttpResponseMessage response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 #endif
+                long issuedAt = GetTimestamp();
                 if (IsTransient(response.StatusCode) && attempt + 1 < MaximumExchangeAttempts)
                 {
                     TimeSpan delay = GetRetryDelay(attempt, response.Headers.RetryAfter);
@@ -198,7 +205,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                         $"X.509 workload identity token exchange failed with HTTP status {(int)response.StatusCode}.");
                 }
 
-                return await ReadTokenAsync(response, async, cancellationToken).ConfigureAwait(false);
+                return await ReadTokenAsync(response, issuedAt, async, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception exception) when (
                 cancellationToken.IsCancellationRequested
@@ -247,6 +254,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
     private async ValueTask<CachedToken> ReadTokenAsync(
         HttpResponseMessage response,
+        long issuedAt,
         bool async,
         CancellationToken cancellationToken)
     {
@@ -303,7 +311,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
         TimeSpan maximumBuffer = TimeSpan.FromTicks(lifetime.Ticks / 2);
         TimeSpan effectiveBuffer = _refreshBuffer < maximumBuffer ? _refreshBuffer : maximumBuffer;
-        return new CachedToken(accessToken, GetTimestamp(), lifetime - effectiveBuffer);
+        return new CachedToken(accessToken, issuedAt, lifetime - effectiveBuffer);
     }
 
     private static async ValueTask<JsonDocument> ParseBoundedResponseAsync(

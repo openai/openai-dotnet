@@ -71,6 +71,95 @@ public sealed partial class X509WorkloadIdentityTests
         Assert.That(client.Endpoint.Scheme, Is.EqualTo(Uri.UriSchemeHttp));
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task DelayedExchangeBodiesCannotCacheOrSendExpiredTokens(bool async)
+    {
+        int exchangeNumber = 0;
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange || Interlocked.Increment(ref exchangeNumber) != 1)
+            {
+                return false;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.StartAsync();
+            await context.Response.WriteAsync("{\"access_token\":\"expired-secret-token\",");
+            await context.Response.Body.FlushAsync();
+            await Task.Delay(TimeSpan.FromMilliseconds(250), context.RequestAborted);
+            await context.Response.WriteAsync("\"expires_in\":0.1}");
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = new(
+            "idp_test",
+            "svc_test",
+            new() { Handler = handler, RefreshBuffer = TimeSpan.Zero });
+        OpenAIClient client = new(credential, new() { NetworkTimeout = TimeSpan.FromSeconds(5) });
+
+        InvalidOperationException exception;
+        if (async)
+        {
+            exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await SendAsync(client));
+        }
+        else
+        {
+            using PipelineMessage message = client.Pipeline.CreateMessage();
+            message.Request.Method = "GET";
+            message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+            exception = Assert.Throws<InvalidOperationException>(() => client.Pipeline.Send(message));
+        }
+
+        Assert.That(exception.Message, Does.Contain("expired").IgnoreCase);
+        Assert.That(exception.Message, Does.Not.Contain("expired-secret-token"));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+
+        using PipelineMessage recovered = await SendAsync(client);
+
+        Assert.That(recovered.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(2));
+        Assert.That(server.ApiCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task ExchangeBodyDelayConsumesTheSameMonotonicRefreshWindowAsCachedReuse()
+    {
+        int exchangeNumber = 0;
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange || Interlocked.Increment(ref exchangeNumber) != 1)
+            {
+                return false;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.StartAsync();
+            await context.Response.WriteAsync("{\"access_token\":\"short-lived-token\",");
+            await context.Response.Body.FlushAsync();
+            await Task.Delay(TimeSpan.FromMilliseconds(350), context.RequestAborted);
+            await context.Response.WriteAsync("\"expires_in\":0.8}");
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = new(
+            "idp_test",
+            "svc_test",
+            new() { Handler = handler, RefreshBuffer = TimeSpan.FromMilliseconds(200) });
+        OpenAIClient client = new(credential);
+
+        using PipelineMessage first = await SendAsync(client);
+        using PipelineMessage immediatelyCached = await SendAsync(client);
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+
+        await Task.Delay(TimeSpan.FromMilliseconds(350));
+        using PipelineMessage refreshed = await SendAsync(client);
+
+        Assert.That(server.ExchangeCount, Is.EqualTo(2));
+        Assert.That(server.ApiCount, Is.EqualTo(3));
+    }
+
     [TestCase(StatusCodes.Status200OK)]
     [TestCase(StatusCodes.Status503ServiceUnavailable)]
     public async Task ConfiguredNetworkTimeoutCoversStalledExchangeResponseBodies(int responseStatus)
