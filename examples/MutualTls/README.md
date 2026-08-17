@@ -88,4 +88,6 @@ dotnet test .\examples\OpenAI.Examples.csproj `
 
 Set `OPENAI_AUTH_MODE=api_key` and provide `OPENAI_API_KEY` to keep the existing API-key path. The application loads the PFX and configures a caller-owned `SocketsHttpHandler`; the credential accepts that handler as its only transport input, verifies redirects are disabled, and constructs one shared HTTP client for token exchange and HTTP API calls. Do not provide a separate SDK transport.
 
+X.509 endpoints must use HTTPS without userinfo, and custom pipeline policies cannot change the final API origin or replace the issued bearer. Configure an HTTP CONNECT proxy when needed; HTTPS proxies, destination-server credentials, and cookies that would reach the token endpoint are rejected to prevent certificate or credential disclosure.
+
 Keep the handler, credential, and OpenAI clients alive together. The credential disposes only the HTTP-client wrapper it creates, never the application's certificate-bearing handler. Rotate the group together to establish new TLS connections with the replacement certificate. X.509 workload identity supports HTTP APIs only; Realtime WebSockets require separate support.

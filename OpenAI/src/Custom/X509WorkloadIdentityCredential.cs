@@ -27,6 +27,8 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     private const int MaximumErrorBodyBytes = 4096;
     private static readonly Uri s_exchangeEndpoint = new("https://mtls.auth.openai.com/oauth/token");
 
+    internal static Uri DefaultApiEndpoint { get; } = new("https://mtls.api.openai.com/v1");
+
     private readonly string _identityProviderId;
     private readonly string _serviceAccountId;
     private readonly HttpMessageHandler _handler;
@@ -56,7 +58,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             throw new ArgumentOutOfRangeException(nameof(options.RefreshBuffer), "The refresh buffer cannot be negative.");
         }
 
-        ValidateHandler(handler);
+        ValidateHandler(handler, s_exchangeEndpoint);
 
         _identityProviderId = identityProviderId;
         _serviceAccountId = serviceAccountId;
@@ -66,68 +68,81 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         {
             Timeout = Timeout.InfiniteTimeSpan,
         };
-        Transport = new HttpClientPipelineTransport(_httpClient);
+        Transport = new WorkloadIdentityPipelineTransport(_httpClient, this);
     }
 
-    internal HttpClientPipelineTransport Transport { get; }
+    internal WorkloadIdentityPipelineTransport Transport { get; }
 
     internal string GetToken(TimeSpan networkTimeout, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
-        ValidateHandler(_handler);
-        CachedToken? token = Volatile.Read(ref _cachedToken);
-        if (token is not null && IsFresh(token))
-        {
-            return token.Value;
-        }
-
-        _refreshLock.Wait(cancellationToken);
-        try
-        {
-            ThrowIfDisposed();
-            token = Volatile.Read(ref _cachedToken);
-            if (token is not null && IsFresh(token))
-            {
-                return token.Value;
-            }
-
-            token = ExchangeWithTimeoutAsync(async: false, networkTimeout, cancellationToken).GetAwaiter().GetResult();
-            Volatile.Write(ref _cachedToken, token);
-            return token.Value;
-        }
-        finally
-        {
-            _refreshLock.Release();
-        }
+        return GetTokenCoreAsync(async: false, networkTimeout, cancellationToken).GetAwaiter().GetResult();
     }
 
-    internal async ValueTask<string> GetTokenAsync(TimeSpan networkTimeout, CancellationToken cancellationToken)
+    internal ValueTask<string> GetTokenAsync(TimeSpan networkTimeout, CancellationToken cancellationToken)
+    {
+        return GetTokenCoreAsync(async: true, networkTimeout, cancellationToken);
+    }
+
+    internal void ValidateEndpoint(Uri endpoint)
     {
         ThrowIfDisposed();
-        ValidateHandler(_handler);
+        ValidateHandler(_handler, endpoint);
+    }
+
+    private async ValueTask<string> GetTokenCoreAsync(
+        bool async,
+        TimeSpan networkTimeout,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        ThrowIfDisposed();
+        ValidateHandler(_handler, s_exchangeEndpoint);
         CachedToken? token = Volatile.Read(ref _cachedToken);
         if (token is not null && IsFresh(token))
         {
             return token.Value;
         }
 
-        await _refreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+        using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        deadline.CancelAfter(networkTimeout);
+        bool acquired = false;
         try
         {
+            if (async)
+            {
+                await _refreshLock.WaitAsync(deadline.Token).ConfigureAwait(false);
+            }
+            else
+            {
+                _refreshLock.Wait(deadline.Token);
+            }
+
+            acquired = true;
             ThrowIfDisposed();
+            ValidateHandler(_handler, s_exchangeEndpoint);
             token = Volatile.Read(ref _cachedToken);
             if (token is not null && IsFresh(token))
             {
                 return token.Value;
             }
 
-            token = await ExchangeWithTimeoutAsync(async: true, networkTimeout, cancellationToken).ConfigureAwait(false);
+            token = await ExchangeTokenAsync(async, deadline.Token).ConfigureAwait(false);
             Volatile.Write(ref _cachedToken, token);
             return token.Value;
         }
+        catch (OperationCanceledException exception) when (
+            deadline.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            throw new InvalidOperationException(
+                "X.509 workload identity token exchange exceeded the configured network timeout.",
+                exception);
+        }
         finally
         {
-            _refreshLock.Release();
+            if (acquired)
+            {
+                _refreshLock.Release();
+            }
         }
     }
 
@@ -150,30 +165,9 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
     }
 
-    private async ValueTask<CachedToken> ExchangeWithTimeoutAsync(
-        bool async,
-        TimeSpan networkTimeout,
-        CancellationToken cancellationToken)
-    {
-        using CancellationTokenSource exchangeCancellation = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        exchangeCancellation.CancelAfter(networkTimeout);
-
-        try
-        {
-            return await ExchangeTokenAsync(async, exchangeCancellation.Token).ConfigureAwait(false);
-        }
-        catch (OperationCanceledException exception) when (
-            exchangeCancellation.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
-        {
-            throw new InvalidOperationException(
-                "X.509 workload identity token exchange exceeded the configured network timeout.",
-                exception);
-        }
-    }
-
     private async ValueTask<CachedToken> ExchangeTokenAsync(bool async, CancellationToken cancellationToken)
     {
-        ValidateHandler(_handler);
+        ValidateHandler(_handler, s_exchangeEndpoint);
 
         for (int attempt = 0; attempt < MaximumExchangeAttempts; attempt++)
         {
@@ -412,26 +406,34 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 #endif
     }
 
-    private static void ValidateHandler(HttpMessageHandler handler)
+    private static void ValidateHandler(HttpMessageHandler handler, Uri destination)
     {
         if (handler.GetType() == typeof(HttpClientHandler))
         {
-            if (((HttpClientHandler)handler).AllowAutoRedirect)
-            {
-                throw new ArgumentException("The workload identity HTTP handler must disable automatic redirects.", nameof(handler));
-            }
-
+            HttpClientHandler native = (HttpClientHandler)handler;
+            ValidateHandlerConfiguration(
+                handler,
+                destination,
+                native.AllowAutoRedirect,
+                native.Credentials,
+                native.UseCookies ? native.CookieContainer : null,
+                native.UseProxy,
+                native.Proxy);
             return;
         }
 
 #if NET8_0_OR_GREATER
         if (handler.GetType() == typeof(SocketsHttpHandler))
         {
-            if (((SocketsHttpHandler)handler).AllowAutoRedirect)
-            {
-                throw new ArgumentException("The workload identity HTTP handler must disable automatic redirects.", nameof(handler));
-            }
-
+            SocketsHttpHandler native = (SocketsHttpHandler)handler;
+            ValidateHandlerConfiguration(
+                handler,
+                destination,
+                native.AllowAutoRedirect,
+                native.Credentials,
+                native.UseCookies ? native.CookieContainer : null,
+                native.UseProxy,
+                native.Proxy);
             return;
         }
 #endif
@@ -439,6 +441,57 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         throw new ArgumentException(
             "The workload identity HTTP handler must be a directly configured HttpClientHandler or supported SocketsHttpHandler.",
             nameof(handler));
+    }
+
+    private static void ValidateHandlerConfiguration(
+        HttpMessageHandler handler,
+        Uri destination,
+        bool allowsRedirects,
+        ICredentials? credentials,
+        CookieContainer? cookies,
+        bool usesProxy,
+        IWebProxy? configuredProxy)
+    {
+        if (allowsRedirects)
+        {
+            throw new ArgumentException("The workload identity HTTP handler must disable automatic redirects.", nameof(handler));
+        }
+
+        if (credentials is not null)
+        {
+            throw new ArgumentException(
+                "The workload identity HTTP handler must not contain destination-server credentials.",
+                nameof(handler));
+        }
+
+        if (cookies?.GetCookies(s_exchangeEndpoint).Count > 0)
+        {
+            throw new ArgumentException(
+                "The workload identity HTTP handler must not send cookies to the token endpoint.",
+                nameof(handler));
+        }
+
+        if (!usesProxy)
+        {
+            return;
+        }
+
+#if NET8_0_OR_GREATER
+        IWebProxy? proxy = configuredProxy ?? HttpClient.DefaultProxy;
+#else
+        IWebProxy? proxy = configuredProxy
+            ?? typeof(HttpClient).GetProperty("DefaultProxy")?.GetValue(null) as IWebProxy
+            ?? WebRequest.DefaultWebProxy;
+#endif
+        if (proxy is not null
+            && !proxy.IsBypassed(destination)
+            && proxy.GetProxy(destination) is Uri proxyEndpoint
+            && !string.Equals(proxyEndpoint.Scheme, Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException(
+                "The workload identity HTTP handler must use an HTTP CONNECT proxy rather than a TLS proxy.",
+                nameof(handler));
+        }
     }
 
     private void ThrowIfDisposed()

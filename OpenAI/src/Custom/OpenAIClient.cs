@@ -144,7 +144,12 @@ public partial class OpenAIClient
     /// <param name="workloadIdentityCredential">The X.509 workload identity credential.</param>
     /// <param name="options">The client options, which must not specify a separate transport.</param>
     public OpenAIClient(X509WorkloadIdentityCredential workloadIdentityCredential, OpenAIClientOptions options)
-        : this(new WorkloadIdentityAuthenticationPolicy(workloadIdentityCredential, options?.NetworkTimeout), ConfigureWorkloadIdentityOptions(workloadIdentityCredential, options))
+        : this(
+            new WorkloadIdentityAuthenticationPolicy(
+                workloadIdentityCredential,
+                options?.Endpoint ?? X509WorkloadIdentityCredential.DefaultApiEndpoint,
+                options?.NetworkTimeout),
+            ConfigureWorkloadIdentityOptions(workloadIdentityCredential, options))
     {
         _workloadIdentityCredential = workloadIdentityCredential;
     }
@@ -426,11 +431,21 @@ public partial class OpenAIClient
         Argument.AssertNotNull(credential, nameof(credential));
         options ??= new OpenAIClientOptions();
 
-        if (options.Endpoint is Uri endpoint
-            && (!endpoint.IsAbsoluteUri || !string.Equals(endpoint.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)))
+        Uri endpoint = options.Endpoint ?? X509WorkloadIdentityCredential.DefaultApiEndpoint;
+        if (!endpoint.IsAbsoluteUri
+            || !string.Equals(endpoint.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
         {
             throw new ArgumentException("X.509 workload identity requires an HTTPS API endpoint.", nameof(options));
         }
+
+        if (endpoint.UserInfo.Length != 0)
+        {
+            throw new ArgumentException(
+                "X.509 workload identity API endpoints must not contain userinfo.",
+                nameof(options));
+        }
+
+        credential.ValidateEndpoint(endpoint);
 
         if (options.Transport is not null)
         {
@@ -445,7 +460,7 @@ public partial class OpenAIClient
         }
 
         options.Transport = credential.Transport;
-        options.Endpoint ??= new Uri("https://mtls.api.openai.com/v1");
+        options.Endpoint ??= X509WorkloadIdentityCredential.DefaultApiEndpoint;
         return options;
     }
 

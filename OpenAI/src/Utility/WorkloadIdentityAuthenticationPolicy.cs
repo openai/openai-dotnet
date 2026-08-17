@@ -12,19 +12,25 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
 {
     private static readonly object s_replayMarker = new();
     private readonly X509WorkloadIdentityCredential _credential;
+    private readonly Uri _endpoint;
     private readonly TimeSpan _networkTimeout;
 
-    internal WorkloadIdentityAuthenticationPolicy(X509WorkloadIdentityCredential credential, TimeSpan? networkTimeout)
+    internal WorkloadIdentityAuthenticationPolicy(
+        X509WorkloadIdentityCredential credential,
+        Uri endpoint,
+        TimeSpan? networkTimeout)
     {
         Argument.AssertNotNull(credential, nameof(credential));
         _credential = credential;
+        _endpoint = endpoint;
         _networkTimeout = networkTimeout ?? TimeSpan.FromSeconds(100);
     }
 
     public override void Process(PipelineMessage message, IReadOnlyList<PipelinePolicy> pipeline, int currentIndex)
     {
+        WorkloadIdentityPipelineTransport.ValidateDestination(message.Request.Uri, _endpoint);
         string token = _credential.GetToken(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken);
-        message.Request.Headers.Set("Authorization", "Bearer " + token);
+        _credential.Transport.Authorize(message, _endpoint, token);
         ProcessNext(message, pipeline, currentIndex);
 
         if (message.Response?.Status != 401)
@@ -41,7 +47,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
         message.ExtractResponse()?.Dispose();
         token = _credential.GetToken(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken);
-        message.Request.Headers.Set("Authorization", "Bearer " + token);
+        _credential.Transport.Authorize(message, _endpoint, token);
         ProcessNext(message, pipeline, currentIndex);
 
         if (message.Response?.Status == 401)
@@ -55,8 +61,9 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         IReadOnlyList<PipelinePolicy> pipeline,
         int currentIndex)
     {
+        WorkloadIdentityPipelineTransport.ValidateDestination(message.Request.Uri, _endpoint);
         string token = await _credential.GetTokenAsync(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken).ConfigureAwait(false);
-        message.Request.Headers.Set("Authorization", "Bearer " + token);
+        _credential.Transport.Authorize(message, _endpoint, token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
 
         if (message.Response?.Status != 401)
@@ -73,7 +80,7 @@ internal sealed class WorkloadIdentityAuthenticationPolicy : AuthenticationPolic
         message.SetProperty(typeof(WorkloadIdentityAuthenticationPolicy), s_replayMarker);
         message.ExtractResponse()?.Dispose();
         token = await _credential.GetTokenAsync(message.NetworkTimeout ?? _networkTimeout, message.CancellationToken).ConfigureAwait(false);
-        message.Request.Headers.Set("Authorization", "Bearer " + token);
+        _credential.Transport.Authorize(message, _endpoint, token);
         await ProcessNextAsync(message, pipeline, currentIndex).ConfigureAwait(false);
 
         if (message.Response?.Status == 401)

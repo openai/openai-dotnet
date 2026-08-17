@@ -1095,7 +1095,9 @@ ChatCompletion completion = await client.GetChatClient("gpt-4o-mini")
     .CompleteChatAsync("Hello");
 ```
 
-The credential creates one `HttpClient` from the supplied handler and shares that exact client between the fixed `https://mtls.auth.openai.com/oauth/token` exchange endpoint and the SDK pipeline. It does not accept an independently configured `OpenAIClientOptions.Transport`, follow redirects, or expose a custom token endpoint. When no endpoint is configured, X.509 clients default to `https://mtls.api.openai.com/v1`; any explicitly configured X.509 endpoint must also use HTTPS. API-key clients retain their existing endpoint behavior.
+The credential creates one `HttpClient` from the supplied handler and shares that exact client between the fixed `https://mtls.auth.openai.com/oauth/token` exchange endpoint and the SDK pipeline. It does not accept an independently configured `OpenAIClientOptions.Transport`, follow redirects, or expose a custom token endpoint. When no endpoint is configured, X.509 clients default to `https://mtls.api.openai.com/v1`; explicitly configured endpoints must use HTTPS and cannot include userinfo. The SDK verifies the final API origin and exchanged bearer immediately before sending, including after custom request policies run. API-key clients retain their existing endpoint behavior.
+
+To keep the workload certificate and authentication domains isolated, X.509 handlers cannot contain destination-server credentials or cookies scoped to the token endpoint. Standard HTTP CONNECT proxies and separately scoped proxy credentials are supported; HTTPS proxies are rejected because .NET can present the workload client certificate while establishing the outer proxy connection.
 
 Token exchange is lazy, concurrent requests share cached credentials, and rejected bearer tokens are refreshed and retried once only for known replayable HTTP request content. X.509 workload identity does not configure Realtime or WebSocket clients.
 
