@@ -3,7 +3,6 @@ using NUnit.Framework;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -516,67 +515,64 @@ public sealed partial class X509WorkloadIdentityTests
     }
 
     [Test]
-    public async Task ARefreshWaiterHonorsItsOwnNetworkTimeout()
+    public Task ARefreshWaiterHonorsItsOwnNetworkTimeout()
     {
-        TaskCompletionSource exchangeStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        await using TestServer server = await TestServer.StartAsync(async (_, exchange) =>
-        {
-            if (exchange)
-            {
-                exchangeStarted.TrySetResult();
-                await Task.Delay(700);
-            }
-
-            return false;
-        });
-        using SocketsHttpHandler handler = server.CreateHandler();
-        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
-        OpenAIClient owner = new(credential, new() { NetworkTimeout = TimeSpan.FromSeconds(5) });
-        OpenAIClient waiter = new(credential, new() { NetworkTimeout = TimeSpan.FromMilliseconds(100) });
-        Task<PipelineMessage> pending = SendAsync(owner);
-        await exchangeStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Stopwatch elapsed = Stopwatch.StartNew();
-
-        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
-            async () => await SendAsync(waiter));
-
-        Assert.That(exception.Message, Does.Contain("network timeout"));
-        Assert.That(elapsed.Elapsed, Is.LessThan(TimeSpan.FromMilliseconds(500)));
-        using PipelineMessage completed = await pending;
-        Assert.That(completed.Response.Status, Is.EqualTo(200));
-        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        return AssertRefreshWaiterHonorsItsOwnNetworkTimeoutAsync(synchronous: false);
     }
 
     [Test]
-    public async Task ASynchronousRefreshWaiterHonorsItsOwnNetworkTimeout()
+    public Task ASynchronousRefreshWaiterHonorsItsOwnNetworkTimeout()
+    {
+        return AssertRefreshWaiterHonorsItsOwnNetworkTimeoutAsync(synchronous: true);
+    }
+
+    private static async Task AssertRefreshWaiterHonorsItsOwnNetworkTimeoutAsync(bool synchronous)
     {
         TaskCompletionSource exchangeStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource releaseExchange = new(TaskCreationOptions.RunContinuationsAsynchronously);
         await using TestServer server = await TestServer.StartAsync(async (_, exchange) =>
         {
             if (exchange)
             {
                 exchangeStarted.TrySetResult();
-                await Task.Delay(700);
+                await releaseExchange.Task;
             }
 
             return false;
         });
         using SocketsHttpHandler handler = server.CreateHandler();
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
-        OpenAIClient owner = new(credential, new() { NetworkTimeout = TimeSpan.FromSeconds(5) });
+        OpenAIClient owner = new(credential, new() { NetworkTimeout = TimeSpan.FromSeconds(10) });
         OpenAIClient waiter = new(credential, new() { NetworkTimeout = TimeSpan.FromMilliseconds(100) });
         Task<PipelineMessage> pending = SendAsync(owner);
-        await exchangeStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        using PipelineMessage message = waiter.Pipeline.CreateMessage();
-        message.Request.Method = "GET";
-        message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
-        Stopwatch elapsed = Stopwatch.StartNew();
+        try
+        {
+            await exchangeStarted.Task.WaitAsync(TimeSpan.FromSeconds(10));
 
-        InvalidOperationException exception = Assert.Throws<InvalidOperationException>(
-            () => waiter.Pipeline.Send(message));
+            InvalidOperationException exception;
+            if (synchronous)
+            {
+                using PipelineMessage message = waiter.Pipeline.CreateMessage();
+                message.Request.Method = "GET";
+                message.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+                exception = Assert.Throws<InvalidOperationException>(() => waiter.Pipeline.Send(message));
+            }
+            else
+            {
+                exception = Assert.ThrowsAsync<InvalidOperationException>(
+                    async () => await SendAsync(waiter));
+            }
 
-        Assert.That(exception.Message, Does.Contain("network timeout"));
-        Assert.That(elapsed.Elapsed, Is.LessThan(TimeSpan.FromMilliseconds(500)));
+            Assert.That(exception.Message, Does.Contain("network timeout"));
+            Assert.That(pending.IsCompleted, Is.False,
+                "The waiter must time out while the owner still holds the refresh lock.");
+            Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        }
+        finally
+        {
+            releaseExchange.TrySetResult();
+        }
+
         using PipelineMessage completed = await pending;
         Assert.That(completed.Response.Status, Is.EqualTo(200));
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
