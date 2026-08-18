@@ -19,7 +19,7 @@ Thank you for your interest in contributing to the OpenAI .NET library! This gui
 
 The following tools are required for development:
 
-- **.NET SDK 10.0.100+** — Required version is specified in `global.json`. Install from the [.NET download page](https://dotnet.microsoft.com/download/dotnet/10.0).
+- **.NET SDK 10.0.400+** — Required version is specified in `global.json`. Install from the [.NET download page](https://dotnet.microsoft.com/download/dotnet/10.0).
 - **Node.js** — Required for TypeSpec compilation and code generation. Install from [nodejs.org](https://nodejs.org/).
 - **PowerShell** — Required for running development scripts. Available by default on Windows; install [PowerShell Core](https://github.com/PowerShell/PowerShell) on macOS/Linux.
 
