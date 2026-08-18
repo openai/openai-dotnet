@@ -1,4 +1,4 @@
-# TypeSpec numeric types
+# Numeric types
 
 This document defines how the OpenAI .NET library maps TypeSpec's generic `integer` and `numeric` scalar types to C# numeric types.
 
@@ -65,14 +65,3 @@ Use a scalar-level override only after reviewing every occurrence in the importe
 ```
 
 For collections, specify the complete alternate collection type, such as `int32[]` or `float64[]`, rather than only its element type.
-
-## Verify generated code
-
-After changing a numeric mapping:
-
-1. Run `./scripts/Invoke-CodeGen.ps1`.
-2. Review every generated use of the customized value, including model properties, constructor parameters, client method parameters, fields, collection element types, and serialization code.
-3. Run `dotnet build`.
-4. Run `./scripts/Export-Api.ps1` and review the API surface changes.
-
-The selected numeric type must remain consistent across the public API and its serialization path.
