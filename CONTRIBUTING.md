@@ -76,10 +76,11 @@ $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 dotnet test OpenAI.slnx
 ```
 
-### Running Tests in Record or Live Mode (Authorized Humans Only)
+### Running Tests in Record or Live Mode
 
-Agents and ordinary CI must never run these modes. An explicitly authorized
-human may generate recordings locally using approved credentials:
+Only explicitly authorized humans may run these modes; agents and ordinary CI
+must never run them. An authorized human may use approved credentials to
+generate recordings in Record mode or run without recordings in Live mode:
 
 ```powershell
 $env:OPENAI_API_KEY = "your-api-key"
@@ -93,16 +94,21 @@ CLIENTMODEL_TEST_MODE=Record dotnet test OpenAI.slnx
 ```
 
 Do not run `.github/workflows/record-test.yml` to create recordings. It
-automatically commits and pushes generated data before a human can inspect and
-sanitize it; its credential-pattern scan is not an adequate review gate. Do not
-use that workflow unless it enforces explicit human review and approval before
-any recording is staged, committed, pushed, uploaded, or otherwise published.
+automatically commits and pushes recordings before an authorized human can
+inspect the automatically sanitized output; its credential-pattern scan does not
+replace that review. Do not use that workflow unless it enforces explicit human
+review and approval before any recording is staged, committed, pushed, uploaded,
+or otherwise published.
 
-`OpenAIRecordedTestBase` disables most default sanitizers. An authorized human
-must inspect and sanitize every locally generated `tests/SessionRecords/` file
-for API keys, authorization headers, cookies, signed URLs, customer data,
-prompts, model responses, and sensitive request/response content before any
-staging, commit, push, or upload. Never upload raw recording artifacts.
+Sanitizers for known sensitive OpenAI headers and fields are enabled, but
+evolving service behavior may expose gaps. An authorized human must inspect
+every locally generated `tests/SessionRecords/` file for API keys, authorization
+headers, cookies, signed URLs, customer data, prompts, model responses, and
+sensitive request/response content before any staging, commit, push, or upload.
+If sensitive data remains, add or improve an enabled deterministic sanitizer
+and regenerate the recording, or report the gap to the core team before
+publication. Never manually sanitize a recording or upload raw recording
+artifacts.
 
 ## Code Generation
 
@@ -174,26 +180,29 @@ This updates the corresponding snippets in markdown documentation files.
   tests, and generated artifacts.
 - **Logs and recordings:** Redact authorization headers, credentials, signed
   URLs, and customer data from diagnostics, exceptions, telemetry, and build
-  artifacts. Use synthetic prompts/model responses and sanitize sensitive
-  request/response content in `tests/SessionRecords/`. Most default recording
-  sanitizers are disabled; explicitly sanitize sensitive fields and inspect
-  every new recording. Agents and ordinary CI test runs must explicitly set
+  artifacts. Use synthetic prompts/model responses. Sanitizers for known
+  sensitive OpenAI headers and fields are enabled, but evolving service behavior
+  can leave gaps. An authorized human must inspect every new recording. If
+  sensitive data remains, add or improve an enabled deterministic sanitizer
+  and regenerate the recording, or report the gap before publication; never
+  manually sanitize recordings. Agents and ordinary CI test runs must set
   `CLIENTMODEL_TEST_MODE=Playback` and
   `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`. Only authorized humans may run
   `Record` or `Live` tests through an approved local process. Do not use the
-  current automated recording workflow: it commits and pushes recordings before
-  the required human inspection and sanitization. Review locally before staging,
-  committing, pushing, or uploading; never upload raw recording artifacts.
+  current automated recording workflow: although sanitization runs
+  automatically, it commits and pushes recordings before the required local
+  human review. Review locally before staging, committing, pushing, or
+  uploading; never upload raw recording artifacts.
 - **Dependencies and generators:** Review direct and transitive changes in
   `Directory.Packages.props`, trusted `nuget.config` feeds and mappings,
   `.config/dotnet-tools.json`, `package.json`, `codegen/package.json`, and the
-  shared root `package-lock.json`. Use `npm ci` for reproducible installs and
-  preserve security-related overrides. The `Moq` dependency is pinned to
-  `[4.18.2]` and requires legal approval before any change. Coordinate
+  shared root `package-lock.json`. Do not change dependency versions without an
+  explicit request from the core team. Use `npm ci` for reproducible installs
+  and preserve security-related overrides. The `Moq` dependency is pinned to
+  `[4.18.2]` and also requires legal approval before any change. Coordinate
   `@typespec/http-client-csharp` and
   `Microsoft.TypeSpec.Generator.ClientModel` upgrades through the existing
-  generator-update workflow, and preserve Microsoft-owned upstream
-  specifications and generated source boundaries.
+  generator-update workflow.
 - **CI and publishing:** Pin external GitHub Actions to full immutable commit
   SHAs, review Action updates, and grant only the workflow permissions required.
   Never expose credentials to untrusted pull requests. Preserve the existing

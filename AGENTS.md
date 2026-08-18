@@ -4,14 +4,6 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the
 [repository testing instructions](.github/skills/running-tests/SKILL.md) before
 making changes.
 
-This SDK is generated in collaboration with Microsoft. Treat
-`specification/base/` as an upstream-owned copy; make client-specific changes in
-`specification/client/` and the `OpenAI/src/Custom/` or
-`OpenAI.Responses/src/Custom/` trees. Never hand-edit either project's
-`src/Generated/` output. Use `./scripts/Invoke-CodeGen.ps1` when regeneration is
-required, and keep generated source, documentation snippets, and `api/` listings
-consistent with their authoritative inputs.
-
 ## Security Requirements
 
 - **Secrets and fixtures:** Never commit, print, or embed API keys, access
@@ -21,19 +13,22 @@ consistent with their authoritative inputs.
   fixtures, tests, and generated artifacts.
 - **Logs and recordings:** Redact authorization headers, credentials, signed
   URLs, and customer data in diagnostics, test output, exceptions, telemetry,
-  and artifacts. Use synthetic prompts/model responses and sanitize sensitive
-  request/response content in recordings. Most default recording sanitizers are
-  disabled; explicitly sanitize sensitive fields and inspect every file in
-  `tests/SessionRecords/` before committing it. Do not use recording workflows
-  that stage, commit, push, or upload files before an authorized human has
-  inspected and sanitized them.
+  and artifacts. Use synthetic prompts/model responses. Sanitizers for known
+  sensitive OpenAI headers and fields are enabled, but evolving service behavior
+  can leave gaps. An authorized human must inspect every recording in
+  `tests/SessionRecords/`. If sensitive data remains, add or improve an enabled
+  deterministic sanitizer and regenerate the recording, or report the gap before
+  publication. Never manually sanitize recordings. Do not use recording
+  workflows that stage, commit, push, or upload files before an authorized human
+  has reviewed them locally.
 - **Dependencies and generators:** Review direct and transitive NuGet/npm
   changes, package provenance, trusted feeds and source mappings, local .NET
   tools, install scripts, and the root workspace `package-lock.json`.
-  Use `npm ci` for reproducible installs and preserve security-related dependency
-  overrides. Never change the `Moq` version pinned to `[4.18.2]` in
-  `Directory.Packages.props` without legal approval. Keep
-  `@typespec/http-client-csharp` and
+  Neither agents nor human contributors may change dependency versions without
+  an explicit request from the core team. Use `npm ci` for reproducible installs
+  and preserve security-related dependency overrides. Never change the `Moq`
+  version pinned to `[4.18.2]` in `Directory.Packages.props` without legal
+  approval. Keep `@typespec/http-client-csharp` and
   `Microsoft.TypeSpec.Generator.ClientModel` synchronized through the existing
   coordinated generator-update workflow.
 - **CI and releases:** Pin external GitHub Actions to full immutable commit

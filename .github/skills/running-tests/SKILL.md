@@ -100,8 +100,10 @@ You must use this template:
 > ```
 >
 > Before staging, committing, pushing, uploading, or otherwise publishing any
-> recording, manually inspect and sanitize every changed file. Never upload
-> raw recording artifacts.
+> recording, inspect every automatically sanitized file. If sensitive data
+> remains, add or improve an enabled deterministic sanitizer and regenerate the
+> recording, or report the gap to the core team. Never manually sanitize a
+> recording or upload raw recording artifacts.
 
 Use `NUnit.Where` for recording requests even when `dotnet test --filter` would work locally. `NUnit.Where` is the contract used by the recording workflow. Prefer `test == ...` because it matches the exact discovered NUnit test name and avoids ambiguity. For NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, the discovered test names may include fixture arguments like `(True)` or `(False)`.
 
