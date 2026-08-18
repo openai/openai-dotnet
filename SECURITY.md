@@ -24,7 +24,7 @@ When reporting a vulnerability, include:
 - The affected package or product and version, or the affected commit.
 - A clear description of the potential impact.
 - Sanitized steps to reproduce the issue or a minimal proof of concept.
-- The .NET runtime, target framework, and operating system.
+- The .NET runtime, target framework, and operating system, when relevant.
 - Any known mitigations or workarounds.
 
 Do not include live credentials, API keys, customer data, or unredacted
