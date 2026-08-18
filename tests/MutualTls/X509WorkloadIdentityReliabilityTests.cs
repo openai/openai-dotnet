@@ -220,6 +220,59 @@ public sealed partial class X509WorkloadIdentityTests
         Assert.That(server.ApiCount, Is.EqualTo(9));
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ProactiveRefreshDeadlineUsesCachedTokenAndSharedFailure(bool async)
+    {
+        int exchangeNumber = 0;
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            if (Interlocked.Increment(ref exchangeNumber) == 1)
+            {
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync("{\"access_token\":\"still-valid-token\",\"expires_in\":2}");
+                return true;
+            }
+
+            await Task.Delay(Timeout.InfiniteTimeSpan, context.RequestAborted);
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = new(
+            "idp_test",
+            "svc_test",
+            new() { Handler = handler, RefreshBuffer = TimeSpan.FromSeconds(1) });
+        OpenAIClient client = new(credential, new() { NetworkTimeout = TimeSpan.FromMilliseconds(200) });
+
+        using PipelineMessage first = await SendAsync(client);
+        await Task.Delay(TimeSpan.FromMilliseconds(1100));
+
+        if (async)
+        {
+            using PipelineMessage fallback = await SendAsync(client);
+            Assert.That(fallback.Response.Status, Is.EqualTo(200));
+        }
+        else
+        {
+            using PipelineMessage fallback = client.Pipeline.CreateMessage();
+            fallback.Request.Method = "GET";
+            fallback.Request.Uri = new Uri("https://mtls.api.openai.com/v1/test");
+            client.Pipeline.Send(fallback);
+            Assert.That(fallback.Response.Status, Is.EqualTo(200));
+        }
+
+        using PipelineMessage sharedFallback = await SendAsync(client);
+
+        Assert.That(sharedFallback.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(2));
+        Assert.That(server.ApiCount, Is.EqualTo(3));
+    }
+
     [Test]
     public async Task ExchangeBodyDelayConsumesTheSameMonotonicRefreshWindowAsCachedReuse()
     {

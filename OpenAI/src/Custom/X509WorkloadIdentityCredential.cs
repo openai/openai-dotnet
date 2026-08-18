@@ -182,6 +182,19 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 Volatile.Write(ref _refreshFailure, null);
                 return refreshedToken.Value;
             }
+            catch (OperationCanceledException exception) when (
+                deadline.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+            {
+                InvalidOperationException timeout = CreateNetworkTimeoutException(exception);
+                RecordRefreshFailure(timeout);
+                fallbackToken = GetUsableCachedToken(token);
+                if (fallbackToken is not null)
+                {
+                    return fallbackToken;
+                }
+
+                throw timeout;
+            }
             catch (Exception exception) when (
                 exception is not OperationCanceledException
                 && !cancellationToken.IsCancellationRequested)
@@ -199,9 +212,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         catch (OperationCanceledException exception) when (
             deadline.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
         {
-            throw new InvalidOperationException(
-                "X.509 workload identity token exchange exceeded the configured network timeout.",
-                exception);
+            throw CreateNetworkTimeoutException(exception);
         }
         finally
         {
@@ -583,6 +594,13 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     private void RecordRefreshFailure(Exception exception)
     {
         Volatile.Write(ref _refreshFailure, new RefreshFailure(exception, GetTimestamp()));
+    }
+
+    private static InvalidOperationException CreateNetworkTimeoutException(OperationCanceledException exception)
+    {
+        return new InvalidOperationException(
+            "X.509 workload identity token exchange exceeded the configured network timeout.",
+            exception);
     }
 
     private static bool HasSameOrigin(Uri first, Uri second)
