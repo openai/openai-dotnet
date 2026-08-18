@@ -219,7 +219,7 @@ namespace OpenAI.Audio
             string language = default;
             string prompt = default;
             AudioTranscriptionFormat? responseFormat = default;
-            double? temperature = default;
+            float? temperature = default;
             IList<InternalTranscriptionInclude> internalInclude = default;
             IList<BinaryData> internalTimestampGranularities = default;
             bool? stream = default;
@@ -264,7 +264,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    temperature = prop.Value.GetDouble();
+                    temperature = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("include"u8))

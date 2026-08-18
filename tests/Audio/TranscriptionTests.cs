@@ -64,7 +64,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         AudioTranscriptionOptions options = new()
         {
             ResponseFormat = AudioTranscriptionFormat.Verbose,
-            Temperature = 0.4,
+            Temperature = 0.4f,
             TimestampGranularities = granularityFlags,
         };
 

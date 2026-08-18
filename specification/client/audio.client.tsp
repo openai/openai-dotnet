@@ -5,6 +5,8 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 
 @@alternateType(CreateTranscriptionResponseJsonLogprobs.bytes, float64[]);
+@@alternateType(CreateTranscriptionRequest.temperature, float32);
+@@alternateType(CreateTranslationRequest.temperature, float32);
 
 @@alternateType(CreateSpeechRequest.speed, float32);
 @@alternateType(VadConfig.threshold, float32);

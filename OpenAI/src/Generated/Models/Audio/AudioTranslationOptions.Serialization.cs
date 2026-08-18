@@ -145,7 +145,7 @@ namespace OpenAI.Audio
             InternalCreateTranslationRequestModel model = default;
             string prompt = default;
             AudioTranslationFormat? responseFormat = default;
-            double? temperature = default;
+            float? temperature = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -179,7 +179,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    temperature = prop.Value.GetDouble();
+                    temperature = prop.Value.GetSingle();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

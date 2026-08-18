@@ -153,7 +153,7 @@ namespace OpenAI.Audio {
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
-        public double? Temperature { get; set; }
+        public float? Temperature { get; set; }
         public AudioTimestampGranularities TimestampGranularities { get; set; }
     }
     public class AudioTranscriptionTokenUsage : AudioTranscriptionUsage, IJsonModel<AudioTranscriptionTokenUsage>, IPersistableModel<AudioTranscriptionTokenUsage> {
@@ -193,7 +193,7 @@ namespace OpenAI.Audio {
     public class AudioTranslationOptions : IJsonModel<AudioTranslationOptions>, IPersistableModel<AudioTranslationOptions> {
         public string Prompt { get; set; }
         public AudioTranslationFormat? ResponseFormat { get; set; }
-        public double? Temperature { get; set; }
+        public float? Temperature { get; set; }
     }
     public class DiarizedAudioTranscription : IJsonModel<DiarizedAudioTranscription>, IPersistableModel<DiarizedAudioTranscription> {
         public TimeSpan Duration { get; }
