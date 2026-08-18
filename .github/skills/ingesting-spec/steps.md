@@ -219,14 +219,7 @@ dotnet build
 
 ### 7a. Review Numeric Properties
 
-Generic TypeSpec `integer` and `numeric` values map to `long` and `double` by default. Add `@@alternateType` customizations in `specification/client/{area}.client.tsp` when the .NET API should expose `int` or `float`:
-
-```typespec
-@@alternateType(TypeName.integer_property, int32);
-@@alternateType(TypeName.numeric_property, float32);
-```
-
-After generation, verify the resulting properties, constructor parameters, client method parameters, fields, and serialization code. Keep `int64` or `float64` for values that require the larger range or precision, such as byte counts or large IDs.
+Follow the [TypeSpec numeric types](../../../eng/patterns/typespec.md) pattern to select explicit .NET numeric types and verify the generated API and serialization code.
 
 ### `Invoke-CodeGen.ps1` Parameter Sets (Reference)
 

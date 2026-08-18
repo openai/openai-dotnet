@@ -43,14 +43,7 @@ If a TypeSpec model is renamed from `FooBar` to `BazQux`, update:
 
 ## 3. Numeric Type Conversions
 
-TypeSpec's generic `integer` and `numeric` types map to `long` and `double` in C# by default. Use `@@alternateType` in the area's `specification/client/{area}.client.tsp` file when the .NET API should instead expose `int` or `float`:
-
-```typespec
-@@alternateType(TypeName.integer_property, int32);
-@@alternateType(TypeName.numeric_property, float32);
-```
-
-For operation parameters, reference the parameter through `OperationName::parameters`. Preserve `int64` or `float64` when the value requires the larger range or precision, such as byte counts, large IDs, or high-precision values. After code generation, review properties, constructor parameters, client method parameters, fields, and serialization code to ensure the selected numeric types are consistent.
+Follow the centralized [TypeSpec numeric types](../../../eng/patterns/typespec.md) pattern when the upstream specification uses generic `integer` or `numeric` types.
 
 ---
 

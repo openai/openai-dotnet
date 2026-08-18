@@ -5,3 +5,4 @@ This directory documents common implementation patterns used across the OpenAI .
 ## Patterns
 
 - [Non-discriminated unions](non-discriminated-unions.md)
+- [TypeSpec numeric types](typespec.md)

@@ -55,6 +55,7 @@ Quick reference for all paths involved in spec ingestion.
 | What | Path |
 |------|------|
 | Codegen plugin source | `codegen/generator/src/` |
+| Numeric type pattern | [`eng/patterns/typespec.md`](../../../eng/patterns/typespec.md) |
 | Numeric type customizations | `specification/client/{area}.client.tsp` |
 
 ## Available Areas
