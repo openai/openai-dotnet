@@ -19,8 +19,7 @@ on:
         type: string
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 # Runs targeting the same branch are queued to prevent conflicting recording branches.
 # Runs targeting different branches are allowed in parallel.
@@ -33,6 +32,8 @@ jobs:
     name: Record tests
     runs-on: ubuntu-latest
     environment: Live Testing
+    outputs:
+      has_changes: ${{ steps.changes.outputs.has_changes }}
     env:
       LATEST_TEST_TFM: net10.0
       TEST_NUNIT_WHERE: ${{ inputs.nunit_where }}
@@ -40,6 +41,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
 
       - name: Setup .NET 10
         uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
@@ -86,17 +89,6 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
-      - name: Scan recordings for unsanitized secrets
-        if: steps.changes.outputs.has_changes == 'true'
-        run: |
-          CHANGED_FILES="$(git status --porcelain tests/SessionRecords/ | awk '{print $NF}')"
-          if echo "$CHANGED_FILES" | xargs grep -qE '(sk-|ek-)[A-Za-z0-9]'; then
-            echo "::error::Potential unsanitized secret key detected in session recordings. Please inspect and sanitize before committing."
-            exit 1
-          else
-            echo "### No unsanitized secrets detected in recordings" >> $GITHUB_STEP_SUMMARY
-          fi
-
       # Playback deliberately omits --framework to validate recordings across all TFMs.
       - name: Validate recordings in Playback mode
         if: steps.changes.outputs.has_changes == 'true'
@@ -110,18 +102,137 @@ jobs:
           CLIENTMODEL_TEST_MODE: Playback
           CLIENTMODEL_DISABLE_AUTO_RECORDING: "true"
 
-      - name: Create PR with recordings
+      - name: Scan recordings for unsanitized secrets
         if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git add -- tests/SessionRecords/
+
+          python -I - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+
+          paths = filter(None, subprocess.check_output(
+              ["git", "diff", "--cached", "--name-only", "-z"]
+          ).split(b"\0"))
+
+          for encoded_path in paths:
+              path = os.fsdecode(encoded_path)
+              if not path.startswith("tests/SessionRecords/") or not path.endswith(".json"):
+                  sys.exit("::error::Unexpected file in session recording changes.")
+
+              entry = subprocess.check_output(["git", "ls-files", "--stage", "-z", "--", path])
+              if not entry:
+                  continue
+              if not entry.startswith(b"100644 "):
+                  sys.exit("::error::Session recordings must be regular JSON files.")
+
+              content = subprocess.check_output(["git", "show", f":{path}"])
+              try:
+                  parsed = json.loads(content)
+              except (UnicodeDecodeError, json.JSONDecodeError):
+                  sys.exit("::error::Session recording contains invalid JSON.")
+              if (re.search(rb"(sk-|ek-)[A-Za-z0-9]", content)
+                      or re.search(r"(sk-|ek-)[A-Za-z0-9]", json.dumps(parsed))):
+                  sys.exit("::error::Potential unsanitized secret key detected in session recordings.")
+          PY
+
+          echo "### No unsanitized secrets detected in recordings" >> $GITHUB_STEP_SUMMARY
+
+      - name: Prepare sanitized recording changes
+        if: steps.changes.outputs.has_changes == 'true'
+        run: git diff --cached --binary -- tests/SessionRecords/ > "$RUNNER_TEMP/session-recordings.patch"
+
+      - name: Upload sanitized recording changes
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        with:
+          name: session-recordings-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/session-recordings.patch
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: ${{ success() }}
+        with:
+          name: test-artifacts-${{ github.run_attempt }}
+          path: ${{ github.workspace }}/artifacts/test-results/playback*.trx
+          if-no-files-found: ignore
+          retention-days: 1
+
+  create-pr:
+    name: Create recording pull request
+    needs: record
+    if: needs.record.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Download sanitized recording changes
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: session-recordings-${{ github.run_attempt }}
+          path: ${{ runner.temp }}
+
+      - name: Apply sanitized recording changes
+        run: |
+          git apply --index --include='tests/SessionRecords/*' "$RUNNER_TEMP/session-recordings.patch"
+
+          if git diff --cached --quiet -- tests/SessionRecords/; then
+            echo "::error::No valid session recording changes were found."
+            exit 1
+          fi
+
+          python -I - <<'PY'
+          import json
+          import os
+          import re
+          import subprocess
+          import sys
+
+          paths = filter(None, subprocess.check_output(
+              ["git", "diff", "--cached", "--name-only", "-z"]
+          ).split(b"\0"))
+
+          for encoded_path in paths:
+              path = os.fsdecode(encoded_path)
+              if not path.startswith("tests/SessionRecords/") or not path.endswith(".json"):
+                  sys.exit("::error::Unexpected file in session recording changes.")
+
+              entry = subprocess.check_output(["git", "ls-files", "--stage", "-z", "--", path])
+              if not entry:
+                  continue
+              if not entry.startswith(b"100644 "):
+                  sys.exit("::error::Session recordings must be regular JSON files.")
+
+              content = subprocess.check_output(["git", "show", f":{path}"])
+              try:
+                  parsed = json.loads(content)
+              except (UnicodeDecodeError, json.JSONDecodeError):
+                  sys.exit("::error::Session recording contains invalid JSON.")
+              if (re.search(rb"(sk-|ek-)[A-Za-z0-9]", content)
+                      or re.search(r"(sk-|ek-)[A-Za-z0-9]", json.dumps(parsed))):
+                  sys.exit("::error::Potential unsanitized secret key detected in session recordings.")
+          PY
+
+      - name: Create PR with recordings
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BASE_BRANCH: ${{ github.ref_name }}
+          TEST_NUNIT_WHERE: ${{ inputs.nunit_where }}
         run: |
-          BASE_BRANCH="${{ github.ref_name }}"
-          RECORDING_BRANCH="recordings/${{ github.run_id }}-${{ github.run_attempt }}"
+          RECORDING_BRANCH="recordings/$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
           
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git checkout -b "$RECORDING_BRANCH"
-          git add tests/SessionRecords/
           git commit -m "Record tests for $BASE_BRANCH"
           git push origin "$RECORDING_BRANCH"
           
@@ -130,7 +241,7 @@ jobs:
 
           printf 'This PR contains session recordings generated by the record-test workflow.\n\n**NUnit.Where:** `%s`\n**Workflow run:** %s' \
             "$TEST_NUNIT_WHERE" \
-            "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
             > "$BODY_FILE"
           
           PR_URL=$(gh pr create \
@@ -139,14 +250,7 @@ jobs:
             --title "Record tests for $BASE_BRANCH" \
             --draft \
             --body-file "$BODY_FILE" \
-            --assignee "${{ github.actor }}")
+            --assignee "$GITHUB_ACTOR")
           
           echo "### Pull request created:" >> $GITHUB_STEP_SUMMARY
           echo "$PR_URL" >> $GITHUB_STEP_SUMMARY
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
-        if: ${{ !cancelled() }}
-        with:
-          name: test-artifacts-${{ github.run_attempt }}
-          path: ${{ github.workspace }}/artifacts
