@@ -24,7 +24,9 @@ consistent with their authoritative inputs.
   and artifacts. Use synthetic prompts/model responses and sanitize sensitive
   request/response content in recordings. Most default recording sanitizers are
   disabled; explicitly sanitize sensitive fields and inspect every file in
-  `tests/SessionRecords/` before committing it.
+  `tests/SessionRecords/` before committing it. Do not use recording workflows
+  that stage, commit, push, or upload files before an authorized human has
+  inspected and sanitized them.
 - **Dependencies and generators:** Review direct and transitive NuGet/npm
   changes, package provenance, trusted feeds and source mappings, local .NET
   tools, install scripts, and the root workspace `package-lock.json`.

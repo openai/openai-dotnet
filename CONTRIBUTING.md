@@ -25,7 +25,13 @@ The following tools are required for development:
 
 ### Optional: VS Code Dev Container / Codespaces
 
-This repository includes a `.devcontainer/devcontainer.json` for contributors who prefer a containerized dev environment, such as the VS Code Dev Containers extension or GitHub Codespaces. It installs the required .NET SDK, Node.js, and PowerShell, then restores `OpenAI.slnx` on first create. The container defaults tests to Playback mode and disables auto-recording; override `CLIENTMODEL_TEST_MODE`/`CLIENTMODEL_DISABLE_AUTO_RECORDING` if you want Record/Live behavior.
+This repository includes a `.devcontainer/devcontainer.json` for contributors
+who prefer a containerized development environment such as VS Code Dev
+Containers or GitHub Codespaces. It installs the required .NET SDK, Node.js, and
+PowerShell, then restores `OpenAI.slnx` on first create. Its default Playback
+mode disables auto-recording. Agents and ordinary CI must preserve both safety
+settings; only explicitly authorized humans may change them for approved local
+Record or Live work.
 
 ## Building the Library
 
@@ -57,35 +63,46 @@ To switch between test modes, set the `CLIENTMODEL_TEST_MODE` environment variab
 
 ### Running Tests in Playback Mode (Default)
 
+Always set both safeguards explicitly, including outside the dev container.
+
 ```bash
+CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
+  dotnet test OpenAI.slnx
+```
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Playback"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 dotnet test OpenAI.slnx
 ```
 
-### Running Tests in Record or Live Mode
+### Running Tests in Record or Live Mode (Authorized Humans Only)
 
-Set the `OPENAI_API_KEY` environment variable and the test mode:
+Agents and ordinary CI must never run these modes. An explicitly authorized
+human may generate recordings locally using approved credentials:
 
-```bash
-# PowerShell
+```powershell
 $env:OPENAI_API_KEY = "your-api-key"
-$env:CLIENTMODEL_TEST_MODE = "Record"  # or "Live"
-
-# Bash
-export OPENAI_API_KEY="your-api-key"
-export CLIENTMODEL_TEST_MODE="Record"  # or "Live"
-```
-
-Then run the tests:
-
-```bash
+$env:CLIENTMODEL_TEST_MODE = "Record"  # Or "Live", when explicitly authorized.
 dotnet test OpenAI.slnx
 ```
 
-`OpenAIRecordedTestBase` disables most default sanitizers, so sensitive headers,
-payloads, and other fields must be explicitly sanitized. Inspect every new
-file in `tests/SessionRecords/` for API keys, authorization headers, cookies,
-customer data, prompts, model responses, and other sensitive content before
-committing. Never commit raw or unsanitized recordings.
+```bash
+export OPENAI_API_KEY="your-api-key"
+CLIENTMODEL_TEST_MODE=Record dotnet test OpenAI.slnx
+```
+
+Do not run `.github/workflows/record-test.yml` to create recordings. It
+automatically commits and pushes generated data before a human can inspect and
+sanitize it; its credential-pattern scan is not an adequate review gate. Do not
+use that workflow unless it enforces explicit human review and approval before
+any recording is staged, committed, pushed, uploaded, or otherwise published.
+
+`OpenAIRecordedTestBase` disables most default sanitizers. An authorized human
+must inspect and sanitize every locally generated `tests/SessionRecords/` file
+for API keys, authorization headers, cookies, signed URLs, customer data,
+prompts, model responses, and sensitive request/response content before any
+staging, commit, push, or upload. Never upload raw recording artifacts.
 
 ## Code Generation
 
@@ -163,8 +180,10 @@ This updates the corresponding snippets in markdown documentation files.
   every new recording. Agents and ordinary CI test runs must explicitly set
   `CLIENTMODEL_TEST_MODE=Playback` and
   `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`. Only authorized humans may run
-  `Record` or `Live` tests; create recordings through the protected recording
-  workflow or an approved local process.
+  `Record` or `Live` tests through an approved local process. Do not use the
+  current automated recording workflow: it commits and pushes recordings before
+  the required human inspection and sanitization. Review locally before staging,
+  committing, pushing, or uploading; never upload raw recording artifacts.
 - **Dependencies and generators:** Review direct and transitive changes in
   `Directory.Packages.props`, trusted `nuget.config` feeds and mappings,
   `.config/dotnet-tools.json`, `package.json`, `codegen/package.json`, and the
@@ -196,7 +215,8 @@ This updates the corresponding snippets in markdown documentation files.
 
 Before submitting a pull request, please ensure:
 
-- [ ] All tests pass (`dotnet test OpenAI.slnx`)
+- [ ] All tests pass using the
+  [safe Playback command](#running-tests-in-playback-mode-default)
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
