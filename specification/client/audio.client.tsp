@@ -4,7 +4,6 @@ import "@azure-tools/typespec-client-generator-core";
 using OpenAI;
 using Azure.ClientGenerator.Core;
 
-@@alternateType(numeric, float32);
 @@alternateType(CreateTranscriptionResponseJsonLogprobs.bytes, float64[]);
 
 @@alternateType(CreateSpeechRequest.speed, float32);

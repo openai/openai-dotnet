@@ -51,17 +51,4 @@ Preserve wrappers required by the wire format. For example, multipart properties
 @@alternateType(CreateRequest.count, HttpPart<int32 | null>);
 ```
 
-When every use of a generic scalar in an area should have the same mapping, the scalar itself can be overridden:
-
-```typespec
-@@alternateType(numeric, float32);
-```
-
-Use a scalar-level override only after reviewing every occurrence in the imported area. It also affects uses nested in collections. Add a property-level override when a particular property must retain a different element type:
-
-```typespec
-@@alternateType(numeric, float32);
-@@alternateType(LogProbability.bytes, float64[]);
-```
-
 For collections, specify the complete alternate collection type, such as `int32[]` or `float64[]`, rather than only its element type.
