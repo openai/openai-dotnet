@@ -43,22 +43,14 @@ If a TypeSpec model is renamed from `FooBar` to `BazQux`, update:
 
 ## 3. Numeric Type Conversions
 
-TypeSpec's `integer` type maps to `long` in C# by default. The `NumericTypesVisitor` (at `codegen/generator/src/Visitors/NumericTypesVisitor.cs`) converts:
-- `long` → `int`
-- `double` → `float`
+TypeSpec's generic `integer` and `numeric` types map to `long` and `double` in C# by default. Use `@@alternateType` in the area's `specification/client/{area}.client.tsp` file when the .NET API should instead expose `int` or `float`:
 
-for all generated properties unless explicitly excluded.
-
-**After code generation, you MUST review the generated numeric properties.** If a property genuinely requires `long` (e.g., byte counts, large IDs) or `double` (high-precision values), add it to the exclusion list in the NumericTypesVisitor:
-
-```csharp
-private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
-{
-    "OpenAI.{Area}.{TypeName}.{PropertyName}",
-};
+```typespec
+@@alternateType(TypeName.integer_property, int32);
+@@alternateType(TypeName.numeric_property, float32);
 ```
 
-See [PR #935 (VectorStore)](https://github.com/openai/openai-dotnet/pull/935) for an example where this visitor was enhanced to handle fields and methods in addition to properties.
+For operation parameters, reference the parameter through `OperationName::parameters`. Preserve `int64` or `float64` when the value requires the larger range or precision, such as byte counts, large IDs, or high-precision values. After code generation, review properties, constructor parameters, client method parameters, fields, and serialization code to ensure the selected numeric types are consistent.
 
 ---
 

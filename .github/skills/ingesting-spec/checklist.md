@@ -50,7 +50,7 @@ Use this checklist when performing a spec ingestion for any area.
 ## Post-Generation Verification
 
 - [ ] Verify generated files: `Get-ChildItem src/Generated/Models/{Area}/ -Name`
-- [ ] **Review numeric types** — check if any `long` or `double` properties, parameters, or fields were incorrectly converted to `int`/`float` by the `NumericTypesVisitor`; add exclusions if needed (see patterns-and-gotchas.md §3)
+- [ ] **Review numeric types** — use `@@alternateType` in the client TypeSpec to select `int32`, `int64`, `float32`, or `float64`, then verify generated properties, parameters, fields, and serialization (see patterns-and-gotchas.md §3)
 - [ ] Verify build: `dotnet build`
 - [ ] Export API surface: `./scripts/Export-Api.ps1`
 

@@ -4,7 +4,7 @@
 
 Before starting, review the **Reference PRs** in [references.md](references.md) from **previous area ingestions**. Since you're ingesting a new area, there won't be an existing PR for it — instead, study PRs from other areas to learn the patterns and common pitfalls. Pay particular attention to:
 
-- What types of changes were made to the codegen visitors (e.g., `NumericTypesVisitor`)
+- What TypeSpec client customizations and codegen visitor changes were needed
 - What features were deferred to follow-up PRs
 - What custom C# code changes were needed
 
@@ -219,19 +219,14 @@ dotnet build
 
 ### 7a. Review Numeric Properties
 
-The `NumericTypesVisitor` (at `codegen/generator/src/Visitors/NumericTypesVisitor.cs`) automatically converts `long` → `int` and `double` → `float` for all generated properties, parameters, and fields unless explicitly excluded.
+Generic TypeSpec `integer` and `numeric` values map to `long` and `double` by default. Add `@@alternateType` customizations in `specification/client/{area}.client.tsp` when the .NET API should expose `int` or `float`:
 
-After generation, check the generated code for any numeric properties that should **stay `long`** (e.g., byte counts, large IDs) or **stay `double`** (high-precision values). If found, add them to the exclusion list:
-
-```csharp
-// In NumericTypesVisitor.cs
-private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
-{
-    "OpenAI.{Area}.{TypeName}.{PropertyName}",
-};
+```typespec
+@@alternateType(TypeName.integer_property, int32);
+@@alternateType(TypeName.numeric_property, float32);
 ```
 
-See [PR #935 (VectorStore)](https://github.com/openai/openai-dotnet/pull/935) for an example where this visitor was enhanced.
+After generation, verify the resulting properties, constructor parameters, client method parameters, fields, and serialization code. Keep `int64` or `float64` for values that require the larger range or precision, such as byte counts or large IDs.
 
 ### `Invoke-CodeGen.ps1` Parameter Sets (Reference)
 
