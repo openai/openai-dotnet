@@ -36,9 +36,9 @@ consistent with their authoritative inputs.
   coordinated generator-update workflow.
 - **CI and releases:** Pin external GitHub Actions to full immutable commit
   SHAs. Keep workflow permissions and credentials least-privileged; never expose
-  secrets to untrusted pull requests. Preserve the existing protected release
-  and publish environments, OIDC/Azure Key Vault signing, scoped `GITHUB_TOKEN`
-  access, and NuGet publishing credentials.
+  secrets to untrusted pull requests. Preserve the existing `release`
+  environment and the protected `publish` environment, OIDC/Azure Key Vault
+  signing, scoped `GITHUB_TOKEN` access, and NuGet publishing credentials.
 - **Sensitive changes and testing:** Require focused maintainer review and
   regression coverage for authentication, custom endpoints, redirects, TLS,
   serialization, streaming, file uploads, logging, dependency resolution,

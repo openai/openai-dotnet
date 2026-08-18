@@ -177,9 +177,10 @@ This updates the corresponding snippets in markdown documentation files.
   specifications and generated source boundaries.
 - **CI and publishing:** Pin external GitHub Actions to full immutable commit
   SHAs, review Action updates, and grant only the workflow permissions required.
-  Never expose credentials to untrusted pull requests. Preserve protected
-  release/publish environments, OIDC and Azure Key Vault package signing,
-  scoped `GITHUB_TOKEN` permissions, and NuGet publishing credentials.
+  Never expose credentials to untrusted pull requests. Preserve the existing
+  `release` environment and the protected `publish` environment, OIDC and Azure
+  Key Vault package signing, scoped `GITHUB_TOKEN` permissions, and NuGet
+  publishing credentials.
 - **Sensitive changes:** Request focused maintainer review and add offline
   regression tests for authentication, endpoint/redirect handling, TLS,
   serialization, streaming, file uploads, logging, dependency resolution,
