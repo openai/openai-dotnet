@@ -100,6 +100,14 @@ public partial class OpenAIClient
         "microsoftonline.com",
         "amazonaws.com",
         "amazonaws.com.cn",
+        "api.aws",
+        "api.amazonwebservices.com.cn",
+        "c2s.ic.gov",
+        "sc2s.sgov.gov",
+        "cloud.adc-e.uk",
+        "csp.hci.ic.gov",
+        "amazonaws.eu",
+        "api.amazonwebservices.eu",
         "googleapis.com",
         "googleapis.cn",
         "googleusercontent.com",
@@ -479,16 +487,16 @@ public partial class OpenAIClient
                 nameof(options));
         }
 
-        credential.BindApiEndpoint(endpoint);
-
         ClientPipelineOptions pipelineOptions = options.Clone();
         pipelineOptions.Transport = credential.Transport;
-        return OpenAIClientUtilities.CreatePipeline(
+        ClientPipeline pipeline = OpenAIClientUtilities.CreatePipeline(
             new WorkloadIdentityAuthenticationPolicy(credential, endpoint, options.NetworkTimeout),
             pipelineOptions,
             options.UserAgentApplicationId,
             options.OrganizationId,
             options.ProjectId);
+        credential.BindApiEndpoint(endpoint);
+        return pipeline;
     }
 
     private static bool IsExternalProviderEndpoint(Uri endpoint)

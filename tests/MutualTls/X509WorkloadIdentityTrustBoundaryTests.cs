@@ -17,6 +17,15 @@ public sealed partial class X509WorkloadIdentityTests
     [TestCase("https://tenant.openai.azure.cn/openai/v1")]
     [TestCase("https://TENANT.OPENAI.AZURE.COM./openai/v1")]
     [TestCase("https://bedrock-runtime.us-east-1.amazonaws.com/v1")]
+    [TestCase("https://bedrock-runtime.us-east-1.api.aws/v1")]
+    [TestCase("https://BEDROCK-RUNTIME.US-EAST-1.API.AWS.:8443/v1")]
+    [TestCase("https://bedrock-runtime.cn-north-1.api.amazonwebservices.com.cn/v1")]
+    [TestCase("https://bedrock-runtime.us-iso-east-1.c2s.ic.gov/v1")]
+    [TestCase("https://bedrock-runtime.us-isob-east-1.sc2s.sgov.gov/v1")]
+    [TestCase("https://bedrock-runtime.eu-isoe-west-1.cloud.adc-e.uk/v1")]
+    [TestCase("https://bedrock-runtime.us-isof-south-1.csp.hci.ic.gov/v1")]
+    [TestCase("https://bedrock-runtime.eusc-de-east-1.amazonaws.eu/v1")]
+    [TestCase("https://bedrock-runtime.eusc-de-east-1.api.amazonwebservices.eu/v1")]
     [TestCase("https://generativelanguage.googleapis.com/v1")]
     public async Task ClientRejectsProviderOwnedEndpointsBeforeTokenAcquisition(string endpoint)
     {

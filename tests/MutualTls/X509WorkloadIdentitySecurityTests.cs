@@ -705,6 +705,59 @@ public sealed partial class X509WorkloadIdentityTests
     }
 
     [Test]
+    public async Task FailedPipelineCreationDoesNotBindCredentialOrigin()
+    {
+        await using TestServer server = await TestServer.StartAsync();
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClientOptions invalidOptions = new()
+        {
+            Endpoint = new Uri("https://failed.example.test/v1"),
+            UserAgentApplicationId = new string('a', 513),
+        };
+
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => new OpenAIClient(credential, invalidOptions));
+
+        Uri endpoint = new("https://recovered.example.test/v1");
+        OpenAIClient client = new(credential, new() { Endpoint = endpoint });
+        using PipelineMessage response = await SendAsync(client);
+
+        Assert.That(client.Endpoint, Is.EqualTo(endpoint));
+        Assert.That(response.Response.Status, Is.EqualTo(200));
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public void ConcurrentClientConstructionBindsOnlyOneCredentialOrigin()
+    {
+        using SocketsHttpHandler handler = new() { AllowAutoRedirect = false, UseCookies = false };
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        using Barrier start = new(participantCount: 2);
+
+        Task<bool> first = Task.Run(() => TryCreateClient("https://first.example.test/v1"));
+        Task<bool> second = Task.Run(() => TryCreateClient("https://second.example.test/v1"));
+        Task.WaitAll(first, second);
+
+        Assert.That(first.Result, Is.Not.EqualTo(second.Result));
+
+        bool TryCreateClient(string endpoint)
+        {
+            start.SignalAndWait();
+            try
+            {
+                _ = new OpenAIClient(credential, new() { Endpoint = new Uri(endpoint) });
+                return true;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+    }
+
+    [Test]
     public Task ARefreshWaiterHonorsItsOwnNetworkTimeout()
     {
         return AssertRefreshWaiterHonorsItsOwnNetworkTimeoutAsync(synchronous: false);
