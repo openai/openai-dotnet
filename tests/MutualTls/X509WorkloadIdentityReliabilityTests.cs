@@ -4,6 +4,7 @@ using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -329,6 +330,40 @@ public sealed partial class X509WorkloadIdentityTests
             async () => await SendAsync(client));
 
         Assert.That(exception.Message, Does.Contain("exhausted"));
+        Assert.That(server.ExchangeCount, Is.EqualTo(3));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [Test]
+    public async Task ConcurrentWaitersShareRecentFailedRefresh()
+    {
+        TaskCompletionSource firstExchangeStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            firstExchangeStarted.TrySetResult();
+            await Task.Delay(TimeSpan.FromMilliseconds(100), context.RequestAborted);
+            context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = CreateCredential(handler);
+        OpenAIClient client = new(credential);
+        Task<PipelineMessage>[] requests = Enumerable.Range(0, 8)
+            .Select(_ => SendAsync(client))
+            .ToArray();
+        await firstExchangeStarted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        foreach (Task<PipelineMessage> request in requests)
+        {
+            InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(async () => await request);
+            Assert.That(exception.Message, Does.Contain("503"));
+        }
+
         Assert.That(server.ExchangeCount, Is.EqualTo(3));
         Assert.That(server.ApiCount, Is.Zero);
     }

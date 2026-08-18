@@ -479,6 +479,8 @@ public partial class OpenAIClient
                 nameof(options));
         }
 
+        credential.BindApiEndpoint(endpoint);
+
         ClientPipelineOptions pipelineOptions = options.Clone();
         pipelineOptions.Transport = credential.Transport;
         return OpenAIClientUtilities.CreatePipeline(

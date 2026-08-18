@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.ExceptionServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     private const int MaximumExchangeAttempts = 3;
     private const int MaximumErrorBodyBytes = 4096;
     private const int MaximumTokenResponseBytes = 1024 * 1024;
+    private static readonly TimeSpan s_refreshFailureBackoff = TimeSpan.FromSeconds(1);
     private static readonly Uri s_exchangeEndpoint = new("https://mtls.auth.openai.com/oauth/token");
 
     internal static Uri DefaultApiEndpoint { get; } = new("https://mtls.api.openai.com/v1");
@@ -36,7 +38,9 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
     private readonly HttpClient _httpClient;
     private readonly SemaphoreSlim _refreshLock = new(1, 1);
     private readonly TimeSpan _refreshBuffer;
+    private Uri? _apiEndpoint;
     private CachedToken? _cachedToken;
+    private RefreshFailure? _refreshFailure;
     private int _disposed;
 
     /// <summary>Creates an X.509 workload identity credential.</summary>
@@ -101,6 +105,23 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         }
     }
 
+    internal void BindApiEndpoint(Uri endpoint)
+    {
+        ThrowIfDisposed();
+        Uri? boundEndpoint = Volatile.Read(ref _apiEndpoint);
+        if (boundEndpoint is null)
+        {
+            boundEndpoint = Interlocked.CompareExchange(ref _apiEndpoint, endpoint, null) ?? endpoint;
+        }
+
+        if (!HasSameOrigin(boundEndpoint, endpoint))
+        {
+            throw new ArgumentException(
+                "An X.509 workload identity credential can be used with only one API endpoint origin.",
+                nameof(endpoint));
+        }
+    }
+
     private async ValueTask<string> GetTokenCoreAsync(
         bool async,
         TimeSpan networkTimeout,
@@ -113,6 +134,8 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         {
             return token.Value;
         }
+
+        ThrowRecentRefreshFailure();
 
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(networkTimeout);
@@ -136,7 +159,19 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 return token.Value;
             }
 
-            token = await ExchangeTokenAsync(async, deadline.Token).ConfigureAwait(false);
+            ThrowRecentRefreshFailure();
+            try
+            {
+                token = await ExchangeTokenAsync(async, deadline.Token).ConfigureAwait(false);
+            }
+            catch (Exception exception) when (
+                exception is not OperationCanceledException
+                && !cancellationToken.IsCancellationRequested)
+            {
+                Volatile.Write(ref _refreshFailure, new RefreshFailure(exception, GetTimestamp()));
+                throw;
+            }
+
             if (!IsFresh(token))
             {
                 throw new InvalidOperationException(
@@ -144,6 +179,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             }
 
             Volatile.Write(ref _cachedToken, token);
+            Volatile.Write(ref _refreshFailure, null);
             return token.Value;
         }
         catch (OperationCanceledException exception) when (
@@ -493,6 +529,29 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         return GetElapsedTime(token.IssuedAt) < token.RefreshAfter;
     }
 
+    private void ThrowRecentRefreshFailure()
+    {
+        RefreshFailure? failure = Volatile.Read(ref _refreshFailure);
+        if (failure is null)
+        {
+            return;
+        }
+
+        if (GetElapsedTime(failure.FailedAt) < s_refreshFailureBackoff)
+        {
+            failure.Exception.Throw();
+        }
+
+        Interlocked.CompareExchange(ref _refreshFailure, null, failure);
+    }
+
+    private static bool HasSameOrigin(Uri first, Uri second)
+    {
+        return string.Equals(first.Scheme, second.Scheme, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(first.IdnHost, second.IdnHost, StringComparison.OrdinalIgnoreCase)
+            && first.Port == second.Port;
+    }
+
     private static long GetTimestamp()
     {
 #if NET8_0_OR_GREATER
@@ -668,6 +727,12 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         internal string Value { get; }
         internal long IssuedAt { get; }
         internal TimeSpan RefreshAfter { get; }
+    }
+
+    private sealed class RefreshFailure(Exception exception, long failedAt)
+    {
+        internal ExceptionDispatchInfo Exception { get; } = ExceptionDispatchInfo.Capture(exception);
+        internal long FailedAt { get; } = failedAt;
     }
 
     private sealed class ValidatingProxy(

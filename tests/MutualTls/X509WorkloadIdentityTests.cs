@@ -120,6 +120,8 @@ public sealed partial class X509WorkloadIdentityTests
         {
             Transport = transport,
         }));
+
+        Assert.DoesNotThrow(() => new OpenAIClient(credential));
     }
 
     [Test]

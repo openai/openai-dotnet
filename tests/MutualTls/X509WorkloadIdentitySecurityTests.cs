@@ -686,22 +686,22 @@ public sealed partial class X509WorkloadIdentityTests
     }
 
     [Test]
-    public async Task SharedCredentialPreservesEachClientsConfiguredHttpsOrigin()
+    public async Task SharedCredentialRejectsDifferentConfiguredHttpsOrigins()
     {
         await using TestServer server = await TestServer.StartAsync();
         using SocketsHttpHandler handler = server.CreateHandler();
         using X509WorkloadIdentityCredential credential = CreateCredential(handler);
         OpenAIClient defaultClient = new(credential);
-        OpenAIClient customClient = new(credential, new()
+        ArgumentException exception = Assert.Throws<ArgumentException>(() => new OpenAIClient(credential, new()
         {
             Endpoint = new Uri("https://customer.example.test/v1"),
-        });
+        }));
 
         using PipelineMessage first = await SendAsync(defaultClient);
-        using PipelineMessage second = await SendAsync(customClient);
 
+        Assert.That(exception.Message, Does.Contain("endpoint").IgnoreCase);
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
-        Assert.That(server.ApiCount, Is.EqualTo(2));
+        Assert.That(server.ApiCount, Is.EqualTo(1));
     }
 
     [Test]
