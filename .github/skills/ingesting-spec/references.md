@@ -6,11 +6,11 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
 
 | Area | PR | Status | Notes |
 |------|----|--------|-------|
-| Embeddings, Images, Models | [#856](https://github.com/openai/openai-dotnet/pull/856) | Merged | Added `NumericPropertiesVisitor`, `ItemsPropertyVisitor`, new image properties |
+| Embeddings, Images, Models | [#856](https://github.com/openai/openai-dotnet/pull/856) | Merged | Added `ItemsPropertyVisitor` and new image properties |
 | Moderations | [#888](https://github.com/openai/openai-dotnet/pull/888) | Merged | Added multimodal input support for text and image moderation |
 | Files | [#894](https://github.com/openai/openai-dotnet/pull/894) | Merged | Updated file operations, pagination changes deferred to separate PR |
 | Audio | [#913](https://github.com/openai/openai-dotnet/pull/913) | Merged | Streaming speech, diarization, usage metadata; new features deferred to follow-up PRs |
-| VectorStore | [#935](https://github.com/openai/openai-dotnet/pull/935) | Merged | Parameter type changes (`long` → `int`), model reorganization, `NumericTypesVisitor` |
+| VectorStore | [#935](https://github.com/openai/openai-dotnet/pull/935) | Merged | Model reorganization and visitor enhancements |
 
 ---
 
@@ -21,14 +21,12 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
 - **Author:** @joseharriaga
 - **Key changes:**
   - Ingested latest TypeSpec for Embeddings, Images, and Models
-  - Added `NumericPropertiesVisitor` to handle TypeSpec's `integer` type (maps to `long` by default, visitor converts to `int`)
   - Added `ItemsPropertyVisitor` to handle serialization of classes customized to inherit from `ReadOnlyCollection<T>`
   - Added `Background`, `OutputFileFormat`, `Quality`, `Size` properties to `GeneratedImageCollection`
   - Disambiguated between `HD` and `High` values in the `GeneratedImageQuality` enum
   - Added `InputFidelity`, `OutputCompressionFactor`, `OutputFileFormat` properties to `ImageEditOptions`
   - Added `OutputTokenDetails` property to `ImageTokenUsage`
 - **Lessons learned:**
-  - Numeric type handling required a new codegen visitor (NumericPropertiesVisitor)
   - Collection-based custom types needed special serialization handling (ItemsPropertyVisitor)
 
 ### PR #888 — Moderations
@@ -41,7 +39,7 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
 - **Lessons learned:**
   - Multiple iterations needed to fix client code after spec update
   - `[Experimental]` attributes are automatically added by the `ExperimentalAttributeVisitor` in the codegen plugin — no manual tagging needed
-  - `prohibited-namespace` errors required adding `[CodeGenType]` stubs to place new types in the correct `OpenAI.{Area}` namespace (see patterns-and-gotchas.md §5)
+  - `prohibited-namespace` errors required adding `[CodeGenType]` stubs to place new types in the correct `OpenAI.{Area}` namespace (see patterns-and-gotchas.md §4)
 
 ### PR #894 — Files
 
@@ -79,13 +77,10 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
 - **Author:** @ShivangiReja
 - **Key changes:**
   - Ingested latest TypeSpec for VectorStore
-  - Changed `limit` parameter types from `long?` to `int?` across multiple clients
   - Added `Description` property to `VectorStoreCreationOptions`
   - Reorganized VectorStore methods and updated TypeSpec definitions
   - Replaced specialized comparison/compound filter discriminated models with single base models
-  - Renamed and enhanced `NumericPropertiesVisitor` to `NumericTypesVisitor` with broader scope (handles fields and methods too)
 - **Lessons learned:**
-  - Parameter type changes can cascade across multiple clients
   - Codegen visitors may need enhancements for new patterns
   - `git mv` doesn't always detect renames when content changes significantly
 

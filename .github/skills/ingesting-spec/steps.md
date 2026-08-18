@@ -196,12 +196,12 @@ After reviewing the old vs. new spec, compile a list of:
 - **New operations** (API endpoints)
 - **Renamed types/properties** (and the mapping from old → new)
 - **Removed types/properties**
-- **Changed property types** (e.g., `long` → `int`, `string` → enum)
+- **Changed property types** (e.g., `string` → enum)
 - **New features** that may need follow-up implementation
 
 ---
 
-## Step 7: Verify Generated Code and Review Numeric Types
+## Step 7: Verify Generated Code
 
 After `Invoke-CodeGen.ps1` completes successfully (from Step 4, or re-run after fixing issues in Steps 5–6), verify the output:
 
@@ -216,10 +216,6 @@ dotnet build
 # Export API surface
 ./scripts/Export-Api.ps1
 ```
-
-### 7a. Review Numeric Properties
-
-Follow the [TypeSpec numeric types](../../../eng/patterns/typespec.md) pattern to select explicit .NET numeric types and verify the generated API and serialization code.
 
 ### `Invoke-CodeGen.ps1` Parameter Sets (Reference)
 
