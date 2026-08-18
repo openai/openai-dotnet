@@ -135,7 +135,11 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
             return token.Value;
         }
 
-        ThrowRecentRefreshFailure();
+        string? fallbackToken = GetFallbackTokenOrThrowRecentRefreshFailure(token);
+        if (fallbackToken is not null)
+        {
+            return fallbackToken;
+        }
 
         using CancellationTokenSource deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         deadline.CancelAfter(networkTimeout);
@@ -159,28 +163,38 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
                 return token.Value;
             }
 
-            ThrowRecentRefreshFailure();
+            fallbackToken = GetFallbackTokenOrThrowRecentRefreshFailure(token);
+            if (fallbackToken is not null)
+            {
+                return fallbackToken;
+            }
+
             try
             {
-                token = await ExchangeTokenAsync(async, deadline.Token).ConfigureAwait(false);
+                CachedToken refreshedToken = await ExchangeTokenAsync(async, deadline.Token).ConfigureAwait(false);
+                if (!IsFresh(refreshedToken))
+                {
+                    throw new InvalidOperationException(
+                        "X.509 workload identity token exchange returned a token that expired before it could be used.");
+                }
+
+                Volatile.Write(ref _cachedToken, refreshedToken);
+                Volatile.Write(ref _refreshFailure, null);
+                return refreshedToken.Value;
             }
             catch (Exception exception) when (
                 exception is not OperationCanceledException
                 && !cancellationToken.IsCancellationRequested)
             {
-                Volatile.Write(ref _refreshFailure, new RefreshFailure(exception, GetTimestamp()));
+                RecordRefreshFailure(exception);
+                fallbackToken = GetUsableCachedToken(token);
+                if (fallbackToken is not null)
+                {
+                    return fallbackToken;
+                }
+
                 throw;
             }
-
-            if (!IsFresh(token))
-            {
-                throw new InvalidOperationException(
-                    "X.509 workload identity token exchange returned a token that expired before it could be used.");
-            }
-
-            Volatile.Write(ref _cachedToken, token);
-            Volatile.Write(ref _refreshFailure, null);
-            return token.Value;
         }
         catch (OperationCanceledException exception) when (
             deadline.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
@@ -354,7 +368,7 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
         TimeSpan maximumBuffer = TimeSpan.FromTicks(lifetime.Ticks / 2);
         TimeSpan effectiveBuffer = _refreshBuffer < maximumBuffer ? _refreshBuffer : maximumBuffer;
-        return new CachedToken(accessToken, issuedAt, lifetime - effectiveBuffer);
+        return new CachedToken(accessToken, issuedAt, lifetime - effectiveBuffer, lifetime);
     }
 
     private static async ValueTask<JsonDocument> ParseBoundedResponseAsync(
@@ -529,20 +543,46 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
         return GetElapsedTime(token.IssuedAt) < token.RefreshAfter;
     }
 
-    private void ThrowRecentRefreshFailure()
+    private static bool IsUsable(CachedToken token)
+    {
+        return GetElapsedTime(token.IssuedAt) < token.ExpiresAfter;
+    }
+
+    private string? GetFallbackTokenOrThrowRecentRefreshFailure(CachedToken? token)
     {
         RefreshFailure? failure = Volatile.Read(ref _refreshFailure);
         if (failure is null)
         {
-            return;
+            return null;
         }
 
         if (GetElapsedTime(failure.FailedAt) < s_refreshFailureBackoff)
         {
+            string? fallbackToken = GetUsableCachedToken(token);
+            if (fallbackToken is not null)
+            {
+                return fallbackToken;
+            }
+
             failure.Exception.Throw();
         }
 
         Interlocked.CompareExchange(ref _refreshFailure, null, failure);
+        return null;
+    }
+
+    private string? GetUsableCachedToken(CachedToken? token)
+    {
+        return token is not null
+            && ReferenceEquals(Volatile.Read(ref _cachedToken), token)
+            && IsUsable(token)
+                ? token.Value
+                : null;
+    }
+
+    private void RecordRefreshFailure(Exception exception)
+    {
+        Volatile.Write(ref _refreshFailure, new RefreshFailure(exception, GetTimestamp()));
     }
 
     private static bool HasSameOrigin(Uri first, Uri second)
@@ -717,16 +757,18 @@ public sealed class X509WorkloadIdentityCredential : IDisposable
 
     private sealed class CachedToken
     {
-        internal CachedToken(string value, long issuedAt, TimeSpan refreshAfter)
+        internal CachedToken(string value, long issuedAt, TimeSpan refreshAfter, TimeSpan expiresAfter)
         {
             Value = value;
             IssuedAt = issuedAt;
             RefreshAfter = refreshAfter;
+            ExpiresAfter = expiresAfter;
         }
 
         internal string Value { get; }
         internal long IssuedAt { get; }
         internal TimeSpan RefreshAfter { get; }
+        internal TimeSpan ExpiresAfter { get; }
     }
 
     private sealed class RefreshFailure(Exception exception, long failedAt)

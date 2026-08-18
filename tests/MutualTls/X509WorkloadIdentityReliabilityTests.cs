@@ -117,11 +117,107 @@ public sealed partial class X509WorkloadIdentityTests
         Assert.That(server.ExchangeCount, Is.EqualTo(1));
         Assert.That(server.ApiCount, Is.Zero);
 
+        await Task.Delay(TimeSpan.FromMilliseconds(1100));
         using PipelineMessage recovered = await SendAsync(client);
 
         Assert.That(recovered.Response.Status, Is.EqualTo(200));
         Assert.That(server.ExchangeCount, Is.EqualTo(2));
         Assert.That(server.ApiCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task ConcurrentWaitersShareUnusableSuccessfulRefresh()
+    {
+        TaskCompletionSource firstExchangeStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            context.Response.ContentType = "application/json";
+            await context.Response.StartAsync();
+            await context.Response.WriteAsync("{\"access_token\":\"expired-secret-token\",");
+            await context.Response.Body.FlushAsync();
+            firstExchangeStarted.TrySetResult();
+            await Task.Delay(TimeSpan.FromMilliseconds(250), context.RequestAborted);
+            await context.Response.WriteAsync("\"expires_in\":0.1}");
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = new(
+            "idp_test",
+            "svc_test",
+            new() { Handler = handler, RefreshBuffer = TimeSpan.Zero });
+        OpenAIClient client = new(credential);
+        Task<PipelineMessage>[] requests = Enumerable.Range(0, 8)
+            .Select(_ => SendAsync(client))
+            .ToArray();
+        await firstExchangeStarted.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        foreach (Task<PipelineMessage> request in requests)
+        {
+            InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+                async () => await request);
+            Assert.That(exception.Message, Does.Contain("expired").IgnoreCase);
+            Assert.That(exception.Message, Does.Not.Contain("expired-secret-token"));
+        }
+
+        Assert.That(server.ExchangeCount, Is.EqualTo(1));
+        Assert.That(server.ApiCount, Is.Zero);
+    }
+
+    [Test]
+    public async Task FailedProactiveRefreshUsesCachedTokenUntilAbsoluteExpiry()
+    {
+        int exchangeNumber = 0;
+        await using TestServer server = await TestServer.StartAsync(async (context, exchange) =>
+        {
+            if (!exchange)
+            {
+                return false;
+            }
+
+            if (Interlocked.Increment(ref exchangeNumber) == 1)
+            {
+                context.Response.ContentType = "application/json";
+                await context.Response.WriteAsync("{\"access_token\":\"still-valid-token\",\"expires_in\":2}");
+                return true;
+            }
+
+            context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            return true;
+        });
+        using SocketsHttpHandler handler = server.CreateHandler();
+        using X509WorkloadIdentityCredential credential = new(
+            "idp_test",
+            "svc_test",
+            new() { Handler = handler, RefreshBuffer = TimeSpan.FromSeconds(1) });
+        OpenAIClient client = new(credential);
+
+        using PipelineMessage first = await SendAsync(client);
+        await Task.Delay(TimeSpan.FromMilliseconds(1100));
+
+        Task<PipelineMessage>[] requests = Enumerable.Range(0, 8)
+            .Select(_ => SendAsync(client))
+            .ToArray();
+        foreach (Task<PipelineMessage> request in requests)
+        {
+            using PipelineMessage fallback = await request;
+            Assert.That(fallback.Response.Status, Is.EqualTo(200));
+        }
+
+        Assert.That(server.ExchangeCount, Is.EqualTo(4));
+        Assert.That(server.ApiCount, Is.EqualTo(9));
+
+        await Task.Delay(TimeSpan.FromMilliseconds(700));
+        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(
+            async () => await SendAsync(client));
+
+        Assert.That(exception.Message, Does.Contain("503"));
+        Assert.That(server.ExchangeCount, Is.EqualTo(4));
+        Assert.That(server.ApiCount, Is.EqualTo(9));
     }
 
     [Test]
