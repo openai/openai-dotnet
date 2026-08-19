@@ -1279,6 +1279,37 @@ model DotNetItemReferenceItemResource extends ItemResource {
   ...ItemReferenceItemBase;
 }
 
+// --------- Multi-Agent ---------
+
+@extension("x-oai-beta", "responses_multi_agent=v1")
+model BetaAgentTag {
+  /** The canonical name of the agent that produced this item. */
+  agent_name: string;
+}
+
+// --------- Programmatic Tool Calling ---------
+
+@discriminator("type")
+model ToolCallCaller {
+  type: ToolCallCallerType;
+}
+
+union ToolCallCallerType {
+  string,
+  direct: "direct",
+  program: "program",
+}
+
+model DirectToolCallCaller extends ToolCallCaller {
+  type: ToolCallCallerType.direct;
+}
+
+model ProgramToolCallCaller extends ToolCallCaller {
+  type: ToolCallCallerType.program;
+
+  caller_id: string;
+}
+
 // --------- Custom Tool ---------
 
 model CustomToolCallItem extends ItemResource {
@@ -1294,16 +1325,16 @@ model CustomToolCallItem extends ItemResource {
   /** The name of the custom tool being called. */
   name: string;
 
-  // WIP
-  // /** The agent that produced this item. */
-  // agent?: BetaAgentTag | null;
+  // feat: multi-agent
+  /** The agent that produced this item. */
+  agent?: BetaAgentTag | null;
 
-  // WIP
-  // caller?: ToolCallCaller | null;
+  // feat: programmatic tool calling
+  caller?: ToolCallCaller | null;
 
-  // WIP
-  // /** The identifier of the actor that created the item. */
-  // created_by?: string;
+  // feat: ???
+  /** The identifier of the actor that created the item. */
+  created_by?: string;
 
   /** The namespace of the custom tool being called. */
   `namespace`?: string;
@@ -1315,13 +1346,13 @@ model CustomToolCallItem extends ItemResource {
 
 union CustomToolCallStatus {
   string,
-  in_progress: "in_progress",
   completed: "completed",
+  in_progress: "in_progress",
   incomplete: "incomplete",
 }
 
 model CustomToolCallOutputItem extends ItemResource {
-    /** The type of the custom tool call output. Always `custom_tool_call_output`. */
+  /** The type of the custom tool call output. Always `custom_tool_call_output`. */
   type: ItemType.custom_tool_call_output;
 
   /** The call ID, used to map this custom tool call output to a custom tool call. */
@@ -1331,16 +1362,16 @@ model CustomToolCallOutputItem extends ItemResource {
   Can be a string or an list of output content.*/
   output: string | ItemContent[];
 
-  // WIP
-  // /** The agent that produced this item. */
-  // agent?: BetaAgentTag | null;
+  // feat: multi-agent
+  /** The agent that produced this item. */
+  agent?: BetaAgentTag | null;
 
-  // WIP
-  // caller?: BetaToolCallCallerParam | null;
+  // feat: programmatic tool calling
+  caller?: ToolCallCaller | null;
 
-  // WIP
-  // /** The identifier of the actor that created the item. */
-  // created_by?: string;
+  // feat: ???
+  /** The identifier of the actor that created the item. */
+  created_by?: string;
 
   /**The status of the item. One of `in_progress`, `completed`, or
   `incomplete`. Populated when items are returned via API.*/
@@ -1348,7 +1379,8 @@ model CustomToolCallOutputItem extends ItemResource {
 }
 
 union CustomToolCallOutputStatus {
-  in_progress: "in_progress",
+  string,
   completed: "completed",
+  in_progress: "in_progress",
   incomplete: "incomplete",
 }

@@ -3,6 +3,7 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -16,12 +17,16 @@ namespace OpenAI.Responses
             Argument.AssertNotNull(toolName, nameof(toolName));
 
             ToolName = toolName;
+            AllowedCallers = new ChangeTrackingList<InternalCallableToolAllowedCaller>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomTool(ResponseToolKind kind, in JsonPatch patch, string toolName, string toolDescription, CustomToolFormat toolFormat) : base(kind, patch)
+        internal CustomTool(ResponseToolKind kind, in JsonPatch patch, string toolName, IList<InternalCallableToolAllowedCaller> allowedCallers, bool? deferLoading, string toolDescription, CustomToolFormat toolFormat) : base(kind, patch)
         {
+            // Plugin customization: ensure initialization of collections
             ToolName = toolName;
+            AllowedCallers = allowedCallers ?? new ChangeTrackingList<InternalCallableToolAllowedCaller>();
+            DeferLoading = deferLoading;
             ToolDescription = toolDescription;
             ToolFormat = toolFormat;
             Patch.SetPropagators(PropagateSet, PropagateGet);
@@ -29,6 +34,10 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ToolName { get; set; }
+
+        internal IList<InternalCallableToolAllowedCaller> AllowedCallers { get; set; }
+
+        internal bool? DeferLoading { get; set; }
 
         public string ToolDescription { get; set; }
 

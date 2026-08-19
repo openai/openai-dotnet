@@ -18,11 +18,13 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string inputDelta, string itemId, int outputIndex) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCustomToolCallInputDeltaUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string inputDelta, string itemId, int outputIndex, InternalBetaAgentTag agent) : base(kind, sequenceNumber, patch)
         {
             InputDelta = inputDelta;
             ItemId = itemId;
             OutputIndex = outputIndex;
+            Agent = agent;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -31,5 +33,7 @@ namespace OpenAI.Responses
         public string ItemId { get; set; }
 
         public int OutputIndex { get; set; }
+
+        internal InternalBetaAgentTag Agent { get; set; }
     }
 }

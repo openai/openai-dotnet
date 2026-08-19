@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CustomToolGrammarFormat : CustomToolFormat, IJsonModel<CustomToolGrammarFormat>
     {
-        public CustomToolGrammarFormat() : this(CustomToolFormatKind.Grammar, default, default, null)
+        public CustomToolGrammarFormat() : this(CustomToolFormatKind.Grammar, default, null, default)
         {
         }
 
@@ -73,15 +73,15 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.syntax"u8))
-            {
-                writer.WritePropertyName("syntax"u8);
-                writer.WriteStringValue(Syntax.ToString());
-            }
             if (!Patch.Contains("$.definition"u8))
             {
                 writer.WritePropertyName("definition"u8);
                 writer.WriteStringValue(Definition);
+            }
+            if (!Patch.Contains("$.syntax"u8))
+            {
+                writer.WritePropertyName("syntax"u8);
+                writer.WriteStringValue(Syntax.ToString());
             }
 
             Patch.WriteTo(writer);
@@ -111,8 +111,8 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            CustomToolGrammarFormatSyntax syntax = default;
             string definition = default;
+            CustomToolGrammarFormatSyntax syntax = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -120,19 +120,19 @@ namespace OpenAI.Responses
                     kind = new CustomToolFormatKind(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("syntax"u8))
-                {
-                    syntax = new CustomToolGrammarFormatSyntax(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("definition"u8))
                 {
                     definition = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("syntax"u8))
+                {
+                    syntax = new CustomToolGrammarFormatSyntax(prop.Value.GetString());
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CustomToolGrammarFormat(kind, patch, syntax, definition);
+            return new CustomToolGrammarFormat(kind, patch, definition, syntax);
         }
     }
 }

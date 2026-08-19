@@ -13,8 +13,8 @@ namespace OpenAI.Responses
     public readonly partial struct CustomToolFormatKind : IEquatable<CustomToolFormatKind>
     {
         private readonly string _value;
-        private const string TextValue = "text";
         private const string GrammarValue = "grammar";
+        private const string TextValue = "text";
 
         public CustomToolFormatKind(string value)
         {
@@ -23,9 +23,9 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static CustomToolFormatKind Text { get; } = new CustomToolFormatKind(TextValue);
-
         public static CustomToolFormatKind Grammar { get; } = new CustomToolFormatKind(GrammarValue);
+
+        public static CustomToolFormatKind Text { get; } = new CustomToolFormatKind(TextValue);
 
         public static bool operator ==(CustomToolFormatKind left, CustomToolFormatKind right) => left.Equals(right);
 

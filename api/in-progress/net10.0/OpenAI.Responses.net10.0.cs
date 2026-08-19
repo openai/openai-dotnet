@@ -420,7 +420,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class CustomToolGrammarFormat : CustomToolFormat, IJsonModel<CustomToolGrammarFormat>, IPersistableModel<CustomToolGrammarFormat> {
         public CustomToolGrammarFormat() : base(default);
-        public CustomToolGrammarFormat(CustomToolGrammarFormatSyntax syntax, string definition) : base(default);
+        public CustomToolGrammarFormat(string definition, CustomToolGrammarFormatSyntax syntax) : base(default);
         public string Definition { get; set; }
         public CustomToolGrammarFormatSyntax Syntax { get; set; }
     }

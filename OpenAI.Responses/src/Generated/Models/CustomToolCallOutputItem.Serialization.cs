@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>
     {
-        public CustomToolCallOutputItem() : this(ResponseItemKind.CustomToolCallOutput, null, default, null, null, default)
+        public CustomToolCallOutputItem() : this(ResponseItemKind.CustomToolCallOutput, null, default, null, null, null, null, null, default)
         {
         }
 
@@ -102,6 +102,21 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(Agent) && !Patch.Contains("$.agent"u8))
+            {
+                writer.WritePropertyName("agent"u8);
+                writer.WriteObjectValue(Agent, options);
+            }
+            if (Optional.IsDefined(Caller) && !Patch.Contains("$.caller"u8))
+            {
+                writer.WritePropertyName("caller"u8);
+                writer.WriteObjectValue(Caller, options);
+            }
+            if (Optional.IsDefined(CreatedBy) && !Patch.Contains("$.created_by"u8))
+            {
+                writer.WritePropertyName("created_by"u8);
+                writer.WriteStringValue(CreatedBy);
+            }
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -138,6 +153,9 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             IList<ResponseContentPart> output = default;
+            InternalBetaAgentTag agent = default;
+            InternalToolCallCaller caller = default;
+            string createdBy = default;
             CustomToolCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -161,6 +179,31 @@ namespace OpenAI.Responses
                     DeserializeOutputValue(prop, ref output, options);
                     continue;
                 }
+                if (prop.NameEquals("agent"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        agent = null;
+                        continue;
+                    }
+                    agent = InternalBetaAgentTag.DeserializeInternalBetaAgentTag(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
+                if (prop.NameEquals("caller"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        caller = null;
+                        continue;
+                    }
+                    caller = InternalToolCallCaller.DeserializeInternalToolCallCaller(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
+                if (prop.NameEquals("created_by"u8))
+                {
+                    createdBy = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("status"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -178,6 +221,9 @@ namespace OpenAI.Responses
                 patch,
                 callId,
                 output,
+                agent,
+                caller,
+                createdBy,
                 status);
         }
 
@@ -187,6 +233,14 @@ namespace OpenAI.Responses
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+            if (local.StartsWith("agent"u8))
+            {
+                return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
+            }
+            if (local.StartsWith("caller"u8))
+            {
+                return Caller.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("caller"u8.Length)], out value);
+            }
             if (local.StartsWith("output"u8))
             {
                 int propertyLength = "output"u8.Length;
@@ -210,6 +264,16 @@ namespace OpenAI.Responses
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+            if (local.StartsWith("agent"u8))
+            {
+                Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("caller"u8))
+            {
+                Caller.Patch.Set([.. "$"u8, .. local.Slice("caller"u8.Length)], value);
+                return true;
+            }
             if (local.StartsWith("output"u8))
             {
                 int propertyLength = "output"u8.Length;

@@ -7,6 +7,14 @@ using TypeSpec.OpenAPI;
 
 namespace OpenAI;
 
+// --------- Programmatic Tool Calling ---------
+
+union CallableToolAllowedCaller {
+  string,
+  direct: "direct",
+  programmatic: "programmatic",
+}
+
 // --------- Custom Tool ---------
 
 model CustomTool extends Tool {
@@ -16,24 +24,18 @@ model CustomTool extends Tool {
   /** The name of the custom tool, used to identify it in tool calls. */
   name: string;
 
+  // feat: programmatic tool calling
+  allowed_callers?: CallableToolAllowedCaller[] | null;
+
+  // feat: tool search
+  /** Whether this tool should be deferred and discovered via tool search. */
+  defer_loading?: boolean;
+
   /** Optional description of the custom tool, used to provide more context. */
   description?: string;
 
   /** The input format for the custom tool. Default is unconstrained text. */
   format?: CustomToolFormat;
-
-  // WIP
-  // /** Whether this tool should be deferred and discovered via tool search. */
-  // defer_loading?: boolean;
-
-  // WIP
-  // allowed_callers?: CallableToolAllowedCaller[] | null;
-}
-
-union CustomToolFormatType {
-  string,
-  text: "text",
-  grammar: "grammar",
 }
 
 @discriminator("type")
@@ -41,24 +43,30 @@ model CustomToolFormat {
   type: CustomToolFormatType;
 }
 
-model CustomToolTextFormat extends CustomToolFormat {
-  /** Unconstrained text format. Always `text`. */
-  type: CustomToolFormatType.text;
+union CustomToolFormatType {
+  string,
+  grammar: "grammar",
+  text: "text",
 }
 
 model CustomToolGrammarFormat extends CustomToolFormat {
   /** Grammar format. Always `grammar`. */
   type: CustomToolFormatType.grammar;
 
-  /** The syntax of the grammar definition. One of `lark` or `regex`. */
-  syntax: CustomToolGrammarFormatSyntax;
-
   /** The grammar definition. */
   definition: string;
+
+  /** The syntax of the grammar definition. One of `lark` or `regex`. */
+  syntax: CustomToolGrammarFormatSyntax;
 }
 
 union CustomToolGrammarFormatSyntax {
   string,
   lark: "lark",
   regex: "regex",
+}
+
+model CustomToolTextFormat extends CustomToolFormat {
+  /** Unconstrained text format. Always `text`. */
+  type: CustomToolFormatType.text;
 }

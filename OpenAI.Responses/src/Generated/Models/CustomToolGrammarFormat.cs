@@ -11,24 +11,24 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomToolGrammarFormat : CustomToolFormat
     {
-        public CustomToolGrammarFormat(CustomToolGrammarFormatSyntax syntax, string definition) : base(CustomToolFormatKind.Grammar)
+        public CustomToolGrammarFormat(string definition, CustomToolGrammarFormatSyntax syntax) : base(CustomToolFormatKind.Grammar)
         {
             Argument.AssertNotNull(definition, nameof(definition));
 
-            Syntax = syntax;
             Definition = definition;
+            Syntax = syntax;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolGrammarFormat(CustomToolFormatKind kind, in JsonPatch patch, CustomToolGrammarFormatSyntax syntax, string definition) : base(kind, patch)
+        internal CustomToolGrammarFormat(CustomToolFormatKind kind, in JsonPatch patch, string definition, CustomToolGrammarFormatSyntax syntax) : base(kind, patch)
         {
-            Syntax = syntax;
             Definition = definition;
+            Syntax = syntax;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public CustomToolGrammarFormatSyntax Syntax { get; set; }
-
         public string Definition { get; set; }
+
+        public CustomToolGrammarFormatSyntax Syntax { get; set; }
     }
 }

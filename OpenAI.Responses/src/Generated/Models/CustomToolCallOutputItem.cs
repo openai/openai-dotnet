@@ -23,11 +23,14 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, IList<ResponseContentPart> output, CustomToolCallOutputStatus? status) : base(kind, id, patch)
+        internal CustomToolCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, IList<ResponseContentPart> output, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, CustomToolCallOutputStatus? status) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
             Output = output ?? new ChangeTrackingList<ResponseContentPart>();
+            Agent = agent;
+            Caller = caller;
+            CreatedBy = createdBy;
             Status = status;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -36,6 +39,12 @@ namespace OpenAI.Responses
         public string CallId { get; set; }
 
         public IList<ResponseContentPart> Output { get; }
+
+        internal InternalBetaAgentTag Agent { get; set; }
+
+        internal InternalToolCallCaller Caller { get; set; }
+
+        internal string CreatedBy { get; set; }
 
         public CustomToolCallOutputStatus? Status { get; set; }
     }

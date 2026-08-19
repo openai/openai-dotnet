@@ -103,10 +103,10 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "text":
-                        return CustomToolTextFormat.DeserializeCustomToolTextFormat(element, data, options);
                     case "grammar":
                         return CustomToolGrammarFormat.DeserializeCustomToolGrammarFormat(element, data, options);
+                    case "text":
+                        return CustomToolTextFormat.DeserializeCustomToolTextFormat(element, data, options);
                 }
             }
             return InternalUnknownCustomToolFormat.DeserializeInternalUnknownCustomToolFormat(element, data, options);

@@ -944,7 +944,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         CustomTool customTool = new("math_exp")
         {
             ToolDescription = "Creates a mathematical addition expression.",
-            ToolFormat = new CustomToolGrammarFormat(CustomToolGrammarFormatSyntax.Regex, grammarDefinition),
+            ToolFormat = new CustomToolGrammarFormat(grammarDefinition, CustomToolGrammarFormatSyntax.Regex),
         };
         CreateResponseOptions options = new(
             "gpt-5.6",

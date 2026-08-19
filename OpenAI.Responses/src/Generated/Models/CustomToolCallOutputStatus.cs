@@ -13,8 +13,8 @@ namespace OpenAI.Responses
     public readonly partial struct CustomToolCallOutputStatus : IEquatable<CustomToolCallOutputStatus>
     {
         private readonly string _value;
-        private const string InProgressValue = "in_progress";
         private const string CompletedValue = "completed";
+        private const string InProgressValue = "in_progress";
         private const string IncompleteValue = "incomplete";
 
         public CustomToolCallOutputStatus(string value)
@@ -24,9 +24,9 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static CustomToolCallOutputStatus InProgress { get; } = new CustomToolCallOutputStatus(InProgressValue);
-
         public static CustomToolCallOutputStatus Completed { get; } = new CustomToolCallOutputStatus(CompletedValue);
+
+        public static CustomToolCallOutputStatus InProgress { get; } = new CustomToolCallOutputStatus(InProgressValue);
 
         public static CustomToolCallOutputStatus Incomplete { get; } = new CustomToolCallOutputStatus(IncompleteValue);
 

@@ -784,9 +784,9 @@ model ResponseCustomToolCallInputDeltaEvent extends ResponseStreamEvent {
   /** The index of the output this delta applies to. */
   output_index: integer;
 
-  // WIP
-  // /** The agent that owns this multi-agent streaming event. */
-  // agent?: BetaAgentTag | null;
+  // feat: multi-agent
+  /** The agent that owns this multi-agent streaming event. */
+  agent?: BetaAgentTag | null;
 }
 
 /** Emitted when the input for a custom tool call is complete. */
@@ -803,7 +803,7 @@ model ResponseCustomToolCallInputDoneEvent extends ResponseStreamEvent {
   /** The index of the output this event applies to. */
   output_index: integer;
 
-  // WIP
-  // /** The agent that owns this multi-agent streaming event. */
-  // agent?: BetaAgentTag | null;
+  // feat: multi-agent
+  /** The agent that owns this multi-agent streaming event. */
+  agent?: BetaAgentTag | null;
 }

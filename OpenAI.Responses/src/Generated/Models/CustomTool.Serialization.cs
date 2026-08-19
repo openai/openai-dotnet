@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
@@ -12,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class CustomTool : ResponseTool, IJsonModel<CustomTool>
     {
-        public CustomTool() : this(ResponseToolKind.Custom, default, null, null, null)
+        public CustomTool() : this(ResponseToolKind.Custom, default, null, null, default, null, null)
         {
         }
 
@@ -78,6 +79,34 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
+            if (Patch.Contains("$.allowed_callers"u8))
+            {
+                if (!Patch.IsRemoved("$.allowed_callers"u8))
+                {
+                    writer.WritePropertyName("allowed_callers"u8);
+                    Patch.WriteTo(writer, "$.allowed_callers"u8);
+                }
+            }
+            else if (Optional.IsCollectionDefined(AllowedCallers))
+            {
+                writer.WritePropertyName("allowed_callers"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < AllowedCallers.Count; i++)
+                {
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_callers[{i}]")))
+                    {
+                        continue;
+                    }
+                    writer.WriteStringValue(AllowedCallers[i].ToString());
+                }
+                Patch.WriteTo(writer, "$.allowed_callers"u8);
+                writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(DeferLoading) && !Patch.Contains("$.defer_loading"u8))
+            {
+                writer.WritePropertyName("defer_loading"u8);
+                writer.WriteBooleanValue(DeferLoading.Value);
+            }
             if (Optional.IsDefined(ToolDescription) && !Patch.Contains("$.description"u8))
             {
                 writer.WritePropertyName("description"u8);
@@ -117,6 +146,8 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string toolName = default;
+            IList<InternalCallableToolAllowedCaller> allowedCallers = default;
+            bool? deferLoading = default;
             string toolDescription = default;
             CustomToolFormat toolFormat = default;
             foreach (var prop in element.EnumerateObject())
@@ -129,6 +160,29 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("name"u8))
                 {
                     toolName = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("allowed_callers"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<InternalCallableToolAllowedCaller> array = new List<InternalCallableToolAllowedCaller>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(new InternalCallableToolAllowedCaller(item.GetString()));
+                    }
+                    allowedCallers = array;
+                    continue;
+                }
+                if (prop.NameEquals("defer_loading"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    deferLoading = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("description"u8))
@@ -147,7 +201,14 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CustomTool(kind, patch, toolName, toolDescription, toolFormat);
+            return new CustomTool(
+                kind,
+                patch,
+                toolName,
+                allowedCallers ?? new ChangeTrackingList<InternalCallableToolAllowedCaller>(),
+                deferLoading,
+                toolDescription,
+                toolFormat);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

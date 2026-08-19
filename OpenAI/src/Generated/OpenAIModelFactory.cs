@@ -567,24 +567,19 @@ namespace OpenAI
             return new ApplyPatchTool(ResponseToolKind.ApplyPatch, default);
         }
 
-        public static CustomTool CustomTool(string toolName = default, string toolDescription = default, CustomToolFormat toolFormat = default)
-        {
-            return new CustomTool(ResponseToolKind.Custom, default, toolName, toolDescription, toolFormat);
-        }
-
         public static CustomToolFormat CustomToolFormat(string kind = default)
         {
             return new InternalUnknownCustomToolFormat(new CustomToolFormatKind(kind), default);
         }
 
+        public static CustomToolGrammarFormat CustomToolGrammarFormat(string definition = default, CustomToolGrammarFormatSyntax syntax = default)
+        {
+            return new CustomToolGrammarFormat(CustomToolFormatKind.Grammar, default, definition, syntax);
+        }
+
         public static CustomToolTextFormat CustomToolTextFormat()
         {
             return new CustomToolTextFormat(CustomToolFormatKind.Text, default);
-        }
-
-        public static CustomToolGrammarFormat CustomToolGrammarFormat(CustomToolGrammarFormatSyntax syntax = default, string definition = default)
-        {
-            return new CustomToolGrammarFormat(CustomToolFormatKind.Grammar, default, syntax, definition);
         }
 
         public static ResponseContentPart ResponseContentPart(string internalType = default)
@@ -1009,32 +1004,6 @@ namespace OpenAI
             return new ReferenceResponseItem(ResponseItemKind.ItemReference, id, default);
         }
 
-        public static CustomToolCallItem CustomToolCallItem(string id = default, string callId = default, string input = default, string toolName = default, string toolNamespace = default, CustomToolCallStatus? status = default)
-        {
-            return new CustomToolCallItem(
-                ResponseItemKind.CustomToolCall,
-                id,
-                default,
-                callId,
-                input,
-                toolName,
-                toolNamespace,
-                status);
-        }
-
-        public static CustomToolCallOutputItem CustomToolCallOutputItem(string id = default, string callId = default, IEnumerable<ResponseContentPart> output = default, CustomToolCallOutputStatus? status = default)
-        {
-            output ??= new ChangeTrackingList<ResponseContentPart>();
-
-            return new CustomToolCallOutputItem(
-                ResponseItemKind.CustomToolCallOutput,
-                id,
-                default,
-                callId,
-                output.ToList(),
-                status);
-        }
-
         public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, ResponseInputTokenUsageDetails inputTokenDetails = default, int outputTokenCount = default, ResponseOutputTokenUsageDetails outputTokenDetails = default, int totalTokenCount = default)
         {
             return new ResponseTokenUsage(
@@ -1442,28 +1411,6 @@ namespace OpenAI
         public static StreamingResponseQueuedUpdate StreamingResponseQueuedUpdate(int sequenceNumber = default, ResponseResult response = default)
         {
             return new StreamingResponseQueuedUpdate(default, sequenceNumber, default, response);
-        }
-
-        public static StreamingResponseCustomToolCallInputDeltaUpdate StreamingResponseCustomToolCallInputDeltaUpdate(int sequenceNumber = default, string inputDelta = default, string itemId = default, int outputIndex = default)
-        {
-            return new StreamingResponseCustomToolCallInputDeltaUpdate(
-                default,
-                sequenceNumber,
-                default,
-                inputDelta,
-                itemId,
-                outputIndex);
-        }
-
-        public static StreamingResponseCustomToolCallInputDoneUpdate StreamingResponseCustomToolCallInputDoneUpdate(int sequenceNumber = default, string input = default, string itemId = default, int outputIndex = default)
-        {
-            return new StreamingResponseCustomToolCallInputDoneUpdate(
-                default,
-                sequenceNumber,
-                default,
-                input,
-                itemId,
-                outputIndex);
         }
 
         public static ResponseDeletionResult ResponseDeletionResult(string responseId = default, bool deleted = default)
