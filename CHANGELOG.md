@@ -18,6 +18,8 @@ Thank you to our developer community members who helped to make the OpenAI clien
 ### Bugs Fixed
 
 - Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. This affects all streaming APIs, including `OpenAI.Assistants`, `OpenAI.Chat`, `OpenAI.Responses`, and `OpenAI.Audio`, on both the synchronous and asynchronous paths. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
+- OpenAI.Assistants:
+  - Fixed the synchronous `AssistantClient.ModifyAssistant` ignoring the `CancellationToken` it was given. The token was dropped before the request was sent, so the call could not be cancelled. It is now forwarded the same way the asynchronous `ModifyAssistantAsync` overload and the rest of the client already forward it.
 
 ### Other Changes
 
