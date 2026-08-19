@@ -35,7 +35,7 @@
     "@typespec/openapi": "1.14.0"
   },
   "devDependencies": {
-    "@types/node": "^22.8.1",
+    "@types/node": "^26.2.0",
     "@vitest/coverage-v8": "^4.0.10",
     "@vitest/ui": "^4.0.10",
     "c8": "^10.1.3",
