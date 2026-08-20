@@ -34,8 +34,7 @@ public partial class ComputerCallOutput
         Argument.AssertNotNull(screenshotImageBytes, nameof(screenshotImageBytes));
         Argument.AssertNotNull(screenshotImageBytesMediaType, nameof(screenshotImageBytesMediaType));
 
-        string base64EncodedData = Convert.ToBase64String(screenshotImageBytes.ToArray());
-        string dataUri = $"data:{screenshotImageBytesMediaType};base64,{base64EncodedData}";
+        string dataUri = DataEncodingHelpers.CreateDataUri(screenshotImageBytes, screenshotImageBytesMediaType);
 
         return new InternalComputerToolCallOutputItemOutputComputerScreenshot()
         {
