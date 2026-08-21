@@ -29,11 +29,19 @@ As the agent, only execute tests in `Playback` mode.
 
 Do not run `Record` or `Live` mode yourself. Those paths require live credentials which you do not have.
 
-Before running tests, always set:
+Every test invocation must set both safeguards explicitly. In PowerShell:
 
 ```powershell
 $env:CLIENTMODEL_TEST_MODE = "Playback"
 $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test OpenAI.slnx
+```
+
+In Bash:
+
+```bash
+CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
+  dotnet test OpenAI.slnx
 ```
 
 If a recorded test needs new recordings or updated recordings, you must follow the instructions below to ask a human to capture them for you instead of trying to capture them yourself.
@@ -58,7 +66,11 @@ Treat these as practical indicators instead of a rigid checklist.
 
 ## When Recordings Are Missing or Stale
 
-Recordings must be captured by a human.
+Recordings may only be captured locally by an explicitly authorized human.
+Do not recommend, dispatch, or run `.github/workflows/record-test.yml`: it
+stages, commits, and pushes recordings before required human inspection. Until
+that workflow enforces human approval before any publication, an approved local
+process is the only supported recording path.
 
 Request recordings from a human before considering your work complete in either of the following cases:
 
@@ -67,24 +79,31 @@ Request recordings from a human before considering your work complete in either 
 
 When asking for recordings, always provide:
 
-1. The link to the recording workflow
+1. The authorized-local-only and pre-publication review requirement
 2. The exact `NUnit.Where` expression
-3. A copy-pasteable `dotnet test` command
+3. A command clearly marked for explicitly authorized humans only
 
 You must use this template:
 
-> Please record tests using the recording workflow:
-> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
+> An authorized maintainer must generate these recordings locally using
+> approved credentials. Do not use the current automated recording workflow.
 >
 > Use the following `NUnit.Where` expression:
 > ```text
 > test == 'Namespace.TestClass.TestMethodName'
 > ```
 >
-> Alternatively, run the following command locally and push the recordings manually:
+> Run only after explicit authorization:
 > ```powershell
+> $env:CLIENTMODEL_TEST_MODE = "Record"
 > dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test == 'Namespace.TestClass.TestMethodName'"
 > ```
+>
+> Before staging, committing, pushing, uploading, or otherwise publishing any
+> recording, inspect every automatically sanitized file. If sensitive data
+> remains, add or improve an enabled deterministic sanitizer and regenerate the
+> recording, or report the gap to the core team. Never manually sanitize a
+> recording or upload raw recording artifacts.
 
 Use `NUnit.Where` for recording requests even when `dotnet test --filter` would work locally. `NUnit.Where` is the contract used by the recording workflow. Prefer `test == ...` because it matches the exact discovered NUnit test name and avoids ambiguity. For NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, the discovered test names may include fixture arguments like `(True)` or `(False)`.
 
