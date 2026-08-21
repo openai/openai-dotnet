@@ -32,7 +32,7 @@ updates:
       # Packages from the Azure development feed are published daily and usually
       # have no changes.  Updated manually as needed.
       - dependency-name: Microsoft.ClientModel.TestFramework
-      - dependency-name: *.Sdk.Tools.*
+      - dependency-name: "*.Sdk.Tools.*"
 
   - package-ecosystem: npm
     # The only NPM use in the repository is related to code generation. Weekly
