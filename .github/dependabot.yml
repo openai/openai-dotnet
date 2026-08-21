@@ -40,12 +40,11 @@ updates:
       day: tuesday
       time: "09:15"
       timezone: Etc/UTC
-    open-pull-requests-limit: 0
     labels:
       - "area: dependencies"
     cooldown:
       default-days: 8
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     groups:
       npm-development-dependencies:
         dependency-type: development
