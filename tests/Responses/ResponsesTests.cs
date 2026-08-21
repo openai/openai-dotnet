@@ -326,12 +326,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedResponsesClient();
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
-                ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
+                ReasoningEffortLevel = ResponseReasoningEffortLevel.ExtraHigh,
             },
             Instructions = "Perform reasoning over any questions asked by the user.",
         };
@@ -340,6 +340,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null);
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.ReasoningOptions, Is.Not.Null);
+        Assert.That(response.ReasoningOptions.ReasoningEffortLevel, Is.EqualTo(ResponseReasoningEffortLevel.ExtraHigh));
 
         ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
         MessageResponseItem messageItem = response.OutputItems[1] as MessageResponseItem;
