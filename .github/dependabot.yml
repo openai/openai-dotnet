@@ -13,6 +13,8 @@ updates:
       day: tuesday
       time: "09:00"
       timezone: Etc/UTC
+    labels:
+      - "area: dependencies"
     cooldown:
       default-days: 8
     open-pull-requests-limit: 5
@@ -36,6 +38,8 @@ updates:
       day: tuesday
       time: "09:15"
       timezone: Etc/UTC
+    labels:
+      - "area: dependencies"
     cooldown:
       default-days: 8
     open-pull-requests-limit: 5
@@ -57,6 +61,8 @@ updates:
       day: tuesday
       time: "09:30"
       timezone: Etc/UTC
+    labels:
+      - "area: dependencies"
     cooldown:
       default-days: 8
     open-pull-requests-limit: 1
@@ -73,6 +79,8 @@ updates:
       day: tuesday
       time: "09:45"
       timezone: Etc/UTC
+    labels:
+      - "area: dependencies"
     cooldown:
       default-days: 8
     open-pull-requests-limit: 2
@@ -84,6 +92,8 @@ updates:
       day: tuesday
       time: "10:00"
       timezone: Etc/UTC
+    labels:
+      - "area: dependencies"
     cooldown:
       default-days: 8
     # Review each third-party action and pinned SHA independently.
