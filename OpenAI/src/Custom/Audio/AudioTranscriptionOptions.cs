@@ -23,7 +23,7 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("TimestampGranularities")]
     internal IList<BinaryData> InternalTimestampGranularities { get; }
 
-    // CUSTOM: Preserve the public API type after removing NumericTypesVisitor.
+    // CUSTOM: Changed type.
     [CodeGenMember("Temperature")]
     public float? Temperature { get; set; }
 

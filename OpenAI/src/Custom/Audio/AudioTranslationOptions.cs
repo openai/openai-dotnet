@@ -18,7 +18,7 @@ public partial class AudioTranslationOptions
     // - Added setter.
     internal InternalCreateTranslationRequestModel Model { get; set; }
 
-    // CUSTOM: Preserve the public API type after removing NumericTypesVisitor.
+    // CUSTOM: Changed type.
     [CodeGenMember("Temperature")]
     public float? Temperature { get; set; }
 

@@ -13,18 +13,18 @@ The generator uses these mappings unless the client TypeSpec overrides them:
 
 The generic TypeSpec types do not communicate the range or precision required by the API. Choose an explicit type for the .NET API whenever that requirement is known:
 
-| TypeSpec alternate type | C# type | Use when |
-|-------------------------|---------|----------|
-| `int32` | `int` | Values fit in a 32-bit signed integer, such as counts, limits, indexes, and token totals |
-| `int64` | `long` | Values may exceed the 32-bit range, such as byte counts or large identifiers |
-| `float32` | `float` | Single precision is sufficient, such as scores, probabilities, ratios, and thresholds |
-| `float64` | `double` | The value requires greater range or precision |
+| TypeSpec alternate type | C# type |
+|-------------------------|---------|
+| `int32` | `int` |
+| `int64` | `long` |
+| `float32` | `float` |
+| `float64` | `double` |
 
 Do not narrow a type based only on its current examples or observed values. Preserve `int64` or `float64` when the API contract requires the larger range or precision.
 
 ## Apply the mapping in client TypeSpec
 
-The files under `specification/base/` are copies of the upstream specification and must not be modified. Add `@@alternateType` customizations to the area's `specification/client/{area}.client.tsp` file instead.
+To override generic TypeSpec types, add `@@alternateType` customizations to the area's `specification/client/{area}.client.tsp` file.
 
 Override a model property directly:
 
@@ -52,3 +52,7 @@ Preserve wrappers required by the wire format. For example, multipart properties
 ```
 
 For collections, specify the complete alternate collection type, such as `int32[]` or `float64[]`, rather than only its element type.
+
+```typespec
+@@alternateType(CreateTranscriptionResponseJsonLogprobs.bytes, float64[]);
+```
