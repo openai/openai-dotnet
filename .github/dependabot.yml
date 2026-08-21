@@ -31,7 +31,9 @@ updates:
       - dependency-name: Microsoft.TypeSpec.Generator.ClientModel
 
   - package-ecosystem: npm
-    # The root package-lock.json owns the codegen npm workspace as well.
+    # The only NPM use in the repository is related to code generation. Weekly
+    # codegen updates will also manage package dependencies. Do not allow pull
+    # requests, but keep this enabled for CVE notifications.
     directory: /
     schedule:
       interval: weekly
@@ -42,18 +44,14 @@ updates:
       - "area: dependencies"
     cooldown:
       default-days: 8
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 0
     groups:
       npm-development-dependencies:
         dependency-type: development
         update-types:
           - minor
           - patch
-    ignore:
-      # Keep the C# emitter paired with its NuGet generator; companion
-      # packages must remain eligible for independent security updates.
-      - dependency-name: "@typespec/http-client-csharp"
-
+    
   - package-ecosystem: dotnet-sdk
     directory: /
     schedule:
