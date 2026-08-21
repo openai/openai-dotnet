@@ -31,13 +31,16 @@ updates:
       - dependency-name: Microsoft.TypeSpec.Generator.ClientModel
 
   - package-ecosystem: npm
-    # The root package-lock.json owns the codegen npm workspace as well.
+    # The only NPM use in the repository is related to code geneation.  Weekly
+    # codegen updates will also manage package dependencies.  Do not allow 
+    # pull requests, but keep enabled for CVE notifications.
     directory: /
     schedule:
       interval: weekly
       day: tuesday
       time: "09:15"
       timezone: Etc/UTC
+    open-pull-requests-limit: 0
     labels:
       - "area: dependencies"
     cooldown:
