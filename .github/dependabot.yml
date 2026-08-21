@@ -51,11 +51,7 @@ updates:
         update-types:
           - minor
           - patch
-    ignore:
-      # Keep the C# emitter paired with its NuGet generator; companion
-      # packages must remain eligible for independent security updates.
-      - dependency-name: "@typespec/http-client-csharp"
-
+    
   - package-ecosystem: dotnet-sdk
     directory: /
     schedule:
