@@ -29,6 +29,9 @@ updates:
       - dependency-name: Moq
       # update-generator.yml updates this with its matching npm packages.
       - dependency-name: Microsoft.TypeSpec.Generator.ClientModel
+      # Packages from the Azure development feed are updated manually as needed.
+      - dependency-name: Microsoft.ClientModel.TestFramework
+      - dependency-name: Azure.Sdk.Tools.*
 
   - package-ecosystem: npm
     # The only NPM use in the repository is related to code generation. Weekly
