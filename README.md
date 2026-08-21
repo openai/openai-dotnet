@@ -173,16 +173,16 @@ When you request a chat completion, the default behavior is for the server to ge
 The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
 ```C# Snippet:ReadMe_Streaming_Sync
-AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
+CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
 ```
 
 Notice that the returned value is a `CollectionResult<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
 
 ```C# Snippet:ReadMe_Streaming_Enumerate
-AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
+CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
 
 Console.Write($"[ASSISTANT]: ");
-await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
+foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
 {
     if (completionUpdate.ContentUpdate.Count > 0)
     {
@@ -194,7 +194,7 @@ await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdat
 Alternatively, you can do this asynchronously by calling the `CompleteChatStreamingAsync` method to get an `AsyncCollectionResult<StreamingChatCompletionUpdate>` and enumerate it using `await foreach`:
 
 ```C# Snippet:ReadMe_Streaming_Async
-AsyncStreamingClientResult<StreamingChatCompletionUpdate> completionUpdates = await client.CompleteChatStreamingAsync("Say 'this is a test.'");
+AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
 Console.Write($"[ASSISTANT]: ");
 await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
@@ -510,7 +510,7 @@ CreateResponseOptions streamingOptions = new()
 streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
 await foreach (StreamingResponseUpdate update
-    in await client.CreateResponseStreamingAsync(streamingOptions))
+    in client.CreateResponseStreamingAsync(streamingOptions))
 {
     if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
         && itemUpdate.Item is ReasoningResponseItem reasoningItem)
@@ -927,7 +927,7 @@ AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions(
 With the assistant and thread prepared, use the `CreateRunStreaming` method to get an enumerable `CollectionResult<StreamingUpdate>`. You can then iterate over this collection with `foreach`. For async calling patterns, use `CreateRunStreamingAsync` and iterate over the `AsyncCollectionResult<StreamingUpdate>` with `await foreach`, instead. Note that streaming variants also exist for `CreateThreadAndRunStreaming` and `SubmitToolOutputsToRunStreaming`.
 
 ```C# Snippet:ReadMe_Assistants_Vision_CreateRunStreaming
-AsyncStreamingClientResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
     thread.Id,
     assistant.Id,
     new RunCreationOptions()
@@ -939,7 +939,7 @@ AsyncStreamingClientResult<StreamingUpdate> streamingUpdates = assistantClient.C
 Finally, to handle the `StreamingUpdates` as they arrive, you can use the `UpdateKind` property on the base `StreamingUpdate` and/or downcast to a specifically desired update type, like `MessageContentUpdate` for `thread.message.delta` events or `RequiredActionUpdate` for streaming tool calls.
 
 ```C# Snippet:ReadMe_Assistants_Vision_HandleStreamingUpdates
-await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+foreach (StreamingUpdate streamingUpdate in streamingUpdates)
 {
     if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
     {

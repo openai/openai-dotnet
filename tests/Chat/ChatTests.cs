@@ -1,4 +1,3 @@
-#pragma warning disable SCME0005
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
@@ -77,9 +76,9 @@ public class ChatTests : OpenAIRecordedTestBase
         TimeSpan? firstTokenReceiptTime = null;
         TimeSpan? latestTokenReceiptTime = null;
         Stopwatch stopwatch = Stopwatch.StartNew();
-        AsyncStreamingClientResult<StreamingChatCompletionUpdate> streamingResult = await client.CompleteChatStreamingAsync(messages);
+        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
 
-        Assert.That(streamingResult, Is.InstanceOf<AsyncStreamingClientResult<StreamingChatCompletionUpdate>>());
+        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
 
         await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
         {
@@ -158,7 +157,7 @@ public class ChatTests : OpenAIRecordedTestBase
         DateTimeOffset? streamedExpiresAt = null;
 
         await foreach (StreamingChatCompletionUpdate update
-            in await client.CompleteChatStreamingAsync(messages, options))
+            in client.CompleteChatStreamingAsync(messages, options))
         {
             if (update.Usage is not null)
             {
@@ -243,7 +242,7 @@ public class ChatTests : OpenAIRecordedTestBase
         StringBuilder streamedTranscriptBuilder = new();
         ChatTokenUsage streamedUsage = null;
         using MemoryStream outputAudioStream = new();
-        await foreach (StreamingChatCompletionUpdate update in await client.CompleteChatStreamingAsync(messages, options))
+        await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(messages, options))
         {
             Assert.That(update.ContentUpdate, Has.Count.EqualTo(0));
             StreamingChatOutputAudioUpdate outputAudioUpdate = update.OutputAudioUpdate;
@@ -376,7 +375,7 @@ public class ChatTests : OpenAIRecordedTestBase
             options = new();
         }
 
-        AsyncStreamingClientResult<StreamingChatCompletionUpdate> chatCompletionUpdates = await client.CompleteChatStreamingAsync(messages, options);
+        AsyncCollectionResult<StreamingChatCompletionUpdate> chatCompletionUpdates = client.CompleteChatStreamingAsync(messages, options);
         Assert.That(chatCompletionUpdates, Is.Not.Null);
 
         await foreach (StreamingChatCompletionUpdate chatCompletionUpdate in chatCompletionUpdates)
@@ -629,7 +628,7 @@ public class ChatTests : OpenAIRecordedTestBase
             }
         }
 
-        await foreach (StreamingChatCompletionUpdate update in await client.CompleteChatStreamingAsync(messages))
+        await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(messages))
         {
             HandleUpdate(update);
         }

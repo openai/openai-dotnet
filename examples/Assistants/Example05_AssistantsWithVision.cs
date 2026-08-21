@@ -1,9 +1,7 @@
-#pragma warning disable SCME0005
 ﻿using NUnit.Framework;
 using OpenAI.Assistants;
 using OpenAI.Files;
 using System;
-using System.Threading.Tasks;
 using System.ClientModel;
 using System.IO;
 
@@ -16,7 +14,7 @@ namespace OpenAI.Examples;
 public partial class AssistantExamples
 {
     [Test]
-    public async Task Example05_AssistantsWithVision()
+    public void Example05_AssistantsWithVision()
     {
         OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
@@ -50,7 +48,7 @@ public partial class AssistantExamples
                 }
         });
 
-        AsyncStreamingClientResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
+        CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
             thread.Id,
             assistant.Id,
             new RunCreationOptions()
@@ -58,7 +56,7 @@ public partial class AssistantExamples
                 AdditionalInstructions = "When possible, try to sneak in puns if you're asked to compare things.",
             });
 
-        await foreach (StreamingUpdate streamingUpdate in streamingUpdates)
+        foreach (StreamingUpdate streamingUpdate in streamingUpdates)
         {
             if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
             {
