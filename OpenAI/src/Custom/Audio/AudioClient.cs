@@ -158,6 +158,7 @@ public partial class AudioClient
         using BinaryContent content = options.ToBinaryContent();
         using PipelineMessage message = CreateGenerateSpeechRequest(content, cancellationToken.ToRequestOptions());
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
         return ClientResult.FromValue(response.Content, response);
     }
 
@@ -182,6 +183,7 @@ public partial class AudioClient
         using BinaryContent content = options.ToBinaryContent();
         using PipelineMessage message = CreateGenerateSpeechRequest(content, cancellationToken.ToRequestOptions());
         PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult.FromResponse(response);
         return ClientResult.FromValue(response.Content, response);
     }
 
@@ -207,6 +209,7 @@ public partial class AudioClient
         using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
@@ -235,6 +238,7 @@ public partial class AudioClient
         using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
@@ -464,6 +468,7 @@ public partial class AudioClient
         using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
@@ -488,6 +493,7 @@ public partial class AudioClient
         using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
@@ -512,6 +518,7 @@ public partial class AudioClient
         using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
@@ -536,6 +543,7 @@ public partial class AudioClient
         using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,

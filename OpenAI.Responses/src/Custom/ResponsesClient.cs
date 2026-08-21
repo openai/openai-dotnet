@@ -240,6 +240,7 @@ public partial class ResponsesClient
         using PipelineMessage message = CreateCreateResponseRequest((BinaryContent)options, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
@@ -272,6 +273,7 @@ public partial class ResponsesClient
         using PipelineMessage message = CreateCreateResponseRequest((BinaryContent)options, requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
@@ -460,6 +462,7 @@ public partial class ResponsesClient
             requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
@@ -499,6 +502,7 @@ public partial class ResponsesClient
             requestOptions);
         message.BufferResponse = false;
         PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
         return SseStreamingClientResult.Create(
             response,
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
