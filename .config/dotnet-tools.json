@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "Azure.Sdk.Tools.SnippetGenerator": {
-      "version": "1.0.0-dev.20260804.1",
+      "version": "1.0.0-dev.20260811.3",
       "commands": [
         "snippet-generator"
       ],
