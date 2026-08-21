@@ -37,8 +37,6 @@ namespace OpenAI.Audio
 
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
 
-        public float? Temperature { get; set; }
-
         [Experimental("OPENAI001")]
         public IList<string> KnownSpeakerNames { get; }
 

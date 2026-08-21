@@ -17,7 +17,6 @@ namespace OpenAILibraryPlugin
             base.Configure();
             // This should be first, as it recomputes the type
             AddVisitor(new NonAbstractPublicTypesVisitor());
-            AddVisitor(new NumericTypesVisitor());
             AddVisitor(new ConstructorFixupVisitor());
             AddVisitor(new KindRenameVisitor());
             AddVisitor(new ContentInnerCollectionDefinedVisitor());

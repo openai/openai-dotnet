@@ -6,6 +6,8 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(ConversationItemCollectionOptions.limit, int32);
+
 // Move operations into their corresponding interface
 @@clientLocation(createConversation, "Conversations");
 @@clientLocation(getConversation, "Conversations");

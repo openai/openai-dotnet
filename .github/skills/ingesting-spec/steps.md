@@ -4,7 +4,7 @@
 
 Before starting, review the **Reference PRs** in [references.md](references.md) from **previous area ingestions**. Since you're ingesting a new area, there won't be an existing PR for it — instead, study PRs from other areas to learn the patterns and common pitfalls. Pay particular attention to:
 
-- What types of changes were made to the codegen visitors (e.g., `NumericTypesVisitor`)
+- What TypeSpec client customizations and codegen visitor changes were needed
 - What features were deferred to follow-up PRs
 - What custom C# code changes were needed
 
@@ -196,12 +196,12 @@ After reviewing the old vs. new spec, compile a list of:
 - **New operations** (API endpoints)
 - **Renamed types/properties** (and the mapping from old → new)
 - **Removed types/properties**
-- **Changed property types** (e.g., `long` → `int`, `string` → enum)
+- **Changed property types** (e.g., `string` → enum)
 - **New features** that may need follow-up implementation
 
 ---
 
-## Step 7: Verify Generated Code and Review Numeric Types
+## Step 7: Verify Generated Code
 
 After `Invoke-CodeGen.ps1` completes successfully (from Step 4, or re-run after fixing issues in Steps 5–6), verify the output:
 
@@ -216,22 +216,6 @@ dotnet build
 # Export API surface
 ./scripts/Export-Api.ps1
 ```
-
-### 7a. Review Numeric Properties
-
-The `NumericTypesVisitor` (at `codegen/generator/src/Visitors/NumericTypesVisitor.cs`) automatically converts `long` → `int` and `double` → `float` for all generated properties, parameters, and fields unless explicitly excluded.
-
-After generation, check the generated code for any numeric properties that should **stay `long`** (e.g., byte counts, large IDs) or **stay `double`** (high-precision values). If found, add them to the exclusion list:
-
-```csharp
-// In NumericTypesVisitor.cs
-private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
-{
-    "OpenAI.{Area}.{TypeName}.{PropertyName}",
-};
-```
-
-See [PR #935 (VectorStore)](https://github.com/openai/openai-dotnet/pull/935) for an example where this visitor was enhanced.
 
 ### `Invoke-CodeGen.ps1` Parameter Sets (Reference)
 
