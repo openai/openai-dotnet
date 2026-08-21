@@ -340,6 +340,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null);
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.ReasoningOptions, Is.Not.Null);
         Assert.That(response.ReasoningOptions.ReasoningEffortLevel, Is.EqualTo(ResponseReasoningEffortLevel.ExtraHigh));
 
         ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
