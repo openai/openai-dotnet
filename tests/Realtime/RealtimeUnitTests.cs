@@ -3,6 +3,7 @@ using OpenAI.Realtime;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Reflection;
 using System.Text.Json;
 
 namespace OpenAI.Tests.Realtime;
@@ -119,6 +120,19 @@ public class RealtimeUnitTests
     }
 
     [Test]
+    public void ClientDoesNotDuplicateRealtimePathWithTrailingSlash()
+    {
+        RealtimeClientOptions options = new()
+        {
+            Endpoint = new Uri("https://custom.openai.com/v1/realtime/"),
+        };
+
+        RealtimeClient client = new(new ApiKeyCredential("test-key"), options);
+
+        Assert.That(GetWebSocketEndpoint(client), Is.EqualTo(new Uri("wss://custom.openai.com/v1/realtime")));
+    }
+
+    [Test]
     public void AudioEndMsSerializesAsInteger()
     {
         // A TimeSpan with sub-millisecond precision that would produce a fractional double
@@ -135,5 +149,13 @@ public class RealtimeUnitTests
         var audioEndMs = root.GetProperty("audio_end_ms");
         Assert.That(audioEndMs.TryGetInt64(out long value), Is.True);
         Assert.That(value, Is.EqualTo(1235));
+    }
+
+    private static Uri GetWebSocketEndpoint(RealtimeClient client)
+    {
+        FieldInfo field = typeof(RealtimeClient).GetField(
+            "_webSocketEndpoint",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        return (Uri)field.GetValue(client);
     }
 }
