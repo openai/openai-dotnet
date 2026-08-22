@@ -13,7 +13,7 @@ namespace OpenAI.Responses {
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
         public ApplyPatchOperation Operation { get; set; }
-        public ApplyPatchCallStatus? Status { get; set; }
+        public ApplyPatchCallStatus? Status { get; }
     }
     [Experimental("OPENAI001")]
     public class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>, IPersistableModel<ApplyPatchCallOutputItem> {
