@@ -112,6 +112,10 @@ jobs:
           # Use the version specified in global.json
           global-json-file: global.json
 
+      - name: Check for mismatched released API listings
+        shell: pwsh
+        run: ./scripts/Confirm-ReleasedApiIntegrity.ps1
+
       - name: Run Export-Api script
         shell: pwsh
         run: |
@@ -129,10 +133,6 @@ jobs:
         uses: ./.github/actions/check-uncommitted-changes
         with:
           error-message: "API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
-
-      - name: Validate released API listings
-        shell: pwsh
-        run: ./scripts/Validate-ReleasedApi.ps1
 
   validate-snippets:
     name: Validate documentation snippets

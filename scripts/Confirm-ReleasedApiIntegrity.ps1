@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Validates that api/released matches the API listings from the recorded release.
+    Confirms that api/released matches the API listings from the recorded release.
 
 .DESCRIPTION
     Reads api/api-version.txt, resolves the corresponding OpenAI_<version> tag,
