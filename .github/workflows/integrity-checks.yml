@@ -15,6 +15,7 @@ on:
       - '.github/workflows/integrity-checks.yml'
       - 'scripts/Invoke-CodeGen.ps1'
       - 'scripts/Export-Api.ps1'
+      - 'scripts/Confirm-ReleasedApiIntegrity.ps1'
       - 'api/**'
       - 'Directory.Build.targets'
       - 'tests/Snippets/**'
@@ -86,11 +87,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # The released API validator only needs the snapshot referenced by
+      # api-version.txt. Fetch that tag shallowly instead of downloading the
+      # repository's complete history and all unrelated tags.
+      - name: Fetch released API tag
+        shell: pwsh
+        run: |
+          $apiVersion = (Get-Content ./api/api-version.txt -Raw).Trim()
+          if ($apiVersion -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$') {
+            Write-Error "API version '$apiVersion' is empty or is not a valid release version."
+            exit 1
+          }
+
+          $releaseTag = "OpenAI_$apiVersion"
+          git fetch --no-tags --depth=1 origin "refs/tags/${releaseTag}:refs/tags/${releaseTag}"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to fetch release tag '$releaseTag'."
+            exit $LASTEXITCODE
+          }
+
       - name: Set up .NET
         uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           # Use the version specified in global.json
           global-json-file: global.json
+
+      - name: Check for mismatched released API listings
+        shell: pwsh
+        run: ./scripts/Confirm-ReleasedApiIntegrity.ps1
 
       - name: Run Export-Api script
         shell: pwsh
