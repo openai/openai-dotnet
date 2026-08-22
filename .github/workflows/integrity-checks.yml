@@ -15,7 +15,7 @@ on:
       - '.github/workflows/integrity-checks.yml'
       - 'scripts/Invoke-CodeGen.ps1'
       - 'scripts/Export-Api.ps1'
-      - 'scripts/Validate-ReleasedApi.ps1'
+      - 'scripts/Confirm-ReleasedApiIntegrity.ps1'
       - 'api/**'
       - 'Directory.Build.targets'
       - 'tests/Snippets/**'
