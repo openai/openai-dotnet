@@ -156,6 +156,7 @@ public class RealtimeUnitTests
         FieldInfo field = typeof(RealtimeClient).GetField(
             "_webSocketEndpoint",
             BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(field, Is.Not.Null, "RealtimeClient should expose its WebSocket endpoint field");
         return (Uri)field.GetValue(client);
     }
 }

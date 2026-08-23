@@ -9,6 +9,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - Aditya Singh _([GitHub](https://github.com/adityasingh2400))_
 - JS van Dijk _([GitHub](https://github.com/hogeheer499-commits))_
 - Rohan Santhosh Kumar _([GitHub](https://github.com/Rohan5commit))_
+- King Star _([GitHub](https://github.com/jstar0))_
 
 ### Features Added
 
@@ -17,6 +18,8 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 ### Bugs Fixed
 
+- OpenAI.Realtime:
+  - Fixed WebSocket endpoint construction for custom endpoints that already end in `/realtime/`, avoiding duplicate path segments. _(A community contribution, courtesy of [jstar0](https://github.com/jstar0))_
 - Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. This affects all streaming APIs, including `OpenAI.Assistants`, `OpenAI.Chat`, `OpenAI.Responses`, and `OpenAI.Audio`, on both the synchronous and asynchronous paths. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
 
 ### Other Changes
