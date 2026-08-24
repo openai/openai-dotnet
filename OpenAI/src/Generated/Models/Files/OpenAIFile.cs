@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Files
 {
@@ -12,22 +11,22 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdOn, string filename, FilePurpose purpose, FileStatus status)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             Filename = filename;
             Purpose = purpose;
             Status = status;
         }
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdOn, DateTimeOffset? expiresOn, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
-            CreatedOn = createdOn;
-            ExpiresOn = expiresOn;
+            CreatedAt = createdAt;
+            ExpiresAt = expiresAt;
             Filename = filename;
             Object = @object;
             Purpose = purpose;
@@ -37,12 +36,6 @@ namespace OpenAI.Files
         }
 
         public string Id { get; }
-
-        [Experimental("OPENAI001")]
-        public DateTimeOffset CreatedOn { get; }
-
-        [Experimental("OPENAI001")]
-        public DateTimeOffset? ExpiresOn { get; }
 
         public string Filename { get; }
 

@@ -49,9 +49,7 @@ namespace OpenAI.Files {
     }
     public class OpenAIFile : IJsonModel<OpenAIFile>, IPersistableModel<OpenAIFile> {
         public DateTimeOffset CreatedAt { get; }
-        public DateTimeOffset CreatedOn { get; }
         public DateTimeOffset? ExpiresAt { get; }
-        public DateTimeOffset? ExpiresOn { get; }
         public string Filename { get; }
         public string Id { get; }
         public FilePurpose Purpose { get; }

@@ -2028,13 +2028,13 @@ namespace OpenAI
             return new ThreadDeletionResult(threadId, deleted, "thread.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdOn = default, DateTimeOffset? expiresOn = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
+        public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
         {
             return new OpenAIFile(
                 id,
                 sizeInBytesLong,
-                createdOn,
-                expiresOn,
+                createdAt,
+                expiresAt,
                 filename,
                 "file",
                 purpose,

@@ -37,8 +37,8 @@ public static partial class OpenAIFilesModelFactory
     {
         return new OpenAIFile(
             id: id,
-            createdOn: createdAt,
-            expiresOn: expiresAt,
+            createdAt: createdAt,
+            expiresAt: expiresAt,
             filename: filename,
             purpose: purpose,
             @object: "file",
