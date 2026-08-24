@@ -1,8 +1,16 @@
 # Agent Instructions
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and the
-[repository testing instructions](.github/skills/running-tests/SKILL.md) before
-making changes.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md)
+before making changes.
+
+## Test Safety
+
+Agents must run tests only with `CLIENTMODEL_TEST_MODE=Playback` and
+`CLIENTMODEL_DISABLE_AUTO_RECORDING=true`; never run `Record` or `Live` mode.
+
+When running, writing, modifying, debugging, or validating tests, read the
+[repository testing instructions](.github/skills/running-tests/SKILL.md)
+before taking action.
 
 ## Security Requirements
 
@@ -14,13 +22,10 @@ making changes.
 - **Logs and recordings:** Redact authorization headers, credentials, signed
   URLs, and customer data in diagnostics, test output, exceptions, telemetry,
   and artifacts. Use synthetic prompts/model responses. Sanitizers for known
-  sensitive OpenAI headers and fields are enabled, but evolving service behavior
-  can leave gaps. An authorized human must inspect every recording in
-  `tests/SessionRecords/`. If sensitive data remains, add or improve an enabled
-  deterministic sanitizer and regenerate the recording, or report the gap before
-  publication. Never manually sanitize recordings. Do not use recording
-  workflows that stage, commit, push, or upload files before an authorized human
-  has reviewed them locally.
+  sensitive OpenAI headers and fields are enabled but may have gaps. Only
+  explicitly authorized humans may capture recordings locally; they must review
+  automatically sanitized recordings before publication. Never manually sanitize
+  recordings or use a workflow that publishes before human review.
 - **Dependencies and generators:** Review direct and transitive NuGet/npm
   changes, package provenance, trusted feeds and source mappings, local .NET
   tools, install scripts, and the root workspace `package-lock.json`.
@@ -39,10 +44,8 @@ making changes.
 - **Sensitive changes and testing:** Require focused maintainer review and
   regression coverage for authentication, custom endpoints, redirects, TLS,
   serialization, streaming, file uploads, logging, dependency resolution,
-  generated output, and signing/publishing changes. Agents must run tests only
-  with `CLIENTMODEL_TEST_MODE=Playback` and
-  `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`; never run `Record` or `Live` mode
-  or attempt to capture recordings with real credentials.
+  generated output, and signing/publishing changes. Follow the test safety
+  requirements above; never capture recordings with real credentials.
 - **Vulnerability disclosure:** Report suspected vulnerabilities privately
   through [SECURITY.md](SECURITY.md) and the existing
   [OpenAI Bugcrowd program](https://bugcrowd.com/engagements/openai). Do not

@@ -1,6 +1,6 @@
 ---
 name: running-tests
-description: Guide for running tests in the openai-dotnet repository. Use this when asked to run, debug, or validate tests, or when writing new tests. Explains test modes (Playback, Record, Live), how to identify recorded vs non-recorded tests, environment variable configuration, and what to do when recordings are missing or stale.
+description: Guide for running tests in the openai-dotnet repository. Use this when running, writing, modifying, debugging, or validating tests. Explains test modes (Playback, Record, Live), how to identify recorded vs non-recorded tests, environment variable configuration, and what to do when recordings are missing or stale.
 ---
 
 # Running Tests
@@ -23,11 +23,21 @@ The mode is controlled by the `CLIENTMODEL_TEST_MODE` environment variable and a
 
 In Playback mode, the framework may attempt to auto-record when a session recording is missing or stale. Disable that behavior by explicitly setting `CLIENTMODEL_DISABLE_AUTO_RECORDING` to `true`.
 
+## Preparing to Run Tests
+
+Restore the repository's local .NET tools before running tests:
+
+```bash
+dotnet tool restore
+```
+
+This installs the `test-proxy` tool required by the test framework.
+
 ## Agent Rules
 
-As the agent, only execute tests in `Playback` mode.
-
-Do not run `Record` or `Live` mode yourself. Those paths require live credentials which you do not have.
+Agents and ordinary CI must run tests only in `Playback` mode with
+auto-recording explicitly disabled. Never run `Record` or `Live` mode, even
+when a recording is missing or stale.
 
 Every test invocation must set both safeguards explicitly. In PowerShell:
 
@@ -45,6 +55,24 @@ CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
 ```
 
 If a recorded test needs new recordings or updated recordings, you must follow the instructions below to ask a human to capture them for you instead of trying to capture them yourself.
+
+## Verifying Playback Command Safety
+
+The committed `tests/Utility/PlaybackCommandDocumentationTests.cs` regressions
+extract both Playback examples above and execute each with a synthetic fake
+`dotnet`. They inherit `CLIENTMODEL_TEST_MODE=Record` and
+`CLIENTMODEL_DISABLE_AUTO_RECORDING=false` and verify that the actual Bash and
+PowerShell commands override both values before running tests. Companion tests
+prove that omitting the safeguards preserves those unsafe inherited settings.
+
+These NUnit tests run automatically in the existing `.github/workflows/main.yml`
+Playback job. Run them directly with:
+
+```bash
+CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
+  dotnet test ./tests/OpenAI.Tests.csproj \
+  --filter FullyQualifiedName~PlaybackCommandDocumentationTests
+```
 
 ## Identifying Recorded Tests vs Non-Recorded Tests
 
@@ -71,6 +99,26 @@ Do not recommend, dispatch, or run `.github/workflows/record-test.yml`: it
 stages, commits, and pushes recordings before required human inspection. Until
 that workflow enforces human approval before any publication, an approved local
 process is the only supported recording path.
+
+An explicitly authorized human must load approved credentials from the
+environment or an approved secrets manager before using `Record` mode. Use
+`Live` mode only with separate explicit authorization. These commands are for
+authorized humans only; agents and ordinary CI must never run them.
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Record"  # Use "Live" only when explicitly authorized.
+dotnet test OpenAI.slnx
+```
+
+```bash
+CLIENTMODEL_TEST_MODE=Record dotnet test OpenAI.slnx
+```
+
+Before staging, committing, pushing, uploading, or otherwise publishing a
+recording, the authorized human must inspect every automatically sanitized
+file. If sensitive data remains, add or improve an enabled deterministic
+sanitizer and regenerate the recording, or report the gap before publication.
+Never manually sanitize a recording or upload raw recording artifacts.
 
 Request recordings from a human before considering your work complete in either of the following cases:
 

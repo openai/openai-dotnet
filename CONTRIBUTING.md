@@ -45,70 +45,37 @@ dotnet build OpenAI.slnx
 
 Tests use the [Microsoft.ClientModel.TestFramework](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Microsoft.ClientModel.TestFramework/README.md) and can run in three modes:
 
-Before running tests, restore the repo's local .NET tools (this installs the `test-proxy` tool used by the test framework):
-
-```bash
-dotnet tool restore
-```
-
 | Mode | Description |
 |------|-------------|
 | **Playback** | Tests run against pre-recorded session data in `tests/SessionRecords/`. No API key required. This is the default mode. |
 | **Record** | Tests run against the live OpenAI API and record HTTP interactions for later playback. |
 | **Live** | Tests run against the live OpenAI API without recording. |
 
-To switch between test modes, set the `CLIENTMODEL_TEST_MODE` environment variable to `Playback`, `Record`, or `Live`.
+The [repository testing instructions](.github/skills/running-tests/SKILL.md)
+are the canonical guide for restoring test tools, Bash and PowerShell commands,
+missing or stale recordings, authorized human requests, and publication.
 
-> **Note:** In Playback mode, if an existing session record does not match the test's requests, the framework will automatically attempt to re-record the test against the live API. To disable this auto-recording behavior, set the `CLIENTMODEL_DISABLE_AUTO_RECORDING` environment variable to `true`.
+> **Note:** Playback may attempt to re-record a missing or stale recording
+> against the live API. Set `CLIENTMODEL_DISABLE_AUTO_RECORDING=true` to
+> prevent that fallback.
 
 ### Running Tests in Playback Mode (Default)
 
-Always set both safeguards explicitly, including outside the dev container.
-
-```bash
-CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
-  dotnet test OpenAI.slnx
-```
-
-```powershell
-$env:CLIENTMODEL_TEST_MODE = "Playback"
-$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
-dotnet test OpenAI.slnx
-```
+Agents and ordinary CI must run tests only with
+`CLIENTMODEL_TEST_MODE=Playback` and
+`CLIENTMODEL_DISABLE_AUTO_RECORDING=true`. Never rely on inherited environment
+settings. Use the safe commands in the
+[repository testing instructions](.github/skills/running-tests/SKILL.md#agent-rules).
 
 ### Running Tests in Record or Live Mode
 
-Only explicitly authorized humans may run these modes; agents and ordinary CI
-must never run them. An authorized human may use approved credentials to
-generate recordings in Record mode or run without recordings in Live mode:
-
-```powershell
-$env:OPENAI_API_KEY = "your-api-key"
-$env:CLIENTMODEL_TEST_MODE = "Record"  # Or "Live", when explicitly authorized.
-dotnet test OpenAI.slnx
-```
-
-```bash
-export OPENAI_API_KEY="your-api-key"
-CLIENTMODEL_TEST_MODE=Record dotnet test OpenAI.slnx
-```
-
-Do not run `.github/workflows/record-test.yml` to create recordings. It
-automatically commits and pushes recordings before an authorized human can
-inspect the automatically sanitized output; its credential-pattern scan does not
-replace that review. Do not use that workflow unless it enforces explicit human
-review and approval before any recording is staged, committed, pushed, uploaded,
-or otherwise published.
-
-Sanitizers for known sensitive OpenAI headers and fields are enabled, but
-evolving service behavior may expose gaps. An authorized human must inspect
-every locally generated `tests/SessionRecords/` file for API keys, authorization
-headers, cookies, signed URLs, customer data, prompts, model responses, and
-sensitive request/response content before any staging, commit, push, or upload.
-If sensitive data remains, add or improve an enabled deterministic sanitizer
-and regenerate the recording, or report the gap to the core team before
-publication. Never manually sanitize a recording or upload raw recording
-artifacts.
+Only explicitly authorized humans may run `Record` or `Live` mode through an
+approved local process; agents and ordinary CI must never run either mode.
+Known sensitive OpenAI headers and fields are sanitized automatically, but
+evolving service behavior may introduce gaps. Recordings require local human
+review before publication; never manually sanitize recordings or use the current
+recording workflow, which publishes before that review. Follow the canonical
+[recording and publication procedure](.github/skills/running-tests/SKILL.md#when-recordings-are-missing-or-stale).
 
 ## Code Generation
 
@@ -181,18 +148,13 @@ This updates the corresponding snippets in markdown documentation files.
 - **Logs and recordings:** Redact authorization headers, credentials, signed
   URLs, and customer data from diagnostics, exceptions, telemetry, and build
   artifacts. Use synthetic prompts/model responses. Sanitizers for known
-  sensitive OpenAI headers and fields are enabled, but evolving service behavior
-  can leave gaps. An authorized human must inspect every new recording. If
-  sensitive data remains, add or improve an enabled deterministic sanitizer
-  and regenerate the recording, or report the gap before publication; never
-  manually sanitize recordings. Agents and ordinary CI test runs must set
-  `CLIENTMODEL_TEST_MODE=Playback` and
-  `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`. Only authorized humans may run
-  `Record` or `Live` tests through an approved local process. Do not use the
-  current automated recording workflow: although sanitization runs
-  automatically, it commits and pushes recordings before the required local
-  human review. Review locally before staging, committing, pushing, or
-  uploading; never upload raw recording artifacts.
+  sensitive OpenAI headers and fields are enabled but may have gaps. Agents and
+  ordinary CI must use `CLIENTMODEL_TEST_MODE=Playback` and
+  `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`. Only explicitly authorized humans
+  may run `Record` or `Live` tests locally. Require local human review before
+  publishing automatically sanitized recordings; never manually sanitize
+  recordings or use a workflow that publishes before review. Follow the
+  [repository testing instructions](.github/skills/running-tests/SKILL.md).
 - **Dependencies and generators:** Review direct and transitive changes in
   `Directory.Packages.props`, trusted `nuget.config` feeds and mappings,
   `.config/dotnet-tools.json`, `package.json`, `codegen/package.json`, and the
@@ -225,7 +187,7 @@ This updates the corresponding snippets in markdown documentation files.
 Before submitting a pull request, please ensure:
 
 - [ ] All tests pass using the
-  [safe Playback command](#running-tests-in-playback-mode-default)
+  [safe Playback commands](.github/skills/running-tests/SKILL.md#agent-rules)
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
