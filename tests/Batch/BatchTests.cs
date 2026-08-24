@@ -328,6 +328,6 @@ public class BatchTests : OpenAIRecordedTestBase
     private static void AssertBasicJobFields(BatchJob job)
     {
         Assert.That(job.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(job.CreatedAt, Is.GreaterThan(s_2024));
+        Assert.That(job.CreatedOn, Is.GreaterThan(s_2024));
     }
 }

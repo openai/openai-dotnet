@@ -313,7 +313,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options);
 
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.CreatedAt, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
+        Assert.That(response.CreatedOn, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
         // Assert.That(response.Status, Is.EqualTo(ResponsesStatus.Completed));
         Assert.That(response.Model, Is.Not.Null.And.Not.Empty);
         Assert.That(response.PreviousResponseId, Is.Null);

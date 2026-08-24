@@ -147,6 +147,6 @@ public class ConversationTests : OpenAIRecordedTestBase
         Assert.That(conversation, Is.Not.Null);
         Assert.That(conversation.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(conversation.Object, Is.EqualTo("conversation"));
-        Assert.That(conversation.CreatedAt, Is.GreaterThan(default(System.DateTimeOffset)));
+        Assert.That(conversation.CreatedOn, Is.GreaterThan(default(System.DateTimeOffset)));
     }
 }

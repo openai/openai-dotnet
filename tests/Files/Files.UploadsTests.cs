@@ -46,11 +46,11 @@ public class UploadsTests : OpenAIRecordedTestBase
         Assert.That(uploadDetails.Id, Does.StartWith("upload_"));
         Assert.That(uploadDetails.Object, Is.EqualTo("upload"));
         Assert.That(uploadDetails.Bytes, Is.EqualTo(8));
-        Assert.That(uploadDetails.CreatedAt, Is.GreaterThan(unixTime2024));
+        Assert.That(uploadDetails.CreatedOn, Is.GreaterThan(unixTime2024));
         Assert.That(uploadDetails.Filename, Is.EqualTo("uploads_test_file.jsonl"));
         Assert.That(uploadDetails.Purpose, Is.EqualTo("fine-tune"));
         Assert.That(uploadDetails.Status, Is.EqualTo("pending"));
-        Assert.That(uploadDetails.ExpiresAt, Is.GreaterThan(uploadDetails.CreatedAt));
+        Assert.That(uploadDetails.ExpiresOn, Is.GreaterThan(uploadDetails.CreatedOn));
     }
 
     [RecordedTest]
@@ -71,7 +71,7 @@ public class UploadsTests : OpenAIRecordedTestBase
 
             Assert.That(uploadPartDetails.Id, Does.StartWith("part_"));
             Assert.That(uploadPartDetails.Object, Is.EqualTo("upload.part"));
-            Assert.That(uploadPartDetails.CreatedAt, Is.GreaterThanOrEqualTo(uploadDetails.CreatedAt));
+            Assert.That(uploadPartDetails.CreatedOn, Is.GreaterThanOrEqualTo(uploadDetails.CreatedOn));
             Assert.That(uploadPartDetails.UploadId, Is.EqualTo(uploadDetails.Id));
         }
     }
@@ -114,11 +114,11 @@ public class UploadsTests : OpenAIRecordedTestBase
             Assert.That(completedUploadDetails.Id, Is.EqualTo(createdUploadDetails.Id));
             Assert.That(completedUploadDetails.Object, Is.EqualTo(createdUploadDetails.Object));
             Assert.That(completedUploadDetails.Bytes, Is.EqualTo(createdUploadDetails.Bytes));
-            Assert.That(completedUploadDetails.CreatedAt, Is.EqualTo(createdUploadDetails.CreatedAt));
+            Assert.That(completedUploadDetails.CreatedOn, Is.EqualTo(createdUploadDetails.CreatedOn));
             Assert.That(completedUploadDetails.Filename, Is.EqualTo(createdUploadDetails.Filename));
             Assert.That(completedUploadDetails.Purpose, Is.EqualTo(createdUploadDetails.Purpose));
             Assert.That(completedUploadDetails.Status, Is.EqualTo("completed"));
-            Assert.That(completedUploadDetails.ExpiresAt, Is.EqualTo(createdUploadDetails.ExpiresAt));
+            Assert.That(completedUploadDetails.ExpiresOn, Is.EqualTo(createdUploadDetails.ExpiresOn));
 
             string fileObject = fileElement.GetProperty("object").GetString();
             int fileBytes = fileElement.GetProperty("bytes").GetInt32();
@@ -129,7 +129,7 @@ public class UploadsTests : OpenAIRecordedTestBase
             Assert.That(fileId, Does.StartWith("file-"));
             Assert.That(fileObject, Is.EqualTo("file"));
             Assert.That(fileBytes, Is.EqualTo(createdUploadDetails.Bytes));
-            Assert.That(fileCreatedAt, Is.GreaterThanOrEqualTo(createdUploadDetails.CreatedAt));
+            Assert.That(fileCreatedAt, Is.GreaterThanOrEqualTo(createdUploadDetails.CreatedOn));
             Assert.That(filename, Is.EqualTo(createdUploadDetails.Filename));
             Assert.That(filePurpose, Is.EqualTo(createdUploadDetails.Purpose));
         }
@@ -150,11 +150,11 @@ public class UploadsTests : OpenAIRecordedTestBase
         Assert.That(canceledUploadDetails.Id, Is.EqualTo(createdUploadDetails.Id));
         Assert.That(canceledUploadDetails.Object, Is.EqualTo(createdUploadDetails.Object));
         Assert.That(canceledUploadDetails.Bytes, Is.EqualTo(createdUploadDetails.Bytes));
-        Assert.That(canceledUploadDetails.CreatedAt, Is.EqualTo(createdUploadDetails.CreatedAt));
+        Assert.That(canceledUploadDetails.CreatedOn, Is.EqualTo(createdUploadDetails.CreatedOn));
         Assert.That(canceledUploadDetails.Filename, Is.EqualTo(createdUploadDetails.Filename));
         Assert.That(canceledUploadDetails.Purpose, Is.EqualTo(createdUploadDetails.Purpose));
         Assert.That(canceledUploadDetails.Status, Is.EqualTo("cancelled"));
-        Assert.That(canceledUploadDetails.ExpiresAt, Is.EqualTo(createdUploadDetails.ExpiresAt));
+        Assert.That(canceledUploadDetails.ExpiresOn, Is.EqualTo(createdUploadDetails.ExpiresOn));
     }
 
     private async Task<UploadDetails> CreateTestUploadAsync(OpenAIFileClient fileClient)
