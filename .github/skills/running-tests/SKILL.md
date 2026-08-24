@@ -64,6 +64,9 @@ extract both Playback examples above and execute each with a synthetic fake
 `CLIENTMODEL_DISABLE_AUTO_RECORDING=false` and verify that the actual Bash and
 PowerShell commands override both values before running tests. Companion tests
 prove that omitting the safeguards preserves those unsafe inherited settings.
+The regressions also run the feature-specific mTLS Playback command below
+against the same hostile environment and verify that its live-only counterpart
+is restricted to explicitly authorized humans without ever executing it.
 
 These NUnit tests run automatically in the existing `.github/workflows/main.yml`
 Playback job. Run them directly with:
@@ -72,6 +75,40 @@ Playback job. Run them directly with:
 CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
   dotnet test ./tests/OpenAI.Tests.csproj \
   --filter FullyQualifiedName~PlaybackCommandDocumentationTests
+```
+
+## Feature-Specific mTLS Tests
+
+### Offline mTLS Tests (Playback)
+
+Use this feature-specific command for deterministic, loopback-only mTLS tests.
+Override both unsafe inherited settings before running the existing category
+filter:
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Playback"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./tests/OpenAI.Tests.csproj `
+  --filter "TestCategory=MutualTls"
+```
+
+### Live mTLS Example (Authorized Humans Only)
+
+This command is for explicitly authorized humans using an approved local
+process only. It makes a live OpenAI request with real API and client-certificate
+credentials. Agents and ordinary CI must never run this command.
+
+Load `OPENAI_API_KEY`, `OPENAI_CLIENT_PFX_PATH`, and any required
+`OPENAI_CLIENT_PFX_PASSWORD` from the environment or an approved secrets
+manager; never inline, print, commit, or record credentials. Explicitly select
+`Live` mode and disable auto-recording before invoking the exact example test:
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Live"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./examples/OpenAI.Examples.csproj `
+  --framework net10.0 `
+  -- NUnit.Where="test == 'OpenAI.Examples.MutualTlsExamples.Example01_MutualTlsAsync'"
 ```
 
 ## Identifying Recorded Tests vs Non-Recorded Tests
