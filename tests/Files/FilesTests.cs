@@ -112,7 +112,7 @@ public class FilesTests : OpenAIRecordedTestBase
 
             Assert.That(fileInfo1, Is.Not.Null);
             Assert.That(fileInfo1.SizeInBytes, Is.EqualTo(uploadedFile1.SizeInBytes));
-            Assert.That(fileInfo1.CreatedAt, Is.EqualTo(uploadedFile1.CreatedAt));
+            Assert.That(fileInfo1.CreatedOn, Is.EqualTo(uploadedFile1.CreatedOn));
             Assert.That(fileInfo1.Filename, Is.EqualTo(uploadedFile1.Filename));
             Assert.That(fileInfo1.Purpose, Is.EqualTo(uploadedFile1.Purpose));
 #pragma warning disable CS0618
@@ -122,7 +122,7 @@ public class FilesTests : OpenAIRecordedTestBase
 
             Assert.That(fileInfo2, Is.Not.Null);
             Assert.That(fileInfo2.SizeInBytes, Is.EqualTo(uploadedFile2.SizeInBytes));
-            Assert.That(fileInfo2.CreatedAt, Is.EqualTo(uploadedFile2.CreatedAt));
+            Assert.That(fileInfo2.CreatedOn, Is.EqualTo(uploadedFile2.CreatedOn));
             Assert.That(fileInfo2.Filename, Is.EqualTo(uploadedFile2.Filename));
             Assert.That(fileInfo2.Purpose, Is.EqualTo(uploadedFile2.Purpose));
 #pragma warning disable CS0618
@@ -185,7 +185,7 @@ public class FilesTests : OpenAIRecordedTestBase
             Assert.That(fileInfo, Is.Not.Null);
             Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
-            Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+            Assert.That(fileInfo.CreatedOn.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
             Assert.That(fileInfo.Filename, Is.EqualTo(filename).IgnoreCase);
             Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
@@ -277,7 +277,7 @@ public class FilesTests : OpenAIRecordedTestBase
             Assert.That(fileInfo, Is.Not.Null);
             Assert.That(fileInfo.Id, Is.EqualTo(uploadedFile.Id));
             Assert.That(fileInfo.SizeInBytes, Is.EqualTo(uploadedFile.SizeInBytes));
-            Assert.That(fileInfo.CreatedAt, Is.EqualTo(uploadedFile.CreatedAt));
+            Assert.That(fileInfo.CreatedOn, Is.EqualTo(uploadedFile.CreatedOn));
             Assert.That(fileInfo.Filename, Is.EqualTo(uploadedFile.Filename));
             Assert.That(fileInfo.Purpose, Is.EqualTo(uploadedFile.Purpose));
 #pragma warning disable CS0618

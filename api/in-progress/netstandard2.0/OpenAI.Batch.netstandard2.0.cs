@@ -35,19 +35,19 @@ namespace OpenAI.Batch {
         public int? PageSizeLimit { get; set; }
     }
     public class BatchJob : IJsonModel<BatchJob>, IPersistableModel<BatchJob> {
-        public DateTimeOffset? CancelledAt { get; }
-        public DateTimeOffset? CancellingAt { get; }
-        public DateTimeOffset? CompletedAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CancellingOn { get; }
+        public DateTimeOffset? CompletedOn { get; }
         public string CompletionWindow { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string Endpoint { get; }
         public string ErrorFileId { get; }
-        public DateTimeOffset? ExpiredAt { get; }
-        public DateTimeOffset? ExpiresAt { get; }
-        public DateTimeOffset? FailedAt { get; }
-        public DateTimeOffset? FinalizingAt { get; }
+        public DateTimeOffset? ExpiredOn { get; }
+        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? FailedOn { get; }
+        public DateTimeOffset? FinalizingOn { get; }
         public string Id { get; }
-        public DateTimeOffset? InProgressAt { get; }
+        public DateTimeOffset? InProgressOn { get; }
         public string InputFileId { get; }
         public IDictionary<string, string> Metadata { get; }
         public string Object { get; }

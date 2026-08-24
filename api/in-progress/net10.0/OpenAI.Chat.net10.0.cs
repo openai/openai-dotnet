@@ -438,7 +438,7 @@ namespace OpenAI.Chat {
     [Experimental("OPENAI001")]
     public class ChatOutputAudio : IJsonModel<ChatOutputAudio>, IPersistableModel<ChatOutputAudio> {
         public BinaryData AudioBytes { get; }
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
         public string Id { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -749,7 +749,7 @@ namespace OpenAI.Chat {
     [Experimental("OPENAI001")]
     public class StreamingChatOutputAudioUpdate : IJsonModel<StreamingChatOutputAudioUpdate>, IPersistableModel<StreamingChatOutputAudioUpdate> {
         public BinaryData AudioBytesUpdate { get; }
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
         public string Id { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

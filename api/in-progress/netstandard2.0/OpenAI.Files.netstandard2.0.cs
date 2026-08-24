@@ -48,8 +48,8 @@ namespace OpenAI.Files {
         public override readonly string ToString();
     }
     public class OpenAIFile : IJsonModel<OpenAIFile>, IPersistableModel<OpenAIFile> {
-        public DateTimeOffset CreatedAt { get; }
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset? ExpiresOn { get; }
         public string Filename { get; }
         public string Id { get; }
         public FilePurpose Purpose { get; }

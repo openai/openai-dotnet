@@ -55,7 +55,7 @@ namespace OpenAI.Moderations {
     }
     public enum ModerationInputPartKind {
         Text = 0,
-        Image = 1
+        ImageUri = 1
     }
     public class ModerationResult : IJsonModel<ModerationResult>, IPersistableModel<ModerationResult> {
         public bool Flagged { get; }

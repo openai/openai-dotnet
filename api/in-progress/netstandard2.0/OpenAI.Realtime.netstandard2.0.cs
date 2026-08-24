@@ -15,7 +15,7 @@ namespace OpenAI.Realtime {
         public static implicit operator BinaryContent(CreateClientSecretOptions createClientSecretOptions);
     }
     public class CreateClientSecretResult : IJsonModel<CreateClientSecretResult>, IPersistableModel<CreateClientSecretResult> {
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -133,7 +133,7 @@ namespace OpenAI.Realtime {
         public string UserAgentApplicationId { get; set; }
     }
     public class RealtimeClientSecret : IJsonModel<RealtimeClientSecret>, IPersistableModel<RealtimeClientSecret> {
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -980,7 +980,7 @@ namespace OpenAI.Realtime {
     }
     public class RealtimeServerUpdateInputAudioBufferDtmfEventReceived : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived>, IPersistableModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived> {
         public string Event { get; }
-        public DateTimeOffset ReceivedAt { get; }
+        public DateTimeOffset ReceivedOn { get; }
     }
     public class RealtimeServerUpdateInputAudioBufferSpeechStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStarted> {
         public TimeSpan AudioStartTime { get; }
@@ -1270,7 +1270,7 @@ namespace OpenAI.Realtime {
     }
     public class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>, IPersistableModel<RealtimeTranscriptionSession> {
         public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
         public string Id { get; }
         public IList<RealtimeIncludedProperty> IncludedProperties { get; }
         public string Object { get; }

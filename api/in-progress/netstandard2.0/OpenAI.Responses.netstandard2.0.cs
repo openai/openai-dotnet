@@ -807,7 +807,7 @@ namespace OpenAI.Responses {
         public static ResponseErrorCode InvalidImage { get; }
         public static ResponseErrorCode InvalidImageFormat { get; }
         public static ResponseErrorCode InvalidImageMode { get; }
-        public static ResponseErrorCode InvalidImageUrl { get; }
+        public static ResponseErrorCode InvalidImageUri { get; }
         public static ResponseErrorCode InvalidPrompt { get; }
         public static ResponseErrorCode RateLimitExceeded { get; }
         public static ResponseErrorCode ServerError { get; }
@@ -1061,7 +1061,7 @@ namespace OpenAI.Responses {
     public class ResponseResult : IJsonModel<ResponseResult>, IPersistableModel<ResponseResult> {
         public bool? BackgroundModeEnabled { get; set; }
         public ResponseConversationOptions ConversationOptions { get; set; }
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
         public string EndUserId { get; set; }
         public ResponseError Error { get; set; }
         public string Id { get; set; }

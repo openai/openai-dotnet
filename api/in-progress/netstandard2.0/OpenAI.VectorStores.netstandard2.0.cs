@@ -22,12 +22,12 @@ namespace OpenAI.VectorStores {
         public int OverlappingTokenCount { get; }
     }
     public class VectorStore : IJsonModel<VectorStore>, IPersistableModel<VectorStore> {
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public VectorStoreExpirationPolicy ExpirationPolicy { get; }
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
         public VectorStoreFileCounts FileCounts { get; }
         public string Id { get; }
-        public DateTimeOffset? LastActiveAt { get; }
+        public DateTimeOffset? LastActiveOn { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public string Name { get; }
         public VectorStoreStatus Status { get; }
@@ -156,7 +156,7 @@ namespace OpenAI.VectorStores {
     public class VectorStoreFile : IJsonModel<VectorStoreFile>, IPersistableModel<VectorStoreFile> {
         public IDictionary<string, BinaryData> Attributes { get; }
         public FileChunkingStrategy ChunkingStrategy { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public string FileId { get; }
         public VectorStoreFileError LastError { get; }
         public VectorStoreFileStatus Status { get; }
@@ -166,7 +166,7 @@ namespace OpenAI.VectorStores {
     }
     public class VectorStoreFileBatch : IJsonModel<VectorStoreFileBatch>, IPersistableModel<VectorStoreFileBatch> {
         public string BatchId { get; }
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
         public VectorStoreFileCounts FileCounts { get; }
         public VectorStoreFileBatchStatus Status { get; }
         public string VectorStoreId { get; }

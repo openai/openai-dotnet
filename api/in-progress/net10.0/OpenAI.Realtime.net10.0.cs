@@ -18,7 +18,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class CreateClientSecretResult : IJsonModel<CreateClientSecretResult>, IPersistableModel<CreateClientSecretResult> {
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -161,7 +161,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class RealtimeClientSecret : IJsonModel<RealtimeClientSecret>, IPersistableModel<RealtimeClientSecret> {
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -1132,7 +1132,7 @@ namespace OpenAI.Realtime {
     [Experimental("OPENAI002")]
     public class RealtimeServerUpdateInputAudioBufferDtmfEventReceived : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived>, IPersistableModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived> {
         public string Event { get; }
-        public DateTimeOffset ReceivedAt { get; }
+        public DateTimeOffset ReceivedOn { get; }
     }
     [Experimental("OPENAI002")]
     public class RealtimeServerUpdateInputAudioBufferSpeechStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStarted> {
@@ -1470,7 +1470,7 @@ namespace OpenAI.Realtime {
     [Experimental("OPENAI002")]
     public class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>, IPersistableModel<RealtimeTranscriptionSession> {
         public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
         public string Id { get; }
         public IList<RealtimeIncludedProperty> IncludedProperties { get; }
         public string Object { get; }

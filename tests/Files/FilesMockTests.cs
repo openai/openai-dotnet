@@ -77,7 +77,7 @@ public class FilesMockTests : ClientTestBase
         OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
         OpenAIFile fileInfo = await client.GetFileAsync("file_id");
-        Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
+        Assert.That(fileInfo.CreatedOn.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class FilesMockTests : ClientTestBase
         """);
         OpenAIFile fileInfo = await InvokeUploadFileSyncOrAsync(clientOptions, fileSourceKind);
 
-        Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
+        Assert.That(fileInfo.CreatedOn.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
 
     [Test]
@@ -315,7 +315,7 @@ public class FilesMockTests : ClientTestBase
         OpenAIFileCollection fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
-        Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
+        Assert.That(fileInfo.CreatedOn.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
 
     [Test]
