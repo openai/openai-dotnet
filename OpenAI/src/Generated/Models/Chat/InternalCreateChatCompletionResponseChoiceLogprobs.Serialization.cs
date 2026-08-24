@@ -195,7 +195,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveContentArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
                 {
                     return false;
                 }
@@ -209,7 +209,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveRefusalArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Refusal.Count)
                 {
                     return false;
                 }
@@ -228,7 +228,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
                 {
                     return false;
                 }
@@ -239,7 +239,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "refusal"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Refusal.Count)
                 {
                     return false;
                 }

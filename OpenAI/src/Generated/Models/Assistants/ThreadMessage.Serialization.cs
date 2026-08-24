@@ -84,7 +84,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("thread_id") != true)
             {
@@ -110,10 +110,10 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
             {
-                if (Optional.IsDefined(CompletedAt))
+                if (Optional.IsDefined(CompletedOn))
                 {
                     writer.WritePropertyName("completed_at"u8);
-                    writer.WriteNumberValue(CompletedAt.Value, "U");
+                    writer.WriteNumberValue(CompletedOn.Value, "U");
                 }
                 else
                 {
@@ -122,10 +122,10 @@ namespace OpenAI.Assistants
             }
             if (_additionalBinaryDataProperties?.ContainsKey("incomplete_at") != true)
             {
-                if (Optional.IsDefined(IncompleteAt))
+                if (Optional.IsDefined(IncompleteOn))
                 {
                     writer.WritePropertyName("incomplete_at"u8);
-                    writer.WriteNumberValue(IncompleteAt.Value, "U");
+                    writer.WriteNumberValue(IncompleteOn.Value, "U");
                 }
                 else
                 {
@@ -249,12 +249,12 @@ namespace OpenAI.Assistants
             }
             string id = default;
             string @object = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string threadId = default;
             MessageStatus status = default;
             MessageFailureDetails incompleteDetails = default;
-            DateTimeOffset? completedAt = default;
-            DateTimeOffset? incompleteAt = default;
+            DateTimeOffset? completedOn = default;
+            DateTimeOffset? incompleteOn = default;
             MessageRole role = default;
             IReadOnlyList<MessageContent> content = default;
             string assistantId = default;
@@ -276,7 +276,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("thread_id"u8))
@@ -303,20 +303,20 @@ namespace OpenAI.Assistants
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        completedAt = null;
+                        completedOn = null;
                         continue;
                     }
-                    completedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    completedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("incomplete_at"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        incompleteAt = null;
+                        incompleteOn = null;
                         continue;
                     }
-                    incompleteAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    incompleteOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("role"u8))
@@ -397,12 +397,12 @@ namespace OpenAI.Assistants
             return new ThreadMessage(
                 id,
                 @object,
-                createdAt,
+                createdOn,
                 threadId,
                 status,
                 incompleteDetails,
-                completedAt,
-                incompleteAt,
+                completedOn,
+                incompleteOn,
                 role,
                 content,
                 assistantId,
