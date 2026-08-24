@@ -59,6 +59,10 @@ namespace OpenAI.FineTuning
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
+        public DateTimeOffset CreatedOn { get; }
+
+        public DateTimeOffset? FinishedOn { get; }
+
         public IDictionary<string, string> Metadata { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData

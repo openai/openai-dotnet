@@ -79,12 +79,12 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(B64Json.ToArray(), "D");
+                writer.WriteBase64StringValue(B64Json, "D");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -154,7 +154,7 @@ namespace OpenAI.Images
             }
             string kind = default;
             BinaryData b64Json = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             InternalCreateImageSize size = default;
             InternalCreateImageQuality quality = default;
             InternalCreateImageBackground background = default;
@@ -175,7 +175,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
@@ -209,7 +209,7 @@ namespace OpenAI.Images
             return new InternalImageGenPartialImageEvent(
                 kind,
                 b64Json,
-                createdAt,
+                createdOn,
                 size,
                 quality,
                 background,

@@ -14,7 +14,7 @@ namespace OpenAI.Batch
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal BatchJob(string id, string endpoint, string inputFileId, string completionWindow, InternalBatchStatus status, DateTimeOffset createdAt, IDictionary<string, string> metadata)
+        internal BatchJob(string id, string endpoint, string inputFileId, string completionWindow, InternalBatchStatus status, DateTimeOffset createdOn, IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -22,11 +22,11 @@ namespace OpenAI.Batch
             InputFileId = inputFileId;
             CompletionWindow = completionWindow;
             Status = status;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal BatchJob(string id, string @object, string endpoint, InternalBatchErrors errors, string inputFileId, string completionWindow, InternalBatchStatus status, string outputFileId, string errorFileId, DateTimeOffset createdAt, DateTimeOffset? inProgressAt, DateTimeOffset? expiresAt, DateTimeOffset? finalizingAt, DateTimeOffset? completedAt, DateTimeOffset? failedAt, DateTimeOffset? expiredAt, DateTimeOffset? cancellingAt, DateTimeOffset? cancelledAt, InternalBatchRequestCounts requestCounts, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal BatchJob(string id, string @object, string endpoint, InternalBatchErrors errors, string inputFileId, string completionWindow, InternalBatchStatus status, string outputFileId, string errorFileId, DateTimeOffset createdOn, DateTimeOffset? inProgressOn, DateTimeOffset? expiresOn, DateTimeOffset? finalizingOn, DateTimeOffset? completedOn, DateTimeOffset? failedOn, DateTimeOffset? expiredOn, DateTimeOffset? cancellingOn, DateTimeOffset? cancelledOn, InternalBatchRequestCounts requestCounts, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -38,15 +38,15 @@ namespace OpenAI.Batch
             Status = status;
             OutputFileId = outputFileId;
             ErrorFileId = errorFileId;
-            CreatedAt = createdAt;
-            InProgressAt = inProgressAt;
-            ExpiresAt = expiresAt;
-            FinalizingAt = finalizingAt;
-            CompletedAt = completedAt;
-            FailedAt = failedAt;
-            ExpiredAt = expiredAt;
-            CancellingAt = cancellingAt;
-            CancelledAt = cancelledAt;
+            CreatedOn = createdOn;
+            InProgressOn = inProgressOn;
+            ExpiresOn = expiresOn;
+            FinalizingOn = finalizingOn;
+            CompletedOn = completedOn;
+            FailedOn = failedOn;
+            ExpiredOn = expiredOn;
+            CancellingOn = cancellingOn;
+            CancelledOn = cancelledOn;
             RequestCounts = requestCounts;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -70,23 +70,23 @@ namespace OpenAI.Batch
 
         public string ErrorFileId { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
-        public DateTimeOffset? InProgressAt { get; }
+        public DateTimeOffset? InProgressOn { get; }
 
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
 
-        public DateTimeOffset? FinalizingAt { get; }
+        public DateTimeOffset? FinalizingOn { get; }
 
-        public DateTimeOffset? CompletedAt { get; }
+        public DateTimeOffset? CompletedOn { get; }
 
-        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? FailedOn { get; }
 
-        public DateTimeOffset? ExpiredAt { get; }
+        public DateTimeOffset? ExpiredOn { get; }
 
-        public DateTimeOffset? CancellingAt { get; }
+        public DateTimeOffset? CancellingOn { get; }
 
-        public DateTimeOffset? CancelledAt { get; }
+        public DateTimeOffset? CancelledOn { get; }
 
         internal InternalBatchRequestCounts RequestCounts { get; }
 

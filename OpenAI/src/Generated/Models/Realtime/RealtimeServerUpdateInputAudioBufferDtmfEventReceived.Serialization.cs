@@ -81,7 +81,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.received_at"u8))
             {
                 writer.WritePropertyName("received_at"u8);
-                writer.WriteNumberValue(ReceivedAt, "U");
+                writer.WriteNumberValue(ReceivedOn, "U");
             }
 
             Patch.WriteTo(writer);
@@ -112,7 +112,7 @@ namespace OpenAI.Realtime
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string @event = default;
-            DateTimeOffset receivedAt = default;
+            DateTimeOffset receivedOn = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -127,12 +127,12 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("received_at"u8))
                 {
-                    receivedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    receivedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeServerUpdateInputAudioBufferDtmfEventReceived(kind, patch, @event, receivedAt);
+            return new RealtimeServerUpdateInputAudioBufferDtmfEventReceived(kind, patch, @event, receivedOn);
         }
     }
 }

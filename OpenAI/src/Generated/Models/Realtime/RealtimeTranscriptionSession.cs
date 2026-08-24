@@ -24,12 +24,12 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTranscriptionSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, string id, string @object, DateTimeOffset? expiresAt, IList<RealtimeIncludedProperty> includedProperties, RealtimeTranscriptionSessionAudioOptions audioOptions) : base(kind, patch)
+        internal RealtimeTranscriptionSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, string id, string @object, DateTimeOffset? expiresOn, IList<RealtimeIncludedProperty> includedProperties, RealtimeTranscriptionSessionAudioOptions audioOptions) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
             IncludedProperties = includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>();
             AudioOptions = audioOptions;
             Patch.SetPropagators(PropagateSet, PropagateGet);
@@ -40,6 +40,6 @@ namespace OpenAI.Realtime
 
         public string Object { get; }
 
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresOn { get; }
     }
 }

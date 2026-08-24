@@ -79,7 +79,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteBase64StringValue(Audio.ToArray(), "D");
+                writer.WriteBase64StringValue(Audio, "D");
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

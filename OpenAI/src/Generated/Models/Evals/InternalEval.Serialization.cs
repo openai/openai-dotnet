@@ -111,7 +111,7 @@ namespace OpenAI.Evals
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -182,7 +182,7 @@ namespace OpenAI.Evals
             string name = default;
             InternalEvalDataSourceConfigResource dataSourceConfig = default;
             IList<InternalEvalGraderResource> testingCriteria = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -224,7 +224,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -258,7 +258,7 @@ namespace OpenAI.Evals
                 name,
                 dataSourceConfig,
                 testingCriteria,
-                createdAt,
+                createdOn,
                 metadata,
                 additionalBinaryDataProperties);
         }

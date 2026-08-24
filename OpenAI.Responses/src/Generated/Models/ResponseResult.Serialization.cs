@@ -244,7 +244,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
             {
@@ -383,7 +383,7 @@ namespace OpenAI.Responses
             string id = default;
             string @object = default;
             ResponseStatus? status = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             ResponseError error = default;
             ResponseIncompleteStatusDetails incompleteStatusDetails = default;
             IList<ResponseItem> outputItems = default;
@@ -592,7 +592,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("error"u8))
@@ -691,7 +691,7 @@ namespace OpenAI.Responses
                 id,
                 @object,
                 status,
-                createdAt,
+                createdOn,
                 error,
                 incompleteStatusDetails,
                 outputItems,
@@ -742,7 +742,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveToolsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
                 {
                     return false;
                 }
@@ -756,7 +756,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveOutputItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
                 {
                     return false;
                 }
@@ -770,7 +770,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveInstructionsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
                 {
                     return false;
                 }
@@ -819,7 +819,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
                 {
                     return false;
                 }
@@ -830,7 +830,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
                 {
                     return false;
                 }
@@ -841,7 +841,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "instructions"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
                 {
                     return false;
                 }

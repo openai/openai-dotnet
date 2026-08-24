@@ -16,8 +16,8 @@ public class ThreadUpdate : StreamingUpdate<AssistantThread>
     public string Id => Value.Id;
     /// <see cref="AssistantThread.Metadata"/>
     public IReadOnlyDictionary<string, string> Metadata => Value.Metadata;
-    /// <see cref="AssistantThread.CreatedAt"/>
-    public DateTimeOffset CreatedAt => Value.CreatedAt;
+    /// <see cref="AssistantThread.CreatedOn"/>
+    public DateTimeOffset CreatedAt => Value.CreatedOn;
     /// <see cref="AssistantThread.ToolResources"/>
     public ToolResources ToolResources => Value.ToolResources;
 
