@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.ServerSentEvents;
 using System.Threading.Tasks;
 using OpenAI;
@@ -22,6 +23,7 @@ namespace OpenAI.Images
         public ClientPipeline Pipeline { get; }
 
 #pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        [Experimental("SCME0005")]
         public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImageEditsAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -34,6 +36,7 @@ namespace OpenAI.Images
 #pragma warning restore SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        [Experimental("SCME0005")]
         public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImagesAsync(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
