@@ -11,6 +11,7 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 - [Getting started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Install the NuGet package](#install-the-nuget-package)
+  - [Experimental APIs](#experimental-apis)
 - [Using the client library](#using-the-client-library)
   - [Namespace organization](#namespace-organization)
   - [Using the async API](#using-the-async-api)
@@ -42,25 +43,6 @@ It is generated from our [OpenAPI specification](https://github.com/openai/opena
 
 To call the OpenAI REST API, you will need an API key. To obtain one, first [create a new OpenAI account](https://platform.openai.com/signup) or [log in](https://platform.openai.com/login). Next, navigate to the [API key page](https://platform.openai.com/account/api-keys) and select "Create new secret key", optionally naming the key. Make sure to save your API key somewhere safe and do not share it with anyone.
 
-### Experimental APIs
-
-Some APIs in this library are marked with `[Experimental]` while the corresponding service surface is still evolving. When you use one of these types or members, the compiler emits a warning code so you can opt in deliberately.
-
-| Warning code | Examples of affected API areas |
-| --- | --- |
-| `OPENAI001` | Assistants, vector stores, batches, evals, realtime client entry points, and other preview client surface area |
-| `OPENAI002` | Realtime session types and session options |
-
-If your project treats warnings as errors, experimental APIs can fail the build until you suppress the relevant warning in the narrowest possible scope:
-
-```csharp
-#pragma warning disable OPENAI001
-AssistantClient assistantClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-#pragma warning restore OPENAI001
-```
-
-Prefer suppressing only the specific warning code around the experimental call site so stable APIs continue surfacing new warnings normally.
-
 ### Install the NuGet package
 
 Add the client library to your .NET project by installing the [NuGet](https://www.nuget.org/) package via your IDE or by running the following command in the .NET CLI:
@@ -70,6 +52,12 @@ dotnet add package OpenAI
 ```
 
 Note that the code examples included below were written using [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
+
+### Experimental APIs
+
+Some client APIs are marked with `[Experimental]` while they undergo iteration and may introduce breaking compile-time or behavioral changes. To use an experimental API, you must acknowledge this risk by suppressing its compiler warning using your preferred approach. See [Suppress code analysis warnings](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/suppress-warnings) for guidance.
+
+The designation describes the lifecycle of the client API only. It does not communicate the state of the REST API feature, its quality or reliability, or its supportability. Stable APIs carry a strong backward-compatibility commitment. Consult the [OpenAI platform API reference](https://developers.openai.com/api/reference/overview) for service documentation and the [feature lifecycle](https://github.com/openai/openai-dotnet/wiki/%F0%9F%93%A6-Feature-Lifecycle-in-the-OpenAI-.NET-Client-Library) for this library's API lifecycle.
 
 ## Using the client library
 
@@ -718,7 +706,7 @@ In this example, you have a JSON document with the monthly sales information of 
 
 To achieve this, use both `OpenAIFileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
 
-Important: The Assistants REST API is currently in beta. As such, the details are subject to change, and correspondingly the `AssistantClient` is attributed as `[Experimental]`. To use it, you must suppress the `OPENAI001` warning first.
+Important: `AssistantClient` is attributed as `[Experimental]`. See [Experimental APIs](#experimental-apis) for what this designation means and how to acknowledge its compiler warning.
 
 ```C# Snippet:ReadMe_Assistants_CreateClients
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
