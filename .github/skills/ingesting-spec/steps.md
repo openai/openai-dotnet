@@ -136,9 +136,9 @@ A successful run shows `Found 0 errors` and `Found N warnings` where N is roughl
 - **Missing types** — A type referenced in the new spec doesn't exist locally. Check whether it exists in `common/` or another area upstream and needs to be copied over.
 
 For each issue found, document it and determine if it can be resolved by:
-1. Copying additional files from upstream (e.g., updated `common/` types)
+1. Updating the local base spec under `specification/base/typespec/` (copy from upstream if needed, but apply fixes here when appropriate)
 2. Handling it in the client TSP layer (`specification/client/`)
-3. Suggesting it as an issue that should be filed against the upstream spec repo (do NOT file the issue yourself)
+3. Documenting it as a follow-up item if neither approach is appropriate (do NOT file issues yourself)
 
 If you fix additional client TSP issues, re-run the compile to verify.
 
