@@ -10,8 +10,8 @@ description: Guide for ingesting the latest OpenAI TypeSpec specification into t
 This skill describes how to ingest the latest OpenAI TypeSpec specification (from the upstream [`microsoft/openai-openapi-pr`](https://github.com/microsoft/openai-openapi-pr) repository) into the `openai-dotnet` SDK, area by area.
 
 The process involves:
-1. Copying updated base specs from upstream
-2. Reporting any compile errors in the base TSP
+1. Copying updated base specs from upstream (exact copy, no modifications)
+2. Reporting any compile errors in the base TSP (do NOT fix — base spec must stay unmodified)
 3. Fixing compile errors in the client TSP layer
 4. Preserving custom C# code (renames, stubs)
 5. Running code generation
@@ -46,7 +46,8 @@ Areas that can be ingested independently:
 ## Key Rules
 
 1. **Always add `@@clientLocation`** for every operation in the client TSP (the latest spec no longer uses `interface` blocks)
-2. **Update `[CodeGenType]` stubs** in `src/Custom/{Area}/Internal/GeneratorStubs.cs` for any renamed types
-3. **Defer complex features** — suggest them as follow-up items rather than implementing in the same ingestion
-4. **Run `./scripts/Invoke-CodeGen.ps1`** to generate code (warnings are OK. Errors are not), then `dotnet build` to verify (Should be no warnings or errors)
-5. **Work locally only** — do NOT create PRs or file issues. Instead, suggest a list of issues that may need to be filed upstream
+2. **NEVER modify the base spec** — it must be an exact copy of upstream. Handle all issues (type unions, suppressions, etc.) in `specification/client/` instead
+3. **Update `[CodeGenType]` stubs** in `src/Custom/{Area}/Internal/GeneratorStubs.cs` for any renamed types
+4. **Defer complex features** — suggest them as follow-up items rather than implementing in the same ingestion
+5. **Run `./scripts/Invoke-CodeGen.ps1`** to generate code (warnings are OK. Errors are not), then `dotnet build` to verify (Should be no warnings or errors)
+6. **Work locally only** — do NOT create PRs or file issues. Instead, suggest a list of issues that may need to be filed upstream
