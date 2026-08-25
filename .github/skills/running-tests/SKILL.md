@@ -37,9 +37,12 @@ This installs the `test-proxy` tool required by the test framework.
 
 Agents and ordinary CI must run tests only in `Playback` mode with
 auto-recording explicitly disabled. Never run `Record` or `Live` mode, even
-when a recording is missing or stale.
+when a recording is missing or stale. These settings avoid test runs that require
+unavailable credentials; they are not a security boundary. Never request, read,
+accept, or use real API keys or other credentials.
 
-Every test invocation must set both safeguards explicitly. In PowerShell:
+Every test invocation must explicitly set the test mode and the separate
+auto-recording setting. In PowerShell:
 
 ```powershell
 $env:CLIENTMODEL_TEST_MODE = "Playback"
@@ -56,34 +59,13 @@ CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
 
 If a recorded test needs new recordings or updated recordings, you must follow the instructions below to ask a human to capture them for you instead of trying to capture them yourself.
 
-## Verifying Playback Command Safety
-
-The committed `tests/Utility/PlaybackCommandDocumentationTests.cs` regressions
-extract both Playback examples above and execute each with a synthetic fake
-`dotnet`. They inherit `CLIENTMODEL_TEST_MODE=Record` and
-`CLIENTMODEL_DISABLE_AUTO_RECORDING=false` and verify that the actual Bash and
-PowerShell commands override both values before running tests. Companion tests
-prove that omitting the safeguards preserves those unsafe inherited settings.
-The regressions also run the feature-specific mTLS Playback command below
-against the same hostile environment and verify that its live-only counterpart
-is restricted to explicitly authorized humans without ever executing it.
-
-These NUnit tests run automatically in the existing `.github/workflows/main.yml`
-Playback job. Run them directly with:
-
-```bash
-CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
-  dotnet test ./tests/OpenAI.Tests.csproj \
-  --filter FullyQualifiedName~PlaybackCommandDocumentationTests
-```
-
 ## Feature-Specific mTLS Tests
 
 ### Offline mTLS Tests (Playback)
 
 Use this feature-specific command for deterministic, loopback-only mTLS tests.
-Override both unsafe inherited settings before running the existing category
-filter:
+Override inherited test-mode and auto-recording settings before running the
+existing category filter:
 
 ```powershell
 $env:CLIENTMODEL_TEST_MODE = "Playback"

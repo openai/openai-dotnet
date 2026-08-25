@@ -26,16 +26,17 @@ For safety, the example accepts only these two HTTPS origins and the `/v1` base 
 
 ## Run the example
 
-The live example is for **explicitly authorized humans only** using an approved
-local process. It sends a real request with API and client-certificate
-credentials. Agents and ordinary CI must never run the live example.
+Run this live example only when authorized; it sends a real request with API and client-certificate credentials. Load `OPENAI_API_KEY`, `OPENAI_CLIENT_PFX_PATH`, and any required `OPENAI_CLIENT_PFX_PASSWORD` from the environment or an approved secrets manager. Never inline, print, commit, or record real credentials.
 
-Load `OPENAI_API_KEY`, `OPENAI_CLIENT_PFX_PATH`, and, when needed,
-`OPENAI_CLIENT_PFX_PASSWORD` from the environment or an approved secrets
-manager. Never inline, print, commit, or record real credentials.
+From PowerShell at the repository root, select Live mode, independently disable auto-recording, and run the explicit example test:
 
-Follow the canonical
-[authorized-human-only live mTLS instructions](../../.github/skills/running-tests/SKILL.md#live-mtls-example-authorized-humans-only).
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Live"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./examples/OpenAI.Examples.csproj `
+  --framework net10.0 `
+  -- NUnit.Where="test == 'OpenAI.Examples.MutualTlsExamples.Example01_MutualTlsAsync'"
+```
 
 The example calls the supported Chat Completions endpoint and prints its text
 response. For EU Data Residency, set:
@@ -56,11 +57,14 @@ verify the TLS chain, API key, HTTP request, and deserialized SDK response. They
 also verify that missing or untrusted client credentials fail closed and that
 the certificate-bearing handler does not follow redirects.
 
-Follow the canonical
-[offline mTLS Playback instructions](../../.github/skills/running-tests/SKILL.md#offline-mtls-tests-playback).
-Agents and ordinary CI must explicitly use `CLIENTMODEL_TEST_MODE=Playback`
-with `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`; never allow missing or stale
-recordings to contact the live API.
+Run these deterministic, loopback-only tests from PowerShell:
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Playback"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./tests/OpenAI.Tests.csproj `
+  --filter "TestCategory=MutualTls"
+```
 
 The explicit example test above is the live end-to-end check against OpenAI. It
 requires an API key and a client certificate whose CA has been uploaded and

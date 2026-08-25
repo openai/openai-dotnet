@@ -3,10 +3,12 @@
 Read [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md)
 before making changes.
 
-## Test Safety
+## Agent Test Execution
 
 Agents must run tests only with `CLIENTMODEL_TEST_MODE=Playback` and
 `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`; never run `Record` or `Live` mode.
+These settings avoid test runs that require unavailable credentials; they are
+not a security boundary.
 
 When running, writing, modifying, debugging, or validating tests, read the
 [repository testing instructions](.github/skills/running-tests/SKILL.md)
@@ -14,11 +16,11 @@ before taking action.
 
 ## Security Requirements
 
-- **Secrets and fixtures:** Never commit, print, or embed API keys, access
-  tokens, connection secrets, signing credentials, or NuGet publishing tokens.
-  Read `OPENAI_API_KEY` from the environment or an approved secrets manager;
-  use synthetic data, safe placeholders, and local mocked transports in examples,
-  fixtures, tests, and generated artifacts.
+- **Secrets and fixtures:** Never request, read, accept, or use real API keys,
+  access tokens, connection secrets, signing credentials, or NuGet publishing
+  tokens. Never commit, print, or embed credentials. Use synthetic data, safe
+  placeholders, and local mocked transports in examples, fixtures, tests, and
+  generated artifacts.
 - **Logs and recordings:** Redact authorization headers, credentials, signed
   URLs, and customer data in diagnostics, test output, exceptions, telemetry,
   and artifacts. Use synthetic prompts/model responses. Sanitizers for known
@@ -44,7 +46,7 @@ before taking action.
 - **Sensitive changes and testing:** Require focused maintainer review and
   regression coverage for authentication, custom endpoints, redirects, TLS,
   serialization, streaming, file uploads, logging, dependency resolution,
-  generated output, and signing/publishing changes. Follow the test safety
+  generated output, and signing/publishing changes. Follow the test execution
   requirements above; never capture recordings with real credentials.
 - **Vulnerability disclosure:** Report suspected vulnerabilities privately
   through [SECURITY.md](SECURITY.md) and the existing
