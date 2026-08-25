@@ -14,11 +14,11 @@ Quick reference for all paths involved in spec ingestion.
 
 | What | Path |
 |------|------|
-| Base spec entry point | `specification/base/typespec/main.tsp` — API definitions and all TypeSpec changes except `Azure.ClientGenerator.Core` decorators |
-| Area base spec | `specification/base/typespec/{area}/` — API definitions and all TypeSpec changes except `Azure.ClientGenerator.Core` decorators |
+| Base spec entry point | `specification/base/typespec/main.tsp` |
+| Area base spec | `specification/base/typespec/{area}/` |
 | SDK entrypoint | `specification/base/entrypoints/sdk.dotnet/main.tsp` |
-| Client customizations | `specification/client/{area}.client.tsp` — `Azure.ClientGenerator.Core` decorators |
-| Client model overrides | `specification/client/models/{area}.models.tsp` — `Azure.ClientGenerator.Core` decorators |
+| Client customizations | `specification/client/{area}.client.tsp` |
+| Client model overrides | `specification/client/models/{area}.models.tsp` |
 | Main TSP entry (all imports) | `specification/main.tsp` |
 | TSP config | `specification/tspconfig.yaml` |
 
