@@ -132,7 +132,7 @@ If there are issues with the base spec:
 | Issue | Solution |
 |------|----------|
 | **Type unions** that would generate binary data types | Handle in `specification/client/models/{area}.models.tsp` using discriminator patterns where appropriate. |
-| **Any other issues**| Resolve according to the current ownership model, or suggest them as upstream issues to be filed (do NOT file issues yourself). |
+| **Any other issues**| Resolve in the appropriate layer (update `specification/base/typespec/` when we own the base spec, otherwise handle it in `specification/client/`), or document it as a follow-up item (do NOT file issues yourself). |
 
 ---
 
