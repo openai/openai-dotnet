@@ -57,6 +57,16 @@ To switch between test modes, set the `CLIENTMODEL_TEST_MODE` environment variab
 
 ### Running Tests in Playback Mode (Default)
 
+In PowerShell:
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Playback"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./tests/OpenAI.Tests.csproj
+```
+
+In Bash:
+
 ```bash
 CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
   dotnet test ./tests/OpenAI.Tests.csproj
