@@ -7,7 +7,6 @@
 //------------------------------------------------------------------------------
 namespace OpenAI.FineTuning {
     public class FineTuningCheckpoint : IJsonModel<FineTuningCheckpoint>, IPersistableModel<FineTuningCheckpoint> {
-        public DateTimeOffset CreatedAt { get; }
         public DateTimeOffset CreatedOn { get; }
         public string Id { get; }
         public string JobId { get; }

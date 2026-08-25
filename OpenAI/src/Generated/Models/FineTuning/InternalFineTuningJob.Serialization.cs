@@ -84,7 +84,7 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
@@ -105,10 +105,10 @@ namespace OpenAI.FineTuning
             }
             if (_additionalBinaryDataProperties?.ContainsKey("finished_at") != true)
             {
-                if (Optional.IsDefined(FinishedAt))
+                if (Optional.IsDefined(FinishedOn))
                 {
                     writer.WritePropertyName("finished_at"u8);
-                    writer.WriteNumberValue(FinishedAt.Value, "U");
+                    writer.WriteNumberValue(FinishedOn.Value, "U");
                 }
                 else
                 {
@@ -275,10 +275,10 @@ namespace OpenAI.FineTuning
             }
             string userProvidedSuffix = default;
             string jobId = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             FineTuningError error = default;
             string fineTunedModel = default;
-            DateTimeOffset? finishedAt = default;
+            DateTimeOffset? finishedOn = default;
             FineTuningHyperparameters hyperparameters = default;
             string baseModel = default;
             string @object = default;
@@ -313,7 +313,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("error"u8))
@@ -339,10 +339,10 @@ namespace OpenAI.FineTuning
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        finishedAt = null;
+                        finishedOn = null;
                         continue;
                     }
-                    finishedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    finishedOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("hyperparameters"u8))
@@ -478,10 +478,10 @@ namespace OpenAI.FineTuning
             return new InternalFineTuningJob(
                 userProvidedSuffix,
                 jobId,
-                createdAt,
+                createdOn,
                 error,
                 fineTunedModel,
-                finishedAt,
+                finishedOn,
                 hyperparameters,
                 baseModel,
                 @object,

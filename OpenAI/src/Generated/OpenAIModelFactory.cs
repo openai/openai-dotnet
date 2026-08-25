@@ -1478,11 +1478,11 @@ namespace OpenAI
             return new FineTuningHyperparameters(batchSize, learningRateMultiplier, epochCount, additionalBinaryDataProperties: null);
         }
 
-        public static FineTuningCheckpoint FineTuningCheckpoint(string id = default, DateTimeOffset createdAt = default, string modelId = default, int stepNumber = default, FineTuningCheckpointMetrics metrics = default, string jobId = default)
+        public static FineTuningCheckpoint FineTuningCheckpoint(string id = default, DateTimeOffset createdOn = default, string modelId = default, int stepNumber = default, FineTuningCheckpointMetrics metrics = default, string jobId = default)
         {
             return new FineTuningCheckpoint(
                 id,
-                createdAt,
+                createdOn,
                 modelId,
                 stepNumber,
                 metrics,

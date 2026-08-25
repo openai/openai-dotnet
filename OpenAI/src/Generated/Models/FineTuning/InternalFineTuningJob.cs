@@ -13,13 +13,13 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalFineTuningJob(string jobId, DateTimeOffset createdAt, string fineTunedModel, DateTimeOffset? finishedAt, FineTuningHyperparameters hyperparameters, string baseModel, string organizationId, IEnumerable<string> resultFileIds, FineTuningStatus status, int? billableTrainedTokenCount, string trainingFileId, string validationFileId, int seed, IDictionary<string, string> metadata)
+        internal InternalFineTuningJob(string jobId, DateTimeOffset createdOn, string fineTunedModel, DateTimeOffset? finishedOn, FineTuningHyperparameters hyperparameters, string baseModel, string organizationId, IEnumerable<string> resultFileIds, FineTuningStatus status, int? billableTrainedTokenCount, string trainingFileId, string validationFileId, int seed, IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             JobId = jobId;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             FineTunedModel = fineTunedModel;
-            FinishedAt = finishedAt;
+            FinishedOn = finishedOn;
             Hyperparameters = hyperparameters;
             BaseModel = baseModel;
             OrganizationId = organizationId;
@@ -33,15 +33,15 @@ namespace OpenAI.FineTuning
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalFineTuningJob(string userProvidedSuffix, string jobId, DateTimeOffset createdAt, FineTuningError error, string fineTunedModel, DateTimeOffset? finishedAt, FineTuningHyperparameters hyperparameters, string baseModel, string @object, string organizationId, IReadOnlyList<string> resultFileIds, FineTuningStatus status, int? billableTrainedTokenCount, string trainingFileId, string validationFileId, IReadOnlyList<FineTuningIntegration> integrations, int seed, DateTimeOffset? estimatedFinishAt, FineTuningTrainingMethod @method, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFineTuningJob(string userProvidedSuffix, string jobId, DateTimeOffset createdOn, FineTuningError error, string fineTunedModel, DateTimeOffset? finishedOn, FineTuningHyperparameters hyperparameters, string baseModel, string @object, string organizationId, IReadOnlyList<string> resultFileIds, FineTuningStatus status, int? billableTrainedTokenCount, string trainingFileId, string validationFileId, IReadOnlyList<FineTuningIntegration> integrations, int seed, DateTimeOffset? estimatedFinishAt, FineTuningTrainingMethod @method, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             UserProvidedSuffix = userProvidedSuffix;
             JobId = jobId;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Error = error;
             FineTunedModel = fineTunedModel;
-            FinishedAt = finishedAt;
+            FinishedOn = finishedOn;
             Hyperparameters = hyperparameters;
             BaseModel = baseModel;
             _object = @object;
