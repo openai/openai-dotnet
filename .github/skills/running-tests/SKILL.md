@@ -41,20 +41,22 @@ when a recording is missing or stale. These settings avoid test runs that requir
 unavailable credentials; they are not a security boundary. Never request, read,
 accept, or use real API keys or other credentials.
 
-Every test invocation must explicitly set the test mode and the separate
-auto-recording setting. In PowerShell:
+Every agent test invocation must explicitly set the test mode and the separate
+auto-recording setting, and target only `./tests/OpenAI.Tests.csproj`. The full
+solution includes example projects that can bypass Playback and contact the live
+service. In PowerShell:
 
 ```powershell
 $env:CLIENTMODEL_TEST_MODE = "Playback"
 $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
-dotnet test OpenAI.slnx
+dotnet test ./tests/OpenAI.Tests.csproj
 ```
 
 In Bash:
 
 ```bash
 CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
-  dotnet test OpenAI.slnx
+  dotnet test ./tests/OpenAI.Tests.csproj
 ```
 
 If a recorded test needs new recordings or updated recordings, you must follow the instructions below to ask a human to capture them for you instead of trying to capture them yourself.
