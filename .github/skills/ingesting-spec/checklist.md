@@ -31,7 +31,7 @@ Use this checklist when performing a spec ingestion for any area.
 - [ ] Ignore warnings; only **errors** matter
 - [ ] If `prohibited-namespace` errors appear, add `[CodeGenType]` stubs — internal types go in `Internal/GeneratorStubs.cs`, public types go in `GeneratorStubs.cs` (see patterns-and-gotchas.md §5)
 - [ ] If client TSP fixes are needed, fix and re-run `./scripts/Invoke-CodeGen.ps1`
-- [ ] Resolve or report any remaining base spec compile errors according to the current ownership model
+- [ ] Resolve remaining base spec compile errors by updating `specification/base/typespec/` and/or handling them in the client TSP layer; document anything that must be deferred (do NOT file issues yourself)
 
 ## Custom C# Code Update
 
