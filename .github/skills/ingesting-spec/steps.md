@@ -272,7 +272,7 @@ model DotNetVariantB extends DotNetMyDiscriminatedModel {
 }
 ```
 
-3. List any type unions that could not be resolved via client models as suggested upstream issues
+3. List any type unions that could not be resolved via client models as follow-up items
 
 ---
 
