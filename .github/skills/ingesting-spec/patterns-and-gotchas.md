@@ -125,16 +125,14 @@ Both use the same namespace (`namespace OpenAI.{Area};`) — the `Internal` fold
 
 ---
 
-## 6. NEVER Modify the Base Spec
-
-> **CRITICAL:** The base spec at `specification/base/typespec/` must be an **exact copy** of the upstream spec from `microsoft/openai-openapi-pr`. Do NOT modify it for any reason — not for type unions, not for import paths, not for namespaces, not for suppression directives.
+## 6. Handling Base Spec Issues
 
 If there are issues with the base spec:
 
 | Issue | Solution |
 |------|----------|
-| **Type unions** that would generate binary data types | handle in `specification/client/models/{area}.models.tsp` using discriminator patterns. |
-| **Any other issues**| resolve in the client TSP layer if possible, or suggest them as upstream issues to be filed (do NOT file issues yourself) |
+| **Type unions** that would generate binary data types | Handle in `specification/client/models/{area}.models.tsp` using discriminator patterns where appropriate. |
+| **Any other issues**| Resolve according to the current ownership model, or suggest them as upstream issues to be filed (do NOT file issues yourself). |
 
 ---
 

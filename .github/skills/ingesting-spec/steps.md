@@ -22,22 +22,20 @@ Review the reference PRs to understand current patterns before proceeding.
    git sparse-checkout set packages/openai-typespec/src/{area} packages/openai-typespec/src/common
    Pop-Location
    ```
-2. Copy the **entire contents** of the area from the clone into the local spec:
+2. Copy the updated files for the area from the clone into the local spec:
    ```
    FROM: $tempDir/packages/openai-typespec/src/{area}/*
    TO:   specification/base/typespec/{area}/
    ```
-3. Replace all existing files in the local area directory with the upstream files.
-4. **Do NOT delete the temporary clone yet** — keep it until after the first successful compile (Step 4). If compile errors reference a type that doesn't exist locally, find its definition in the upstream `common/models.tsp` folder and copy **only that type definition** into the corresponding local common file — do NOT copy the entire file or folder:
+3. **Do NOT delete the temporary clone yet** — keep it until after the first successful compile (Step 4). If compile errors reference a type that doesn't exist locally, find its definition in the upstream `common/models.tsp` folder and copy the needed type definition into the corresponding local common file:
    ```powershell
    # Example: compile error says type "Foo" is not found
    # 1. Find the type definition in the upstream common files:
    Select-String -Path "$tempDir/packages/openai-typespec/src/common/*.tsp" -Pattern "model Foo|union Foo|enum Foo|alias Foo|scalar Foo"
-   # 2. Open that upstream file, copy ONLY the "Foo" type definition block
+   # 2. Open that upstream file and copy the "Foo" type definition block
    # 3. Paste it into the local file: specification/base/typespec/common/models.tsp (or whichever local common file is appropriate)
    ```
-   > **Do NOT** copy the entire upstream common `.tsp` file — only extract and add the specific missing type definition.
-5. **Delete the temporary clone** after compile succeeds and no more upstream files are needed:
+4. **Delete the temporary clone** after compile succeeds and no more upstream files are needed:
    ```powershell
    Remove-Item -Recurse -Force $tempDir
    ```
@@ -117,7 +115,7 @@ If the area has a client models file (`specification/client/models/{area}.models
 
 ---
 
-## Step 4: Compile and Verify — Report Issues (Do NOT Modify Base Spec)
+## Step 4: Compile and Verify
 
 After fixing the client TSP, run `Invoke-CodeGen.ps1` to compile and generate code in one step:
 
@@ -127,8 +125,6 @@ After fixing the client TSP, run `Invoke-CodeGen.ps1` to compile and generate co
 
 > **Do NOT run `npx tsp compile .` separately.** The `Invoke-CodeGen.ps1` script handles everything: `npm ci` → build codegen plugin → `npx tsp compile .` (which both compiles TypeSpec and runs code generation). If there are compile errors, the script will fail and show them — fix the errors and re-run the script.
 
-> **CRITICAL:** The base spec at `specification/base/typespec/` must remain an **exact copy** of the upstream spec. Do NOT modify it to fix compile errors. If there are issues, **report them** so they can be addressed upstream or in the client TSP layer.
-
 ### Expect ~200 Pre-existing Warnings
 
 The compile will produce **~200 warnings from other areas** (e.g., `union-enums-invalid-kind`, `multiple-response-types`). These are pre-existing and **not related to your ingestion**. Only **errors** matter.
@@ -137,10 +133,10 @@ A successful run shows `Found 0 errors` and `Found N warnings` where N is roughl
 
 ### What to look for and report:
 
-- **Missing types** — A type referenced in the new spec doesn't exist locally. Check if it exists in `common/` or another area upstream and needs to be copied over (as an exact copy).
+- **Missing types** — A type referenced in the new spec doesn't exist locally. Check whether it exists in `common/` or another area upstream and needs to be copied over.
 
 For each issue found, document it and determine if it can be resolved by:
-1. Copying additional files from upstream (e.g., updated `common/` types) — always as exact copies
+1. Copying additional files from upstream (e.g., updated `common/` types)
 2. Handling it in the client TSP layer (`specification/client/`)
 3. Suggesting it as an issue that should be filed against the upstream spec repo (do NOT file the issue yourself)
 
@@ -249,11 +245,10 @@ The script has three modes. **Use Default (no parameters)** since you already co
 
 ## Step 8: Handle Type Unions vs. Discriminators
 
-> **CRITICAL RULE:** The base spec must remain an exact copy of upstream. If the upstream spec contains type unions (e.g., `model Foo { bar: TypeA | TypeB; }`), do NOT modify the base spec — instead:
+When type unions (e.g., `model Foo { bar: TypeA | TypeB; }`) require discriminator patterns for the C# generator:
 
-1. **Keep the base spec as-is** (matching upstream exactly)
-2. **After generation, list** all types/properties that use type unions that would need discriminator patterns
-3. Handle discriminator patterns in the **client models TSP** (`specification/client/models/{area}.models.tsp`) where possible, using patterns like:
+1. **After generation, list** all types/properties that use type unions that would need discriminator patterns
+2. Handle discriminator patterns in the **client models TSP** (`specification/client/models/{area}.models.tsp`) where appropriate, using patterns like:
 
 ```typespec
 @usage(Usage.output | Usage.json)
@@ -277,7 +272,7 @@ model DotNetVariantB extends DotNetMyDiscriminatedModel {
 }
 ```
 
-4. List any type unions that could not be resolved via client models as suggested upstream issues
+3. List any type unions that could not be resolved via client models as suggested upstream issues
 
 ---
 
