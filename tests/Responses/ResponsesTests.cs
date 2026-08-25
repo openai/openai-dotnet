@@ -326,7 +326,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedResponsesClient();
 
-        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("What's the best way to cook a steak?")])
         {
             ReasoningOptions = new()
             {
@@ -350,6 +350,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
+
+        Assert.That(response.Usage, Is.Not.Null);
+        Assert.That(response.Usage.InputTokenDetails, Is.Not.Null);
+        Assert.That(response.Usage.InputTokenDetails.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(response.Usage.InputTokenDetails.CachedWriteTokens, Is.GreaterThanOrEqualTo(0));
+        Assert.That(response.Usage.OutputTokenDetails, Is.Not.Null);
+        Assert.That(response.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThan(0));
     }
 
     [RecordedTest]

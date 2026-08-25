@@ -1090,6 +1090,12 @@ model ResponseUsage {
      * [More on prompt caching](/docs/guides/prompt-caching).
      */
     cached_tokens: int32;
+
+    /**
+     * The number of input tokens newly wrtitten to the cache.
+     * [More on prompt caching](/docs/guides/prompt-caching).
+     */
+    cached_write_tokens: int32;
   };
 
   /** The number of output tokens. */

@@ -14,6 +14,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 - OpenAI.Responses:
   - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, or `AllTurns`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
+  - Added the `CachedWriteTokens` property to `ResponseInputTokenUsageDetails`, which reports the number of input tokens newly written to the prompt cache.
 
 ### Bugs Fixed
 
