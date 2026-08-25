@@ -58,12 +58,13 @@ To switch between test modes, set the `CLIENTMODEL_TEST_MODE` environment variab
 ### Running Tests in Playback Mode (Default)
 
 ```bash
-dotnet test OpenAI.slnx
+CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
+  dotnet test ./tests/OpenAI.Tests.csproj
 ```
 
 ### Running Tests in Record or Live Mode
 
-Only explicitly authorized human contributors may run Record or Live tests through an approved local process. Set the `OPENAI_API_KEY` environment variable and the test mode:
+Only explicitly authorized human contributors may run Record or Live tests through an approved local process. Full-solution runs intentionally include examples that bypass recording and make live requests; authorize those live calls before running either command. Set the `OPENAI_API_KEY` environment variable and the test mode:
 
 ```powershell
 $env:OPENAI_API_KEY = "your-api-key"
@@ -155,7 +156,7 @@ This updates the corresponding snippets in markdown documentation files.
 
 Before submitting a pull request, please ensure:
 
-- [ ] All tests pass (`dotnet test OpenAI.slnx`)
+- [ ] All tests pass (`CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true dotnet test ./tests/OpenAI.Tests.csproj`)
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)

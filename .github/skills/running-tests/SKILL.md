@@ -128,11 +128,14 @@ authorized humans only; agents and ordinary CI must never run them.
 
 ```powershell
 $env:CLIENTMODEL_TEST_MODE = "Record"  # Use "Live" only when explicitly authorized.
-dotnet test OpenAI.slnx
+dotnet test ./tests/OpenAI.Tests.csproj `
+  -- NUnit.Where="test == 'Namespace.TestClass.TestMethodName'"
 ```
 
 ```bash
-CLIENTMODEL_TEST_MODE=Record dotnet test OpenAI.slnx
+CLIENTMODEL_TEST_MODE=Record \
+  dotnet test ./tests/OpenAI.Tests.csproj \
+  -- NUnit.Where="test == 'Namespace.TestClass.TestMethodName'"
 ```
 
 Before staging, committing, pushing, uploading, or otherwise publishing a
