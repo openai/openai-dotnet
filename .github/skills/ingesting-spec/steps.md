@@ -57,13 +57,16 @@ Each area typically contains:
 
 **Before compiling**, update the client TSP files to fix broken references caused by the new base spec. This avoids unnecessary compile errors from stale client TSP references.
 
-The client TSP files (`specification/client/{area}.client.tsp`) contain:
+The client TSP files (`specification/client/{area}.client.tsp`) contain decorators from `Azure.ClientGenerator.Core`:
+
 - `@@clientName` — renames operations/types for C# conventions
 - `@@clientLocation` — assigns operations to specific client classes (replaces the `interface` pattern)
 - `@@visibility` — controls property visibility
 - `@@alternateType` — overrides property types
 - `@@usage` — controls model usage pattern
 - `@@dynamicModel` — marks models for dynamic serialization (JsonPatch)
+
+Put API definitions and all other TypeSpec changes in `specification/base/typespec/`.
 
 ### 3a. Why `@@clientLocation` is Required
 
@@ -136,8 +139,8 @@ A successful run shows `Found 0 errors` and `Found N warnings` where N is roughl
 - **Missing types** — A type referenced in the new spec doesn't exist locally. Check whether it exists in `common/` or another area upstream and needs to be copied over.
 
 For each issue found, document it and determine if it can be resolved by:
-1. Updating the local base spec under `specification/base/typespec/` (copy from upstream if needed, but apply fixes here when appropriate)
-2. Handling it in the client TSP layer (`specification/client/`)
+1. Updating the local base spec under `specification/base/typespec/` (copy from upstream if needed). Put API definitions and all TypeSpec changes other than `Azure.ClientGenerator.Core` decorators here.
+2. Adding an `Azure.ClientGenerator.Core` decorator in the client TSP layer (`specification/client/`).
 3. Documenting it as a follow-up item if neither approach is appropriate (do NOT file issues yourself)
 
 If you fix additional client TSP issues, re-run the compile to verify.
