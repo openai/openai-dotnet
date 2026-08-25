@@ -131,7 +131,7 @@ If there are issues with the base spec:
 
 | Issue | Solution |
 |------|----------|
-| **Type unions** that would generate binary data types | Replace with discriminator patterns in `specification/base/typespec/` where appropriate. |
+| **Type unions** that would generate binary data types | Replace with discriminator patterns where appropriate. |
 | **Any other issues** | Update `specification/base/typespec/`, unless the change is an `Azure.ClientGenerator.Core` decorator, which belongs in `specification/client/`; otherwise document it as a follow-up item (do NOT file issues yourself). |
 
 ---
