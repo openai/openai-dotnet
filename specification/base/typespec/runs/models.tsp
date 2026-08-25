@@ -1,7 +1,3 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
 
 import "../assistants";
 import "../messages";
