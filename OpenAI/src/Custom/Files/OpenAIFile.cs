@@ -49,5 +49,6 @@ public partial class OpenAIFile
     public DateTimeOffset CreatedAt { get; }
 
     [CodeGenMember("ExpiresOn")]
+    [Experimental("OPENAI001")]
     public DateTimeOffset? ExpiresAt { get; }
 }
