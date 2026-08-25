@@ -55,9 +55,7 @@ Note that the code examples included below were written using [.NET 10](https://
 
 ### Experimental APIs
 
-Some client APIs are marked with `[Experimental]` while they undergo iteration and may introduce breaking compile-time or behavioral changes. To use an experimental API, you must acknowledge this risk by suppressing its compiler warning using your preferred approach. See [Suppress code analysis warnings](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/suppress-warnings) for guidance.
-
-The designation describes the lifecycle of the client API only. It does not communicate the state of the REST API feature, its quality or reliability, or its supportability. Stable APIs carry a strong backward-compatibility commitment. Consult the [OpenAI platform API reference](https://developers.openai.com/api/reference/overview) for service documentation and the [feature lifecycle](https://github.com/openai/openai-dotnet/wiki/%F0%9F%93%A6-Feature-Lifecycle-in-the-OpenAI-.NET-Client-Library) for this library's API lifecycle.
+Some client APIs are marked with `[Experimental]` while their .NET design is still evolving. Using one produces a compiler error that you must explicitly suppress for its diagnostic ID. See [Preview APIs](https://learn.microsoft.com/dotnet/fundamentals/apicompat/preview-apis) for .NET guidance and [Feature lifecycle](./docs/FeatureLifecycle.md) for how OpenAI .NET APIs are introduced and promoted to stable.
 
 ## Using the client library
 
@@ -706,7 +704,7 @@ In this example, you have a JSON document with the monthly sales information of 
 
 To achieve this, use both `OpenAIFileClient` from the `OpenAI.Files` namespace and `AssistantClient` from the `OpenAI.Assistants` namespace.
 
-Important: `AssistantClient` is attributed as `[Experimental]`. See [Experimental APIs](#experimental-apis) for what this designation means and how to acknowledge its compiler warning.
+Important: `AssistantClient` is attributed as `[Experimental]`. See [Experimental APIs](#experimental-apis) for what this designation means and how to acknowledge its compiler error.
 
 ```C# Snippet:ReadMe_Assistants_CreateClients
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
