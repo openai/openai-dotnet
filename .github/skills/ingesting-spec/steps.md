@@ -57,9 +57,7 @@ Each area typically contains:
 
 **Before compiling**, update the client TSP files to fix broken references caused by the new base spec. This avoids unnecessary compile errors from stale client TSP references.
 
-The client TSP files (`specification/client/{area}.client.tsp`) contain:
-
-decorators from `Azure.ClientGenerator.Core`:
+The client TSP files (`specification/client/{area}.client.tsp`) contain decorators from `Azure.ClientGenerator.Core`:
 
 - `@@clientName` — renames operations/types for C# conventions
 - `@@clientLocation` — assigns operations to specific client classes (replaces the `interface` pattern)
