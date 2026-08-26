@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    This project is a NuGet/MSBuild reference resolver, not a product build.
+    Export-Api.ps1 supplies, for example:
+
+      ReleasedApiVersion=2.13.0
+      ReleasedApiTargetFramework=net8.0
+
+    and invokes ResolveReferences with -getItem:ReferencePath. MSBuild then emits
+    the exact compile-time files selected for that package/TFM, including
+    framework reference assemblies and transitive package dependencies. Keeping
+    this logic in the SDK avoids reimplementing NuGet asset selection by parsing
+    project.assets.json in PowerShell.
+  -->
+  <PropertyGroup>
+    <TargetFramework>$(ReleasedApiTargetFramework)</TargetFramework>
+
+    <!--
+      The released package must use its historical dependency graph. If central
+      package management remained enabled, current repository pins could replace
+      versions requested by OpenAI 2.13.0; for example, System.ClientModel 1.15.0
+      could replace the package's 1.14.0 dependency and change metadata loading.
+    -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+
+    <!-- No source is compiled or packed; ResolveReferences is the only workload. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!--
+      Restoring OpenAI a second time is intentional. The independently downloaded
+      .nupkg remains the analyzed API authority, while this reference gives NuGet
+      enough information to calculate dependencies. Export-Api.ps1 verifies that
+      the restored OpenAI.dll matches the downloaded lib/<tfm>/OpenAI.dll.
+    -->
+    <PackageReference Include="OpenAI" Version="$(ReleasedApiVersion)" />
+  </ItemGroup>
+
+  <!-- Fail with a focused message when the helper is invoked outside the script. -->
+  <Target Name="ValidateReleasedApiProperties" BeforeTargets="Restore;ResolveReferences">
+    <Error Condition="'$(ReleasedApiVersion)' == ''"
+           Text="ReleasedApiVersion is required." />
+    <Error Condition="'$(ReleasedApiTargetFramework)' == ''"
+           Text="ReleasedApiTargetFramework is required." />
+  </Target>
+</Project>

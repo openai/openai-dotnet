@@ -2,6 +2,13 @@
   "version": 1,
   "isRoot": true,
   "tools": {
+    "microsoft.dotnet.genapi.tool": {
+      "version": "10.0.300-preview.0.26072.115",
+      "commands": [
+        "genapi"
+      ],
+      "rollForward": false
+    },
     "Azure.Sdk.Tools.SnippetGenerator": {
       "version": "1.0.0-dev.20260811.3",
       "commands": [
