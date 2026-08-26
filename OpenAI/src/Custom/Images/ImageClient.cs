@@ -19,8 +19,12 @@ namespace OpenAI.Images;
 [CodeGenSuppress("ImageClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("GenerateImagesAsync", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateImages", typeof(ImageGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImagesStreamingAsync", typeof(ImageGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImagesStreaming", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageEdits), typeof(ImageEditOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageEditsAsync), typeof(ImageEditOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImageEditsStreamingAsync", typeof(ImageEditOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImageEditsStreaming", typeof(ImageEditOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageVariations), typeof(ImageVariationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageVariationsAsync), typeof(ImageVariationOptions), typeof(CancellationToken))]
 public partial class ImageClient

@@ -35,12 +35,14 @@ namespace OpenAI.Audio {
         public virtual ClientResult DeleteVoiceConsent(string consentId, RequestOptions options = null);
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult> DeleteVoiceConsentAsync(string consentId, RequestOptions options = null);
+        public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<BinaryData> GenerateSpeech(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [Experimental("SCME0005")]
-        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual AsyncStreamingClientResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null);
         [Experimental("OPENAI001")]
         public virtual Task<AsyncStreamingClientResult<StreamingSpeechUpdate>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]

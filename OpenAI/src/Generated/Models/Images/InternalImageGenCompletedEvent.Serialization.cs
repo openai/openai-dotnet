@@ -155,10 +155,10 @@ namespace OpenAI.Images
             string kind = default;
             BinaryData b64Json = default;
             DateTimeOffset createdOn = default;
-            InternalCreateImageSize1 size = default;
-            InternalCreateImageQuality1 quality = default;
-            InternalCreateImageBackground1 background = default;
-            InternalCreateImageOutputFormat1 outputFormat = default;
+            InternalCreateImageStreamingSize1 size = default;
+            InternalCreateImageStreamingQuality1 quality = default;
+            InternalCreateImageStreamingBackground1 background = default;
+            InternalCreateImageStreamingOutputFormat1 outputFormat = default;
             InternalImagesUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -180,22 +180,22 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("size"u8))
                 {
-                    size = new InternalCreateImageSize1(prop.Value.GetString());
+                    size = new InternalCreateImageStreamingSize1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
                 {
-                    quality = new InternalCreateImageQuality1(prop.Value.GetString());
+                    quality = new InternalCreateImageStreamingQuality1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
                 {
-                    background = new InternalCreateImageBackground1(prop.Value.GetString());
+                    background = new InternalCreateImageStreamingBackground1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
                 {
-                    outputFormat = new InternalCreateImageOutputFormat1(prop.Value.GetString());
+                    outputFormat = new InternalCreateImageStreamingOutputFormat1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))

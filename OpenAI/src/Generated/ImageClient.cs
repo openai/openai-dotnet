@@ -22,26 +22,60 @@ namespace OpenAI.Images
 
         public ClientPipeline Pipeline { get; }
 
-#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        [Experimental("SCME0005")]
-        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImageEditsAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        public virtual ClientResult GenerateImageEdits(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
             Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateGenerateImageEditsRequest(content, contentType, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GenerateImageEditsAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
+
+            using PipelineMessage message = CreateGenerateImageEditsRequest(content, contentType, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        [Experimental("OPENAI001")]
+        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImageEditsStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
+
+            using PipelineMessage message = CreateGenerateImageEditsStreamingRequest(content, contentType, options);
             message.BufferResponse = false;
             return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 #pragma warning restore SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        [Experimental("SCME0005")]
-        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImagesAsync(BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult GenerateImages(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateGenerateImagesRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GenerateImagesAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateGenerateImagesRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        [Experimental("OPENAI001")]
+        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImagesStreamingAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateGenerateImagesStreamingRequest(content, options);
             message.BufferResponse = false;
             return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
