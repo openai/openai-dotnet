@@ -12,11 +12,16 @@ on:
       - 'package.json'
       - 'global.json'
       - 'package-lock.json'
+      - '.config/dotnet-tools.json'
       - '.github/workflows/integrity-checks.yml'
       - 'scripts/Invoke-CodeGen.ps1'
       - 'scripts/Export-Api.ps1'
+      - 'scripts/ApiExport/**'
       - 'api/**'
+      - 'Directory.Build.props'
       - 'Directory.Build.targets'
+      - 'Directory.Packages.props'
+      - 'nuget.config'
       - 'tests/Snippets/**'
       - 'README.md'
       - 'scripts/Update-Snippets.ps1'
@@ -109,6 +114,38 @@ jobs:
         uses: ./.github/actions/check-uncommitted-changes
         with:
           error-message: "API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
+
+  validate-released-api-export:
+    name: Validate released API export
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run released Export-Api script
+        shell: pwsh
+        run: |
+          Write-Host "Running released API export validation..."
+          ./scripts/Export-Api.ps1 -Released
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Released API export failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+
+          Write-Host "Released API export completed successfully!"
+
+      - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "Released API export produced changes. Please run './scripts/Export-Api.ps1 -Released' locally and commit the results."
 
   validate-snippets:
     name: Validate documentation snippets
