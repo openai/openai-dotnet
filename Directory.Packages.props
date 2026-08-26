@@ -23,7 +23,7 @@
   <!-- Test-Only Dependencies -->
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
     <PackageVersion Include="Azure.Core" Version="1.62.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.8.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
     <PackageVersion Include="NUnit" Version="4.6.1" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
     <PackageVersion Include="System.Linq.AsyncEnumerable" Version="10.0.11" />
