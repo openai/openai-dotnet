@@ -211,7 +211,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveAnnotationsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
                 {
                     return false;
                 }
@@ -225,7 +225,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveLogprobsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
                 {
                     return false;
                 }
@@ -244,7 +244,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
                 {
                     return false;
                 }
@@ -255,7 +255,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
                 {
                     return false;
                 }

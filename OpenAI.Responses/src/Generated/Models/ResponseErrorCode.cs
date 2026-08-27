@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         private const string InvalidImageValue = "invalid_image";
         private const string InvalidImageFormatValue = "invalid_image_format";
         private const string InvalidBase64ImageValue = "invalid_base64_image";
-        private const string InvalidImageUrlValue = "invalid_image_url";
+        private const string InvalidImageUriValue = "invalid_image_url";
         private const string ImageTooLargeValue = "image_too_large";
         private const string ImageTooSmallValue = "image_too_small";
         private const string ImageParseErrorValue = "image_parse_error";
@@ -53,7 +53,7 @@ namespace OpenAI.Responses
 
         public static ResponseErrorCode InvalidBase64Image { get; } = new ResponseErrorCode(InvalidBase64ImageValue);
 
-        public static ResponseErrorCode InvalidImageUrl { get; } = new ResponseErrorCode(InvalidImageUrlValue);
+        public static ResponseErrorCode InvalidImageUri { get; } = new ResponseErrorCode(InvalidImageUriValue);
 
         public static ResponseErrorCode ImageTooLarge { get; } = new ResponseErrorCode(ImageTooLargeValue);
 

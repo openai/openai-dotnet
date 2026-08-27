@@ -81,12 +81,12 @@ namespace OpenAI.Chat
             if (Optional.IsDefined(AudioBytesUpdate) && !Patch.Contains("$.data"u8))
             {
                 writer.WritePropertyName("data"u8);
-                writer.WriteBase64StringValue(AudioBytesUpdate.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytesUpdate, "D");
             }
-            if (Optional.IsDefined(ExpiresAt) && !Patch.Contains("$.expires_at"u8))
+            if (Optional.IsDefined(ExpiresOn) && !Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
 
             Patch.WriteTo(writer);
@@ -115,7 +115,7 @@ namespace OpenAI.Chat
             string id = default;
             string transcriptUpdate = default;
             BinaryData audioBytesUpdate = default;
-            DateTimeOffset? expiresAt = default;
+            DateTimeOffset? expiresOn = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -146,12 +146,12 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresAt, patch);
+            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresOn, patch);
         }
     }
 }

@@ -76,7 +76,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytes, "D");
             }
             if (Optional.IsDefined(Transcript) && !Patch.Contains("$.transcript"u8))
             {

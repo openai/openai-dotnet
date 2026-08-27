@@ -8,10 +8,13 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartAudio : ChatMessageContentPart
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionRequestMessageContentPartAudio(InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio)
         {
             InputAudio = inputAudio;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionRequestMessageContentPartAudio(in JsonPatch patch, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio) : base(patch)

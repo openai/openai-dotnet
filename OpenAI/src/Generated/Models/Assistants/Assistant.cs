@@ -14,10 +14,10 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal Assistant(string id, DateTimeOffset createdAt, string name, string description, string model, string instructions)
+        internal Assistant(string id, DateTimeOffset createdOn, string name, string description, string model, string instructions)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Name = name;
             Description = description;
             Model = model;
@@ -26,12 +26,12 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal Assistant(string id, string @object, DateTimeOffset createdAt, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal Assistant(string id, string @object, DateTimeOffset createdOn, string name, string description, string model, string instructions, IReadOnlyList<ToolDefinition> tools, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Name = name;
             Description = description;
             Model = model;
@@ -47,7 +47,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string Name { get; }
 

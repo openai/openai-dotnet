@@ -113,7 +113,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
                 writer.WritePropertyName("result"u8);
-                writer.WriteBase64StringValue(ImageResultBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(ImageResultBytes, "D");
             }
             else if (!Patch.Contains("$.result"u8))
             {

@@ -10,11 +10,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemRetrieved : RealtimeServerUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemRetrieved(string eventId, RealtimeItem item) : base(InternalRealtimeServerEventTypeGA.ConversationItemRetrieved)
         {
             EventId = eventId;
             Item = item;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemRetrieved(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeItem item) : base(kind, patch)

@@ -17,13 +17,16 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionMessageList(IEnumerable<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalChatCompletionMessageList(string @object, IList<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)

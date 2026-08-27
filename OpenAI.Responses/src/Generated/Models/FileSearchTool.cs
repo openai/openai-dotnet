@@ -14,12 +14,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileSearchTool : ResponseTool
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public FileSearchTool(IEnumerable<string> vectorStoreIds) : base(ResponseToolKind.FileSearch)
         {
             Argument.AssertNotNull(vectorStoreIds, nameof(vectorStoreIds));
 
             VectorStoreIds = vectorStoreIds.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal FileSearchTool(ResponseToolKind kind, in JsonPatch patch, IList<string> vectorStoreIds, int? maxResultCount, FileSearchToolRankingOptions rankingOptions, BinaryData filters) : base(kind, patch)

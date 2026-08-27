@@ -99,17 +99,17 @@ namespace OpenAI.Containers
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (!Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status);
             }
-            if (Optional.IsDefined(LastActiveAt) && !Patch.Contains("$.last_active_at"u8))
+            if (Optional.IsDefined(LastActiveOn) && !Patch.Contains("$.last_active_at"u8))
             {
                 writer.WritePropertyName("last_active_at"u8);
-                writer.WriteNumberValue(LastActiveAt.Value, "U");
+                writer.WriteNumberValue(LastActiveOn.Value, "U");
             }
             if (Optional.IsDefined(ExpirationPolicy) && !Patch.Contains("$.expires_after"u8))
             {
@@ -153,9 +153,9 @@ namespace OpenAI.Containers
             string id = default;
             string @object = default;
             string name = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string status = default;
-            DateTimeOffset? lastActiveAt = default;
+            DateTimeOffset? lastActiveOn = default;
             ContainerExpirationPolicy expirationPolicy = default;
             ContainerMemoryLimit? memoryLimit = default;
             ContainerNetworkPolicy networkPolicy = default;
@@ -181,7 +181,7 @@ namespace OpenAI.Containers
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -195,7 +195,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    lastActiveAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    lastActiveOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("expires_after"u8))
@@ -231,9 +231,9 @@ namespace OpenAI.Containers
                 id,
                 @object,
                 name,
-                createdAt,
+                createdOn,
                 status,
-                lastActiveAt,
+                lastActiveOn,
                 expirationPolicy,
                 memoryLimit,
                 networkPolicy,

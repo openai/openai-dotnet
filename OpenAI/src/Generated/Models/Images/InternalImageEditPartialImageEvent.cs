@@ -11,10 +11,10 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageEditPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageEditSize size, InternalCreateImageEditQuality quality, InternalCreateImageEditBackground background, InternalCreateImageEditOutputFormat outputFormat, int partialImageIndex)
+        internal InternalImageEditPartialImageEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageEditSize size, InternalCreateImageEditQuality quality, InternalCreateImageEditBackground background, InternalCreateImageEditOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Size = size;
             Quality = quality;
             Background = background;
@@ -22,11 +22,11 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageEditPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageEditSize size, InternalCreateImageEditQuality quality, InternalCreateImageEditBackground background, InternalCreateImageEditOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageEditPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageEditSize size, InternalCreateImageEditQuality quality, InternalCreateImageEditBackground background, InternalCreateImageEditOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Size = size;
             Quality = quality;
             Background = background;
@@ -39,7 +39,7 @@ namespace OpenAI.Images
 
         public BinaryData B64Json { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         internal InternalCreateImageEditSize Size { get; }
 

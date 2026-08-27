@@ -208,7 +208,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveToolDefinitionsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
                 {
                     return false;
                 }
@@ -227,7 +227,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
                 {
                     return false;
                 }

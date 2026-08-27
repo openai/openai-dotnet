@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -49,6 +50,13 @@ namespace OpenAI.Images
 
         string IPersistableModel<InternalImageEditCompletedEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
+        public static explicit operator InternalImageEditCompletedEvent(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalImageEditCompletedEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalImageEditCompletedEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -71,12 +79,12 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(B64Json.ToArray(), "D");
+                writer.WriteBase64StringValue(B64Json, "D");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -146,7 +154,7 @@ namespace OpenAI.Images
             }
             string kind = default;
             BinaryData b64Json = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             InternalCreateImageEditSize1 size = default;
             InternalCreateImageEditQuality1 quality = default;
             InternalCreateImageEditBackground1 background = default;
@@ -167,7 +175,7 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
@@ -201,7 +209,7 @@ namespace OpenAI.Images
             return new InternalImageEditCompletedEvent(
                 kind,
                 b64Json,
-                createdAt,
+                createdOn,
                 size,
                 quality,
                 background,

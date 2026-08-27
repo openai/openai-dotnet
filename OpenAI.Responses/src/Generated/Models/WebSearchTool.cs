@@ -10,9 +10,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchTool : ResponseTool
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public WebSearchTool() : this(ResponseToolKind.WebSearch, default, null, null, default)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal WebSearchTool(ResponseToolKind kind, in JsonPatch patch, WebSearchToolFilters filters, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, patch)

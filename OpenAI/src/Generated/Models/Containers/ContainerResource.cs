@@ -16,23 +16,26 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ContainerResource(string id, string name, DateTimeOffset createdAt, string status)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ContainerResource(string id, string name, DateTimeOffset createdOn, string status)
         {
             Id = id;
             Name = name;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Status = status;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status, DateTimeOffset? lastActiveAt, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
+        internal ContainerResource(string id, string @object, string name, DateTimeOffset createdOn, string status, DateTimeOffset? lastActiveOn, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
             Name = name;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Status = status;
-            LastActiveAt = lastActiveAt;
+            LastActiveOn = lastActiveOn;
             ExpirationPolicy = expirationPolicy;
             MemoryLimit = memoryLimit;
             NetworkPolicy = networkPolicy;
@@ -52,11 +55,11 @@ namespace OpenAI.Containers
 
         public string Name { get; set; }
 
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
         public string Status { get; set; }
 
-        public DateTimeOffset? LastActiveAt { get; set; }
+        public DateTimeOffset? LastActiveOn { get; set; }
 
         public ContainerExpirationPolicy ExpirationPolicy { get; set; }
 

@@ -96,7 +96,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("vector_store_id") != true)
             {
@@ -192,7 +192,7 @@ namespace OpenAI.VectorStores
             string fileId = default;
             string @object = default;
             long? usageInBytes = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string vectorStoreId = default;
             VectorStoreFileStatus status = default;
             VectorStoreFileError lastError = default;
@@ -223,7 +223,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("vector_store_id"u8))
@@ -283,7 +283,7 @@ namespace OpenAI.VectorStores
                 fileId,
                 @object,
                 usageInBytes,
-                createdAt,
+                createdOn,
                 vectorStoreId,
                 status,
                 lastError,

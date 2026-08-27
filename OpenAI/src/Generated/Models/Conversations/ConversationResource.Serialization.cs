@@ -129,7 +129,7 @@ namespace OpenAI.Conversations
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
 
             Patch.WriteTo(writer);
@@ -158,7 +158,7 @@ namespace OpenAI.Conversations
             string id = default;
             string @object = default;
             IDictionary<string, string> metadata = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -198,12 +198,12 @@ namespace OpenAI.Conversations
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ConversationResource(id, @object, metadata, createdAt, patch);
+            return new ConversationResource(id, @object, metadata, createdOn, patch);
         }
     }
 }
