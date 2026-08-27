@@ -10,9 +10,12 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - JS van Dijk _([GitHub](https://github.com/hogeheer499-commits))_
 - Rohan Santhosh Kumar _([GitHub](https://github.com/Rohan5commit))_
 - King Star _([GitHub](https://github.com/jstar0))_
+- Trask Stalnaker _([GitHub](https://github.com/trask))_
 
 ### Features Added
 
+- OpenAI.Chat:
+  - Added opt-in support for the latest experimental OpenTelemetry GenAI semantic conventions supported by this library. Set `OTEL_SEMCONV_STABILITY_OPT_IN` to include `gen_ai_latest_experimental` to emit `gen_ai.provider.name` instead of `gen_ai.system`. The default remains compatible with OpenTelemetry GenAI Semantic Conventions v1.27.0. _(A community contribution, courtesy of [trask](https://github.com/trask))_
 - OpenAI.Responses:
   - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, or `AllTurns`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
 

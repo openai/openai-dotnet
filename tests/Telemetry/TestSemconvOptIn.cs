@@ -3,8 +3,7 @@ using System;
 namespace OpenAI.Tests.Telemetry;
 
 /// <summary>
-/// Test helper that enables the latest GenAI semantic conventions by setting
-/// the OTEL_SEMCONV_STABILITY_OPT_IN environment variable.
+/// Temporarily sets the OTEL_SEMCONV_STABILITY_OPT_IN environment variable.
 /// Restores the original value on dispose.
 /// Must be used before constructing <see cref="OpenAI.Telemetry.OpenTelemetrySource"/>.
 /// </summary>
@@ -20,12 +19,14 @@ internal class TestSemconvOptIn : IDisposable
         Environment.SetEnvironmentVariable(EnvVarName, envValue);
     }
 
-    /// <summary>
-    /// Enables the latest GenAI semantic conventions for the duration of the test.
-    /// </summary>
-    public static IDisposable EnableLatestGenAiSemconv()
+    public static IDisposable SetLatestGenAiSemconv(bool enabled)
     {
-        return new TestSemconvOptIn("gen_ai_latest_experimental");
+        return new TestSemconvOptIn(enabled ? "gen_ai_latest_experimental" : null);
+    }
+
+    public static IDisposable SetSemconvOptIn(string value)
+    {
+        return new TestSemconvOptIn(value);
     }
 
     public void Dispose()

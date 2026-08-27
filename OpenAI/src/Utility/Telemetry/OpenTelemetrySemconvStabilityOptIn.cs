@@ -15,7 +15,7 @@ internal static class OpenTelemetrySemconvStabilityOptIn
 
     /// <summary>
     /// When true, the instrumentation emits the latest experimental GenAI
-    /// semantic conventions.
+    /// semantic conventions supported by this library version.
     /// When false (default), the instrumentation continues to emit v1.27.0 conventions.
     /// </summary>
     public static bool IsLatestGenAiSemconvEnabled => ParseOptIn();

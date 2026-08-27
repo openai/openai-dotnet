@@ -56,7 +56,7 @@ public class ChatTelemetryTests
     public void MetricsOnTracingOff(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var _semconv = useLatestSemconv ? TestSemconvOptIn.EnableLatestGenAiSemconv() : null;
+        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
 
@@ -87,7 +87,7 @@ public class ChatTelemetryTests
     public void MetricsOnTracingOffException(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var _semconv = useLatestSemconv ? TestSemconvOptIn.EnableLatestGenAiSemconv() : null;
+        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var meterListener = new TestMeterListener("OpenAI.ChatClient");
@@ -106,7 +106,7 @@ public class ChatTelemetryTests
     public void TracingOnMetricsOff(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var _semconv = useLatestSemconv ? TestSemconvOptIn.EnableLatestGenAiSemconv() : null;
+        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
@@ -165,7 +165,7 @@ public class ChatTelemetryTests
     public void ChatTracingException(bool useLatestSemconv)
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var _semconv = useLatestSemconv ? TestSemconvOptIn.EnableLatestGenAiSemconv() : null;
+        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(useLatestSemconv);
 
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
@@ -179,6 +179,17 @@ public class ChatTelemetryTests
         Assert.That(Activity.Current, Is.Null);
 
         ValidateChatActivity(listener.Activities.Single(), error, RequestModel, Host, Port, useLatestSemconv: useLatestSemconv);
+    }
+
+    [TestCase("gen_ai_latest_experimental", true)]
+    [TestCase("http/dup, gen_ai_latest_experimental", true)]
+    [TestCase("http/dup", false)]
+    [TestCase("", false)]
+    public void SemconvStabilityOptInParsing(string value, bool expected)
+    {
+        using var _ = TestSemconvOptIn.SetSemconvOptIn(value);
+
+        Assert.That(OpenTelemetrySemconvStabilityOptIn.IsLatestGenAiSemconvEnabled, Is.EqualTo(expected));
     }
 
     [Test]

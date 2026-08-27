@@ -54,14 +54,14 @@ Check out [OpenTelemetry documentation](https://opentelemetry.io/docs/languages/
 
 By default, the instrumentation emits telemetry following [OpenTelemetry GenAI Semantic Conventions v1.27.0](https://github.com/open-telemetry/semantic-conventions/tree/v1.27.0/docs/gen-ai).
 
-To opt in to the latest experimental GenAI semantic conventions, set the `OTEL_SEMCONV_STABILITY_OPT_IN` environment variable to include `gen_ai_latest_experimental` (comma-separated if combined with other values):
+To opt in to the latest experimental GenAI semantic conventions supported by this library version, set the `OTEL_SEMCONV_STABILITY_OPT_IN` environment variable to include `gen_ai_latest_experimental` (comma-separated if combined with other values):
 
 ```
 OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental
 ```
 
 When this opt-in is enabled, the instrumentation emits attributes following the
-[latest conventions](https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai).
+[latest supported conventions](https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai).
 Notable changes include:
 
 - The `gen_ai.system` attribute is replaced by `gen_ai.provider.name`.
