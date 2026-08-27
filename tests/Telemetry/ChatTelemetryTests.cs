@@ -264,6 +264,9 @@ public class ChatTelemetryTests
         var duration = listener.GetInstrument("gen_ai.client.operation.duration");
         Assert.That(duration, Is.Not.Null);
         Assert.That(duration, Is.InstanceOf<Histogram<double>>());
+        Assert.That(
+            ((Histogram<double>)duration).Advice.HistogramBucketBoundaries,
+            Is.EqualTo(new double[] { 0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48, 40.96, 81.92 }));
 
         var measurements = listener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.That(measurements, Is.Not.Null);
@@ -282,6 +285,9 @@ public class ChatTelemetryTests
         var usage = listener.GetInstrument("gen_ai.client.token.usage");
         Assert.That(usage, Is.Not.Null);
         Assert.That(usage, Is.InstanceOf<Histogram<long>>());
+        Assert.That(
+            ((Histogram<long>)usage).Advice.HistogramBucketBoundaries,
+            Is.EqualTo(new long[] { 1, 4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864 }));
 
         var measurements = listener.GetMeasurements("gen_ai.client.token.usage");
         Assert.That(measurements, Is.Not.Null);
