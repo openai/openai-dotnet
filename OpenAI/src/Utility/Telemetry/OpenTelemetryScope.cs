@@ -40,24 +40,24 @@ internal class OpenTelemetryScope : IDisposable
 
     public static OpenTelemetryScope StartChat(string model, string operationName,
         string serverAddress, int serverPort, ChatCompletionOptions options,
-        string systemKey)
+        string providerAttributeKey)
     {
         if (IsChatEnabled)
         {
             var scope = new OpenTelemetryScope(model, operationName, serverAddress, serverPort);
-            scope.StartChat(options, systemKey);
+            scope.StartChat(options, providerAttributeKey);
             return scope;
         }
 
         return null;
     }
 
-    private void StartChat(ChatCompletionOptions options, string systemKey)
+    private void StartChat(ChatCompletionOptions options, string providerAttributeKey)
     {
         _duration = Stopwatch.StartNew();
         _commonTags = new TagList
         {
-            { systemKey, GenAiSystemValue },
+            { providerAttributeKey, GenAiSystemValue },
             { GenAiRequestModelKey, _requestModel },
             { ServerAddressKey, _serverAddress },
             { ServerPortKey, _serverPort },

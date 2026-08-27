@@ -9,7 +9,7 @@ internal class OpenTelemetrySource
     private readonly bool IsOTelEnabled = AppContextSwitchHelper
         .GetConfigValue("OpenAI.Experimental.EnableOpenTelemetry", "OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY");
 
-    private readonly string _systemKey = OpenTelemetrySemconvStabilityOptIn.IsLatestGenAiSemconvEnabled
+    private readonly string _providerAttributeKey = OpenTelemetrySemconvStabilityOptIn.IsLatestGenAiSemconvEnabled
         ? OpenTelemetryConstants.GenAiProviderNameKey
         : OpenTelemetryConstants.GenAiSystemKey;
 
@@ -27,7 +27,7 @@ internal class OpenTelemetrySource
     public OpenTelemetryScope StartChatScope(ChatCompletionOptions completionsOptions)
     {
         return IsOTelEnabled
-            ? OpenTelemetryScope.StartChat(_model, ChatOperationName, _serverAddress, _serverPort, completionsOptions, _systemKey)
+            ? OpenTelemetryScope.StartChat(_model, ChatOperationName, _serverAddress, _serverPort, completionsOptions, _providerAttributeKey)
             : null;
     }
 
