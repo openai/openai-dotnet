@@ -41,28 +41,7 @@ If a TypeSpec model is renamed from `FooBar` to `BazQux`, update:
 
 ---
 
-## 3. Numeric Type Conversions
-
-TypeSpec's `integer` type maps to `long` in C# by default. The `NumericTypesVisitor` (at `codegen/generator/src/Visitors/NumericTypesVisitor.cs`) converts:
-- `long` → `int`
-- `double` → `float`
-
-for all generated properties unless explicitly excluded.
-
-**After code generation, you MUST review the generated numeric properties.** If a property genuinely requires `long` (e.g., byte counts, large IDs) or `double` (high-precision values), add it to the exclusion list in the NumericTypesVisitor:
-
-```csharp
-private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
-{
-    "OpenAI.{Area}.{TypeName}.{PropertyName}",
-};
-```
-
-See [PR #935 (VectorStore)](https://github.com/openai/openai-dotnet/pull/935) for an example where this visitor was enhanced to handle fields and methods in addition to properties.
-
----
-
-## 4. Client Models TSP — When It Exists and Why
+## 3. Client Models TSP — When It Exists and Why
 
 Not every area has a client models TSP file (`specification/client/models/{area}.models.tsp`). These files exist **only** for areas that need discriminated union wrappers or .NET-specific model overrides.
 
@@ -96,7 +75,7 @@ model DotNetTranscriptTextSegmentEvent extends DotNetCreateTranscriptionStreamin
 
 ---
 
-## 5. `prohibited-namespace` Errors Require `[CodeGenType]` Stubs
+## 4. `prohibited-namespace` Errors Require `[CodeGenType]` Stubs
 
 A `prohibited-namespace` compile error means the generator found a type that doesn't have a corresponding `[CodeGenType]` stub in the custom C# code. This can be triggered by any type — inline unions, new models, new enums, etc. — but **not every new type causes it**. Only fix the specific types named in the error.
 
@@ -125,7 +104,7 @@ Both use the same namespace (`namespace OpenAI.{Area};`) — the `Internal` fold
 
 ---
 
-## 6. NEVER Modify the Base Spec
+## 5. NEVER Modify the Base Spec
 
 > **CRITICAL:** The base spec at `specification/base/typespec/` must be an **exact copy** of the upstream spec from `microsoft/openai-openapi-pr`. Do NOT modify it for any reason — not for type unions, not for import paths, not for namespaces, not for suppression directives.
 
@@ -138,7 +117,7 @@ If there are issues with the base spec:
 
 ---
 
-## 7. Follow-up PRs for Complex Features
+## 6. Follow-up PRs for Complex Features
 
 Not everything needs to be done during the spec ingestion. New features that require significant custom C# implementation should be listed as suggested follow-up items for the user to review.
 
@@ -150,13 +129,13 @@ Not everything needs to be done during the spec ingestion. New features that req
 
 ---
 
-## 8. `[Experimental]` Attribute for New Features
+## 7. `[Experimental]` Attribute for New Features
 
 The `[Experimental]` attribute is automatically added to new public types by the `ExperimentalAttributeVisitor` in the codegen plugin — no manual tagging is needed. This was observed during the Moderations ingestion (#888).
 
 ---
 
-## 9. Test Fixes After Ingestion
+## 8. Test Fixes After Ingestion
 
 Expect test updates after spec ingestion:
 - **Session records** may need regeneration if API shapes changed
@@ -165,6 +144,6 @@ Expect test updates after spec ingestion:
 
 ---
 
-## 10. API Export After Ingestion
+## 9. API Export After Ingestion
 
 Always run `./scripts/Export-Api.ps1` after successful code generation to update the API surface files under `api/in-progress/<tfm>/` (for example, `api/in-progress/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`). These files are used for API compatibility checks and should be committed as part of the PR.

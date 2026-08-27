@@ -23,6 +23,10 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("TimestampGranularities")]
     internal IList<BinaryData> InternalTimestampGranularities { get; }
 
+    // CUSTOM: Changed type.
+    [CodeGenMember("Temperature")]
+    public float? Temperature { get; set; }
+
     // CUSTOM: Made internal to allow specification by the operation method.
     [CodeGenMember("Stream")]
     internal bool? Stream { get; set; }

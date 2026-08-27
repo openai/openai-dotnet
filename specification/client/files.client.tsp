@@ -4,6 +4,9 @@ import "@azure-tools/typespec-client-generator-core";
 using OpenAI;
 using Azure.ClientGenerator.Core;
 
+@@alternateType(FileExpirationAfter.seconds, int32);
+@@alternateType(listFiles::parameters.limit, int32);
+
 @@clientName(createFile, "UploadFile");
 @@clientName(listFiles, "GetFiles");
 @@clientName(retrieveFile, "GetFile");
@@ -14,4 +17,4 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(downloadFile, "Files");
 @@clientLocation(deleteFile, "Files");
 
-@@alternateType(OpenAIFile.bytes, integer | null);
+@@alternateType(OpenAIFile.bytes, int32 | null);

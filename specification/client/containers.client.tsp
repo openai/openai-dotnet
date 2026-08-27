@@ -6,6 +6,10 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(ContainerExpiresAfter.minutes, int32);
+@@alternateType(ContainerCollectionOptions.limit, int32);
+@@alternateType(ContainerFileCollectionOptions.limit, int32);
+
 @@clientName(Containers.retrieveContainer, "GetContainer");
 @@clientName(Containers.createContainerFile, "UploadContainerFile");
 @@clientName(Containers.retrieveContainerFile, "GetContainerFile");
