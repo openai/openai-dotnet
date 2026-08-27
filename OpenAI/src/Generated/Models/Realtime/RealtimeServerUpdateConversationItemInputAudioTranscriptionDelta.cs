@@ -12,12 +12,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : RealtimeServerUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(string eventId, string itemId) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionDelta)
         {
             EventId = eventId;
             ItemId = itemId;
             Logprobs = new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int? contentIndex, string delta, IList<RealtimeLogProbabilityDetails> logprobs) : base(kind, patch)

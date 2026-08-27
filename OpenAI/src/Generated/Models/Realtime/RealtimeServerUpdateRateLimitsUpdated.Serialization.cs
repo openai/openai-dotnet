@@ -173,7 +173,7 @@ namespace OpenAI.Realtime
                 {
                     return TryResolveRateLimitDetailsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
                 {
                     return false;
                 }
@@ -192,7 +192,7 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "rate_limits"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
                 {
                     return false;
                 }

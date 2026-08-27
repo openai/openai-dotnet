@@ -10,7 +10,7 @@ namespace OpenAI.Moderations
     {
         public static string ToSerialString(this ModerationInputPartKind value) => value switch
         {
-            ModerationInputPartKind.Image => "image_url",
+            ModerationInputPartKind.ImageUri => "image_url",
             ModerationInputPartKind.Text => "text",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ModerationInputPartKind value.")
         };
@@ -19,7 +19,7 @@ namespace OpenAI.Moderations
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "image_url"))
             {
-                return ModerationInputPartKind.Image;
+                return ModerationInputPartKind.ImageUri;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "text"))
             {

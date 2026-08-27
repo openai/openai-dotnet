@@ -16,17 +16,17 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeClientSecret(string value, DateTimeOffset expiresAt)
+        internal RealtimeClientSecret(string value, DateTimeOffset expiresOn)
         {
             Value = value;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientSecret(string value, DateTimeOffset expiresAt, in JsonPatch patch)
+        internal RealtimeClientSecret(string value, DateTimeOffset expiresOn, in JsonPatch patch)
         {
             Value = value;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,6 +38,6 @@ namespace OpenAI.Realtime
 
         public string Value { get; }
 
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
     }
 }
