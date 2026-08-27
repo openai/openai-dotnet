@@ -1,9 +1,9 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common/custom.tsp";
-import "./custom.tsp";
 import "./models.tsp";
+import "./models_items.tsp";
+import "./models_streaming.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -19,9 +19,9 @@ interface Responses {
   @operationId("createResponse")
   @post
   createResponse(
-    ...AcceptJsonOrEventStreamHeader,
+    @header accept: "application/json" | "text/event-stream",
     @body requestBody: CreateResponse,
-  ): Response | SseResponseOf<ResponseStreamEvent> | ResponseErrorResponse;
+  ): Response | SseResponseOfResponseStreamEvent | ResponseErrorResponse;
 
   /**
    * Retrieves a model response with the given ID.
@@ -49,7 +49,7 @@ interface Responses {
 
     @query(#{ explode: true })
     include_obfuscation?: boolean,
-  ): Response | SseResponseOf<ResponseStreamEvent> | ResponseErrorResponse;
+  ): Response | SseResponseOfResponseStreamEvent | ResponseErrorResponse;
 
   @delete
   @route("{response_id}")
@@ -89,6 +89,81 @@ interface Responses {
     @example("resp_677efb5139a88190b512bc3fef8e535d")
     response_id: string,
 
-    ...CommonPageQueryParameters,
+    /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  @query limit?: int32 = 20,
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  @query order?: DotNetResponseItemCollectionOrder,
+  /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken after?: string,
+  /**
+   * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+   */
+  @query before?: string,
   ): ResponseItemList | ResponseErrorResponse;
+
+ /** Get input token counts */
+ @summary("Get input token counts")
+ @post
+ @route("input_tokens")
+ @operationId("getInputTokenCounts")
+ op getInputTokenCounts(
+  @header
+  contentType: "application/json" | "application/x-www-form-urlencoded",
+  @body
+  body: TokenCountsBody,
+): TokenCountsResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ResponseErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ResponseErrorResponse;
+};
+
+  @post
+  @route("compact")
+  @operationId("compactConversation")
+  op compactConversation(
+  @header
+  contentType: "application/json" | "application/x-www-form-urlencoded",
+  @body
+  body: CompactResponseMethodPublicBody,
+): CompactResource | {
+  @maxValue(499)
+  @minValue(400)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ResponseErrorResponse;
+} | {
+  @maxValue(599)
+  @minValue(500)
+  @statusCode
+  statusCode: int32;
+
+  @body
+  body: ResponseErrorResponse;
+};
 }

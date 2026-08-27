@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -16,10 +15,10 @@ interface Threads {
   @tag("Assistants")
   @summary("Create a thread.")
   createThread(
-    ...AcceptJsonHeader,
-    ...AssistantsBetaHeader,
+    @header accept: "application/json",
+    @header("OpenAI-Beta") openAIBeta: "assistants=v2",
     @body requestBody: CreateThreadRequest,
-  ): ThreadObject | ErrorResponse;
+  ): ThreadObject | ThreadsErrorResponse;
 
   @route("{thread_id}")
   @get
@@ -27,12 +26,12 @@ interface Threads {
   @tag("Assistants")
   @summary("Retrieves a thread.")
   getThread(
-    ...AcceptJsonHeader,
-    ...AssistantsBetaHeader,
+    @header accept: "application/json",
+    @header("OpenAI-Beta") openAIBeta: "assistants=v2",
 
     /** The ID of the thread to retrieve. */
     @path thread_id: string,
-  ): ThreadObject | ErrorResponse;
+  ): ThreadObject | ThreadsErrorResponse;
 
   @route("{thread_id}")
   @post
@@ -40,14 +39,14 @@ interface Threads {
   @tag("Assistants")
   @summary("Modifies a thread.")
   modifyThread(
-    ...AcceptJsonHeader,
-    ...AssistantsBetaHeader,
+    @header accept: "application/json",
+    @header("OpenAI-Beta") openAIBeta: "assistants=v2",
 
     /** The ID of the thread to modify. Only the `metadata` can be modified. */
     @path thread_id: string,
 
     @body requestBody: ModifyThreadRequest,
-  ): ThreadObject | ErrorResponse;
+  ): ThreadObject | ThreadsErrorResponse;
 
   @route("{thread_id}")
   @delete
@@ -55,10 +54,10 @@ interface Threads {
   @tag("Assistants")
   @summary("Delete a thread.")
   deleteThread(
-    ...AcceptJsonHeader,
-    ...AssistantsBetaHeader,
+    @header accept: "application/json",
+    @header("OpenAI-Beta") openAIBeta: "assistants=v2",
 
     /** The ID of the thread to delete. */
     @path thread_id: string,
-  ): DeleteThreadResponse | ErrorResponse;
+  ): DeleteThreadResponse | ThreadsErrorResponse;
 }

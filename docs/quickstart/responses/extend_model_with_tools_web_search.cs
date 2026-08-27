@@ -8,9 +8,9 @@
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponsesClient client = new(key);
 
-CreateResponseOptions options = new();
+CreateResponseOptions options = new() { Model = "gpt-5.2" };
 options.Tools.Add(
     ResponseTool.CreateWebSearchTool()
 );

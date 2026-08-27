@@ -1,0 +1,28 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace OpenAI.Files;
+
+[CodeGenType("UploadFilePurpose")]
+public enum FilePurpose
+{
+    Assistants,
+
+    AssistantsOutput,
+
+    Batch,
+
+    BatchOutput,
+
+    FineTune,
+
+    FineTuneResults,
+
+    Vision,
+
+    [Experimental("OPENAI001")]
+    UserData,
+
+    [Experimental("OPENAI001")]
+    Evaluations,
+}

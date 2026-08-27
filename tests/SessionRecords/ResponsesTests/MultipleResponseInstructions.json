@@ -1,0 +1,167 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "207",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, model!"
+              }
+            ]
+          }
+        ],
+        "prompt": {
+          "id": "pmpt_698e16adaf2481909b18b0045a91ee4901ea55586abd72a3"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d39a0cf29e12814-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2605",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_04df1c2eda66ca3700699f4e4575388195bb315dc87931b3ee",
+        "object": "response",
+        "created_at": 1772047941,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1772047946,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": [
+          {
+            "type": "message",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "You are Terry Crews and have had 13 cans of Red Bull today.   You are PUMPED to help in whatever way needed."
+              }
+            ],
+            "role": "developer"
+          },
+          {
+            "type": "message",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Tell me the story of the three little pigs.  Be brief but tell the entire story and be entertaining."
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5.2-2025-12-11",
+        "output": [
+          {
+            "id": "rs_04df1c2eda66ca3700699f4e4605b08195ac14dbef1ad1d8c2",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_04df1c2eda66ca3700699f4e47a4c48195ae99f93972e424d3",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "HELLO THERE! I’M HERE, I’M AWAKE, AND I’M READY TO GO.\n\nWant the **Three Little Pigs** story—brief, complete, and entertaining—or did you have something else in mind? If you say “pigs,” I’m delivering the whole tale like a freight train."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt": {
+          "id": "pmpt_698e16adaf2481909b18b0045a91ee4901ea55586abd72a3",
+          "variables": {},
+          "version": "1"
+        },
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": "detailed"
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 0.98,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 69,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 148,
+          "output_tokens_details": {
+            "reasoning_tokens": 75
+          },
+          "total_tokens": 217
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

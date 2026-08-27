@@ -1,0 +1,31 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+[Experimental("OPENAI001")]
+[CodeGenType("ComputerActionType")]
+public enum ComputerCallActionKind
+{
+    Click,
+
+    DoubleClick,
+
+    Drag,
+
+    [CodeGenMember("Keypress")]
+    KeyPress,
+
+    Move,
+
+    Screenshot,
+
+    Scroll,
+
+    Type,
+
+    Wait
+}

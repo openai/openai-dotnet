@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -40,8 +39,8 @@ interface Batches {
     completion_window: "24h",
 
     /** Optional custom metadata for the batch. */
-    ...MetadataPropertyForRequest,
-  ): Batch | ErrorResponse;
+    metadata?: Record<string>,
+  ): Batch | BatchErrorResponse;
 
   @get
   @operationId("listBatches")
@@ -63,7 +62,7 @@ interface Batches {
      * default is 20.
      */
     @query limit?: int32 = 20,
-  ): ListBatchesResponse | ErrorResponse;
+  ): ListBatchesResponse | BatchErrorResponse;
 
   @route("{batch_id}")
   @get
@@ -75,7 +74,7 @@ interface Batches {
 
     /** The ID of the batch to retrieve. */
     @path batch_id: string,
-  ): Batch | ErrorResponse;
+  ): Batch | BatchErrorResponse;
 
   @route("{batch_id}/cancel")
   @post
@@ -87,5 +86,5 @@ interface Batches {
 
     /** The ID of the batch to cancel. */
     @path batch_id: string,
-  ): Batch | ErrorResponse;
+  ): Batch | BatchErrorResponse;
 }

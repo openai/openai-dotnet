@@ -7,38 +7,38 @@
         "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "487",
-        "Content-Type": "multipart/form-data; boundary=\"vWpLIVg58xTtLy=E4ikwYPbNky_klO5W0eVRPunZFjA702FZW=i_NaH27iRc_qwiQP2xSO\"",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "Content-Type": "multipart/form-data; boundary=\"7jGQ2puiL97WI1MEX3SwpnCiDfoN6mxyRBKLGBtu0peWdk3Ti7_zNttiwca8CzLBlCdHPG\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980bd2d12e9ad44f-SEA",
+        "CF-RAY": "a03091c96bd2b99c-SEA",
         "Connection": "keep-alive",
         "Content-Length": "233",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:51:12 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "692",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "706",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "file",
-        "id": "file-QrYtVR54MLXBApCzp1joKi",
+        "id": "file-Rk1B7rvT3mB7zJJocLrFi1",
         "purpose": "assistants",
         "filename": "你好.txt",
         "bytes": 33,
-        "created_at": 1758145871,
+        "created_at": 1780006017,
         "expires_at": null,
         "status": "processed",
         "status_details": null
@@ -46,6 +46,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

@@ -87,6 +87,7 @@ union IncludedRunStepProperty {
   file_search_result_content: "step_details.tool_calls[*].file_search.results[*].content",
 }
 
-enum RunStepDetailsToolCallsFileSearchResultObjectContentType {
-  text,
+union RunStepDetailsToolCallsFileSearchResultObjectContentType {
+  string,
+  text: "text",
 }

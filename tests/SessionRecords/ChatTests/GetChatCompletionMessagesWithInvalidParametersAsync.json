@@ -1,6 +1,6 @@
 {
   "Entries": [],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

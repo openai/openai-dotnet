@@ -3,7 +3,6 @@
  * Edits made directly to this file will be lost.
  */
 
-import "../common";
 import "../messages";
 import "../runs";
 import "../threads";
@@ -150,10 +149,17 @@ union MessageStreamEvent {
   },
 }
 
+model StreamingError {
+  code: string | null;
+  message: string;
+  param: string | null;
+  type: string;
+}
+
 /** Occurs when an [error](/docs/guides/error-codes#api-errors) occurs. This can happen due to an internal server error or a timeout. */
 model ErrorEvent {
   event: "error";
-  data: Error;
+  data: StreamingError;
 }
 
 /** Occurs when a stream ends. */

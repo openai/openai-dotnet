@@ -1,6 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
-import "../common";
+
 import "./models.tsp";
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -50,7 +50,7 @@ op ListVideos(
   /** Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
-  order?: OrderEnum,
+  order?: VideosOrderEnum,
 
   /** Identifier for the last item from the previous pagination request */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."

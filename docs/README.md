@@ -15,7 +15,7 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
     winget install Microsoft.DotNet.SDK.10
     ```
 
-- Mac OS
+- macOS
 
     ```bash
     # Install .NET 10 SDK Preview
@@ -44,7 +44,7 @@ dotnet --version
 You should see output similar to:
 
 ```text
-10.0.100
+10.0.400
 ```
 
 ## Setup

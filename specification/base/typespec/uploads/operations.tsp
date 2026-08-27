@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -27,7 +26,7 @@ interface Uploads {
   createUpload(
     @header accept: "application/json",
     @body requestBody: CreateUploadRequest,
-  ): Upload | ErrorResponse;
+  ): Upload | UploadsErrorResponse;
 
   @route("{upload_id}/parts")
   @post
@@ -45,7 +44,7 @@ interface Uploads {
     @header contentType: "multipart/form-data",
     @path upload_id: string,
     @multipartBody requestBody: AddUploadPartRequest,
-  ): UploadPart | ErrorResponse;
+  ): UploadPart | UploadsErrorResponse;
 
   @route("{upload_id}/complete")
   @post
@@ -64,7 +63,7 @@ interface Uploads {
     @header accept: "application/json",
     @path upload_id: string,
     @body requestBody: CompleteUploadRequest,
-  ): Upload | ErrorResponse;
+  ): Upload | UploadsErrorResponse;
 
   @route("{upload_id}/cancel")
   @post
@@ -74,5 +73,5 @@ interface Uploads {
   cancelUpload(
     @header accept: "application/json",
     @path upload_id: string,
-  ): Upload | ErrorResponse;
+  ): Upload | UploadsErrorResponse;
 }

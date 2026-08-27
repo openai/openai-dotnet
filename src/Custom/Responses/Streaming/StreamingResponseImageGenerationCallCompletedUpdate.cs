@@ -1,9 +1,0 @@
-using Microsoft.TypeSpec.Generator.Customizations;
-
-namespace OpenAI.Responses;
-
-// CUSTOM: Renamed.
-[CodeGenType("ResponseImageGenCallCompletedEvent")]
-public partial class StreamingResponseImageGenerationCallCompletedUpdate
-{
-}

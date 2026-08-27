@@ -17,10 +17,9 @@ namespace OpenAILibraryPlugin
             base.Configure();
             // This should be first, as it recomputes the type
             AddVisitor(new NonAbstractPublicTypesVisitor());
-            AddVisitor(new NumericPropertiesVisitor());
+            AddVisitor(new NumericTypesVisitor());
             AddVisitor(new ConstructorFixupVisitor());
             AddVisitor(new KindRenameVisitor());
-            AddVisitor(new VisibilityVisitor());
             AddVisitor(new ContentInnerCollectionDefinedVisitor());
             AddVisitor(new PageOrderRemovalVisitor(this));
             AddVisitor(new OmittedTypesVisitor());
@@ -31,10 +30,12 @@ namespace OpenAILibraryPlugin
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());
             AddVisitor(new ModelDirectoryVisitor());
+            AddVisitor(new ResponsesDirectoryVisitor());
             AddVisitor(new PaginationVisitor());
             AddVisitor(new MetadataQueryParamVisitor());
             AddVisitor(new ProtocolModelVisitor());
-			AddVisitor(new ItemsPropertyVisitor());
+            AddVisitor(new ItemsPropertyVisitor());
+            AddVisitor(new VisibilityVisitor());
         }
     }
 }

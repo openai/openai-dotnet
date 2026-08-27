@@ -7,9 +7,9 @@
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponsesClient client = new(key);
 
-ResponseResult response = client.CreateResponse([
+ResponseResult response = client.CreateResponse("gpt-5.2", [
     ResponseItem.CreateDeveloperMessageItem("Talk like a pirate."),
     ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
 ]);

@@ -33,7 +33,10 @@ param(
   [string]$BranchName = "typespec/update-http-client-csharp-$PackageVersion",
 
   [Parameter(Mandatory = $false)]
-  [string]$RepoPath = "."
+  [string]$RepoPath = ".",
+
+  [Parameter(Mandatory = $false)]
+  [string]$ActionRunUrl = ""
 )
 
 # Set up variables for the PR
@@ -49,14 +52,14 @@ function Write-Log {
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): $Message" -ForegroundColor Green
 }
 
-function Write-Warning-Log {
+function Write-WarningLog {
     param([string]$Message)
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): WARNING: $Message" -ForegroundColor Yellow
     # Set the global warning flag to track that warnings occurred
     $script:WarningsEncountered = $true
 }
 
-function Write-Error-Log {
+function Write-ErrorLog {
     param([string]$Message)
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): ERROR: $Message" -ForegroundColor Red
 }
@@ -76,7 +79,7 @@ function Get-PackageDependencies {
         
         # Check if there was an error
         if ($LASTEXITCODE -ne 0) {
-            Write-Warning-Log "Failed to get dependencies for $PackageName version $PackageVersion. Error: $npmViewOutput"
+            Write-WarningLog "Failed to get dependencies for $PackageName version $PackageVersion. Error: $npmViewOutput"
             return $null
         }
         
@@ -86,7 +89,7 @@ function Get-PackageDependencies {
         return $dependencies
     }
     catch {
-        Write-Warning-Log "Error fetching dependencies for $PackageName version $PackageVersion $_"
+        Write-WarningLog "Error fetching dependencies for $PackageName version $PackageVersion $_"
         return $null
     }
 }
@@ -153,33 +156,32 @@ try {
                     $openAiPackageJson.dependencies.$dependency = $dependencyVersion
                     Write-Log "Updated $dependency to version $dependencyVersion"
                 } else {
-                    Write-Warning-Log "Dependency $dependency not found in package.json"
+                    Write-WarningLog "Dependency $dependency not found in package.json"
                 }
             } else {
-                Write-Warning-Log "Dependency $dependency not found in @typespec/http-client-csharp version $PackageVersion"
+                Write-WarningLog "Dependency $dependency not found in @typespec/http-client-csharp version $PackageVersion"
             }
         }
     } else {
-        Write-Warning-Log "Could not fetch dependencies for @typespec/http-client-csharp version $PackageVersion"
+        Write-WarningLog "Could not fetch dependencies for @typespec/http-client-csharp version $PackageVersion"
     }
     
 
     $openAiPackageJson.dependencies.'@typespec/http-client-csharp' = $PackageVersion
     $openAiPackageJson | ConvertTo-Json -Depth 10 | Set-Content -Path $openAiPackageJsonPath
 
-    # Update Microsoft.TypeSpec.Generator.ClientModel version in csproj files
-    $openAiCsprojPath = "codegen/generator/src/OpenAI.Library.Plugin.csproj"
+    # Update Microsoft.TypeSpec.Generator.ClientModel version in Directory.Packages.props (central package management)
+    $directoryPackagesPropsPath = "Directory.Packages.props"
     
-    Write-Log "Updating Microsoft.TypeSpec.Generator.ClientModel version in csproj files"
+    Write-Log "Updating Microsoft.TypeSpec.Generator.ClientModel version in Directory.Packages.props"
     
-    # Update OpenAI csproj
-    if (Test-Path $openAiCsprojPath) {
-        $openAiCsproj = Get-Content $openAiCsprojPath -Raw
-        $openAiCsproj = $openAiCsproj -replace '(<PackageReference Include="Microsoft\.TypeSpec\.Generator\.ClientModel" Version=")[^"]*(")', "`${1}$PackageVersion`${2}"
-        Set-Content -Path $openAiCsprojPath -Value $openAiCsproj -NoNewline
-        Write-Log "Updated OpenAI csproj: $openAiCsprojPath"
+    if (Test-Path $directoryPackagesPropsPath) {
+        $directoryPackagesProps = Get-Content $directoryPackagesPropsPath -Raw
+        $directoryPackagesProps = $directoryPackagesProps -replace '(<PackageVersion Include="Microsoft\.TypeSpec\.Generator\.ClientModel" Version=")[^"]*(")', "`${1}$PackageVersion`${2}"
+        Set-Content -Path $directoryPackagesPropsPath -Value $directoryPackagesProps -NoNewline
+        Write-Log "Updated Directory.Packages.props: $directoryPackagesPropsPath"
     } else {
-        Write-Warning-Log "OpenAI csproj not found at: $openAiCsprojPath"
+        Write-WarningLog "Directory.Packages.props not found at: $directoryPackagesPropsPath"
     }
     
     # Delete previous package-lock.json
@@ -198,9 +200,18 @@ try {
     # Build OpenAI plugin
     Write-Log "Building OpenAI plugin"
     Push-Location "codegen"
-    npm run clean && npm run build
-    if ($LASTEXITCODE -ne 0) {
-        Write-Warning-Log "OpenAI plugin build failed, but continuing..."
+    try {
+        & npm run clean
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm run clean failed with exit code $LASTEXITCODE"
+        }
+
+        & npm run build
+        if ($LASTEXITCODE -ne 0) {
+            throw "npm run build failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-WarningLog "OpenAI plugin build failed, but continuing: $_"
     }
     Pop-Location
     
@@ -210,7 +221,7 @@ try {
     try {
         pwsh scripts/Invoke-CodeGen.ps1
     } catch {
-        Write-Warning-Log "OpenAI code generation failed: $_"
+        Write-WarningLog "OpenAI code generation failed: $_"
     }
     Pop-Location
 
@@ -218,12 +229,12 @@ try {
     Write-Log "Building the library"
     Push-Location "."
     try {
-        & dotnet build src/OpenAI.csproj
+        & dotnet build OpenAI/src/OpenAI.csproj
         if ($LASTEXITCODE -ne 0) {
             throw "Build failed with exit code $LASTEXITCODE"
         }
     } catch {
-        Write-Warning-Log "Building the library failed: $_"
+        Write-WarningLog "Building the library failed: $_"
     }
     Pop-Location
     
@@ -241,7 +252,7 @@ try {
     # Add and commit changes
     Write-Log "Adding and committing changes"
     git add codegen/package.json
-    git add codegen/generator/src/OpenAI.Library.Plugin.csproj
+    git add Directory.Packages.props
     git add api
     git add package-lock.json
     git add ./ # Add any generated code changes
@@ -283,7 +294,7 @@ This PR automatically updates the TypeSpec HTTP client C# generator version and 
 - Updated ``@typespec/http-client-csharp`` from ``$currentVersion`` to ``$PackageVersion``
 - Updated ``Microsoft.TypeSpec.Generator.ClientModel`` from ``$currentVersion`` to ``$PackageVersion``
 - Updated OpenAI plugin package.json file
-- Updated OpenAI plugin csproj file
+- Updated ``Directory.Packages.props`` with new generator package version
 - Regenerated OpenAI SDK code using the new generator version
 - Updated centrally managed package-lock.json file with new dependency versions
 
@@ -298,7 +309,7 @@ Please run the existing test suites to ensure the generated code works correctly
 
 ## Notes
 This PR was created automatically by the **Update TypeSpec Generator Version** workflow. The workflow runs weekly and when manually triggered to keep the generator version current with the latest TypeSpec improvements and fixes.
-
+$(if ($ActionRunUrl) { "`n- [Action Run]($ActionRunUrl)" })
 If there are any issues with the generated code, please review the [TypeSpec release notes](https://github.com/microsoft/typespec/releases) for breaking changes or new features that may require manual adjustments.
 "@
     
@@ -312,12 +323,12 @@ If there are any issues with the generated code, please review the [TypeSpec rel
     # If warnings were encountered, make the script exit with non-zero code
     # This will mark the GitHub Action step as failed but still create the PR
     if ($WarningsEncountered) {
-        Write-Warning-Log "Warnings were encountered during execution. PR was created but marking step as failed."
+        Write-WarningLog "Warnings were encountered during execution. PR was created but marking step as failed."
         exit 1
     }
     
 } catch {
-    Write-Error-Log "Error creating PR: $_"
+    Write-ErrorLog "Error creating PR: $_"
     exit 1
 } finally {
     Pop-Location

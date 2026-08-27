@@ -10,7 +10,7 @@ using System.Linq;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// This visitor updates the public/internal visibility of constructors, methods, and properties on a type:
+/// This visitor updates the visibility of constructors, methods, and properties on a type:
 ///   - Visibility can be customized via the [CodeGenVisibility] attribute, which will always take precedence
 ///   - Default visibility is adjusted based on common patterns
 /// </summary>
@@ -75,11 +75,14 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
         List<AttributeStatement> matchingAttributes = [];
 
-        foreach (AttributeStatement attribute in allAttributes.Where(attribute => attribute.Type.Name == "CodeGenVisibilityAttribute"))
+        foreach (AttributeStatement attribute in allAttributes.Where(attribute => 
+             attribute.Type.Name == "CodeGenVisibilityAttribute" || attribute.Type.Name == "CodeGenVisibility"))
         {
             if (attribute.Arguments.Count < 2 || attribute.Arguments[0] is not LiteralExpression)
             {
-                throw new ArgumentException($"Invalid CodeGenVisibilityAttribute provided for {type.Name}; a target name and visibility specifier are required");
+                // When Roslyn can't fully resolve the CodeGenVisibilityAttribute, its short name "CodeGenVisibility"
+                // may also match other symbols (e.g. the CodeGenVisibility enum). Skip non-matching entries.
+                continue;
             }
             matchingAttributes.Add(attribute);
         }
@@ -89,11 +92,11 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static bool TryUpdateVisibilityFromAttributes<T>(T target, IEnumerable<AttributeStatement> visibilityAttributes)
     {
-        (string targetName, IReadOnlyList<ParameterProvider> targetParameters, MethodSignatureModifiers startingModifiers, TypeProvider enclosingType) = target switch
+        (string targetName, IReadOnlyList<ParameterProvider> targetParameters, MethodSignatureModifiers startingModifiers) = target switch
         {
-            PropertyProvider propertyTarget => (propertyTarget.Name, [], propertyTarget.Modifiers, propertyTarget.EnclosingType),
-            ConstructorProvider constructorTarget => (constructorTarget.EnclosingType.Name, constructorTarget.Signature.Parameters, constructorTarget.Signature.Modifiers, constructorTarget.EnclosingType),
-            MethodProvider methodTarget => (methodTarget.Signature.Name, methodTarget.Signature.Parameters, methodTarget.Signature.Modifiers, methodTarget.EnclosingType),
+            PropertyProvider propertyTarget => (propertyTarget.Name, (IReadOnlyList<ParameterProvider>)[], propertyTarget.Modifiers),
+            ConstructorProvider constructorTarget => (constructorTarget.EnclosingType.Name, constructorTarget.Signature.Parameters, constructorTarget.Signature.Modifiers),
+            MethodProvider methodTarget => (methodTarget.Signature.Name, methodTarget.Signature.Parameters, methodTarget.Signature.Modifiers),
             _ => throw new NotImplementedException()
         };
 
@@ -127,6 +130,7 @@ public class VisibilityVisitor : ScmLibraryVisitor
             null => null,
             "0" => MethodSignatureModifiers.Internal,
             "1" => MethodSignatureModifiers.Public,
+            "2" => MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal,
             _ => throw new NotImplementedException(),
         };
 
@@ -167,10 +171,17 @@ public class VisibilityVisitor : ScmLibraryVisitor
 
     private static MethodSignatureModifiers AssignModifier<T>(T target, MethodSignatureModifiers modifier)
     {
+        const MethodSignatureModifiers visibilityMask =
+            MethodSignatureModifiers.Public |
+            MethodSignatureModifiers.Internal |
+            MethodSignatureModifiers.Protected |
+            MethodSignatureModifiers.Private;
+
         MethodSignatureModifiers GetUpdatedModifiers(MethodSignatureModifiers originalModifiers) => modifier switch
         {
-            MethodSignatureModifiers.Public => originalModifiers & ~MethodSignatureModifiers.Internal & ~MethodSignatureModifiers.Private | MethodSignatureModifiers.Public,
-            MethodSignatureModifiers.Internal => originalModifiers & ~MethodSignatureModifiers.Public & ~MethodSignatureModifiers.Private | MethodSignatureModifiers.Internal,
+            MethodSignatureModifiers.Public => originalModifiers & ~visibilityMask | MethodSignatureModifiers.Public,
+            MethodSignatureModifiers.Internal => originalModifiers & ~visibilityMask | MethodSignatureModifiers.Internal,
+            MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal => originalModifiers & ~visibilityMask | MethodSignatureModifiers.Protected | MethodSignatureModifiers.Internal,
             _ => throw new NotImplementedException()
         };
 

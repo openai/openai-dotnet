@@ -18,12 +18,14 @@ namespace OpenAILibraryPlugin.Visitors;
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    private static readonly string[] _paginationParamsToReplace = ["after", "before", "limit", "order", "model", "metadata", "filter"];
+    private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter"];
     private static readonly Dictionary<string, string> _paramReplacementMap = new()
     {
         { "after", "AfterId" },
+        { "afterId", "AfterId" },
         { "before", "BeforeId" },
         { "limit", "PageSizeLimit" },
+        { "pageSizeLimit", "PageSizeLimit" },
         { "order", "Order" },
         { "model", "Model" },
         { "metadata", "Metadata" },
@@ -78,22 +80,6 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetVectorStoreFilesInBatchAsync",
             ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainers",
-            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainersAsync",
-            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainerFiles",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
-        },
-        {
-            "GetContainerFilesAsync",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetResponseInputItems",

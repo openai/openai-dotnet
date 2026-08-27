@@ -19,7 +19,10 @@ param(
     [switch]$Force,
 
     [Parameter(Mandatory = $false)]
-    [switch]$Clean
+    [switch]$Clean,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$SkipExperimentalValidation
 )
 
 function Invoke-ScriptWithLogging {
@@ -235,8 +238,9 @@ $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
 $specificationFolderPath = Join-Path $repoRootPath "specification"
 $baseSpecificationFolderPath = Join-Path $repoRootPath "specification\base"
 $codegenFolderPath = Join-Path $repoRootPath "codegen"
-
-$scriptStartTime = Get-Date
+$openAICustomFolderPath = Join-Path $repoRootPath "OpenAI" "src" "Custom"
+$responsesCustomFolderPath = Join-Path $repoRootPath "OpenAI.Responses" "src" "Custom"
+$responsesCustomMirrorPath = Join-Path $openAICustomFolderPath "__OpenAIResponsesCustom"
 
 if ($PSCmdlet.ParameterSetName -eq 'Default') {
     if (-not (Test-Path $baseSpecificationFolderPath)) {
@@ -315,10 +319,41 @@ try {
     }
     Write-ElapsedTime "npm run build complete"
 
+    if (Test-Path $responsesCustomMirrorPath) {
+        Remove-Item -Path $responsesCustomMirrorPath -Recurse -Force
+    }
+    New-Item -ItemType Directory -Path $responsesCustomMirrorPath -Force | Out-Null
+    Copy-Item -Path (Join-Path $responsesCustomFolderPath "*") -Destination $responsesCustomMirrorPath -Recurse -Force
+
     Set-Location $specificationFolderPath
-    Invoke-ScriptWithLogging { npx tsp compile . --stats --trace @typespec/http-client-csharp }
+    Invoke-ScriptWithLogging { npx tsp compile . --options "@open-ai/plugin.emitter-output-dir={project-root}/../OpenAI/" --stats --trace @typespec/http-client-csharp }
+
+    Write-ElapsedTime "tsp compile complete"
+
+    if (Test-Path $responsesCustomMirrorPath) {
+        Remove-Item -Path $responsesCustomMirrorPath -Recurse -Force
+    }
+
+    # Validate that all public APIs in stable classes have correct [Experimental] decoration.
+    # This catches custom code that bypasses the code generator's ExperimentalAttributeVisitor.
+    if ($SkipExperimentalValidation) {
+        Write-Host "Skipping experimental attribute validation (-SkipExperimentalValidation)." -ForegroundColor Yellow
+    }
+    else {
+        $validationScript = Join-Path $repoRootPath "scripts" "Test-ExperimentalAttributes.ps1"
+        Write-Host "Running experimental attribute validation..." -ForegroundColor Cyan
+        Write-Host ""
+        & pwsh -NoProfile -File $validationScript
+        if ($LASTEXITCODE -ne 0) {
+            throw "Experimental attribute validation failed with exit code $LASTEXITCODE"
+        }
+    }
 }
 finally {
+    if (Test-Path $responsesCustomMirrorPath) {
+        Remove-Item -Path $responsesCustomMirrorPath -Recurse -Force
+    }
+
     Pop-Location
 }
 

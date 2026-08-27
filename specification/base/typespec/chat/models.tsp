@@ -3,13 +3,42 @@
  * Edits made directly to this file will be lost.
  */
 
-import "../common";
-import "./custom.tsp";
+import "@azure-tools/typespec-client-generator-core";
 
+using Azure.ClientGenerator.Core;
 using Http;
 using TypeSpec.OpenAPI;
 
 namespace OpenAI;
+
+model ChatError {
+  code: string | null;
+  message: string;
+  param: string | null;
+  type: string;
+}
+
+@error
+model ChatErrorResponse {
+  error: ChatError;
+}
+
+@doc("""
+  **Reasoning models only**
+  
+  Constrains effort on reasoning for
+  [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
+  reasoning effort can result in faster responses and fewer tokens used
+  on reasoning in a response.
+  """)
+union ChatReasoningEffort {
+  "none",
+  "minimal",
+  "low",
+  "medium",
+  "high",
+}
 
 // Tool generated type. Extracts from CreateChatCompletionResponse.choices
 alias CreateChatCompletionResponseChoice = {
@@ -123,15 +152,153 @@ alias CreateChatCompletionStreamResponseChoice = {
 // Tool generated type. Extracts from ChatCompletionMessageList.data
 alias ChatCompletionMessageListData = {
   ...ChatCompletionResponseMessage;
-
   content_parts?: ChatCompletionRequestMessageContentPart[] | null;
 
   /** The identifier of the chat message. */
   id: string;
 };
 
+union SearchContextSize {
+  string,
+  "low",
+  "medium",
+  "high"
+}
+
+@doc("""
+  Options for streaming response. Only set this when you set `stream: true`.
+  """)
+model ChatCompletionStreamOptions {
+  @doc("""
+    If set, an additional chunk will be streamed before the `data: [DONE]`
+    message. The `usage` field on this chunk shows the token usage statistics
+    for the entire request, and the `choices` field will always be an empty
+    array.
+    
+    All other chunks will also include a `usage` field, but with a null
+    value. **NOTE:** If the stream is interrupted, you may not receive the
+    final usage chunk which contains the total token usage for the request.
+    """)
+  include_usage?: boolean;
+}
+
+union ChatModelIds {
+  string,
+  "gpt-4.1",
+  "gpt-4.1-mini",
+  "gpt-4.1-nano",
+  "gpt-4.1-2025-04-14",
+  "gpt-4.1-mini-2025-04-14",
+  "gpt-4.1-nano-2025-04-14",
+  "o4-mini",
+  "o4-mini-2025-04-16",
+  "o3",
+  "o3-2025-04-16",
+  "o3-mini",
+  "o3-mini-2025-01-31",
+  "o1",
+  "o1-2024-12-17",
+  "o1-preview",
+  "o1-preview-2024-09-12",
+  "o1-mini",
+  "o1-mini-2024-09-12",
+  "gpt-4o",
+  "gpt-4o-2024-11-20",
+  "gpt-4o-2024-08-06",
+  "gpt-4o-2024-05-13",
+  "gpt-4o-audio-preview",
+  "gpt-4o-audio-preview-2024-10-01",
+  "gpt-4o-audio-preview-2024-12-17",
+  "gpt-4o-audio-preview-2025-06-03",
+  "gpt-4o-mini-audio-preview",
+  "gpt-4o-mini-audio-preview-2024-12-17",
+  "gpt-4o-search-preview",
+  "gpt-4o-mini-search-preview",
+  "gpt-4o-search-preview-2025-03-11",
+  "gpt-4o-mini-search-preview-2025-03-11",
+  "chatgpt-4o-latest",
+  "codex-mini-latest",
+  "gpt-4o-mini",
+  "gpt-4o-mini-2024-07-18",
+  "gpt-4-turbo",
+  "gpt-4-turbo-2024-04-09",
+  "gpt-4-0125-preview",
+  "gpt-4-turbo-preview",
+  "gpt-4-1106-preview",
+  "gpt-4-vision-preview",
+  "gpt-4",
+  "gpt-4-0314",
+  "gpt-4-0613",
+  "gpt-4-32k",
+  "gpt-4-32k-0314",
+  "gpt-4-32k-0613",
+  "gpt-3.5-turbo",
+  "gpt-3.5-turbo-16k",
+  "gpt-3.5-turbo-0301",
+  "gpt-3.5-turbo-0613",
+  "gpt-3.5-turbo-1106",
+  "gpt-3.5-turbo-0125",
+  "gpt-3.5-turbo-16k-0613",
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+union DotNetChatVoiceIds {
+  string,
+  "alloy",
+  "ash",
+  "ballad",
+  "coral",
+  "echo",
+  "fable",
+  "onyx",
+  "nova",
+  "sage",
+  "shimmer",
+  "verse",
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+@discriminator("type")
+model DotNetChatResponseFormat {
+  type: "text" | "json_object" | "json_schema";
+}
+
 model CreateChatCompletionRequest {
-  ...ModelResponsePropertiesForRequest;
+  metadata?: Record<string>;
+
+  @doc("""
+    What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+    We generally recommend altering this or `top_p` but not both.
+    """)
+  @minValue(0)
+  @maxValue(2)
+  temperature?: float32 | null = 1;
+
+  /** An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. */
+  top_logprobs?: int32 | null;
+
+  @doc("""
+    An alternative to sampling with temperature, called nucleus sampling,
+    where the model considers the results of the tokens with top_p probability
+    mass. So 0.1 means only the tokens comprising the top 10% probability mass
+    are considered.
+    
+    We generally recommend altering this or `temperature` but not both.
+    """)
+  @minValue(0)
+  @maxValue(1)
+  top_p?: float32 | null = 1;
+
+  /** A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids). */
+  user?: string;
+
+  /**A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
+  The IDs should be a string that uniquely identifies each user. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).*/
+  safety_identifier?: string;
+
+  service_tier?: DotNetChatServiceTier;
 
   /**
    * A list of messages comprising the conversation so far. Depending on the
@@ -148,10 +315,10 @@ model CreateChatCompletionRequest {
     characteristics, and price points. Refer to the [model guide](/docs/models)
     to browse and compare available models.
     """)
-  `model`: ModelIdsShared;
+  `model`: ChatModelIds;
 
   modalities?: ResponseModalities | null;
-  reasoning_effort?: ReasoningEffort | null = "medium";
+  reasoning_effort?: ChatReasoningEffort | null = "medium";
 
   /** An upper bound for the number of tokens that can be generated for a completion, including visible output tokens and [reasoning tokens](/docs/guides/reasoning). */
   max_completion_tokens?: int32 | null;
@@ -189,7 +356,7 @@ model CreateChatCompletionRequest {
       approximate: WebSearchLocation;
     } | null;
 
-    search_context_size?: WebSearchContextSize = "medium";
+    search_context_size?: SearchContextSize = "medium";
   };
 
   // Tool customization: apply a named union type
@@ -205,7 +372,7 @@ model CreateChatCompletionRequest {
     ensures the message the model generates is valid JSON. Using `json_schema`
     is preferred for models that support it.
     """)
-  response_format?: ResponseFormat;
+  response_format?: DotNetChatResponseFormat;
 
   @doc("""
     Parameters for audio output. Required when audio output is requested with
@@ -216,7 +383,7 @@ model CreateChatCompletionRequest {
       The voice the model uses to respond. Supported voices are
       `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `nova`, `onyx`, `sage`, and `shimmer`.
       """)
-    voice: VoiceIdsShared;
+    voice: DotNetChatVoiceIds;
 
     @doc("""
       Specifies the output audio format. Must be one of `wav`, `mp3`, `flac`,
@@ -241,7 +408,7 @@ model CreateChatCompletionRequest {
    */
   stream?: boolean | null = false;
 
-  stop?: StopConfiguration | null = null;
+  stop?: string | string[] | null = null;
 
   /**
    * Modify the likelihood of specified tokens appearing in the completion.
@@ -306,7 +473,7 @@ model CreateChatCompletionRequest {
   tools?: ChatCompletionTool[];
 
   tool_choice?: ChatCompletionToolChoiceOption;
-  parallel_tool_calls?: ParallelToolCalls = true;
+  parallel_tool_calls?: boolean = true;
 
   #suppress "deprecated" "Warning unnecessary for spec description of deprecation"
   #deprecated "This field is marked as deprecated."
@@ -341,6 +508,69 @@ model CreateChatCompletionRequest {
   functions?: ChatCompletionFunctions[];
 }
 
+/** Usage statistics for the completion request. */
+model CompletionUsage {
+  /** Number of tokens in the generated completion. */
+  completion_tokens: int32 = 0;
+
+  /** Number of tokens in the prompt. */
+  prompt_tokens: int32 = 0;
+
+  /** Total number of tokens used in the request (prompt + completion). */
+  total_tokens: int32 = 0;
+
+  /** Breakdown of tokens used in a completion. */
+  completion_tokens_details?: {
+    /**
+     * When using Predicted Outputs, the number of tokens in the
+     * prediction that appeared in the completion.
+     */
+    accepted_prediction_tokens?: int32 = 0;
+
+    /** Audio input tokens generated by the model. */
+    audio_tokens?: int32 = 0;
+
+    /** Tokens generated by the model for reasoning. */
+    reasoning_tokens?: int32 = 0;
+
+    /**
+     * When using Predicted Outputs, the number of tokens in the
+     * prediction that did not appear in the completion. However, like
+     * reasoning tokens, these tokens are still counted in the total
+     * completion tokens for purposes of billing, output, and context window
+     * limits.
+     */
+    rejected_prediction_tokens?: int32 = 0;
+  };
+
+  /** Breakdown of tokens used in the prompt. */
+  prompt_tokens_details?: {
+    /** Audio input tokens present in the prompt. */
+    audio_tokens?: int32 = 0;
+
+    /** Cached tokens present in the prompt. */
+    cached_tokens?: int32 = 0;
+  };
+}
+
+@doc("""
+  Specifies the latency tier to use for processing the request. This parameter is relevant for customers subscribed to the scale tier service:
+    - If set to 'auto', and the Project is Scale tier enabled, the system
+      will utilize scale tier credits until they are exhausted.
+    - If set to 'auto', and the Project is not Scale tier enabled, the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+    - If set to 'default', the request will be processed using the default service tier with a lower uptime SLA and no latency guarantee.
+    - If set to 'flex', the request will be processed with the Flex Processing service tier. [Learn more](/docs/guides/flex-processing).
+    - When not set, the default behavior is 'auto'.
+  
+    When this parameter is set, the response body will include the `service_tier` utilized.
+  """)
+union DotNetChatServiceTier {
+  "auto",
+  "default",
+  "flex",
+  "scale",
+}
+
 /** Represents a chat completion response returned by model, based on the provided input. */
 model CreateChatCompletionResponse {
   /** A unique identifier for the chat completion. */
@@ -359,7 +589,7 @@ model CreateChatCompletionResponse {
   /** The model used for the chat completion. */
   `model`: string;
 
-  service_tier?: ServiceTier | null = "auto";
+  service_tier?: DotNetChatServiceTier | null = "auto";
 
   @doc("""
     This fingerprint represents the backend configuration that the model runs with.
@@ -376,6 +606,26 @@ model CreateChatCompletionResponse {
   usage?: CompletionUsage;
 }
 
+model ChatFunctionObject {
+  /** A description of what the function does, used by the model to choose when and how to call the function. */
+  description?: string;
+
+  /** The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
+  name: string;
+
+  /**
+   * The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+   *
+   * Omitting `parameters` defines a function with an empty parameter list.
+   */
+  parameters?: unknown;
+
+  @doc("""
+    Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](docs/guides/function-calling).
+    """)
+  strict?: boolean | null = false;
+}
+
 model ChatCompletionTool {
   // Tool customization: Use enum instead of string constants to maintain backwards compatibility
   @doc("""
@@ -383,7 +633,7 @@ model ChatCompletionTool {
     """)
   type: ChatToolKind.function;
 
-  function: FunctionObject;
+  function: ChatFunctionObject;
 }
 
 /** Specifies a tool the model should use. Use to force the model to call a specific function. */
@@ -698,13 +948,14 @@ model ChatCompletionModalities is ("text" | "audio")[];
 
 // Tool customization: convert to enum
 /** The role of the author of a message */
-enum ChatCompletionRole {
-  system,
-  developer,
-  user,
-  assistant,
-  tool,
-  function,
+union ChatCompletionRole {
+  string,
+  system: "system",
+  developer: "developer",
+  user: "user",
+  assistant: "assistant",
+  tool: "tool",
+  function: "function",
 }
 
 /** A chat completion message generated by the model. */
@@ -805,7 +1056,12 @@ model ChatCompletionFunctions {
   /** The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64. */
   name: string;
 
-  ...FunctionParametersCommon;
+  /**
+   * The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format.
+   *
+   * Omitting `parameters` defines a function with an empty parameter list.
+   */
+  parameters?: unknown;
 }
 
 // Tool customization: Add a missing "audio" to the chat streaming delta definition
@@ -881,7 +1137,7 @@ model CreateChatCompletionStreamResponse {
   /** The model to generate the completion. */
   `model`: string;
 
-  service_tier?: ServiceTier | null = "auto";
+  service_tier?: DotNetChatServiceTier | null = "auto";
 
   @doc("""
     This fingerprint represents the backend configuration that the model runs with.
@@ -972,4 +1228,190 @@ model ChatCompletionMessageList {
 
   /** Indicates whether there are more chat messages available. */
   has_more: boolean;
+}
+
+// =====================================================================
+// Types moved from common/models.tsp — used exclusively by the chat
+// feature area.
+// =====================================================================
+
+@doc("""
+  Output types that you would like the model to generate.
+  Most models are capable of generating text, which is the default:
+  
+  `["text"]`
+  
+  The `gpt-4o-audio-preview` model can also be used to
+  [generate audio](/docs/guides/audio). To request that this model generate
+  both text and audio responses, you can use:
+  
+  `["text", "audio"]`
+  """)
+model ResponseModalities is ("text" | "audio")[];
+
+/** Approximate location parameters for the search. */
+model WebSearchLocation {
+  @doc("""
+    The two-letter
+    [ISO country code](https://en.wikipedia.org/wiki/ISO_3166-1) of the user,
+    e.g. `US`.
+    """)
+  country?: string;
+
+  @doc("""
+    Free text input for the region of the user, e.g. `California`.
+    """)
+  region?: string;
+
+  @doc("""
+    Free text input for the city of the user, e.g. `San Francisco`.
+    """)
+  city?: string;
+
+  @doc("""
+    The [IANA timezone](https://timeapi.io/documentation/iana-timezones)
+    of the user, e.g. `America/Los_Angeles`.
+    """)
+  timezone?: string;
+}
+
+alias SseResponseOfCreateChatCompletionStreamResponse = {
+  @header("Content-Type") contentType: "text/event-stream";
+  @body responseBody: CreateChatCompletionStreamResponse;
+};
+
+union ChatCompletionMessageCollectionOrder {
+  string,
+  Ascending: "asc",
+  Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model ChatCompletionMessageCollectionOptions {
+  /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken afterId?: string;
+
+  /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  @query pageSizeLimit?: int32 = 20;
+
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  @query order?: ChatCompletionMessageCollectionOrder;
+}
+
+union ChatOutputPredictionType {
+  string,
+  static_content: "content",
+}
+
+/**
+ * Base representation of predicted output from a model.
+ */
+@discriminator("type")
+model ChatOutputPrediction {
+  type: ChatOutputPredictionType;
+}
+
+model ChatCompletionFunctionChoice {}
+
+model ChatCompletionToolChoice {}
+
+union ChatCompletionRequestMessageContentPartType {
+  text: "text",
+  file: "file",
+  input_audio: "input_audio",
+  image_url: "image_url",
+  refusal: "refusal",
+}
+
+@discriminator("type")
+model ChatCompletionRequestMessageContentPart {
+  type: ChatCompletionRequestMessageContentPartType;
+}
+
+model ChatCompletionMessageAudioChunk {
+  id?: string;
+  transcript?: string;
+
+  @encode("base64")
+  data?: bytes;
+
+  @encode("unixTimestamp", int32)
+  expires_at?: utcDateTime;
+}
+
+enum ChatToolKind {
+  function,
+}
+
+enum ChatToolCallKind {
+  function,
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetChatResponseFormatText extends DotNetChatResponseFormat {
+  @doc("""
+    The type of response format being defined. Always `text`.
+    """)
+  type: "text";
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetChatResponseFormatJsonSchema extends DotNetChatResponseFormat {
+  type: "json_schema";
+  json_schema: {
+    description?: string;
+    name: string;
+    schema?: unknown;
+    strict?: boolean | null = false;
+  };
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetChatResponseFormatJsonObject extends DotNetChatResponseFormat {
+  ...ResponseFormatJsonObject;
+}
+
+union ChatCompletionCollectionOrder {
+  string,
+  Ascending: "asc",
+  Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model ChatCompletionCollectionOptions {
+  /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken afterId?: string;
+
+  /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  @query pageSizeLimit?: int32 = 20;
+
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  @query order?: ChatCompletionCollectionOrder;
+  @query metadata?: Record<string>;
+  @query `model`?: string;
 }

@@ -231,6 +231,40 @@ public class FilesMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task UploadFileWithPathUsesFileNameOnly()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
+        {
+            "id": "returned_file_id"
+        }
+        """);
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        await InvokeUploadFileSyncOrAsync(clientOptions, FileSourceKind.UsingFilePath);
+
+        string fileContentDisposition = requestBody
+            .Split(["\r\n", "\n"], StringSplitOptions.None)
+            .Single(line => line.StartsWith("Content-Disposition: form-data; name=file", StringComparison.Ordinal));
+
+        Assert.That(fileContentDisposition, Does.Contain("filename=files_travis_favorite_food.pdf"));
+        Assert.That(fileContentDisposition, Does.Not.Contain("Assets"));
+    }
+
+    [Test]
     public void UploadFileRespectsTheCancellationToken()
     {
         OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
@@ -402,23 +436,23 @@ public class FilesMockTests : ClientTestBase
     private async ValueTask<OpenAIFile> InvokeUploadFileSyncOrAsync(OpenAIClientOptions clientOptions, FileSourceKind fileSourceKind)
     {
         OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
-        string filename = "images_dog_and_cat.png";
-        string path = Path.Combine("Assets", filename);
+        string filename = "test-file.txt";
 
         if (fileSourceKind == FileSourceKind.UsingStream)
         {
-            using FileStream file = File.OpenRead(path);
+            using Stream file = new MemoryStream([0x01, 0x02, 0x03, 0x04, 0x05]);
 
             return await client.UploadFileAsync(file, filename, purpose: FileUploadPurpose.Assistants);
         }
         else if (fileSourceKind == FileSourceKind.UsingFilePath)
         {
+            string path = Path.Combine("Assets", "files_travis_favorite_food.pdf");
+
             return await client.UploadFileAsync(path, purpose: FileUploadPurpose.Assistants);
         }
         else if (fileSourceKind == FileSourceKind.UsingBinaryData)
         {
-            using FileStream file = File.OpenRead(path);
-            BinaryData content = BinaryData.FromStream(file);
+            BinaryData content = BinaryData.FromBytes([0x01, 0x02, 0x03, 0x04, 0x05]);
 
             return await client.UploadFileAsync(content, filename, purpose: FileUploadPurpose.Assistants);
         }

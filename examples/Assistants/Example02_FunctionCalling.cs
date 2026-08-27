@@ -76,7 +76,7 @@ public partial class AssistantExamples
             Tools = { getLocationTool, getWeatherTool },
         };
 
-        Assistant assistant = client.CreateAssistant("gpt-4-turbo", assistantOptions);
+        Assistant assistant = client.CreateAssistant("gpt-4o", assistantOptions);
         #endregion
 
         #region

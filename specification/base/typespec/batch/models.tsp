@@ -3,12 +3,26 @@
  * Edits made directly to this file will be lost.
  */
 
-import "../common";
+import "@typespec/http";
+import "@azure-tools/typespec-client-generator-core";
 
 using Http;
 using TypeSpec.OpenAPI;
+using Azure.ClientGenerator.Core;
 
 namespace OpenAI;
+
+model BatchError {
+  code: string | null;
+  message: string;
+  param: string | null;
+  type: string;
+}
+
+@error
+model BatchErrorResponse {
+  error: BatchError;
+}
 
 // Tool generated type. Extracts from Batch.errors.data
 alias BatchErrorsData = {
@@ -126,7 +140,16 @@ model Batch {
     failed: int32;
   };
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
 }
 
 /** The per-line object of the batch input file */
@@ -181,4 +204,21 @@ model ListBatchesResponse {
   @continuationToken last_id?: string;
   has_more: boolean;
   object: "list";
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model BatchCollectionOptions {
+  /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken afterId?: string;
+
+  /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  @query pageSizeLimit?: int32 = 20;
 }

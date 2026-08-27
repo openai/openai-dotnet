@@ -5,10 +5,10 @@ using System;
 using System.ClientModel;
 using System.IO;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Images;
 
+[Ignore("Image variations are only supported by dall-e-2, which has been deprecated as of 2026-05-12.")]
 public partial class ImageVariationsTests : ImageTestFixtureBase
 {
     public ImageVariationsTests(bool isAsync) : base(isAsync)
@@ -20,7 +20,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImage image = null;
@@ -58,7 +58,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImage image = null;
@@ -121,7 +121,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImageCollection images = null;
@@ -165,7 +165,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImageCollection images = null;

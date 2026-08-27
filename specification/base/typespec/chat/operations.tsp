@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -17,12 +16,28 @@ interface Chat {
   @summary("Returns a list of chat completions.")
   @list
   listChatCompletions(
-    ...PageAfterQueryParameter,
-    ...PageLimitQueryParameter,
-    ...PageOrderQueryParameter,
+    /**
+     * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+     * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+     * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     */
+    @query @continuationToken after?: string,
+
+    /**
+     * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+     * default is 20.
+     */
+    @query limit?: int32 = 20,
+
+    /**
+     * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+     * for descending order.
+     */
+    @query order?: ChatCompletionMessageCollectionOrder,
+
     @query metadata?: Record<string>,
     @query `model`?: string,
-  ): ChatCompletionList | ErrorResponse;
+  ): ChatCompletionList | ChatErrorResponse;
 
   @post
   @operationId("createChatCompletion")
@@ -30,7 +45,7 @@ interface Chat {
   createChatCompletion(
     @header accept: "application/json",
     @body requestBody: CreateChatCompletionRequest,
-  ): CreateChatCompletionResponse | SseResponseOf<CreateChatCompletionStreamResponse> | ErrorResponse;
+  ): CreateChatCompletionResponse | SseResponseOfCreateChatCompletionStreamResponse | ChatErrorResponse;
 
   @get
   @route("{completion_id}")
@@ -41,7 +56,7 @@ interface Chat {
   getChatCompletion(
     /** The ID of the stored chat completion to retrieve. */
     @path completion_id: string,
-  ): CreateChatCompletionResponse | ErrorResponse;
+  ): CreateChatCompletionResponse | ChatErrorResponse;
 
   @post
   @route("{completion_id}")
@@ -54,16 +69,16 @@ interface Chat {
     @path completion_id: string,
 
     /**
-    * Set of 16 key-value pairs that can be attached to an object. This can be
-    * useful for storing additional information about the object in a structured
-    * format, and querying for objects via API or the dashboard.
-    *
-    * Keys are strings with a maximum length of 64 characters. Values are strings
-    * with a maximum length of 512 characters.
-    */
+     * Set of 16 key-value pairs that can be attached to an object. This can be
+     * useful for storing additional information about the object in a structured
+     * format, and querying for objects via API or the dashboard.
+     *
+     * Keys are strings with a maximum length of 64 characters. Values are strings
+     * with a maximum length of 512 characters.
+     */
     @extension("x-oaiTypeLabel", "map")
-    metadata: Record<string>;
-  ): CreateChatCompletionResponse | ErrorResponse;
+    metadata: Record<string>,
+  ): CreateChatCompletionResponse | ChatErrorResponse;
 
   @delete
   @route("{completion_id}")
@@ -72,7 +87,7 @@ interface Chat {
   deleteChatCompletion(
     /** The ID of the stored chat completion to delete. */
     @path completion_id: string,
-  ): ChatCompletionDeleted | ErrorResponse;
+  ): ChatCompletionDeleted | ChatErrorResponse;
 
   @get
   @route("{completion_id}/messages")
@@ -83,8 +98,23 @@ interface Chat {
     /** The ID of the stored chat completion to retrieve messages for. */
     @path completion_id: string,
 
-    ...PageAfterQueryParameter,
-    ...PageLimitQueryParameter,
-    ...PageOrderQueryParameter,
-  ): ChatCompletionMessageList | ErrorResponse;
+    /**
+     * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+     * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+     * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+     */
+    @query @continuationToken after?: string,
+
+    /**
+     * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+     * default is 20.
+     */
+    @query limit?: int32 = 20,
+
+    /**
+     * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+     * for descending order.
+     */
+    @query order?: ChatCompletionMessageCollectionOrder,
+  ): ChatCompletionMessageList | ChatErrorResponse;
 }

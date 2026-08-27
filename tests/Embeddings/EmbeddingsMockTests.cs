@@ -207,6 +207,54 @@ public class EmbeddingsMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task GenerateEmbeddingDeserializesBase64WithEscapedSolidus()
+    {
+        // Float values [1.9921875, -1.99710083] encode to base64 "AAD/PwCh/78=" which contains '/'.
+        // Per RFC 8259 §7, JSON may escape '/' as '\/', producing "AAD\/PwCh\/78=".
+        // The SDK must handle this correctly.
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "data": [
+                {
+                    "embedding": "AAD\/PwCh\/78="
+                }
+            ]
+        }
+        """);
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("model", s_fakeCredential, clientOptions));
+
+        OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync("prompt");
+
+        float[] vector = embedding.ToFloats().ToArray();
+        Assert.That(vector.Length, Is.EqualTo(2));
+        Assert.That(vector[0], Is.EqualTo(1.9921875f));
+        Assert.That(vector[1], Is.EqualTo(-1.99710083f));
+    }
+
+    [Test]
+    public async Task GenerateEmbeddingDeserializesBase64WithUnicodeEscapedSolidus()
+    {
+        // Same float values as above, but '/' is escaped as '\u002F' instead of '\/'.
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "data": [
+                {
+                    "embedding": "AAD\u002FPwCh\u002F78="
+                }
+            ]
+        }
+        """);
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("model", s_fakeCredential, clientOptions));
+
+        OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync("prompt");
+
+        float[] vector = embedding.ToFloats().ToArray();
+        Assert.That(vector.Length, Is.EqualTo(2));
+        Assert.That(vector[0], Is.EqualTo(1.9921875f));
+        Assert.That(vector[1], Is.EqualTo(-1.99710083f));
+    }
+
+    [Test]
     public void JsonArraySupport()
     {
         string json = """

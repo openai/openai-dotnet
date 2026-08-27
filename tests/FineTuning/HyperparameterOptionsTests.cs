@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.ClientModel.Primitives;
+using NUnit.Framework;
 using OpenAI.FineTuning;
 
 namespace OpenAI.Tests.FineTuning;
@@ -43,5 +45,22 @@ class HyperparameterOptionsTests
     {
         FineTuningTrainingMethod supervisedMethod = FineTuningTrainingMethod.CreateSupervised();
         // TODO: Add more tests here
+    }
+
+    [Test]
+    [Parallelizable]
+    public void BetaFactorCanSerialize()
+    {
+        // Regression: HyperparameterBetaFactor's IJsonModel.Write threw NotImplementedException,
+        // so FineTuningTrainingMethod.CreateDirectPreferenceOptimization threw whenever a beta
+        // factor was supplied, even though the sibling hyperparameters serialized correctly.
+        BinaryData numeric = ModelReaderWriter.Write(new HyperparameterBetaFactor(2), ModelReaderWriterOptions.Json);
+        Assert.That(numeric.ToString(), Is.EqualTo("2"));
+
+        BinaryData auto = ModelReaderWriter.Write(HyperparameterBetaFactor.CreateAuto(), ModelReaderWriterOptions.Json);
+        Assert.That(auto.ToString(), Is.EqualTo("\"auto\""));
+
+        Assert.DoesNotThrow(() =>
+            FineTuningTrainingMethod.CreateDirectPreferenceOptimization(betaFactor: new HyperparameterBetaFactor(2)));
     }
 }

@@ -12,8 +12,7 @@ on:
     - cron: '0 0 * * *'
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
 
 jobs:
   build:
@@ -23,26 +22,26 @@ jobs:
     env:
       version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Setup .NET 10
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
-          dotnet-version: '10.x'
+          global-json-file: global.json
 
       - name: Setup .NET 9
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: '9.x'
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: '8.x'
 
-      - name: Checkout code
-        uses: actions/checkout@v6
-
       - name: Restore tools
-        run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
+        run: dotnet tool restore
 
       # Pack the client NuGet package and include URL back to the repository and release tag
       - name: Build and pack
@@ -53,25 +52,18 @@ jobs:
           /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
           ${{ env.version_suffix_args }}
 
-      - name: Run unit tests
-        run: dotnet test
-          --configuration Release
-          --filter="TestCategory=Smoke&TestCategory!=Manual"
-          --logger "trx;LogFileName=${{ github.workspace }}/artifacts/test-results/smoke.trx"
-          ${{ env.version_suffix_args }}
-
-      - name: Run recorded tests
+      - name: Run tests in Playback mode
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="(TestCategory=Chat|TestCategory=Embeddings|TestCategory=Responses)&TestCategory!=MPFD"
-          --logger "trx;LogFilePrefix=live"
+          --logger "trx;LogFilePrefix=playback"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.version_suffix_args }}
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLIENTMODEL_TEST_MODE: Playback
+          CLIENTMODEL_DISABLE_AUTO_RECORDING: true
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ !cancelled() }}
         with:
           name: build-artifacts
@@ -86,13 +78,13 @@ jobs:
 
     steps:
     - name: Download build artifacts
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
       with:
         name: build-artifacts
         path: ${{ github.workspace }}/build-artifacts
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
       with:
         dotnet-version: '9.x'
 
@@ -100,7 +92,7 @@ jobs:
       run: dotnet tool install --tool-path . --prerelease sign
 
     - name: 'Az CLI login'
-      uses: azure/login@v2
+      uses: azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
       with:
         client-id: 80125de0-6f58-4f16-bd05-b2fa621d36a5
         tenant-id: 16076fdc-fcc1-4a15-b1ca-32c9a255900e
@@ -120,42 +112,26 @@ jobs:
         --azure-key-vault-certificate "OpenAISDKSCCert"
 
     - name: Upload signed artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         name: build-artifacts-signed
         path: ${{ github.workspace }}/build-artifacts
 
-  deploy:
-    name: Publish package
+  publish-github-packages:
+    name: Publish package to GitHub Packages
     needs: sign
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
       - name: Download build artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: build-artifacts-signed
           path: ${{ github.workspace }}/build-artifacts
 
-      - name: Upload release asset
-        if: github.event_name == 'release'
-        run: gh release upload ${{ github.event.release.tag_name }}
-          ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update GitHub release notes to point to the changelog
-        if: github.event_name == 'release'
-        run: |
-          gh release edit "${{ github.event.release.tag_name }}" \
-            --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: '9.x'
 
@@ -174,10 +150,52 @@ jobs:
             --api-key ${{ secrets.GITHUB_TOKEN }}
             --skip-duplicate
 
+  publish-nuget:
+    name: Publish package to NuGet.org
+    if: github.event_name == 'release'
+    needs: sign
+    runs-on: ubuntu-latest
+    environment: publish
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: build-artifacts-signed
+          path: ${{ github.workspace }}/build-artifacts
+
+      - name: Upload release asset
+        run: gh release upload ${{ github.event.release.tag_name }}
+          ${{ github.workspace }}/build-artifacts/packages/*.*nupkg
+          --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Update GitHub release notes to point to the changelog
+        run: |
+          gh release edit "${{ github.event.release.tag_name }}" \
+            --notes "See full changelog: ${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '9.x'
+
+      - name: NuGet login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1
+        id: nuget-login
+        with:
+          user: bebroder
+
       - name: Publish package to nuget.org
-        if: github.event_name == 'release'
         run: dotnet nuget push
             ${{ github.workspace }}/build-artifacts/packages/*.nupkg
             --source https://api.nuget.org/v3/index.json
-            --api-key ${{ secrets.NUGET_API_KEY }}
+            --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
             --skip-duplicate

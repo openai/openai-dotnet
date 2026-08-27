@@ -1,8 +1,8 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
-using System.ClientModel;
-using static OpenAI.Tests.TestHelpers;
+using OpenAI.Realtime;
+using OpenAI.Responses;
 
 namespace OpenAI.Tests.Utility
 {
@@ -13,6 +13,13 @@ namespace OpenAI.Tests.Utility
         {
             // Normalizes filepaths used as filenames in Content-Disposition headers, so record/playback works across different OSes
             CustomSanitizers.Add(new ContentDispositionFilePathSanitizer());
+
+            // The SDK platform metadata headers describe the machine that issued the request, so their values vary by
+            // recording machine and runtime. Removing them means recordings never capture them and playback requests
+            // are stripped of them before matching, which keeps existing recordings valid without re-recording.
+            // Coverage for these headers lives in mock-based unit tests instead.
+            CustomSanitizers.Add(new RemoveHeaderSanitizer(
+                new RemoveHeaderSanitizerBody(string.Join(",", PlatformTelemetryHeaderNames))));
 
             // Turn off default sanitizers to improve performance in large recordings (audio/image specifically)
             // This turns off all sanitizers exception Authorization headers, so we have to be very careful to explicitly sanitize
@@ -26,19 +33,57 @@ namespace OpenAI.Tests.Utility
             SanitizedHeaders.Add("Date");
             SanitizedHeaders.Add("Set-Cookie");
             JsonPathSanitizers.Add("$.system_fingerprint");
+            JsonPathSanitizers.Add("$..encrypted_content");
         }
 
-        internal T GetProxiedOpenAIClient<T>(TestScenario scenario, string overrideModel = null, bool excludeDumpPolicy = false, OpenAIClientOptions options = default) where T : class
+        /// <summary>
+        /// The SDK platform metadata headers that the client adds to every request.
+        /// </summary>
+        /// <remarks>
+        /// These reference the client's own constants rather than restating the names, so that the sanitizer
+        /// cannot drift away from what the client actually sends.
+        /// </remarks>
+        internal static readonly string[] PlatformTelemetryHeaderNames =
+        [
+            PlatformTelemetry.LangHeaderName,
+            PlatformTelemetry.PackageVersionHeaderName,
+            PlatformTelemetry.RuntimeHeaderName,
+            PlatformTelemetry.RuntimeVersionHeaderName,
+            PlatformTelemetry.OSHeaderName,
+            PlatformTelemetry.ArchHeaderName,
+        ];
+
+        internal T GetProxiedOpenAIClient<T>(string overrideModel = null, OpenAIClientOptions options = default) where T : class
         {
             options ??= new OpenAIClientOptions();
+
             OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
-            T client = GetTestClient<T>(scenario, overrideModel, excludeDumpPolicy, options: instrumentedOptions, credential: GetTestApiKeyCredential());
+            T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
+
             return proxiedClient;
         }
 
-        public ApiKeyCredential GetTestApiKeyCredential() => new(TestEnvironment.OpenApiKey);
+        internal ResponsesClient GetProxiedResponsesClient(ResponsesClientOptions options = default)
+        {
+            options ??= new ResponsesClientOptions();
 
-        public OpenAIClient GetProxiedTestTopLevelClient() => GetProxiedOpenAIClient<OpenAIClient>(TestScenario.TopLevel);
+            ResponsesClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            ResponsesClient client = TestEnvironment.GetTestResponsesClient(instrumentedOptions);
+            ResponsesClient proxiedClient = CreateProxyFromClient<ResponsesClient>(client, null);
+
+            return proxiedClient;
+        }
+
+        internal RealtimeClient GetProxiedRealtimeClient(RealtimeClientOptions options = default)
+        {
+            options ??= new RealtimeClientOptions();
+
+            RealtimeClientOptions instrumentedOptions = InstrumentClientOptions(options);
+            RealtimeClient client = TestEnvironment.GetTestRealtimeClient(instrumentedOptions);
+            RealtimeClient proxiedClient = CreateProxyFromClient<RealtimeClient>(client, null);
+
+            return proxiedClient;
+        }
     }
 }

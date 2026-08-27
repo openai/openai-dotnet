@@ -8,6 +8,10 @@
     <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\api\ga-apis.yaml" Link="ga-apis.yaml" LogicalName="ga-apis.yaml" />
+  </ItemGroup>
+
   <!-- Copy output to package dist path for local execution and  -->
   <Target Name="CopyForNpmPackage" AfterTargets="Build">
     <Message Text="Copying output to dist path" Importance="high" />

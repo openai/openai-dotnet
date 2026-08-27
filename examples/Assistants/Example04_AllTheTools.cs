@@ -61,7 +61,7 @@ public partial class AssistantExamples
 
         #region Create an assistant with functions, file search, and code interpreter all enabled
         AssistantClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        Assistant assistant = client.CreateAssistant("gpt-4-turbo", new AssistantCreationOptions()
+        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
         {
             Instructions = "Use functions to resolve family relations into the names of people. Use file search to "
                 + " look up the favorite numbers of people. Use code interpreter to create graphs of lines.",

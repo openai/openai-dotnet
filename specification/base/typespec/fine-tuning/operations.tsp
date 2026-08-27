@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -23,13 +22,26 @@ interface FineTuning {
     /** The ID of the fine-tuned model checkpoint to get permissions for. */
     @path fine_tuned_model_checkpoint: string,
 
-    ...PageAfterQueryParameter,
-    ...PageLimitQueryParameter,
-    ...PageOrderQueryParameter,
+    /**
+   * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+   * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+   * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+   */
+  @query @continuationToken after?: string,
+    /**
+   * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+   * default is 20.
+   */
+  @query limit?: int32 = 20,
+    /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  @query order?: FineTuningCheckpointCollectionOrder,
 
     /** The ID of the project to get permissions for. */
     @query project_id?: string,
-  ): ListFineTuningCheckpointPermissionResponse | ErrorResponse;
+  ): ListFineTuningCheckpointPermissionResponse | FineTuningErrorResponse;
 
   @post
   @route("checkpoints/{fine_tuned_model_checkpoint}/permissions")
@@ -43,7 +55,7 @@ interface FineTuning {
     @path fine_tuned_model_checkpoint: string,
 
     ...CreateFineTuningCheckpointPermissionRequest,
-  ): ListFineTuningCheckpointPermissionResponse | ErrorResponse;
+  ): ListFineTuningCheckpointPermissionResponse | FineTuningErrorResponse;
 
   @delete
   @route("checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}")
@@ -58,7 +70,7 @@ interface FineTuning {
 
     /** The ID of the permission to delete. */
     @path permission_id: string,
-  ): DeleteFineTuningCheckpointPermissionResponse | ErrorResponse;
+  ): DeleteFineTuningCheckpointPermissionResponse | FineTuningErrorResponse;
 
   @route("jobs")
   @post
@@ -73,7 +85,7 @@ interface FineTuning {
   createFineTuningJob(
     @header accept: "application/json",
     @body requestBody: CreateFineTuningJobRequest,
-  ): FineTuningJob | ErrorResponse;
+  ): FineTuningJob | FineTuningErrorResponse;
 
   @route("jobs")
   @get
@@ -87,7 +99,7 @@ interface FineTuning {
 
     /** Number of fine-tuning jobs to retrieve. */
     @query limit?: int32 = 20,
-  ): ListPaginatedFineTuningJobsResponse | ErrorResponse;
+  ): ListPaginatedFineTuningJobsResponse | FineTuningErrorResponse;
 
   @route("jobs/{fine_tuning_job_id}")
   @get
@@ -102,7 +114,7 @@ interface FineTuning {
 
     /** The ID of the fine-tuning job. */
     @path fine_tuning_job_id: string,
-  ): FineTuningJob | ErrorResponse;
+  ): FineTuningJob | FineTuningErrorResponse;
 
   @route("jobs/{fine_tuning_job_id}/cancel")
   @post
@@ -113,7 +125,7 @@ interface FineTuning {
 
     /** The ID of the fine-tuning job to cancel. */
     @path fine_tuning_job_id: string,
-  ): FineTuningJob | ErrorResponse;
+  ): FineTuningJob | FineTuningErrorResponse;
 
   @route("jobs/{fine_tuning_job_id}/checkpoints")
   @get
@@ -130,7 +142,7 @@ interface FineTuning {
 
     /** Number of checkpoints to retrieve. */
     @query limit?: int32 = 10,
-  ): ListFineTuningJobCheckpointsResponse | ErrorResponse;
+  ): ListFineTuningJobCheckpointsResponse | FineTuningErrorResponse;
 
   @route("jobs/{fine_tuning_job_id}/events")
   @get
@@ -147,7 +159,7 @@ interface FineTuning {
 
     /** Number of events to retrieve. */
     @query limit?: int32 = 20,
-  ): ListFineTuningJobEventsResponse | ErrorResponse;
+  ): ListFineTuningJobEventsResponse | FineTuningErrorResponse;
 
   @post
   @route("jobs/{fine_tuning_job_id}/pause")
@@ -158,7 +170,7 @@ interface FineTuning {
   pauseFineTuningJob(
     /** The ID of the fine-tuning job to pause. */
     @path fine_tuning_job_id: string,
-  ): FineTuningJob | ErrorResponse;
+  ): FineTuningJob | FineTuningErrorResponse;
 
   @post
   @route("jobs/{fine_tuning_job_id}/resume")
@@ -169,5 +181,5 @@ interface FineTuning {
   resumeFineTuningJob(
     /** The ID of the fine-tuning job to resume. */
     @path fine_tuning_job_id: string,
-  ): FineTuningJob | ErrorResponse;
+  ): FineTuningJob | FineTuningErrorResponse;
 }

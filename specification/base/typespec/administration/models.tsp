@@ -3,11 +3,6 @@
  * Edits made directly to this file will be lost.
  */
 
-import "./custom.tsp";
-
-using Http;
-using TypeSpec.OpenAPI;
-
 namespace OpenAI;
 
 // Tool generated type. Extracts from AuditLog.certificates_activated.certificates

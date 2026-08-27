@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -78,7 +77,7 @@ interface Evals {
     @path eval_id: string,
     @body body: {
       name?: string;
-      metadata?: MetadataPropertyForRequest;
+      metadata?: Record<string>;
     },
   ): Eval | EvalsErrorResponse;
 
@@ -228,11 +227,11 @@ interface Evals {
 @error
 model EvalsErrorResponse {
   @statusCode statusCode: 400;
-  ...Error;
+  ...EvalApiError;
 }
 
 @error
 model EvalsErrorNotFoundResponse {
   @statusCode statusCode: 404;
-  ...Error;
+  ...EvalApiError;
 }

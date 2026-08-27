@@ -1,7 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
 
-import "../common";
 import "./models.tsp";
 
 using TypeSpec.Http;
@@ -12,21 +11,12 @@ namespace OpenAI;
 @route("/containers")
 @tag("Containers")
 interface Containers {
-  @get
-  @operationId("ListContainers")
-  @list
-  listContainers(
-    ...PageLimitQueryParameter,
-    ...PageOrderQueryParameter,
-    ...PageAfterQueryParameter,
-  ): ContainerListResource | ErrorResponse;
-
   @post
   @operationId("CreateContainer")
   createContainer(
     @body
-    body: CreateContainerBody,
-  ): ContainerResource | ErrorResponse;
+    options: ContainerCreationOptions,
+  ): ContainerResource | ContainersErrorResponse;
 
   @get
   @route("{container_id}")
@@ -34,7 +24,7 @@ interface Containers {
   retrieveContainer(
     @path
     container_id: string,
-  ): ContainerResource | ErrorResponse;
+  ): ContainerResource | ContainersErrorResponse;
 
   @delete
   @route("{container_id}")
@@ -42,11 +32,14 @@ interface Containers {
   deleteContainer(
     @path
     container_id: string,
-  ): {
-    id: string;
-    object: "container.deleted";
-    deleted: true;
-  } | ErrorResponse;
+  ): ContainerDeletionResult | ContainersErrorResponse;
+
+  @get
+  @operationId("ListContainers")
+  @list
+  listContainers(
+    ...ContainerCollectionOptions,
+  ): ContainerCollection | ContainersErrorResponse;
 
   @post
   @route("{container_id}/files")
@@ -59,21 +52,8 @@ interface Containers {
     contentType: "multipart/form-data",
 
     @multipartBody
-    body: CreateContainerFileBody,
-  ): ContainerFileResource | ErrorResponse;
-
-  @get
-  @route("{container_id}/files")
-  @operationId("ListContainerFiles")
-  @list
-  listContainerFiles(
-    @path
-    container_id: string,
-
-    ...PageLimitQueryParameter,
-    ...PageOrderQueryParameter,
-    ...PageAfterQueryParameter,
-  ): ContainerFileListResource | ErrorResponse;
+    options: ContainerFileUploadOptions,
+  ): ContainerFileResource | ContainersErrorResponse;
 
   @get
   @route("{container_id}/files/{file_id}")
@@ -84,7 +64,7 @@ interface Containers {
 
     @path
     file_id: string,
-  ): ContainerFileResource | ErrorResponse;
+  ): ContainerFileResource | ContainersErrorResponse;
 
   @delete
   @route("{container_id}/files/{file_id}")
@@ -95,11 +75,15 @@ interface Containers {
 
     @path
     file_id: string,
-  ): {
-    id: string;
-    object: "container.file.deleted";
-    deleted: true;
-  } | ErrorResponse;
+  ): ContainerFileDeletionResult | ContainersErrorResponse;
+
+  @get
+  @route("{container_id}/files")
+  @operationId("ListContainerFiles")
+  @list
+  listContainerFiles(
+    ...ContainerFileCollectionOptions,
+  ): ContainerFileCollection | ContainersErrorResponse;
 
   @get
   @route("{container_id}/files/{file_id}/content")
@@ -112,5 +96,5 @@ interface Containers {
     file_id: string,
   ): {
     @encode("base64") @body file_content: bytes;
-  } | ErrorResponse;
+  } | ContainersErrorResponse;
 }

@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "57",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
@@ -16,20 +16,24 @@
       },
       "StatusCode": 401,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980b8bea2a43a37e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a093f19ddf197538-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:02:47 GMT",
-        "openai-processing-ms": "65",
+        "Date": "Sanitized",
+        "openai-processing-ms": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "WWW-Authenticate": "Bearer realm=\"OpenAI API\"",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "71",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
@@ -42,7 +46,5 @@
       }
     }
   ],
-  "Variables": {
-    "OPEN-API-KEY": "api-key"
-  }
+  "Variables": {}
 }

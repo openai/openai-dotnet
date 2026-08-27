@@ -6,29 +6,29 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "3163166",
-        "Content-Type": "multipart/form-data; boundary=\"AKpylUQ6cQzXDURHwqg2Di7GFmD2fhIiEWeZNLmg3560TQw0jGsMk=eCYJ62sGaZig8tl8\"",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "Content-Length": "3163148",
+        "Content-Type": "multipart/form-data; boundary=\"FY7fGEuq_OaaMJ8A=9KBds4JfLlZCKK2dX7lK7b=VN2eBwJ7nUUDNN_SsUOPpMDYgfacv7\"",
+        "User-Agent": "OpenAI/2.10.0 (.NET 8.0.27; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 400,
       "ResponseHeaders": {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980bd3462acfd44f-SEA",
+        "CF-RAY": "a0309231ac7a76ca-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "231",
+        "Content-Length": "399",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:51:30 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "26",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "365",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -38,11 +38,15 @@
           "type": "invalid_request_error",
           "param": "purpose",
           "code": null
+        },
+        "detail": {
+          "message": "'world_domination' is not one of ['fine-tune', 'assistants', 'batch', 'user_data', 'vision', 'evals'] - 'purpose'",
+          "code": null
         }
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

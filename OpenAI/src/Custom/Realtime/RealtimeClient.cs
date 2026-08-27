@@ -1,0 +1,128 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+
+namespace OpenAI.Realtime;
+
+[CodeGenType("Realtime")]
+public partial class RealtimeClient
+{
+    public event EventHandler<BinaryData> OnSendingCommand;
+    public event EventHandler<BinaryData> OnReceivingCommand;
+
+    private readonly ApiKeyCredential _keyCredential;
+    private readonly Uri _webSocketEndpoint;
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public RealtimeClient(string apiKey) : this(new ApiKeyCredential(apiKey), new RealtimeClientOptions())
+    {
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public RealtimeClient(ApiKeyCredential credential) : this(credential, new RealtimeClientOptions())
+    {
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options) : this(OpenAIClientUtilities.CreateApiKeyAuthenticationPolicy(credential), options)
+    {
+        _keyCredential = credential;
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public RealtimeClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new RealtimeClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public RealtimeClient(AuthenticationPolicy authenticationPolicy, RealtimeClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new RealtimeClientOptions();
+
+        Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _webSocketEndpoint = GetWebSocketEndpoint(options);
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    protected internal RealtimeClient(ClientPipeline pipeline, RealtimeClientOptions options)
+    {
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new RealtimeClientOptions();
+
+        Pipeline = pipeline;
+        _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
+        _webSocketEndpoint = GetWebSocketEndpoint(options);
+    }
+
+    [Experimental("SCME0002")]
+    public RealtimeClient(RealtimeClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
+    private static Uri GetWebSocketEndpoint(RealtimeClientOptions options = null)
+    {
+        UriBuilder uriBuilder = new(OpenAIClientUtilities.GetEndpoint(options?.Endpoint));
+        uriBuilder.Scheme = uriBuilder.Scheme.ToLowerInvariant() switch
+        {
+            "http" => "ws",
+            "https" => "wss",
+            _ => uriBuilder.Scheme
+        };
+        uriBuilder.Query = "";
+        string path = uriBuilder.Path.TrimEnd('/');
+        if (!path.EndsWith("/realtime", StringComparison.Ordinal))
+        {
+            path += "/realtime";
+        }
+        uriBuilder.Path = path;
+
+        return uriBuilder.Uri;
+    }
+
+    internal void RaiseOnSendingCommand<T>(T session, BinaryData data)
+        => OnSendingCommand?.Invoke(session, data);
+
+    internal void RaiseOnReceivingCommand<T>(T session, BinaryData data)
+        => OnReceivingCommand?.Invoke(session, data);
+}

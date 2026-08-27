@@ -20,7 +20,7 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("Roll 2d4+1"),
         ];
 
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
             Tools = {
                 new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
@@ -30,7 +30,7 @@ public partial class ResponseExamples
             }
         };
 
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(options);
 

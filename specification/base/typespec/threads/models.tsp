@@ -3,14 +3,23 @@
  * Edits made directly to this file will be lost.
  */
 
-import "../common";
 import "../messages";
-import "./custom.tsp";
-
 using Http;
 using TypeSpec.OpenAPI;
 
 namespace OpenAI;
+
+model ThreadsError {
+  code: string | null;
+  message: string;
+  param: string | null;
+  type: string;
+}
+
+@error
+model ThreadsErrorResponse {
+  error: ThreadsError;
+}
 
 /**
  * Options to create a new thread. If no thread is provided when running a
@@ -36,7 +45,7 @@ model CreateThreadRequest {
     file_search?: ToolResourcesFileSearch;
   } | null;
 
-  ...MetadataPropertyForRequest;
+  metadata?: Record<string>;
 }
 
 model ModifyThreadRequest {
@@ -56,7 +65,7 @@ model ModifyThreadRequest {
     file_search?: ToolResourcesFileSearchIdsOnly;
   } | null;
 
-  ...MetadataPropertyForRequest;
+  metadata?: Record<string>;
 }
 
 model DeleteThreadResponse {
@@ -98,5 +107,57 @@ model ThreadObject {
     };
   } | null;
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
 }
+
+// This customization allows us to concretely specify that the file_search object must provide
+// either ID references --or-- in-line creation helpers, but not both.
+
+alias CreateThreadRequestToolResourcesFileSearch = CreateThreadRequestToolResourcesFileSearchVectorStoreIdReferences | CreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelpers;
+
+model CreateThreadRequestToolResourcesFileSearchVectorStoreIdReferences {
+  ...CreateThreadRequestToolResourcesFileSearchBase;
+
+  /**
+   * The [vector store](/docs/api-reference/vector-stores/object) attached to this thread.
+   * There can be a maximum of 1 vector store attached to the thread.
+   */
+  @maxItems(1)
+  vector_store_ids?: string[];
+}
+
+model CreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelpers {
+  ...CreateThreadRequestToolResourcesFileSearchBase;
+
+  /**
+   * A helper to create a [vector store](/docs/api-reference/vector-stores/object) with
+   * file_ids and attach it to this thread. There can be a maximum of 1 vector store attached
+   * to the thread.
+   */
+  @maxItems(1)
+  vector_stores?: CreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelper[];
+}
+
+model CreateThreadRequestToolResourcesFileSearchBase {
+  // Common fields (currently none)
+}
+
+alias CreateThreadRequestToolResourcesFileSearchVectorStoreCreationHelper = {
+  /**
+   * A list of [file](/docs/api-reference/files) IDs to add to the vector store. There can be
+   * a maximum of 10000 files in a vector store.
+   */
+  @maxItems(10000)
+  file_ids?: string[];
+
+  metadata?: Record<string>;
+};

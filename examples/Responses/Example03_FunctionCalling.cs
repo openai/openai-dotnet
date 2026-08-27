@@ -62,7 +62,7 @@ public partial class ResponseExamples
     [Test]
     public void Example03_FunctionCalling()
     {
-        ResponsesClient client = new(model: "gpt-5-mini", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
@@ -77,7 +77,7 @@ public partial class ResponseExamples
         {
             requiresAction = false;
 
-            CreateResponseOptions options = new(inputItems)
+            CreateResponseOptions options = new("gpt-5-mini", inputItems)
             {
                 Tools = { getCurrentLocationTool, getCurrentWeatherTool },
             };

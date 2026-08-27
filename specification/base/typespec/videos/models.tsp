@@ -1,8 +1,19 @@
 import "@typespec/openapi";
 import "@typespec/http";
+import "@azure-tools/typespec-client-generator-core";
 using TypeSpec.OpenAPI;
 using TypeSpec.Http;
+using Azure.ClientGenerator.Core;
 namespace OpenAI;
+
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+union VideosOrderEnum {
+  string,
+  asc: "asc",
+  desc: "desc",
+}
+
 #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model `Error-2` {
@@ -64,48 +75,39 @@ model VideoResource {
 
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum VideoModel {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `sora-2`,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `sora-2-pro`,
+union VideoModel {
+  string,
+  `sora-2`: "sora-2",
+  `sora-2-pro`: "sora-2-pro",
 }
 
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum VideoStatus {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  queued,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  in_progress,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  completed,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  failed,
+union VideoStatus {
+  string,
+  queued: "queued",
+  in_progress: "in_progress",
+  completed: "completed",
+  failed: "failed",
 }
 
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum VideoSize {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `720x1280`,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `1280x720`,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `1024x1792`,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `1792x1024`,
+union VideoSize {
+  string,
+  `720x1280`: "720x1280",
+  `1280x720`: "1280x720",
+  `1024x1792`: "1024x1792",
+  `1792x1024`: "1792x1024",
 }
 
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum VideoSeconds {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `4`,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `8`,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  `12`,
+union VideoSeconds {
+  string,
+  `4`: "4",
+  `8`: "8",
+  `12`: "12",
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -180,11 +182,38 @@ scalar VideoPrompt extends string;
 
 #suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-enum VideoContentVariant {
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  video,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  thumbnail,
-  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  spritesheet,
+union VideoContentVariant {
+  string,
+  video: "video",
+  thumbnail: "thumbnail",
+  spritesheet: "spritesheet",
+}
+
+union VideoCollectionOrder {
+   string,
+   Ascending: "asc",
+   Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model VideoCollectionOptions {
+   /**
+    * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    * subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    */
+   @query @continuationToken afterId?: string;
+
+   /**
+    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    * default is 20.
+    */
+   @query pageSizeLimit?: int32 = 20;
+
+   /**
+    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    * for descending order.
+    */
+   @query order?: VideoCollectionOrder;
 }

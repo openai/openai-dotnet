@@ -33,7 +33,7 @@
     Runs the compatibility check using default parameters for the OpenAI SDK
 
 .EXAMPLE
-    Invoke-APICompat -ProjectPath "src\MyProject.csproj" -ReleasePath "src\bin\Release" -PackageName "MyPackage" -BaselineVersion "1.0.0"
+    Invoke-APICompat -ProjectPath "OpenAI\src\MyProject.csproj" -ReleasePath "OpenAI\src\bin\Release" -PackageName "MyPackage" -BaselineVersion "1.0.0"
     Runs a compatibility check between the current version and version 1.0.0 of MyPackage
 
 .NOTES
@@ -48,7 +48,7 @@ function Invoke-DotNetBuild {
 
     Write-Output "Building $($ProjectPath)..."
     Write-Output ""
-    & dotnet build $ProjectPath
+    & dotnet build $ProjectPath --configuration Release
     Write-Output ""
 }
 
@@ -60,7 +60,7 @@ function Invoke-DotNetPack {
 
     Write-Output "Packing $($ProjectPath)..."
     Write-Output ""
-    & dotnet pack $ProjectPath
+    & dotnet pack $ProjectPath --configuration Release
     Write-Output ""
 }
 
@@ -68,6 +68,9 @@ function Invoke-APICompat {
     param (
         [Parameter(Mandatory = $true)]
         [string]$ProjectPath,
+
+        [Parameter(Mandatory = $true)]
+        [string]$DirectoryBuildPropsPath,
 
         [Parameter(Mandatory = $true)]
         [string]$ReleasePath,
@@ -89,17 +92,23 @@ function Invoke-APICompat {
         Invoke-DotNetPack -ProjectPath $ProjectPath
 
         # Extract the values of VersionPrefix and VersionSuffix from the .csproj XML file.
-        $xml = [xml](Get-Content $ProjectPath)
-        $versionPrefix = $($xml.Project.PropertyGroup[0].VersionPrefix)
-        $versionSuffix = $($xml.Project.PropertyGroup[0].VersionSuffix)
+        $xml = [xml](Get-Content $DirectoryBuildPropsPath)
+        $versionPropertyGroup = $xml.Project.PropertyGroup | Where-Object { $_.VersionPrefix -or $_.VersionSuffix } | Select-Object -First 1
+
+        if (-not $versionPropertyGroup) {
+            throw "Could not find version information in '$DirectoryBuildPropsPath'."
+        }
+
+        $versionPrefix = $versionPropertyGroup.VersionPrefix
+        $versionSuffix = $versionPropertyGroup.VersionSuffix
         $currentVersion = [string]::IsNullOrEmpty($versionSuffix) ? "$($versionPrefix)" : "$($versionPrefix)-$($versionSuffix)"
 
         $currentNuGetPackagePath = Join-Path $ReleasePath "$($PackageName).$($currentVersion).nupkg"
         $currentNuGetSymbolsPath = Join-Path $ReleasePath "$($PackageName).$($currentVersion).snupkg"
 
         # Create temporary folder
-        $tempFolderPath = Join-Path $PSScriptRoot "\TempApiCompatibility"
-        New-Item -ItemType Directory -Path $tempFolderPath | Out-Null
+        $tempFolderPath = Join-Path $PSScriptRoot "TempApiCompatibility"
+        New-Item -ItemType Directory -Path $tempFolderPath -Force | Out-Null
 
         # Download OpenAI NuGet package
         $baselineNuGetPackageName = "$($PackageName).$($BaselineVersion).nupkg"
@@ -118,15 +127,15 @@ function Invoke-APICompat {
         $warningRegex = "CP\d\d\d\d"
 
         # Concatenate the ignored namespaces into a single string, delimiting them by "|" and escaping the "."
-        $ignoredRegex = $IgnoredNamespaces -join "|" -creplace "\.", "\."
-
-        Write-Output $excludedRegex
+        $ignoredRegex = if ($IgnoredNamespaces) {
+            ($IgnoredNamespaces | ForEach-Object { [regex]::Escape($_) }) -join "|"
+        }
 
         $warningsFound = 0
 
         foreach ($line in $($output -split "`r`n")) {
             if ($line -cmatch $warningRegex) {
-                if ($($line -cnotmatch $ignoredRegex)) {
+                if (-not $ignoredRegex -or $line -cnotmatch $ignoredRegex) {
                     $warningsFound++
                 }
             }
@@ -139,7 +148,7 @@ function Invoke-APICompat {
         else {
             foreach ($line in $($output -split "`r`n")) {
                 if ($line -cmatch $warningRegex) {
-                    if ($($line -cnotmatch $ignoredRegex)){
+                    if (-not $ignoredRegex -or $line -cnotmatch $ignoredRegex){
                         Write-Warning "$line"
                         Write-Output ""
                     }
@@ -152,30 +161,43 @@ function Invoke-APICompat {
         }
     }
     finally {
-        Remove-Item -Path $tempFolderPath -Recurse -Force
-        Remove-Item -Path $currentNuGetPackagePath -Force
-        Remove-Item -Path $currentNuGetSymbolsPath -Force
+        if ($tempFolderPath -and (Test-Path $tempFolderPath)) {
+            Remove-Item -Path $tempFolderPath -Recurse -Force
+        }
+
+        if ($currentNuGetPackagePath -and (Test-Path $currentNuGetPackagePath)) {
+            Remove-Item -Path $currentNuGetPackagePath -Force
+        }
+
+        if ($currentNuGetSymbolsPath -and (Test-Path $currentNuGetSymbolsPath)) {
+            Remove-Item -Path $currentNuGetSymbolsPath -Force
+        }
     }
 }
 
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
-$projectPath = Join-Path $repoRootPath "src\OpenAI.csproj"
-$releasePath = Join-Path $repoRootPath "src\bin\Release"
+$projectPath = Join-Path $repoRootPath "OpenAI\src\OpenAI.csproj"
+$buildPropsPath = Join-Path $repoRootPath "Directory.Build.props"
+$releasePath = Join-Path $repoRootPath "OpenAI\src\bin\Release"
 
 $experimentalNamespaces = @(
     "OpenAI.Assistants",
     "OpenAI.Batch",
     "OpenAI.Containers",
+    "OpenAI.Conversations",
     "OpenAI.Evals",
     "OpenAI.FineTuning",
     "OpenAI.Graders",
     "OpenAI.Realtime",
     "OpenAI.Responses",
-    "OpenAI.VectorStores"
+    "OpenAI.Skills",
+    "OpenAI.VectorStores",
+    "OpenAI.Videos"
 )
 
 Invoke-APICompat -ProjectPath $projectPath `
+    -DirectoryBuildPropsPath $buildPropsPath `
     -ReleasePath $releasePath `
     -PackageName "OpenAI" `
-    -BaselineVersion "2.7.0" `
+    -BaselineVersion "2.12.0" `
     -IgnoredNamespaces $experimentalNamespaces

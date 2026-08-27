@@ -6,46 +6,67 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "101",
+        "Content-Length": "82",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
-        "model": "dall-e-2",
+        "model": "gpt-image-1",
         "n": 2,
-        "response_format": "url",
-        "size": "256x256"
+        "size": "1024x1024"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980b8db67ee1a37e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a093e47eaaa4e668-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "969",
+        "Content-Length": "519",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:04:10 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "8944",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "8950",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "created": 1758143050,
+        "created": 1781047510,
+        "background": "opaque",
         "data": [
           {
-            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-Hq0tu3r1lB0gQvfHFVkDiFpo.png?st=2025-09-17T20%3A04%3A10Z&se=2025-09-17T22%3A04%3A10Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=31d50bd4-689f-439b-a875-f22bd677744d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T21%3A04%3A09Z&ske=2025-09-18T21%3A04%3A09Z&sks=b&skv=2024-08-04&sig=Sanitized"
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
           },
           {
-            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-sQS0530ZNSVEDBCUBHJccuUx.png?st=2025-09-17T20%3A04%3A09Z&se=2025-09-17T22%3A04%3A09Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=31d50bd4-689f-439b-a875-f22bd677744d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T21%3A04%3A09Z&ske=2025-09-18T21%3A04%3A09Z&sks=b&skv=2024-08-04&sig=Sanitized"
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
           }
-        ]
+        ],
+        "output_format": "png",
+        "quality": "medium",
+        "size": "1024x1024",
+        "usage": {
+          "input_tokens": 22,
+          "input_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 22
+          },
+          "output_tokens": 2112,
+          "output_tokens_details": {
+            "image_tokens": 2112,
+            "text_tokens": 0
+          },
+          "total_tokens": 2134
+        }
       }
     },
     {
@@ -54,9 +75,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "625",
+        "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -70,7 +91,7 @@
               {
                 "type": "image_url",
                 "image_url": {
-                  "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-Hq0tu3r1lB0gQvfHFVkDiFpo.png?st=2025-09-17T20%3A04%3A10Z&se=2025-09-17T22%3A04%3A10Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=31d50bd4-689f-439b-a875-f22bd677744d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T21%3A04%3A09Z&ske=2025-09-18T21%3A04%3A09Z&sks=b&skv=2024-08-04&sig=Sanitized"
+                  "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
                 }
               }
             ]
@@ -81,22 +102,25 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980b8def2e36a37e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a093e4e1998de668-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "861",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:04:12 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "1959",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1993",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
         "x-ratelimit-limit-requests": "30000",
@@ -110,16 +134,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGtbuxHKPk0p3VMjj4DhJvT1xZwFz",
+        "id": "chatcmpl-Dp06iIIDma6gkJcPe4wHJUjeYyrGI",
         "object": "chat.completion",
-        "created": 1758143050,
+        "created": 1781047512,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a red stop sign, which is in the shape of an octagon. The word \"STOP\" is written in bold white letters across the center of the sign. It is mounted on a metal pole, typically found at road intersections to instruct drivers to come to a complete stop.",
+              "content": "The image features a standard stop sign. It is octagonal in shape with a bright red background. The word \"STOP\" is prominently displayed in large white letters at the center of the sign. The sign is mounted on a vertical gray pole against a plain white background, making it stand out clearly. The overall design is simple and straightforward, conveying the universal message to halt.",
               "refusal": null,
               "annotations": []
             },
@@ -128,9 +152,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 8514,
-          "completion_tokens": 59,
-          "total_tokens": 8573,
+          "prompt_tokens": 25515,
+          "completion_tokens": 75,
+          "total_tokens": 25590,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -152,9 +176,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "625",
+        "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -168,7 +192,7 @@
               {
                 "type": "image_url",
                 "image_url": {
-                  "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-sQS0530ZNSVEDBCUBHJccuUx.png?st=2025-09-17T20%3A04%3A09Z&se=2025-09-17T22%3A04%3A09Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=31d50bd4-689f-439b-a875-f22bd677744d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T21%3A04%3A09Z&ske=2025-09-18T21%3A04%3A09Z&sks=b&skv=2024-08-04&sig=Sanitized"
+                  "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
                 }
               }
             ]
@@ -179,22 +203,25 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980b8dfc4899a37e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a093e4f269f5e668-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "855",
+        "Content-Length": "924",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:04:13 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "1416",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1437",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
         "x-ratelimit-limit-requests": "30000",
@@ -208,16 +235,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGtbwfnyuWqoGx7VVTjSSkE8Ro2cm",
+        "id": "chatcmpl-Dp06l7Nlayc4ZCgAyNTTzkJwC1PhA",
         "object": "chat.completion",
-        "created": 1758143052,
+        "created": 1781047515,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a classic red octagonal stop sign. The sign has the word \"STOP\" prominently displayed in white letters. It is mounted on a pole, and the overall appearance is clear and recognizable, typical of traffic signage used to instruct vehicles to halt.",
+              "content": "The image features a red octagonal stop sign mounted on a silver metal pole. The sign has the word \"STOP\" written in large, white uppercase letters at its center. The background appears plain, emphasizing the sign itself. The design is typical of standard traffic signs used to indicate that vehicles must come to a complete stop.",
               "refusal": null,
               "annotations": []
             },
@@ -226,9 +253,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 8514,
-          "completion_tokens": 52,
-          "total_tokens": 8566,
+          "prompt_tokens": 25515,
+          "completion_tokens": 65,
+          "total_tokens": 25580,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -246,6 +273,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

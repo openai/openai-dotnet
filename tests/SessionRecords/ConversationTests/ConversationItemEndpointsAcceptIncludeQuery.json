@@ -1,0 +1,263 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "98",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.10; Ubuntu 24.04.4 LTS)"
+      },
+      "RequestBody": {
+        "items": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "first item"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a20c318e78bb1b9a-DUB",
+        "Connection": "keep-alive",
+        "Content-Length": "141",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a64d61271bc81978f6bf8089632a0790f2c9ddbc598f953",
+        "object": "conversation",
+        "created_at": 1784993298,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a64d61271bc81978f6bf8089632a0790f2c9ddbc598f953/items?include[]=message.input_image.image_url&include[]=web_search_call.action.sources",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "99",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.10; Ubuntu 24.04.4 LTS)"
+      },
+      "RequestBody": {
+        "items": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "second item"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a20c3194bcaa1b9a-DUB",
+        "Connection": "keep-alive",
+        "Content-Length": "466",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "second item"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953",
+        "has_more": false,
+        "last_id": "msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a64d61271bc81978f6bf8089632a0790f2c9ddbc598f953/items/msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953?include[]=message.input_image.image_url&include[]=web_search_call.action.sources",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.10; Ubuntu 24.04.4 LTS)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a20c3198cf2f1b9a-DUB",
+        "Connection": "keep-alive",
+        "Content-Length": "218",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953",
+        "type": "message",
+        "status": "completed",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "second item"
+          }
+        ],
+        "role": "user"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a64d61271bc81978f6bf8089632a0790f2c9ddbc598f953/items?include[]=message.input_image.image_url&include[]=web_search_call.action.sources",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.10; Ubuntu 24.04.4 LTS)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a20c319cc9b71b9a-DUB",
+        "Connection": "keep-alive",
+        "Content-Length": "733",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "second item"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_6a64d61272088197a24548f9c5f6af470f2c9ddbc598f953",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "first item"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_6a64d61300bc8197b2ee13bee46a49890f2c9ddbc598f953",
+        "has_more": false,
+        "last_id": "msg_6a64d61272088197a24548f9c5f6af470f2c9ddbc598f953"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a64d61271bc81978f6bf8089632a0790f2c9ddbc598f953",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.10; Ubuntu 24.04.4 LTS)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a20c319ffc891b9a-DUB",
+        "Connection": "keep-alive",
+        "Content-Length": "122",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "conv_6a64d61271bc81978f6bf8089632a0790f2c9ddbc598f953",
+        "object": "conversation.deleted",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

@@ -8,9 +8,10 @@
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponsesClient client = new(key);
 
 ResponseResult response = client.CreateResponse(
+    "gpt-5.2",
     "Write a short bedtime story about a unicorn."
 );
 

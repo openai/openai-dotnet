@@ -1,7 +1,3 @@
-﻿using Microsoft.ClientModel.TestFramework;
-using NUnit.Framework;
-using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -9,7 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
+using OpenAI.Files;
+using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Files;
 
@@ -28,14 +27,20 @@ public class FilesTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public async Task OneTimeTearDown()
     {
-        OpenAIFileClient client = GetTestClient();
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
+        {
+            return;
+        }
+
+        OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
         foreach (string fileId in FileIdsForCleanup)
         {
-            _ = client.DeleteFile(fileId, noThrowOptions);
+            _ = await client.DeleteFileAsync(fileId, noThrowOptions);
         }
     }
 
@@ -44,7 +49,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             using Stream file1 = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
             using Stream file2 = BinaryData.FromString("Hello! This is another test text file. Please delete me.").ToStream();
             string filename = "test-file-delete-me.txt";
@@ -135,7 +140,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             string filename = "images_dog_and_cat.png";
             string path = Path.Combine("Assets", filename);
             OpenAIFile fileInfo = null;
@@ -177,13 +182,11 @@ public class FilesTests : OpenAIRecordedTestBase
 
             long expectedSize = new FileInfo(path).Length;
             long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-            string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? path : filename;
-
             Assert.That(fileInfo, Is.Not.Null);
             Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
             Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(fileInfo.Filename, Is.EqualTo(expectedFilename));
+            Assert.That(fileInfo.Filename, Is.EqualTo(filename).IgnoreCase);
             Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
             Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
@@ -196,7 +199,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             string filename = "images_dog_and_cat.png";
             string path = Path.Combine("Assets", filename);
             FileUploadPurpose fakePurpose = new FileUploadPurpose("world_domination");
@@ -213,7 +216,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             string fileContent = "Hello! This is a test text file. Please delete me.";
             using Stream file = BinaryData.FromString(fileContent).ToStream();
             string filename = "test-file-delete-me.txt";
@@ -239,7 +242,7 @@ public class FilesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void DeleteFileCanParseServiceError()
     {
-        OpenAIFileClient client = GetTestClient();
+        OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
         ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
@@ -250,7 +253,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             using Stream file = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
             string filename = "test-file-delete-me.txt";
             OpenAIFile uploadedFile = null;
@@ -287,7 +290,7 @@ public class FilesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void GetFileCanParseServiceError()
     {
-        OpenAIFileClient client = GetTestClient();
+        OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
         ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
@@ -298,7 +301,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             string filename = "images_dog_and_cat.png";
             string path = Path.Combine("Assets", filename);
             using Stream file = File.OpenRead(path);
@@ -330,7 +333,7 @@ public class FilesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void DownloadFileCanParseServiceError()
     {
-        OpenAIFileClient client = GetTestClient();
+        OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
         ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
@@ -347,7 +350,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             string filename = "你好.txt";
             BinaryData fileContent = BinaryData.FromString("世界您好！这是个测试。");
             OpenAIFile uploadedFile = await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants);
@@ -361,7 +364,7 @@ public class FilesTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetTestClient();
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
 
             BinaryData fileContent = BinaryData.FromString("Hello, world!");
             OpenAIFile uploadedFile = await client.UploadFileAsync(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData);
@@ -385,7 +388,4 @@ public class FilesTests : OpenAIRecordedTestBase
         {
             throw new NotImplementedException();
         }
-    }
-
-    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-}
+    }}

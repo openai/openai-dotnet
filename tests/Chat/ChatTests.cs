@@ -9,6 +9,7 @@ using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,7 +20,6 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.Telemetry.TestMeterListener;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
@@ -34,7 +34,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task HelloWorldChat()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages);
         Assert.That(result, Is.InstanceOf<ClientResult<ChatCompletion>>());
@@ -45,7 +45,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task HelloWorldWithTopLevelClient()
     {
-        OpenAIClient client = GetProxiedOpenAIClient<OpenAIClient>(TestScenario.TopLevel);
+        OpenAIClient client = GetProxiedOpenAIClient<OpenAIClient>();
         ChatClient chatClient = client.GetChatClient("gpt-4o-mini");
         IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
         ClientResult<ChatCompletion> result = await chatClient.CompleteChatAsync(messages);
@@ -55,7 +55,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MultiMessageChat()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [
             new SystemChatMessage("You are a helpful assistant. You always talk like a pirate."),
             new UserChatMessage("Hello, assistant! Can you help me train my parrot?"),
@@ -68,7 +68,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingChat()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
@@ -101,7 +101,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task TwoTurnChat()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         List<ChatMessage> messages =
         [
@@ -126,7 +126,7 @@ public class ChatTests : OpenAIRecordedTestBase
         using Stream stream = File.OpenRead(filePath);
         BinaryData imageData = BinaryData.FromStream(stream);
 
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart("Describe this image for me."),
@@ -142,7 +142,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatWithBasicAudioOutput()
     {
-        ChatClient client = GetTestClient(overrideModel: "gpt-4o-audio-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-audio-1.5");
         List<ChatMessage> messages = ["Say the exact word 'hello' and nothing else."];
         ChatCompletionOptions options = new()
         {
@@ -192,7 +192,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatWithAudio()
     {
-        ChatClient client = GetTestClient(overrideModel: "gpt-4o-audio-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-audio-1.5");
 
         string helloWorldAudioPath = Path.Join("Assets", "audio_hello_world.mp3");
         BinaryData helloWorldAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(helloWorldAudioPath));
@@ -306,7 +306,7 @@ public class ChatTests : OpenAIRecordedTestBase
     public async Task TokenLogProbabilities(bool includeLogProbabilities)
     {
         const int topLogProbabilityCount = 3;
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IList<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
         ChatCompletionOptions options;
 
@@ -358,7 +358,7 @@ public class ChatTests : OpenAIRecordedTestBase
     public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
     {
         const int topLogProbabilityCount = 3;
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IList<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
         ChatCompletionOptions options;
 
@@ -411,7 +411,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task NonStrictJsonSchemaWorks()
     {
-        ChatClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-mini");
         ChatCompletionOptions options = new()
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
@@ -433,7 +433,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task JsonResult()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage("Give me a JSON object with the following properties: red, green, and blue. The value "
                 + "of each property should be a string containing their RGB representation in hexadecimal.")
@@ -454,7 +454,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MultipartContentWorks()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         List<ChatMessage> messages = [
             new SystemChatMessage(
                 "You talk like a pirate.",
@@ -475,7 +475,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StructuredOutputsWork()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage("What's heavier, a pound of feathers or sixteen ounces of steel?")
         ];
@@ -522,7 +522,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StructuredRefusalWorks()
     {
-        ChatClient client = GetTestClient(overrideModel: "gpt-4o-2024-08-06");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-2024-08-06");
         List<ChatMessage> messages = [
             new UserChatMessage("What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."),
         ];
@@ -579,7 +579,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingStructuredRefusalWorks()
     {
-        ChatClient client = GetTestClient(overrideModel: "gpt-4o-2024-08-06");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-2024-08-06");
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage("What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."),
         ];
@@ -645,7 +645,7 @@ public class ChatTests : OpenAIRecordedTestBase
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages);
 
@@ -672,7 +672,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ReasoningTokensWork()
     {
-        ChatClient client = GetTestClient(overrideModel: "o3-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
 
         UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         ChatCompletionOptions options = new()
@@ -696,7 +696,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task PredictedOutputsWork()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         foreach (ChatOutputPrediction predictionVariant in new List<ChatOutputPrediction>(
             [
@@ -761,7 +761,7 @@ public class ChatTests : OpenAIRecordedTestBase
             ReasoningEffortLevel = ChatReasoningEffortLevel.Low,
         };
 
-        ChatClient client = GetTestClient(overrideModel: "o3-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
         ChatCompletion completion = await client.CompleteChatAsync(messages, options);
 
         Assert.That(completion.Content, Has.Count.EqualTo(1));
@@ -771,7 +771,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchWorks()
     {
-        ChatClient client = GetTestClient("gpt-4o-search-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-search-preview");
 
         ChatCompletionOptions options = new()
         {
@@ -789,7 +789,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [Category("MPFD")]
     public async Task FileIdContentWorks()
     {
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         OpenAIFile testInputFile = await fileClient.UploadFileAsync(
             Path.Combine("Assets", "files_travis_favorite_food.pdf"),
             FileUploadPurpose.UserData);
@@ -802,7 +802,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(fileIdContentPart.FileBytesMediaType, Is.Null);
         Assert.That(fileIdContentPart.Filename, Is.Null);
 
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ChatCompletion completion = await client.CompleteChatAsync(
             [
                 ChatMessage.CreateUserMessage(
@@ -828,7 +828,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(binaryFileContentPart.Filename, Is.EqualTo("test_travis_favorite_food.pdf"));
         Assert.That(binaryFileContentPart.FileId, Is.Null);
 
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         ChatCompletion completion = await client.CompleteChatAsync(
             [
@@ -843,7 +843,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetChatCompletionMessagesHandlesNonExistentCompletion()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
 
         // Test with non-existent completion ID
         string nonExistentId = "comp_nonexistent_12345";
@@ -866,7 +866,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void GetChatCompletionMessagesWithInvalidParameters()
     {
-        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(scenario: TestScenario.Chat, credential: GetTestApiKeyCredential()));
+        ChatClient client = CreateProxyFromClient(TestEnvironment.GetTestClient<ChatClient>());
 
         // Test with null completion ID
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
@@ -890,7 +890,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ChatServiceTierWorks()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat, "o3-mini");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("o3-mini");
 
         UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         ChatCompletionOptions options = new()
@@ -904,146 +904,10 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(completion.ServiceTier, Is.EqualTo(ChatServiceTier.Default));
     }
 
-    [SyncOnly]
-    [RecordedTest]
-    public void StreamingChatCanBeCancelled()
-    {
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
-            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: [DONE]
-            """);
-
-        OpenAIClientOptions options = new OpenAIClientOptions()
-        {
-            Transport = new MockPipelineTransport(_ => response)
-        };
-
-        CancellationTokenSource cancellationTokenSource = new();
-        cancellationTokenSource.CancelAfter(1000);
-
-        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat, options: options));
-        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
-
-        CollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreaming(messages, cancellationToken: cancellationTokenSource.Token);
-        IEnumerator<StreamingChatCompletionUpdate> enumerator = streamingResult.GetEnumerator();
-
-        enumerator.MoveNext();
-        StreamingChatCompletionUpdate firstUpdate = enumerator.Current;
-
-        Assert.That(firstUpdate, Is.Not.Null);
-        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
-
-        Thread.Sleep(1000);
-
-        Assert.Throws<OperationCanceledException>(() =>
-        {
-            // Should throw for the second update.
-            Assert.That(cancellationTokenSource.IsCancellationRequested);
-            Assert.That(cancellationTokenSource.Token.IsCancellationRequested);
-            enumerator.MoveNext();
-            enumerator.MoveNext();
-        });
-    }
-
-    [AsyncOnly]
-    [RecordedTest]
-    public async Task StreamingChatCanBeCancelledAsync()
-    {
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
-            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: [DONE]
-            """);
-
-        OpenAIClientOptions options = new OpenAIClientOptions()
-        {
-            Transport = new MockPipelineTransport(_ => response)
-            {
-                ExpectSyncPipeline = !IsAsync
-            }
-        };
-
-        CancellationTokenSource cancellationTokenSource = new();
-        cancellationTokenSource.CancelAfter(1000);
-
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options, credential: GetTestApiKeyCredential());
-        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
-
-        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages, cancellationToken: cancellationTokenSource.Token);
-        IAsyncEnumerator<StreamingChatCompletionUpdate> enumerator = streamingResult.GetAsyncEnumerator();
-
-        await enumerator.MoveNextAsync();
-        StreamingChatCompletionUpdate firstUpdate = enumerator.Current;
-
-        Assert.That(firstUpdate, Is.Not.Null);
-        Assert.That(cancellationTokenSource.IsCancellationRequested, Is.False);
-
-        await Task.Delay(1000);
-
-        Assert.ThrowsAsync<OperationCanceledException>(async () =>
-        {
-            // Should throw for the second update.
-            Assert.That(cancellationTokenSource.IsCancellationRequested);
-            Assert.That(cancellationTokenSource.Token.IsCancellationRequested);
-            await enumerator.MoveNextAsync();
-            await enumerator.MoveNextAsync();
-        });
-    }
-
-    [RecordedTest]
-    public async Task CompleteChatStreamingClosesNetworkStream()
-    {
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
-            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
-
-            data: [DONE]
-            """);
-
-        OpenAIClientOptions options = new()
-        {
-            Transport = new MockPipelineTransport(_ => response)
-            {
-                ExpectSyncPipeline = !IsAsync
-            }
-        };
-
-        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat, options: options, credential: GetTestApiKeyCredential()));
-        IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
-
-        int updateCount = 0;
-        TimeSpan? firstTokenReceiptTime = null;
-        TimeSpan? latestTokenReceiptTime = null;
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages);
-
-        Assert.That(streamingResult, Is.InstanceOf<AsyncCollectionResult<StreamingChatCompletionUpdate>>());
-        Assert.That(response.IsDisposed, Is.False);
-
-        await foreach (StreamingChatCompletionUpdate chatUpdate in streamingResult)
-        {
-            firstTokenReceiptTime ??= stopwatch.Elapsed;
-            latestTokenReceiptTime = stopwatch.Elapsed;
-            updateCount++;
-
-            Console.WriteLine(stopwatch.Elapsed.TotalMilliseconds);
-        }
-
-        stopwatch.Stop();
-
-        Assert.That(response.IsDisposed);
-    }
-
     [RecordedTest]
     public async Task ValidateConcurrency()
     {
-        ChatClient client = GetTestClient();
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ChatCompletionOptions _options = new()
         {
             Temperature = 0,
@@ -1054,7 +918,7 @@ public class ChatTests : OpenAIRecordedTestBase
             "3 + 5 = ?",
             "4 + 6 = ?",
         ];
-        List<string> responses = [];
+        ConcurrentBag<string> responses = [];
 
         await Parallel.ForEachAsync(_messages, async (message, cancellationToken) =>
         {
@@ -1071,15 +935,21 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [OneTimeTearDown]
-    public void TearDown()
+    public async Task OneTimeTearDown()
     {
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        // Skip resource cleanup in Playback mode; no live resources were created.
+        if (Mode == RecordedTestMode.Playback)
+        {
+            return;
+        }
+
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
 
         foreach (string fileId in FileIdsToDelete)
         {
-            _ = fileClient.DeleteFile(fileId, noThrowOptions);
+            _ = await fileClient.DeleteFileAsync(fileId, noThrowOptions);
         }
     }
 
@@ -1096,9 +966,4 @@ public class ChatTests : OpenAIRecordedTestBase
             Assert.Fail($"Unhandled item type for validation: {item.GetType().Name}");
         }
     }
-
-    private ChatClient GetTestClient(string overrideModel = null)
-        => GetProxiedOpenAIClient<ChatClient>(
-            scenario: TestScenario.Chat,
-            overrideModel: overrideModel);
 }

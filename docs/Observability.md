@@ -60,7 +60,9 @@ To opt in to the latest experimental GenAI semantic conventions, set the `OTEL_S
 OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental
 ```
 
-When this opt-in is enabled, the instrumentation emits attributes following the latest conventions. Notable changes include:
+When this opt-in is enabled, the instrumentation emits attributes following the
+[latest conventions](https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai).
+Notable changes include:
 
 - The `gen_ai.system` attribute is replaced by `gen_ai.provider.name`.
 
@@ -71,3 +73,53 @@ The default behavior (without the opt-in) remains unchanged and continues to emi
 The following sources and meters are available:
 
 - `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
+
+## Telemetry and privacy
+
+Separately from the OpenTelemetry instrumentation described above, the library includes a small set of headers on outgoing requests that describe the SDK and the platform it is running on. Unlike the instrumentation above, which is opt-in, these are sent by default and can be turned off; see [Opting out](#opting-out). The two features are independent: `OpenAI.Experimental.EnableOpenTelemetry` does not govern these headers, and `OpenAI.DisableTelemetry` does not govern OpenTelemetry tracing or metrics.
+
+### What is sent
+
+| Header | Value | Source |
+| --- | --- | --- |
+| `X-Stainless-Lang` | `csharp` | Constant. |
+| `X-Stainless-Package-Version` | The `OpenAI` package version, such as `2.12.0`. | The assembly informational version, with any `+<commit>` suffix removed. This is the version token from the `User-Agent`, sent verbatim; if it could not be transmitted unaltered it is reported as `unknown` rather than rewritten, so the two can never silently disagree. |
+| `X-Stainless-Runtime` | `dotnet` | Constant. |
+| `X-Stainless-Runtime-Version` | The running .NET version, such as `8.0.11`. | The version portion of `RuntimeInformation.FrameworkDescription`. Falls back to the full description when no version is present, and to `unknown` when it cannot be determined. |
+| `X-Stainless-OS` | `Windows`, `MacOS`, `Linux`, `FreeBSD`, `Android`, `iOS`, `MacCatalyst`, or `Browser`. | `RuntimeInformation.IsOSPlatform`. Unrecognized platforms report `Other:<description>`. |
+| `X-Stainless-Arch` | `x64`, `x86`, `arm64`, or `arm`. | `RuntimeInformation.ProcessArchitecture`. Other architectures report `other:<name>`. |
+
+These headers restate, in a machine-parseable form, information already present in the `User-Agent` header, plus the process CPU architecture. Sending them individually means consumers do not have to parse the user agent string, which is not a stable contract.
+
+Values are:
+
+- Derived locally and deterministically, with no per-user or per-installation entropy. Two installations of the same package version on the same platform and runtime produce byte-for-byte identical values.
+- Free of user names, machine names, tenant identifiers, file paths, and persistent identifiers.
+- Printable ASCII with no line breaks. Free-form platform text (the operating system and runtime fallbacks) is additionally bounded in length. The package version is not bounded, so that it matches the `User-Agent` verbatim; the sole exception is the `unknown` fallback described above, used when the version could not be sent unaltered.
+
+Any of these headers that you set yourself is preserved; the library only supplies values that are absent. Header names are matched case-insensitively.
+
+### Opting out
+
+Use either of the following, in order of precedence:
+
+1. Set the `OpenAI.DisableTelemetry` context switch when your application starts, before creating any clients:
+
+   ```csharp
+   AppContext.SetSwitch("OpenAI.DisableTelemetry", true);
+   ```
+
+2. Set the `OPENAI_DISABLE_TELEMETRY` environment variable to `true` or `1`.
+
+The setting is read when a client is created, so it must be applied before constructing any client.
+
+Opting out suppresses:
+
+- All six `X-Stainless-*` headers.
+- The `User-Agent` header that the library adds. Neither `HttpClient` nor the underlying transport substitutes a default, so an opted-out request carries no user agent unless you supply one.
+
+Opting out does not affect the `Authorization`, `OpenAI-Organization`, or `OpenAI-Project` headers, nor any header you set yourself.
+
+### Realtime sessions
+
+The WebSocket handshake that opens a Realtime session sends only the `Authorization` header along with any headers you supply through `RealtimeSessionClientOptions.Headers`. It does not send the `X-Stainless-*` headers, matching the behavior of the other official OpenAI SDKs. Regular HTTP requests made by `RealtimeClient` do include them.

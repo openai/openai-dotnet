@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "158",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -24,19 +24,19 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801cf037a0598e5-SEA",
+        "CF-RAY": "9cd10011c865c37c-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:41:00 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "2492",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2508",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
@@ -47,16 +47,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGT1e9UvRX0fYe2JLrH72d1rgV4bA",
+        "id": "chatcmpl-D8dV8khBMDU8YVEMhuBrSt2cusabB",
         "object": "chat.completion",
-        "created": 1758040858,
+        "created": 1770950838,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "In geometry, triangles can be classified based on the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all three internal angles are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, while the third side is of a different length. The angles opposite the equal sides are also equal.\n\n3. **Scalene Triangle**: All three sides have different lengths. Consequently, all three internal angles are also different.\n\nThese classifications help in understanding the properties and theorems related to triangles in geometry.",
+              "content": "Triangles can be classified by the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all three internal angles are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, and the angles opposite those sides are also equal. This means that an isosceles triangle has at least two equal sides.\n\n3. **Scalene Triangle**: All three sides are of different lengths, which means that all three internal angles are also different from one another.\n\nThese classifications help in understanding the properties and characteristics of triangles in various geometric contexts.",
               "refusal": null,
               "annotations": []
             },
@@ -66,8 +66,8 @@
         ],
         "usage": {
           "prompt_tokens": 26,
-          "completion_tokens": 131,
-          "total_tokens": 157,
+          "completion_tokens": 137,
+          "total_tokens": 163,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -80,7 +80,7 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_560af6e559"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
@@ -89,9 +89,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "939",
+        "Content-Length": "980",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -101,7 +101,7 @@
           },
           {
             "role": "assistant",
-            "content": "In geometry, triangles can be classified based on the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all three internal angles are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, while the third side is of a different length. The angles opposite the equal sides are also equal.\n\n3. **Scalene Triangle**: All three sides have different lengths. Consequently, all three internal angles are also different.\n\nThese classifications help in understanding the properties and theorems related to triangles in geometry."
+            "content": "Triangles can be classified by the lengths of their sides into three main types:\n\n1. **Equilateral Triangle**: All three sides are of equal length. Consequently, all three internal angles are also equal, each measuring 60 degrees.\n\n2. **Isosceles Triangle**: Two sides are of equal length, and the angles opposite those sides are also equal. This means that an isosceles triangle has at least two equal sides.\n\n3. **Scalene Triangle**: All three sides are of different lengths, which means that all three internal angles are also different from one another.\n\nThese classifications help in understanding the properties and characteristics of triangles in various geometric contexts."
           },
           {
             "role": "user",
@@ -115,39 +115,39 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801cf13d92898e5-SEA",
+        "CF-RAY": "9cd1001f6bc7c37c-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:41:01 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "852",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "864",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999795",
+        "x-ratelimit-remaining-tokens": "149999785",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGT1gSXZhFwWypyQyL8jAw0TVB3qD",
+        "id": "chatcmpl-D8dVAh3QFoZJ1kq9BHkSxEx5UEvOp",
         "object": "chat.completion",
-        "created": 1758040860,
+        "created": 1770950840,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The triangle where exactly two sides are the same length is called an **Isosceles Triangle**. In an isosceles triangle, the angles opposite the equal sides are also equal.",
+              "content": "The triangle where exactly two sides are the same length is called an **Isosceles Triangle**. In an isosceles triangle, the two equal sides are known as the \"legs,\" and the third side is referred to as the \"base.\" The angles opposite the equal sides are also congruent.",
               "refusal": null,
               "annotations": []
             },
@@ -156,9 +156,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 180,
-          "completion_tokens": 39,
-          "total_tokens": 219,
+          "prompt_tokens": 186,
+          "completion_tokens": 63,
+          "total_tokens": 249,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -171,11 +171,11 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_51db84afab"
+        "system_fingerprint": "Sanitized"
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

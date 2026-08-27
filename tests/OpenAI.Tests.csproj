@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\OpenAI.csproj" />
+    <ProjectReference Include="..\OpenAI\src\OpenAI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Azure.Core" />
     <PackageReference Include="Microsoft.ClientModel.TestFramework" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
@@ -25,12 +25,30 @@
 
   <!-- Conditionally include packages built into the latest runtime -->
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0')) == 'false'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
-    <Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\PlatformTelemetry.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\TelemetryDetails.cs" LinkBase="Telemetry\Shared" />
+    <Compile Include="..\OpenAI\src\Generated\Internal\Argument.cs" LinkBase="Telemetry\Shared" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))">
+    <!-- The mTLS sample uses X509CertificateLoader, which is available in .NET 9 and later. -->
+    <Compile Include="..\examples\MutualTls\Example01_MutualTlsAsync.cs" LinkBase="Shared\Examples" />
+  </ItemGroup>
+
+  <!-- The SSE collections are internal and the library is signed, so they are linked
+       in rather than exposed through InternalsVisibleTo. -->
+  <ItemGroup>
+    <Compile Include="..\OpenAI\src\Utility\SseUpdateCollection.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI\src\Utility\AsyncSseUpdateCollection.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI\src\Generated\Internal\ModelSerializationExtensions.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI\src\Generated\Internal\TypeFormatters.cs" LinkBase="Utility\Shared" />
+    <Compile Include="..\OpenAI\src\Generated\Internal\SerializationFormat.cs" LinkBase="Utility\Shared" />
   </ItemGroup>
 
   <ItemGroup>

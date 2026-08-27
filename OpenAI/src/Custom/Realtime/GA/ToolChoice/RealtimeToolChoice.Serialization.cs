@@ -1,0 +1,70 @@
+﻿using System;
+using System.ClientModel.Primitives;
+using System.Text.Json;
+
+namespace OpenAI.Realtime;
+
+// CUSTOM: This type is not its own object. Instead, it represents a union, and as such, it must directly forward
+// its serialization and deserialization logic to the components of said union.
+public partial class RealtimeToolChoice
+{
+    // CUSTOM: Edited to remove calls to WriteStartObject() and WriteEndObject(). 
+    void IJsonModel<RealtimeToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        JsonModelWriteCore(writer, options);
+    }
+
+    // CUSTOM: Edited to serialize the different components of the union.
+    protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        string format = options.Format == "W" ? ((IPersistableModel<RealtimeToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(RealtimeToolChoice)} does not support writing '{format}' format.");
+        }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Optional.IsDefined(DefaultToolChoice) && !Patch.Contains("$.default_tool_choice"u8))
+        {
+            writer.WriteStringValue(DefaultToolChoice.Value.ToString());
+        }
+        if (Optional.IsDefined(CustomToolChoice) && !Patch.Contains("$.custom_tool_choice"u8))
+        {
+            writer.WriteObjectValue(CustomToolChoice, options);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    }
+
+    // CUSTOM: Edited to deserialize the different components of the union.
+    internal static RealtimeToolChoice DeserializeRealtimeToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+    {
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        RealtimeDefaultToolChoice? defaultToolChoice = default;
+        RealtimeCustomToolChoice customToolChoice = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        if (element.ValueKind == JsonValueKind.String)
+        {
+            defaultToolChoice = new RealtimeDefaultToolChoice(element.GetString());
+        }
+        else
+        {
+            customToolChoice = RealtimeCustomToolChoice.DeserializeRealtimeCustomToolChoice(element, element.GetUtf8Bytes(), options);
+        }
+
+        return new RealtimeToolChoice(defaultToolChoice, customToolChoice, patch);
+    }
+}

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "noEmit": true,
     "composite": true,
+    "skipLibCheck": true,
     "alwaysStrict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "Node16",

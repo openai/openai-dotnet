@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "236",
+        "Content-Length": "304",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.9.1 (.NET 10.0.4; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -27,45 +27,46 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "What was a positive news story from today?"
+                "text": "Searching the internet, what is the weather today in Redmond, WA?"
               }
             ]
           }
+        ],
+        "include": [
+          "web_search_call.action.sources"
         ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99ab70b48c8c6841-SEA",
+        "CF-RAY": "9e347c963f8fba28-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "6236",
+        "Content-Length": "6289",
         "Content-Type": "application/json",
-        "Date": "Fri, 07 Nov 2025 08:25:35 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "6549",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "6554",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_056b55c61ddc70ad00690dacf91da08193a10d51aa3276e4e2",
+        "id": "resp_0e394ee28d10ee6f0069c7716f20c4819497d0b686973242de",
         "object": "response",
-        "created_at": 1762503929,
+        "created_at": 1774678383,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1774678385,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
@@ -73,16 +74,73 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "ws_056b55c61ddc70ad00690dacf9317c8193a3032562dc43beeb",
+            "id": "ws_0e394ee28d10ee6f0069c7716f322081948016a379a91adf55",
             "type": "web_search_call",
             "status": "completed",
             "action": {
               "type": "search",
-              "query": "What was a positive news story from today?"
+              "queries": [
+                "Searching the internet, what is the weather today in Redmond, WA?"
+              ],
+              "query": "Searching the internet, what is the weather today in Redmond, WA?",
+              "sources": [
+                {
+                  "type": "url",
+                  "url": "https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weather-atlas.com/en/west-virginia-usa/redmond-weather-march?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weatherspark.com/h/m/905/2026/3/Historical-Weather-in-March-2026-in-Redmond-Washington-United-States?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weatherspark.com/h/m/1218/2026/3/Historical-Weather-in-March-2026-in-Redmond-Oregon-United-States?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://weatherspark.com/h/m/905/2026/3/%25E9%259B%25B7%25E5%25BE%25B7%25E8%2592%2599%25E5%25BE%25B7%25E3%2580%2581%25E5%258D%258E%25E7%259B%259B%25E9%25A1%25BF%25E5%25B7%259E%25E3%2580%2581%25E7%25BE%258E%25E5%259C%258B2026%25E5%25B9%25B43%25E6%259C%2588%25E6%25AD%25B7%25E5%258F%25B2%25E5%25A4%25A9%25E6%25B0%25A3?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.almanac.com/weather/forecast/WA/Redmond?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.almanac.com/weather/longrange/WA/Redmond/1000?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weather2visit.com/north-america/united-states/redmond-wa-march.htm?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weather-us.com/en/washington-usa/redmond-weather-march?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.theweathernetwork.com/en/city/us/washington/redmond/monthly?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.theweathernetwork.com/en/city/au/western-australia/redmond/monthly?utm_source=openai"
+                },
+                {
+                  "type": "url",
+                  "url": "https://www.weatherworld.com/forecast/wa/redmond.html?utm_source=openai"
+                },
+                {
+                  "type": "api",
+                  "name": "oai-weather"
+                }
+              ]
             }
           },
           {
-            "id": "msg_056b55c61ddc70ad00690dacfb0b50819382b918f7c025690f",
+            "id": "msg_0e394ee28d10ee6f0069c771700f90819492fa802357cf9325",
             "type": "message",
             "status": "completed",
             "content": [
@@ -91,48 +149,21 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 463,
-                    "start_index": 331,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 854,
-                    "start_index": 722,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 1269,
-                    "start_index": 1133,
-                    "title": "School Assembly News Headlines: 7 November 2025 - Leverage Edu Discover",
-                    "url": "https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 1702,
-                    "start_index": 1566,
-                    "title": "School Assembly News Headlines: 7 November 2025 - Leverage Edu Discover",
-                    "url": "https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 2105,
-                    "start_index": 1973,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
+                    "end_index": 1044,
+                    "start_index": 934,
+                    "title": "March weather - Spring 2026 - Redmond, WA",
+                    "url": "https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "Here are some positive news stories from today, November 7, 2025:\n\n**1. India Plants 5 Million Trees for Clean Air Campaign**\n\nAs part of the \"Clean Air, Green Future\" initiative, citizens across 10 states in India planted over 5 million saplings today. This campaign encourages sustainable living and aims to improve air quality. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**2. Mumbai Students Lead Beach Cleanup Drive**\n\nOver 2,000 students participated in a beach cleanup drive at Juhu Beach in Mumbai, collecting nearly 10 tonnes of plastic waste in one day. This effort set a record for community-led cleanliness initiatives. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**3. India’s Wealthiest Donate Record Rs 10,380 Crore in 2025**\n\nAccording to the EdelGive Hurun India Philanthropy List 2025, top donors contributed Rs 10,380 crore. The list includes 191 philanthropists, with 12 newcomers, reflecting the rise of large-scale giving in India. ([leverageedu.com](https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai))\n\n**4. India’s Solar Module Capacity to Exceed 125 GW by 2025**\n\nIndia's solar manufacturing capacity is projected to reach 125 GW by 2025, surpassing domestic demand. This growth is fueled by Production-Linked Incentive (PLI) incentives, contributing to the country's renewable energy expansion. ([leverageedu.com](https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai))\n\n**5. AI-Based Education Tools Gain Popularity in Schools**\n\nSchools across India are adopting AI-powered learning platforms to personalize education and track student progress. This integration is set to reshape traditional classrooms and enhance learning experiences. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\nThese stories highlight positive developments in environmental conservation, community engagement, philanthropy, renewable energy, and educational innovation. "
+                "text": "As of 6:13 AM on Saturday, March 28, 2026, in Redmond, WA, the current weather is cloudy with a temperature of 47°F (8°C).\n\n## Weather for Redmond, WA:\nCurrent Conditions: Cloudy, 47°F (8°C)\n\nHourly Forecast:\n* 12:00\u202FAM: 40°F (5°C), Partly cloudy\n* 1:00\u202FAM: 42°F (6°C), Partly cloudy\n* 2:00\u202FAM: 42°F (6°C), Partly cloudy\n* 3:00\u202FAM: 43°F (6°C), Partly cloudy\n* 4:00\u202FAM: 42°F (6°C), Partly cloudy\n* 5:00\u202FAM: 42°F (6°C), Partly cloudy\n* 6:00\u202FAM: 42°F (5°C), Partly cloudy\n* 7:00\u202FAM: 41°F (5°C), Partly sunny\n* 8:00\u202FAM: 42°F (5°C), Partly sunny\n* 9:00\u202FAM: 44°F (6°C), Partly sunny\n* 10:00\u202FAM: 47°F (8°C), Partly sunny\n* 11:00\u202FAM: 49°F (10°C), Partly sunny\n\n\nIn March, Redmond typically experiences cool and damp conditions, with average high temperatures around 50.2°F (10.1°C) and average low temperatures around 36.5°F (2.5°C). The city receives approximately 3.11 inches (79 mm) of precipitation over about 19.7 days during the month. ([weather-atlas.com](https://www.weather-atlas.com/en/washington-usa/redmond-weather-march?utm_source=openai))\n\nPlease note that weather conditions can change rapidly; for the most current information, consider checking a local weather service. "
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
         "prompt_cache_retention": null,
@@ -170,15 +201,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 312,
+          "input_tokens": 324,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 519,
+          "output_tokens": 415,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 831
+          "total_tokens": 739
         },
         "user": null,
         "metadata": {}
@@ -186,6 +217,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

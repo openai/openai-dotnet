@@ -4,14 +4,28 @@
  */
 
 import "../chat";
-import "../common";
-import "../responses";
-import "./custom.tsp";
-
+import "../graders/models.tsp";
 using Http;
 using TypeSpec.OpenAPI;
 
 namespace OpenAI;
+
+@doc("""
+  **Reasoning models only**
+  
+  Constrains effort on reasoning for
+  [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
+  reasoning effort can result in faster responses and fewer tokens used
+  on reasoning in a response.
+  """)
+union EvalsReasoningEffort {
+  "none",
+  "minimal",
+  "low",
+  "medium",
+  "high",
+}
 
 // Tool generated type. Extracts from EvalRunFileContentDataContentSource.content
 alias EvalRunFileContentDataContentSourceContent = {
@@ -74,7 +88,7 @@ model CreateEvalRequest {
   /** The name of the evaluation. */
   name?: string;
 
-  ...MetadataPropertyForRequest;
+  metadata?: Record<string>;
 
   // Tool customization: Use discriminated type
   /** The configuration for the data source used for the evaluation runs. Dictates the schema of the data used in the evaluation. */
@@ -118,7 +132,16 @@ model Eval {
   @encode("unixTimestamp", int32)
   created_at: utcDateTime;
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type
@@ -170,6 +193,32 @@ model EvalJsonlRunDataSourceParams extends EvalRunDataSourceParams {
   source: EvalRunFileContentDataContentSource | EvalRunFileIdDataContentSource;
 }
 
+@doc("""
+  An object specifying the format that the model must output.
+  
+  Configuring `{ "type": "json_schema" }` enables Structured Outputs,
+  which ensures the model will match your supplied JSON schema. Learn more in the
+  [Structured Outputs guide](/docs/guides/structured-outputs).
+  
+  The default format is `{ "type": "text" }` with no additional options.
+  
+  **Not recommended for gpt-4o and newer models:**
+  
+  Setting to `{ "type": "json_object" }` enables the older JSON mode, which
+  ensures the message the model generates is valid JSON. Using `json_schema`
+  is preferred for models that support it.
+  """)
+union EvalTextFormatConfigurationType {
+  string,
+  text: "text",
+  json_schema: "json_schema",
+  json_object: "json_object",
+}
+@discriminator("type")
+model EvalTextFormatConfiguration {
+  type: EvalTextFormatConfigurationType;
+}
+
 // Tool customization (apply_discriminator): Apply discriminated type
 /** A CompletionsRunDataSource object describing a model sampling configuration. */
 model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
@@ -190,7 +239,7 @@ model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
     @doc("""
       A list of chat messages forming the prompt or context. May include variable references to the `item` namespace, ie {{item.name}}.
       """)
-    template: (EasyInputMessage | EvalItem)[];
+    template: (unknown | EvalItem)[];
   } | {
     @doc("""
       The type of input messages. Always `item_reference`.
@@ -229,7 +278,7 @@ model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
       ensures the message the model generates is valid JSON. Using `json_schema`
       is preferred for models that support it.
       """)
-    response_format?: ResponseTextFormatConfiguration;
+    response_format?: EvalTextFormatConfiguration;
 
     /** A list of tools the model may call. Currently, only functions are supported as a tool. Use this to provide a list of functions the model may generate JSON inputs for. A max of 128 functions are supported. */
     tools?: ChatCompletionTool[];
@@ -243,6 +292,26 @@ model EvalCompletionsRunDataSourceParams extends EvalRunDataSourceParams {
     Determines what populates the `item` namespace in this run's data source.
     """)
   source: EvalRunFileContentDataContentSource | EvalRunFileIdDataContentSource | EvalRunStoredCompletionsDataContentSource;
+}
+
+// Tool customization: Establish a discriminated type base for tools
+/** A tool that can be used to generate a response. */
+union EvalToolType {
+  string,
+  file_search: "file_search",
+  function: "function",
+  computer_use_preview: "computer_use_preview",
+  web_search: "web_search",
+  web_search_preview: "web_search_preview",
+  mcp: "mcp",
+  code_interpreter: "code_interpreter",
+  image_generation: "image_generation",
+  local_shell: "local_shell",
+  apply_patch: "apply_patch",
+}
+@discriminator("type")
+model EvalTool {
+  type: EvalToolType;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type
@@ -311,7 +380,7 @@ model EvalResponsesRunDataSourceParams extends EvalRunDataSourceParams {
         enabling the model to call your own code. Learn more about
         [function calling](/docs/guides/function-calling).
       """)
-    tools?: Tool[];
+    tools?: EvalTool[];
 
     /**
      * Configuration options for a text response from the model. Can be plain
@@ -321,7 +390,7 @@ model EvalResponsesRunDataSourceParams extends EvalRunDataSourceParams {
      */
     text?: {
       // Tool customization: Employ discriminated type base
-      format?: ResponseTextFormatConfiguration;
+      format?: EvalTextFormatConfiguration;
     };
   };
 
@@ -346,14 +415,14 @@ model EvalLogsDataSourceConfigParams extends EvalDataSourceConfigParams {
     """)
   type: EvalDataSourceConfigType.logs;
 
-  ...MetadataPropertyForRequest;
+  metadata?: Record<string>;
 }
 
 model CreateEvalRunRequest {
   /** The name of the run. */
   name?: string;
 
-  ...MetadataPropertyForRequest;
+  metadata?: Record<string>;
 
   // Tool customization: Use discriminated type
   /** Details about the run's data source. */
@@ -367,6 +436,12 @@ model EvalApiError {
 
   /** The error message. */
   message: string;
+
+  /** The parameter that caused the error, if applicable. */
+  param: string | null;
+
+  /** The type of the error. */
+  type: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type
@@ -487,7 +562,7 @@ model EvalRunResponsesDataContentSource extends EvalRunDataContentSource {
     """)
   type: EvalRunDataContentSourceType.responses;
 
-  ...MetadataPropertyForRequest;
+  metadata?: Record<string>;
 
   /** The name of the model to find responses for. This is a query parameter used to select responses. */
   `model`?: string | null;
@@ -504,7 +579,7 @@ model EvalRunResponsesDataContentSource extends EvalRunDataContentSource {
   created_before?: int32 | null;
 
   /** Optional reasoning effort parameter. This is a query parameter used to select responses. */
-  reasoning_effort?: ReasoningEffort | null = "medium";
+  reasoning_effort?: EvalsReasoningEffort | null = "medium";
 
   /** Sampling temperature. This is a query parameter used to select responses. */
   temperature?: float32 | null;
@@ -572,7 +647,16 @@ model EvalRun {
   /** Information about the run's data source. */
   data_source: EvalRunDataSourceResource;
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
   error: EvalApiError;
 }
 
@@ -751,7 +835,16 @@ model EvalStoredCompletionsDataSourceConfigResource
     """)
   type: EvalDataSourceConfigType.stored_completions;
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
 
   /**
    * The json schema for the run data source items.
@@ -769,7 +862,16 @@ model EvalRunStoredCompletionsDataContentSource
     """)
   type: EvalRunDataContentSourceType.stored_completions;
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
 
   /** An optional model to filter by (e.g., 'gpt-4o'). */
   `model`?: string | null;
@@ -797,11 +899,126 @@ model EvalLogsDataSourceConfigResource extends EvalDataSourceConfigResource {
     """)
   type: EvalDataSourceConfigType.logs;
 
-  ...MetadataPropertyForResponse;
+  /**
+   * Set of 16 key-value pairs that can be attached to an object. This can be
+   * useful for storing additional information about the object in a structured
+   * format, and querying for objects via API or the dashboard.
+   *
+   * Keys are strings with a maximum length of 64 characters. Values are strings
+   * with a maximum length of 512 characters.
+   */
+  @extension("x-oaiTypeLabel", "map")
+  metadata: Record<string> | null;
 
   /**
    * The json schema for the run data source items.
    * Learn how to build JSON schemas [here](https://json-schema.org/).
    */
   schema: Record<unknown>;
+}
+
+union EvalItemContentType {
+  input_text: "input_text",
+  output_text: "output_text",
+}
+
+@discriminator("type")
+model EvalItemContent {
+  type: EvalItemContentType;
+}
+
+model EvalItemContentInputText extends EvalItemContent {
+  type: EvalItemContentType.input_text;
+  text: string;
+}
+
+model EvalItemContentOutputText extends EvalItemContent {
+  type: EvalItemContentType.output_text;
+  text: string;
+}
+
+union EvalDataSourceConfigType {
+  custom: "custom",
+  logs: "logs",
+  stored_completions: "stored_completions",
+}
+
+@discriminator("type")
+model EvalDataSourceConfigParams {
+  type: EvalDataSourceConfigType;
+}
+
+@discriminator("type")
+model EvalDataSourceConfigResource {
+  type: EvalDataSourceConfigType;
+}
+
+union EvalRunDataContentSourceType {
+  file_id: "file_id",
+  file_content: "file_content",
+  stored_completions: "stored_completions",
+  responses: "responses",
+}
+
+@discriminator("type")
+model EvalRunDataContentSource {
+  type: EvalRunDataContentSourceType;
+}
+
+union EvalRunDataSourceType {
+  jsonl: "jsonl",
+  completions: "completions",
+  responses: "responses",
+}
+
+@discriminator("type")
+model EvalRunDataSourceParams {
+  type: EvalRunDataSourceType;
+}
+
+model EvalRunDataSourceResource {
+  type: EvalRunDataSourceType;
+}
+
+model EvalRunDataSourceJsonlResource extends EvalRunDataSourceResource {
+  type: EvalRunDataSourceType.jsonl;
+}
+
+model EvalRunDataSourceCompletionsResource extends EvalRunDataSourceResource {
+  type: EvalRunDataSourceType.completions;
+}
+
+model EvalRunDataSourceResponsesResource extends EvalRunDataSourceResource {
+  type: EvalRunDataSourceType.responses;
+}
+
+@discriminator("type")
+model EvalGraderParams {
+  type: GraderType;
+}
+
+@discriminator("type")
+model EvalGraderResource {
+  type: GraderType;
+}
+
+// Customization note: as of 2025-05-21, the origin specification only formally splits input (request) and output
+// (response) models for the [Create]EvalLabelModelGrader component[s]. For compatibility and clarity, this
+// reprojection chooses to split all EvalGrader components into input and output models, sharing details via
+// spread.
+
+model EvalGraderStringCheckParams extends EvalGraderParams {
+  ...EvalGraderStringCheckResource;
+}
+
+model EvalGraderTextSimilarityParams extends EvalGraderParams {
+  ...EvalGraderTextSimilarityResource;
+}
+
+model EvalGraderPythonParams extends EvalGraderParams {
+  ...EvalGraderPythonResource;
+}
+
+model EvalGraderScoreModelParams extends EvalGraderParams {
+  ...EvalGraderScoreModelResource;
 }
