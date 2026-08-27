@@ -66,8 +66,8 @@ public class VectorStoresTests : OpenAIRecordedTestBase
             Assert.That(vectorStore.ExpirationPolicy?.Anchor, Is.EqualTo(VectorStoreExpirationAnchor.LastActiveAt));
             Assert.That(vectorStore.ExpirationPolicy?.Days, Is.EqualTo(3));
             Assert.That(vectorStore.FileCounts.Total, Is.EqualTo(1));
-            Assert.That(vectorStore.CreatedOn, Is.GreaterThan(s_2024));
-            Assert.That(vectorStore.ExpiresOn, Is.GreaterThan(s_2024));
+            Assert.That(vectorStore.CreatedAt, Is.GreaterThan(s_2024));
+            Assert.That(vectorStore.ExpiresAt, Is.GreaterThan(s_2024));
             Assert.That(vectorStore.Status, Is.EqualTo(VectorStoreStatus.InProgress));
             Assert.That(vectorStore.Metadata?.TryGetValue("test-key", out string metadataValue) == true && metadataValue == "test-value");
         });
@@ -78,8 +78,8 @@ public class VectorStoresTests : OpenAIRecordedTestBase
             Assert.That(vectorStore.ExpirationPolicy?.Anchor, Is.EqualTo(VectorStoreExpirationAnchor.LastActiveAt));
             Assert.That(vectorStore.ExpirationPolicy?.Days, Is.EqualTo(3));
             Assert.That(vectorStore.FileCounts.Total, Is.EqualTo(1));
-            Assert.That(vectorStore.CreatedOn, Is.GreaterThan(s_2024));
-            Assert.That(vectorStore.ExpiresOn, Is.GreaterThan(s_2024));
+            Assert.That(vectorStore.CreatedAt, Is.GreaterThan(s_2024));
+            Assert.That(vectorStore.ExpiresAt, Is.GreaterThan(s_2024));
             Assert.That(vectorStore.Metadata?.TryGetValue("test-key", out string metadataValue) == true && metadataValue == "test-value");
         });
 
@@ -170,7 +170,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                 Assert.That(vectorStoreFile.FileId, Is.EqualTo(file.Id));
                 Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
                 Assert.That(vectorStoreFile.LastError, Is.Null);
-                Assert.That(vectorStoreFile.CreatedOn, Is.GreaterThan(s_2024));
+                Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
                 Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
             });
         }
@@ -218,7 +218,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                 Assert.That(vectorStoreFile.FileId, Is.EqualTo(file.Id));
                 Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
                 Assert.That(vectorStoreFile.LastError, Is.Null);
-                Assert.That(vectorStoreFile.CreatedOn, Is.GreaterThan(s_2024));
+                Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
                 Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
             });
         }
@@ -266,7 +266,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
             {
                 Assert.That(itemsInRehydratedPage[0].FileId, Is.EqualTo(itemsInPage[0].FileId));
                 Assert.That(itemsInRehydratedPage[0].VectorStoreId, Is.EqualTo(itemsInPage[0].VectorStoreId));
-                Assert.That(itemsInRehydratedPage[0].CreatedOn, Is.EqualTo(itemsInPage[0].CreatedOn));
+                Assert.That(itemsInRehydratedPage[0].CreatedAt, Is.EqualTo(itemsInPage[0].CreatedAt));
                 Assert.That(itemsInRehydratedPage[0].UsageInBytes, Is.EqualTo(itemsInPage[0].UsageInBytes));
             }
 
@@ -515,7 +515,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
             {
                 Assert.That(itemsInPage[i].FileId, Is.EqualTo(itemsInRehydratedPage[i].FileId));
                 Assert.That(itemsInPage[i].VectorStoreId, Is.EqualTo(itemsInRehydratedPage[i].VectorStoreId));
-                Assert.That(itemsInPage[i].CreatedOn, Is.EqualTo(itemsInRehydratedPage[i].CreatedOn));
+                Assert.That(itemsInPage[i].CreatedAt, Is.EqualTo(itemsInRehydratedPage[i].CreatedAt));
                 Assert.That(itemsInPage[i].Status, Is.EqualTo(itemsInRehydratedPage[i].Status));
             }
 
@@ -569,7 +569,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                 Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
                 Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.Completed));
                 // Assert.That(vectorStoreFile.UsageInBytes, Is.GreaterThan(0));
-                Assert.That(vectorStoreFile.CreatedOn, Is.GreaterThan(s_2024));
+                Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
                 Assert.That(vectorStoreFile.LastError, Is.Null);
             });
         }
@@ -665,7 +665,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                     Assert.That(vectorStoreFile.FileId, Is.Not.Null);
                     Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
                     Assert.That(vectorStoreFile.LastError, Is.Null);
-                    Assert.That(vectorStoreFile.CreatedOn, Is.GreaterThan(s_2024));
+                    Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
                     Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
                 });
             }

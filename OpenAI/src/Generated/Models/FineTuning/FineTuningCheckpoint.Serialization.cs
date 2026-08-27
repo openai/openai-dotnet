@@ -71,7 +71,7 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("fine_tuned_model_checkpoint") != true)
             {
@@ -140,7 +140,7 @@ namespace OpenAI.FineTuning
                 return null;
             }
             string id = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
             string modelId = default;
             int stepNumber = default;
             FineTuningCheckpointMetrics metrics = default;
@@ -156,7 +156,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("fine_tuned_model_checkpoint"u8))
@@ -189,7 +189,7 @@ namespace OpenAI.FineTuning
             }
             return new FineTuningCheckpoint(
                 id,
-                createdOn,
+                createdAt,
                 modelId,
                 stepNumber,
                 metrics,

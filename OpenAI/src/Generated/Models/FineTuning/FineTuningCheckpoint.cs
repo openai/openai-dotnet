@@ -13,20 +13,20 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal FineTuningCheckpoint(string id, DateTimeOffset createdOn, string modelId, int stepNumber, FineTuningCheckpointMetrics metrics, string jobId)
+        internal FineTuningCheckpoint(string id, DateTimeOffset createdAt, string modelId, int stepNumber, FineTuningCheckpointMetrics metrics, string jobId)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ModelId = modelId;
             StepNumber = stepNumber;
             Metrics = metrics;
             JobId = jobId;
         }
 
-        internal FineTuningCheckpoint(string id, DateTimeOffset createdOn, string modelId, int stepNumber, FineTuningCheckpointMetrics metrics, string jobId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningCheckpoint(string id, DateTimeOffset createdAt, string modelId, int stepNumber, FineTuningCheckpointMetrics metrics, string jobId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ModelId = modelId;
             StepNumber = stepNumber;
             Metrics = metrics;
@@ -35,7 +35,7 @@ namespace OpenAI.FineTuning
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

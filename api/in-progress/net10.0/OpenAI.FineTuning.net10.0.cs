@@ -8,7 +8,7 @@
 namespace OpenAI.FineTuning {
     [Experimental("OPENAI001")]
     public class FineTuningCheckpoint : IJsonModel<FineTuningCheckpoint>, IPersistableModel<FineTuningCheckpoint> {
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
         public string Id { get; }
         public string JobId { get; }
         public FineTuningCheckpointMetrics Metrics { get; }
@@ -74,7 +74,7 @@ namespace OpenAI.FineTuning {
     [Experimental("OPENAI001")]
     public class FineTuningEvent : IJsonModel<FineTuningEvent>, IPersistableModel<FineTuningEvent> {
         public string Level;
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
         public BinaryData Data { get; }
         public string Id { get; }
         public FineTuningJobEventKind? Kind { get; }

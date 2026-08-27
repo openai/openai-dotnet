@@ -23,7 +23,7 @@ public partial class AssistantExamples
         AsyncCollectionResult<Assistant> assistants = client.GetAssistantsAsync();
         await foreach (Assistant assistant in assistants)
         {
-            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedOn:s} {assistant.Name}");
+            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
 
             count++;
         }

@@ -164,10 +164,10 @@ public class ChatTests : OpenAIRecordedTestBase
                 Assert.That(streamedUsage, Is.Null);
                 streamedUsage = update.Usage;
             }
-            if (update.OutputAudioUpdate?.ExpiresOn is not null)
+            if (update.OutputAudioUpdate?.ExpiresAt is not null)
             {
                 Assert.That(streamedExpiresAt, Is.Null);
-                streamedExpiresAt = update.OutputAudioUpdate.ExpiresOn;
+                streamedExpiresAt = update.OutputAudioUpdate.ExpiresAt;
             }
             if (update.OutputAudioUpdate?.Id is not null)
             {
@@ -262,10 +262,10 @@ public class ChatTests : OpenAIRecordedTestBase
                     Assert.That(streamedCorrelationId, Is.Null.Or.EqualTo(streamedCorrelationId));
                     streamedCorrelationId ??= outputAudioUpdate.Id;
                 }
-                if (outputAudioUpdate.ExpiresOn.HasValue)
+                if (outputAudioUpdate.ExpiresAt.HasValue)
                 {
                     Assert.That(streamedExpiresAt.HasValue, Is.False);
-                    streamedExpiresAt = outputAudioUpdate.ExpiresOn;
+                    streamedExpiresAt = outputAudioUpdate.ExpiresAt;
                 }
                 streamedTranscriptBuilder.Append(outputAudioUpdate.TranscriptUpdate);
                 outputAudioStream.Write(outputAudioUpdate.AudioBytesUpdate);

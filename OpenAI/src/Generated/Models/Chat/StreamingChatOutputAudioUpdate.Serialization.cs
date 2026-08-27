@@ -83,10 +83,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("data"u8);
                 writer.WriteBase64StringValue(AudioBytesUpdate, "D");
             }
-            if (Optional.IsDefined(ExpiresOn) && !Patch.Contains("$.expires_at"u8))
+            if (Optional.IsDefined(ExpiresAt) && !Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresOn.Value, "U");
+                writer.WriteNumberValue(ExpiresAt.Value, "U");
             }
 
             Patch.WriteTo(writer);
@@ -115,7 +115,7 @@ namespace OpenAI.Chat
             string id = default;
             string transcriptUpdate = default;
             BinaryData audioBytesUpdate = default;
-            DateTimeOffset? expiresOn = default;
+            DateTimeOffset? expiresAt = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -146,12 +146,12 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresOn, patch);
+            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresAt, patch);
         }
     }
 }

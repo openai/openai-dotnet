@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeTruncationBaseGA))]
     public partial class RealtimeCustomTruncation : IJsonModel<RealtimeCustomTruncation>
     {
         internal RealtimeCustomTruncation()

@@ -26,12 +26,12 @@ namespace OpenAI.VectorStores {
     }
     [Experimental("OPENAI001")]
     public class VectorStore : IJsonModel<VectorStore>, IPersistableModel<VectorStore> {
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
         public VectorStoreExpirationPolicy ExpirationPolicy { get; }
-        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? ExpiresAt { get; }
         public VectorStoreFileCounts FileCounts { get; }
         public string Id { get; }
-        public DateTimeOffset? LastActiveOn { get; }
+        public DateTimeOffset? LastActiveAt { get; }
         public IReadOnlyDictionary<string, string> Metadata { get; }
         public string Name { get; }
         public VectorStoreStatus Status { get; }
@@ -171,7 +171,7 @@ namespace OpenAI.VectorStores {
     public class VectorStoreFile : IJsonModel<VectorStoreFile>, IPersistableModel<VectorStoreFile> {
         public IDictionary<string, BinaryData> Attributes { get; }
         public FileChunkingStrategy ChunkingStrategy { get; }
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
         public string FileId { get; }
         public VectorStoreFileError LastError { get; }
         public VectorStoreFileStatus Status { get; }
@@ -182,7 +182,7 @@ namespace OpenAI.VectorStores {
     [Experimental("OPENAI001")]
     public class VectorStoreFileBatch : IJsonModel<VectorStoreFileBatch>, IPersistableModel<VectorStoreFileBatch> {
         public string BatchId { get; }
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
         public VectorStoreFileCounts FileCounts { get; }
         public VectorStoreFileBatchStatus Status { get; }
         public string VectorStoreId { get; }

@@ -217,7 +217,7 @@ namespace OpenAI.Containers {
     [Experimental("OPENAI001")]
     public class ContainerFileResource : IJsonModel<ContainerFileResource>, IPersistableModel<ContainerFileResource> {
         public string ContainerId { get; set; }
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public string Id { get; set; }
         public string Object { get; set; }
         [Serialization.JsonIgnore]
@@ -286,10 +286,10 @@ namespace OpenAI.Containers {
     }
     [Experimental("OPENAI001")]
     public class ContainerResource : IJsonModel<ContainerResource>, IPersistableModel<ContainerResource> {
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public ContainerExpirationPolicy ExpirationPolicy { get; set; }
         public string Id { get; set; }
-        public DateTimeOffset? LastActiveOn { get; set; }
+        public DateTimeOffset? LastActiveAt { get; set; }
         public ContainerMemoryLimit? MemoryLimit { get; set; }
         public string Name { get; set; }
         public ContainerNetworkPolicy NetworkPolicy { get; set; }

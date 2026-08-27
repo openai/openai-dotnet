@@ -74,7 +74,7 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationResource : IJsonModel<ConversationResource>, IPersistableModel<ConversationResource> {
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
         public string Id { get; set; }
         public IDictionary<string, string> Metadata { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]

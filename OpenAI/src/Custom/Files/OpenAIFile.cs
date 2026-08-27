@@ -45,10 +45,9 @@ public partial class OpenAIFile
         + $" `error` field on the fine-tuning job.")]
     public string StatusDetails { get; }
 
-    [CodeGenMember("CreatedOn")]
     public DateTimeOffset CreatedAt { get; }
 
-    [CodeGenMember("ExpiresOn")]
+    // CUSTOM: Added the Experimental attribute.
     [Experimental("OPENAI001")]
     public DateTimeOffset? ExpiresAt { get; }
 }

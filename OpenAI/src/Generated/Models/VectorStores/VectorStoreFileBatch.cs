@@ -13,19 +13,19 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal VectorStoreFileBatch(string batchId, DateTimeOffset createdOn, string vectorStoreId, VectorStoreFileBatchStatus status, VectorStoreFileCounts fileCounts)
+        internal VectorStoreFileBatch(string batchId, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileBatchStatus status, VectorStoreFileCounts fileCounts)
         {
             BatchId = batchId;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
             FileCounts = fileCounts;
         }
 
-        internal VectorStoreFileBatch(string batchId, DateTimeOffset createdOn, string vectorStoreId, VectorStoreFileBatchStatus status, VectorStoreFileCounts fileCounts, object @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreFileBatch(string batchId, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileBatchStatus status, VectorStoreFileCounts fileCounts, object @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             BatchId = batchId;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
             FileCounts = fileCounts;
@@ -33,7 +33,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         public string VectorStoreId { get; }
 

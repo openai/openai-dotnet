@@ -223,7 +223,7 @@ public static partial class OpenAIChatModelFactory
     {
         return new ChatOutputAudio(
             id: id,
-            expiresOn: expiresAt,
+            expiresAt: expiresAt,
             transcript: transcript,
             audioBytes: audioBytes,
             patch: default);
@@ -350,7 +350,7 @@ public static partial class OpenAIChatModelFactory
     {
         return new StreamingChatOutputAudioUpdate(
             id: id,
-            expiresOn: expiresAt,
+            expiresAt: expiresAt,
             transcriptUpdate: transcriptUpdate,
             audioBytesUpdate: audioBytesUpdate,
             patch: default);

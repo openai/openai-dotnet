@@ -49,7 +49,7 @@ public partial class ChatExamples
                     await outputFileStream.WriteAsync(outputAudio.AudioBytes);
                 }
                 Console.WriteLine($"Response audio written to file: {outputFilePath}");
-                Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresOn}");
+                Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresAt}");
             }
         }
 

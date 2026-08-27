@@ -107,7 +107,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         await foreach (ContainerResource container in containers)
         {
             count++;
-            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedOn:s} {container.Name ?? "(no name)"}");
+            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
             Validate(container);
 
             if (container.Id == _testContainerId)
@@ -151,7 +151,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(options);
         await foreach (ContainerFileResource file in files)
         {
-            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedOn:s} {file.Path} ({file.SizeInBytes} bytes)");
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
             Validate(file);
             Assert.That(file.ContainerId, Is.EqualTo(_testContainerId), "File should belong to the correct container");
             count++;
@@ -185,7 +185,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync();
         await foreach (ContainerResource container in containers)
         {
-            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedOn:s} {container.Name ?? "(no name)"}");
+            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
             Validate(container);
 
             if (container.Id == _testContainerId)
@@ -224,7 +224,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(new ContainerFileCollectionOptions(_testContainerId));
         await foreach (ContainerFileResource file in files)
         {
-            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedOn:s} {file.Path} ({file.SizeInBytes} bytes)");
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.SizeInBytes} bytes)");
             Validate(file);
             Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
             count++;
@@ -835,7 +835,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Assert.That(container, Is.Not.Null);
         Assert.That(container.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(container.Object, Is.Not.Null.And.Not.Empty);
-        Assert.That(container.CreatedOn, Is.GreaterThan(DateTimeOffset.MinValue));
+        Assert.That(container.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
         Assert.That(container.Status, Is.Not.Null.And.Not.Empty);
         // Name can be null/empty for some containers
     }
@@ -846,7 +846,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Assert.That(file.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(file.Object, Is.Not.Null.And.Not.Empty);
         Assert.That(file.ContainerId, Is.Not.Null.And.Not.Empty);
-        Assert.That(file.CreatedOn, Is.GreaterThan(DateTimeOffset.MinValue));
+        Assert.That(file.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
         Assert.That(file.SizeInBytes, Is.GreaterThanOrEqualTo(0));
         Assert.That(file.Path, Is.Not.Null);
         Assert.That(file.Source, Is.Not.Null);

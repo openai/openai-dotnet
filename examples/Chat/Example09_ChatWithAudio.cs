@@ -48,7 +48,7 @@ public partial class ChatExamples
                     outputFileStream.Write(outputAudio.AudioBytes);
                 }
                 Console.WriteLine($"Response audio written to file: {outputFilePath}");
-                Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresOn}");
+                Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresAt}");
             }
         }
 

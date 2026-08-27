@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownComputerAction))]
     public partial class ComputerCallAction : IJsonModel<ComputerCallAction>
     {
         internal ComputerCallAction()
