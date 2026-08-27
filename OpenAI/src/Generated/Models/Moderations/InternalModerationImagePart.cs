@@ -9,7 +9,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationImagePart : ModerationInputPart
     {
-        internal InternalModerationImagePart(InternalModerationImagePartImageUrl imageUrl) : base(ModerationInputPartKind.Image)
+        internal InternalModerationImagePart(InternalModerationImagePartImageUrl imageUrl) : base(ModerationInputPartKind.ImageUri)
         {
             ImageUrl = imageUrl;
         }

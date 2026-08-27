@@ -13,13 +13,16 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileSearchCallResponseItem : ResponseItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public FileSearchCallResponseItem(IEnumerable<string> queries) : base(ResponseItemKind.FileSearchCall)
         {
             Argument.AssertNotNull(queries, nameof(queries));
 
             Queries = queries.ToList();
             Results = new ChangeTrackingList<FileSearchCallResult>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal FileSearchCallResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, patch)

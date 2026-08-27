@@ -79,7 +79,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
@@ -104,7 +104,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt, "U");
+                writer.WriteNumberValue(ExpiresOn, "U");
             }
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -158,12 +158,12 @@ namespace OpenAI.Files
                 return null;
             }
             string id = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string filename = default;
             int bytes = default;
             string purpose = default;
             InternalUploadStatus status = default;
-            DateTimeOffset expiresAt = default;
+            DateTimeOffset expiresOn = default;
             InternalUploadObject? @object = default;
             OpenAIFile @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -176,7 +176,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("filename"u8))
@@ -201,7 +201,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("expires_at"u8))
                 {
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -228,12 +228,12 @@ namespace OpenAI.Files
             }
             return new InternalUpload(
                 id,
-                createdAt,
+                createdOn,
                 filename,
                 bytes,
                 purpose,
                 status,
-                expiresAt,
+                expiresOn,
                 @object,
                 @file,
                 additionalBinaryDataProperties);

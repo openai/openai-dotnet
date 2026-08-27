@@ -80,7 +80,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt, "U");
+                writer.WriteNumberValue(ExpiresOn, "U");
             }
 
             Patch.WriteTo(writer);
@@ -107,7 +107,7 @@ namespace OpenAI.Realtime
                 return null;
             }
             string value = default;
-            DateTimeOffset expiresAt = default;
+            DateTimeOffset expiresOn = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -120,12 +120,12 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("expires_at"u8))
                 {
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeClientSecret(value, expiresAt, patch);
+            return new RealtimeClientSecret(value, expiresOn, patch);
         }
     }
 }

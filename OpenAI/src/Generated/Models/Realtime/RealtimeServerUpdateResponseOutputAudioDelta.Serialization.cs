@@ -101,7 +101,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.delta"u8))
             {
                 writer.WritePropertyName("delta"u8);
-                writer.WriteBase64StringValue(Delta.ToArray(), "D");
+                writer.WriteBase64StringValue(Delta, "D");
             }
 
             Patch.WriteTo(writer);
