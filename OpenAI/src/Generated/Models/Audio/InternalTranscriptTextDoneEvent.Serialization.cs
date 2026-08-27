@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -48,6 +49,13 @@ namespace OpenAI.Audio
         InternalTranscriptTextDoneEvent IPersistableModel<InternalTranscriptTextDoneEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
         string IPersistableModel<InternalTranscriptTextDoneEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalTranscriptTextDoneEvent(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalTranscriptTextDoneEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
 
         void IJsonModel<InternalTranscriptTextDoneEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

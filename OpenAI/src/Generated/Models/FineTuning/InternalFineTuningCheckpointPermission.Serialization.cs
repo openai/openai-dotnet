@@ -71,7 +71,7 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("project_id") != true)
             {
@@ -125,7 +125,7 @@ namespace OpenAI.FineTuning
                 return null;
             }
             string id = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string projectId = default;
             string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -138,7 +138,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("project_id"u8))
@@ -154,7 +154,7 @@ namespace OpenAI.FineTuning
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalFineTuningCheckpointPermission(id, createdAt, projectId, @object, additionalBinaryDataProperties);
+            return new InternalFineTuningCheckpointPermission(id, createdOn, projectId, @object, additionalBinaryDataProperties);
         }
     }
 }

@@ -104,7 +104,7 @@ namespace OpenAI.Evals
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("report_url") != true)
             {
@@ -216,7 +216,7 @@ namespace OpenAI.Evals
             string status = default;
             string model = default;
             string name = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string reportUrl = default;
             InternalEvalRunResultCounts resultCounts = default;
             IList<InternalEvalRunPerModelUsage> perModelUsage = default;
@@ -259,7 +259,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("report_url"u8))
@@ -334,7 +334,7 @@ namespace OpenAI.Evals
                 status,
                 model,
                 name,
-                createdAt,
+                createdOn,
                 reportUrl,
                 resultCounts,
                 perModelUsage,

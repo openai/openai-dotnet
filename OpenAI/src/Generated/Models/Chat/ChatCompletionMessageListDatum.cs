@@ -17,6 +17,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatCompletionMessageListDatum(string content, string refusal, string id)
         {
             Content = content;
@@ -25,7 +26,9 @@ namespace OpenAI.Chat
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
             ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, IList<ChatMessageContentPart> contentParts, string id, in JsonPatch patch)

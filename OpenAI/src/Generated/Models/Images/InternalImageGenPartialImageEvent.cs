@@ -11,10 +11,10 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageSize size, InternalCreateImageQuality quality, InternalCreateImageBackground background, InternalCreateImageOutputFormat outputFormat, int partialImageIndex)
+        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageSize size, InternalCreateImageQuality quality, InternalCreateImageBackground background, InternalCreateImageOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Size = size;
             Quality = quality;
             Background = background;
@@ -22,11 +22,11 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalCreateImageSize size, InternalCreateImageQuality quality, InternalCreateImageBackground background, InternalCreateImageOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageSize size, InternalCreateImageQuality quality, InternalCreateImageBackground background, InternalCreateImageOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Size = size;
             Quality = quality;
             Background = background;
@@ -39,7 +39,7 @@ namespace OpenAI.Images
 
         public BinaryData B64Json { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         internal InternalCreateImageSize Size { get; }
 
