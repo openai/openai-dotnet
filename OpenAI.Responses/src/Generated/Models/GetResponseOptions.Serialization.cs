@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class GetResponseOptions : IJsonModel<GetResponseOptions>
     {
-        public GetResponseOptions() : this(null, default, default, null, default, default)
-        {
-        }
-
         protected virtual GetResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GetResponseOptions>)this).GetFormatFromOptions(options) : options.Format;

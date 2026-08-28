@@ -31,6 +31,10 @@ namespace OpenAI.Responses
 
         public FunctionCallOutputStatus? Status { get; set; }
 
+        public FunctionCallOutputResponseItem() : this(default, default)
+        {
+        }
+
         public string CallId { get; set; }
 
         public string FunctionOutput { get; set; }

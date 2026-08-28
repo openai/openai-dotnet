@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchUpdateFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchUpdateFileOperation>
     {
-        public ApplyPatchUpdateFileOperation() : this(InternalApplyPatchOperationType.UpdateFile, default, null, null)
-        {
-        }
-
         protected override ApplyPatchOperation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ApplyPatchUpdateFileOperation>)this).GetFormatFromOptions(options) : options.Format;

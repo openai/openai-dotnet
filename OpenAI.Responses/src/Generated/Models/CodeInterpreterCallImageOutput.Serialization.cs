@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterCallImageOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallImageOutput>
     {
-        public CodeInterpreterCallImageOutput() : this(InternalCodeInterpreterToolOutputType.Image, default, null)
-        {
-        }
-
         protected override CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallImageOutput>)this).GetFormatFromOptions(options) : options.Format;

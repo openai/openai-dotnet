@@ -13,10 +13,6 @@ namespace OpenAI.Images
 {
     public partial class ImageGenerationOptions : IJsonModel<ImageGenerationOptions>
     {
-        public ImageGenerationOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         protected virtual ImageGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

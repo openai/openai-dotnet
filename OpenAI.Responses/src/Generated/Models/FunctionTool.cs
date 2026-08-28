@@ -15,6 +15,7 @@ namespace OpenAI.Responses
         public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(ResponseToolKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
+            Argument.AssertNotNull(functionParameters, nameof(functionParameters));
 
             FunctionName = functionName;
             FunctionParameters = functionParameters;
@@ -30,6 +31,10 @@ namespace OpenAI.Responses
             StrictModeEnabled = strictModeEnabled;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public FunctionTool() : this(default, default, default)
+        {
+        }
 
         public string FunctionName { get; set; }
 

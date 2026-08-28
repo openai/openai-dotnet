@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>
     {
-        public StreamingResponseFunctionCallArgumentsDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseFunctionCallArgumentsDelta, default, default, null, default, null)
-        {
-        }
-
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;

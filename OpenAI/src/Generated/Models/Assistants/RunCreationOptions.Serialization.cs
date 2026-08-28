@@ -12,10 +12,6 @@ namespace OpenAI.Assistants
 {
     public partial class RunCreationOptions : IJsonModel<RunCreationOptions>
     {
-        public RunCreationOptions() : this(null, null, default, null, null, null, null, null, default, default, default, default, default, null, null, default, null, null)
-        {
-        }
-
         protected virtual RunCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RunCreationOptions>)this).GetFormatFromOptions(options) : options.Format;

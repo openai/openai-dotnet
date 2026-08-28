@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchActionUriSource : WebSearchActionSource, IJsonModel<WebSearchActionUriSource>
     {
-        public WebSearchActionUriSource() : this(InternalWebSearchActionSearchSourcesType.Uri, default, null)
-        {
-        }
-
         protected override WebSearchActionSource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchActionUriSource>)this).GetFormatFromOptions(options) : options.Format;
