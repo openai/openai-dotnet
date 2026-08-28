@@ -54,12 +54,6 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
 
-@@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
-
-// NOTE: Contrary to other tools, the "status" property of `ApplyPatchToolCallOutputItemResource`
-// is set by the client instead of being set by the server, and it is also required. The "status"
-// property is used to indicate if the client successfully applied the patch or not.
-
 // This is a data URL. Treat it as a string internally to avoid Uri limits.
 @@alternateType(ItemContentInputImage.image_url, string | null); 
 @@clientName(ItemContentInputImage.image_url, "ImageUri");

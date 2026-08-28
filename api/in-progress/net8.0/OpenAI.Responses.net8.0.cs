@@ -19,10 +19,11 @@ namespace OpenAI.Responses {
     public class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>, IPersistableModel<ApplyPatchCallOutputItem> {
         public ApplyPatchCallOutputItem() : base(default);
         public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status) : base(default);
+        public ApplyPatchCallOutputItem(string callId) : base(default);
         public string CallId { get; set; }
         public string CreatedBy { get; set; }
         public string Output { get; set; }
-        public ApplyPatchCallOutputStatus Status { get; set; }
+        public ApplyPatchCallOutputStatus? Status { get; set; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ApplyPatchCallOutputStatus : IEquatable<ApplyPatchCallOutputStatus> {

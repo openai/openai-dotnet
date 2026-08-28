@@ -1010,7 +1010,7 @@ model LocalShellToolCallOutputItemParam extends ItemParam {
 
 model LocalShellToolCallOutputItemResource extends ItemResource {
   type: ItemType.local_shell_call_output;
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
   ...LocalShellToolCallOutputItemBase;
 }
 
@@ -1064,7 +1064,7 @@ model ApplyPatchToolCallItemResource extends ItemResource {
   call_id: string;
 
   /** The status of the apply patch tool call. One of `in_progress` or `completed`. */
-  status: ApplyPatchCallStatus;
+  status?: ApplyPatchCallStatus;
 
   /** One of the create_file, delete_file, or update_file operations applied via apply_patch. */
   @summary("Apply patch operation")
@@ -1142,7 +1142,7 @@ model ApplyPatchToolCallOutputItemResource extends ItemResource {
   call_id: string;
 
   /** The status of the apply patch tool call output. One of `completed` or `failed`. */
-  status: ApplyPatchCallOutputStatus;
+  status?: ApplyPatchCallOutputStatus;
 
   output?: string | null;
 
@@ -1224,7 +1224,7 @@ model ResponsesMessageItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   /** The role associated with the message. */
   role: ResponsesMessageRole;
