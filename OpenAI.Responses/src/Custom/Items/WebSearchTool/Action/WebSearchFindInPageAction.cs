@@ -5,7 +5,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("WebSearchActionFind")]
-[CodeGenSuppress("WebSearchFindInPageAction")]
 public partial class WebSearchFindInPageAction
 {
     // CUSTOM: Renamed.
