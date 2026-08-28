@@ -10,7 +10,6 @@ public partial class AssistantThread
     [CodeGenMember("Object")]
     internal string Object { get; } = "thread";
 
-
     /// <summary>
     /// The set of resources that are made available to the assistant's tools on this thread.
     /// The resources are specific to the type of tool.

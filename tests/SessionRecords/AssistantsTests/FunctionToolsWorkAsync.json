@@ -91,7 +91,7 @@
       "RequestUri": "https://api.openai.com/v1/threads/runs",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "131",
         "Content-Type": "application/json",
@@ -1128,7 +1128,7 @@
       "RequestUri": "https://api.openai.com/v1/threads/thread_gkKX1IBZbPQjL4hFRsW92Jlx/runs/run_SQHx3Z6TDUBXWlOChOJ76TJL/submit_tool_outputs",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "84",
         "Content-Type": "application/json",
@@ -1437,7 +1437,7 @@
               {
                 "type": "text",
                 "text": {
-                  "value": "On Thursday, you should eat tacos! \uD83C\uDF2E",
+                  "value": "On Thursday, you should eat tacos! \ud83c\udf2e",
                   "annotations": []
                 }
               }

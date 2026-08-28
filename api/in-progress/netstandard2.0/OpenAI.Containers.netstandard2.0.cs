@@ -7,7 +7,6 @@
 //------------------------------------------------------------------------------
 namespace OpenAI.Containers {
     public class ContainerAllowlistNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerAllowlistNetworkPolicy>, IPersistableModel<ContainerAllowlistNetworkPolicy> {
-        public ContainerAllowlistNetworkPolicy() : base(default);
         public ContainerAllowlistNetworkPolicy(IEnumerable<string> allowedDomains) : base(default);
         public IList<string> AllowedDomains { get; }
         public IList<ContainerNetworkPolicyDomainSecret> DomainSecrets { get; }
@@ -100,7 +99,6 @@ namespace OpenAI.Containers {
         public static explicit operator ContainerCollectionPage(ClientResult result);
     }
     public class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>, IPersistableModel<ContainerCreationOptions> {
-        public ContainerCreationOptions();
         public ContainerCreationOptions(string name);
         public ContainerExpirationPolicy ExpirationPolicy { get; set; }
         public IList<string> FileIds { get; }
@@ -147,7 +145,6 @@ namespace OpenAI.Containers {
         public override readonly string ToString();
     }
     public class ContainerFileCollectionOptions : IJsonModel<ContainerFileCollectionOptions>, IPersistableModel<ContainerFileCollectionOptions> {
-        public ContainerFileCollectionOptions();
         public ContainerFileCollectionOptions(string containerId);
         public string AfterId { get; set; }
         public string ContainerId { get; set; }
@@ -229,7 +226,6 @@ namespace OpenAI.Containers {
         public ref JsonPatch Patch { get; }
     }
     public class ContainerNetworkPolicyDomainSecret : IJsonModel<ContainerNetworkPolicyDomainSecret>, IPersistableModel<ContainerNetworkPolicyDomainSecret> {
-        public ContainerNetworkPolicyDomainSecret();
         public ContainerNetworkPolicyDomainSecret(string domain, string name, string value);
         public string Domain { get; set; }
         public string Name { get; set; }

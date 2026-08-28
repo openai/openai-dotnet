@@ -13,6 +13,12 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress(nameof(AssistantCreationOptions), typeof(string))]
 public partial class AssistantCreationOptions
 {
+    public AssistantCreationOptions()
+    {
+        Tools = new ChangeTrackingList<ToolDefinition>();
+        Metadata = new ChangeTrackingDictionary<string, string>();
+    }
+
     // CUSTOM: visibility hidden to promote required property to method parameter
     internal string Model { get; set; }
 
