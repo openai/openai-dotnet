@@ -131,6 +131,7 @@ namespace OpenAI.Responses {
         public static AutomaticCodeInterpreterToolContainerConfiguration CreateAutomaticContainerConfiguration(IEnumerable<string> fileIds = null);
     }
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
+        public ComputerCallAction(ComputerCallActionKind kind);
         public Drawing.Point? ClickCoordinates { get; }
         public ComputerCallActionMouseButton? ClickMouseButton { get; }
         public Drawing.Point? DoubleClickCoordinates { get; }
@@ -243,8 +244,8 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ContainerFileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<ContainerFileCitationMessageAnnotation>, IPersistableModel<ContainerFileCitationMessageAnnotation> {
-        public ContainerFileCitationMessageAnnotation();
-        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename);
+        public ContainerFileCitationMessageAnnotation() : base(default);
+        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename) : base(default);
         public string ContainerId { get; set; }
         public int EndIndex { get; set; }
         public string FileId { get; set; }
@@ -293,15 +294,15 @@ namespace OpenAI.Responses {
         public McpToolFilter ToolsNeverRequiringApproval { get; set; }
     }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
-        public FileCitationMessageAnnotation();
-        public FileCitationMessageAnnotation(string fileId, int index, string filename);
+        public FileCitationMessageAnnotation() : base(default);
+        public FileCitationMessageAnnotation(string fileId, int index, string filename) : base(default);
         public string FileId { get; set; }
         public string Filename { get; set; }
         public int Index { get; set; }
     }
     public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
-        public FilePathMessageAnnotation();
-        public FilePathMessageAnnotation(string fileId, int index);
+        public FilePathMessageAnnotation() : base(default);
+        public FilePathMessageAnnotation(string fileId, int index) : base(default);
         public string FileId { get; set; }
         public int Index { get; set; }
     }
@@ -966,6 +967,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
+        public ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1121,12 +1123,12 @@ namespace OpenAI.Responses {
         public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> CreateResponseStreaming(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> CreateResponseStreaming(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> CreateResponseStreamingAsync(string model, string userInputText, string previousResponseId = null, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
@@ -1147,10 +1149,10 @@ namespace OpenAI.Responses {
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncStreamingClientResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<AsyncStreamingClientResult<StreamingResponseUpdate>> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
     public class ResponsesClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -1657,8 +1659,8 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
-        public UriCitationMessageAnnotation();
-        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
+        public UriCitationMessageAnnotation() : base(default);
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title) : base(default);
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
         public string Title { get; set; }

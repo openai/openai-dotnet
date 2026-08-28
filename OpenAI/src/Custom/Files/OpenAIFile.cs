@@ -44,4 +44,10 @@ public partial class OpenAIFile
     [Obsolete($"This property is obsolete. For details on why a fine-tuning training file failed validation, see the"
         + $" `error` field on the fine-tuning job.")]
     public string StatusDetails { get; }
+
+    public DateTimeOffset CreatedAt { get; }
+
+    // CUSTOM: Added the Experimental attribute.
+    [Experimental("OPENAI001")]
+    public DateTimeOffset? ExpiresAt { get; }
 }

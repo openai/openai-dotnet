@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>
     {
-        public ComputerCallOutputResponseItem() : this(ResponseItemKind.ComputerCallOutput, null, default, default, null, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerCallOutputResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -218,7 +214,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveAcknowledgedSafetyChecksArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= AcknowledgedSafetyChecks.Count)
                 {
                     return false;
                 }
@@ -242,7 +238,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "acknowledged_safety_checks"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= AcknowledgedSafetyChecks.Count)
                 {
                     return false;
                 }

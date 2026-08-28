@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/audio/speech",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/octet-stream, text/event-stream",
+        "Accept": "application/octet-stream",
         "Authorization": "Sanitized",
         "Content-Length": "67",
         "Content-Type": "application/json",

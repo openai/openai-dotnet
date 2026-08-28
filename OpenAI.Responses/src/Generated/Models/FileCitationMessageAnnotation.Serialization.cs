@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>
     {
-        public FileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.FileCitation, default, null, default, null)
-        {
-        }
-
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;

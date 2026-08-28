@@ -10,7 +10,6 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    [PersistableModelProxy(typeof(InternalUnknownChatMessage))]
     public partial class ChatMessage : IJsonModel<ChatMessage>
     {
         internal ChatMessage() : this(default, null, default)

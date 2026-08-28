@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>
     {
-        public ReasoningResponseItem() : this(ResponseItemKind.Reasoning, null, default, default, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReasoningResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -203,7 +199,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveSummaryPartsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= SummaryParts.Count)
                 {
                     return false;
                 }
@@ -222,7 +218,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "summary"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= SummaryParts.Count)
                 {
                     return false;
                 }

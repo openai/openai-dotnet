@@ -14,10 +14,6 @@ namespace OpenAI.Containers
 {
     public partial class ContainerFileCollectionPage : IJsonModel<ContainerFileCollectionPage>
     {
-        public ContainerFileCollectionPage() : this(null, null, null, null, default, default)
-        {
-        }
-
         protected virtual ContainerFileCollectionPage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCollectionPage>)this).GetFormatFromOptions(options) : options.Format;
@@ -214,7 +210,7 @@ namespace OpenAI.Containers
                 {
                     return TryResolveDataArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Data.Count)
                 {
                     return false;
                 }
@@ -233,7 +229,7 @@ namespace OpenAI.Containers
             {
                 int propertyLength = "data"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Data.Count)
                 {
                     return false;
                 }

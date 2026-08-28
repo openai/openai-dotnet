@@ -13,10 +13,6 @@ namespace OpenAI.Images
 {
     public partial class ImageVariationOptions : IJsonModel<ImageVariationOptions>
     {
-        public ImageVariationOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         protected virtual ImageVariationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

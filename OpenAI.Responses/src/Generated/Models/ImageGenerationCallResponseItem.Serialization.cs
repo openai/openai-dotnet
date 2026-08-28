@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>
     {
-        public ImageGenerationCallResponseItem() : this(ResponseItemKind.ImageGenerationCall, null, default, default, default, default, default, default, default, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -113,7 +109,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
                 writer.WritePropertyName("result"u8);
-                writer.WriteBase64StringValue(ImageResultBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(ImageResultBytes, "D");
             }
             else if (!Patch.Contains("$.result"u8))
             {

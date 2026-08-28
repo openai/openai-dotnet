@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownResponseTextFormatConfiguration))]
     public partial class ResponseTextFormat : IJsonModel<ResponseTextFormat>
     {
         internal ResponseTextFormat()

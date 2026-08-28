@@ -19,8 +19,12 @@ namespace OpenAI.Images;
 [CodeGenSuppress("ImageClient", typeof(ClientPipeline), typeof(Uri))]
 [CodeGenSuppress("GenerateImagesAsync", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateImages", typeof(ImageGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImagesStreamingAsync", typeof(ImageGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImagesStreaming", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageEdits), typeof(ImageEditOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageEditsAsync), typeof(ImageEditOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImageEditsStreamingAsync", typeof(ImageEditOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImageEditsStreaming", typeof(ImageEditOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageVariations), typeof(ImageVariationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageVariationsAsync), typeof(ImageVariationOptions), typeof(CancellationToken))]
 public partial class ImageClient
@@ -150,7 +154,9 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, null, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateImagesAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using PipelineMessage message = CreateGenerateImagesRequest(content, cancellationToken.ToRequestOptions());
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -168,7 +174,9 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, null, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
+        using PipelineMessage message = CreateGenerateImagesRequest(content, cancellationToken.ToRequestOptions());
+        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -187,7 +195,9 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, imageCount, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateImagesAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using PipelineMessage message = CreateGenerateImagesRequest(content, cancellationToken.ToRequestOptions());
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
 
@@ -206,7 +216,9 @@ public partial class ImageClient
         CreateImageGenerationOptions(prompt, imageCount, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
+        using PipelineMessage message = CreateGenerateImagesRequest(content, cancellationToken.ToRequestOptions());
+        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
 
@@ -239,7 +251,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -268,7 +282,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -345,7 +361,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -382,7 +400,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue(((GeneratedImageCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -468,7 +488,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
 
@@ -498,7 +520,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
-        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
 
@@ -578,7 +602,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
 
@@ -616,7 +642,9 @@ public partial class ImageClient
         CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
-        ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
+        using PipelineMessage message = CreateGenerateImageEditsRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
+        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(response);
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
     }
 

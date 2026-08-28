@@ -14,10 +14,6 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>
     {
-        public ChatCompletionOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, default, null, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default)
-        {
-        }
-
         [Experimental("OPENAI001")]
         protected virtual ChatCompletionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
@@ -791,7 +787,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveMessagesArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Messages.Count)
                 {
                     return false;
                 }
@@ -805,7 +801,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveToolsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
                 {
                     return false;
                 }
@@ -819,7 +815,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveFunctionsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Functions.Count)
                 {
                     return false;
                 }
@@ -873,7 +869,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "messages"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Messages.Count)
                 {
                     return false;
                 }
@@ -884,7 +880,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
                 {
                     return false;
                 }
@@ -895,7 +891,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "functions"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Functions.Count)
                 {
                     return false;
                 }

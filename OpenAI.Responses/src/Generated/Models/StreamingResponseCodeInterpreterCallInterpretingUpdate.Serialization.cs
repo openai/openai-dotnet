@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseCodeInterpreterCallInterpretingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInterpretingUpdate>
     {
-        public StreamingResponseCodeInterpreterCallInterpretingUpdate() : this(StreamingResponseUpdateKind.ResponseCodeInterpreterCallInterpreting, default, default, default, null)
-        {
-        }
-
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallInterpretingUpdate>)this).GetFormatFromOptions(options) : options.Format;

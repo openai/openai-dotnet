@@ -18,5 +18,5 @@ public readonly partial struct GeneratedImageFormat
     ///     URI is only valid for 60 minutes after the image is generated.
     /// </summary>
     [CodeGenMember("Url")]
-    public static GeneratedImageFormat Uri { get; } = new GeneratedImageFormat(UrlValue);
+    public static GeneratedImageFormat Uri { get; } = new GeneratedImageFormat(UriValue);
 }

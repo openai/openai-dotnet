@@ -290,7 +290,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveToolCallsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
                 {
                     return false;
                 }
@@ -304,7 +304,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveAnnotationsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
                 {
                     return false;
                 }
@@ -333,7 +333,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
                 {
                     return false;
                 }
@@ -344,7 +344,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
                 {
                     return false;
                 }

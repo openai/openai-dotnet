@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>
     {
-        public StreamingResponseImageGenerationCallPartialImageUpdate() : this(StreamingResponseUpdateKind.ResponseImageGenerationCallPartialImage, default, default, default, null, default, null)
-        {
-        }
-
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallPartialImageUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -91,7 +87,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.partial_image_b64"u8))
             {
                 writer.WritePropertyName("partial_image_b64"u8);
-                writer.WriteBase64StringValue(PartialImageBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(PartialImageBytes, "D");
             }
 
             Patch.WriteTo(writer);

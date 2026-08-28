@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>
     {
-        public McpToolDefinitionListItem() : this(ResponseItemKind.McpListTools, null, default, null, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinitionListItem>)this).GetFormatFromOptions(options) : options.Format;
@@ -208,7 +204,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveToolDefinitionsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
                 {
                     return false;
                 }
@@ -227,7 +223,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
                 {
                     return false;
                 }

@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchDeleteFileOperation : ApplyPatchOperation, IJsonModel<ApplyPatchDeleteFileOperation>
     {
-        public ApplyPatchDeleteFileOperation() : this(InternalApplyPatchOperationType.DeleteFile, default, null)
-        {
-        }
-
         protected override ApplyPatchOperation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ApplyPatchDeleteFileOperation>)this).GetFormatFromOptions(options) : options.Format;

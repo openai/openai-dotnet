@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Files
 {
@@ -37,11 +36,6 @@ namespace OpenAI.Files
         }
 
         public string Id { get; }
-
-        public DateTimeOffset CreatedAt { get; }
-
-        [Experimental("OPENAI001")]
-        public DateTimeOffset? ExpiresAt { get; }
 
         public string Filename { get; }
 

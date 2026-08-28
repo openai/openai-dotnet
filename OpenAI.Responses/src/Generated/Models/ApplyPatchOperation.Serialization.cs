@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownApplyPatchOperation))]
     public partial class ApplyPatchOperation : IJsonModel<ApplyPatchOperation>
     {
         internal ApplyPatchOperation()

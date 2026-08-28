@@ -20,6 +20,7 @@ namespace OpenAILibraryPlugin.Visitors
         private const string _realtimeNamespace = "OpenAI.Realtime";
         private static readonly AttributeStatement _experimental001Attribute = new(typeof(ExperimentalAttribute), Snippet.Literal("OPENAI001"));
         private static readonly AttributeStatement _experimental002Attribute = new(typeof(ExperimentalAttribute), Snippet.Literal("OPENAI002"));
+        private static readonly AttributeStatement _experimentalScme0005Attribute = new(typeof(ExperimentalAttribute), Snippet.Literal("SCME0005"));
 
         // Stable sets loaded from the embedded ga-apis.yaml resource
         private static readonly HashSet<string> _stableClasses;
@@ -124,7 +125,33 @@ namespace OpenAILibraryPlugin.Visitors
                 return methodProvider;
             }
 
+            if (UsesAsyncStreamingClientResult(methodProvider.Signature.ReturnType))
+            {
+                methodProvider.Signature.Update(
+                    attributes: [.. methodProvider.Signature.Attributes, _experimentalScme0005Attribute]);
+
+                return methodProvider;
+            }
+
             return base.VisitMethod(methodProvider);
+        }
+
+        private static bool UsesAsyncStreamingClientResult(CSharpType? returnType)
+        {
+            if (returnType is null)
+            {
+                return false;
+            }
+
+            if (returnType.Name == "AsyncStreamingClientResult" && returnType.Namespace == "System.ClientModel")
+            {
+                return true;
+            }
+
+            return returnType.Name == "Task"
+                && returnType.Namespace == "System.Threading.Tasks"
+                && returnType.Arguments.Count == 1
+                && UsesAsyncStreamingClientResult(returnType.Arguments[0]);
         }
 
         // Tracks which (Namespace.Name) pairs have already been decorated in the

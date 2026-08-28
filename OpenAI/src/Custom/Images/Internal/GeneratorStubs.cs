@@ -53,22 +53,22 @@ namespace OpenAI.Images;
 [CodeGenType("ImageEditCompletedEventQuality")] internal readonly partial struct InternalImageEditCompletedEventQuality { }
 [CodeGenType("ImageEditCompletedEventSize")] internal readonly partial struct InternalImageEditCompletedEventSize { }
 
-// Image edit (new image edit operation types).
-[CodeGenType("CreateImageEditSize")] internal readonly partial struct InternalCreateImageEditSize {}
-[CodeGenType("CreateImageEditQuality")] internal readonly partial struct InternalCreateImageEditQuality {}
-[CodeGenType("CreateImageEditBackground")] internal readonly partial struct InternalCreateImageEditBackground {}
-[CodeGenType("CreateImageEditOutputFormat")] internal readonly partial struct InternalCreateImageEditOutputFormat {}
-[CodeGenType("CreateImageEditSize1")] internal readonly partial struct InternalCreateImageEditSize1 {}
-[CodeGenType("CreateImageEditQuality1")] internal readonly partial struct InternalCreateImageEditQuality1 {}
-[CodeGenType("CreateImageEditBackground1")] internal readonly partial struct InternalCreateImageEditBackground1 {}
-[CodeGenType("CreateImageEditOutputFormat1")] internal readonly partial struct InternalCreateImageEditOutputFormat1 {}
+// Duplicate enums from split streaming image edit operation.
+[CodeGenType("CreateImageEditStreamingSize")] internal readonly partial struct InternalCreateImageEditStreamingSize {}
+[CodeGenType("CreateImageEditStreamingQuality")] internal readonly partial struct InternalCreateImageEditStreamingQuality {}
+[CodeGenType("CreateImageEditStreamingBackground")] internal readonly partial struct InternalCreateImageEditStreamingBackground {}
+[CodeGenType("CreateImageEditStreamingOutputFormat")] internal readonly partial struct InternalCreateImageEditStreamingOutputFormat {}
+[CodeGenType("CreateImageEditStreamingSize1")] internal readonly partial struct InternalCreateImageEditStreamingSize1 {}
+[CodeGenType("CreateImageEditStreamingQuality1")] internal readonly partial struct InternalCreateImageEditStreamingQuality1 {}
+[CodeGenType("CreateImageEditStreamingBackground1")] internal readonly partial struct InternalCreateImageEditStreamingBackground1 {}
+[CodeGenType("CreateImageEditStreamingOutputFormat1")] internal readonly partial struct InternalCreateImageEditStreamingOutputFormat1 {}
 
-// Image generation (new image generation operation types).
-[CodeGenType("CreateImageSize")] internal readonly partial struct InternalCreateImageSize {}
-[CodeGenType("CreateImageQuality")] internal readonly partial struct InternalCreateImageQuality {}
-[CodeGenType("CreateImageBackground")] internal readonly partial struct InternalCreateImageBackground {}
-[CodeGenType("CreateImageOutputFormat")] internal readonly partial struct InternalCreateImageOutputFormat {}
-[CodeGenType("CreateImageSize1")] internal readonly partial struct InternalCreateImageSize1 {}
-[CodeGenType("CreateImageQuality1")] internal readonly partial struct InternalCreateImageQuality1 {}
-[CodeGenType("CreateImageBackground1")] internal readonly partial struct InternalCreateImageBackground1 {}
-[CodeGenType("CreateImageOutputFormat1")] internal readonly partial struct InternalCreateImageOutputFormat1 {}
+// Duplicate enums from split streaming image generation operation.
+[CodeGenType("CreateImageStreamingSize")] internal readonly partial struct InternalCreateImageStreamingSize {}
+[CodeGenType("CreateImageStreamingQuality")] internal readonly partial struct InternalCreateImageStreamingQuality {}
+[CodeGenType("CreateImageStreamingBackground")] internal readonly partial struct InternalCreateImageStreamingBackground {}
+[CodeGenType("CreateImageStreamingOutputFormat")] internal readonly partial struct InternalCreateImageStreamingOutputFormat {}
+[CodeGenType("CreateImageStreamingSize1")] internal readonly partial struct InternalCreateImageStreamingSize1 {}
+[CodeGenType("CreateImageStreamingQuality1")] internal readonly partial struct InternalCreateImageStreamingQuality1 {}
+[CodeGenType("CreateImageStreamingBackground1")] internal readonly partial struct InternalCreateImageStreamingBackground1 {}
+[CodeGenType("CreateImageStreamingOutputFormat1")] internal readonly partial struct InternalCreateImageStreamingOutputFormat1 {}
