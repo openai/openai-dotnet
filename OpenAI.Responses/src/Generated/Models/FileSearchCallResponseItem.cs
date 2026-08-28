@@ -35,10 +35,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public FileSearchCallResponseItem() : this(default)
-        {
-        }
-
         public IList<string> Queries { get; }
 
         public IList<FileSearchCallResult> Results { get; set; }

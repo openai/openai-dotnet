@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/responses",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "4217148",
         "Content-Type": "application/json",

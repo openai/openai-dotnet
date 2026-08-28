@@ -13,12 +13,26 @@ namespace OpenAI.Chat;
 /// </summary>
 [CodeGenType("CreateChatCompletionRequest")]
 [CodeGenVisibility(nameof(ChatCompletionOptions), CodeGenVisibility.Public)]
+[CodeGenSuppress(nameof(ChatCompletionOptions))]
 [CodeGenSuppress(nameof(ChatCompletionOptions), typeof(IEnumerable<ChatMessage>), typeof(string))]
 [CodeGenSerialization(nameof(Messages), SerializationValueHook = nameof(SerializeMessagesValue))]
 [CodeGenSerialization(nameof(StopSequences), SerializationValueHook = nameof(SerializeStopSequencesValue), DeserializationValueHook = nameof(DeserializeStopSequencesValue))]
 [CodeGenSerialization(nameof(LogitBiases), SerializationValueHook = nameof(SerializeLogitBiasesValue), DeserializationValueHook = nameof(DeserializeLogitBiasesValue))]
 public partial class ChatCompletionOptions
 {
+    // CUSTOM: Initialize collections that the generated parameterless constructor leaves null.
+    public ChatCompletionOptions()
+    {
+        Metadata = new ChangeTrackingDictionary<string, string>();
+        Messages = new ChangeTrackingList<ChatMessage>();
+        InternalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
+        StopSequences = new ChangeTrackingList<string>();
+        LogitBiases = new ChangeTrackingDictionary<int, int>();
+        Tools = new ChangeTrackingList<ChatTool>();
+        Functions = new ChangeTrackingList<ChatFunction>();
+        Patch.SetPropagators(PropagateSet, PropagateGet);
+    }
+
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.
     // - Added setter.
@@ -114,7 +128,6 @@ public partial class ChatCompletionOptions
     /// </summary>
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
-
 
     // CUSTOM: Hide deprecated max_tokens and reroute to newer max_completion_tokens.
     [CodeGenMember("MaxTokens")]
@@ -226,16 +239,16 @@ public partial class ChatCompletionOptions
         clone.StreamOptions = StreamOptions;
         clone.IncludeLogProbabilities = IncludeLogProbabilities;
         clone.TopLogProbabilityCount = TopLogProbabilityCount;
-        foreach (var s in StopSequences) clone.StopSequences.Add(s);
-        foreach (var l in LogitBiases) clone.LogitBiases[l.Key] = l.Value;
+        if (StopSequences is not null) foreach (var s in StopSequences) clone.StopSequences.Add(s);
+        if (LogitBiases is not null) foreach (var l in LogitBiases) clone.LogitBiases[l.Key] = l.Value;
         clone.ToolChoice = ToolChoice;
         clone.FunctionChoice = FunctionChoice;
         clone.AllowParallelToolCalls = AllowParallelToolCalls;
         clone.EndUserId = EndUserId;
         clone._deprecatedMaxTokens = _deprecatedMaxTokens;
         clone.MaxOutputTokenCount = MaxOutputTokenCount;
-        foreach (var f in Functions) clone.Functions.Add(f);
-        foreach (var m in Metadata) clone.Metadata[m.Key] = m.Value;
+        if (Functions is not null) foreach (var f in Functions) clone.Functions.Add(f);
+        if (Metadata is not null) foreach (var m in Metadata) clone.Metadata[m.Key] = m.Value;
         clone.StoredOutputEnabled = StoredOutputEnabled;
         clone.ReasoningEffortLevel = ReasoningEffortLevel;
         clone.InternalModalities = _internalModalities?.ToList();
@@ -244,7 +257,7 @@ public partial class ChatCompletionOptions
         clone.AudioOptions = AudioOptions;
         clone.OutputPrediction = OutputPrediction;
         clone.Messages = Messages?.Select(m => m).ToList();
-        foreach (var t in Tools) clone.Tools.Add(t);
+        if (Tools is not null) foreach (var t in Tools) clone.Tools.Add(t);
         clone.Temperature = Temperature;
         clone.TopP = TopP;
         clone.SafetyIdentifier = SafetyIdentifier;

@@ -31,10 +31,6 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public ResponseItemCollectionOptions() : this(default)
-        {
-        }
-
         public string ResponseId { get; set; }
 
         public string AfterId { get; set; }

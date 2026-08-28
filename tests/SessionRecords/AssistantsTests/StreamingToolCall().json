@@ -81,7 +81,7 @@
       "RequestUri": "https://api.openai.com/v1/threads/runs",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "152",
         "Content-Type": "application/json",
@@ -147,7 +147,7 @@
       "RequestUri": "https://api.openai.com/v1/threads/thread_6oUGUBxLwhyApwhYBhWjHI5f/runs/run_oyfV44CrJXYJkvb2qsd80LvJ/submit_tool_outputs",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "107",
         "Content-Type": "application/json",

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat;
 
-
 [CodeGenType("ChatCompletionResponseMessage")]
 [CodeGenSuppress("InternalChatCompletionResponseMessage", typeof(IEnumerable<ChatMessageContentPart>))]
 internal partial class InternalChatCompletionResponseMessage
