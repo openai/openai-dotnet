@@ -34,10 +34,6 @@ namespace OpenAI.Containers
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public ContainerAllowlistNetworkPolicy() : this(default)
-        {
-        }
-
         public IList<string> AllowedDomains { get; }
 
         public IList<ContainerNetworkPolicyDomainSecret> DomainSecrets { get; }

@@ -94,7 +94,6 @@ public partial class AssistantClient
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
 
-
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.

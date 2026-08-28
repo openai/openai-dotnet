@@ -10,8 +10,14 @@ namespace OpenAI.Responses;
 // - Renamed.
 [CodeGenType("ComputerAction")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
+[CodeGenSuppress("ComputerCallAction", typeof(ComputerCallActionKind))]
 public partial class ComputerCallAction
 {
+    private protected ComputerCallAction(ComputerCallActionKind kind)
+    {
+        Kind = kind;
+    }
+
     // CUSTOM: Exposed click action properties.
     public Point? ClickCoordinates => this switch
     {
