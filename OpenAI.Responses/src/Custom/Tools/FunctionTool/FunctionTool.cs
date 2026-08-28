@@ -4,7 +4,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("FunctionTool")]
-[CodeGenSuppress("FunctionTool")]
 public partial class FunctionTool
 {
 

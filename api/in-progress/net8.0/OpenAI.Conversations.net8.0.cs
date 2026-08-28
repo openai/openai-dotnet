@@ -87,6 +87,7 @@ namespace OpenAI.Conversations {
     }
     [Experimental("OPENAI001")]
     public class ConversationUpdateOptions : IJsonModel<ConversationUpdateOptions>, IPersistableModel<ConversationUpdateOptions> {
+        public ConversationUpdateOptions();
         public ConversationUpdateOptions(IDictionary<string, string> metadata);
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]

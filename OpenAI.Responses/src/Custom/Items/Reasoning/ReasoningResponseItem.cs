@@ -8,6 +8,10 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("ReasoningResponseItem")]
 public partial class ReasoningResponseItem
 {
+    public ReasoningResponseItem() : base(ResponseItemKind.Reasoning)
+    {
+    }
+
     // CUSTOM:
     // - Made nullable because this is an optional property.
     // - Added setter because this is an optional property in an input/output type.
