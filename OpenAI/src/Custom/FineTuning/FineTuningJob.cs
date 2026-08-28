@@ -175,7 +175,6 @@ public partial class FineTuningJob : OperationResult
         return Rehydrate(client, rehydrationToken, cancellationToken.ToRequestOptions());
     }
 
-
     /// <inheritdoc cref="Rehydrate(FineTuningClient, ContinuationToken, CancellationToken)"/>"
     public static async Task<FineTuningJob> RehydrateAsync(FineTuningClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default)
     {

@@ -8,7 +8,6 @@ public partial class StaticFileChunkingStrategy : FileChunkingStrategy
     [CodeGenMember("Static")]
     private InternalStaticChunkingStrategy _internalDetails;
 
-
     /// <summary>
     /// Creates a new instance of <see cref="StaticFileChunkingStrategy"/>, which allows for direct specification of
     /// file chunk size and chunk overlap windows.

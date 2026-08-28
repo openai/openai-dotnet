@@ -3,7 +3,6 @@ using System;
 
 namespace OpenAI.FineTuning;
 
-
 [CodeGenType("FineTuneDPOHyperparameters")]
 public partial class HyperparametersForDPO : MethodHyperparameters
 {
@@ -18,7 +17,6 @@ public partial class HyperparametersForDPO : MethodHyperparameters
 
     [CodeGenMember("Beta")]
     internal BinaryData _Beta { get; set; }
-
 
     public int BatchSize => (int)HandleDefaults(_BatchSize);
     public int EpochCount => (int)HandleDefaults(_NEpochs);

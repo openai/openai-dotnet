@@ -2,7 +2,6 @@
 using System.ClientModel.Primitives;
 using System.Text.Json;
 
-
 namespace OpenAI.Responses;
 
 public partial class CodeInterpreterToolContainer
