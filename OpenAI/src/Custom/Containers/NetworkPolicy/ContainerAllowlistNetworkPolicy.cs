@@ -6,5 +6,4 @@ namespace OpenAI.Containers;
 [CodeGenType("ContainerNetworkPolicyAllowlist")]
 public partial class ContainerAllowlistNetworkPolicy
 {
-
 }
