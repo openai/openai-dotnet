@@ -14,38 +14,38 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal VectorStore(string id, DateTimeOffset createdOn, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, DateTimeOffset? lastActiveOn)
+        internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, DateTimeOffset? lastActiveAt)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             Name = name;
             UsageBytes = usageBytes;
             FileCounts = fileCounts;
             Status = status;
-            LastActiveOn = lastActiveOn;
+            LastActiveAt = lastActiveAt;
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal VectorStore(string id, string @object, DateTimeOffset createdOn, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, VectorStoreExpirationPolicy expirationPolicy, DateTimeOffset? expiresOn, DateTimeOffset? lastActiveOn, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStore(string id, string @object, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, VectorStoreExpirationPolicy expirationPolicy, DateTimeOffset? expiresAt, DateTimeOffset? lastActiveAt, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             Name = name;
             UsageBytes = usageBytes;
             FileCounts = fileCounts;
             Status = status;
             ExpirationPolicy = expirationPolicy;
-            ExpiresOn = expiresOn;
-            LastActiveOn = lastActiveOn;
+            ExpiresAt = expiresAt;
+            LastActiveAt = lastActiveAt;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         public string Name { get; }
 
@@ -55,9 +55,9 @@ namespace OpenAI.VectorStores
 
         public VectorStoreStatus Status { get; }
 
-        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? ExpiresAt { get; }
 
-        public DateTimeOffset? LastActiveOn { get; }
+        public DateTimeOffset? LastActiveAt { get; }
 
         public IReadOnlyDictionary<string, string> Metadata { get; }
 

@@ -21,6 +21,10 @@ namespace OpenAI.Audio
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
+        public AudioTranslationOptions()
+        {
+        }
+
         public string Prompt { get; set; }
 
         public AudioTranslationFormat? ResponseFormat { get; set; }

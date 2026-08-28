@@ -11,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageEditSize1 size, InternalCreateImageEditQuality1 quality, InternalCreateImageEditBackground1 background, InternalCreateImageEditOutputFormat1 outputFormat, InternalImagesUsage usage)
+        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageEditStreamingSize1 size, InternalCreateImageEditStreamingQuality1 quality, InternalCreateImageEditStreamingBackground1 background, InternalCreateImageEditStreamingOutputFormat1 outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedOn = createdOn;
@@ -22,7 +22,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageEditSize1 size, InternalCreateImageEditQuality1 quality, InternalCreateImageEditBackground1 background, InternalCreateImageEditOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageEditStreamingSize1 size, InternalCreateImageEditStreamingQuality1 quality, InternalCreateImageEditStreamingBackground1 background, InternalCreateImageEditStreamingOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedOn { get; }
 
-        internal InternalCreateImageEditSize1 Size { get; }
+        internal InternalCreateImageEditStreamingSize1 Size { get; }
 
-        internal InternalCreateImageEditQuality1 Quality { get; }
+        internal InternalCreateImageEditStreamingQuality1 Quality { get; }
 
-        internal InternalCreateImageEditBackground1 Background { get; }
+        internal InternalCreateImageEditStreamingBackground1 Background { get; }
 
-        internal InternalCreateImageEditOutputFormat1 OutputFormat { get; }
+        internal InternalCreateImageEditStreamingOutputFormat1 OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
 
