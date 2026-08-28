@@ -12,9 +12,9 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("McpTool", typeof(string))]
 public partial class McpTool
 {
-    public McpTool() : base(ResponseToolKind.Mcp)
+    // CUSTOM: Delegate to internal hydration constructor.
+    public McpTool() : this(ResponseToolKind.Mcp, default, null, null, null, null, null, null, null, null)
     {
-        Headers = new ChangeTrackingDictionary<string, string>();
     }
 
     // CUSTOM: Added a constructor that takes the server URI in addition to the server label.
