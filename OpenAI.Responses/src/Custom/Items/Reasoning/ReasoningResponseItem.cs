@@ -5,8 +5,14 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ReasoningItemResource")]
+[CodeGenSuppress("ReasoningResponseItem")]
 public partial class ReasoningResponseItem
 {
+    // CUSTOM: Disambiguate the parameterless constructor.
+    public ReasoningResponseItem() : this(default(string))
+    {
+    }
+
     // CUSTOM:
     // - Made nullable because this is an optional property.
     // - Added setter because this is an optional property in an input/output type.

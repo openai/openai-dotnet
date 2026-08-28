@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class FunctionTool : ResponseTool, IJsonModel<FunctionTool>
     {
-        public FunctionTool() : this(ResponseToolKind.Function, default, null, null, null, default)
-        {
-        }
-
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionTool>)this).GetFormatFromOptions(options) : options.Format;

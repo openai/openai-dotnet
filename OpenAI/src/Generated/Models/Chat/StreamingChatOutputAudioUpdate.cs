@@ -21,12 +21,12 @@ namespace OpenAI.Chat
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingChatOutputAudioUpdate(string id, string transcriptUpdate, BinaryData audioBytesUpdate, DateTimeOffset? expiresOn, in JsonPatch patch)
+        internal StreamingChatOutputAudioUpdate(string id, string transcriptUpdate, BinaryData audioBytesUpdate, DateTimeOffset? expiresAt, in JsonPatch patch)
         {
             Id = id;
             TranscriptUpdate = transcriptUpdate;
             AudioBytesUpdate = audioBytesUpdate;
-            ExpiresOn = expiresOn;
+            ExpiresAt = expiresAt;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -38,6 +38,6 @@ namespace OpenAI.Chat
 
         public string Id { get; }
 
-        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? ExpiresAt { get; }
     }
 }

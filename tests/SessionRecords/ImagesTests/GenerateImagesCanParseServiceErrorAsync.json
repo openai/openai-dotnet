@@ -4,11 +4,11 @@
       "RequestUri": "https://api.openai.com/v1/images/generations",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "63",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
@@ -19,12 +19,11 @@
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
           "X-Request-ID",
-          "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e289b9e1647d-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a31ea28f1d40f16e-SEA",
         "Connection": "keep-alive",
         "Content-Length": "237",
         "Content-Type": "application/json",

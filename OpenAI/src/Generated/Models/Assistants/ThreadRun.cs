@@ -14,19 +14,19 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ThreadRun(string id, DateTimeOffset createdOn, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresOn, DateTimeOffset? startedOn, DateTimeOffset? cancelledOn, DateTimeOffset? failedOn, DateTimeOffset? completedOn, RunIncompleteDetails incompleteDetails, string model, string instructions, RunTokenUsage usage, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, InternalRunRequiredAction internalRequiredAction)
+        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, RunTokenUsage usage, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, InternalRunRequiredAction internalRequiredAction)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ThreadId = threadId;
             AssistantId = assistantId;
             Status = status;
             LastError = lastError;
-            ExpiresOn = expiresOn;
-            StartedOn = startedOn;
-            CancelledOn = cancelledOn;
-            FailedOn = failedOn;
-            CompletedOn = completedOn;
+            ExpiresAt = expiresAt;
+            StartedAt = startedAt;
+            CancelledAt = cancelledAt;
+            FailedAt = failedAt;
+            CompletedAt = completedAt;
             IncompleteDetails = incompleteDetails;
             Model = model;
             Instructions = instructions;
@@ -42,21 +42,21 @@ namespace OpenAI.Assistants
             _internalRequiredAction = internalRequiredAction;
         }
 
-        internal ThreadRun(string id, string @object, DateTimeOffset createdOn, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresOn, DateTimeOffset? startedOn, DateTimeOffset? cancelledOn, DateTimeOffset? failedOn, DateTimeOffset? completedOn, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, InternalRunRequiredAction internalRequiredAction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadRun(string id, string @object, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, InternalRunRequiredAction internalRequiredAction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ThreadId = threadId;
             AssistantId = assistantId;
             Status = status;
             LastError = lastError;
-            ExpiresOn = expiresOn;
-            StartedOn = startedOn;
-            CancelledOn = cancelledOn;
-            FailedOn = failedOn;
-            CompletedOn = completedOn;
+            ExpiresAt = expiresAt;
+            StartedAt = startedAt;
+            CancelledAt = cancelledAt;
+            FailedAt = failedAt;
+            CompletedAt = completedAt;
             IncompleteDetails = incompleteDetails;
             Model = model;
             Instructions = instructions;
@@ -77,7 +77,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         public string ThreadId { get; }
 
@@ -87,15 +87,15 @@ namespace OpenAI.Assistants
 
         public RunError LastError { get; }
 
-        public DateTimeOffset? ExpiresOn { get; }
+        public DateTimeOffset? ExpiresAt { get; }
 
-        public DateTimeOffset? StartedOn { get; }
+        public DateTimeOffset? StartedAt { get; }
 
-        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CancelledAt { get; }
 
-        public DateTimeOffset? FailedOn { get; }
+        public DateTimeOffset? FailedAt { get; }
 
-        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset? CompletedAt { get; }
 
         public RunIncompleteDetails IncompleteDetails { get; }
 
