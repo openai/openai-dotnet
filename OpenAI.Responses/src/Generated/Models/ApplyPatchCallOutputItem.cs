@@ -11,15 +11,16 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ApplyPatchCallOutputItem : ResponseItem
     {
-        public ApplyPatchCallOutputItem(string callId) : base(ResponseItemKind.ApplyPatchCallOutput)
+        public ApplyPatchCallOutputItem(string callId, ApplyPatchCallOutputStatus status) : base(ResponseItemKind.ApplyPatchCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
 
             CallId = callId;
+            Status = status;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ApplyPatchCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, ApplyPatchCallOutputStatus? status, string output, string createdBy) : base(kind, id, patch)
+        internal ApplyPatchCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, ApplyPatchCallOutputStatus status, string output, string createdBy) : base(kind, id, patch)
         {
             CallId = callId;
             Status = status;
@@ -30,7 +31,7 @@ namespace OpenAI.Responses
 
         public string CallId { get; set; }
 
-        public ApplyPatchCallOutputStatus? Status { get; set; }
+        public ApplyPatchCallOutputStatus Status { get; set; }
 
         public string Output { get; set; }
 

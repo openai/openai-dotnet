@@ -78,10 +78,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (!Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToString());
+                writer.WriteStringValue(Status.ToString());
             }
             if (Optional.IsDefined(Output) && !Patch.Contains("$.output"u8))
             {
@@ -123,7 +123,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
-            ApplyPatchCallOutputStatus? status = default;
+            ApplyPatchCallOutputStatus status = default;
             string output = default;
             string createdBy = default;
             foreach (var prop in element.EnumerateObject())
@@ -145,10 +145,6 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
                     status = new ApplyPatchCallOutputStatus(prop.Value.GetString());
                     continue;
                 }

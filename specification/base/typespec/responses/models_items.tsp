@@ -1142,7 +1142,9 @@ model ApplyPatchToolCallOutputItemResource extends ItemResource {
   call_id: string;
 
   /** The status of the apply patch tool call output. One of `completed` or `failed`. */
-  status?: ApplyPatchCallOutputStatus;
+  // NOTE: Contrary to other tools, this property is set by the client instead of the
+  // server, and it is required to indicate whether the patch was successfully applied.
+  status: ApplyPatchCallOutputStatus;
 
   output?: string | null;
 

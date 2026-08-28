@@ -972,7 +972,7 @@ namespace OpenAI
             return new ApplyPatchUpdateFileOperation(InternalApplyPatchOperationType.UpdateFile, default, filePath, diff);
         }
 
-        public static ApplyPatchCallOutputItem ApplyPatchCallOutputItem(string id = default, string callId = default, ApplyPatchCallOutputStatus? status = default, string output = default, string createdBy = default)
+        public static ApplyPatchCallOutputItem ApplyPatchCallOutputItem(string id = default, string callId = default, ApplyPatchCallOutputStatus status = default, string output = default, string createdBy = default)
         {
             return new ApplyPatchCallOutputItem(
                 ResponseItemKind.ApplyPatchCallOutput,
