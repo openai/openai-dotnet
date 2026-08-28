@@ -11,14 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using static Microsoft.TypeSpec.Generator.Snippets.Snippet;
 
-namespace OpenAILibraryPlugin;
+namespace OpenAILibraryPlugin.Visitors;
 
-public class OpenAILibraryVisitor : ScmLibraryVisitor
+public class JsonModelWriteCoreVisitor : ScmLibraryVisitor
 {
-    private const string RawDataPropertyName = "SerializedAdditionalRawData";
     private const string AdditionalPropertiesFieldName = "_additionalBinaryDataProperties";
-    private const string SentinelValueFieldName = "_sentinelValue";
-    private const string ModelSerializationExtensionsTypeName = "ModelSerializationExtensions";
     private const string IsSentinelValueMethodName = "IsSentinelValue";
     private const string JsonModelWriteCoreMethodName = "JsonModelWriteCore";
 
@@ -26,7 +23,7 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
     // a conditional that includes an appropriate "Optional" check, e.g.:
     //   - Optional.IsCollectionDefined(Messages) ... writer.WritePropertyName("messages"u8)
     //   - Optional.IsDefined(Model) ... writer.WritePropertyName("model"u8)
-    private static WritePropertyNameAdditionalReplacementInfo _readonlyStatusReplacementInfo = new("Status", "status", isCollection: false); 
+    private static WritePropertyNameAdditionalReplacementInfo _readonlyStatusReplacementInfo = new("Status", "status", isCollection: false);
     private static readonly Dictionary<string, List<WritePropertyNameAdditionalReplacementInfo>> TypeNameToWritePropertyNameAdditionalConditionMap = new()
     {
         ["ChatCompletionOptions"] =
@@ -52,75 +49,6 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
     };
     private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =
         new("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");
-
-    protected override TypeProvider VisitType(TypeProvider type)
-    {
-        var additionalPropertiesField = type.Fields.FirstOrDefault(f => f.Name == AdditionalPropertiesFieldName);
-        if (type is ModelProvider { BaseModelProvider: null } && additionalPropertiesField != null)
-        {
-            // Add an internal AdditionalProperties property to all base models
-            var properties = new List<PropertyProvider>(type.Properties)
-            {
-                new PropertyProvider($"", MethodSignatureModifiers.Internal,
-                    typeof(IDictionary<string, BinaryData>), RawDataPropertyName,
-                    new ExpressionPropertyBody(
-                        additionalPropertiesField,
-                        type.DeclarationModifiers.HasFlag(TypeSignatureModifiers.ReadOnly) ? null : additionalPropertiesField.Assign(Value)),
-                    type)
-            };
-            
-            type.Update(properties: properties);
-        }
-        else if (type.Name == ModelSerializationExtensionsTypeName)
-        {
-            // Add a static BinaryData field representing the sentinel value
-            var sentinelValueField = new FieldProvider(
-                FieldModifiers.Private | FieldModifiers.Static | FieldModifiers.ReadOnly,
-                typeof(BinaryData),
-                SentinelValueFieldName,
-                type,
-                $"",
-                BinaryDataSnippets.FromBytes(LiteralU8("\"__EMPTY__\"").Invoke("ToArray")));
-            var fields = new List<FieldProvider>(type.Fields)
-            {
-                sentinelValueField
-            };
-
-            // Add the IsSentinelValue method
-            var valueParameter = new ParameterProvider("value", $"", typeof(BinaryData));
-            var methods = new List<MethodProvider>(type.Methods)
-            {
-                new MethodProvider(
-                    new MethodSignature(
-                        IsSentinelValueMethodName,
-                        $"",
-                        MethodSignatureModifiers.Internal | MethodSignatureModifiers.Static,
-                        typeof(bool),
-                        $"",
-                        [valueParameter]),
-                    new[]
-                    {
-                        Declare("sentinelSpan", typeof(ReadOnlySpan<byte>), sentinelValueField.As<BinaryData>().ToMemory().Property("Span"), out var sentinelVariable),
-                        Declare("valueSpan", typeof(ReadOnlySpan<byte>), valueParameter.As<BinaryData>().ToMemory().Property("Span"), out var valueVariable),
-                        Return(sentinelVariable.Invoke("SequenceEqual", valueVariable))
-                    },
-                    type)
-            };
-            
-            type.Update(fields: fields, methods: methods);
-        }
-        return type;
-    }
-
-    protected override FieldProvider VisitField(FieldProvider field)
-    {
-        // Make the backing additional properties field not be read only as long as the type is not readonly.
-        if (field.Name == AdditionalPropertiesFieldName && !field.EnclosingType.DeclarationModifiers.HasFlag(TypeSignatureModifiers.ReadOnly))
-        {
-            field.Modifiers &= ~FieldModifiers.ReadOnly;
-        }
-        return field;
-    }
 
     protected override MethodProvider VisitMethod(MethodProvider method)
     {
