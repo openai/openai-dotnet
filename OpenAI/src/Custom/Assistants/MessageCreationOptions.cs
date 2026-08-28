@@ -13,11 +13,9 @@ namespace OpenAI.Assistants;
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContent))]
 public partial class MessageCreationOptions
 {
-    public MessageCreationOptions()
+    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
+    public MessageCreationOptions() : this(default, null, null, null, null)
     {
-        Content = new ChangeTrackingList<MessageContent>();
-        Attachments = new ChangeTrackingList<MessageCreationAttachment>();
-        Metadata = new ChangeTrackingDictionary<string, string>();
     }
 
     // CUSTOM: role is hidden, as this required property is promoted to a method parameter
