@@ -71,7 +71,7 @@ namespace OpenAI.FineTuning
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
             {
@@ -147,7 +147,7 @@ namespace OpenAI.FineTuning
                 return null;
             }
             string id = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
             string message = default;
             FineTuningJobEventKind? kind = default;
             BinaryData data = default;
@@ -163,7 +163,7 @@ namespace OpenAI.FineTuning
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("message"u8))
@@ -204,7 +204,7 @@ namespace OpenAI.FineTuning
             }
             return new FineTuningEvent(
                 id,
-                createdOn,
+                createdAt,
                 message,
                 kind,
                 data,

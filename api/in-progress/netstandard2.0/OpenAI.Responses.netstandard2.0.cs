@@ -131,6 +131,7 @@ namespace OpenAI.Responses {
         public static AutomaticCodeInterpreterToolContainerConfiguration CreateAutomaticContainerConfiguration(IEnumerable<string> fileIds = null);
     }
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
+        public ComputerCallAction(ComputerCallActionKind kind);
         public Drawing.Point? ClickCoordinates { get; }
         public ComputerCallActionMouseButton? ClickMouseButton { get; }
         public Drawing.Point? DoubleClickCoordinates { get; }
@@ -243,8 +244,8 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ContainerFileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<ContainerFileCitationMessageAnnotation>, IPersistableModel<ContainerFileCitationMessageAnnotation> {
-        public ContainerFileCitationMessageAnnotation();
-        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename);
+        public ContainerFileCitationMessageAnnotation() : base(default);
+        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename) : base(default);
         public string ContainerId { get; set; }
         public int EndIndex { get; set; }
         public string FileId { get; set; }
@@ -393,15 +394,15 @@ namespace OpenAI.Responses {
         public CustomToolTextFormat() : base(default);
     }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
-        public FileCitationMessageAnnotation();
-        public FileCitationMessageAnnotation(string fileId, int index, string filename);
+        public FileCitationMessageAnnotation() : base(default);
+        public FileCitationMessageAnnotation(string fileId, int index, string filename) : base(default);
         public string FileId { get; set; }
         public string Filename { get; set; }
         public int Index { get; set; }
     }
     public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
-        public FilePathMessageAnnotation();
-        public FilePathMessageAnnotation(string fileId, int index);
+        public FilePathMessageAnnotation() : base(default);
+        public FilePathMessageAnnotation(string fileId, int index) : base(default);
         public string FileId { get; set; }
         public int Index { get; set; }
     }
@@ -1068,6 +1069,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
+        public ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1772,8 +1774,8 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
-        public UriCitationMessageAnnotation();
-        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
+        public UriCitationMessageAnnotation() : base(default);
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title) : base(default);
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
         public string Title { get; set; }

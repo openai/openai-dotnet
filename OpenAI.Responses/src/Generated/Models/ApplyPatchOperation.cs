@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected ApplyPatchOperation(InternalApplyPatchOperationType kind)
+        internal ApplyPatchOperation(InternalApplyPatchOperationType kind)
         {
             Kind = kind;
         }

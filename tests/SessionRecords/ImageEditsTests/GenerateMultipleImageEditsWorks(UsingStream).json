@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/images/edits",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "848991",
         "Content-Type": "multipart/form-data; boundary=\"n79JSKKR1dpNC4weDZfElSu7lHbg6uGjgXjHuoAgflX368ycHuOI9ZSokE6cuId9nBZDUJ\"",

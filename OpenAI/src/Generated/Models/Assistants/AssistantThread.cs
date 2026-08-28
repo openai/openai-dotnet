@@ -14,20 +14,20 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AssistantThread(string id, DateTimeOffset createdOn, ToolResources toolResources)
+        internal AssistantThread(string id, DateTimeOffset createdAt, ToolResources toolResources)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ToolResources = toolResources;
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal AssistantThread(string id, string @object, DateTimeOffset createdOn, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantThread(string id, string @object, DateTimeOffset createdAt, ToolResources toolResources, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ToolResources = toolResources;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -35,7 +35,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         public IReadOnlyDictionary<string, string> Metadata { get; }
 

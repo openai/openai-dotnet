@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    [PersistableModelProxy(typeof(InternalUnknownCreateTranscriptionResponseStreamEvent))]
     public partial class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>
     {
         internal StreamingAudioTranscriptionUpdate()
