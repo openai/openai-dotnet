@@ -30,6 +30,10 @@ namespace OpenAI.Containers
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
+        public ContainerFileCollectionOptions() : this(default)
+        {
+        }
+
         public string ContainerId { get; set; }
 
         public ContainerFileCollectionOrder? Order { get; set; }

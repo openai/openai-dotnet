@@ -6,7 +6,6 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [CodeGenType("ComputerToolCallSafetyCheck")]
-[CodeGenSuppress("ComputerCallSafetyCheck")]
 public partial class ComputerCallSafetyCheck
 {
 
