@@ -136,6 +136,7 @@ public class ChatTelemetryTests
     public void ChatTracingAllAttributes()
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(false);
         var telemetry = new OpenTelemetrySource(RequestModel, new Uri(Endpoint));
         using var listener = new TestActivityListener("OpenAI.ChatClient");
         var options = new ChatCompletionOptions()
@@ -157,7 +158,7 @@ public class ChatTelemetryTests
         }
         Assert.That(Activity.Current, Is.Null);
 
-        ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port);
+        ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port, useLatestSemconv: false);
     }
 
     [TestCase(false)]

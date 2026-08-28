@@ -642,6 +642,7 @@ public class ChatTests : OpenAIRecordedTestBase
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(false);
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 
@@ -650,11 +651,11 @@ public class ChatTests : OpenAIRecordedTestBase
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages);
 
         Assert.That(activityListener.Activities.Count, Is.EqualTo(1));
-        TestActivityListener.ValidateChatActivity(activityListener.Activities.Single(), result.Value);
+        TestActivityListener.ValidateChatActivity(activityListener.Activities.Single(), result.Value, useLatestSemconv: false);
 
         List<TestMeasurement> durations = meterListener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.That(durations.Count, Is.EqualTo(1));
-        ValidateChatMetricTags(durations.Single(), result.Value);
+        ValidateChatMetricTags(durations.Single(), result.Value, useLatestSemconv: false);
 
         List<TestMeasurement> usages = meterListener.GetMeasurements("gen_ai.client.token.usage");
         Assert.That(usages.Count, Is.EqualTo(2));
