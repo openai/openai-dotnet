@@ -4,7 +4,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ConversationParam2")]
-[CodeGenSuppress("ResponseConversationOptions")]
 public partial class ResponseConversationOptions
 {
     // CUSTOM: Renamed.
