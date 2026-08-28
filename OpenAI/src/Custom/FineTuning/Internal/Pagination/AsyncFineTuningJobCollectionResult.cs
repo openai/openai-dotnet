@@ -38,6 +38,7 @@ internal class AsyncFineTuningJobCollectionResult : AsyncCollectionResult<FineTu
         _cancellationToken = _options?.CancellationToken ?? default;
     }
 
+
     public async override IAsyncEnumerable<ClientResult> GetRawPagesAsync()
     {
         ClientResult page = await GetFirstPageAsync().ConfigureAwait(false);
