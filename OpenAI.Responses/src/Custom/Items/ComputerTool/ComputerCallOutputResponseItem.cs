@@ -4,7 +4,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ComputerToolCallOutputItemResource")]
-[CodeGenSuppress("ComputerCallOutputResponseItem")]
 public partial class ComputerCallOutputResponseItem
 {
     // CUSTOM:
