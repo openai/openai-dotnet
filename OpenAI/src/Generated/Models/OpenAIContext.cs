@@ -291,6 +291,7 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.FileCitationMessageAnnotation is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileCitationMessageAnnotation))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.FileCitationMessageAnnotation is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(FileCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(FileDeletionResult))]
 #pragma warning disable OPENAI001 // global::OpenAI.VectorStores.FileFromStoreRemovalResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(FileFromStoreRemovalResult))]
