@@ -22,6 +22,7 @@ internal class OpenTelemetryScope : IDisposable
     private static readonly Histogram<long> s_chatTokens = CreateTokenHistogram(s_chatMeter);
     private static readonly Histogram<double> s_responsesDuration = CreateDurationHistogram(s_responsesMeter);
     private static readonly Histogram<long> s_responsesTokens = CreateTokenHistogram(s_responsesMeter);
+    private static readonly ResponseItemKind s_compactionItemKind = new("compaction");
 
     private readonly ActivitySource _activitySource;
     private readonly Histogram<double> _durationHistogram;
@@ -143,7 +144,7 @@ internal class OpenTelemetryScope : IDisposable
                 SetActivityTagIfNotNull(OpenAiResponseServiceTierKey, responseServiceTier);
                 SetActivityTagIfNotNull(GenAiUsageCacheReadInputTokensKey, response.Usage?.InputTokenDetails?.CachedTokenCount);
                 SetActivityTagIfNotNull(GenAiUsageReasoningOutputTokensKey, response.Usage?.OutputTokenDetails?.ReasoningTokenCount);
-                if (response.OutputItems.Any(item => string.Equals(item.Kind.ToString(), "compaction", StringComparison.Ordinal)))
+                if (response.OutputItems.Any(item => item?.Kind == s_compactionItemKind))
                 {
                     _activity.SetTag(GenAiConversationCompactedKey, true);
                 }
@@ -188,7 +189,7 @@ internal class OpenTelemetryScope : IDisposable
         return meter.CreateHistogram<long>(
             GenAiClientTokenUsageMetricName,
             "{token}",
-            "Measures the number of input and output token used.",
+            "Measures the number of input and output tokens used.",
             advice: new InstrumentAdvice<long>
             {
                 HistogramBucketBoundaries = [1, 4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864],
@@ -227,8 +228,8 @@ internal class OpenTelemetryScope : IDisposable
         _activity = _activitySource.StartActivity(
             activityName,
             ActivityKind.Client,
-            Activity.Current?.Context ?? default,
-            activityTags);
+            parentContext: default,
+            tags: activityTags);
     }
 
     private void RecordChatRequestAttributes(ChatCompletionOptions options)
@@ -361,8 +362,28 @@ internal class OpenTelemetryScope : IDisposable
     {
         if (response.Status == ResponseStatus.Failed)
         {
-            var errorType = response.Error?.Code.ToString();
-            return string.IsNullOrEmpty(errorType) ? "failed" : errorType;
+            return response.Error?.Code.ToString() switch
+            {
+                "server_error" => "server_error",
+                "rate_limit_exceeded" => "rate_limit_exceeded",
+                "invalid_prompt" => "invalid_prompt",
+                "vector_store_timeout" => "vector_store_timeout",
+                "invalid_image" => "invalid_image",
+                "invalid_image_format" => "invalid_image_format",
+                "invalid_base64_image" => "invalid_base64_image",
+                "invalid_image_url" => "invalid_image_url",
+                "image_too_large" => "image_too_large",
+                "image_too_small" => "image_too_small",
+                "image_parse_error" => "image_parse_error",
+                "image_content_policy_violation" => "image_content_policy_violation",
+                "invalid_image_mode" => "invalid_image_mode",
+                "image_file_too_large" => "image_file_too_large",
+                "unsupported_image_media_type" => "unsupported_image_media_type",
+                "empty_image_file" => "empty_image_file",
+                "failed_to_download_image" => "failed_to_download_image",
+                "image_file_not_found" => "image_file_not_found",
+                _ => "failed",
+            };
         }
         if (response.Status == ResponseStatus.Cancelled)
         {

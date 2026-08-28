@@ -251,6 +251,30 @@ public class ResponsesTelemetryTests
         Assert.That(tags["openai.api.type"], Is.EqualTo("responses"));
     }
 
+    [TestCase(ActivityIdFormat.W3C)]
+    [TestCase(ActivityIdFormat.Hierarchical)]
+    public void ActivityPreservesAmbientParent(ActivityIdFormat parentIdFormat)
+    {
+        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var activityListener = new TestActivityListener(ActivitySourceName);
+        using var parent = new Activity("parent")
+            .SetIdFormat(parentIdFormat)
+            .AddBaggage("baggage-key", "baggage-value")
+            .Start();
+        var telemetry = new OpenTelemetrySource(s_endpoint);
+
+        using (var scope = telemetry.StartResponsesScope(CreateOptions()))
+        {
+            Assert.That(scope, Is.Not.Null);
+            Assert.That(Activity.Current?.Parent, Is.SameAs(parent));
+        }
+
+        Assert.That(Activity.Current, Is.SameAs(parent));
+        var activity = activityListener.Activities.Single();
+        Assert.That(activity.Parent, Is.SameAs(parent));
+        Assert.That(activity.GetBaggageItem("baggage-key"), Is.EqualTo("baggage-value"));
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void MissingRequestModelEmitsTelemetry(bool useLatestSemanticConventions)
@@ -277,6 +301,26 @@ public class ResponsesTelemetryTests
         Assert.That(usage, Has.Count.EqualTo(2));
         Assert.That(usage.All(measurement => !measurement.tags.ContainsKey("gen_ai.request.model")), Is.True);
         Assert.That(usage.All(measurement => measurement.tags["gen_ai.response.model"].Equals(ResponseModel)), Is.True);
+    }
+
+    [Test]
+    public void UnknownResponseErrorCodeUsesStableFallback()
+    {
+        using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
+        using var activityListener = new TestActivityListener(ActivitySourceName);
+        using var meterListener = new TestMeterListener(ActivitySourceName);
+        var telemetry = new OpenTelemetrySource(s_endpoint);
+        var response = CreateResponseResult("failed", null, "request-specific-error");
+
+        using (var scope = telemetry.StartResponsesScope(CreateOptions()))
+        {
+            scope.RecordResponseResult(response);
+        }
+
+        var activity = activityListener.Activities.Single();
+        Assert.That(activity.GetTagItem("error.type"), Is.EqualTo("failed"));
+        var duration = meterListener.GetMeasurements("gen_ai.client.operation.duration").Single();
+        Assert.That(duration.tags["error.type"], Is.EqualTo("failed"));
     }
 
     [Test]
@@ -352,10 +396,10 @@ public class ResponsesTelemetryTests
         return options;
     }
 
-    private static ResponseResult CreateResponseResult(string status, string incompleteReason)
+    private static ResponseResult CreateResponseResult(string status, string incompleteReason, string errorCode = "server_error")
     {
         var error = status == "failed"
-            ? "\"error\":{\"code\":\"server_error\",\"message\":\"synthetic failure\",\"param\":null,\"type\":\"server_error\"},"
+            ? $"\"error\":{{\"code\":\"{errorCode}\",\"message\":\"synthetic failure\",\"param\":null,\"type\":\"server_error\"}},"
             : "\"error\":null,";
         var incompleteDetails = incompleteReason is null
             ? "\"incomplete_details\":null,"
@@ -471,9 +515,10 @@ public class ResponsesTelemetryTests
               ],
               "role": "assistant"
             },
+            null,
             {
               "id": "cmp_synthetic",
-              "type": "compaction",
+              "type": "COMPACTION",
               "encrypted_content": "sensitive compaction content"
             }
           ],
