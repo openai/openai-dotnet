@@ -6,5 +6,4 @@ namespace OpenAI.Responses;
 [CodeGenType("DotNetResponseItemCollectionOptions")]
 public partial class ResponseItemCollectionOptions
 {
-
 }

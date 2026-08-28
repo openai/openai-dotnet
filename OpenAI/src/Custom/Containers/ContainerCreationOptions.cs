@@ -6,5 +6,4 @@ namespace OpenAI.Containers;
 [CodeGenType("ContainerCreationOptions")]
 public partial class ContainerCreationOptions
 {
-
 }
