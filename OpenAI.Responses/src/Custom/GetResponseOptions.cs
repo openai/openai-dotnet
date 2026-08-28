@@ -4,6 +4,8 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetGetResponseOptions")]
+[CodeGenSuppress("GetResponseOptions")]
 public partial class GetResponseOptions
 {
+
 }

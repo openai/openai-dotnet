@@ -83,7 +83,6 @@ public partial class FineTuningClient
         return new AsyncFineTuningJobCollectionResult(this, Pipeline, options, pageSize, afterJobId);
     }
 
-
     // CUSTOM:
     // - Renamed.
     // - Edited doc comment.

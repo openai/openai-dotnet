@@ -4,6 +4,7 @@ namespace OpenAI.Containers;
 
 // CUSTOM: Renamed.
 [CodeGenType("ContainerFileCollectionOptions")]
+[CodeGenSuppress("ContainerFileCollectionOptions")]
 public partial class ContainerFileCollectionOptions
 {
     // CUSTOM: Renamed.

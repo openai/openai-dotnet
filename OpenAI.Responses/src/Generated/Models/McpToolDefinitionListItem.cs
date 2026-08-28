@@ -37,10 +37,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public McpToolDefinitionListItem() : this(default, default)
-        {
-        }
-
         public string ServerLabel { get; set; }
 
         public IList<McpToolDefinition> ToolDefinitions { get; }

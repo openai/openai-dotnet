@@ -76,7 +76,6 @@ namespace OpenAI.Conversations {
         public static explicit operator ConversationResource(ClientResult result);
     }
     public class ConversationUpdateOptions : IJsonModel<ConversationUpdateOptions>, IPersistableModel<ConversationUpdateOptions> {
-        public ConversationUpdateOptions();
         public ConversationUpdateOptions(IDictionary<string, string> metadata);
         public IDictionary<string, string> Metadata { get; }
         [Serialization.JsonIgnore]

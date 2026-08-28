@@ -4,6 +4,8 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ReasoningItemSummaryTextPart")]
+[CodeGenSuppress("ReasoningSummaryTextPart")]
 public partial class ReasoningSummaryTextPart
 {
+
 }

@@ -8,7 +8,6 @@ namespace OpenAI.Chat;
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContentValue), DeserializationValueHook = nameof(DeserializeContentValue))]
 internal partial class InternalChatOutputPredictionContent
 {
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SerializeContentValue(Utf8JsonWriter writer, ModelReaderWriterOptions options = null)
         => Content.WriteTo(writer, options);

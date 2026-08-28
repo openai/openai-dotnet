@@ -13,9 +13,9 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("McpTool")]
 public partial class McpTool
 {
-    // CUSTOM: Disambiguate the parameterless constructor.
-    public McpTool() : this(default(string), default(Uri))
+    public McpTool() : base(ResponseToolKind.Mcp)
     {
+        Headers = new ChangeTrackingDictionary<string, string>();
     }
 
     // CUSTOM: Added a constructor that takes the server URI in addition to the server label.

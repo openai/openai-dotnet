@@ -4,11 +4,11 @@
       "RequestUri": "https://api.openai.com/v1/responses",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "245",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -37,11 +37,16 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a8434195d9de032-DFW",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a32599e8bbe0703b-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1481",
+        "Content-Length": "2019",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -51,33 +56,35 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2112",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999955",
+        "x-ratelimit-remaining-tokens": "149999952",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03",
+        "id": "resp_057a43232198d6fc006a91dc86a6a887d0b4e83a1f707d1c56",
         "object": "response",
-        "created_at": 1764776857,
+        "created_at": 1787944070,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1787944072,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
         "output": [
           {
-            "id": "msg_071778fc33eb968e0069305b99a748819e844991fcab2e5168",
+            "id": "msg_057a43232198d6fc006a91dc8778b487d0a768798907c72f61",
             "type": "message",
             "status": "completed",
             "content": [
@@ -85,17 +92,19 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Arr, matey! How can I assist ye today?"
+                "text": "Arr, matey! What brings ye to these waters today?"
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": null,
           "effort": null,
           "summary": null
         },
@@ -110,6 +119,24 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [],
         "top_logprobs": 0,
         "top_p": 1.0,
@@ -117,34 +144,40 @@
         "usage": {
           "input_tokens": 26,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 13,
+          "output_tokens": 14,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 39
+          "total_tokens": 40
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_057a43232198d6fc006a91dc86a6a887d0b4e83a1f707d1c56",
       "RequestMethod": "GET",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a843429cfb3e032-DFW",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a32599f7cb59703b-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1481",
+        "Content-Length": "2019",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -154,27 +187,29 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "66",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03",
+        "id": "resp_057a43232198d6fc006a91dc86a6a887d0b4e83a1f707d1c56",
         "object": "response",
-        "created_at": 1764776857,
+        "created_at": 1787944070,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1787944072,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
         "output": [
           {
-            "id": "msg_071778fc33eb968e0069305b99a748819e844991fcab2e5168",
+            "id": "msg_057a43232198d6fc006a91dc8778b487d0a768798907c72f61",
             "type": "message",
             "status": "completed",
             "content": [
@@ -182,17 +217,19 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Arr, matey! How can I assist ye today?"
+                "text": "Arr, matey! What brings ye to these waters today?"
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": null,
           "effort": null,
           "summary": null
         },
@@ -207,6 +244,24 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [],
         "top_logprobs": 0,
         "top_p": 1.0,
@@ -214,32 +269,38 @@
         "usage": {
           "input_tokens": 26,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 13,
+          "output_tokens": 14,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 39
+          "total_tokens": 40
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03/input_items",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_057a43232198d6fc006a91dc86a6a887d0b4e83a1f707d1c56/input_items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a84342e1acae032-DFW",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a32599f8ad98703b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "778",
         "Content-Type": "application/json",
@@ -251,14 +312,13 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "119",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "list",
         "data": [
           {
-            "id": "msg_071778fc33eb968e0069305b9909a4819e890b45fb5f678d20",
+            "id": "msg_057a43232198d6fc006a91dc86ae2087d0865641216395ac25",
             "type": "message",
             "status": "completed",
             "content": [
@@ -270,7 +330,7 @@
             "role": "user"
           },
           {
-            "id": "msg_071778fc33eb968e0069305b990994819e98cce31d4bb2dea7",
+            "id": "msg_057a43232198d6fc006a91dc86ae1087d0a44e02b0db6dfcb7",
             "type": "message",
             "status": "completed",
             "content": [
@@ -282,13 +342,13 @@
             "role": "system"
           }
         ],
-        "first_id": "msg_071778fc33eb968e0069305b9909a4819e890b45fb5f678d20",
+        "first_id": "msg_057a43232198d6fc006a91dc86ae2087d0865641216395ac25",
         "has_more": false,
-        "last_id": "msg_071778fc33eb968e0069305b990994819e98cce31d4bb2dea7"
+        "last_id": "msg_057a43232198d6fc006a91dc86ae1087d0a44e02b0db6dfcb7"
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

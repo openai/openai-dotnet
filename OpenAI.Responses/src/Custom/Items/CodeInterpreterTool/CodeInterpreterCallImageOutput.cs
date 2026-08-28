@@ -4,6 +4,8 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("CodeInterpreterToolImageOutput")]
+[CodeGenSuppress("CodeInterpreterCallImageOutput")]
 public partial class CodeInterpreterCallImageOutput
 {
+
 }

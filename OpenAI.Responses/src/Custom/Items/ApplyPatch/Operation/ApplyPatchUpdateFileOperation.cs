@@ -4,6 +4,7 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ApplyPatchUpdateFileOperation")]
+[CodeGenSuppress("ApplyPatchUpdateFileOperation")]
 public partial class ApplyPatchUpdateFileOperation
 {
     // CUSTOM: Renamed.

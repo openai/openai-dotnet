@@ -11,7 +11,6 @@ public partial class ThreadMessage
     [CodeGenMember("Object")]
     internal string Object { get; } = "thread.message";
 
-
     /// <inheritdoc cref="MessageRole"/>
     [CodeGenMember("Role")]
     public MessageRole Role { get; }

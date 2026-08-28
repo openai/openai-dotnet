@@ -8,11 +8,6 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("ReasoningResponseItem")]
 public partial class ReasoningResponseItem
 {
-    // CUSTOM: Disambiguate the parameterless constructor.
-    public ReasoningResponseItem() : this(default(string))
-    {
-    }
-
     // CUSTOM: Added for convenience.
     public ReasoningResponseItem(string summaryText) : this(summaryParts: [new ReasoningSummaryTextPart(summaryText)])
     {
