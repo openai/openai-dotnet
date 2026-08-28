@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseTokenTopLogProbabilityDetails : IJsonModel<ResponseTokenTopLogProbabilityDetails>
     {
-        public ResponseTokenTopLogProbabilityDetails()
-        {
-        }
-
         protected virtual ResponseTokenTopLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseTokenTopLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;

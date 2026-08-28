@@ -37,6 +37,10 @@ namespace OpenAI.Responses
 
         public CodeInterpreterCallStatus? Status { get; set; }
 
+        public CodeInterpreterCallResponseItem() : this(default)
+        {
+        }
+
         public string ContainerId { get; set; }
 
         public string Code { get; set; }

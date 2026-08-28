@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseInputTokenUsageDetails : IJsonModel<ResponseInputTokenUsageDetails>
     {
-        public ResponseInputTokenUsageDetails()
-        {
-        }
-
         protected virtual ResponseInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseInputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;

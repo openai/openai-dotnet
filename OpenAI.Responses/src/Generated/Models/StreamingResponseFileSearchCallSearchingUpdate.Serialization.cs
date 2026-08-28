@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseFileSearchCallSearchingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallSearchingUpdate>
     {
-        public StreamingResponseFileSearchCallSearchingUpdate() : this(StreamingResponseUpdateKind.ResponseFileSearchCallSearching, default, default, default, null)
-        {
-        }
-
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseFileSearchCallSearchingUpdate>)this).GetFormatFromOptions(options) : options.Format;

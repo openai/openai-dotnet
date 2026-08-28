@@ -39,6 +39,10 @@ namespace OpenAI.Responses
 
         public ComputerCallOutputStatus? Status { get; set; }
 
+        public ComputerCallOutputResponseItem() : this(default, default)
+        {
+        }
+
         public string CallId { get; set; }
 
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }

@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/responses",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "167",
         "Content-Type": "application/json",
@@ -880,7 +880,7 @@
       "RequestUri": "https://api.openai.com/v1/responses/resp_0a5004ef5dc3564c0069845a9c82c481938b9b7c975a6f56b1",
       "RequestMethod": "GET",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
       },
@@ -979,7 +979,7 @@
       "RequestUri": "https://api.openai.com/v1/responses/resp_0a5004ef5dc3564c0069845a9c82c481938b9b7c975a6f56b1?stream=true&starting_after=1",
       "RequestMethod": "GET",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
       },

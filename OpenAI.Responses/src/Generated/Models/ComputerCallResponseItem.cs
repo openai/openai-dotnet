@@ -41,6 +41,10 @@ namespace OpenAI.Responses
 
         public ComputerCallStatus? Status { get; set; }
 
+        public ComputerCallResponseItem() : this(default, default, default)
+        {
+        }
+
         public string CallId { get; set; }
 
         public ComputerCallAction Action { get; set; }

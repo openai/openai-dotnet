@@ -33,6 +33,10 @@ namespace OpenAI.Images
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+        public ImageGenerationOptions()
+        {
+        }
+
         public GeneratedImageQuality? Quality { get; set; }
 
         public GeneratedImageFormat? ResponseFormat { get; set; }

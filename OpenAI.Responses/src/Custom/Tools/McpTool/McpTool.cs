@@ -10,8 +10,14 @@ namespace OpenAI.Responses;
 //   the two must be provided.
 [CodeGenType("MCPTool")]
 [CodeGenSuppress("McpTool", typeof(string))]
+[CodeGenSuppress("McpTool")]
 public partial class McpTool
 {
+    // CUSTOM: Disambiguate the parameterless constructor.
+    public McpTool() : this(default(string), default(Uri))
+    {
+    }
+
     // CUSTOM: Added a constructor that takes the server URI in addition to the server label.
     public McpTool(string serverLabel, Uri serverUri) : base(ResponseToolKind.Mcp)
     {

@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>
     {
-        public FilePathMessageAnnotation() : this(ResponseMessageAnnotationKind.FilePath, default, null, default)
-        {
-        }
-
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FilePathMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
