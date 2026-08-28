@@ -642,7 +642,7 @@ public class ChatTests : OpenAIRecordedTestBase
     public async Task HelloWorldChatWithTracingAndMetrics()
     {
         using var _ = TestAppContextSwitchHelper.EnableOpenTelemetry();
-        using var _semconv = TestSemconvOptIn.SetLatestGenAiSemconv(false);
+        using var _semanticConvention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(false);
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 

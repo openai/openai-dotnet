@@ -7,26 +7,26 @@ namespace OpenAI.Tests.Telemetry;
 /// Restores the original value on dispose.
 /// Must be used before constructing <see cref="OpenAI.Telemetry.OpenTelemetrySource"/>.
 /// </summary>
-internal class TestSemconvOptIn : IDisposable
+internal class TestSemanticConventionOptIn : IDisposable
 {
     private const string EnvVarName = "OTEL_SEMCONV_STABILITY_OPT_IN";
 
     private readonly string _originalEnvValue;
 
-    private TestSemconvOptIn(string envValue)
+    private TestSemanticConventionOptIn(string envValue)
     {
         _originalEnvValue = Environment.GetEnvironmentVariable(EnvVarName);
         Environment.SetEnvironmentVariable(EnvVarName, envValue);
     }
 
-    public static IDisposable SetLatestGenAiSemconv(bool enabled)
+    public static IDisposable SetLatestGenAiSemanticConvention(bool enabled)
     {
-        return new TestSemconvOptIn(enabled ? "gen_ai_latest_experimental" : null);
+        return new TestSemanticConventionOptIn(enabled ? "gen_ai_latest_experimental" : null);
     }
 
-    public static IDisposable SetSemconvOptIn(string value)
+    public static IDisposable SetSemanticConventionOptIn(string value)
     {
-        return new TestSemconvOptIn(value);
+        return new TestSemanticConventionOptIn(value);
     }
 
     public void Dispose()

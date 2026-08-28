@@ -8,7 +8,7 @@ namespace OpenAI.Telemetry;
 ///
 /// See https://github.com/open-telemetry/semantic-conventions-genai for details.
 /// </summary>
-internal static class OpenTelemetrySemconvStabilityOptIn
+internal static class OpenTelemetrySemanticConventionStabilityOptIn
 {
     private const string EnvVarName = "OTEL_SEMCONV_STABILITY_OPT_IN";
     private const string GenAiLatestExperimentalValue = "gen_ai_latest_experimental";
@@ -18,7 +18,7 @@ internal static class OpenTelemetrySemconvStabilityOptIn
     /// semantic conventions supported by this library version.
     /// When false (default), the instrumentation continues to emit v1.27.0 conventions.
     /// </summary>
-    public static bool IsLatestGenAiSemconvEnabled => ParseOptIn();
+    public static bool IsLatestGenAiSemanticConventionEnabled => ParseOptIn();
 
     private static bool ParseOptIn()
     {

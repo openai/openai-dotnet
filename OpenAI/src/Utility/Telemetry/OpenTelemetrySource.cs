@@ -9,7 +9,7 @@ internal class OpenTelemetrySource
     private readonly bool IsOTelEnabled = AppContextSwitchHelper
         .GetConfigValue("OpenAI.Experimental.EnableOpenTelemetry", "OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY");
 
-    private readonly string _providerAttributeKey = OpenTelemetrySemconvStabilityOptIn.IsLatestGenAiSemconvEnabled
+    private readonly string _providerAttributeKey = OpenTelemetrySemanticConventionStabilityOptIn.IsLatestGenAiSemanticConventionEnabled
         ? OpenTelemetryConstants.GenAiProviderNameKey
         : OpenTelemetryConstants.GenAiSystemKey;
 
