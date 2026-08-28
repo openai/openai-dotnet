@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>
     {
-        public CodeInterpreterCallResponseItem() : this(ResponseItemKind.CodeInterpreterCall, null, default, default, null, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;

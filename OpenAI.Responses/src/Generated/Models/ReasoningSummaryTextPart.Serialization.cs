@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ReasoningSummaryTextPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryTextPart>
     {
-        public ReasoningSummaryTextPart() : this(InternalReasoningItemSummaryPartType.SummaryText, default, null)
-        {
-        }
-
         protected override ReasoningSummaryPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ReasoningSummaryTextPart>)this).GetFormatFromOptions(options) : options.Format;

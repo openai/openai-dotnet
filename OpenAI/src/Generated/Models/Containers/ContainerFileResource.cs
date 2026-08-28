@@ -40,6 +40,10 @@ namespace OpenAI.Containers
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
+        public ContainerFileResource()
+        {
+        }
+
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]

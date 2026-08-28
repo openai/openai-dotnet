@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>
     {
-        public FunctionCallResponseItem() : this(ResponseItemKind.FunctionCall, null, default, default, null, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FunctionCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;

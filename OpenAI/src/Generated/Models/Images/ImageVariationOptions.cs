@@ -22,6 +22,10 @@ namespace OpenAI.Images
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
+        public ImageVariationOptions()
+        {
+        }
+
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;
