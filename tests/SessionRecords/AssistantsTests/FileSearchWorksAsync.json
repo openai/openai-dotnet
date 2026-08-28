@@ -333,7 +333,7 @@
       "RequestUri": "https://api.openai.com/v1/threads/thread_qlsEoLJsJH7QqKNlDhFr95qJ/runs?include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "73",
         "Content-Type": "application/json",
@@ -543,11 +543,11 @@
               {
                 "type": "text",
                 "text": {
-                  "value": "Filip's favorite food is cake【4:1†favorite_foods.txt】.",
+                  "value": "Filip's favorite food is cake\u30104:1\u2020favorite_foods.txt\u3011.",
                   "annotations": [
                     {
                       "type": "file_citation",
-                      "text": "【4:1†favorite_foods.txt】",
+                      "text": "\u30104:1\u2020favorite_foods.txt\u3011",
                       "start_index": 29,
                       "end_index": 53,
                       "file_citation": {

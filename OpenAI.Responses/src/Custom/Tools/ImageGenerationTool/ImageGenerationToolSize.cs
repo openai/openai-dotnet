@@ -11,7 +11,6 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("", typeof(string))]
 public readonly partial struct ImageGenerationToolSize
 {
-
     /// <summary> Initializes a new instance of <see cref="ImageGenerationToolSize"/>. </summary>
     /// <exception cref="ArgumentNullException"> <paramref name="value"/> is null. </exception>
     internal ImageGenerationToolSize(string value)

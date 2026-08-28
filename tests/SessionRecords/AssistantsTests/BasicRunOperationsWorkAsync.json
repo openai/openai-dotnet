@@ -188,7 +188,7 @@
       "RequestUri": "https://api.openai.com/v1/threads/thread_57O8yG1Ly6QlkLWsokhb8Ot1/runs?include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "73",
         "Content-Type": "application/json",

@@ -17,6 +17,13 @@ namespace OpenAI.Assistants;
 [CodeGenSerialization(nameof(ToolConstraint), "tool_choice", SerializationValueHook = nameof(SerializeToolConstraint))]
 public partial class RunCreationOptions
 {
+    public RunCreationOptions()
+    {
+        InternalMessages = new ChangeTrackingList<MessageCreationOptions>();
+        ToolsOverride = new ChangeTrackingList<ToolDefinition>();
+        Metadata = new ChangeTrackingDictionary<string, string>();
+    }
+
     // CUSTOM: assistant_id/stream visibility hidden so that they can be promoted to required method parameters
     [CodeGenMember("AssistantId")]
     internal string AssistantId { get; set; }

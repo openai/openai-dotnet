@@ -5,6 +5,7 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("WebSearchActionSearchSourceUrl")]
+[CodeGenSuppress("WebSearchActionUriSource")]
 public partial class WebSearchActionUriSource
 {
     // CUSTOM: Renamed.
