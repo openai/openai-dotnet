@@ -20,17 +20,9 @@ namespace OpenAI.Chat;
 [CodeGenSerialization(nameof(LogitBiases), SerializationValueHook = nameof(SerializeLogitBiasesValue), DeserializationValueHook = nameof(DeserializeLogitBiasesValue))]
 public partial class ChatCompletionOptions
 {
-    // CUSTOM: Initialize collections that the generated parameterless constructor leaves null.
-    public ChatCompletionOptions()
+    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
+    public ChatCompletionOptions() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, default)
     {
-        Metadata = new ChangeTrackingDictionary<string, string>();
-        Messages = new ChangeTrackingList<ChatMessage>();
-        InternalModalities = new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
-        StopSequences = new ChangeTrackingList<string>();
-        LogitBiases = new ChangeTrackingDictionary<int, int>();
-        Tools = new ChangeTrackingList<ChatTool>();
-        Functions = new ChangeTrackingList<ChatFunction>();
-        Patch.SetPropagators(PropagateSet, PropagateGet);
     }
 
     // CUSTOM:
