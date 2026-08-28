@@ -14,8 +14,8 @@ namespace OpenAI.Graders {
         public BinaryData LearningRateMultiplier { get; set; }
         public BinaryData NEpochs { get; set; }
     }
-    [PersistableModelProxy(typeof(UnknownGrader))]
     public class Grader : IJsonModel<Grader>, IPersistableModel<Grader> {
+        public Grader(GraderType kind);
     }
     public class GraderClient {
         protected GraderClient();
@@ -44,13 +44,13 @@ namespace OpenAI.Graders {
         public IList<string> PassingLabels { get; }
     }
     public class GraderMulti : Grader, IJsonModel<GraderMulti>, IPersistableModel<GraderMulti> {
-        public GraderMulti(string name, BinaryData graders, string calculateOutput);
+        public GraderMulti(string name, BinaryData graders, string calculateOutput) : base(default);
         public string CalculateOutput { get; set; }
         public BinaryData Graders { get; set; }
         public string Name { get; set; }
     }
     public class GraderPython : Grader, IJsonModel<GraderPython>, IPersistableModel<GraderPython> {
-        public GraderPython(string name, string source);
+        public GraderPython(string name, string source) : base(default);
         public string ImageTag { get; set; }
         public string Name { get; set; }
         public string Source { get; set; }
@@ -62,7 +62,7 @@ namespace OpenAI.Graders {
         public BinaryData SamplingParams { get; set; }
     }
     public class GraderStringCheck : Grader, IJsonModel<GraderStringCheck>, IPersistableModel<GraderStringCheck> {
-        public GraderStringCheck(string name, string input, string reference, GraderStringCheckOperation operation);
+        public GraderStringCheck(string name, string input, string reference, GraderStringCheckOperation operation) : base(default);
         public string Input { get; set; }
         public string Name { get; set; }
         public GraderStringCheckOperation Operation { get; set; }
@@ -86,7 +86,7 @@ namespace OpenAI.Graders {
         public override readonly string ToString();
     }
     public class GraderTextSimilarity : Grader, IJsonModel<GraderTextSimilarity>, IPersistableModel<GraderTextSimilarity> {
-        public GraderTextSimilarity(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric);
+        public GraderTextSimilarity(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric) : base(default);
         public GraderTextSimilarityEvaluationMetric EvaluationMetric { get; set; }
         public string Input { get; set; }
         public string Name { get; set; }

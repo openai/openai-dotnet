@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/audio/speech",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/octet-stream, text/event-stream",
+        "Accept": "application/octet-stream",
         "Authorization": "Sanitized",
         "Content-Length": "85",
         "Content-Type": "application/json",
@@ -47,7 +47,7 @@
       "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "62253",
         "Content-Type": "multipart/form-data; boundary=\"KTdFmGLqampQDu0Gxbin2uv=xYJZ7d5p6ZMIMvrFTcQd51CKOxDbIl=PAqKGOE=kg7ZSZr\"",

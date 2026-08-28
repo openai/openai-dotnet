@@ -84,10 +84,10 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(ExpiresOn) && !Patch.Contains("$.expires_at"u8))
+            if (Optional.IsDefined(ExpiresAt) && !Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresOn.Value, "U");
+                writer.WriteNumberValue(ExpiresAt.Value, "U");
             }
             if (Patch.Contains("$.include"u8))
             {
@@ -147,7 +147,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string id = default;
             string @object = default;
-            DateTimeOffset? expiresOn = default;
+            DateTimeOffset? expiresAt = default;
             IList<RealtimeIncludedProperty> includedProperties = default;
             RealtimeTranscriptionSessionAudioOptions audioOptions = default;
             foreach (var prop in element.EnumerateObject())
@@ -173,7 +173,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("include"u8))
@@ -206,7 +206,7 @@ namespace OpenAI.Realtime
                 patch,
                 id,
                 @object,
-                expiresOn,
+                expiresAt,
                 includedProperties ?? new ChangeTrackingList<RealtimeIncludedProperty>(),
                 audioOptions);
         }

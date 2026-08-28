@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseImageGenerationCallGeneratingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>
     {
-        public StreamingResponseImageGenerationCallGeneratingUpdate() : this(StreamingResponseUpdateKind.ResponseImageGenerationCallGenerating, default, default, default, null)
-        {
-        }
-
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>)this).GetFormatFromOptions(options) : options.Format;

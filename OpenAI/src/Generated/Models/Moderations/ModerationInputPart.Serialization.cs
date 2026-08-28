@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    [PersistableModelProxy(typeof(InternalUnknownModerationInputPart))]
     public partial class ModerationInputPart : IJsonModel<ModerationInputPart>
     {
         internal ModerationInputPart()

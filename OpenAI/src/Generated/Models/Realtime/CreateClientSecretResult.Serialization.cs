@@ -89,7 +89,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.expires_at"u8))
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresOn, "U");
+                writer.WriteNumberValue(ExpiresAt, "U");
             }
             if (!Patch.Contains("$.session"u8))
             {
@@ -121,7 +121,7 @@ namespace OpenAI.Realtime
                 return null;
             }
             string value = default;
-            DateTimeOffset expiresOn = default;
+            DateTimeOffset expiresAt = default;
             RealtimeSession session = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -135,7 +135,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("expires_at"u8))
                 {
-                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("session"u8))
@@ -145,7 +145,7 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CreateClientSecretResult(value, expiresOn, session, patch);
+            return new CreateClientSecretResult(value, expiresAt, session, patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

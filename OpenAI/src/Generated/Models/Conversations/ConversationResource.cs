@@ -18,25 +18,29 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdOn)
+        internal ConversationResource(string id, IDictionary<string, string> metadata, DateTimeOffset createdAt)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdOn, in JsonPatch patch)
+        internal ConversationResource(string id, string @object, IDictionary<string, string> metadata, DateTimeOffset createdAt, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public ConversationResource()
+        {
+        }
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -47,6 +51,6 @@ namespace OpenAI.Conversations
 
         public IDictionary<string, string> Metadata { get; }
 
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedAt { get; set; }
     }
 }

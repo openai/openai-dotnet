@@ -13,10 +13,6 @@ namespace OpenAI.Containers
 {
     public partial class ContainerResource : IJsonModel<ContainerResource>
     {
-        public ContainerResource()
-        {
-        }
-
         protected virtual ContainerResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerResource>)this).GetFormatFromOptions(options) : options.Format;
@@ -99,17 +95,17 @@ namespace OpenAI.Containers
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (!Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status);
             }
-            if (Optional.IsDefined(LastActiveOn) && !Patch.Contains("$.last_active_at"u8))
+            if (Optional.IsDefined(LastActiveAt) && !Patch.Contains("$.last_active_at"u8))
             {
                 writer.WritePropertyName("last_active_at"u8);
-                writer.WriteNumberValue(LastActiveOn.Value, "U");
+                writer.WriteNumberValue(LastActiveAt.Value, "U");
             }
             if (Optional.IsDefined(ExpirationPolicy) && !Patch.Contains("$.expires_after"u8))
             {
@@ -153,9 +149,9 @@ namespace OpenAI.Containers
             string id = default;
             string @object = default;
             string name = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
             string status = default;
-            DateTimeOffset? lastActiveOn = default;
+            DateTimeOffset? lastActiveAt = default;
             ContainerExpirationPolicy expirationPolicy = default;
             ContainerMemoryLimit? memoryLimit = default;
             ContainerNetworkPolicy networkPolicy = default;
@@ -181,7 +177,7 @@ namespace OpenAI.Containers
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -195,7 +191,7 @@ namespace OpenAI.Containers
                     {
                         continue;
                     }
-                    lastActiveOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    lastActiveAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("expires_after"u8))
@@ -231,9 +227,9 @@ namespace OpenAI.Containers
                 id,
                 @object,
                 name,
-                createdOn,
+                createdAt,
                 status,
-                lastActiveOn,
+                lastActiveAt,
                 expirationPolicy,
                 memoryLimit,
                 networkPolicy,

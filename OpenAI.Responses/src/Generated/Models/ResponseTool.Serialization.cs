@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownTool))]
     public partial class ResponseTool : IJsonModel<ResponseTool>
     {
         internal ResponseTool()

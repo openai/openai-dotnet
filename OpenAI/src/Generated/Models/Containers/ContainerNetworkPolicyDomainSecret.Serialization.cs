@@ -12,10 +12,6 @@ namespace OpenAI.Containers
 {
     public partial class ContainerNetworkPolicyDomainSecret : IJsonModel<ContainerNetworkPolicyDomainSecret>
     {
-        public ContainerNetworkPolicyDomainSecret()
-        {
-        }
-
         protected virtual ContainerNetworkPolicyDomainSecret PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerNetworkPolicyDomainSecret>)this).GetFormatFromOptions(options) : options.Format;

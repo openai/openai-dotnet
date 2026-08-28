@@ -15,15 +15,15 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ThreadMessage(string id, DateTimeOffset createdOn, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedOn, DateTimeOffset? incompleteOn, MessageRole role, string assistantId, string runId, IEnumerable<MessageCreationAttachment> attachments)
+        internal ThreadMessage(string id, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, MessageRole role, string assistantId, string runId, IEnumerable<MessageCreationAttachment> attachments)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ThreadId = threadId;
             Status = status;
             IncompleteDetails = incompleteDetails;
-            CompletedOn = completedOn;
-            IncompleteOn = incompleteOn;
+            CompletedAt = completedAt;
+            IncompleteAt = incompleteAt;
             Role = role;
             Content = new ChangeTrackingList<MessageContent>();
             AssistantId = assistantId;
@@ -32,17 +32,17 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal ThreadMessage(string id, string @object, DateTimeOffset createdOn, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedOn, DateTimeOffset? incompleteOn, MessageRole role, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyList<MessageCreationAttachment> attachments, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadMessage(string id, string @object, DateTimeOffset createdAt, string threadId, MessageStatus status, MessageFailureDetails incompleteDetails, DateTimeOffset? completedAt, DateTimeOffset? incompleteAt, MessageRole role, IReadOnlyList<MessageContent> content, string assistantId, string runId, IReadOnlyList<MessageCreationAttachment> attachments, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             ThreadId = threadId;
             Status = status;
             IncompleteDetails = incompleteDetails;
-            CompletedOn = completedOn;
-            IncompleteOn = incompleteOn;
+            CompletedAt = completedAt;
+            IncompleteAt = incompleteAt;
             Role = role;
             Content = content ?? new ChangeTrackingList<MessageContent>();
             AssistantId = assistantId;
@@ -54,7 +54,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         public string ThreadId { get; }
 
@@ -62,9 +62,9 @@ namespace OpenAI.Assistants
 
         public MessageFailureDetails IncompleteDetails { get; }
 
-        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset? CompletedAt { get; }
 
-        public DateTimeOffset? IncompleteOn { get; }
+        public DateTimeOffset? IncompleteAt { get; }
 
         public IReadOnlyList<MessageContent> Content { get; }
 

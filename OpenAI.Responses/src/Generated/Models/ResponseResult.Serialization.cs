@@ -14,10 +14,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseResult : IJsonModel<ResponseResult>
     {
-        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, null, null, null, null, default, null, null, default, default)
-        {
-        }
-
         protected virtual ResponseResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -244,7 +240,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
             {
@@ -383,7 +379,7 @@ namespace OpenAI.Responses
             string id = default;
             string @object = default;
             ResponseStatus? status = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
             ResponseError error = default;
             ResponseIncompleteStatusDetails incompleteStatusDetails = default;
             IList<ResponseItem> outputItems = default;
@@ -592,7 +588,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("error"u8))
@@ -691,7 +687,7 @@ namespace OpenAI.Responses
                 id,
                 @object,
                 status,
-                createdOn,
+                createdAt,
                 error,
                 incompleteStatusDetails,
                 outputItems,

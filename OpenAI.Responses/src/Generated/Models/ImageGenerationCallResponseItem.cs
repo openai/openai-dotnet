@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -13,6 +14,8 @@ namespace OpenAI.Responses
     {
         public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(ResponseItemKind.ImageGenerationCall)
         {
+            Argument.AssertNotNull(imageResultBytes, nameof(imageResultBytes));
+
             ImageResultBytes = imageResultBytes;
         }
 
@@ -29,6 +32,10 @@ namespace OpenAI.Responses
             ImageResultBytes = imageResultBytes;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public ImageGenerationCallResponseItem() : this(default)
+        {
+        }
 
         public ImageGenerationToolAction? Action { get; set; }
 

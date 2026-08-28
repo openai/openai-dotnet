@@ -84,7 +84,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
@@ -218,7 +218,7 @@ namespace OpenAI.Assistants
             }
             string id = default;
             string @object = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
             string name = default;
             string description = default;
             string model = default;
@@ -244,7 +244,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -359,7 +359,7 @@ namespace OpenAI.Assistants
             return new Assistant(
                 id,
                 @object,
-                createdOn,
+                createdAt,
                 name,
                 description,
                 model,

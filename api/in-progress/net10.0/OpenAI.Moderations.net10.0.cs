@@ -60,6 +60,7 @@ namespace OpenAI.Moderations {
     }
     [Experimental("OPENAI001")]
     public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
+        public ModerationInputPart(ModerationInputPartKind kind);
         public Uri ImageUri { get; }
         public ModerationInputPartKind Kind { get; }
         public string Text { get; }

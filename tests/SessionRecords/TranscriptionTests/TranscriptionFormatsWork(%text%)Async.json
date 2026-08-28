@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "34716",
         "Content-Type": "multipart/form-data; boundary=\"3j1h=g7fG3JE4Wk5zOUbLqfPPKhUbVcz21KHxhHyl7wPxtb=gOzUGbUaZX5SxbC4jkco3P\"",

@@ -11,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageSize1 size, InternalCreateImageQuality1 quality, InternalCreateImageBackground1 background, InternalCreateImageOutputFormat1 outputFormat, InternalImagesUsage usage)
+        internal InternalImageGenCompletedEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageStreamingSize1 size, InternalCreateImageStreamingQuality1 quality, InternalCreateImageStreamingBackground1 background, InternalCreateImageStreamingOutputFormat1 outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedOn = createdOn;
@@ -22,7 +22,7 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageSize1 size, InternalCreateImageQuality1 quality, InternalCreateImageBackground1 background, InternalCreateImageOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageStreamingSize1 size, InternalCreateImageStreamingQuality1 quality, InternalCreateImageStreamingBackground1 background, InternalCreateImageStreamingOutputFormat1 outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedOn { get; }
 
-        internal InternalCreateImageSize1 Size { get; }
+        internal InternalCreateImageStreamingSize1 Size { get; }
 
-        internal InternalCreateImageQuality1 Quality { get; }
+        internal InternalCreateImageStreamingQuality1 Quality { get; }
 
-        internal InternalCreateImageBackground1 Background { get; }
+        internal InternalCreateImageStreamingBackground1 Background { get; }
 
-        internal InternalCreateImageOutputFormat1 OutputFormat { get; }
+        internal InternalCreateImageStreamingOutputFormat1 OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
 

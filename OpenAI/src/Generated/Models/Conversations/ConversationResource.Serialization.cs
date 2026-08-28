@@ -14,10 +14,6 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationResource : IJsonModel<ConversationResource>
     {
-        public ConversationResource() : this(null, null, null, default, default)
-        {
-        }
-
         protected virtual ConversationResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationResource>)this).GetFormatFromOptions(options) : options.Format;
@@ -129,7 +125,7 @@ namespace OpenAI.Conversations
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
 
             Patch.WriteTo(writer);
@@ -158,7 +154,7 @@ namespace OpenAI.Conversations
             string id = default;
             string @object = default;
             IDictionary<string, string> metadata = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -198,12 +194,12 @@ namespace OpenAI.Conversations
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ConversationResource(id, @object, metadata, createdOn, patch);
+            return new ConversationResource(id, @object, metadata, createdAt, patch);
         }
     }
 }

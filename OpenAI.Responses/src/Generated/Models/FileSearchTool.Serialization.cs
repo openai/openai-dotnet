@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>
     {
-        public FileSearchTool() : this(ResponseToolKind.FileSearch, default, null, default, null, null)
-        {
-        }
-
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchTool>)this).GetFormatFromOptions(options) : options.Format;

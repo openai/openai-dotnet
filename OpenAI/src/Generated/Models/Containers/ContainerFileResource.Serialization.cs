@@ -13,10 +13,6 @@ namespace OpenAI.Containers
 {
     public partial class ContainerFileResource : IJsonModel<ContainerFileResource>
     {
-        public ContainerFileResource()
-        {
-        }
-
         protected virtual ContainerFileResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerFileResource>)this).GetFormatFromOptions(options) : options.Format;
@@ -99,7 +95,7 @@ namespace OpenAI.Containers
             if (!Patch.Contains("$.created_at"u8))
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (Optional.IsDefined(SizeInBytes) && !Patch.Contains("$.bytes"u8))
             {
@@ -147,7 +143,7 @@ namespace OpenAI.Containers
             string id = default;
             string @object = default;
             string containerId = default;
-            DateTimeOffset createdOn = default;
+            DateTimeOffset createdAt = default;
             long? sizeInBytes = default;
             string path = default;
             string source = default;
@@ -173,7 +169,7 @@ namespace OpenAI.Containers
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("bytes"u8))
@@ -202,7 +198,7 @@ namespace OpenAI.Containers
                 id,
                 @object,
                 containerId,
-                createdOn,
+                createdAt,
                 sizeInBytes,
                 path,
                 source,

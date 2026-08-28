@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeConversationItemMessageContentPartGA))]
     public partial class RealtimeMessageContentPart : IJsonModel<RealtimeMessageContentPart>
     {
         internal RealtimeMessageContentPart()

@@ -155,10 +155,10 @@ namespace OpenAI.Images
             string kind = default;
             BinaryData b64Json = default;
             DateTimeOffset createdOn = default;
-            InternalCreateImageEditSize size = default;
-            InternalCreateImageEditQuality quality = default;
-            InternalCreateImageEditBackground background = default;
-            InternalCreateImageEditOutputFormat outputFormat = default;
+            InternalCreateImageEditStreamingSize size = default;
+            InternalCreateImageEditStreamingQuality quality = default;
+            InternalCreateImageEditStreamingBackground background = default;
+            InternalCreateImageEditStreamingOutputFormat outputFormat = default;
             int partialImageIndex = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -180,22 +180,22 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("size"u8))
                 {
-                    size = new InternalCreateImageEditSize(prop.Value.GetString());
+                    size = new InternalCreateImageEditStreamingSize(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
                 {
-                    quality = new InternalCreateImageEditQuality(prop.Value.GetString());
+                    quality = new InternalCreateImageEditStreamingQuality(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
                 {
-                    background = new InternalCreateImageEditBackground(prop.Value.GetString());
+                    background = new InternalCreateImageEditStreamingBackground(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
                 {
-                    outputFormat = new InternalCreateImageEditOutputFormat(prop.Value.GetString());
+                    outputFormat = new InternalCreateImageEditStreamingOutputFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("partial_image_index"u8))

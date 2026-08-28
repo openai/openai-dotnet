@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "311118",
         "Content-Type": "multipart/form-data; boundary=\"WSVB09qEnHjtA9B1XNBDC1iGkXQe34KkyzuYeFeQwFdaCQ_lTwuoKmBHzvTHhTfZIlx9ir\"",
@@ -111,7 +111,7 @@
       "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "311119",
         "Content-Type": "multipart/form-data; boundary=\"UQd7Za4vGCVDlaafa_=NlaYNFQw4q85u8364ij=ACF8hlqROcjWH_bB=1RMpgPtgmraM7N\"",

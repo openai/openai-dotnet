@@ -11,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageSize size, InternalCreateImageQuality quality, InternalCreateImageBackground background, InternalCreateImageOutputFormat outputFormat, int partialImageIndex)
+        internal InternalImageGenPartialImageEvent(BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageStreamingSize size, InternalCreateImageStreamingQuality quality, InternalCreateImageStreamingBackground background, InternalCreateImageStreamingOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
             CreatedOn = createdOn;
@@ -22,7 +22,7 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageSize size, InternalCreateImageQuality quality, InternalCreateImageBackground background, InternalCreateImageOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalImageGenPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdOn, InternalCreateImageStreamingSize size, InternalCreateImageStreamingQuality quality, InternalCreateImageStreamingBackground background, InternalCreateImageStreamingOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             B64Json = b64Json;
@@ -41,13 +41,13 @@ namespace OpenAI.Images
 
         public DateTimeOffset CreatedOn { get; }
 
-        internal InternalCreateImageSize Size { get; }
+        internal InternalCreateImageStreamingSize Size { get; }
 
-        internal InternalCreateImageQuality Quality { get; }
+        internal InternalCreateImageStreamingQuality Quality { get; }
 
-        internal InternalCreateImageBackground Background { get; }
+        internal InternalCreateImageStreamingBackground Background { get; }
 
-        internal InternalCreateImageOutputFormat OutputFormat { get; }
+        internal InternalCreateImageStreamingOutputFormat OutputFormat { get; }
 
         public int PartialImageIndex { get; }
 

@@ -96,12 +96,12 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
+                writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (Optional.IsDefined(ExpiresOn) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresOn.Value, "U");
+                writer.WriteNumberValue(ExpiresAt.Value, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
             {
@@ -172,8 +172,8 @@ namespace OpenAI.Files
             }
             string id = default;
             long? sizeInBytesLong = default;
-            DateTimeOffset createdOn = default;
-            DateTimeOffset? expiresOn = default;
+            DateTimeOffset createdAt = default;
+            DateTimeOffset? expiresAt = default;
             string filename = default;
             string @object = default;
             FilePurpose purpose = default;
@@ -199,7 +199,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("expires_at"u8))
@@ -208,7 +208,7 @@ namespace OpenAI.Files
                     {
                         continue;
                     }
-                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("filename"u8))
@@ -242,8 +242,8 @@ namespace OpenAI.Files
             return new OpenAIFile(
                 id,
                 sizeInBytesLong,
-                createdOn,
-                expiresOn,
+                createdAt,
+                expiresAt,
                 filename,
                 @object,
                 purpose,

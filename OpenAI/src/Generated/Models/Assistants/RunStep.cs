@@ -14,10 +14,10 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunStep(string id, DateTimeOffset createdOn, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredOn, DateTimeOffset? cancelledOn, DateTimeOffset? failedOn, DateTimeOffset? completedOn, RunStepTokenUsage usage)
+        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunStepTokenUsage usage)
         {
             Id = id;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             AssistantId = assistantId;
             ThreadId = threadId;
             RunId = runId;
@@ -25,20 +25,20 @@ namespace OpenAI.Assistants
             Status = status;
             Details = details;
             LastError = lastError;
-            ExpiredOn = expiredOn;
-            CancelledOn = cancelledOn;
-            FailedOn = failedOn;
-            CompletedOn = completedOn;
+            ExpiredAt = expiredAt;
+            CancelledAt = cancelledAt;
+            FailedAt = failedAt;
+            CompletedAt = completedAt;
             Metadata = new ChangeTrackingDictionary<string, string>();
             Usage = usage;
         }
 
-        internal RunStep(string id, string @object, DateTimeOffset createdOn, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredOn, DateTimeOffset? cancelledOn, DateTimeOffset? failedOn, DateTimeOffset? completedOn, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunStep(string id, string @object, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
-            CreatedOn = createdOn;
+            CreatedAt = createdAt;
             AssistantId = assistantId;
             ThreadId = threadId;
             RunId = runId;
@@ -46,10 +46,10 @@ namespace OpenAI.Assistants
             Status = status;
             Details = details;
             LastError = lastError;
-            ExpiredOn = expiredOn;
-            CancelledOn = cancelledOn;
-            FailedOn = failedOn;
-            CompletedOn = completedOn;
+            ExpiredAt = expiredAt;
+            CancelledAt = cancelledAt;
+            FailedAt = failedAt;
+            CompletedAt = completedAt;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -57,7 +57,7 @@ namespace OpenAI.Assistants
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedOn { get; }
+        public DateTimeOffset CreatedAt { get; }
 
         public string AssistantId { get; }
 
@@ -71,13 +71,13 @@ namespace OpenAI.Assistants
 
         public RunStepError LastError { get; }
 
-        public DateTimeOffset? ExpiredOn { get; }
+        public DateTimeOffset? ExpiredAt { get; }
 
-        public DateTimeOffset? CancelledOn { get; }
+        public DateTimeOffset? CancelledAt { get; }
 
-        public DateTimeOffset? FailedOn { get; }
+        public DateTimeOffset? FailedAt { get; }
 
-        public DateTimeOffset? CompletedOn { get; }
+        public DateTimeOffset? CompletedAt { get; }
 
         public IReadOnlyDictionary<string, string> Metadata { get; }
 
