@@ -6,5 +6,4 @@ namespace OpenAI.Containers;
 [CodeGenType("ContainerNetworkPolicyDomainSecret")]
 public partial class ContainerNetworkPolicyDomainSecret
 {
-
 }
