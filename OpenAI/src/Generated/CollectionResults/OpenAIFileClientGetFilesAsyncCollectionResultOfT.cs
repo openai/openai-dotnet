@@ -53,7 +53,7 @@ namespace OpenAI.Files
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((OpenAIFileCollection)page).LastId;
-            if (!string.IsNullOrEmpty(nextPage))
+            if (!string.IsNullOrEmpty(nextPage) && ((OpenAIFileCollection)page).HasMore)
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

@@ -368,6 +368,70 @@ public class FilesMockTests : ClientTestBase
     }
 
     [Test]
+    public async Task GetFilesReturnsNoContinuationTokenForFinalPage()
+    {
+        string[] responseContents =
+        [
+            """
+            {
+                "object": "list",
+                "data": [{ "id": "file_1" }],
+                "first_id": "file_1",
+                "last_id": "file_1",
+                "has_more": true
+            }
+            """,
+            """
+            {
+                "object": "list",
+                "data": [{ "id": "file_2" }],
+                "first_id": "file_2",
+                "last_id": "file_2",
+                "has_more": false
+            }
+            """
+        ];
+        int responseIndex = 0;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ =>
+                new MockPipelineResponse(200).WithContent(responseContents[responseIndex++]))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        OpenAIFileClient client = new(s_fakeCredential, clientOptions);
+        FileCollectionOptions options = new()
+        {
+            Purpose = FilePurpose.Assistants,
+            PageSizeLimit = 1
+        };
+
+        if (IsAsync)
+        {
+            AsyncCollectionResult<OpenAIFile> result = client.GetFilesAsync(options);
+            List<ClientResult> pages = [];
+            await foreach (ClientResult page in result.GetRawPagesAsync())
+            {
+                pages.Add(page);
+            }
+
+            Assert.That(pages, Has.Count.EqualTo(2));
+            Assert.That(result.GetContinuationToken(pages[0]), Is.Not.Null);
+            Assert.That(result.GetContinuationToken(pages[1]), Is.Null);
+        }
+        else
+        {
+            CollectionResult<OpenAIFile> result = client.GetFiles(options);
+            List<ClientResult> pages = [.. result.GetRawPages()];
+
+            Assert.That(pages, Has.Count.EqualTo(2));
+            Assert.That(result.GetContinuationToken(pages[0]), Is.Not.Null);
+            Assert.That(result.GetContinuationToken(pages[1]), Is.Null);
+        }
+    }
+
+    [Test]
     public async Task GetFilesDeserializesCreatedAt()
     {
         OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
