@@ -31,6 +31,8 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
+        public ReasoningStatus? Status { get; set; }
+
         public string EncryptedContent { get; set; }
 
         public IList<ReasoningSummaryPart> SummaryParts { get; }

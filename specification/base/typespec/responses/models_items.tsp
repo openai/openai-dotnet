@@ -948,7 +948,7 @@ model ReasoningItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   ...ReasoningItemBase;
 }

@@ -47,7 +47,6 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         ["FunctionCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
         ["ImageGenerationCallResponseItem"] = [_readonlyStatusReplacementInfo],
         ["MessageResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ReasoningResponseItem"] = [_readonlyStatusReplacementInfo],
         ["WebSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
     };
     private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =

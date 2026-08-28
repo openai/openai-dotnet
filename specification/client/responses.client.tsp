@@ -44,7 +44,6 @@ using TypeSpec.HttpClient.CSharp;
 @@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
 @@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
 
-@@visibility(ReasoningItemResource.status, Lifecycle.Read);
 @@clientName(ReasoningItemResource.summary, "SummaryParts");
 
 @@visibility(WebSearchToolCallItemResource.status, Lifecycle.Read);
