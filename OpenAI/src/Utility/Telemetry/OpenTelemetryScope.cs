@@ -13,9 +13,22 @@ internal class OpenTelemetryScope : IDisposable
     private static readonly ActivitySource s_chatSource = new ActivitySource("OpenAI.ChatClient");
     private static readonly Meter s_chatMeter = new Meter("OpenAI.ChatClient");
 
-    // TODO: add explicit histogram buckets once System.Diagnostics.DiagnosticSource 9.0 is used
-    private static readonly Histogram<double> s_duration = s_chatMeter.CreateHistogram<double>(GenAiClientOperationDurationMetricName, "s", "Measures GenAI operation duration.");
-    private static readonly Histogram<long> s_tokens = s_chatMeter.CreateHistogram<long>(GenAiClientTokenUsageMetricName, "{token}", "Measures the number of input and output token used.");
+    private static readonly Histogram<double> s_duration = s_chatMeter.CreateHistogram<double>(
+        GenAiClientOperationDurationMetricName,
+        "s",
+        "Measures GenAI operation duration.",
+        advice: new InstrumentAdvice<double>
+        {
+            HistogramBucketBoundaries = [0.01, 0.02, 0.04, 0.08, 0.16, 0.32, 0.64, 1.28, 2.56, 5.12, 10.24, 20.48, 40.96, 81.92],
+        });
+    private static readonly Histogram<long> s_tokens = s_chatMeter.CreateHistogram<long>(
+        GenAiClientTokenUsageMetricName,
+        "{token}",
+        "Measures the number of input and output token used.",
+        advice: new InstrumentAdvice<long>
+        {
+            HistogramBucketBoundaries = [1, 4, 16, 64, 256, 1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864],
+        });
 
     private readonly string _operationName;
     private readonly string _serverAddress;
@@ -39,24 +52,25 @@ internal class OpenTelemetryScope : IDisposable
     private static bool IsChatEnabled => s_chatSource.HasListeners() || s_tokens.Enabled || s_duration.Enabled;
 
     public static OpenTelemetryScope StartChat(string model, string operationName,
-        string serverAddress, int serverPort, ChatCompletionOptions options)
+        string serverAddress, int serverPort, ChatCompletionOptions options,
+        string providerAttributeKey)
     {
         if (IsChatEnabled)
         {
             var scope = new OpenTelemetryScope(model, operationName, serverAddress, serverPort);
-            scope.StartChat(options);
+            scope.StartChat(options, providerAttributeKey);
             return scope;
         }
 
         return null;
     }
 
-    private void StartChat(ChatCompletionOptions options)
+    private void StartChat(ChatCompletionOptions options, string providerAttributeKey)
     {
         _duration = Stopwatch.StartNew();
         _commonTags = new TagList
         {
-            { GenAiSystemKey, GenAiSystemValue },
+            { providerAttributeKey, GenAiSystemValue },
             { GenAiRequestModelKey, _requestModel },
             { ServerAddressKey, _serverAddress },
             { ServerPortKey, _serverPort },
@@ -103,11 +117,10 @@ internal class OpenTelemetryScope : IDisposable
 
     private void RecordCommonAttributes()
     {
-        _activity.SetTag(GenAiSystemKey, GenAiSystemValue);
-        _activity.SetTag(GenAiRequestModelKey, _requestModel);
-        _activity.SetTag(ServerAddressKey, _serverAddress);
-        _activity.SetTag(ServerPortKey, _serverPort);
-        _activity.SetTag(GenAiOperationNameKey, _operationName);
+        foreach (var tag in _commonTags)
+        {
+            _activity.SetTag(tag.Key, tag.Value);
+        }
     }
 
     private void RecordMetrics(string responseModel, string errorType, int? inputTokensUsage, int? outputTokensUsage)
