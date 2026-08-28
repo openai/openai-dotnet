@@ -9,7 +9,7 @@ namespace OpenAI.Responses;
 public partial class ReasoningResponseItem
 {
     // CUSTOM: Delegate to internal hydration constructor.
-    public ReasoningResponseItem() : this(ResponseItemKind.Reasoning, null, default, null, null, null)
+    public ReasoningResponseItem() : this(ResponseItemKind.Reasoning, null, default, default, null, null)
     {
     }
 

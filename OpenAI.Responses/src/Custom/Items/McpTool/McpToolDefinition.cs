@@ -6,5 +6,4 @@ namespace OpenAI.Responses;
 [CodeGenType("MCPListToolsTool")]
 public partial class McpToolDefinition
 {
-
 }

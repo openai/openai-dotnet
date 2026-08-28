@@ -15,7 +15,7 @@ namespace OpenAI.Responses;
 public partial class ResponseResult
 {
     // CUSTOM: Delegate to internal hydration constructor which initializes collections.
-    public ResponseResult() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, default, null, null, null, null, null, false, null, null, null, default)
+    public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, null, null, null, null, default, null, null, default, default)
     {
     }
 
