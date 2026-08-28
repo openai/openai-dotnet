@@ -8,6 +8,10 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("ReasoningResponseItem")]
 public partial class ReasoningResponseItem
 {
+    public ReasoningResponseItem() : base(ResponseItemKind.Reasoning)
+    {
+    }
+
     // CUSTOM: Added for convenience.
     public ReasoningResponseItem(string summaryText) : this(summaryParts: [new ReasoningSummaryTextPart(summaryText)])
     {

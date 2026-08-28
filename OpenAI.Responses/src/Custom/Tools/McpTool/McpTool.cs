@@ -10,7 +10,6 @@ namespace OpenAI.Responses;
 //   the two must be provided.
 [CodeGenType("MCPTool")]
 [CodeGenSuppress("McpTool", typeof(string))]
-[CodeGenSuppress("McpTool")]
 public partial class McpTool
 {
     public McpTool() : base(ResponseToolKind.Mcp)
