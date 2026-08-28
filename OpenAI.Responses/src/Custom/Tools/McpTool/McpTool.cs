@@ -13,7 +13,7 @@ namespace OpenAI.Responses;
 public partial class McpTool
 {
     // CUSTOM: Delegate to internal hydration constructor.
-    public McpTool() : this(ResponseToolKind.Mcp, default, null, null, null, null, null, null, null, null)
+    public McpTool() : this(ResponseToolKind.Mcp, default, null, null, default, null, null, null, null, null)
     {
     }
 
