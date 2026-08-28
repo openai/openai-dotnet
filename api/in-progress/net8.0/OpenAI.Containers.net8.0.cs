@@ -8,6 +8,7 @@
 namespace OpenAI.Containers {
     [Experimental("OPENAI001")]
     public class ContainerAllowlistNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerAllowlistNetworkPolicy>, IPersistableModel<ContainerAllowlistNetworkPolicy> {
+        public ContainerAllowlistNetworkPolicy() : base(default);
         public ContainerAllowlistNetworkPolicy(IEnumerable<string> allowedDomains) : base(default);
         public IList<string> AllowedDomains { get; }
         public IList<ContainerNetworkPolicyDomainSecret> DomainSecrets { get; }
@@ -109,6 +110,7 @@ namespace OpenAI.Containers {
     }
     [Experimental("OPENAI001")]
     public class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>, IPersistableModel<ContainerCreationOptions> {
+        public ContainerCreationOptions();
         public ContainerCreationOptions(string name);
         public ContainerExpirationPolicy ExpirationPolicy { get; set; }
         public IList<string> FileIds { get; }
@@ -163,6 +165,7 @@ namespace OpenAI.Containers {
     }
     [Experimental("OPENAI001")]
     public class ContainerFileCollectionOptions : IJsonModel<ContainerFileCollectionOptions>, IPersistableModel<ContainerFileCollectionOptions> {
+        public ContainerFileCollectionOptions();
         public ContainerFileCollectionOptions(string containerId);
         public string AfterId { get; set; }
         public string ContainerId { get; set; }
@@ -255,6 +258,7 @@ namespace OpenAI.Containers {
     }
     [Experimental("OPENAI001")]
     public class ContainerNetworkPolicyDomainSecret : IJsonModel<ContainerNetworkPolicyDomainSecret>, IPersistableModel<ContainerNetworkPolicyDomainSecret> {
+        public ContainerNetworkPolicyDomainSecret();
         public ContainerNetworkPolicyDomainSecret(string domain, string name, string value);
         public string Domain { get; set; }
         public string Name { get; set; }

@@ -5,7 +5,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("AnnotationUrlCitation")]
-[CodeGenSuppress("UriCitationMessageAnnotation")]
 public partial class UriCitationMessageAnnotation
 {
     // CUSTOM: Renamed.
