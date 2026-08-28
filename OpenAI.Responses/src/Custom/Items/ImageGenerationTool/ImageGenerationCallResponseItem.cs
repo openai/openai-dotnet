@@ -4,6 +4,7 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ImageGenToolCallItemResource")]
+[CodeGenSuppress("ImageGenerationCallResponseItem")]
 public partial class ImageGenerationCallResponseItem
 {
     // CUSTOM:

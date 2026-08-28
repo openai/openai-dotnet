@@ -6,6 +6,7 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("LogProb")]
+[CodeGenSuppress("ResponseTokenLogProbabilityDetails")]
 public partial class ResponseTokenLogProbabilityDetails
 {
     // CUSTOM: Renamed.

@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "62",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -16,9 +16,14 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cbe75720c4a8a73-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3259999b972703b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "61",
         "Content-Type": "application/json",
@@ -28,7 +33,6 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "X-Request-ID": "Sanitized"
@@ -40,6 +44,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }
