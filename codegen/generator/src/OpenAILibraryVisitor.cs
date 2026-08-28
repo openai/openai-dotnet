@@ -26,6 +26,7 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
     // a conditional that includes an appropriate "Optional" check, e.g.:
     //   - Optional.IsCollectionDefined(Messages) ... writer.WritePropertyName("messages"u8)
     //   - Optional.IsDefined(Model) ... writer.WritePropertyName("model"u8)
+    private static WritePropertyNameAdditionalReplacementInfo _readonlyStatusReplacementInfo = new("Status", "status", isCollection: false);
     private static readonly Dictionary<string, List<WritePropertyNameAdditionalReplacementInfo>> TypeNameToWritePropertyNameAdditionalConditionMap = new()
     {
         ["ChatCompletionOptions"] =
