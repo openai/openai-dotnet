@@ -775,7 +775,7 @@ model FileSearchToolCallItemResource extends ItemResource {
     The status of the file search tool call. One of `in_progress`,
     `searching`, `completed`, `incomplete`, or `failed`.
     """)
-  status: "in_progress" | "searching" | "completed" | "incomplete" | "failed";
+  status?: "in_progress" | "searching" | "completed" | "incomplete" | "failed";
 
   ...FileSearchToolCallItemBase;
 }
@@ -792,7 +792,7 @@ model ComputerToolCallItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   ...ComputerToolCallItemBase;
 }
@@ -809,7 +809,7 @@ model ComputerToolCallOutputItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   ...ComputerToolCallOutputItemBase;
 }
@@ -822,7 +822,7 @@ model WebSearchToolCallItemResource extends ItemResource {
   type: ItemType.web_search_call;
 
   /** The status of the web search tool call. */
-  status: "in_progress" | "searching" | "completed" | "failed";
+  status?: "in_progress" | "searching" | "completed" | "failed";
 
   // CUSTOM: Based on service behavior, "action" is optional.
   /**An object describing the specific action taken in this web search call.
@@ -914,7 +914,7 @@ model FunctionToolCallItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   ...FunctionToolCallItemBase;
 }
@@ -931,7 +931,7 @@ model FunctionToolCallOutputItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   ...FunctionToolCallOutputItemBase;
 }
@@ -971,7 +971,7 @@ model ImageGenToolCallItemParam extends ItemParam {
 
 model ImageGenToolCallItemResource extends ItemResource {
   type: ItemType.image_generation_call;
-  status: "in_progress" | "completed" | "generating" | "failed";
+  status?: "in_progress" | "completed" | "generating" | "failed";
   action?: ImageGenerationToolAction;
   background?: ImageGenerationBackground;
   output_format?: ImageGenerationOutputFormat | null;
@@ -988,7 +988,7 @@ model CodeInterpreterToolCallItemParam extends ItemParam {
 
 model CodeInterpreterToolCallItemResource extends ItemResource {
   type: ItemType.code_interpreter_call;
-  status: "in_progress" | "interpreting" | "completed";
+  status?: "in_progress" | "interpreting" | "completed";
   ...CodeInterpreterToolCallItemBase;
 }
 
@@ -999,7 +999,7 @@ model LocalShellToolCallItemParam extends ItemParam {
 
 model LocalShellToolCallItemResource extends ItemResource {
   type: ItemType.local_shell_call;
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
   ...LocalShellToolCallItemBase;
 }
 
@@ -1010,7 +1010,7 @@ model LocalShellToolCallOutputItemParam extends ItemParam {
 
 model LocalShellToolCallOutputItemResource extends ItemResource {
   type: ItemType.local_shell_call_output;
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
   ...LocalShellToolCallOutputItemBase;
 }
 
@@ -1064,7 +1064,7 @@ model ApplyPatchToolCallItemResource extends ItemResource {
   call_id: string;
 
   /** The status of the apply patch tool call. One of `in_progress` or `completed`. */
-  status: ApplyPatchCallStatus;
+  status?: ApplyPatchCallStatus;
 
   /** One of the create_file, delete_file, or update_file operations applied via apply_patch. */
   @summary("Apply patch operation")
@@ -1142,6 +1142,8 @@ model ApplyPatchToolCallOutputItemResource extends ItemResource {
   call_id: string;
 
   /** The status of the apply patch tool call output. One of `completed` or `failed`. */
+  // NOTE: Contrary to other tools, this property is set by the client instead of the
+  // server, and it is required to indicate whether the patch was successfully applied.
   status: ApplyPatchCallOutputStatus;
 
   output?: string | null;
@@ -1224,7 +1226,7 @@ model ResponsesMessageItemResource extends ItemResource {
     The status of the item. One of `in_progress`, `completed`, or
     `incomplete`. Populated when items are returned via API.
     """)
-  status: "in_progress" | "completed" | "incomplete";
+  status?: "in_progress" | "completed" | "incomplete";
 
   /** The role associated with the message. */
   role: ResponsesMessageRole;

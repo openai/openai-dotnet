@@ -8,15 +8,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellToolCallItemResource : ResponseItem
     {
-        internal InternalLocalShellToolCallItemResource(InternalLocalShellToolCallItemResourceStatus status, string callId, InternalLocalShellExecAction action) : base(ResponseItemKind.LocalShellCall)
+        internal InternalLocalShellToolCallItemResource(string callId, InternalLocalShellExecAction action) : base(ResponseItemKind.LocalShellCall)
         {
-            Status = status;
             CallId = callId;
             Action = action;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalLocalShellToolCallItemResource(ResponseItemKind kind, string id, in JsonPatch patch, InternalLocalShellToolCallItemResourceStatus status, string callId, InternalLocalShellExecAction action) : base(kind, id, patch)
+        internal InternalLocalShellToolCallItemResource(ResponseItemKind kind, string id, in JsonPatch patch, InternalLocalShellToolCallItemResourceStatus? status, string callId, InternalLocalShellExecAction action) : base(kind, id, patch)
         {
             Status = status;
             CallId = callId;
@@ -25,7 +24,7 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal InternalLocalShellToolCallItemResourceStatus Status { get; set; }
+        internal InternalLocalShellToolCallItemResourceStatus? Status { get; set; }
 
         public string CallId { get; set; }
 
