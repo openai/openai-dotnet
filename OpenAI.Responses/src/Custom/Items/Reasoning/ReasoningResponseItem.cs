@@ -8,7 +8,8 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("ReasoningResponseItem")]
 public partial class ReasoningResponseItem
 {
-    public ReasoningResponseItem() : base(ResponseItemKind.Reasoning)
+    // CUSTOM: Delegate to internal hydration constructor.
+    public ReasoningResponseItem() : this(ResponseItemKind.Reasoning, null, default, null, null, null)
     {
     }
 

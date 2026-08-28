@@ -13,10 +13,9 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress(nameof(AssistantCreationOptions), typeof(string))]
 public partial class AssistantCreationOptions
 {
-    public AssistantCreationOptions()
+    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
+    public AssistantCreationOptions() : this(null, null, null, null, null, null, null, null, null, null, null, null)
     {
-        Tools = new ChangeTrackingList<ToolDefinition>();
-        Metadata = new ChangeTrackingDictionary<string, string>();
     }
 
     // CUSTOM: visibility hidden to promote required property to method parameter
