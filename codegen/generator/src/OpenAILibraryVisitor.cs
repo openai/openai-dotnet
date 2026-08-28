@@ -39,15 +39,6 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
                 new("Id", "id", isCollection: false),
             ],
         ["ApplyPatchCallItem"] = [_readonlyStatusReplacementInfo],
-        ["CodeInterpreterCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ComputerCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ComputerCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["FileSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["FunctionCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["FunctionCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ImageGenerationCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["MessageResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["WebSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
     };
     private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =
         new("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");
