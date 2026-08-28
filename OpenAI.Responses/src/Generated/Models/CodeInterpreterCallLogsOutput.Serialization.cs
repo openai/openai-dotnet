@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterCallLogsOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallLogsOutput>
     {
-        public CodeInterpreterCallLogsOutput() : this(InternalCodeInterpreterToolOutputType.Logs, default, null)
-        {
-        }
-
         protected override CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallLogsOutput>)this).GetFormatFromOptions(options) : options.Format;

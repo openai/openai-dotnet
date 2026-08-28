@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>
     {
-        public McpToolDefinitionListItem() : this(ResponseItemKind.McpListTools, null, default, null, null, null)
-        {
-        }
-
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinitionListItem>)this).GetFormatFromOptions(options) : options.Format;

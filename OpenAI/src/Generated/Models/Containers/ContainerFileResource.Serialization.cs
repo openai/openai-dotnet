@@ -13,10 +13,6 @@ namespace OpenAI.Containers
 {
     public partial class ContainerFileResource : IJsonModel<ContainerFileResource>
     {
-        public ContainerFileResource()
-        {
-        }
-
         protected virtual ContainerFileResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerFileResource>)this).GetFormatFromOptions(options) : options.Format;

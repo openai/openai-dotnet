@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallSafetyCheck : IJsonModel<ComputerCallSafetyCheck>
     {
-        public ComputerCallSafetyCheck()
-        {
-        }
-
         protected virtual ComputerCallSafetyCheck PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerCallSafetyCheck>)this).GetFormatFromOptions(options) : options.Format;

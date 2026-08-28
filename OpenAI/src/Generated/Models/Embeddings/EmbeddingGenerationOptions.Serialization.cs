@@ -13,10 +13,6 @@ namespace OpenAI.Embeddings
 {
     public partial class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>
     {
-        public EmbeddingGenerationOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         protected virtual EmbeddingGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

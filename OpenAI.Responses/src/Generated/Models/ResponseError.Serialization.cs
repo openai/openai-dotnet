@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseError : IJsonModel<ResponseError>
     {
-        public ResponseError()
-        {
-        }
-
         protected virtual ResponseError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseError>)this).GetFormatFromOptions(options) : options.Format;

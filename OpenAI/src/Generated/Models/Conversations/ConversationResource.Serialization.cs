@@ -14,10 +14,6 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationResource : IJsonModel<ConversationResource>
     {
-        public ConversationResource() : this(null, null, null, default, default)
-        {
-        }
-
         protected virtual ConversationResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationResource>)this).GetFormatFromOptions(options) : options.Format;

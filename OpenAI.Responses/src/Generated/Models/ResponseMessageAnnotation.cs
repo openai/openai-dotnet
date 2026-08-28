@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        protected internal ResponseMessageAnnotation(ResponseMessageAnnotationKind kind)
+        public ResponseMessageAnnotation(ResponseMessageAnnotationKind kind)
         {
             Kind = kind;
         }

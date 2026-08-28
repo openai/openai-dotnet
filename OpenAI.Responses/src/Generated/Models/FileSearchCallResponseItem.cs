@@ -37,6 +37,10 @@ namespace OpenAI.Responses
 
         public FileSearchCallStatus? Status { get; set; }
 
+        public FileSearchCallResponseItem() : this(default)
+        {
+        }
+
         public IList<string> Queries { get; }
 
         public IList<FileSearchCallResult> Results { get; set; }

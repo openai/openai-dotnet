@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseConversationOptions : IJsonModel<ResponseConversationOptions>
     {
-        public ResponseConversationOptions()
-        {
-        }
-
         protected virtual ResponseConversationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseConversationOptions>)this).GetFormatFromOptions(options) : options.Format;

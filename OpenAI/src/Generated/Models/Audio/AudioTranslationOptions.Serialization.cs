@@ -13,10 +13,6 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranslationOptions : IJsonModel<AudioTranslationOptions>
     {
-        public AudioTranslationOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         protected virtual AudioTranslationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

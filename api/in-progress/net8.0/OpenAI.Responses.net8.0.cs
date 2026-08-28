@@ -153,6 +153,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
+        public ComputerCallAction(ComputerCallActionKind kind);
         public Drawing.Point? ClickCoordinates { get; }
         public ComputerCallActionMouseButton? ClickMouseButton { get; }
         public Drawing.Point? DoubleClickCoordinates { get; }
@@ -1081,7 +1082,6 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseInputTokenUsageDetails : IJsonModel<ResponseInputTokenUsageDetails>, IPersistableModel<ResponseInputTokenUsageDetails> {
         public int CachedTokenCount { get; set; }
-        public int CacheWriteTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -1200,7 +1200,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
-        protected internal ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
+        public ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
