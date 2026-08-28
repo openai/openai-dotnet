@@ -1806,6 +1806,7 @@ namespace OpenAI.Responses {
         Failed = 3
     }
     public class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>, IPersistableModel<WebSearchFindInPageAction> {
+        public WebSearchFindInPageAction();
         public WebSearchFindInPageAction(Uri uri, string pattern);
         public string Pattern { get; set; }
         public Uri Uri { get; set; }
