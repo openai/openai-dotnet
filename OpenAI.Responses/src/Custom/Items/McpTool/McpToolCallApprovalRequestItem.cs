@@ -12,8 +12,13 @@ namespace OpenAI.Responses;
 //   outputs using a dedicated "call ID".
 [CodeGenType("MCPApprovalRequestItemResource")]
 [CodeGenVisibility(nameof(McpToolCallApprovalRequestItem), CodeGenVisibility.Internal, typeof(string), typeof(string), typeof(BinaryData))]
+[CodeGenSuppress("McpToolCallApprovalRequestItem")]
 public partial class McpToolCallApprovalRequestItem
 {
+    public McpToolCallApprovalRequestItem() : this(ResponseItemKind.McpApprovalRequest, null, default, null, null, null)
+    {
+    }
+
     // CUSTOM: Added a constructor that takes the item ID.
     public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(ResponseItemKind.McpApprovalRequest)
     {

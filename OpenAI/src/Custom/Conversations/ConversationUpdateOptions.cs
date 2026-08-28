@@ -5,5 +5,4 @@ namespace OpenAI.Conversations;
 [CodeGenType("ConversationUpdateOptions")]
 public partial class ConversationUpdateOptions
 {
-
 }

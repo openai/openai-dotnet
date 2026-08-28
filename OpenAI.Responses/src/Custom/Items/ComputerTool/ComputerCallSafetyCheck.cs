@@ -8,5 +8,4 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerToolCallSafetyCheck")]
 public partial class ComputerCallSafetyCheck
 {
-
 }
