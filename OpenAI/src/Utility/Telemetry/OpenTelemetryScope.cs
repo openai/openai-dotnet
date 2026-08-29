@@ -22,6 +22,7 @@ internal class OpenTelemetryScope : IDisposable
     private static readonly Histogram<long> s_chatTokens = CreateTokenHistogram(s_chatMeter);
     private static readonly Histogram<double> s_responsesDuration = CreateDurationHistogram(s_responsesMeter);
     private static readonly Histogram<long> s_responsesTokens = CreateTokenHistogram(s_responsesMeter);
+    // Telemetry sources are linked into tests, where the generated internal ResponseItemKind.Compaction is unavailable.
     private static readonly ResponseItemKind s_compactionItemKind = new("compaction");
 
     private readonly ActivitySource _activitySource;
