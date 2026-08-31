@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Responses;
@@ -24,6 +25,132 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     {
         TestTimeoutInSeconds = 30;
     }
+
+    [RecordedTest]
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task FunctionToolWorks(bool isStateless)
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")];
+        CreateResponseOptions options = new(TestModel.Responses, inputItems)
+        {
+            Tools = { s_GetWeatherAtLocationTool },
+            ToolChoice = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName),
+            StoredOutputEnabled = !isStateless
+        };
+
+        // First turn.
+        ResponseResult response1 = await client.CreateResponseAsync(options);
+        Assert.That(response1, Is.Not.Null);
+        Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response1.Tools.Count, Is.EqualTo(1));
+
+        FunctionCallResponseItem functionCall = response1.OutputItems[0] as FunctionCallResponseItem;
+        Assert.That(functionCall, Is.Not.Null);
+        Assert.That(functionCall.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(functionCall.CallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
+        Assert.That(functionCall.FunctionArguments, Is.Not.Null);
+
+        Assert.DoesNotThrow(() =>
+        {
+            using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
+            Assert.That(document.RootElement.GetProperty("location").GetString(), Is.Not.Null.And.Not.Empty);
+            Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
+        });
+
+        ResponseItem functionCallOutput = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 degrees Celsius and windy");
+
+        if (isStateless)
+        {
+            foreach (ResponseItem outputItem in response1.OutputItems)
+            {
+                options.InputItems.Add(outputItem);
+            }
+            Assert.That(options.InputItems.Count, Is.EqualTo(2));
+        }
+        else
+        {
+            options.PreviousResponseId = response1.Id;
+            options.InputItems.Clear();
+            Assert.That(options.InputItems.Count, Is.EqualTo(0));
+        }
+
+        options.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        options.InputItems.Add(functionCallOutput);
+
+        // Second turn.
+        ResponseResult response2 = await client.CreateResponseAsync(options);
+        Assert.That(response2, Is.Not.Null);
+        Assert.That(response2.GetOutputText(), Is.Not.Null.And.Not.Empty);
+        Assert.That(response2.GetOutputText(), Does.Contain("22"));
+    }
+
+    [RecordedTest]
+    public async Task FunctionToolStreamingWorks()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")];
+        CreateResponseOptions options = new(TestModel.Responses, inputItems)
+        {
+            Tools = { s_GetWeatherAtLocationTool },
+            ToolChoice = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName),
+            StreamingEnabled = true,
+        };
+
+        int functionCallArgumentsDeltaUpdateCount = 0;
+        int functionCallArgumentsDoneUpdateCount = 0;
+
+        Dictionary<int, StringBuilder> argumentsByOutputIndex = [];
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
+            {
+                functionCallArgumentsDeltaUpdateCount++;
+
+                BinaryData delta = functionCallArgumentsDeltaUpdate.Delta;
+                Assert.That(delta, Is.Not.Null);
+
+                if (!delta.ToMemory().IsEmpty)
+                {
+                    if (!argumentsByOutputIndex.TryGetValue(functionCallArgumentsDeltaUpdate.OutputIndex, out StringBuilder argumentsBuilder))
+                    {
+                        argumentsBuilder = new StringBuilder();
+                        argumentsByOutputIndex.Add(functionCallArgumentsDeltaUpdate.OutputIndex, argumentsBuilder);
+                    }
+
+                    argumentsBuilder.Append(delta.ToString());
+                }
+            }
+            else if (update is StreamingResponseFunctionCallArgumentsDoneUpdate functionCallArgumentsDoneUpdate)
+            {
+                functionCallArgumentsDoneUpdateCount++;
+
+                BinaryData functionArguments = functionCallArgumentsDoneUpdate.FunctionArguments;
+                Assert.That(functionArguments, Is.Not.Null);
+                Assert.That(argumentsByOutputIndex.TryGetValue(functionCallArgumentsDoneUpdate.OutputIndex, out StringBuilder argumentsBuilder), Is.True);
+                Assert.That(functionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString()));
+                Assert.DoesNotThrow(() =>
+                {
+                    using JsonDocument document = JsonDocument.Parse(functionArguments);
+                    Assert.That(document.RootElement.GetProperty("location").GetString(), Is.Not.Null.And.Not.Empty);
+                    Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
+                });
+
+                argumentsByOutputIndex.Remove(functionCallArgumentsDoneUpdate.OutputIndex);
+            }
+        }
+
+        Assert.That(functionCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
+        Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
+        Assert.That(argumentsByOutputIndex, Is.Empty);
+    }
+
 
     [RecordedTest]
     public async Task MCPToolWorks()
@@ -1608,4 +1735,28 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
     }
+
+    private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
+    private static readonly FunctionTool s_GetWeatherAtLocationTool = new(
+        functionName: s_GetWeatherAtLocationToolName,
+        functionParameters: BinaryData.FromBytes("""
+            {
+                "type": "object",
+                "properties": {
+                "location": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": ["C", "F", "K"]
+                }
+                },
+                "required": ["location", "unit"],
+                "additionalProperties": false
+            }
+            """u8.ToArray()),
+        strictModeEnabled: true)
+    {
+        FunctionDescription = "Gets the weather at a specified location, optionally specifying units for temperature",
+    };
 }
