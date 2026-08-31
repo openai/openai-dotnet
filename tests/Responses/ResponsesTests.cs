@@ -314,6 +314,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response1.ReasoningOptions, Is.Not.Null);
         Assert.That(response1.ReasoningOptions.ReasoningEffortLevel, Is.EqualTo(ResponseReasoningEffortLevel.ExtraHigh));
         Assert.That(response1.ReasoningOptions.ReasoningSummaryVerbosity, Is.EqualTo(ResponseReasoningSummaryVerbosity.Detailed));
+        Assert.That(response1.OutputItems[0], Is.InstanceOf<ReasoningResponseItem>());
+        Assert.That(response1.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
         ReasoningResponseItem reasoningItem = response1.OutputItems[0] as ReasoningResponseItem;
         Assert.That(reasoningItem, Is.Not.Null);

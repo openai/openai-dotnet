@@ -47,9 +47,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
         Assert.That(response1.Tools.Count, Is.EqualTo(1));
-
         Assert.That(response1.OutputItems[0], Is.InstanceOf<FunctionCallResponseItem>());
-        FunctionCallResponseItem functionCall = (FunctionCallResponseItem)response1.OutputItems[0];
+
+        FunctionCallResponseItem functionCall = response1.OutputItems[0] as FunctionCallResponseItem;
+        Assert.That(functionCall, Is.Not.Null);
         Assert.That(functionCall.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(functionCall.CallId, Is.Not.Null.And.Not.Empty);
         Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
@@ -1743,13 +1744,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             {
                 "type": "object",
                 "properties": {
-                "location": {
-                    "type": "string"
-                },
-                "unit": {
-                    "type": "string",
-                    "enum": ["C", "F", "K"]
-                }
+                    "location": {
+                        "type": "string"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["C", "F", "K"]
+                    }
                 },
                 "required": ["location", "unit"],
                 "additionalProperties": false
