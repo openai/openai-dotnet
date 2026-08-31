@@ -22,8 +22,10 @@ namespace OpenAI.Audio;
 [CodeGenSuppress("GenerateSpeech", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateSpeechStreamingAsync", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateSpeechStreaming", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateSpeechStreamingAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("TranscribeAudioStreamingAsync", typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("TranscribeAudioStreaming", typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("TranscribeAudioStreamingAsync", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress(nameof(TranscribeAudio), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(TranscribeAudioAsync), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(TranslateAudio), typeof(AudioTranslationOptions), typeof(CancellationToken))]
@@ -198,9 +200,11 @@ public partial class AudioClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI004")]
     public virtual async Task<AsyncStreamingClientResult<StreamingSpeechUpdate>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -218,6 +222,8 @@ public partial class AudioClient
             response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
@@ -227,9 +233,11 @@ public partial class AudioClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI004")]
     public virtual AsyncStreamingClientResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -247,6 +255,22 @@ public partial class AudioClient
             response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
+    }
+
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null)
+    {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
+        Argument.AssertNotNull(content, nameof(content));
+
+        using PipelineMessage message = CreateGenerateSpeechStreamingRequest(content, options);
+        message.BufferResponse = false;
+        return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     #endregion
@@ -460,9 +484,11 @@ public partial class AudioClient
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI004")]
     public virtual async Task<AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -481,12 +507,16 @@ public partial class AudioClient
             response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI004")]
     public virtual async Task<AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
@@ -507,12 +537,16 @@ public partial class AudioClient
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken,
             additionalDisposalActions: [() => inputStream?.Dispose()]);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI004")]
     public virtual AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -531,12 +565,16 @@ public partial class AudioClient
             response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI004")]
     public virtual AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
@@ -557,6 +595,23 @@ public partial class AudioClient
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken,
             additionalDisposalActions: [() => inputStream?.Dispose()]);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
+    }
+
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null)
+    {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
+        Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
+
+        using PipelineMessage message = CreateTranscribeAudioStreamingRequest(content, contentType, options);
+        message.BufferResponse = false;
+        return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     private void EnsureModelSupportsStreaming()
