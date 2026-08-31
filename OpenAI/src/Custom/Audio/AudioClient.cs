@@ -4,6 +4,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net.ServerSentEvents;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +22,12 @@ namespace OpenAI.Audio;
 [CodeGenSuppress("GenerateSpeech", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateSpeechStreamingAsync", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateSpeechStreaming", typeof(SpeechGenerationOptions), typeof(CancellationToken))]
-[CodeGenSuppress(nameof(TranscribeAudio), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
-[CodeGenSuppress(nameof(TranscribeAudioAsync), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateSpeechStreamingAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("TranscribeAudioStreamingAsync", typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("TranscribeAudioStreaming", typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("TranscribeAudioStreamingAsync", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress(nameof(TranscribeAudio), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
+[CodeGenSuppress(nameof(TranscribeAudioAsync), typeof(AudioTranscriptionOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(TranslateAudio), typeof(AudioTranslationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(TranslateAudioAsync), typeof(AudioTranslationOptions), typeof(CancellationToken))]
 public partial class AudioClient
@@ -159,8 +162,11 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
+        return ClientResult.FromValue(response.Content, response);
     }
 
     /// <summary> Generates a life-like, spoken audio recording of the input text. </summary>
@@ -182,8 +188,11 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = GenerateSpeech(content, cancellationToken.ToRequestOptions()); ;
-        return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
+        return ClientResult.FromValue(response.Content, response);
     }
 
     /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
@@ -193,9 +202,11 @@ public partial class AudioClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
-    [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<StreamingSpeechUpdate>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -204,10 +215,17 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        return new AsyncSseUpdateCollection<StreamingSpeechUpdate>(
-            async () => await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
+        message.BufferResponse = false;
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
+        return SseStreamingClientResult.Create(
+            response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
@@ -217,9 +235,11 @@ public partial class AudioClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
-    [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    [Experimental("OPENAI004")]
+    public virtual AsyncStreamingClientResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -228,10 +248,31 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        return new SseUpdateCollection<StreamingSpeechUpdate>(
-            () => GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true)),
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
+        message.BufferResponse = false;
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
+        return SseStreamingClientResult.Create(
+            response,
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
+    }
+
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null)
+    {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
+        Argument.AssertNotNull(content, nameof(content));
+
+        using PipelineMessage message = CreateGenerateSpeechStreamingRequest(content, options);
+        message.BufferResponse = false;
+        return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     #endregion
@@ -265,8 +306,11 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
+        return ClientResult.FromValue(AudioTranscription.FromResponse(response), response);
     }
 
     /// <summary> Transcribes the input audio. </summary>
@@ -296,8 +340,11 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(AudioTranscription.FromResponse(result.GetRawResponse()), result.GetRawResponse());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
+        return ClientResult.FromValue(AudioTranscription.FromResponse(response), response);
     }
 
     /// <summary> Transcribes the input audio. </summary>
@@ -362,9 +409,12 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        using var document = JsonDocument.Parse(result.GetRawResponse().Content);
-        return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), result.GetRawResponse());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
+        using var document = JsonDocument.Parse(response.Content);
+        return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), response);
     }
 
     /// <summary> Transcribes the input audio with diarization. </summary>
@@ -395,9 +445,12 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions());
-        using var document = JsonDocument.Parse(result.GetRawResponse().Content);
-        return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), result.GetRawResponse());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
+        using var document = JsonDocument.Parse(response.Content);
+        return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), response);
     }
 
     /// <summary> Transcribes the input audio with diarization. </summary>
@@ -437,9 +490,11 @@ public partial class AudioClient
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -449,38 +504,63 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(audio, audioFilename);
 
-        return new AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate>(
-            async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        message.BufferResponse = false;
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+        ClientResult.FromResponse(response);
+        return SseStreamingClientResult.Create(
+            response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
-        MultiPartFormDataBinaryContent content
-            = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
+        try
+        {
+            MultiPartFormDataBinaryContent content
+                = CreatePerCallTranscriptionOptions(options, stream: true)
+                    .ToMultipartContent(inputStream, audioFilePath);
 
-        AsyncSseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
-            async () => await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
-            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-            cancellationToken);
-        result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
-        return result;
+            RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+            using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+            message.BufferResponse = false;
+            PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+            ClientResult.FromResponse(response);
+            return SseStreamingClientResult.Create(
+                response,
+                StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+                cancellationToken,
+                additionalDisposalActions: [() => inputStream?.Dispose()]);
+        }
+        catch
+        {
+            inputStream?.Dispose();
+            throw;
+        }
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    [Experimental("OPENAI004")]
+    public virtual AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -490,32 +570,70 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options, stream: true)
                 .ToMultipartContent(audio, audioFilename);
 
-        return new SseUpdateCollection<StreamingAudioTranscriptionUpdate>(
-            () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        message.BufferResponse = false;
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+        ClientResult.FromResponse(response);
+        return SseStreamingClientResult.Create(
+            response,
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
-    [Experimental("OPENAI001")]
-    public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    [Experimental("OPENAI004")]
+    public virtual AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
-        MultiPartFormDataBinaryContent content
-            = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
+        try
+        {
+            MultiPartFormDataBinaryContent content
+                = CreatePerCallTranscriptionOptions(options, stream: true)
+                    .ToMultipartContent(inputStream, audioFilePath);
 
-        SseUpdateCollection<StreamingAudioTranscriptionUpdate> result = new(
-            () => TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-            cancellationToken);
-        result.AdditionalDisposalActions.Add(() => inputStream?.Dispose());
-        return result;
+            RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+            using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+            message.BufferResponse = false;
+            PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+            ClientResult.FromResponse(response);
+            return SseStreamingClientResult.Create(
+                response,
+                StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+                cancellationToken,
+                additionalDisposalActions: [() => inputStream?.Dispose()]);
+        }
+        catch
+        {
+            inputStream?.Dispose();
+            throw;
+        }
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
+    }
+
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null)
+    {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
+        Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
+
+        using PipelineMessage message = CreateTranscribeAudioStreamingRequest(content, contentType, options);
+        message.BufferResponse = false;
+        return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     private void EnsureModelSupportsStreaming()
