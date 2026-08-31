@@ -162,8 +162,9 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        using PipelineMessage message = CreateGenerateSpeechRequest(content, cancellationToken.ToRequestOptions());
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
         ClientResult.FromResponse(response);
         return ClientResult.FromValue(response.Content, response);
     }
@@ -187,8 +188,9 @@ public partial class AudioClient
         CreateSpeechGenerationOptions(text, voice, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        using PipelineMessage message = CreateGenerateSpeechRequest(content, cancellationToken.ToRequestOptions());
-        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateGenerateSpeechRequest(content, requestOptions);
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
         ClientResult.FromResponse(response);
         return ClientResult.FromValue(response.Content, response);
     }
@@ -304,8 +306,9 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
         ClientResult.FromResponse(response);
         return ClientResult.FromValue(AudioTranscription.FromResponse(response), response);
     }
@@ -337,8 +340,9 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
-        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
         ClientResult.FromResponse(response);
         return ClientResult.FromValue(AudioTranscription.FromResponse(response), response);
     }
@@ -405,8 +409,9 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
         ClientResult.FromResponse(response);
         using var document = JsonDocument.Parse(response.Content);
         return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), response);
@@ -440,8 +445,9 @@ public partial class AudioClient
             = CreatePerCallTranscriptionOptions(options)
                 .ToMultipartContent(audio, audioFilename);
 
-        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, cancellationToken.ToRequestOptions());
-        PipelineResponse response = Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
+        RequestOptions requestOptions = cancellationToken.ToRequestOptions();
+        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
         ClientResult.FromResponse(response);
         using var document = JsonDocument.Parse(response.Content);
         return ClientResult.FromValue(DiarizedAudioTranscription.DeserializeDiarizedAudioTranscription(document.RootElement, null), response);
