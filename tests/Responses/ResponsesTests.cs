@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
@@ -78,7 +79,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
 
@@ -136,7 +137,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         string doneText = null;
         string completedResponseText = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
 
@@ -210,6 +211,66 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(completedResponseText, Is.Not.Null.And.Not.Empty);
         Assert.That(completedResponseText, Is.EqualTo(doneText));
         Assert.That(completedResponseText, Is.EqualTo(string.Concat(deltaTextSegments)));
+    }
+
+    [RecordedTest]
+    public async Task StreamingResponsesWithReasoningSummary()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        CreateResponseOptions options = new(
+            "o3-mini",
+            [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")])
+        {
+            ReasoningOptions = new()
+            {
+                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+                ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+            },
+            Instructions = "Perform reasoning over any questions asked by the user.",
+            StreamingEnabled = true,
+        };
+
+        int partsAdded = 0;
+        int partsDone = 0;
+        bool inPart = false;
+
+        bool receivedTextDelta = false;
+        bool receivedTextDone = false;
+        List<string> reasoningTexts = [];
+        string finalOutput = null;
+
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
+            {
+                partsAdded++;
+                inPart = true;
+            }
+            else if (update is StreamingResponseReasoningSummaryPartDoneUpdate partDone)
+            {
+                partsDone++;
+                inPart = false;
+            }
+            else if (update is StreamingResponseReasoningSummaryTextDeltaUpdate textDelta)
+            {
+                receivedTextDelta = true;
+                reasoningTexts.Add(textDelta.Delta);
+            }
+            else if (update is StreamingResponseReasoningSummaryTextDoneUpdate textDone)
+            {
+                receivedTextDone = true;
+                finalOutput = textDone.Text;
+            }
+        }
+
+        Assert.That(partsAdded, Is.GreaterThanOrEqualTo(1), "No reasoning summary parts were added.");
+        Assert.That(partsDone, Is.EqualTo(partsAdded), "Parts added/done mismatch.");
+        Assert.That(receivedTextDelta, Is.True, "No reasoning summary text delta event received.");
+        Assert.That(receivedTextDone, Is.True, "No reasoning summary text done event received.");
+        Assert.That(reasoningTexts.Count, Is.GreaterThan(0), "No reasoning summary text accumulated.");
+        Assert.That(string.IsNullOrWhiteSpace(finalOutput), Is.False, "Final output text is empty.");
+        Assert.That(inPart, Is.False, "Ended while still inside a reasoning summary part.");
     }
 
     [RecordedTest]
@@ -432,7 +493,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
         }
@@ -814,6 +875,102 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task FunctionCallWorks()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
+        {
+            Tools = { s_GetWeatherAtLocationTool }
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(
+            options);
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(1));
+        FunctionCallResponseItem functionCall = response.OutputItems[0] as FunctionCallResponseItem;
+        Assert.That(functionCall, Is.Not.Null);
+        Assert.That(functionCall!.Id, Has.Length.GreaterThan(0));
+        Assert.That(functionCall.FunctionName, Is.EqualTo("get_weather_at_location"));
+        Assert.That(functionCall.FunctionArguments, Is.Not.Null);
+
+        Assert.DoesNotThrow(() =>
+        {
+            using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
+            _ = document.RootElement.GetProperty("location");
+        });
+
+        ResponseItem functionReply = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 celcius and windy");
+        CreateResponseOptions turn2Options = new(TestModel.Responses, [functionReply])
+        {
+            PreviousResponseId = response.Id,
+            Tools = { s_GetWeatherAtLocationTool },
+        };
+
+        ResponseResult turn2Response = await client.CreateResponseAsync(
+            turn2Options);
+        Assert.That(turn2Response.OutputItems?.Count, Is.EqualTo(1));
+        MessageResponseItem turn2Message = turn2Response!.OutputItems[0] as MessageResponseItem;
+        Assert.That(turn2Message, Is.Not.Null);
+        Assert.That(turn2Message!.Role, Is.EqualTo(MessageRole.Assistant));
+        Assert.That(turn2Message.Content, Has.Count.EqualTo(1));
+        Assert.That(turn2Message.Content[0].Text, Does.Contain("22"));
+
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(turn2Response.Id)))
+        { }
+    }
+
+    [RecordedTest]
+    public async Task FunctionCallStreamingWorks()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
+        {
+            Tools = { s_GetWeatherAtLocationTool },
+            StreamingEnabled = true,
+        };
+
+        AsyncStreamingClientResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(
+            options);
+
+        int functionCallArgumentsDeltaUpdateCount = 0;
+        int functionCallArgumentsDoneUpdateCount = 0;
+
+        StringBuilder argumentsBuilder = new StringBuilder();
+
+        await foreach (StreamingResponseUpdate update in responseUpdates)
+        {
+            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
+            {
+                functionCallArgumentsDeltaUpdateCount++;
+
+                BinaryData delta = functionCallArgumentsDeltaUpdate.Delta;
+                Assert.That(delta, Is.Not.Null);
+
+                if (!delta.ToMemory().IsEmpty)
+                {
+                    argumentsBuilder.AppendLine(functionCallArgumentsDeltaUpdate.Delta.ToString());
+                }
+            }
+
+            if (update is StreamingResponseFunctionCallArgumentsDoneUpdate functionCallArgumentsDoneUpdate)
+            {
+                functionCallArgumentsDoneUpdateCount++;
+
+                BinaryData functionArguments = functionCallArgumentsDoneUpdate.FunctionArguments;
+                Assert.That(functionArguments, Is.Not.Null);
+                Assert.That(functionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString().ReplaceLineEndings(string.Empty)));
+
+                argumentsBuilder.Clear();
+            }
+        }
+
+        Assert.That(functionCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
+        Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
+    }
+
+    [RecordedTest]
     public async Task MaxTokens()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -869,7 +1026,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(createOptions);
+        AsyncStreamingClientResult<StreamingResponseUpdate> updates = await client.CreateResponseStreamingAsync(createOptions);
 
         string queuedResponseId = null;
         int lastSequenceNumber = 0;
@@ -902,7 +1059,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(getOptions);
+        AsyncStreamingClientResult<StreamingResponseUpdate> continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;
