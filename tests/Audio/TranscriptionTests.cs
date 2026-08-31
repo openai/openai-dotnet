@@ -1,3 +1,4 @@
+#pragma warning disable SCME0005
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
@@ -242,7 +243,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         List<AudioTokenLogProbabilityDetails> streamedDeltaLogProbs = [];
 
         await foreach (StreamingAudioTranscriptionUpdate update
-            in client.TranscribeAudioStreamingAsync(
+            in await client.TranscribeAudioStreamingAsync(
                 path,
                 new AudioTranscriptionOptions()
                 {
@@ -304,16 +305,16 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         FileStream inputStream = null;
 
-        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+        AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             inputStream = File.OpenRead(path);
-            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(inputStream, filename);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            streamingUpdates = client.TranscribeAudioStreamingAsync(path);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(path);
         }
 
         StringBuilder deltaBuilder = new();
@@ -341,7 +342,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
-    public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
+    public async Task StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
@@ -350,16 +351,16 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             using FileStream inputStream = File.OpenRead(path);
-            Assert.Throws<NotSupportedException>(() =>
+            Assert.ThrowsAsync<NotSupportedException>(async () =>
             {
-                _ = client.TranscribeAudioStreamingAsync(inputStream, filename);
+                await client.TranscribeAudioStreamingAsync(inputStream, filename);
             });
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            Assert.Throws<NotSupportedException>(() =>
+            Assert.ThrowsAsync<NotSupportedException>(async () =>
             {
-                _ = client.TranscribeAudioStreamingAsync(path);
+                await client.TranscribeAudioStreamingAsync(path);
             });
         }
     }
@@ -516,16 +517,16 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
             ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
-        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+        AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
             inputStream = File.OpenRead(path);
-            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename, options);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(inputStream, filename, options);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            streamingUpdates = client.TranscribeAudioStreamingAsync(path, options);
+            streamingUpdates = await client.TranscribeAudioStreamingAsync(path, options);
         }
 
         string doneText = null;
