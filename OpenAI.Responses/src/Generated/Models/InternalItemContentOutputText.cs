@@ -11,15 +11,18 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputText : ResponseContentPart
     {
-        public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(InternalItemContentType.OutputText)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(ResponseContentPartKind.OutputText)
         {
             InternalText = internalText;
             Annotations = annotations.ToList();
             Logprobs = new ChangeTrackingList<ResponseTokenLogProbabilityDetails>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentOutputText(InternalItemContentType internalType, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<ResponseTokenLogProbabilityDetails> logprobs) : base(internalType, patch)
+        internal InternalItemContentOutputText(ResponseContentPartKind kind, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<ResponseTokenLogProbabilityDetails> logprobs) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             InternalText = internalText;

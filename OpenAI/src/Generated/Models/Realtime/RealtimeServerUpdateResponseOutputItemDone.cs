@@ -10,13 +10,16 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputItemDone : RealtimeServerUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateResponseOutputItemDone(string eventId, string responseId, int outputIndex, RealtimeItem item) : base(InternalRealtimeServerEventTypeGA.ResponseOutputItemDone)
         {
             EventId = eventId;
             ResponseId = responseId;
             OutputIndex = outputIndex;
             Item = item;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateResponseOutputItemDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, patch)

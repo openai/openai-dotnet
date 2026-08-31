@@ -75,7 +75,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(InternalType.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }

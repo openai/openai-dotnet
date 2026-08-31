@@ -94,7 +94,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -141,7 +141,7 @@ namespace OpenAI.Audio
             string id = default;
             string name = default;
             string language = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -167,7 +167,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -178,7 +178,7 @@ namespace OpenAI.Audio
                 id,
                 name,
                 language,
-                createdAt,
+                createdOn,
                 additionalBinaryDataProperties);
         }
     }

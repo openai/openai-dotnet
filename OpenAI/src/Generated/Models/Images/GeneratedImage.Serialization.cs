@@ -66,7 +66,7 @@ namespace OpenAI.Images
             if (Optional.IsDefined(ImageBytes) && _additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(ImageBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(ImageBytes, "D");
             }
             if (Optional.IsDefined(ImageUri) && _additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
