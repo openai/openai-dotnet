@@ -7,38 +7,38 @@
         "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "27587",
-        "Content-Type": "multipart/form-data; boundary=\"bhIZGTgBie4KMGjhDOrPQtUbdOph_PRPzNgA3UwiiCuHNZcRu37HePk=Au_rMb4SQvSAu4\"",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "Content-Type": "multipart/form-data; boundary=\"XVOsEl6I1XEDWJYG4q_ggRf9pZINdMrEL1OEKmiv7UHuzxtuz5xB3v6h=LmMSzbdGydI1A\"",
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98042d121d3675ca-SEA",
+        "CF-RAY": "a3259a74383a703b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "248",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:34:44 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "1758",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1766",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "file",
-        "id": "file-J5qqtFN9DjSYTXHfB4QTBj",
+        "id": "file-EcRJ6Ad85yyUn8rF1fmoDi",
         "purpose": "user_data",
         "filename": "test_favorite_foods.pdf",
         "bytes": 27140,
-        "created_at": 1758065682,
+        "created_at": 1787944093,
         "expires_at": null,
         "status": "processed",
         "status_details": null
@@ -52,7 +52,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "226",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -67,7 +67,7 @@
               },
               {
                 "type": "input_file",
-                "file_id": "file-J5qqtFN9DjSYTXHfB4QTBj"
+                "file_id": "file-EcRJ6Ad85yyUn8rF1fmoDi"
               }
             ]
           }
@@ -75,44 +75,54 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98042d1dcda275ca-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3259a791c8a703b-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1425",
+        "Content-Length": "2003",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:34:45 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "1231",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1238",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999935",
+        "x-ratelimit-remaining-tokens": "149999937",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_06eb3a26a4b5af1b0068c9f414359c8193b520829467b463ce",
+        "id": "resp_03d80ec8bf423d78006a91dc9daf2887d090d2110c8963e331",
         "object": "response",
-        "created_at": 1758065684,
+        "created_at": 1787944094,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1787944094,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
         "output": [
           {
-            "id": "msg_06eb3a26a4b5af1b0068c9f41509788193bfcb041cde1d7673",
+            "id": "msg_03d80ec8bf423d78006a91dc9ebcdc87d08ee0b6bc89ed06b5",
             "type": "message",
             "status": "completed",
             "content": [
@@ -120,16 +130,19 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "You should order pizza for Travis, as it's his favorite food."
+                "text": "You should order pizza for Travis!"
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": null,
           "effort": null,
           "summary": null
         },
@@ -144,6 +157,24 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [],
         "top_logprobs": 0,
         "top_p": 1.0,
@@ -151,13 +182,14 @@
         "usage": {
           "input_tokens": 45,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 14,
+          "output_tokens": 8,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 59
+          "total_tokens": 53
         },
         "user": null,
         "metadata": {}
@@ -165,6 +197,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

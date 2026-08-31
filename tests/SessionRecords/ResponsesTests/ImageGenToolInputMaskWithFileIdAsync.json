@@ -4,7 +4,7 @@
       "RequestUri": "https://api.openai.com/v1/files",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json",
+        "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
         "Content-Length": "3163141",
         "Content-Type": "multipart/form-data; boundary=\"ToM0CWkAB_3CsglQNHrvCHERucyRt1zY3roX4VuNZTXzXfiJursWK0jeKMSawwtAG3ggvW\"",

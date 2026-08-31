@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    [PersistableModelProxy(typeof(InternalUnknownChatOutputPrediction))]
     public partial class ChatOutputPrediction : IJsonModel<ChatOutputPrediction>
     {
         internal ChatOutputPrediction()

@@ -13,10 +13,6 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDeltaUpdate>
     {
-        public StreamingResponseOutputTextDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseOutputTextDelta, default, default, null, default, default, null, null)
-        {
-        }
-
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -220,7 +216,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveTokenLogProbabilitiesArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TokenLogProbabilities.Count)
                 {
                     return false;
                 }
@@ -239,7 +235,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TokenLogProbabilities.Count)
                 {
                     return false;
                 }

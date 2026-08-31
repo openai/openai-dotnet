@@ -19,6 +19,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, IEnumerable<ResponseItem> instructions, bool parallelToolCallsEnabled)
         {
             // Plugin customization: ensure initialization of collections
@@ -34,7 +35,9 @@ namespace OpenAI.Responses
             OutputItems = outputItems.ToList();
             Instructions = instructions.ToList();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, IList<ResponseItem> instructions, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, in JsonPatch patch)
@@ -74,6 +77,10 @@ namespace OpenAI.Responses
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public ResponseResult()
+        {
+        }
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

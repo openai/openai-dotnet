@@ -7,55 +7,51 @@
         "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "479",
-        "Content-Type": "multipart/form-data; boundary=\"gZbQKxLKkzWchPKGTNFhHrkUQyUXeHF88Nlk0qfcMoCNnL84vVcWD87ZQcBomuPK3gDHC1\"",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "Content-Type": "multipart/form-data; boundary=\"0BHZkqQa5RAodOXQin9k4M9iTVbJeeY3zCEW_HTRDZaHlNRJqiE7HmfHL5gT1u0I31kqkg\"",
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": [
-        "--gZbQKxLKkzWchPKGTNFhHrkUQyUXeHF88Nlk0qfcMoCNnL84vVcWD87ZQcBomuPK3gDHC1\r\n",
+        "--0BHZkqQa5RAodOXQin9k4M9iTVbJeeY3zCEW_HTRDZaHlNRJqiE7HmfHL5gT1u0I31kqkg\r\n",
         "Content-Disposition: form-data; name=file; filename=test_favorite_foods.txt; filename*=utf-8''test_favorite_foods.txt\r\n",
         "\r\n",
         "b64:VHJhdmlzJ3MgZmF2b3JpdGUgZm9vZCBpcyBwaXp6YS4=",
         "\r\n",
-        "--gZbQKxLKkzWchPKGTNFhHrkUQyUXeHF88Nlk0qfcMoCNnL84vVcWD87ZQcBomuPK3gDHC1\r\n",
+        "--0BHZkqQa5RAodOXQin9k4M9iTVbJeeY3zCEW_HTRDZaHlNRJqiE7HmfHL5gT1u0I31kqkg\r\n",
         "Content-Type: text/plain; charset=utf-8\r\n",
         "Content-Disposition: form-data; name=purpose\r\n",
         "\r\n",
         "user_data",
         "\r\n",
-        "--gZbQKxLKkzWchPKGTNFhHrkUQyUXeHF88Nlk0qfcMoCNnL84vVcWD87ZQcBomuPK3gDHC1--\r\n"
+        "--0BHZkqQa5RAodOXQin9k4M9iTVbJeeY3zCEW_HTRDZaHlNRJqiE7HmfHL5gT1u0I31kqkg--\r\n"
       ],
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99a808d2d9070903-SEA",
+        "CF-RAY": "a3259bb8d9de703b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "245",
         "Content-Type": "application/json",
-        "Date": "Thu, 06 Nov 2025 22:30:17 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "459",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "465",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "file",
-        "id": "file-DRh5qpFvkpc6r7c2E69W2g",
+        "id": "file-9FmQsdajnvJg5JcqrFA1bt",
         "purpose": "user_data",
         "filename": "test_favorite_foods.txt",
         "bytes": 32,
-        "created_at": 1762468217,
+        "created_at": 1787944144,
         "expires_at": null,
         "status": "processed",
         "status_details": null
@@ -69,37 +65,37 @@
         "Authorization": "Sanitized",
         "Content-Length": "44",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "file_ids": [
-          "file-DRh5qpFvkpc6r7c2E69W2g"
+          "file-9FmQsdajnvJg5JcqrFA1bt"
         ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99a808d80d1b0903-SEA",
+        "CF-RAY": "a3259bbe1f97703b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "406",
         "Content-Type": "application/json",
-        "Date": "Thu, 06 Nov 2025 22:30:18 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "888",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "893",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "vs_690d2179acdc819188103443c2ec958d",
+        "id": "vs_6a91dcd1b5288191823e0bc0391fac2b",
         "object": "vector_store",
-        "created_at": 1762468218,
+        "created_at": 1787944146,
         "name": null,
         "description": null,
         "usage_bytes": 0,
@@ -113,7 +109,7 @@
         "status": "in_progress",
         "expires_after": null,
         "expires_at": null,
-        "last_active_at": 1762468218,
+        "last_active_at": 1787944146,
         "metadata": {}
       }
     },
@@ -125,7 +121,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "260",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -133,7 +129,7 @@
           {
             "type": "file_search",
             "vector_store_ids": [
-              "vs_690d2179acdc819188103443c2ec958d"
+              "vs_6a91dcd1b5288191823e0bc0391fac2b"
             ]
           }
         ],
@@ -152,56 +148,65 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99a808fe1cae0903-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3259be37872703b-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2200",
+        "Content-Length": "2790",
         "Content-Type": "application/json",
-        "Date": "Thu, 06 Nov 2025 22:30:27 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "3394",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "3402",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149998820",
+        "x-ratelimit-remaining-tokens": "149998642",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_07295d436a819e7400690d217fc590819382926370a588d98c",
+        "id": "resp_0fbd0266fd4f36e4006a91dcd7ac9087d0b37c7ad63c8e24fc",
         "object": "response",
-        "created_at": 1762468223,
+        "created_at": 1787944151,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1787944154,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
         "output": [
           {
-            "id": "fs_07295d436a819e7400690d2180c95c8193ab7cbe79d087dba0",
+            "id": "fs_0fbd0266fd4f36e4006a91dcd84d8c87d08829c229a325c314",
             "type": "file_search_call",
             "status": "completed",
             "queries": [
-              "What is Travis's favorite food?"
+              "What is Travis's favorite food?",
+              "Travis favorite food",
+              "Travis likes to eat"
             ],
             "results": null
           },
           {
-            "id": "msg_07295d436a819e7400690d21822bfc8193a7d3977d3d47fd38",
+            "id": "msg_0fbd0266fd4f36e4006a91dcd9ca2487d09364a4d93ec1a48e",
             "type": "message",
             "status": "completed",
             "content": [
@@ -210,7 +215,7 @@
                 "annotations": [
                   {
                     "type": "file_citation",
-                    "file_id": "file-DRh5qpFvkpc6r7c2E69W2g",
+                    "file_id": "file-9FmQsdajnvJg5JcqrFA1bt",
                     "filename": "test_favorite_foods.txt",
                     "index": 31
                   }
@@ -223,10 +228,12 @@
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": null,
           "effort": null,
           "summary": null
         },
@@ -241,6 +248,24 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "file_search",
@@ -251,7 +276,7 @@
               "score_threshold": 0.0
             },
             "vector_store_ids": [
-              "vs_690d2179acdc819188103443c2ec958d"
+              "vs_6a91dcd1b5288191823e0bc0391fac2b"
             ]
           }
         ],
@@ -259,53 +284,58 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 1160,
+          "input_tokens": 1340,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 42,
+          "output_tokens": 53,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 1202
+          "total_tokens": 1393
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_07295d436a819e7400690d217fc590819382926370a588d98c/input_items",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_0fbd0266fd4f36e4006a91dcd7ac9087d0b37c7ad63c8e24fc/input_items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99a8091479b60903-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3259bf4ba72703b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "519",
         "Content-Type": "application/json",
-        "Date": "Thu, 06 Nov 2025 22:30:27 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "156",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "163",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "list",
         "data": [
           {
-            "id": "msg_07295d436a819e7400690d217fd1fc819391bc8127016f0dea",
+            "id": "msg_0fbd0266fd4f36e4006a91dcd7c32487d0a3c7978d53b42fab",
             "type": "message",
             "status": "completed",
             "content": [
@@ -317,13 +347,13 @@
             "role": "user"
           }
         ],
-        "first_id": "msg_07295d436a819e7400690d217fd1fc819391bc8127016f0dea",
+        "first_id": "msg_0fbd0266fd4f36e4006a91dcd7c32487d0a3c7978d53b42fab",
         "has_more": false,
-        "last_id": "msg_07295d436a819e7400690d217fd1fc819391bc8127016f0dea"
+        "last_id": "msg_0fbd0266fd4f36e4006a91dcd7c32487d0a3c7978d53b42fab"
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

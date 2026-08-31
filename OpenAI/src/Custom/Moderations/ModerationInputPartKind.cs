@@ -14,6 +14,6 @@ public enum ModerationInputPartKind
     [CodeGenMember("Text")]
     Text,
 
-    [CodeGenMember("ImageUrl")]
+    [CodeGenMember("ImageUri")]
     Image,
 }

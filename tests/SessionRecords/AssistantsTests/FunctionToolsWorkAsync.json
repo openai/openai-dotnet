@@ -1437,7 +1437,7 @@
               {
                 "type": "text",
                 "text": {
-                  "value": "On Thursday, you should eat tacos! \uD83C\uDF2E",
+                  "value": "On Thursday, you should eat tacos! \ud83c\udf2e",
                   "annotations": []
                 }
               }

@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownLocation))]
     public partial class WebSearchToolLocation : IJsonModel<WebSearchToolLocation>
     {
         internal WebSearchToolLocation()

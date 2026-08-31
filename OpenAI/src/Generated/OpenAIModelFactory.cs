@@ -50,7 +50,7 @@ namespace OpenAI
 
         public static ToolDefinition ToolDefinition(string kind = default)
         {
-            return new UnknownAssistantToolDefinition(new InternalAssistantToolDefinitionType(kind), additionalBinaryDataProperties: null);
+            return new ToolDefinition(new InternalAssistantToolDefinitionType(kind), additionalBinaryDataProperties: null);
         }
 
         public static CodeInterpreterToolDefinition CodeInterpreterToolDefinition()
@@ -176,12 +176,12 @@ namespace OpenAI
 
         public static ChatMessage ChatMessage(string role = default, ChatMessageContent content = default)
         {
-            return new InternalUnknownChatMessage(role.ToChatMessageRole(), content, default);
+            return new ChatMessage(role.ToChatMessageRole(), content, default);
         }
 
         public static ChatMessageContentPart ChatMessageContentPart()
         {
-            return new InternalUnknownChatCompletionRequestMessageContentPart(default);
+            return new ChatMessageContentPart(default);
         }
 
         public static SystemChatMessage SystemChatMessage(ChatMessageContent content = default, string participantName = default)
@@ -236,7 +236,7 @@ namespace OpenAI
 
         public static ChatResponseFormat ChatResponseFormat(string kind = default)
         {
-            return new InternalUnknownChatResponseFormat(new InternalDotNetChatResponseFormatType(kind), default);
+            return new ChatResponseFormat(new InternalDotNetChatResponseFormatType(kind), default);
         }
 
         public static ChatAudioOptions ChatAudioOptions(ChatOutputAudioVoice outputAudioVoice = default, ChatOutputAudioFormat outputAudioFormat = default)
@@ -246,7 +246,7 @@ namespace OpenAI
 
         public static ChatOutputPrediction ChatOutputPrediction(string kind = default)
         {
-            return new InternalUnknownChatOutputPrediction(new InternalChatOutputPredictionKind(kind), default);
+            return new ChatOutputPrediction(new InternalChatOutputPredictionKind(kind), default);
         }
 
         public static ChatFunction ChatFunction(string functionDescription = default, string functionName = default, BinaryData functionParameters = default)
@@ -289,7 +289,7 @@ namespace OpenAI
 
         public static ContainerNetworkPolicy ContainerNetworkPolicy(string kind = default)
         {
-            return new InternalUnknownContainerNetworkPolicy(new ContainerNetworkPolicyKind(kind), default);
+            return new ContainerNetworkPolicy(new ContainerNetworkPolicyKind(kind), default);
         }
 
         public static ContainerDisabledNetworkPolicy ContainerDisabledNetworkPolicy()
@@ -418,12 +418,12 @@ namespace OpenAI
 
         public static ResponseTextFormat ResponseTextFormat(string internalType = default)
         {
-            return new InternalUnknownResponseTextFormatConfiguration(new InternalResponsesTextFormatType(internalType), default);
+            return new ResponseTextFormat(new InternalResponsesTextFormatType(internalType), default);
         }
 
         public static ResponseTool ResponseTool(string kind = default)
         {
-            return new InternalUnknownTool(new ResponseToolKind(kind), default);
+            return new ResponseTool(new ResponseToolKind(kind), default);
         }
 
         public static FunctionTool FunctionTool(string functionName = default, string functionDescription = default, BinaryData functionParameters = default, bool? strictModeEnabled = default)
@@ -467,7 +467,7 @@ namespace OpenAI
 
         public static WebSearchToolLocation WebSearchToolLocation(string kind = default)
         {
-            return new InternalUnknownLocation(new InternalWebSearchUserLocationKind(kind), default);
+            return new WebSearchToolLocation(new InternalWebSearchUserLocationKind(kind), default);
         }
 
         public static WebSearchToolApproximateLocation WebSearchToolApproximateLocation(string country = default, string region = default, string city = default, string timezone = default)
@@ -505,7 +505,7 @@ namespace OpenAI
 
         public static CodeInterpreterToolContainerConfiguration CodeInterpreterToolContainerConfiguration(string kind = default)
         {
-            return new InternalUnknownCodeInterpreterContainerConfiguration(new InternalCodeInterpreterContainerConfigurationType(kind), default);
+            return new CodeInterpreterToolContainerConfiguration(new InternalCodeInterpreterContainerConfigurationType(kind), default);
         }
 
         public static AutomaticCodeInterpreterToolContainerConfiguration AutomaticCodeInterpreterToolContainerConfiguration(IEnumerable<string> fileIds = default)
@@ -569,12 +569,12 @@ namespace OpenAI
 
         public static ResponseContentPart ResponseContentPart(string internalType = default)
         {
-            return new InternalUnknownItemContent(new InternalItemContentType(internalType), default);
+            return new ResponseContentPart(new InternalItemContentType(internalType), default);
         }
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
-            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
+            return new ResponseMessageAnnotation(kind.ToResponseMessageAnnotationKind(), default);
         }
 
         public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default, string filename = default)
@@ -637,7 +637,7 @@ namespace OpenAI
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
         {
-            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), default);
+            return new ComputerCallAction(kind.ToComputerCallActionKind(), default);
         }
 
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
@@ -647,12 +647,12 @@ namespace OpenAI
 
         public static ComputerCallOutput ComputerCallOutput(string kind = default)
         {
-            return new InternalUnknownComputerToolCallOutputItemOutput(new InternalComputerUsePreviewToolCallOutputOutputType(kind), default);
+            return new ComputerCallOutput(new InternalComputerUsePreviewToolCallOutputOutputType(kind), default);
         }
 
         public static ReasoningSummaryPart ReasoningSummaryPart(string kind = default)
         {
-            return new InternalUnknownReasoningItemSummaryPart(new InternalReasoningItemSummaryPartType(kind), default);
+            return new ReasoningSummaryPart(new InternalReasoningItemSummaryPartType(kind), default);
         }
 
         public static ReasoningSummaryTextPart ReasoningSummaryTextPart(string text = default)
@@ -662,7 +662,7 @@ namespace OpenAI
 
         public static CodeInterpreterCallOutput CodeInterpreterCallOutput(string kind = default)
         {
-            return new InternalUnknownCodeInterpreterToolOutput(new InternalCodeInterpreterToolOutputType(kind), default);
+            return new CodeInterpreterCallOutput(new InternalCodeInterpreterToolOutputType(kind), default);
         }
 
         public static CodeInterpreterCallLogsOutput CodeInterpreterCallLogsOutput(string logs = default)
@@ -738,7 +738,7 @@ namespace OpenAI
 
         public static ResponseItem ResponseItem(string kind = default, string id = default)
         {
-            return new InternalUnknownItemResource(new ResponseItemKind(kind), id, default);
+            return new ResponseItem(new ResponseItemKind(kind), id, default);
         }
 
         public static McpToolCallApprovalResponseItem McpToolCallApprovalResponseItem(string id = default, string approvalRequestId = default, bool approved = default, string reason = default)
@@ -829,7 +829,7 @@ namespace OpenAI
 
         public static WebSearchAction WebSearchAction(string kind = default)
         {
-            return new InternalUnknownWebSearchActionBase(new InternalWebSearchActionType(kind), default);
+            return new WebSearchAction(new InternalWebSearchActionType(kind), default);
         }
 
         public static WebSearchSearchAction WebSearchSearchAction(string query = default, IEnumerable<string> queries = default, IEnumerable<WebSearchActionSource> sources = default)
@@ -842,12 +842,12 @@ namespace OpenAI
 
         public static WebSearchActionSource WebSearchActionSource(string kind = default)
         {
-            return new InternalUnknownWebSearchActionSearchSourceBase(new InternalWebSearchActionSearchSourcesType(kind), default);
+            return new WebSearchActionSource(new InternalWebSearchActionSearchSourcesType(kind), default);
         }
 
         public static WebSearchActionUriSource WebSearchActionUriSource(Uri uri = default)
         {
-            return new WebSearchActionUriSource(InternalWebSearchActionSearchSourcesType.Url, default, uri);
+            return new WebSearchActionUriSource(InternalWebSearchActionSearchSourcesType.Uri, default, uri);
         }
 
         public static WebSearchOpenPageAction WebSearchOpenPageAction(Uri uri = default)
@@ -954,7 +954,7 @@ namespace OpenAI
 
         public static ApplyPatchOperation ApplyPatchOperation(string kind = default)
         {
-            return new InternalUnknownApplyPatchOperation(new InternalApplyPatchOperationType(kind), default);
+            return new ApplyPatchOperation(new InternalApplyPatchOperationType(kind), default);
         }
 
         public static ApplyPatchCreateFileOperation ApplyPatchCreateFileOperation(string filePath = default, string diff = default)
@@ -1012,7 +1012,7 @@ namespace OpenAI
 
         public static StreamingResponseUpdate StreamingResponseUpdate(string kind = default, int sequenceNumber = default)
         {
-            return new InternalUnknownResponseStreamEvent(new StreamingResponseUpdateKind(kind), sequenceNumber, default);
+            return new StreamingResponseUpdate(new StreamingResponseUpdateKind(kind), sequenceNumber, default);
         }
 
         public static StreamingResponseCodeInterpreterCallCodeDeltaUpdate StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber = default, int outputIndex = default, string itemId = default, string delta = default)
@@ -1423,7 +1423,7 @@ namespace OpenAI
 
         public static FineTuningIntegration FineTuningIntegration(string kind = default)
         {
-            return new UnknownCreateFineTuningJobRequestIntegration(new InternalCreateFineTuningJobRequestIntegrationType(kind), additionalBinaryDataProperties: null);
+            return new FineTuningIntegration(new InternalCreateFineTuningJobRequestIntegrationType(kind), additionalBinaryDataProperties: null);
         }
 
         public static HyperparametersForSupervised HyperparametersForSupervised(BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData nEpochs = default)
@@ -1449,7 +1449,7 @@ namespace OpenAI
 
         public static Grader Grader(string kind = default)
         {
-            return new UnknownGrader(new GraderType(kind), additionalBinaryDataProperties: null);
+            return new Grader(new GraderType(kind), additionalBinaryDataProperties: null);
         }
 
         public static GraderTextSimilarity GraderTextSimilarity(string name = default, string input = default, string reference = default, GraderTextSimilarityEvaluationMetric evaluationMetric = default)
@@ -1644,7 +1644,7 @@ namespace OpenAI
 
         public static RealtimeSessionOptions RealtimeSessionOptions(string kind = default)
         {
-            return new InternalUnknownRealtimeSessionCreateRequestGABaseGA(new InternalRealtimeSessionCreateRequestGABaseTypeGA(kind), default);
+            return new RealtimeSessionOptions(new InternalRealtimeSessionCreateRequestGABaseTypeGA(kind), default);
         }
 
         public static RealtimeConversationSessionOptions RealtimeConversationSessionOptions(IEnumerable<RealtimeOutputModality> outputModalities = default, string model = default, string instructions = default, RealtimeConversationSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTracing tracing = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeTruncation truncation = default)
@@ -1680,7 +1680,7 @@ namespace OpenAI
 
         public static RealtimeAudioFormat RealtimeAudioFormat(string kind = default)
         {
-            return new InternalUnknownRealtimeAudioFormatGA(new InternalRealtimeAudioFormatType(kind), default);
+            return new RealtimeAudioFormat(new InternalRealtimeAudioFormatType(kind), default);
         }
 
         public static RealtimePcmAudioFormat RealtimePcmAudioFormat()
@@ -1710,7 +1710,7 @@ namespace OpenAI
 
         public static RealtimeTurnDetection RealtimeTurnDetection(string kind = default)
         {
-            return new InternalUnknownRealtimeTurnDetectionBaseGA(new InternalRealtimeTurnDetectionBaseTypeGA(kind), default);
+            return new RealtimeTurnDetection(new InternalRealtimeTurnDetectionBaseTypeGA(kind), default);
         }
 
         public static RealtimeServerVadTurnDetection RealtimeServerVadTurnDetection(float? detectionThreshold = default, TimeSpan? prefixPadding = default, TimeSpan? silenceDuration = default, bool? createResponseEnabled = default, bool? interruptResponseEnabled = default, TimeSpan? idleTimeout = default)
@@ -1745,7 +1745,7 @@ namespace OpenAI
 
         public static RealtimeTool RealtimeTool(string kind = default)
         {
-            return new InternalUnknownRealtimeToolBaseGA(new InternalRealtimeToolBaseTypeGA(kind), default);
+            return new RealtimeTool(new InternalRealtimeToolBaseTypeGA(kind), default);
         }
 
         public static RealtimeFunctionTool RealtimeFunctionTool(string functionName = default, string functionDescription = default, BinaryData functionParameters = default)
@@ -1784,7 +1784,7 @@ namespace OpenAI
 
         public static RealtimeCustomToolChoice RealtimeCustomToolChoice(string kind = default)
         {
-            return new InternalUnknownToolChoiceBaseGA(new InternalToolChoiceBaseTypeGA(kind), default);
+            return new RealtimeCustomToolChoice(new InternalToolChoiceBaseTypeGA(kind), default);
         }
 
         public static RealtimeCustomFunctionToolChoice RealtimeCustomFunctionToolChoice(string functionName = default)
@@ -1799,7 +1799,7 @@ namespace OpenAI
 
         public static RealtimeCustomTruncation RealtimeCustomTruncation(string kind = default)
         {
-            return new InternalUnknownRealtimeTruncationBaseGA(new InternalRealtimeTruncationBaseTypeGA(kind), default);
+            return new RealtimeCustomTruncation(new InternalRealtimeTruncationBaseTypeGA(kind), default);
         }
 
         public static RealtimeCustomRetentionRatioTruncation RealtimeCustomRetentionRatioTruncation(float retentionRatio = default, RealtimeRetentionRatioTokenLimitDetails tokenLimitDetails = default)
@@ -1836,7 +1836,7 @@ namespace OpenAI
 
         public static RealtimeSession RealtimeSession(string kind = default)
         {
-            return new InternalUnknownRealtimeSessionCreateResponseBaseGA(new InternalRealtimeSessionCreateResponseBaseTypeGA(kind), default);
+            return new RealtimeSession(new InternalRealtimeSessionCreateResponseBaseTypeGA(kind), default);
         }
 
         public static RealtimeConversationSession RealtimeConversationSession(RealtimeClientSecret clientSecret = default, IEnumerable<RealtimeOutputModality> outputModalities = default, string model = default, string instructions = default, RealtimeConversationSessionAudioOptions audioOptions = default, IEnumerable<RealtimeIncludedProperty> includedProperties = default, RealtimeTracing tracing = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeTruncation truncation = default)
@@ -1973,7 +1973,7 @@ namespace OpenAI
 
         public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
         {
-            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
+            return new RunStepToolCall(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
         }
 
         public static RunStepCodeInterpreterOutput RunStepCodeInterpreterOutput(string kind = default)
@@ -2050,7 +2050,7 @@ namespace OpenAI
 
         public static AudioTranscriptionCustomChunkingStrategy AudioTranscriptionCustomChunkingStrategy(string kind = default)
         {
-            return new InternalUnknownChunkingStrategyConfig(new InternalChunkingStrategyConfigType(kind), additionalBinaryDataProperties: null);
+            return new AudioTranscriptionCustomChunkingStrategy(new InternalChunkingStrategyConfigType(kind), additionalBinaryDataProperties: null);
         }
 
         public static AudioTranscriptionCustomServerVadChunkingStrategy AudioTranscriptionCustomServerVadChunkingStrategy(TimeSpan? prefixPadding = default, TimeSpan? silenceDuration = default, float? detectionThreshold = default)
@@ -2060,7 +2060,7 @@ namespace OpenAI
 
         public static AudioTranscriptionUsage AudioTranscriptionUsage(string kind = default)
         {
-            return new InternalUnknownCreateTranscriptionResponseJsonUsage(new InternalCreateTranscriptionResponseJsonUsageType(kind), additionalBinaryDataProperties: null);
+            return new AudioTranscriptionUsage(new InternalCreateTranscriptionResponseJsonUsageType(kind), additionalBinaryDataProperties: null);
         }
 
         public static AudioTranscriptionTokenUsage AudioTranscriptionTokenUsage(int inputTokenCount = default, AudioTranscriptionInputTokenUsageDetails inputTokenDetails = default, int outputTokenCount = default, int totalTokenCount = default)
@@ -2311,7 +2311,7 @@ namespace OpenAI
 
         public static ModerationInputPart ModerationInputPart(string kind = default)
         {
-            return new InternalUnknownModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+            return new ModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
         }
 
         public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
@@ -2429,7 +2429,7 @@ namespace OpenAI
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)
         {
-            return new InternalUnknownDotNetAssistantResponseFormat(new InternalAssistantsResponseFormatType(kind), additionalBinaryDataProperties: null);
+            return new AssistantResponseFormat(new InternalAssistantsResponseFormatType(kind), additionalBinaryDataProperties: null);
         }
 
         public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
@@ -2497,7 +2497,7 @@ namespace OpenAI
 
         public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
         {
-            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new InternalCreateTranscriptionStreamingResponseType(kind), additionalBinaryDataProperties: null);
+            return new StreamingAudioTranscriptionUpdate(new InternalCreateTranscriptionStreamingResponseType(kind), additionalBinaryDataProperties: null);
         }
 
         public static StreamingAudioTranscriptionTextSegmentUpdate StreamingAudioTranscriptionTextSegmentUpdate(string segmentId = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
@@ -2528,7 +2528,7 @@ namespace OpenAI
 
         public static StreamingSpeechUpdate StreamingSpeechUpdate(string kind = default)
         {
-            return new InternalUnknownDotNetCreateSpeechStreamingResponse(new InternalDotNetCreateSpeechStreamingResponseType(kind), additionalBinaryDataProperties: null);
+            return new StreamingSpeechUpdate(new InternalDotNetCreateSpeechStreamingResponseType(kind), additionalBinaryDataProperties: null);
         }
 
         public static StreamingSpeechAudioDeltaUpdate StreamingSpeechAudioDeltaUpdate(BinaryData audioBytes = default)
@@ -2630,7 +2630,7 @@ namespace OpenAI
 
         public static RealtimeItem RealtimeItem(string kind = default)
         {
-            return new InternalUnknownRealtimeConversationItemGA(new InternalRealtimeConversationItemTypeGA(kind), default);
+            return new RealtimeItem(new InternalRealtimeConversationItemTypeGA(kind), default);
         }
 
         public static RealtimeMcpToolCallApprovalResponseItem RealtimeMcpToolCallApprovalResponseItem(string id = default, string approvalRequestId = default, bool approved = default, string reason = default)
@@ -2694,7 +2694,7 @@ namespace OpenAI
 
         public static RealtimeMessageContentPart RealtimeMessageContentPart(string kind = default)
         {
-            return new InternalUnknownRealtimeConversationItemMessageContentPartGA(new InternalRealtimeConversationItemMessageContentPartTypeGA(kind), default);
+            return new RealtimeMessageContentPart(new InternalRealtimeConversationItemMessageContentPartTypeGA(kind), default);
         }
 
         public static RealtimeInputTextMessageContentPart RealtimeInputTextMessageContentPart(string text = default)
@@ -2749,7 +2749,7 @@ namespace OpenAI
 
         public static RealtimeServerUpdate RealtimeServerUpdate(string kind = default)
         {
-            return new InternalUnknownRealtimeServerEventGA(new InternalRealtimeServerEventTypeGA(kind), default);
+            return new RealtimeServerUpdate(new InternalRealtimeServerEventTypeGA(kind), default);
         }
 
         public static RealtimeServerUpdateError RealtimeServerUpdateError(string eventId = default, RealtimeError error = default)
@@ -2799,7 +2799,7 @@ namespace OpenAI
 
         public static RealtimeTranscriptionUsage RealtimeTranscriptionUsage(string kind = default)
         {
-            return new InternalUnknownTranscriptionTokenUsageBaseGA(new InternalTranscriptionTokenUsageBaseTypeGA(kind), default);
+            return new RealtimeTranscriptionUsage(new InternalTranscriptionTokenUsageBaseTypeGA(kind), default);
         }
 
         public static RealtimeTranscriptionDurationUsage RealtimeTranscriptionDurationUsage(TimeSpan duration = default)
@@ -3223,7 +3223,7 @@ namespace OpenAI
 
         public static RealtimeClientCommand RealtimeClientCommand(string kind = default)
         {
-            return new InternalUnknownRealtimeClientEventGA(new InternalRealtimeClientEventTypeGA(kind), default);
+            return new RealtimeClientCommand(new InternalRealtimeClientEventTypeGA(kind), default);
         }
 
         public static RealtimeClientCommandSessionUpdate RealtimeClientCommandSessionUpdate(string eventId = default, RealtimeSessionOptions sessionOptions = default)
@@ -3309,7 +3309,7 @@ namespace OpenAI
 
         public static RunStepUpdateCodeInterpreterOutput RunStepUpdateCodeInterpreterOutput(string kind = default)
         {
-            return new UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(new InternalRunStepDetailsCodeInterpreterOutputType(kind), additionalBinaryDataProperties: null);
+            return new RunStepUpdateCodeInterpreterOutput(new InternalRunStepDetailsCodeInterpreterOutputType(kind), additionalBinaryDataProperties: null);
         }
     }
 }

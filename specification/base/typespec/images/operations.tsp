@@ -250,6 +250,7 @@ namespace OpenAI;
   }
 )
 @tag("Images")
+@sharedRoute
 op createImageEdit(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @header
@@ -258,7 +259,25 @@ op createImageEdit(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @multipartBody
   body: CreateImageEditRequest,
-): ImagesResponse | SSEStream<CreateImageEditStreamingResponse>;
+): ImagesResponse;
+
+/** Creates an edited or extended image given one or more source images and a prompt, streamed as server-sent events. */
+#suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+@post
+@sharedRoute
+@route("/images/edits")
+@tag("Images")
+op createImageEditStreaming(
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @header
+  contentType: "multipart/form-data",
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @multipartBody
+  body: CreateImageEditRequest,
+): SSEStream<CreateImageEditStreamingResponse>;
 
 /** Creates an image given a prompt. [Learn more](https://platform.openai.com/docs/guides/images). */
 #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
@@ -500,11 +519,25 @@ op createImageEdit(
   }
 )
 @tag("Images")
+@sharedRoute
 op createImage(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @body
   body: CreateImageRequest,
-): ImagesResponse | SSEStream<CreateImageStreamingResponse>;
+): ImagesResponse;
+
+/** Creates an image given a prompt, streamed as server-sent events. */
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+@post
+@sharedRoute
+@route("/images/generations")
+@tag("Images")
+op createImageStreaming(
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @body
+  body: CreateImageRequest,
+): SSEStream<CreateImageStreamingResponse>;
 
 /** Creates a variation of a given image. This endpoint only supports `dall-e-2`. */
 #suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."

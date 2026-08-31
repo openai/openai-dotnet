@@ -14,10 +14,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseResult : IJsonModel<ResponseResult>
     {
-        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, null, null, null, null, default, null, null, default, default)
-        {
-        }
-
         protected virtual ResponseResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseResult>)this).GetFormatFromOptions(options) : options.Format;
@@ -742,7 +738,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveToolsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
                 {
                     return false;
                 }
@@ -756,7 +752,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveOutputItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
                 {
                     return false;
                 }
@@ -770,7 +766,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveInstructionsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
                 {
                     return false;
                 }
@@ -819,7 +815,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
                 {
                     return false;
                 }
@@ -830,7 +826,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
                 {
                     return false;
                 }
@@ -841,7 +837,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "instructions"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Instructions.Count)
                 {
                     return false;
                 }
