@@ -13,6 +13,11 @@ namespace OpenAI.Moderations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
+        public ModerationInputPart(ModerationInputPartKind kind)
+        {
+            Kind = kind;
+        }
+
         internal ModerationInputPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;

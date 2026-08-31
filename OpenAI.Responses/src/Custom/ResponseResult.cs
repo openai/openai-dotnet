@@ -11,14 +11,8 @@ namespace OpenAI.Responses;
 // - Suppressed client-only OutputText property in favor of a method.
 [CodeGenType("Response")]
 [CodeGenSuppress("OutputText")]
-[CodeGenSuppress("ResponseResult")]
 public partial class ResponseResult
 {
-    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
-    public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, null, null, null, null, default, null, null, default, default)
-    {
-    }
-
     // CUSTOM: Renamed.
     [CodeGenMember("Background")]
     public bool? BackgroundModeEnabled { get; set; }

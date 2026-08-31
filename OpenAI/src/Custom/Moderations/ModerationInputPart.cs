@@ -5,14 +5,8 @@ namespace OpenAI.Moderations;
 
 // CUSTOM: Renamed.
 [CodeGenType("CreateModerationRequestInput")]
-[CodeGenSuppress("ModerationInputPart", typeof(ModerationInputPartKind))]
 public partial class ModerationInputPart
 {
-    private protected ModerationInputPart(ModerationInputPartKind kind)
-    {
-        Kind = kind;
-    }
-
     // CUSTOM: Renamed to Kind and removed setter.
     [CodeGenMember("Type")]
     public ModerationInputPartKind Kind { get; }

@@ -17,11 +17,6 @@ namespace OpenAI.Assistants;
 [CodeGenSerialization(nameof(ToolConstraint), "tool_choice", SerializationValueHook = nameof(SerializeToolConstraint))]
 public partial class RunCreationOptions
 {
-    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
-    public RunCreationOptions() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null)
-    {
-    }
-
     // CUSTOM: assistant_id/stream visibility hidden so that they can be promoted to required method parameters
     [CodeGenMember("AssistantId")]
     internal string AssistantId { get; set; }
