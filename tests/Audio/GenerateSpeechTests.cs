@@ -92,7 +92,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
         bool gotDone = false;
 
         await foreach (StreamingSpeechUpdate update
-            in client.GenerateSpeechStreamingAsync("Hello, world! This is a streaming test.", GeneratedSpeechVoice.Alloy))
+            in await client.GenerateSpeechStreamingAsync("Hello, world! This is a streaming test.", GeneratedSpeechVoice.Alloy))
         {
             if (update is StreamingSpeechAudioDeltaUpdate deltaUpdate)
             {
