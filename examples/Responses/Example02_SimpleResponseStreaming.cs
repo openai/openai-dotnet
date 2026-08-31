@@ -2,24 +2,26 @@
 using OpenAI.Responses;
 using System;
 using System.ClientModel;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
 // This example uses experimental APIs which are subject to change. To use experimental APIs,
 // please acknowledge their experimental status by suppressing the corresponding warning.
 #pragma warning disable OPENAI001
+#pragma warning disable SCME0005
 
 public partial class ResponseExamples
 {
     [Test]
-    public void Example02_SimpleResponseStreaming()
+    public async Task Example02_SimpleResponseStreaming()
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming("gpt-5", "Say 'this is a test.'");
+        AsyncStreamingClientResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming("gpt-5", "Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
-        foreach (StreamingResponseUpdate update in responseUpdates)
+        await foreach (StreamingResponseUpdate update in responseUpdates)
         {
             if (update is StreamingResponseOutputTextDeltaUpdate outputTextUpdate)
             {
@@ -30,3 +32,4 @@ public partial class ResponseExamples
 }
 
 #pragma warning restore OPENAI001
+#pragma warning restore SCME0005
