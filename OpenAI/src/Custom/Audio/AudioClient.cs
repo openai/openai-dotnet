@@ -529,20 +529,28 @@ public partial class AudioClient
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
-        MultiPartFormDataBinaryContent content
-            = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
+        try
+        {
+            MultiPartFormDataBinaryContent content
+                = CreatePerCallTranscriptionOptions(options, stream: true)
+                    .ToMultipartContent(inputStream, audioFilePath);
 
-        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
-        message.BufferResponse = false;
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
-        ClientResult.FromResponse(response);
-        return SseStreamingClientResult.Create(
-            response,
-            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-            cancellationToken,
-            additionalDisposalActions: [() => inputStream?.Dispose()]);
+            RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+            using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+            message.BufferResponse = false;
+            PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
+            ClientResult.FromResponse(response);
+            return SseStreamingClientResult.Create(
+                response,
+                StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+                cancellationToken,
+                additionalDisposalActions: [() => inputStream?.Dispose()]);
+        }
+        catch
+        {
+            inputStream?.Dispose();
+            throw;
+        }
 #pragma warning restore OPENAI001
 #pragma warning restore SCME0005
     }
@@ -587,20 +595,28 @@ public partial class AudioClient
 
         FileStream inputStream = File.OpenRead(audioFilePath);
 
-        MultiPartFormDataBinaryContent content
-            = CreatePerCallTranscriptionOptions(options, stream: true)
-                .ToMultipartContent(inputStream, audioFilePath);
+        try
+        {
+            MultiPartFormDataBinaryContent content
+                = CreatePerCallTranscriptionOptions(options, stream: true)
+                    .ToMultipartContent(inputStream, audioFilePath);
 
-        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
-        message.BufferResponse = false;
-        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
-        ClientResult.FromResponse(response);
-        return SseStreamingClientResult.Create(
-            response,
-            StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
-            cancellationToken,
-            additionalDisposalActions: [() => inputStream?.Dispose()]);
+            RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
+            using PipelineMessage message = CreateTranscribeAudioRequest(content, content.ContentType, requestOptions);
+            message.BufferResponse = false;
+            PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
+            ClientResult.FromResponse(response);
+            return SseStreamingClientResult.Create(
+                response,
+                StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
+                cancellationToken,
+                additionalDisposalActions: [() => inputStream?.Dispose()]);
+        }
+        catch
+        {
+            inputStream?.Dispose();
+            throw;
+        }
 #pragma warning restore OPENAI001
 #pragma warning restore SCME0005
     }
