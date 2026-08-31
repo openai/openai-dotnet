@@ -5,6 +5,7 @@ using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net.ServerSentEvents;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +26,8 @@ namespace OpenAI.Images;
 [CodeGenSuppress("GenerateImagesStreaming", typeof(ImageGenerationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateImageEditsStreamingAsync", typeof(ImageEditOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GenerateImageEditsStreaming", typeof(ImageEditOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GenerateImageEditsStreamingAsync", typeof(BinaryContent), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("GenerateImagesStreamingAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress(nameof(GenerateImageVariations), typeof(ImageVariationOptions), typeof(CancellationToken))]
 [CodeGenSuppress(nameof(GenerateImageVariationsAsync), typeof(ImageVariationOptions), typeof(CancellationToken))]
 public partial class ImageClient
@@ -212,6 +215,20 @@ public partial class ImageClient
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateImages(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((GeneratedImageCollection)result, result.GetRawResponse());
+    }
+
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImagesStreamingAsync(BinaryContent content, RequestOptions options = null)
+    {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
+        Argument.AssertNotNull(content, nameof(content));
+
+        using PipelineMessage message = CreateGenerateImagesStreamingRequest(content, options);
+        message.BufferResponse = false;
+        return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     #endregion
@@ -680,6 +697,21 @@ public partial class ImageClient
         using FileStream imageStream = File.OpenRead(imageFilePath);
         using FileStream maskStream = File.OpenRead(maskFilePath);
         return GenerateImageEdits(imageStream, imageFilePath, prompt, maskStream, maskFilePath, imageCount, options);
+    }
+
+    [Experimental("OPENAI004")]
+    public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateImageEditsStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null)
+    {
+#pragma warning disable OPENAI001
+#pragma warning disable SCME0005
+        Argument.AssertNotNull(content, nameof(content));
+        Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
+
+        using PipelineMessage message = CreateGenerateImageEditsStreamingRequest(content, contentType, options);
+        message.BufferResponse = false;
+        return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+#pragma warning restore OPENAI001
+#pragma warning restore SCME0005
     }
 
     #endregion
