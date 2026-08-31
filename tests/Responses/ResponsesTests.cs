@@ -316,12 +316,14 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response1.ReasoningOptions.ReasoningSummaryVerbosity, Is.EqualTo(ResponseReasoningSummaryVerbosity.Detailed));
 
         ReasoningResponseItem reasoningItem = response1.OutputItems[0] as ReasoningResponseItem;
+        Assert.That(reasoningItem, Is.Not.Null);
         Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
         Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.EncryptedContent, Is.Not.Null.And.Not.Empty);
 
         MessageResponseItem messageItem = response1.OutputItems[1] as MessageResponseItem;
+        Assert.That(messageItem, Is.Not.Null);
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
 
         if (isStateless)
