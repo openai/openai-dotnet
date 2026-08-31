@@ -188,13 +188,13 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int imageCount, ImageEditOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, int imageCount, ImageEditOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(string imageFilePath, string prompt, string maskFilePath, int imageCount, ImageEditOptions options = null);
-        [Experimental("OPENAI001")]
+        [Experimental("OPENAI004")]
         public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateImageEditsStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult GenerateImages(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<GeneratedImageCollection> GenerateImages(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GenerateImagesAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImagesAsync(string prompt, int imageCount, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
-        [Experimental("OPENAI001")]
+        [Experimental("OPENAI004")]
         public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateImagesStreamingAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(Stream image, string imageFilename, ImageVariationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<GeneratedImage> GenerateImageVariation(string imageFilePath, ImageVariationOptions options = null);
