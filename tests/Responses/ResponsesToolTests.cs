@@ -124,7 +124,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                         argumentsByOutputIndex.Add(functionCallArgumentsDeltaUpdate.OutputIndex, argumentsBuilder);
                     }
 
-                    argumentsBuilder.Append(delta.ToString());
+                    argumentsBuilder.Append(delta);
                 }
             }
             else if (update is StreamingResponseFunctionCallArgumentsDoneUpdate functionCallArgumentsDoneUpdate)
