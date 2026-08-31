@@ -13,11 +13,6 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress(nameof(AssistantCreationOptions), typeof(string))]
 public partial class AssistantCreationOptions
 {
-    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
-    public AssistantCreationOptions() : this(null, null, null, null, null, null, null, null, null, null, null, null)
-    {
-    }
-
     // CUSTOM: visibility hidden to promote required property to method parameter
     internal string Model { get; set; }
 

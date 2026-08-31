@@ -24,6 +24,10 @@ namespace OpenAI.Assistants
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
+        public MessageCreationOptions()
+        {
+        }
+
         public IList<MessageCreationAttachment> Attachments { get; set; }
 
         public IDictionary<string, string> Metadata { get; }
