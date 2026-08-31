@@ -55,12 +55,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
         Assert.That(functionCall.FunctionArguments, Is.Not.Null);
 
-        Assert.DoesNotThrow(() =>
+        Assert.That(() =>
         {
             using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
             Assert.That(document.RootElement.GetProperty("location").GetString(), Is.Not.Null.And.Not.Empty);
             Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
-        });
+        }, Throws.Nothing);
 
         ResponseItem functionCallOutput = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 degrees Celsius and windy");
 
