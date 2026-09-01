@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>
     {
+        public CodeInterpreterTool() : this(ResponseToolKind.CodeInterpreter, default, null)
+        {
+        }
+
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterTool>)this).GetFormatFromOptions(options) : options.Format;
