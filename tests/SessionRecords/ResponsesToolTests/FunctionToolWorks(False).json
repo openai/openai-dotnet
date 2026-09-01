@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "719",
+        "Content-Length": "704",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -68,7 +68,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a347d71eea3d4f73-SEA",
+        "CF-Ray": "a32eb6812fe5680b-SEA",
         "Connection": "keep-alive",
         "Content-Length": "2681",
         "Content-Type": "application/json",
@@ -83,21 +83,21 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999697",
+        "x-ratelimit-remaining-tokens": "149999700",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_09a21ae683e9942a006a9756f5a61887d0a703b4f6a32a49c5",
+        "id": "resp_0034e0c849e64df1006a9351bdafa487d086172f37962bd4bc",
         "object": "response",
-        "created_at": 1788303093,
+        "created_at": 1788039613,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788303094,
+        "completed_at": 1788039614,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -108,11 +108,11 @@
         "moderation": null,
         "output": [
           {
-            "id": "fc_09a21ae683e9942a006a9756f6089c87d0a4b06b1fe354daf1",
+            "id": "fc_0034e0c849e64df1006a9351be137487d09aebc4f88404a4e7",
             "type": "function_call",
             "status": "completed",
-            "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"F\"}",
-            "call_id": "call_2l4pL6aYeR0N1BINAneT7WBh",
+            "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}",
+            "call_id": "call_PH5gglyxFHdQ79KHLCdxiKOW",
             "name": "get_weather_at_location"
           }
         ],
@@ -213,12 +213,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "735",
+        "Content-Length": "720",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_09a21ae683e9942a006a9756f5a61887d0a703b4f6a32a49c5",
+        "previous_response_id": "resp_0034e0c849e64df1006a9351bdafa487d086172f37962bd4bc",
         "model": "gpt-4o-mini",
         "tools": [
           {
@@ -253,7 +253,7 @@
         "input": [
           {
             "type": "function_call_output",
-            "call_id": "call_2l4pL6aYeR0N1BINAneT7WBh",
+            "call_id": "call_PH5gglyxFHdQ79KHLCdxiKOW",
             "output": "22 degrees Celsius and windy"
           }
         ],
@@ -268,9 +268,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a347d72408444f73-SEA",
+        "CF-Ray": "a32eb6862a27680b-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3245",
+        "Content-Length": "3180",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -289,15 +289,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_09a21ae683e9942a006a9756f67f4087d0bad2d390bbcd72f9",
+        "id": "resp_0034e0c849e64df1006a9351be938487d0b0f4d46bcb6ef1ca",
         "object": "response",
-        "created_at": 1788303094,
+        "created_at": 1788039614,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788303096,
+        "completed_at": 1788039615,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -308,7 +308,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_09a21ae683e9942a006a9756f7ea5487d0b66de87c47b0e58b",
+            "id": "msg_0034e0c849e64df1006a9351bf235c87d0b0d34a96ca6b4956",
             "type": "message",
             "status": "completed",
             "content": [
@@ -316,7 +316,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "The weather in San Francisco is currently about 22°C (72°F) and windy. Here are some clothing suggestions:\n\n1. **Light Layering**: A lightweight jacket or windbreaker would be ideal due to the wind.\n2. **Tops**: A comfortable t-shirt or long-sleeve shirt works well.\n3. **Bottoms**: Jeans, chinos, or comfortable shorts, depending on your preference.\n4. **Shoes**: Comfortable shoes for walking, like sneakers or sandals.\n5. **Accessories**: Consider a hat to shield against wind, and maybe sunglasses.\n\nEnjoy your time in San Francisco!"
+                "text": "The weather in San Francisco is currently 22°C and windy. Here are some suggestions for what to wear:\n\n- **Light layers**: A breathable shirt or blouse combined with a light jacket or cardigan for the wind.\n- **Pants or jeans**: Comfortable and suitable for slightly cool weather.\n- **Closed-toe shoes**: Sneakers or lightweight boots are ideal for walking.\n- **Accessories**: Consider a light scarf to keep warm and protect you from the wind.\n\nEnjoy your time in San Francisco!"
               }
             ],
             "role": "assistant"
@@ -324,7 +324,7 @@
         ],
         "parallel_tool_calls": true,
         "presence_penalty": 0.0,
-        "previous_response_id": "resp_09a21ae683e9942a006a9756f5a61887d0a703b4f6a32a49c5",
+        "previous_response_id": "resp_0034e0c849e64df1006a9351bdafa487d086172f37962bd4bc",
         "prompt_cache_key": null,
         "prompt_cache_retention": "in_memory",
         "reasoning": {
@@ -400,11 +400,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 130,
+          "output_tokens": 105,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 240
+          "total_tokens": 215
         },
         "user": null,
         "metadata": {}
