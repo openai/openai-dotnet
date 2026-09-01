@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "361",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-5.6",
@@ -19,8 +19,8 @@
             "description": "Creates a mathematical addition expression.",
             "format": {
               "type": "grammar",
-              "syntax": "regex",
-              "definition": "^[0-9]+ \\+ [0-9]+$"
+              "definition": "^[0-9]+ \\+ [0-9]+$",
+              "syntax": "regex"
             }
           }
         ],
@@ -47,7 +47,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a27270938d1a8691-SEA",
+        "CF-Ray": "a34679e8ca507594-SEA",
         "Connection": "keep-alive",
         "Content-Length": "2177",
         "Content-Type": "application/json",
@@ -68,15 +68,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_06971e13fbb4de59006a753212b4e8819b89767e82365bee4c",
+        "id": "resp_0324457768c1c480006a971f1607e087d0b2e157501113c7ff",
         "object": "response",
-        "created_at": 1786065426,
+        "created_at": 1788288790,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1786065427,
+        "completed_at": 1788288791,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -87,10 +87,10 @@
         "moderation": null,
         "output": [
           {
-            "id": "ctc_06971e13fbb4de59006a753213b418819baa3fdc2dd478df8d",
+            "id": "ctc_0324457768c1c480006a971f176f6c87d0967b71311116c953",
             "type": "custom_tool_call",
             "status": "completed",
-            "call_id": "call_ok2Rifudbnx8BUtSeYZV01vZ",
+            "call_id": "call_DyJD8OzrNvICW3Mt0OE6niSj",
             "input": "4 + 4",
             "name": "math_exp"
           }

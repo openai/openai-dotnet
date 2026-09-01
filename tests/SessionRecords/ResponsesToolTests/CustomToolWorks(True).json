@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "310",
+        "Content-Length": "324",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-5.6",
@@ -34,7 +34,8 @@
               }
             ]
           }
-        ]
+        ],
+        "store": false
       },
       "StatusCode": 200,
       "ResponseHeaders": {
@@ -45,9 +46,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a2ac42a4fa9e30be-SEA",
+        "CF-Ray": "a34679b08aae7594-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2109",
+        "Content-Length": "2110",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -67,15 +68,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_01acd2cbf7650b98006a7e726780cc81999a495b6e6be92af6",
+        "id": "resp_05df00402207e7e2016a971f0d1e9487d0a618aad6dc589ee7",
         "object": "response",
-        "created_at": 1786671719,
+        "created_at": 1788288781,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1786671720,
+        "completed_at": 1788288782,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -86,10 +87,10 @@
         "moderation": null,
         "output": [
           {
-            "id": "ctc_01acd2cbf7650b98006a7e7268344881999ab8fe3de87015fc",
+            "id": "ctc_05df00402207e7e2016a971f0e042887d09fa559b3a28a4cfd",
             "type": "custom_tool_call",
             "status": "completed",
-            "call_id": "call_iy6c4yy1pFzGxbGVPEkFxAdN",
+            "call_id": "call_9t9XSNaAsuwTrqxwhMYaQZqj",
             "input": "print(\"hello world\")\n",
             "name": "code_exec"
           }
@@ -107,7 +108,7 @@
         },
         "safety_identifier": null,
         "service_tier": "default",
-        "store": true,
+        "store": false,
         "temperature": 1.0,
         "text": {
           "format": {
@@ -169,12 +170,11 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "361",
+        "Content-Length": "658",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_01acd2cbf7650b98006a7e726780cc81999a495b6e6be92af6",
         "model": "gpt-5.6",
         "tools": [
           {
@@ -186,10 +186,29 @@
             }
           }
         ],
+        "tool_choice": "auto",
         "input": [
           {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Use the code_exec tool to print hello world to the console."
+              }
+            ]
+          },
+          {
+            "type": "custom_tool_call",
+            "id": "ctc_05df00402207e7e2016a971f0e042887d09fa559b3a28a4cfd",
+            "call_id": "call_9t9XSNaAsuwTrqxwhMYaQZqj",
+            "input": "print(\"hello world\")\n",
+            "name": "code_exec",
+            "status": "completed"
+          },
+          {
             "type": "custom_tool_call_output",
-            "call_id": "call_iy6c4yy1pFzGxbGVPEkFxAdN",
+            "call_id": "call_9t9XSNaAsuwTrqxwhMYaQZqj",
             "output": [
               {
                 "type": "input_text",
@@ -197,7 +216,8 @@
               }
             ]
           }
-        ]
+        ],
+        "store": false
       },
       "StatusCode": 200,
       "ResponseHeaders": {
@@ -208,9 +228,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a2ac42ae386b30be-SEA",
+        "CF-Ray": "a34679baab847594-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2254",
+        "Content-Length": "2202",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -229,15 +249,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_01acd2cbf7650b98006a7e7268d8b0819997efe8e091315aee",
+        "id": "resp_05df00402207e7e2016a971f0e92d887d0b2b03996f2013900",
         "object": "response",
-        "created_at": 1786671720,
+        "created_at": 1788288782,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1786671721,
+        "completed_at": 1788288783,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -248,7 +268,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_01acd2cbf7650b98006a7e7269aa648199af158fa832444bf9",
+            "id": "msg_05df00402207e7e2016a971f0f79bc87d0a59cc8b7f29384b1",
             "type": "message",
             "status": "completed",
             "content": [
@@ -265,7 +285,7 @@
         ],
         "parallel_tool_calls": true,
         "presence_penalty": 0.0,
-        "previous_response_id": "resp_01acd2cbf7650b98006a7e726780cc81999a495b6e6be92af6",
+        "previous_response_id": null,
         "prompt_cache_key": null,
         "prompt_cache_retention": "24h",
         "reasoning": {
@@ -276,7 +296,7 @@
         },
         "safety_identifier": null,
         "service_tier": "default",
-        "store": true,
+        "store": false,
         "temperature": 1.0,
         "text": {
           "format": {
@@ -330,79 +350,6 @@
         },
         "user": null,
         "metadata": {}
-      }
-    },
-    {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_01acd2cbf7650b98006a7e7268d8b0819997efe8e091315aee/input_items",
-      "RequestMethod": "GET",
-      "RequestHeaders": {
-        "Accept": "application/json",
-        "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.12.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
-      },
-      "RequestBody": null,
-      "StatusCode": 200,
-      "ResponseHeaders": {
-        "Access-Control-Expose-Headers": [
-          "X-Request-ID",
-          "CF-Ray",
-          "CF-Ray"
-        ],
-        "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a2ac42b66de130be-SEA",
-        "Connection": "keep-alive",
-        "Content-Length": "1100",
-        "Content-Type": "application/json",
-        "Date": "Sanitized",
-        "openai-organization": "Sanitized",
-        "openai-processing-ms": "Sanitized",
-        "openai-project": "Sanitized",
-        "openai-version": "2020-10-01",
-        "Server": "cloudflare",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-        "X-Content-Type-Options": "nosniff",
-        "X-Request-ID": "Sanitized"
-      },
-      "ResponseBody": {
-        "object": "list",
-        "data": [
-          {
-            "id": "ctco_01acd2cbf7650b98006a7e7268de148199b30a532b64de7174",
-            "type": "custom_tool_call_output",
-            "status": "completed",
-            "call_id": "call_iy6c4yy1pFzGxbGVPEkFxAdN",
-            "output": [
-              {
-                "type": "input_text",
-                "text": "hello world"
-              }
-            ]
-          },
-          {
-            "id": "ctc_01acd2cbf7650b98006a7e7268344881999ab8fe3de87015fc",
-            "type": "custom_tool_call",
-            "status": "completed",
-            "call_id": "call_iy6c4yy1pFzGxbGVPEkFxAdN",
-            "input": "print(\"hello world\")\n",
-            "name": "code_exec"
-          },
-          {
-            "id": "msg_01acd2cbf7650b98006a7e72678814819996953a39cbd63fa3",
-            "type": "message",
-            "status": "completed",
-            "content": [
-              {
-                "type": "input_text",
-                "text": "Use the code_exec tool to print hello world to the console."
-              }
-            ],
-            "role": "user"
-          }
-        ],
-        "first_id": "ctco_01acd2cbf7650b98006a7e7268de148199b30a532b64de7174",
-        "has_more": false,
-        "last_id": "msg_01acd2cbf7650b98006a7e72678814819996953a39cbd63fa3"
       }
     }
   ],
