@@ -13,8 +13,9 @@ namespace OpenAI.Audio
     {
         private readonly IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel)
+        internal DiarizedTranscriptionSegment(string kind, string id, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel)
         {
+            Kind = kind;
             Id = id;
             StartTime = startTime;
             EndTime = endTime;
@@ -22,8 +23,9 @@ namespace OpenAI.Audio
             SpeakerLabel = speakerLabel;
         }
 
-        internal DiarizedTranscriptionSegment(string id, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal DiarizedTranscriptionSegment(string kind, string id, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Kind = kind;
             Id = id;
             StartTime = startTime;
             EndTime = endTime;

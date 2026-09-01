@@ -13,6 +13,10 @@ namespace OpenAI.Containers
 {
     public partial class ContainerAllowlistNetworkPolicy : ContainerNetworkPolicy, IJsonModel<ContainerAllowlistNetworkPolicy>
     {
+        public ContainerAllowlistNetworkPolicy() : this(ContainerNetworkPolicyKind.Allowlist, default, null, null)
+        {
+        }
+
         protected override ContainerNetworkPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerAllowlistNetworkPolicy>)this).GetFormatFromOptions(options) : options.Format;

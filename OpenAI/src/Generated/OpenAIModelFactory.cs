@@ -179,9 +179,9 @@ namespace OpenAI
             return new ChatMessage(role.ToChatMessageRole(), content, default);
         }
 
-        public static ChatMessageContentPart ChatMessageContentPart()
+        public static ChatMessageContentPart ChatMessageContentPart(string kind = default)
         {
-            return new ChatMessageContentPart(default);
+            return new ChatMessageContentPart(kind.ToChatMessageContentPartKind(), default);
         }
 
         public static SystemChatMessage SystemChatMessage(ChatMessageContent content = default, string participantName = default)
@@ -2100,6 +2100,7 @@ namespace OpenAI
         public static DiarizedTranscriptionSegment DiarizedTranscriptionSegment(string id = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
         {
             return new DiarizedTranscriptionSegment(
+                "transcript.text.segment",
                 id,
                 startTime,
                 endTime,

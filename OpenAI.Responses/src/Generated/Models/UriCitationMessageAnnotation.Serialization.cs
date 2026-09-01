@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>
     {
+        public UriCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.UriCitation, default, null, default, default, null)
+        {
+        }
+
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<UriCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;

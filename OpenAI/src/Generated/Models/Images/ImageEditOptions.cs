@@ -32,10 +32,6 @@ namespace OpenAI.Images
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public ImageEditOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         public ImageInputFidelity? InputFidelity { get; set; }
 

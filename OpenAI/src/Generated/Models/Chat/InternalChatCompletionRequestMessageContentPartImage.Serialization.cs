@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartImage : ChatMessageContentPart, IJsonModel<InternalChatCompletionRequestMessageContentPartImage>
     {
-        internal InternalChatCompletionRequestMessageContentPartImage()
+        internal InternalChatCompletionRequestMessageContentPartImage() : this(default, default, null)
         {
         }
 
@@ -102,12 +102,18 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            ChatMessageContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl = default;
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = prop.Value.GetString().ToChatMessageContentPartKind();
+                    continue;
+                }
                 if (prop.NameEquals("image_url"u8))
                 {
                     imageUrl = InternalChatCompletionRequestMessageContentPartImageImageUrl.DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(prop.Value, prop.Value.GetUtf8Bytes(), options);
@@ -115,7 +121,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalChatCompletionRequestMessageContentPartImage(patch, imageUrl);
+            return new InternalChatCompletionRequestMessageContentPartImage(kind, patch, imageUrl);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
