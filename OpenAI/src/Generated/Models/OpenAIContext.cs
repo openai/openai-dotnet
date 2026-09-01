@@ -274,6 +274,24 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CustomMcpToolCallApprovalPolicy))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomTool is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CustomTool))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomToolCallItem is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CustomToolCallItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomToolCallItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomToolCallOutputItem is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CustomToolCallOutputItem))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomToolCallOutputItem is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomToolFormat is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CustomToolFormat))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomToolFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomToolGrammarFormat is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CustomToolGrammarFormat))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomToolGrammarFormat is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomToolTextFormat is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CustomToolTextFormat))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomToolTextFormat is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Chat.DeveloperChatMessage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(DeveloperChatMessage))]
 #pragma warning restore OPENAI001 // global::OpenAI.Chat.DeveloperChatMessage is experimental and may change in future versions.
@@ -434,6 +452,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalBatchRequestOutput))]
     [ModelReaderWriterBuildable(typeof(InternalBatchRequestOutputError))]
     [ModelReaderWriterBuildable(typeof(InternalBatchRequestOutputResponse))]
+    [ModelReaderWriterBuildable(typeof(InternalBetaAgentTag))]
     [ModelReaderWriterBuildable(typeof(InternalChatCompletionFunctionCallOption))]
     [ModelReaderWriterBuildable(typeof(InternalChatCompletionList))]
     [ModelReaderWriterBuildable(typeof(InternalChatCompletionMessageList))]
@@ -534,6 +553,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalDeleteEvalResponse))]
     [ModelReaderWriterBuildable(typeof(InternalDeleteEvalRunResponse))]
     [ModelReaderWriterBuildable(typeof(InternalDeleteFineTuningCheckpointPermissionResponse))]
+    [ModelReaderWriterBuildable(typeof(InternalDirectToolCallCaller))]
     [ModelReaderWriterBuildable(typeof(InternalDotNetAssistantResponseFormatJsonObject))]
     [ModelReaderWriterBuildable(typeof(InternalDotNetAssistantResponseFormatJsonSchema))]
     [ModelReaderWriterBuildable(typeof(InternalDotNetAssistantResponseFormatJsonSchemaJsonSchema))]
@@ -701,6 +721,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalModifyThreadRequestToolResources))]
     [ModelReaderWriterBuildable(typeof(InternalModifyThreadRequestToolResourcesCodeInterpreter))]
     [ModelReaderWriterBuildable(typeof(InternalOtherChunkingStrategyResponseParam))]
+    [ModelReaderWriterBuildable(typeof(InternalProgramToolCallCaller))]
     [ModelReaderWriterBuildable(typeof(InternalRealtimeErrorGA))]
     [ModelReaderWriterBuildable(typeof(InternalRealtimeErrorResponseGA))]
     [ModelReaderWriterBuildable(typeof(InternalReasoningItemParam))]
@@ -775,6 +796,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalTodoFineTuneChatRequestInput))]
     [ModelReaderWriterBuildable(typeof(InternalTokenCountsBody))]
     [ModelReaderWriterBuildable(typeof(InternalTokenCountsResource))]
+    [ModelReaderWriterBuildable(typeof(InternalToolCallCaller))]
     [ModelReaderWriterBuildable(typeof(InternalToolChoiceObject))]
     [ModelReaderWriterBuildable(typeof(InternalToolChoiceObjectCodeInterpreter))]
     [ModelReaderWriterBuildable(typeof(InternalToolChoiceObjectComputer))]
@@ -806,6 +828,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownContainerNetworkPolicy))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCreateTranscriptionResponseJsonUsage))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCreateTranscriptionResponseStreamEvent))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownCustomToolFormat))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetAssistantResponseFormat))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetCombinedChunkingStrategyParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetCreateSpeechStreamingResponse))]
@@ -840,6 +863,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseTextFormatConfiguration))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTool))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownToolCallCaller))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolChoiceBaseGA))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolChoiceObject))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTranscriptionTokenUsageBaseGA))]
@@ -1517,8 +1541,12 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCreatedUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCreatedUpdate))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCreatedUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCustomToolCallInputDeltaUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCustomToolCallInputDeltaUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCustomToolCallInputDeltaUpdate is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseCustomToolCallInputDoneUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseCustomToolCallInputDoneUpdate))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseCustomToolCallInputDoneUpdate is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.StreamingResponseErrorUpdate is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(StreamingResponseErrorUpdate))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.StreamingResponseErrorUpdate is experimental and may change in future versions.

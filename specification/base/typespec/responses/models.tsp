@@ -1671,7 +1671,6 @@ model DeleteResponseResponse {
   deleted: boolean;
 }
 
-
 @access(Access.public)
 @usage(Usage.input)
 model DotNetGetResponseOptions {

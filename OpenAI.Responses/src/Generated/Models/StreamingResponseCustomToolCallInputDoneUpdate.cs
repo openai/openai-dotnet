@@ -3,31 +3,37 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class StreamingResponseCustomToolCallInputDoneUpdate : StreamingResponseUpdate
+    [Experimental("OPENAI001")]
+    public partial class StreamingResponseCustomToolCallInputDoneUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCustomToolCallInputDoneUpdate(int sequenceNumber, int outputIndex, string itemId, string input) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDone, sequenceNumber)
+        internal StreamingResponseCustomToolCallInputDoneUpdate(int sequenceNumber, string input, string itemId, int outputIndex) : base(StreamingResponseUpdateKind.ResponseCustomToolCallInputDone, sequenceNumber)
         {
-            OutputIndex = outputIndex;
-            ItemId = itemId;
             Input = input;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCustomToolCallInputDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string input) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCustomToolCallInputDoneUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string input, string itemId, int outputIndex, InternalBetaAgentTag agent) : base(kind, sequenceNumber, patch)
         {
-            OutputIndex = outputIndex;
-            ItemId = itemId;
             Input = input;
+            ItemId = itemId;
+            OutputIndex = outputIndex;
+            Agent = agent;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public int OutputIndex { get; set; }
+        public string Input { get; set; }
 
         public string ItemId { get; set; }
 
-        public string Input { get; set; }
+        public int OutputIndex { get; set; }
+
+        internal InternalBetaAgentTag Agent { get; set; }
     }
 }

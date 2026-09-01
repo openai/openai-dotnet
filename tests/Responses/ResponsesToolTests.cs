@@ -34,6 +34,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")];
+
         CreateResponseOptions options = new(TestModel.Responses, inputItems)
         {
             Tools = { s_GetWeatherAtLocationTool },
@@ -45,17 +46,23 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response1 = await client.CreateResponseAsync(options);
         Assert.That(response1, Is.Not.Null);
         Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
         Assert.That(response1.Tools.Count, Is.EqualTo(1));
+        Assert.That(response1.Tools[0], Is.InstanceOf<FunctionTool>());
+        Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
         Assert.That(response1.OutputItems[0], Is.InstanceOf<FunctionCallResponseItem>());
+
+        FunctionTool responseTool = response1.Tools[0] as FunctionTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.FunctionName, Is.EqualTo(s_GetWeatherAtLocationTool.FunctionName));
+        Assert.That(responseTool.FunctionDescription, Is.EqualTo(s_GetWeatherAtLocationTool.FunctionDescription));
 
         FunctionCallResponseItem functionCall = response1.OutputItems[0] as FunctionCallResponseItem;
         Assert.That(functionCall, Is.Not.Null);
         Assert.That(functionCall.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(functionCall.Status, Is.EqualTo(FunctionCallStatus.Completed));
         Assert.That(functionCall.CallId, Is.Not.Null.And.Not.Empty);
         Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
         Assert.That(functionCall.FunctionArguments, Is.Not.Null);
-
         Assert.That(() =>
         {
             using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
@@ -86,6 +93,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         // Second turn.
         ResponseResult response2 = await client.CreateResponseAsync(options);
         Assert.That(response2, Is.Not.Null);
+        Assert.That(response2.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response2.OutputItems[0], Is.InstanceOf<MessageResponseItem>());
         Assert.That(response2.GetOutputText(), Is.Not.Null.And.Not.Empty);
         Assert.That(response2.GetOutputText(), Does.Contain("22"));
     }
@@ -96,6 +105,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedResponsesClient();
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")];
+
         CreateResponseOptions options = new(TestModel.Responses, inputItems)
         {
             Tools = { s_GetWeatherAtLocationTool },
@@ -103,53 +113,235 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        int functionCallArgumentsDeltaUpdateCount = 0;
-        int functionCallArgumentsDoneUpdateCount = 0;
-
-        Dictionary<int, StringBuilder> argumentsByOutputIndex = [];
+        StringBuilder argumentsBuilder = new();
+        int argumentsDeltaCount = 0;
+        int argumentsDoneCount = 0;
+        string toolCallItemId = null;
+        FunctionCallResponseItem completedFunctionToolCall = null;
 
         await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
         {
-            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
+            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate argumentsDeltaUpdate)
             {
-                functionCallArgumentsDeltaUpdateCount++;
-
-                BinaryData delta = functionCallArgumentsDeltaUpdate.Delta;
-                Assert.That(delta, Is.Not.Null);
-
-                if (!delta.ToMemory().IsEmpty)
-                {
-                    if (!argumentsByOutputIndex.TryGetValue(functionCallArgumentsDeltaUpdate.OutputIndex, out StringBuilder argumentsBuilder))
-                    {
-                        argumentsBuilder = new StringBuilder();
-                        argumentsByOutputIndex.Add(functionCallArgumentsDeltaUpdate.OutputIndex, argumentsBuilder);
-                    }
-
-                    argumentsBuilder.Append(delta);
-                }
+                Assert.That(argumentsDeltaUpdate.Delta, Is.Not.Null);
+                Assert.That(argumentsDeltaUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                Assert.That(argumentsDeltaUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                toolCallItemId ??= argumentsDeltaUpdate.ItemId;
+                Assert.That(argumentsDeltaUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                argumentsBuilder.Append(argumentsDeltaUpdate.Delta);
+                argumentsDeltaCount++;
             }
-            else if (update is StreamingResponseFunctionCallArgumentsDoneUpdate functionCallArgumentsDoneUpdate)
+            else if (update is StreamingResponseFunctionCallArgumentsDoneUpdate argumentsDoneUpdate)
             {
-                functionCallArgumentsDoneUpdateCount++;
-
-                BinaryData functionArguments = functionCallArgumentsDoneUpdate.FunctionArguments;
-                Assert.That(functionArguments, Is.Not.Null);
-                Assert.That(argumentsByOutputIndex.TryGetValue(functionCallArgumentsDoneUpdate.OutputIndex, out StringBuilder argumentsBuilder), Is.True);
-                Assert.That(functionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString()));
+                Assert.That(argumentsDoneUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                Assert.That(argumentsDoneUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                Assert.That(argumentsDoneUpdate.FunctionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString()));
                 Assert.DoesNotThrow(() =>
                 {
-                    using JsonDocument document = JsonDocument.Parse(functionArguments);
+                    using JsonDocument document = JsonDocument.Parse(argumentsDoneUpdate.FunctionArguments);
                     Assert.That(document.RootElement.GetProperty("location").GetString(), Is.Not.Null.And.Not.Empty);
                     Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
                 });
-
-                argumentsByOutputIndex.Remove(functionCallArgumentsDoneUpdate.OutputIndex);
+                argumentsDoneCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate
+                && outputItemDoneUpdate.Item is FunctionCallResponseItem functionToolCall)
+            {
+                completedFunctionToolCall = functionToolCall;
             }
         }
 
-        Assert.That(functionCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
-        Assert.That(argumentsByOutputIndex, Is.Empty);
+        Assert.That(argumentsDeltaCount, Is.GreaterThan(0));
+        Assert.That(argumentsDoneCount, Is.EqualTo(1));
+        Assert.That(completedFunctionToolCall, Is.Not.Null);
+        Assert.That(completedFunctionToolCall.Id, Is.EqualTo(toolCallItemId));
+        Assert.That(completedFunctionToolCall.Status, Is.EqualTo(FunctionCallStatus.Completed));
+        Assert.That(completedFunctionToolCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
+        Assert.That(completedFunctionToolCall.FunctionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString()));
+    }
+
+    [RecordedTest]
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task CustomToolWorks(bool isStateless)
+    {
+        const string toolName = "code_exec";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Use the code_exec tool to print hello world to the console.")];
+
+        CustomTool customTool = new(toolName)
+        {
+            ToolDescription = "Executes arbitrary Python code.",
+            ToolFormat = new CustomToolTextFormat(),
+        };
+
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            StoredOutputEnabled = !isStateless,
+        };
+
+        // First turn.
+        ResponseResult response1 = await client.CreateResponseAsync(options);
+        Assert.That(response1, Is.Not.Null);
+        Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response1.Tools.Count, Is.EqualTo(1));
+        Assert.That(response1.Tools[0], Is.InstanceOf<CustomTool>());
+        Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response1.OutputItems[0], Is.InstanceOf<CustomToolCallItem>());
+
+        CustomTool responseTool = response1.Tools[0] as CustomTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.ToolName, Is.EqualTo(customTool.ToolName));
+        Assert.That(responseTool.ToolDescription, Is.EqualTo(customTool.ToolDescription));
+        Assert.That(responseTool.ToolFormat, Is.TypeOf<CustomToolTextFormat>());
+
+        CustomToolCallItem customToolCall = response1.OutputItems[0] as CustomToolCallItem;
+        Assert.That(customToolCall, Is.Not.Null);
+        Assert.That(customToolCall.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+        Assert.That(customToolCall.CallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(customToolCall.ToolName, Is.EqualTo(toolName));
+        Assert.That(customToolCall.Input, Does.Contain("hello").IgnoreCase);
+
+        ResponseItem customToolOutput = ResponseItem.CreateCustomToolCallOutputItem(customToolCall.CallId, [ResponseContentPart.CreateInputTextPart("hello world")]);
+
+        if (isStateless)
+        {
+            foreach (ResponseItem outputItem in response1.OutputItems)
+            {
+                options.InputItems.Add(outputItem);
+            }
+            Assert.That(options.InputItems.Count, Is.EqualTo(2));
+        }
+        else
+        {
+            options.PreviousResponseId = response1.Id;
+            options.InputItems.Clear();
+            Assert.That(options.InputItems.Count, Is.EqualTo(0));
+        }
+
+        options.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        options.InputItems.Add(customToolOutput);
+
+        // Second turn.
+        ResponseResult response2 = await client.CreateResponseAsync(options);
+        Assert.That(response2, Is.Not.Null);
+        Assert.That(response2.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response2.OutputItems[0], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response2.GetOutputText(), Is.Not.Null.And.Not.Empty);
+        Assert.That(response2.GetOutputText(), Does.Contain("hello world").IgnoreCase);
+    }
+
+    [RecordedTest]
+    public async Task CustomToolStreamingWorks()
+    {
+        const string toolName = "code_exec";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Use the code_exec tool to print hello world to the console.")];
+
+        CustomTool customTool = new(toolName)
+        {
+            ToolDescription = "Executes arbitrary Python code.",
+            ToolFormat = new CustomToolTextFormat(),
+        };
+
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            StreamingEnabled = true,
+        };
+
+        StringBuilder inputBuilder = new();
+        int inputDeltaCount = 0;
+        int inputDoneCount = 0;
+        string toolCallItemId = null;
+        CustomToolCallItem completedCustomToolCall = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseCustomToolCallInputDeltaUpdate inputDeltaUpdate)
+            {
+                Assert.That(inputDeltaUpdate.InputDelta, Is.Not.Null);
+                Assert.That(inputDeltaUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                Assert.That(inputDeltaUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                toolCallItemId ??= inputDeltaUpdate.ItemId;
+                Assert.That(inputDeltaUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                inputBuilder.Append(inputDeltaUpdate.InputDelta);
+                inputDeltaCount++;
+            }
+            else if (update is StreamingResponseCustomToolCallInputDoneUpdate inputDoneUpdate)
+            {
+                Assert.That(inputDoneUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                Assert.That(inputDoneUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                Assert.That(inputDoneUpdate.Input, Is.EqualTo(inputBuilder.ToString()));
+                inputDoneCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate
+                && outputItemDoneUpdate.Item is CustomToolCallItem customToolCall)
+            {
+                completedCustomToolCall = customToolCall;
+            }
+        }
+
+        Assert.That(inputDeltaCount, Is.GreaterThan(0));
+        Assert.That(inputDoneCount, Is.EqualTo(1));
+        Assert.That(completedCustomToolCall, Is.Not.Null);
+        Assert.That(completedCustomToolCall.Id, Is.EqualTo(toolCallItemId));
+        Assert.That(completedCustomToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+        Assert.That(completedCustomToolCall.ToolName, Is.EqualTo(toolName));
+        Assert.That(completedCustomToolCall.Input, Is.EqualTo(inputBuilder.ToString()));
+    }
+
+    [RecordedTest]
+    public async Task CustomToolWithGrammarWorks()
+    {
+        const string grammarDefinition = "^[0-9]+ \\+ [0-9]+$";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Use the math_exp tool to add four plus four.")];
+
+        CustomTool customTool = new("math_exp")
+        {
+            ToolDescription = "Creates a mathematical addition expression.",
+            ToolFormat = new CustomToolGrammarFormat(grammarDefinition, CustomToolGrammarFormatSyntax.Regex),
+        };
+
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.Tools.Count, Is.EqualTo(1));
+        Assert.That(response.Tools[0], Is.InstanceOf<CustomTool>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<CustomToolCallItem>());
+
+        CustomTool responseTool = response.Tools[0] as CustomTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.ToolFormat, Is.InstanceOf<CustomToolGrammarFormat>());
+
+        CustomToolGrammarFormat responseToolFormat = responseTool.ToolFormat as CustomToolGrammarFormat;
+        Assert.That(responseToolFormat, Is.Not.Null);
+        Assert.That(responseToolFormat.Syntax, Is.EqualTo(CustomToolGrammarFormatSyntax.Regex));
+        Assert.That(responseToolFormat.Definition, Is.EqualTo(grammarDefinition));
+
+        CustomToolCallItem customToolCall = response.OutputItems[0] as CustomToolCallItem;
+        Assert.That(customToolCall, Is.Not.Null);
+        Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+        Assert.That(customToolCall.ToolName, Is.EqualTo(customTool.ToolName));
+        Assert.That(customToolCall.Input, Does.Match(grammarDefinition)); // e.g.: "4 + 4"
     }
 
 
