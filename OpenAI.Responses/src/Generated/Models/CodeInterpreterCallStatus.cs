@@ -16,6 +16,8 @@ namespace OpenAI.Responses
         private const string InProgressValue = "in_progress";
         private const string InterpretingValue = "interpreting";
         private const string CompletedValue = "completed";
+        private const string IncompleteValue = "incomplete";
+        private const string FailedValue = "failed";
 
         public CodeInterpreterCallStatus(string value)
         {
@@ -29,6 +31,10 @@ namespace OpenAI.Responses
         public static CodeInterpreterCallStatus Interpreting { get; } = new CodeInterpreterCallStatus(InterpretingValue);
 
         public static CodeInterpreterCallStatus Completed { get; } = new CodeInterpreterCallStatus(CompletedValue);
+
+        public static CodeInterpreterCallStatus Incomplete { get; } = new CodeInterpreterCallStatus(IncompleteValue);
+
+        public static CodeInterpreterCallStatus Failed { get; } = new CodeInterpreterCallStatus(FailedValue);
 
         public static bool operator ==(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right) => left.Equals(right);
 
