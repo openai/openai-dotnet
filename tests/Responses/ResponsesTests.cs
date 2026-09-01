@@ -354,7 +354,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.Usage, Is.Not.Null);
         Assert.That(response.Usage.InputTokenDetails, Is.Not.Null);
         Assert.That(response.Usage.InputTokenDetails.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
-        Assert.That(response.Usage.InputTokenDetails.CachedWriteTokens, Is.GreaterThanOrEqualTo(0));
+        Assert.That(response.Usage.InputTokenDetails.CachedWriteTokenCount, Is.GreaterThanOrEqualTo(0));
         Assert.That(response.Usage.OutputTokenDetails, Is.Not.Null);
         Assert.That(response.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThan(0));
     }

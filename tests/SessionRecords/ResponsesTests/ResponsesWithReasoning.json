@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "269",
+        "Content-Length": "267",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.10; Ubuntu 24.04.1 LTS)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Ubuntu 24.04.1 LTS)"
       },
       "RequestBody": {
         "model": "gpt-5.6",
@@ -23,7 +23,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "What's the best way to fold a burrito?"
+                "text": "What's the best way to cook a steak?"
               }
             ]
           }
@@ -39,9 +39,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a2a2044278bdaff6-EWR",
+        "CF-Ray": "a345332b288755d7-EWR",
         "Connection": "keep-alive",
-        "Content-Length": "2832",
+        "Content-Length": "3492",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -55,21 +55,21 @@
         "x-ratelimit-limit-requests": "15000",
         "x-ratelimit-limit-tokens": "40000000",
         "x-ratelimit-remaining-requests": "14999",
-        "x-ratelimit-remaining-tokens": "39999922",
+        "x-ratelimit-remaining-tokens": "39999589",
         "x-ratelimit-reset-requests": "4ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0cc0a58be930d768006a7cced25fbc819e8fa80571fbf90047",
+        "id": "resp_02ace6e5f44baad8006a96eacfb02087d2abc4ee12fd84097c",
         "object": "response",
-        "created_at": 1786564306,
+        "created_at": 1788275407,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1786564310,
+        "completed_at": 1788275418,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -80,19 +80,19 @@
         "moderation": null,
         "output": [
           {
-            "id": "rs_0cc0a58be930d768006a7cced2e63c819ea6aeb034e95080f0",
+            "id": "rs_02ace6e5f44baad8006a96ead15ee487d2bacdb26b7d6d4dca",
             "type": "reasoning",
             "content": [],
             "encrypted_content": "Sanitized",
             "summary": [
               {
                 "type": "summary_text",
-                "text": "**Creating clear instructions**\n\nI need to provide a concise answer while following the desired instructions. It sounds like a good approach is to explain the steps clearly: warm the tortilla, avoid overfilling, tuck in the sides, and roll it tightly. I should include specific quantities and helpful tips to eliminate any confusion. I might also mention placing the seam-side down and toasting it for better results. Let’s aim to create bullet points for clarity!"
+                "text": "**Exploring cooking methods**\n\nI'm thinking about answering generically about cooking techniques. The best method often hinges on the cut and equipment. For thick steaks, the reverse sear is a winner, and for thinner cuts, pan-searing works well. It's crucial to share helpful temperature guidelines and the impact of dry brining and resting. USDA recommends 145°F for safety, but culinary preferences vary. For a 1.5-inch ribeye, the reverse sear can start by baking to about 110-115°F then searing to finish at the desired temp."
               }
             ]
           },
           {
-            "id": "msg_0cc0a58be930d768006a7cced4d71c819e9b32c8cfaab0b303",
+            "id": "msg_02ace6e5f44baad8006a96ead6984c87d2a950b0e694cb6b07",
             "type": "message",
             "status": "completed",
             "content": [
@@ -100,7 +100,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "For a tight, leak-resistant burrito:\n\n1. **Warm the tortilla** for 10–15 seconds so it’s flexible.\n2. **Place filling just below the center**, leaving about 2 inches clear on each side. Don’t overfill.\n3. **Fold the bottom edge up and over the filling.**\n4. **Pull it back gently** to compact the filling into a tight cylinder.\n5. **Fold both sides inward** over the filling.\n6. **Roll forward tightly**, keeping the sides tucked in, until the seam is underneath.\n7. Optionally, **toast seam-side down** in a dry skillet for 1–2 minutes to seal it.\n\nKey tip: use less filling than you think—about 1½ cups for a large tortilla."
+                "text": "For a **thick steak (1½–2 inches), reverse-searing** is the most reliable way to get an evenly cooked center and a great crust.\n\n### Reverse-sear method\n1. **Salt ahead:** Season generously with kosher salt 1–24 hours before cooking. Refrigerate uncovered if possible.\n2. **Dry and season:** Pat very dry; add black pepper.\n3. **Low oven:** Place on a wire rack over a sheet pan at **250°F / 120°C**. Cook until the center is about **10–15°F below your target**—roughly **115–120°F for medium-rare**.\n4. **Sear:** Heat a cast-iron or heavy pan until extremely hot. Add a thin layer of high-smoke-point oil, then sear the steak **45–60 seconds per side**, including the edges.\n5. **Finish:** During the final 30 seconds, optionally add butter, garlic, and thyme and baste.\n6. **Rest briefly:** Let it sit for about **5 minutes**, then slice across the grain.\n\n### Final temperature guide\n- Rare: **120–125°F / 49–52°C**\n- Medium-rare: **130–135°F / 54–57°C**\n- Medium: **140–145°F / 60–63°C**\n\nUse an instant-read thermometer—temperature is much more reliable than timing. For steaks under about **1 inch thick**, skip the oven and simply sear in a very hot pan for 2–3 minutes per side."
               }
             ],
             "phase": "final_answer",
@@ -152,16 +152,16 @@
         "top_p": 0.98,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 30,
+          "input_tokens": 29,
           "input_tokens_details": {
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 221,
+          "output_tokens": 554,
           "output_tokens_details": {
-            "reasoning_tokens": 56
+            "reasoning_tokens": 228
           },
-          "total_tokens": 251
+          "total_tokens": 583
         },
         "user": null,
         "metadata": {}

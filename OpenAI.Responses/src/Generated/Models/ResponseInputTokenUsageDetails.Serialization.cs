@@ -80,7 +80,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.cached_write_tokens"u8))
             {
                 writer.WritePropertyName("cached_write_tokens"u8);
-                writer.WriteNumberValue(CachedWriteTokens);
+                writer.WriteNumberValue(CachedWriteTokenCount);
             }
 
             Patch.WriteTo(writer);
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
                 return null;
             }
             int cachedTokenCount = default;
-            int cachedWriteTokens = default;
+            int cachedWriteTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -120,12 +120,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("cached_write_tokens"u8))
                 {
-                    cachedWriteTokens = prop.Value.GetInt32();
+                    cachedWriteTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseInputTokenUsageDetails(cachedTokenCount, cachedWriteTokens, patch);
+            return new ResponseInputTokenUsageDetails(cachedTokenCount, cachedWriteTokenCount, patch);
         }
     }
 }
