@@ -1092,7 +1092,7 @@ model ResponseUsage {
     cached_tokens: int32;
 
     /**
-     * The number of input tokens newly wrtitten to the cache.
+     * The number of input tokens newly written to the cache.
      * [More on prompt caching](/docs/guides/prompt-caching).
      */
     cache_write_tokens: int32;
