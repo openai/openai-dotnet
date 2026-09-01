@@ -8,10 +8,11 @@
         "Authorization": "Sanitized",
         "Content-Length": "184",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
+        "instructions": "Always begin your replies with 'Arr, matey'",
         "input": [
           {
             "type": "message",
@@ -23,21 +24,15 @@
               }
             ]
           }
-        ],
-        "instructions": "Always begin your replies with 'Arr, matey'"
+        ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": [
-          "X-Request-ID",
-          "CF-Ray",
-          "CF-Ray"
-        ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32599dfccca703b-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9a843401ce75e032-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "2049",
+        "Content-Length": "1522",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -45,37 +40,39 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2156",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999952",
+        "x-ratelimit-remaining-tokens": "149999955",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_029d5f891a7bd1de006a91dc85277887d0a2341f3042877d02",
+        "id": "resp_019551d585e3d78b0069305b9538c4819386ce50ab75df5da1",
         "object": "response",
-        "created_at": 1787944069,
+        "created_at": 1764776853,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1787944069,
         "error": null,
-        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": "Always begin your replies with 'Arr, matey'",
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
-        "moderation": null,
         "output": [
           {
-            "id": "msg_029d5f891a7bd1de006a91dc85852487d086d77ff1aefc9313",
+            "id": "msg_019551d585e3d78b0069305b9602e481939305d88f2757e69a",
             "type": "message",
             "status": "completed",
             "content": [
@@ -90,12 +87,10 @@
           }
         ],
         "parallel_tool_calls": true,
-        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": "in_memory",
+        "prompt_cache_retention": null,
         "reasoning": {
-          "context": null,
           "effort": null,
           "summary": null
         },
@@ -110,24 +105,6 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
-        "tool_usage": {
-          "image_gen": {
-            "input_tokens": 0,
-            "input_tokens_details": {
-              "image_tokens": 0,
-              "text_tokens": 0
-            },
-            "output_tokens": 0,
-            "output_tokens_details": {
-              "image_tokens": 0,
-              "text_tokens": 0
-            },
-            "total_tokens": 0
-          },
-          "web_search": {
-            "num_requests": 0
-          }
-        },
         "tools": [],
         "top_logprobs": 0,
         "top_p": 1.0,
@@ -135,7 +112,6 @@
         "usage": {
           "input_tokens": 26,
           "input_tokens_details": {
-            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
           "output_tokens": 13,
@@ -149,26 +125,21 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_029d5f891a7bd1de006a91dc85277887d0a2341f3042877d02",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_019551d585e3d78b0069305b9538c4819386ce50ab75df5da1",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": [
-          "X-Request-ID",
-          "CF-Ray",
-          "CF-Ray"
-        ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32599e4e920703b-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9a843412cdade032-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "2049",
+        "Content-Length": "1522",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -178,29 +149,27 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "152",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_029d5f891a7bd1de006a91dc85277887d0a2341f3042877d02",
+        "id": "resp_019551d585e3d78b0069305b9538c4819386ce50ab75df5da1",
         "object": "response",
-        "created_at": 1787944069,
+        "created_at": 1764776853,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1787944069,
         "error": null,
-        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": "Always begin your replies with 'Arr, matey'",
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-4o-mini-2024-07-18",
-        "moderation": null,
         "output": [
           {
-            "id": "msg_029d5f891a7bd1de006a91dc85852487d086d77ff1aefc9313",
+            "id": "msg_019551d585e3d78b0069305b9602e481939305d88f2757e69a",
             "type": "message",
             "status": "completed",
             "content": [
@@ -215,12 +184,10 @@
           }
         ],
         "parallel_tool_calls": true,
-        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": "in_memory",
+        "prompt_cache_retention": null,
         "reasoning": {
-          "context": null,
           "effort": null,
           "summary": null
         },
@@ -235,24 +202,6 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
-        "tool_usage": {
-          "image_gen": {
-            "input_tokens": 0,
-            "input_tokens_details": {
-              "image_tokens": 0,
-              "text_tokens": 0
-            },
-            "output_tokens": 0,
-            "output_tokens_details": {
-              "image_tokens": 0,
-              "text_tokens": 0
-            },
-            "total_tokens": 0
-          },
-          "web_search": {
-            "num_requests": 0
-          }
-        },
         "tools": [],
         "top_logprobs": 0,
         "top_p": 1.0,
@@ -260,7 +209,6 @@
         "usage": {
           "input_tokens": 26,
           "input_tokens_details": {
-            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
           "output_tokens": 13,
@@ -274,24 +222,19 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_029d5f891a7bd1de006a91dc85277887d0a2341f3042877d02/input_items",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_019551d585e3d78b0069305b9538c4819386ce50ab75df5da1/input_items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": [
-          "X-Request-ID",
-          "CF-Ray",
-          "CF-Ray"
-        ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32599e7987e703b-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9a8434170813e032-DFW",
         "Connection": "keep-alive",
         "Content-Length": "474",
         "Content-Type": "application/json",
@@ -303,13 +246,14 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "158",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "list",
         "data": [
           {
-            "id": "msg_029d5f891a7bd1de006a91dc852d5087d0b26e142d8da95436",
+            "id": "msg_019551d585e3d78b0069305b953b948193b1e83d2dfe72ad09",
             "type": "message",
             "status": "completed",
             "content": [
@@ -321,13 +265,13 @@
             "role": "user"
           }
         ],
-        "first_id": "msg_029d5f891a7bd1de006a91dc852d5087d0b26e142d8da95436",
+        "first_id": "msg_019551d585e3d78b0069305b953b948193b1e83d2dfe72ad09",
         "has_more": false,
-        "last_id": "msg_029d5f891a7bd1de006a91dc852d5087d0b26e142d8da95436"
+        "last_id": "msg_019551d585e3d78b0069305b953b948193b1e83d2dfe72ad09"
       }
     }
   ],
   "Variables": {
-    "OPENAI_API_KEY": "api-key"
+    "OPEN-API-KEY": "api-key"
   }
 }

@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "82",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
@@ -20,12 +20,11 @@
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
           "X-Request-ID",
-          "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e47eaaa4e668-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a347f742e8e8b9df-SEA",
         "Connection": "keep-alive",
         "Content-Length": "519",
         "Content-Type": "application/json",
@@ -35,13 +34,12 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "created": 1781047510,
+        "created": 1788304422,
         "background": "opaque",
         "data": [
           {
@@ -77,7 +75,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "messages": [
@@ -109,7 +107,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e4e1998de668-SEA",
+        "CF-Ray": "a347f793db01b9df-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -134,16 +132,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp06iIIDma6gkJcPe4wHJUjeYyrGI",
+        "id": "chatcmpl-EJRxfjJDvelBNZTk135iMbWR8pyv3",
         "object": "chat.completion",
-        "created": 1781047512,
+        "created": 1788304423,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a standard stop sign. It is octagonal in shape with a bright red background. The word \"STOP\" is prominently displayed in large white letters at the center of the sign. The sign is mounted on a vertical gray pole against a plain white background, making it stand out clearly. The overall design is simple and straightforward, conveying the universal message to halt.",
+              "content": "The image shows a red, octagonal stop sign. The word \"STOP\" is prominently displayed in bold white letters in the center of the sign. The sign is mounted on a gray metal pole and has a plain white background, emphasizing the sign's bright red color and clear message.",
               "refusal": null,
               "annotations": []
             },
@@ -153,8 +151,8 @@
         ],
         "usage": {
           "prompt_tokens": 25515,
-          "completion_tokens": 75,
-          "total_tokens": 25590,
+          "completion_tokens": 57,
+          "total_tokens": 25572,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -178,7 +176,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "messages": [
@@ -210,9 +208,8 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093e4f269f5e668-SEA",
+        "CF-Ray": "a347f7a1c8feb9df-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "924",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -221,6 +218,7 @@
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
@@ -228,23 +226,23 @@
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-input-images": "49999",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999225",
+        "x-ratelimit-remaining-tokens": "149999227",
         "x-ratelimit-reset-input-images": "1ms",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp06l7Nlayc4ZCgAyNTTzkJwC1PhA",
+        "id": "chatcmpl-EJRxh987k2bXqpZGzSIrBvLZauye5",
         "object": "chat.completion",
-        "created": 1781047515,
+        "created": 1788304425,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a red octagonal stop sign mounted on a silver metal pole. The sign has the word \"STOP\" written in large, white uppercase letters at its center. The background appears plain, emphasizing the sign itself. The design is typical of standard traffic signs used to indicate that vehicles must come to a complete stop.",
+              "content": "The image features a stop sign, which is octagonal in shape and primarily red. The word \"STOP\" is prominently displayed in large white letters in the center of the sign. The sign is mounted on a gray pole, and the background is plain, emphasizing the sign itself. This type of sign is commonly used to indicate that vehicles must come to a complete stop at intersections or roadways.",
               "refusal": null,
               "annotations": []
             },
@@ -254,8 +252,8 @@
         ],
         "usage": {
           "prompt_tokens": 25515,
-          "completion_tokens": 65,
-          "total_tokens": 25580,
+          "completion_tokens": 79,
+          "total_tokens": 25594,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "720",
+        "Content-Length": "705",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -68,7 +68,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a347d735bc624f73-SEA",
+        "CF-Ray": "a32eb5ffea3783bf-SEA",
         "Connection": "keep-alive",
         "Content-Length": "2682",
         "Content-Type": "application/json",
@@ -78,6 +78,7 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "x-ratelimit-limit-requests": "30000",
@@ -89,15 +90,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0f97f18eea6a3549016a9756f949ac87d0b901ad0693c763b9",
+        "id": "resp_0d10f421b18278c3016a9351a925c487d08198be1e27be0057",
         "object": "response",
-        "created_at": 1788303097,
+        "created_at": 1788039593,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788303097,
+        "completed_at": 1788039593,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -108,11 +109,11 @@
         "moderation": null,
         "output": [
           {
-            "id": "fc_0f97f18eea6a3549016a9756f9bcd487d09eb27e61532ea696",
+            "id": "fc_0d10f421b18278c3016a9351a9a83487d0993434fd9038b9a6",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"F\"}",
-            "call_id": "call_4vQFz2aTlOJKbqvskHXbcpen",
+            "call_id": "call_6D5pBmxBPeBeZvoIyqGngO4y",
             "name": "get_weather_at_location"
           }
         ],
@@ -213,9 +214,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "1036",
+        "Content-Length": "1021",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -262,15 +263,15 @@
           },
           {
             "type": "function_call",
-            "id": "fc_0f97f18eea6a3549016a9756f9bcd487d09eb27e61532ea696",
+            "id": "fc_0d10f421b18278c3016a9351a9a83487d0993434fd9038b9a6",
             "status": "completed",
-            "call_id": "call_4vQFz2aTlOJKbqvskHXbcpen",
+            "call_id": "call_6D5pBmxBPeBeZvoIyqGngO4y",
             "name": "get_weather_at_location",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"F\"}"
           },
           {
             "type": "function_call_output",
-            "call_id": "call_4vQFz2aTlOJKbqvskHXbcpen",
+            "call_id": "call_6D5pBmxBPeBeZvoIyqGngO4y",
             "output": "22 degrees Celsius and windy"
           }
         ],
@@ -285,9 +286,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a347d73a79fd4f73-SEA",
+        "CF-Ray": "a32eb6066a1383bf-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3070",
+        "Content-Length": "3186",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -306,15 +307,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0f97f18eea6a3549016a9756fa144c87d09128544409ce50f5",
+        "id": "resp_0d10f421b18278c3016a9351aa0a6487d0b8ed441fb13d5aa8",
         "object": "response",
-        "created_at": 1788303098,
+        "created_at": 1788039594,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788303100,
+        "completed_at": 1788039595,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -325,7 +326,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_0f97f18eea6a3549016a9756fb541887d0bed5aafdc301fd7d",
+            "id": "msg_0d10f421b18278c3016a9351aa83a887d099da0da36acd1116",
             "type": "message",
             "status": "completed",
             "content": [
@@ -333,7 +334,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "The weather in San Francisco is currently 22°C (around 72°F) and windy. Here are some suggestions for what to wear:\n\n1. **Layers**: A light long-sleeve shirt or a t-shirt under a light jacket or cardigan.\n2. **Pants**: Comfortable jeans or chinos.\n3. **Footwear**: Casual shoes or sneakers that are good for walking.\n4. **Accessories**: A light scarf or hat can help with the wind.\n\nEnjoy your day in San Francisco!"
+                "text": "The weather in San Francisco is currently around 22°C (approximately 72°F) and windy. Here's what you should consider wearing:\n\n- **Layered Clothing**: A light long-sleeve shirt or a breathable sweater will be comfortable.\n- **Jacket**: A light windbreaker or a jacket to ward off the breeze.\n- **Pants**: Comfortable pants or jeans.\n- **Footwear**: Closed-toed shoes, as it might be windy and a bit chilly.\n- **Accessories**: Sunglasses and possibly a scarf if you feel the wind is significant.\n\nEnjoy your time in San Francisco!"
               }
             ],
             "role": "assistant"
@@ -417,11 +418,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 107,
+          "output_tokens": 128,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 217
+          "total_tokens": 238
         },
         "user": null,
         "metadata": {}
