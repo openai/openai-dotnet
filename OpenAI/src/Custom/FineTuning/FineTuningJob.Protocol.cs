@@ -88,6 +88,7 @@ public partial class FineTuningJob : OperationResult
         return client.CreateJobFromResponse(response);
     }
 
+
     /// <inheritdoc/>
     public override async ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options)
     {
@@ -277,5 +278,8 @@ public partial class FineTuningJob : OperationResult
         using PipelineMessage message = _client.CreateGetFineTuningEventsRequest(JobId, after, limit, options);
         return ClientResult.FromResponse(_pipeline.ProcessMessage(message, options));
     }
+
+
+
 
 }
