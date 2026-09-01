@@ -1434,6 +1434,8 @@ union CodeInterpreterCallStatus {
   in_progress: "in_progress",
   interpreting: "interpreting",
   completed: "completed",
+  incomplete: "incomplete",
+  failed: "failed",
 }
 
 union ImageGenerationCallStatus {
