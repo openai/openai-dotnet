@@ -213,66 +213,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task StreamingResponsesWithReasoningSummary()
-    {
-        ResponsesClient client = GetProxiedResponsesClient();
-
-        CreateResponseOptions options = new(
-            "o3-mini",
-            [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")])
-        {
-            ReasoningOptions = new()
-            {
-                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
-                ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
-            },
-            Instructions = "Perform reasoning over any questions asked by the user.",
-            StreamingEnabled = true,
-        };
-
-        int partsAdded = 0;
-        int partsDone = 0;
-        bool inPart = false;
-
-        bool receivedTextDelta = false;
-        bool receivedTextDone = false;
-        List<string> reasoningTexts = [];
-        string finalOutput = null;
-
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
-        {
-            if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
-            {
-                partsAdded++;
-                inPart = true;
-            }
-            else if (update is StreamingResponseReasoningSummaryPartDoneUpdate partDone)
-            {
-                partsDone++;
-                inPart = false;
-            }
-            else if (update is StreamingResponseReasoningSummaryTextDeltaUpdate textDelta)
-            {
-                receivedTextDelta = true;
-                reasoningTexts.Add(textDelta.Delta);
-            }
-            else if (update is StreamingResponseReasoningSummaryTextDoneUpdate textDone)
-            {
-                receivedTextDone = true;
-                finalOutput = textDone.Text;
-            }
-        }
-
-        Assert.That(partsAdded, Is.GreaterThanOrEqualTo(1), "No reasoning summary parts were added.");
-        Assert.That(partsDone, Is.EqualTo(partsAdded), "Parts added/done mismatch.");
-        Assert.That(receivedTextDelta, Is.True, "No reasoning summary text delta event received.");
-        Assert.That(receivedTextDone, Is.True, "No reasoning summary text done event received.");
-        Assert.That(reasoningTexts.Count, Is.GreaterThan(0), "No reasoning summary text accumulated.");
-        Assert.That(string.IsNullOrWhiteSpace(finalOutput), Is.False, "Final output text is empty.");
-        Assert.That(inPart, Is.False, "Ended while still inside a reasoning summary part.");
-    }
-
-    [RecordedTest]
     [TestCase("gpt-4o-mini")]
     public async Task ResponsesHelloWorldWithTool(string model)
     {
@@ -322,37 +262,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ResponsesWithReasoning()
-    {
-        ResponsesClient client = GetProxiedResponsesClient();
-
-        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
-        {
-            ReasoningOptions = new()
-            {
-                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
-                ReasoningEffortLevel = ResponseReasoningEffortLevel.ExtraHigh,
-            },
-            Instructions = "Perform reasoning over any questions asked by the user.",
-        };
-
-        ResponseResult response = await client.CreateResponseAsync(options);
-        Assert.That(response, Is.Not.Null);
-        Assert.That(response.Id, Is.Not.Null);
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.ReasoningOptions, Is.Not.Null);
-        Assert.That(response.ReasoningOptions.ReasoningEffortLevel, Is.EqualTo(ResponseReasoningEffortLevel.ExtraHigh));
-
-        ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
-        MessageResponseItem messageItem = response.OutputItems[1] as MessageResponseItem;
-
-        Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
-        Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
-        Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
-    }
-
-    [RecordedTest]
     public async Task ResponsesWithPromptCache()
     {
         string expectedPromptCacheKey = "test-prompt-cache-key";
@@ -374,32 +283,137 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ReasoningWithStoreDisabled()
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task ReasoningWorks(bool isStateless)
     {
         ResponsesClient client = GetProxiedResponsesClient();
 
-        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
-        CreateResponseOptions options = new("gpt-5-mini", inputItems)
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What is the best ice cream flavor: Chocolate or vanilla?")];
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
         {
-            StoredOutputEnabled = false,
-            IncludedProperties = { IncludedResponseProperty.ReasoningEncryptedContent }
+            ReasoningOptions = new()
+            {
+                ReasoningEffortLevel = ResponseReasoningEffortLevel.ExtraHigh,
+                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
+            },
+            StoredOutputEnabled = !isStateless,
         };
+
+        if (isStateless)
+        {
+            // This property is technically no longer needed; `encrypted_content` is included by default.
+            options.IncludedProperties.Add(IncludedResponseProperty.ReasoningEncryptedContent);
+        }
 
         // First turn.
         ResponseResult response1 = await client.CreateResponseAsync(options);
         Assert.That(response1, Is.Not.Null);
-        Assert.That(response1.OutputItems.OfType<ReasoningResponseItem>().Any(), Is.True);
+        Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response1.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response1.ReasoningOptions, Is.Not.Null);
+        Assert.That(response1.ReasoningOptions.ReasoningEffortLevel, Is.EqualTo(ResponseReasoningEffortLevel.ExtraHigh));
+        Assert.That(response1.ReasoningOptions.ReasoningSummaryVerbosity, Is.EqualTo(ResponseReasoningSummaryVerbosity.Detailed));
+        Assert.That(response1.OutputItems[0], Is.InstanceOf<ReasoningResponseItem>());
+        Assert.That(response1.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        // Propagate the output items into the next turn.
-        inputItems.AddRange(response1.OutputItems);
+        ReasoningResponseItem reasoningItem = response1.OutputItems[0] as ReasoningResponseItem;
+        Assert.That(reasoningItem, Is.Not.Null);
+        Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
+        Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
+        Assert.That(reasoningItem.EncryptedContent, Is.Not.Null.And.Not.Empty);
 
-        // Add the next user input.
-        inputItems.Add(ResponseItem.CreateUserMessageItem("Say that again, but dramatically"));
+        MessageResponseItem messageItem = response1.OutputItems[1] as MessageResponseItem;
+        Assert.That(messageItem, Is.Not.Null);
+        Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
+
+        if (isStateless)
+        {
+            foreach (ResponseItem outputItem in response1.OutputItems)
+            {
+                options.InputItems.Add(outputItem);
+            }
+            Assert.That(options.InputItems.Count, Is.EqualTo(3));
+        }
+        else
+        {
+            options.PreviousResponseId = response1.Id;
+            options.InputItems.Clear();
+            Assert.That(options.InputItems.Count, Is.EqualTo(0));
+        }
+
+        options.InputItems.Add(ResponseItem.CreateUserMessageItem("What about the best cake flavor?"));
 
         // Second turn.
         ResponseResult response2 = await client.CreateResponseAsync(options);
         Assert.That(response2, Is.Not.Null);
-        Assert.That(response2.GetOutputText(), Is.Not.Null.Or.Empty);
+        Assert.That(response2.GetOutputText(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
+    public async Task ReasoningStreamingWorks()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What is the best ice cream flavor: Chocolate or vanilla?")];
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            ReasoningOptions = new()
+            {
+                ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+            },
+            StreamingEnabled = true,
+        };
+
+        int partsAdded = 0;
+        int partsDone = 0;
+        bool inPart = false;
+
+        bool receivedTextDelta = false;
+        bool receivedTextDone = false;
+        List<string> reasoningTextDeltas = [];
+        string finalOutput = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
+            {
+                partsAdded++;
+                inPart = true;
+            }
+            else if (update is StreamingResponseReasoningSummaryPartDoneUpdate partDone)
+            {
+                partsDone++;
+                inPart = false;
+            }
+            else if (update is StreamingResponseReasoningSummaryTextDeltaUpdate textDelta)
+            {
+                receivedTextDelta = true;
+                reasoningTextDeltas.Add(textDelta.Delta);
+            }
+            else if (update is StreamingResponseReasoningSummaryTextDoneUpdate textDone)
+            {
+                receivedTextDone = true;
+                finalOutput = textDone.Text;
+            }
+        }
+
+        Assert.That(partsAdded, Is.GreaterThanOrEqualTo(1), "No reasoning summary parts were added.");
+        Assert.That(partsDone, Is.EqualTo(partsAdded), "Parts added/done mismatch.");
+        Assert.That(receivedTextDelta, Is.True, "No reasoning summary text delta event received.");
+        Assert.That(receivedTextDone, Is.True, "No reasoning summary text done event received.");
+        Assert.That(reasoningTextDeltas.Count, Is.GreaterThan(0), "No reasoning summary text accumulated.");
+        Assert.That(inPart, Is.False, "Ended while still inside a reasoning summary part.");
+        Assert.That(string.IsNullOrWhiteSpace(finalOutput), Is.False, "Final output text is empty.");
+
+        StringBuilder sb = new();
+        foreach (string reasoningTextDelta in reasoningTextDeltas)
+        {
+            sb.Append(reasoningTextDelta);
+        }
+        Assert.That(finalOutput, Is.EqualTo(sb.ToString()));
     }
 
     [RecordedTest]
@@ -800,102 +814,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task FunctionCallWorks()
-    {
-        ResponsesClient client = GetProxiedResponsesClient();
-
-        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
-        {
-            Tools = { s_GetWeatherAtLocationTool }
-        };
-
-        ResponseResult response = await client.CreateResponseAsync(
-            options);
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(1));
-        FunctionCallResponseItem functionCall = response.OutputItems[0] as FunctionCallResponseItem;
-        Assert.That(functionCall, Is.Not.Null);
-        Assert.That(functionCall!.Id, Has.Length.GreaterThan(0));
-        Assert.That(functionCall.FunctionName, Is.EqualTo("get_weather_at_location"));
-        Assert.That(functionCall.FunctionArguments, Is.Not.Null);
-
-        Assert.DoesNotThrow(() =>
-        {
-            using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
-            _ = document.RootElement.GetProperty("location");
-        });
-
-        ResponseItem functionReply = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 celcius and windy");
-        CreateResponseOptions turn2Options = new(TestModel.Responses, [functionReply])
-        {
-            PreviousResponseId = response.Id,
-            Tools = { s_GetWeatherAtLocationTool },
-        };
-
-        ResponseResult turn2Response = await client.CreateResponseAsync(
-            turn2Options);
-        Assert.That(turn2Response.OutputItems?.Count, Is.EqualTo(1));
-        MessageResponseItem turn2Message = turn2Response!.OutputItems[0] as MessageResponseItem;
-        Assert.That(turn2Message, Is.Not.Null);
-        Assert.That(turn2Message!.Role, Is.EqualTo(MessageRole.Assistant));
-        Assert.That(turn2Message.Content, Has.Count.EqualTo(1));
-        Assert.That(turn2Message.Content[0].Text, Does.Contain("22"));
-
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(turn2Response.Id)))
-        { }
-    }
-
-    [RecordedTest]
-    public async Task FunctionCallStreamingWorks()
-    {
-        ResponsesClient client = GetProxiedResponsesClient();
-
-        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
-        {
-            Tools = { s_GetWeatherAtLocationTool },
-            StreamingEnabled = true,
-        };
-
-        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(
-            options);
-
-        int functionCallArgumentsDeltaUpdateCount = 0;
-        int functionCallArgumentsDoneUpdateCount = 0;
-
-        StringBuilder argumentsBuilder = new StringBuilder();
-
-        await foreach (StreamingResponseUpdate update in responseUpdates)
-        {
-            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
-            {
-                functionCallArgumentsDeltaUpdateCount++;
-
-                BinaryData delta = functionCallArgumentsDeltaUpdate.Delta;
-                Assert.That(delta, Is.Not.Null);
-
-                if (!delta.ToMemory().IsEmpty)
-                {
-                    argumentsBuilder.AppendLine(functionCallArgumentsDeltaUpdate.Delta.ToString());
-                }
-            }
-
-            if (update is StreamingResponseFunctionCallArgumentsDoneUpdate functionCallArgumentsDoneUpdate)
-            {
-                functionCallArgumentsDoneUpdateCount++;
-
-                BinaryData functionArguments = functionCallArgumentsDoneUpdate.FunctionArguments;
-                Assert.That(functionArguments, Is.Not.Null);
-                Assert.That(functionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString().ReplaceLineEndings(string.Empty)));
-
-                argumentsBuilder.Clear();
-            }
-        }
-
-        Assert.That(functionCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
-    }
-
-    [RecordedTest]
     public async Task MaxTokens()
     {
         ResponsesClient client = GetProxiedResponsesClient();
@@ -1206,8 +1124,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                     "enum": ["C", "F", "K"]
                 }
                 },
-                "required": ["location"]
+                "required": ["location", "unit"],
+                "additionalProperties": false
             }
             """),
-        strictModeEnabled: false);
+        strictModeEnabled: true);
 }
