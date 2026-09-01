@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "704",
+        "Content-Length": "719",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -68,7 +68,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb60f48f583bf-SEA",
+        "CF-Ray": "a347d749d9b94f73-SEA",
         "Connection": "keep-alive",
         "Content-Length": "2681",
         "Content-Type": "application/json",
@@ -89,15 +89,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_03dd394bec695ea4006a9351ab790087d09f22efdc0a391c2e",
+        "id": "resp_0bc792d8ac4e4413006a9756fc82ec87d0bf05979bb0d0930c",
         "object": "response",
-        "created_at": 1788039595,
+        "created_at": 1788303100,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039596,
+        "completed_at": 1788303101,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -108,11 +108,11 @@
         "moderation": null,
         "output": [
           {
-            "id": "fc_03dd394bec695ea4006a9351abdc9c87d08b13e13e1708b619",
+            "id": "fc_0bc792d8ac4e4413006a9756fd02b887d0a0ab0f4af0d28adb",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}",
-            "call_id": "call_AfgkaB29GOE1HnS4argVkD5K",
+            "call_id": "call_i7AxJLtAPsDI3eJjXyBSREF9",
             "name": "get_weather_at_location"
           }
         ],
@@ -213,12 +213,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "720",
+        "Content-Length": "735",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_03dd394bec695ea4006a9351ab790087d09f22efdc0a391c2e",
+        "previous_response_id": "resp_0bc792d8ac4e4413006a9756fc82ec87d0bf05979bb0d0930c",
         "model": "gpt-4o-mini",
         "tools": [
           {
@@ -253,7 +253,7 @@
         "input": [
           {
             "type": "function_call_output",
-            "call_id": "call_AfgkaB29GOE1HnS4argVkD5K",
+            "call_id": "call_i7AxJLtAPsDI3eJjXyBSREF9",
             "output": "22 degrees Celsius and windy"
           }
         ],
@@ -268,9 +268,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb614cef683bf-SEA",
+        "CF-Ray": "a347d74fcfcb4f73-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3228",
+        "Content-Length": "3268",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -289,15 +289,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_03dd394bec695ea4006a9351ac5c2087d0987128b7fd6b425c",
+        "id": "resp_0bc792d8ac4e4413006a9756fda60487d0a19f22b9c4652b12",
         "object": "response",
-        "created_at": 1788039596,
+        "created_at": 1788303101,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039597,
+        "completed_at": 1788303104,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -308,7 +308,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_03dd394bec695ea4006a9351acd66087d0ac9160464346c686",
+            "id": "msg_0bc792d8ac4e4413006a9756fea5a887d08b6671360b9f5adc",
             "type": "message",
             "status": "completed",
             "content": [
@@ -316,7 +316,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "In San Francisco, it's currently about 22°C and windy. Here are some suggestions for what to wear:\n\n- **Layered clothing**: A light sweater or long-sleeve shirt along with a breathable, short-sleeve option underneath.\n- **Windbreaker**: A lightweight jacket to protect against the wind.\n- **Comfortable pants**: Consider jeans or chinos.\n- **Sturdy shoes**: Sneakers or comfortable shoes suitable for walking.\n- **Accessories**: A hat or sunglasses can be helpful, especially if it's sunny.\n\nEnjoy your time in San Francisco!"
+                "text": "The weather in San Francisco is currently around 22°C and windy. Here are some suggestions on what to wear:\n\n1. **Layered Clothing**: A light long-sleeve shirt or a lightweight sweater can be a good choice, as it can get a bit cooler with the wind.\n2. **Windbreaker**: A windbreaker or light jacket would help protect against the wind.\n3. **Comfortable Pants**: Consider wearing comfortable trousers or jeans.\n4. **Footwear**: Comfortable shoes are ideal, especially if you plan on walking around.\n\nDon't forget sunglasses and maybe a hat to protect against the sun!"
               }
             ],
             "role": "assistant"
@@ -324,7 +324,7 @@
         ],
         "parallel_tool_calls": true,
         "presence_penalty": 0.0,
-        "previous_response_id": "resp_03dd394bec695ea4006a9351ab790087d09f22efdc0a391c2e",
+        "previous_response_id": "resp_0bc792d8ac4e4413006a9756fc82ec87d0bf05979bb0d0930c",
         "prompt_cache_key": null,
         "prompt_cache_retention": "in_memory",
         "reasoning": {
@@ -400,11 +400,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 119,
+          "output_tokens": 129,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 229
+          "total_tokens": 239
         },
         "user": null,
         "metadata": {}
