@@ -77,9 +77,9 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("cached_tokens"u8);
                 writer.WriteNumberValue(CachedTokenCount);
             }
-            if (!Patch.Contains("$.cached_write_tokens"u8))
+            if (!Patch.Contains("$.cache_write_tokens"u8))
             {
-                writer.WritePropertyName("cached_write_tokens"u8);
+                writer.WritePropertyName("cache_write_tokens"u8);
                 writer.WriteNumberValue(CachedWriteTokenCount);
             }
 
@@ -118,7 +118,7 @@ namespace OpenAI.Responses
                     cachedTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("cached_write_tokens"u8))
+                if (prop.NameEquals("cache_write_tokens"u8))
                 {
                     cachedWriteTokenCount = prop.Value.GetInt32();
                     continue;
