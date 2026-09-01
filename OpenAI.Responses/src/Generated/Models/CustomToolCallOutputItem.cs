@@ -13,6 +13,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CustomToolCallOutputItem : ResponseItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public CustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output) : base(ResponseItemKind.CustomToolCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -20,7 +21,9 @@ namespace OpenAI.Responses
 
             CallId = callId;
             Output = output.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal CustomToolCallOutputItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, IList<ResponseContentPart> output, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, CustomToolCallOutputStatus? status) : base(kind, id, patch)

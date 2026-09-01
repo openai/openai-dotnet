@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "705",
+        "Content-Length": "720",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -68,7 +68,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb6706f55680b-SEA",
+        "CF-Ray": "a347d70dce6e4f73-SEA",
         "Connection": "keep-alive",
         "Content-Length": "2682",
         "Content-Type": "application/json",
@@ -90,15 +90,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_00911c4d36c46114016a9351bb055087d0a1dc358eca90dc6e",
+        "id": "resp_0c0c09d0be0f73e7016a9756f310b087d0a3efd3f1a3996064",
         "object": "response",
-        "created_at": 1788039611,
+        "created_at": 1788303091,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039611,
+        "completed_at": 1788303091,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -109,11 +109,11 @@
         "moderation": null,
         "output": [
           {
-            "id": "fc_00911c4d36c46114016a9351bb50b887d08650aabc1f44a0e2",
+            "id": "fc_0c0c09d0be0f73e7016a9756f3767087d0b6e05c81a85ff99b",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}",
-            "call_id": "call_0luNvJGsJhskDRkWybQ4WoKu",
+            "call_id": "call_8XCy264LQVtcyZf771zBQuNn",
             "name": "get_weather_at_location"
           }
         ],
@@ -214,9 +214,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "1021",
+        "Content-Length": "1036",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -263,15 +263,15 @@
           },
           {
             "type": "function_call",
-            "id": "fc_00911c4d36c46114016a9351bb50b887d08650aabc1f44a0e2",
+            "id": "fc_0c0c09d0be0f73e7016a9756f3767087d0b6e05c81a85ff99b",
             "status": "completed",
-            "call_id": "call_0luNvJGsJhskDRkWybQ4WoKu",
+            "call_id": "call_8XCy264LQVtcyZf771zBQuNn",
             "name": "get_weather_at_location",
             "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"C\"}"
           },
           {
             "type": "function_call_output",
-            "call_id": "call_0luNvJGsJhskDRkWybQ4WoKu",
+            "call_id": "call_8XCy264LQVtcyZf771zBQuNn",
             "output": "22 degrees Celsius and windy"
           }
         ],
@@ -286,9 +286,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32eb674493b680b-SEA",
+        "CF-Ray": "a347d7133c7e4f73-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3338",
+        "Content-Length": "3240",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -301,21 +301,21 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999675",
+        "x-ratelimit-remaining-tokens": "149999672",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_00911c4d36c46114016a9351bc067887d0a93e0ce119b6154a",
+        "id": "resp_0c0c09d0be0f73e7016a9756f3c59487d08d1e38bb810c7a4f",
         "object": "response",
-        "created_at": 1788039612,
+        "created_at": 1788303091,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788039613,
+        "completed_at": 1788303093,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -326,7 +326,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_00911c4d36c46114016a9351bc6a9887d0b18105d33b1778db",
+            "id": "msg_0c0c09d0be0f73e7016a9756f43ed887d08650473cbe2fa84b",
             "type": "message",
             "status": "completed",
             "content": [
@@ -334,7 +334,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "The weather in San Francisco is currently 22°C and windy. Here are some recommendations for what to wear:\n\n1. **Light Layers**: A lightweight long-sleeve shirt or a light sweater is ideal, as it might get a bit cooler with the wind.\n2. **Windbreaker**: A windbreaker or light jacket will help protect you from the wind.\n3. **Comfortable Pants**: Opt for lightweight pants or jeans for comfort.\n4. **Closed-toe Shoes**: Comfortable shoes are recommended, especially if you'll be walking around.\n5. **Accessories**: A hat or sunglasses can help shield you from the sun, especially if you're out during peak hours.\n\nOverall, dressing in layers is key to stay comfortable throughout the day!"
+                "text": "The weather in San Francisco is currently about 22°C and windy. Here are some clothing suggestions:\n\n- **Lightweight layers**: A long-sleeve shirt or a light sweater can be great for the cooler breeze.\n- **Windbreaker or jacket**: A lightweight windbreaker will help protect against the wind.\n- **Comfortable bottoms**: Jeans or breathable pants would be ideal.\n- **Footwear**: Sneakers or comfortable shoes are recommended for walking around.\n- **Accessories**: Consider a hat and sunglasses if it’s sunny, but be prepared for cooler gusts of wind.\n\nEnjoy your time in San Francisco!"
               }
             ],
             "role": "assistant"
@@ -418,11 +418,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 155,
+          "output_tokens": 129,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 265
+          "total_tokens": 239
         },
         "user": null,
         "metadata": {}
