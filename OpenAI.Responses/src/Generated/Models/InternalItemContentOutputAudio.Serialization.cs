@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputAudio : ResponseContentPart, IJsonModel<InternalItemContentOutputAudio>
     {
-        public InternalItemContentOutputAudio() : this(InternalItemContentType.OutputAudio, default, null, null)
+        public InternalItemContentOutputAudio() : this(ResponseContentPartKind.OutputAudio, default, null, null)
         {
         }
 
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalItemContentType internalType = default;
+            ResponseContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -117,7 +117,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    internalType = new InternalItemContentType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToResponseContentPartKind();
                     continue;
                 }
                 if (prop.NameEquals("data"u8))
@@ -132,7 +132,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputAudio(internalType, patch, data0, transcript);
+            return new InternalItemContentOutputAudio(kind, patch, data0, transcript);
         }
     }
 }

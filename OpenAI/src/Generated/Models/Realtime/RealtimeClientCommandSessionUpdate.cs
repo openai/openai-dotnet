@@ -11,12 +11,15 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandSessionUpdate : RealtimeClientCommand
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeClientCommandSessionUpdate(RealtimeSessionOptions sessionOptions) : base(InternalRealtimeClientEventTypeGA.SessionUpdate)
         {
             Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
 
             SessionOptions = sessionOptions;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeClientCommandSessionUpdate(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeSessionOptions sessionOptions) : base(kind, patch)

@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputText : ResponseContentPart, IJsonModel<InternalItemContentOutputText>
     {
-        public InternalItemContentOutputText() : this(InternalItemContentType.OutputText, default, null, null, null)
+        public InternalItemContentOutputText() : this(ResponseContentPartKind.OutputText, default, null, null, null)
         {
         }
 
@@ -149,7 +149,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalItemContentType internalType = default;
+            ResponseContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -160,7 +160,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    internalType = new InternalItemContentType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToResponseContentPartKind();
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -194,7 +194,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputText(internalType, patch, internalText, annotations, logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
+            return new InternalItemContentOutputText(kind, patch, internalText, annotations, logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -211,7 +211,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveAnnotationsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
                 {
                     return false;
                 }
@@ -225,7 +225,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveLogprobsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
                 {
                     return false;
                 }
@@ -244,7 +244,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
                 {
                     return false;
                 }
@@ -255,7 +255,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
                 {
                     return false;
                 }

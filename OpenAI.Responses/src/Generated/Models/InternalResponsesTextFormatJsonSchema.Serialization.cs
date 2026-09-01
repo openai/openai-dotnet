@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonSchema : ResponseTextFormat, IJsonModel<InternalResponsesTextFormatJsonSchema>
     {
-        public InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, default, null, null, null, default)
+        public InternalResponsesTextFormatJsonSchema() : this(ResponseTextFormatKind.JsonSchema, default, null, null, null, default)
         {
         }
 
@@ -124,7 +124,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalResponsesTextFormatType internalType = default;
+            ResponseTextFormatKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -136,7 +136,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    internalType = new InternalResponsesTextFormatType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToResponseTextFormatKind();
                     continue;
                 }
                 if (prop.NameEquals("description"u8))
@@ -167,7 +167,7 @@ namespace OpenAI.Responses
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalResponsesTextFormatJsonSchema(
-                internalType,
+                kind,
                 patch,
                 description,
                 name,

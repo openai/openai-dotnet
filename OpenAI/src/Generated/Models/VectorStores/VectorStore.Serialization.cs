@@ -84,7 +84,7 @@ namespace OpenAI.VectorStores
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
@@ -111,17 +111,17 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("expires_after"u8);
                 writer.WriteObjectValue(ExpirationPolicy, options);
             }
-            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            if (Optional.IsDefined(ExpiresOn) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
                 writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
+                writer.WriteNumberValue(ExpiresOn.Value, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("last_active_at") != true)
             {
-                if (Optional.IsDefined(LastActiveAt))
+                if (Optional.IsDefined(LastActiveOn))
                 {
                     writer.WritePropertyName("last_active_at"u8);
-                    writer.WriteNumberValue(LastActiveAt.Value, "U");
+                    writer.WriteNumberValue(LastActiveOn.Value, "U");
                 }
                 else
                 {
@@ -188,14 +188,14 @@ namespace OpenAI.VectorStores
             }
             string id = default;
             string @object = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string name = default;
             int usageBytes = default;
             VectorStoreFileCounts fileCounts = default;
             VectorStoreStatus status = default;
             VectorStoreExpirationPolicy expirationPolicy = default;
-            DateTimeOffset? expiresAt = default;
-            DateTimeOffset? lastActiveAt = default;
+            DateTimeOffset? expiresOn = default;
+            DateTimeOffset? lastActiveOn = default;
             IReadOnlyDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -212,7 +212,7 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -248,20 +248,20 @@ namespace OpenAI.VectorStores
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        expiresAt = null;
+                        expiresOn = null;
                         continue;
                     }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    expiresOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("last_active_at"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        lastActiveAt = null;
+                        lastActiveOn = null;
                         continue;
                     }
-                    lastActiveAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    lastActiveOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -292,14 +292,14 @@ namespace OpenAI.VectorStores
             return new VectorStore(
                 id,
                 @object,
-                createdAt,
+                createdOn,
                 name,
                 usageBytes,
                 fileCounts,
                 status,
                 expirationPolicy,
-                expiresAt,
-                lastActiveAt,
+                expiresOn,
+                lastActiveOn,
                 metadata,
                 additionalBinaryDataProperties);
         }

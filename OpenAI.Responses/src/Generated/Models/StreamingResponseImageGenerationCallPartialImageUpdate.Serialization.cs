@@ -91,7 +91,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.partial_image_b64"u8))
             {
                 writer.WritePropertyName("partial_image_b64"u8);
-                writer.WriteBase64StringValue(PartialImageBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(PartialImageBytes, "D");
             }
 
             Patch.WriteTo(writer);

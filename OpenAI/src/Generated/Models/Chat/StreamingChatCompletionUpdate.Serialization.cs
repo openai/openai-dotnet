@@ -259,7 +259,7 @@ namespace OpenAI.Chat
                 {
                     return TryResolveChoicesArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
                 {
                     return false;
                 }
@@ -283,7 +283,7 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "choices"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
                 {
                     return false;
                 }

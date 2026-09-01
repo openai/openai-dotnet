@@ -108,7 +108,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalItemContentType internalType = default;
+            ResponseContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -119,7 +119,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    internalType = new InternalItemContentType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToResponseContentPartKind();
                     continue;
                 }
                 if (prop.NameEquals("image_url"u8))
@@ -153,7 +153,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentInputImage(internalType, patch, imageUri, fileId, detail);
+            return new InternalItemContentInputImage(kind, patch, imageUri, fileId, detail);
         }
     }
 }

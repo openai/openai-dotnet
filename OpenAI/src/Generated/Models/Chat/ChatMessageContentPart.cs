@@ -14,9 +14,15 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatMessageContentPart(in JsonPatch patch)
+        private protected ChatMessageContentPart(ChatMessageContentPartKind kind)
         {
+            Kind = kind;
+        }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ChatMessageContentPart(ChatMessageContentPartKind kind, in JsonPatch patch)
+        {
+            Kind = kind;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

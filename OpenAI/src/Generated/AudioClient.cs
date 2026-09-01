@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.ServerSentEvents;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -21,39 +22,28 @@ namespace OpenAI.Audio
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null)
+#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateGenerateSpeechRequest(content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            message.BufferResponse = false;
+            return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
+#pragma warning restore SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public virtual async Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null)
-        {
-            Argument.AssertNotNull(content, nameof(content));
-
-            using PipelineMessage message = CreateGenerateSpeechRequest(content, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null)
+#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> TranscribeAudioAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
             Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateTranscribeAudioRequest(content, contentType, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            message.BufferResponse = false;
+            return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
-
-        public virtual async Task<ClientResult> TranscribeAudioAsync(BinaryContent content, string contentType, RequestOptions options = null)
-        {
-            Argument.AssertNotNull(content, nameof(content));
-            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
-
-            using PipelineMessage message = CreateTranscribeAudioRequest(content, contentType, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
+#pragma warning restore SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null)
         {
