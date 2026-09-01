@@ -5,5 +5,5 @@ namespace OpenAI.Responses;
 // CUSTOM: Renamed.
 [CodeGenType("CustomToolCallStatus")]
 public readonly partial struct CustomToolCallStatus
-{ 
+{
 }

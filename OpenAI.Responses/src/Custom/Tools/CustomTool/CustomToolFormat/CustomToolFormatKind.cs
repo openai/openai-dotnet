@@ -7,5 +7,5 @@ namespace OpenAI.Responses;
 // - Made public.
 [CodeGenType("CustomToolFormatType")]
 public readonly partial struct CustomToolFormatKind
-{ 
+{
 }
