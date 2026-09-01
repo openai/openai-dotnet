@@ -338,6 +338,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(responseToolFormat.Definition, Is.EqualTo(grammarDefinition));
 
         CustomToolCallItem customToolCall = response.OutputItems[0] as CustomToolCallItem;
+        Assert.That(customToolCall, Is.Not.Null);
         Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
         Assert.That(customToolCall.ToolName, Is.EqualTo(customTool.ToolName));
         Assert.That(customToolCall.Input, Does.Match(grammarDefinition)); // e.g.: "4 + 4"
