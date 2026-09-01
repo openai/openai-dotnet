@@ -1336,6 +1336,7 @@ model CustomToolCallItem extends ItemResource {
   /** The identifier of the actor that created the item. */
   created_by?: string;
 
+  // feat: tool search
   /** The namespace of the custom tool being called. */
   `namespace`?: string;
 

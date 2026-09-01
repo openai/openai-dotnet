@@ -103,10 +103,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("created_by"u8);
                 writer.WriteStringValue(CreatedBy);
             }
-            if (Optional.IsDefined(ToolNamespace) && !Patch.Contains("$.namespace"u8))
+            if (Optional.IsDefined(Namespace) && !Patch.Contains("$.namespace"u8))
             {
                 writer.WritePropertyName("namespace"u8);
-                writer.WriteStringValue(ToolNamespace);
+                writer.WriteStringValue(Namespace);
             }
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
@@ -148,7 +148,7 @@ namespace OpenAI.Responses
             InternalBetaAgentTag agent = default;
             InternalToolCallCaller caller = default;
             string createdBy = default;
-            string toolNamespace = default;
+            string @namespace = default;
             CustomToolCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -204,7 +204,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("namespace"u8))
                 {
-                    toolNamespace = prop.Value.GetString();
+                    @namespace = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -228,7 +228,7 @@ namespace OpenAI.Responses
                 agent,
                 caller,
                 createdBy,
-                toolNamespace,
+                @namespace,
                 status);
         }
 

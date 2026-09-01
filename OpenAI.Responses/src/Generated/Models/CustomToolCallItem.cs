@@ -23,7 +23,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string toolName, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, string toolNamespace, CustomToolCallStatus? status) : base(kind, id, patch)
+        internal CustomToolCallItem(ResponseItemKind kind, string id, in JsonPatch patch, string callId, string input, string toolName, InternalBetaAgentTag agent, InternalToolCallCaller caller, string createdBy, string @namespace, CustomToolCallStatus? status) : base(kind, id, patch)
         {
             CallId = callId;
             Input = input;
@@ -31,7 +31,7 @@ namespace OpenAI.Responses
             Agent = agent;
             Caller = caller;
             CreatedBy = createdBy;
-            ToolNamespace = toolNamespace;
+            Namespace = @namespace;
             Status = status;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -49,7 +49,7 @@ namespace OpenAI.Responses
 
         internal string CreatedBy { get; set; }
 
-        public string ToolNamespace { get; set; }
+        internal string Namespace { get; set; }
 
         public CustomToolCallStatus? Status { get; set; }
     }

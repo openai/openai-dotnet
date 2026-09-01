@@ -348,7 +348,6 @@ namespace OpenAI.Responses {
         public string Input { get; set; }
         public CustomToolCallStatus? Status { get; set; }
         public string ToolName { get; set; }
-        public string ToolNamespace { get; set; }
     }
     [Experimental("OPENAI001")]
     public class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>, IPersistableModel<CustomToolCallOutputItem> {
