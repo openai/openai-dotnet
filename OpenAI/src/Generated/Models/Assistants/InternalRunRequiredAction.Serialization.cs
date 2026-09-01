@@ -63,11 +63,6 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunRequiredAction)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("submit_tool_outputs") != true)
             {
                 writer.WritePropertyName("submit_tool_outputs"u8);
@@ -119,17 +114,11 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string kind = default;
             InternalRunObjectRequiredActionSubmitToolOutputs submitToolOutputs = default;
             object @type = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("type"u8))
-                {
-                    kind = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("submit_tool_outputs"u8))
                 {
                     submitToolOutputs = InternalRunObjectRequiredActionSubmitToolOutputs.DeserializeInternalRunObjectRequiredActionSubmitToolOutputs(prop.Value, options);
@@ -143,7 +132,7 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRunRequiredAction(kind, submitToolOutputs, @type, additionalBinaryDataProperties);
+            return new InternalRunRequiredAction(submitToolOutputs, @type, additionalBinaryDataProperties);
         }
     }
 }

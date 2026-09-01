@@ -24,10 +24,6 @@ namespace OpenAI.Audio
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public SpeechGenerationOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         public string Instructions { get; set; }
 

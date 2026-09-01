@@ -35,10 +35,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public ContainerFileCitationMessageAnnotation() : this(default, default, default, default, default)
-        {
-        }
-
         public string ContainerId { get; set; }
 
         public string FileId { get; set; }

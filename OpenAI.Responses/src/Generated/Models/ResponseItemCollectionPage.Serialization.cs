@@ -14,6 +14,10 @@ namespace OpenAI.Responses
 {
     public partial class ResponseItemCollectionPage : IJsonModel<ResponseItemCollectionPage>
     {
+        public ResponseItemCollectionPage() : this(null, null, default, null, null, default)
+        {
+        }
+
         protected virtual ResponseItemCollectionPage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseItemCollectionPage>)this).GetFormatFromOptions(options) : options.Format;

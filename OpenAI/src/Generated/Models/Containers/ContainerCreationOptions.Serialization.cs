@@ -14,6 +14,10 @@ namespace OpenAI.Containers
 {
     public partial class ContainerCreationOptions : IJsonModel<ContainerCreationOptions>
     {
+        public ContainerCreationOptions() : this(null, null, null, default, null, default)
+        {
+        }
+
         protected virtual ContainerCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerCreationOptions>)this).GetFormatFromOptions(options) : options.Format;

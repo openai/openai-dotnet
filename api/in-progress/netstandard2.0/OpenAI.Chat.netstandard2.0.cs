@@ -319,6 +319,7 @@ namespace OpenAI.Chat {
         public ChatMessageContent(string content);
     }
     public class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>, IPersistableModel<ChatMessageContentPart> {
+        public ChatMessageContentPart(ChatMessageContentPartKind kind);
         public BinaryData FileBytes { get; }
         public string FileBytesMediaType { get; }
         public string FileId { get; }

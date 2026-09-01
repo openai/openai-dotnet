@@ -13,6 +13,10 @@ namespace OpenAI.Responses
 {
     public partial class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>
     {
+        public ResponseDeletionResult()
+        {
+        }
+
         protected virtual ResponseDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
