@@ -30,7 +30,7 @@ namespace OpenAI.Chat;
 [CodeGenType("ChatCompletionRequestMessageContentPart")]
 public partial class ChatMessageContentPart
 {
-    private readonly ChatMessageContentPartKind _kind;
+    private ChatMessageContentPartKind _kind;
     private readonly string _text;
     private readonly InternalChatCompletionRequestMessageContentPartImageImageUrl _imageUri;
     private readonly InternalChatCompletionRequestMessageContentPartAudioInputAudio _inputAudio;
@@ -64,7 +64,12 @@ public partial class ChatMessageContentPart
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     /// <summary> The kind of content part. </summary>
-    public ChatMessageContentPartKind Kind => _kind;
+    [CodeGenMember("Kind")]
+    public ChatMessageContentPartKind Kind
+    {
+        get => _kind;
+        private set => _kind = value;
+    }
 
     // CUSTOM: Spread.
     /// <summary> The text. </summary>

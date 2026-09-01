@@ -13,6 +13,10 @@ namespace OpenAI.Images
 {
     public partial class ImageEditOptions : IJsonModel<ImageEditOptions>
     {
+        public ImageEditOptions()
+        {
+        }
+
         [Experimental("OPENAI001")]
         protected virtual ImageEditOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

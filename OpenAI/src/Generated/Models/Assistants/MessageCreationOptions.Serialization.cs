@@ -12,6 +12,10 @@ namespace OpenAI.Assistants
 {
     public partial class MessageCreationOptions : IJsonModel<MessageCreationOptions>
     {
+        public MessageCreationOptions() : this(default, null, null, null, null)
+        {
+        }
+
         protected virtual MessageCreationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<MessageCreationOptions>)this).GetFormatFromOptions(options) : options.Format;

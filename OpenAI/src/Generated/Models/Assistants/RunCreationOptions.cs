@@ -37,10 +37,6 @@ namespace OpenAI.Assistants
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public RunCreationOptions()
-        {
-        }
-
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;
