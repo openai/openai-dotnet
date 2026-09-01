@@ -35,12 +35,23 @@ internal class TestActivityListener : IDisposable
         _listener.Dispose();
     }
 
-    public static void ValidateChatActivity(Activity activity, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatActivity(Activity activity, ChatCompletion response, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443, bool useLatestSemconv = false)
     {
         Assert.That(activity, Is.Not.Null);
         Assert.That(activity.DisplayName, Is.EqualTo($"chat {requestModel}"));
         Assert.That(activity.GetTagItem("gen_ai.operation.name"), Is.EqualTo("chat"));
-        Assert.That(activity.GetTagItem("gen_ai.system"), Is.EqualTo("openai"));
+
+        if (useLatestSemconv)
+        {
+            Assert.That(activity.GetTagItem("gen_ai.provider.name"), Is.EqualTo("openai"));
+            Assert.That(activity.GetTagItem("gen_ai.system"), Is.Null);
+        }
+        else
+        {
+            Assert.That(activity.GetTagItem("gen_ai.system"), Is.EqualTo("openai"));
+            Assert.That(activity.GetTagItem("gen_ai.provider.name"), Is.Null);
+        }
+
         Assert.That(activity.GetTagItem("gen_ai.request.model"), Is.EqualTo(requestModel));
 
         Assert.That(activity.GetTagItem("server.address"), Is.EqualTo(host));
@@ -64,9 +75,9 @@ internal class TestActivityListener : IDisposable
         }
     }
 
-    public static void ValidateChatActivity(Activity activity, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443)
+    public static void ValidateChatActivity(Activity activity, Exception ex, string requestModel = "gpt-4o-mini", string host = "api.openai.com", int port = 443, bool useLatestSemconv = false)
     {
-        ValidateChatActivity(activity, (ChatCompletion)null, requestModel, host, port);
+        ValidateChatActivity(activity, (ChatCompletion)null, requestModel, host, port, useLatestSemconv);
         Assert.That(activity.GetTagItem("error.type"), Is.EqualTo(ex.GetType().FullName));
     }
 }

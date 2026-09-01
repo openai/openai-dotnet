@@ -110,10 +110,12 @@ public partial class RealtimeClient
             _ => uriBuilder.Scheme
         };
         uriBuilder.Query = "";
-        if (!uriBuilder.Path.EndsWith("/realtime"))
+        string path = uriBuilder.Path.TrimEnd('/');
+        if (!path.EndsWith("/realtime", StringComparison.Ordinal))
         {
-            uriBuilder.Path += uriBuilder.Path[uriBuilder.Path.Length - 1] == '/' ? "realtime" : "/realtime";
+            path += "/realtime";
         }
+        uriBuilder.Path = path;
 
         return uriBuilder.Uri;
     }
