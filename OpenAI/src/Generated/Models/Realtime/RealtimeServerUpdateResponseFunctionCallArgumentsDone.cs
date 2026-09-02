@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseFunctionCallArgumentsDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseFunctionCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string functionName) : base(InternalRealtimeServerEventTypeGA.ResponseFunctionCallArgumentsDone)
+        internal RealtimeServerUpdateResponseFunctionCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string functionName) : base(RealtimeServerUpdateKind.ResponseFunctionCallArgumentsDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -23,7 +23,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseFunctionCallArgumentsDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string functionName) : base(kind, patch)
+        internal RealtimeServerUpdateResponseFunctionCallArgumentsDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string functionName) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -35,14 +35,14 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public string CallId { get; }
+        public string CallId { get; set; }
     }
 }

@@ -9,9 +9,9 @@ public partial class RealtimeRateLimitDetails
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Remaining")]
-    public int? RemainingCount { get; }
+    public int? RemainingCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("ResetSeconds")]
-    public TimeSpan? TimeUntilReset { get; }
+    public TimeSpan? TimeUntilReset { get; set; }
 }

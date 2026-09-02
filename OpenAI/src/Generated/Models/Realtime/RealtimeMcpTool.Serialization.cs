@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpTool : RealtimeTool, IJsonModel<RealtimeMcpTool>
     {
-        internal RealtimeMcpTool() : this(InternalRealtimeToolBaseTypeGA.Mcp, default, null, null, default, null, null, null, null, null)
+        public RealtimeMcpTool() : this(InternalRealtimeToolBaseTypeGA.Mcp, default, null, null, default, null, null, null, null, null)
         {
         }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandInputAudioBufferAppend : RealtimeClientCommand
     {
-        public RealtimeClientCommandInputAudioBufferAppend(BinaryData audioBytes) : base(InternalRealtimeClientEventTypeGA.InputAudioBufferAppend)
+        public RealtimeClientCommandInputAudioBufferAppend(BinaryData audioBytes) : base(RealtimeClientCommandKind.InputAudioBufferAppend)
         {
             Argument.AssertNotNull(audioBytes, nameof(audioBytes));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandInputAudioBufferAppend(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId, BinaryData audioBytes) : base(kind, patch)
+        internal RealtimeClientCommandInputAudioBufferAppend(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId, BinaryData audioBytes) : base(kind, patch)
         {
             EventId = eventId;
             AudioBytes = audioBytes;

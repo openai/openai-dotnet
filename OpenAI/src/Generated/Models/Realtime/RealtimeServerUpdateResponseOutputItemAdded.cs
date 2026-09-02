@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     public partial class RealtimeServerUpdateResponseOutputItemAdded : RealtimeServerUpdate
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputItemAdded(string eventId, string responseId, int outputIndex, RealtimeItem item) : base(InternalRealtimeServerEventTypeGA.ResponseOutputItemAdded)
+        internal RealtimeServerUpdateResponseOutputItemAdded(string eventId, string responseId, int outputIndex, RealtimeItem item) : base(RealtimeServerUpdateKind.ResponseOutputItemAdded)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -22,7 +22,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputItemAdded(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputItemAdded(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, int outputIndex, RealtimeItem item) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -32,12 +32,12 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public RealtimeItem Item { get; }
+        public RealtimeItem Item { get; set; }
     }
 }

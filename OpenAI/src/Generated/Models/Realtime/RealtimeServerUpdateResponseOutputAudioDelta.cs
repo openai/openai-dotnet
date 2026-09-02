@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputAudioDelta : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseOutputAudioDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, BinaryData delta) : base(InternalRealtimeServerEventTypeGA.ResponseOutputAudioDelta)
+        internal RealtimeServerUpdateResponseOutputAudioDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, BinaryData delta) : base(RealtimeServerUpdateKind.ResponseOutputAudioDelta)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -22,7 +22,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputAudioDelta(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, BinaryData delta) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputAudioDelta(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, BinaryData delta) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -33,16 +33,16 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public BinaryData Delta { get; }
+        public BinaryData Delta { get; set; }
     }
 }

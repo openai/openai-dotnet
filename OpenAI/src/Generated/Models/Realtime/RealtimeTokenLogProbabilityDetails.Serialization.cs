@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class RealtimeLogProbabilityDetails : IJsonModel<RealtimeLogProbabilityDetails>
+    public partial class RealtimeTokenLogProbabilityDetails : IJsonModel<RealtimeTokenLogProbabilityDetails>
     {
-        internal RealtimeLogProbabilityDetails()
+        public RealtimeTokenLogProbabilityDetails()
         {
         }
 
-        protected virtual RealtimeLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual RealtimeTokenLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeRealtimeLogProbabilityDetails(document.RootElement, data, options);
+                        return DeserializeRealtimeTokenLogProbabilityDetails(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(RealtimeLogProbabilityDetails)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeTokenLogProbabilityDetails)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(RealtimeLogProbabilityDetails)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeTokenLogProbabilityDetails)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<RealtimeLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeTokenLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        RealtimeLogProbabilityDetails IPersistableModel<RealtimeLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeTokenLogProbabilityDetails IPersistableModel<RealtimeTokenLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<RealtimeLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeTokenLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<RealtimeLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeTokenLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +66,10 @@ namespace OpenAI.Realtime
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(RealtimeLogProbabilityDetails)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeTokenLogProbabilityDetails)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (!Patch.Contains("$.token"u8))
@@ -110,20 +110,20 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        RealtimeLogProbabilityDetails IJsonModel<RealtimeLogProbabilityDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeTokenLogProbabilityDetails IJsonModel<RealtimeTokenLogProbabilityDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual RealtimeLogProbabilityDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual RealtimeTokenLogProbabilityDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(RealtimeLogProbabilityDetails)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeTokenLogProbabilityDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeLogProbabilityDetails(document.RootElement, null, options);
+            return DeserializeRealtimeTokenLogProbabilityDetails(document.RootElement, null, options);
         }
 
-        internal static RealtimeLogProbabilityDetails DeserializeRealtimeLogProbabilityDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static RealtimeTokenLogProbabilityDetails DeserializeRealtimeTokenLogProbabilityDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -165,7 +165,7 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new RealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, patch);
+            return new RealtimeTokenLogProbabilityDetails(token, logProbability, utf8Bytes, patch);
         }
     }
 }

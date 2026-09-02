@@ -10,12 +10,12 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandInputAudioBufferCommit : RealtimeClientCommand
     {
-        public RealtimeClientCommandInputAudioBufferCommit() : this(InternalRealtimeClientEventTypeGA.InputAudioBufferCommit, default, null)
+        public RealtimeClientCommandInputAudioBufferCommit() : this(RealtimeClientCommandKind.InputAudioBufferCommit, default, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandInputAudioBufferCommit(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId) : base(kind, patch)
+        internal RealtimeClientCommandInputAudioBufferCommit(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId) : base(kind, patch)
         {
             EventId = eventId;
         }

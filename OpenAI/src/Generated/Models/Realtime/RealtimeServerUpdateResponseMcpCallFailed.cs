@@ -10,7 +10,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseMcpCallFailed : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseMcpCallFailed(string eventId, int outputIndex, string itemId) : base(InternalRealtimeServerEventTypeGA.ResponseMcpCallFailed)
+        internal RealtimeServerUpdateResponseMcpCallFailed(string eventId, int outputIndex, string itemId) : base(RealtimeServerUpdateKind.ResponseMcpCallFailed)
         {
             EventId = eventId;
             OutputIndex = outputIndex;
@@ -18,7 +18,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseMcpCallFailed(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, int outputIndex, string itemId) : base(kind, patch)
+        internal RealtimeServerUpdateResponseMcpCallFailed(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, int outputIndex, string itemId) : base(kind, patch)
         {
             EventId = eventId;
             OutputIndex = outputIndex;
@@ -26,10 +26,10 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
 }

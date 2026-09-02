@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     public partial class RealtimeServerUpdateConversationItemRetrieved : RealtimeServerUpdate
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemRetrieved(string eventId, RealtimeItem item) : base(InternalRealtimeServerEventTypeGA.ConversationItemRetrieved)
+        internal RealtimeServerUpdateConversationItemRetrieved(string eventId, RealtimeItem item) : base(RealtimeServerUpdateKind.ConversationItemRetrieved)
         {
             EventId = eventId;
             Item = item;
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemRetrieved(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeItem item) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemRetrieved(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, RealtimeItem item) : base(kind, patch)
         {
             EventId = eventId;
             Item = item;
@@ -28,8 +28,8 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public RealtimeItem Item { get; }
+        public RealtimeItem Item { get; set; }
     }
 }

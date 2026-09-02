@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeConversationItemGA : RealtimeItem, IJsonModel<RealtimeItem>
     {
-        internal InternalUnknownRealtimeConversationItemGA() : this(default, default)
+        public InternalUnknownRealtimeConversationItemGA() : this(default, default)
         {
         }
 
