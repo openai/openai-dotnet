@@ -25,7 +25,7 @@ The following tools are required for development:
 
 ### Optional: VS Code Dev Container / Codespaces
 
-This repository includes a `.devcontainer/devcontainer.json` for contributors who prefer a containerized dev environment, such as the VS Code Dev Containers extension or GitHub Codespaces. It installs the required .NET SDK, Node.js, and PowerShell, then restores `OpenAI.slnx` on first create. The container defaults tests to Playback mode and disables auto-recording; override `CLIENTMODEL_TEST_MODE`/`CLIENTMODEL_DISABLE_AUTO_RECORDING` if you want Record/Live behavior.
+This repository includes a `.devcontainer/devcontainer.json` for contributors who prefer a containerized dev environment, such as the VS Code Dev Containers extension or GitHub Codespaces. It installs the required .NET SDK, Node.js, and PowerShell, then restores `OpenAI.slnx` on first create. The container defaults tests to Playback mode and separately disables auto-recording. GitHub Codespaces must keep both defaults; only authorized contributors on an approved local machine may override `CLIENTMODEL_TEST_MODE` and `CLIENTMODEL_DISABLE_AUTO_RECORDING` for Record or Live testing.
 
 ## Building the Library
 
@@ -53,35 +53,44 @@ dotnet tool restore
 
 To switch between test modes, set the `CLIENTMODEL_TEST_MODE` environment variable to `Playback`, `Record`, or `Live`.
 
-> **Note:** In Playback mode, if an existing session record does not match the test's requests, the framework will automatically attempt to re-record the test against the live API. To disable this auto-recording behavior, set the `CLIENTMODEL_DISABLE_AUTO_RECORDING` environment variable to `true`.
+> **Note:** In Playback mode, if an existing session record does not match the test's requests, the framework will automatically attempt to re-record the test against the live API. To disable this separate auto-recording behavior, set the `CLIENTMODEL_DISABLE_AUTO_RECORDING` environment variable to `true`.
 
 ### Running Tests in Playback Mode (Default)
 
+In PowerShell:
+
+```powershell
+$env:CLIENTMODEL_TEST_MODE = "Playback"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./tests/OpenAI.Tests.csproj
+```
+
+In Bash:
+
 ```bash
-dotnet test OpenAI.slnx
+CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
+  dotnet test ./tests/OpenAI.Tests.csproj
 ```
 
 ### Running Tests in Record or Live Mode
 
-Set the `OPENAI_API_KEY` environment variable and the test mode:
+Only explicitly authorized human contributors may run Record or Live tests through an approved local process. Full-solution runs intentionally include examples that bypass recording and make live requests; authorize those live calls before running either command. Set the `OPENAI_API_KEY` environment variable and the test mode:
 
-```bash
-# PowerShell
+```powershell
 $env:OPENAI_API_KEY = "your-api-key"
 $env:CLIENTMODEL_TEST_MODE = "Record"  # or "Live"
-
-# Bash
-export OPENAI_API_KEY="your-api-key"
-export CLIENTMODEL_TEST_MODE="Record"  # or "Live"
-```
-
-Then run the tests:
-
-```bash
 dotnet test OpenAI.slnx
 ```
 
-When recording tests, sensitive data such as API keys and other secrets are automatically sanitized before being saved to session files. This ensures that session recordings can be safely committed to the repository. Always verify that new recordings do not contain sensitive information before committing.
+```bash
+export OPENAI_API_KEY="your-api-key"
+export CLIENTMODEL_TEST_MODE="Record"  # or "Live"
+dotnet test OpenAI.slnx
+```
+
+The API key values shown above are placeholders; load real credentials from your environment or an approved secrets manager. Never provide real API keys or other credentials to coding agents because doing so can expose credentials or enable unauthorized live requests.
+
+Sanitizers for known sensitive OpenAI headers and fields run automatically, but evolving service behavior can introduce gaps. An authorized human must review every recording locally before staging, committing, pushing, uploading, or otherwise publishing it. If sensitive data remains, improve an enabled deterministic sanitizer and regenerate the recording, or report the gap; never manually sanitize recordings or use a workflow that publishes them before review.
 
 ## Code Generation
 
@@ -144,11 +153,22 @@ Code snippets in documentation are synchronized from actual test code. After mod
 
 This updates the corresponding snippets in markdown documentation files.
 
+## Security Requirements
+
+- **Secrets and fixtures:** Load `OPENAI_API_KEY` and other credentials from environment variables or an approved secrets manager. Never commit real API keys, access tokens, signing credentials, or NuGet publishing secrets; use synthetic data, safe placeholders, and mocked transports in examples, fixtures, tests, and generated artifacts.
+- **Logs and recordings:** Redact authorization headers, credentials, signed URLs, and customer data from diagnostics, exceptions, telemetry, and build artifacts. Use synthetic prompts and model responses. Sanitizers for known sensitive OpenAI headers and fields are enabled but may have gaps. Only explicitly authorized humans may run `Record` or `Live` tests locally. Review automatically sanitized recordings before publication; never manually sanitize recordings or use a workflow that publishes them before review.
+- **Dependencies and generators:** Review direct and transitive changes in `Directory.Packages.props`, trusted `nuget.config` feeds and mappings, `.config/dotnet-tools.json`, `package.json`, `codegen/package.json`, and the shared root `package-lock.json`. Do not change dependency versions without an explicit request from the core team. Use `npm ci` for reproducible installs and preserve security-related overrides. The `Moq` dependency is pinned to `[4.18.2]` and also requires legal approval before any change. Coordinate `@typespec/http-client-csharp` and `Microsoft.TypeSpec.Generator.ClientModel` upgrades through the existing generator-update workflow.
+- **CI and publishing:** Pin external GitHub Actions to full immutable commit SHAs, review Action updates, and grant only the workflow permissions required. Never expose credentials to untrusted pull requests. Preserve the existing `release` environment and the protected `publish` environment, OIDC and Azure Key Vault package signing, scoped `GITHUB_TOKEN` permissions, and NuGet publishing credentials.
+- **Sensitive changes:** Request focused maintainer review and add offline regression tests for authentication, endpoint or redirect handling, TLS, serialization, streaming, file uploads, logging, dependency resolution, generated source, and release or signing changes. Follow the existing API export, code-generation, and playback-test workflows when they apply.
+- **Vulnerability reports:** Follow [SECURITY.md](SECURITY.md) and report suspected vulnerabilities privately through the existing [OpenAI Bugcrowd program](https://bugcrowd.com/engagements/openai). Do not disclose vulnerabilities, proof-of-concept secrets, or customer data in public GitHub issues, pull requests, or discussions.
+
 ## Pull Request Checklist
 
 Before submitting a pull request, please ensure:
 
-- [ ] All tests pass (`dotnet test OpenAI.slnx`)
+- [ ] All tests pass (`CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true dotnet test ./tests/OpenAI.Tests.csproj`)
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
+- [ ] Examples, fixtures, recordings, diagnostics, and generated artifacts contain no real credentials or customer data
+- [ ] Security-sensitive changes include focused regression coverage and appropriate maintainer review
