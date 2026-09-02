@@ -153,7 +153,6 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
-        public ComputerCallAction(ComputerCallActionKind kind);
         public Drawing.Point? ClickCoordinates { get; }
         public ComputerCallActionMouseButton? ClickMouseButton { get; }
         public Drawing.Point? DoubleClickCoordinates { get; }
@@ -1200,7 +1199,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
-        public ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
+        protected internal ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
