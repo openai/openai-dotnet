@@ -105,7 +105,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
@@ -299,7 +299,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new RunStepKind(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToRunStepKind();
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
