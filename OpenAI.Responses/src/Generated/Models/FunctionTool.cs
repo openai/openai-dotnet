@@ -15,7 +15,6 @@ namespace OpenAI.Responses
         public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled) : base(ResponseToolKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
-            Argument.AssertNotNull(functionParameters, nameof(functionParameters));
 
             FunctionName = functionName;
             FunctionParameters = functionParameters;
