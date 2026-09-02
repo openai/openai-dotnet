@@ -1,0 +1,313 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Files
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Files
+  description: Files are used to upload documents that can be used with features like Assistants and Fine-tuning.
+paths:
+  /files:
+    get:
+      operationId: listFiles
+      tags:
+      - Files
+      summary: Returns a list of files.
+      parameters:
+      - in: query
+        name: purpose
+        required: false
+        schema:
+          type: string
+        description: Only return files with the given purpose.
+      - name: limit
+        in: query
+        description: >-
+          A limit on the number of objects to be returned. Limit can range between 1 and 10,000, and the default is 10,000.
+        required: false
+        schema:
+          type: integer
+          default: 10000
+      - name: order
+        in: query
+        description: >-
+          Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: after
+        in: query
+        description: >-
+          A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListFilesResponse"
+    post:
+      operationId: createFile
+      tags:
+      - Files
+      summary: >-
+        Upload a file that can be used across various endpoints. Individual files can be up to 512 MB, and each project can store up to 2.5 TB of files in total. There is no organization-wide storage limit. Uploads to this endpoint are rate-limited to 1,000 requests per minute per authenticated user.
+
+        - The Assistants API supports files up to 2 million tokens and of specific   file types. See the [Assistants Tools guide](/docs/assistants/tools) for   details.
+
+        - The Fine-tuning API only supports `.jsonl` files. The input also has   certain required formats for fine-tuning   [chat](/docs/api-reference/fine-tuning/chat-input) or   [completions](/docs/api-reference/fine-tuning/completions-input) models.
+
+        - The Batch API only supports `.jsonl` files up to 200 MB in size. The input   also has a specific required   [format](/docs/api-reference/batch/request-input).
+
+        - For Retrieval or `file_search` ingestion, upload files here first. If   you need to attach multiple uploaded files to the same vector store, use   [`/vector_stores/{vector_store_id}/file_batches`](/docs/api-reference/vector-stores-file-batches/createBatch)   instead of attaching them one by one. Vector store attachment has separate   limits from file upload, including 2,000 attached files per minute per   organization.
+
+        Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateFileRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenAIFile"
+  /files/{file_id}:
+    delete:
+      operationId: deleteFile
+      tags:
+      - Files
+      summary: Delete a file and remove it from all vector stores.
+      parameters:
+      - in: path
+        name: file_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the file to use for this request.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteFileResponse"
+    get:
+      operationId: retrieveFile
+      tags:
+      - Files
+      summary: Returns information about a specific file.
+      parameters:
+      - in: path
+        name: file_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the file to use for this request.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OpenAIFile"
+  /files/{file_id}/content:
+    get:
+      operationId: downloadFile
+      tags:
+      - Files
+      summary: Returns the contents of the specified file.
+      parameters:
+      - in: path
+        name: file_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the file to use for this request.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    CreateFileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file:
+          description: |-
+            The File object (not file name) to be uploaded.
+          type: string
+          format: binary
+        purpose:
+          description: |-
+            The intended purpose of the uploaded file. One of:
+            - `assistants`: Used in the Assistants API
+            - `batch`: Used in the Batch API
+            - `fine-tune`: Used for fine-tuning
+            - `vision`: Images used for vision fine-tuning
+            - `user_data`: Flexible file type for any purpose
+            - `evals`: Used for eval data sets
+          type: string
+          enum:
+          - assistants
+          - batch
+          - fine-tune
+          - vision
+          - user_data
+          - evals
+        expires_after:
+          $ref: "#/components/schemas/FileExpirationAfter"
+      required:
+      - file
+      - purpose
+    DeleteFileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum:
+          - file
+          x-stainless-const: true
+        deleted:
+          type: boolean
+      required:
+      - id
+      - object
+      - deleted
+    FileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
+      properties:
+        anchor:
+          description: "Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`."
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
+    ListFilesResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/OpenAIFile"
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    OpenAIFile:
+      title: OpenAIFile
+      description: The `File` object represents a document that has been uploaded to OpenAI.
+      properties:
+        id:
+          type: string
+          description: The file identifier, which can be referenced in the API endpoints.
+        bytes:
+          type: integer
+          description: The size of the file, in bytes.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the file was created.
+        expires_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the file will expire.
+        filename:
+          type: string
+          description: The name of the file.
+        object:
+          type: string
+          description: The object type, which is always `file`.
+          enum:
+          - file
+          x-stainless-const: true
+        purpose:
+          type: string
+          description: The intended purpose of the file. Supported values are `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`, and `user_data`.
+          enum:
+          - assistants
+          - assistants_output
+          - batch
+          - batch_output
+          - fine-tune
+          - fine-tune-results
+          - vision
+          - user_data
+        status:
+          type: string
+          deprecated: true
+          description: Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`.
+          enum:
+          - uploaded
+          - processed
+          - error
+        status_details:
+          type: string
+          deprecated: true
+          description: Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
+      required:
+      - id
+      - object
+      - bytes
+      - created_at
+      - filename
+      - purpose
+      - status
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
