@@ -329,9 +329,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
 
         Assert.That(response1.Usage, Is.Not.Null);
-        Assert.That(response1.Usage.InputTokenDetails, Is.Not.Null);
-        Assert.That(response1.Usage.InputTokenDetails.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
-        Assert.That(response1.Usage.InputTokenDetails.CachedWriteTokenCount, Is.GreaterThanOrEqualTo(0));
         Assert.That(response1.Usage.OutputTokenDetails, Is.Not.Null);
         Assert.That(response1.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThan(0));
 
@@ -421,6 +418,24 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             sb.Append(reasoningTextDelta);
         }
         Assert.That(finalOutput, Is.EqualTo(sb.ToString()));
+    }
+
+    [RecordedTest]
+    public async Task UsageWorks()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What is the best ice cream flavor: Chocolate or vanilla?")];
+        CreateResponseOptions options = new("gpt-5.6", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        Assert.That(response.Usage, Is.Not.Null);
+        Assert.That(response.Usage.InputTokenCount, Is.GreaterThan(0));
+        Assert.That(response.Usage.OutputTokenCount, Is.GreaterThan(0));
+        Assert.That(response.Usage.TotalTokenCount, Is.EqualTo(response.Usage.InputTokenCount + response.Usage.OutputTokenCount));
+        Assert.That(response.Usage.InputTokenDetails, Is.Not.Null);
+        Assert.That(response.Usage.InputTokenDetails.CachedTokenCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(response.Usage.InputTokenDetails.CacheWriteTokenCount, Is.GreaterThanOrEqualTo(0));
+
     }
 
     [RecordedTest]
