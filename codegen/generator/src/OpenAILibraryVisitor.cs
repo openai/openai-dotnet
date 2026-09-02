@@ -26,7 +26,6 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
     // a conditional that includes an appropriate "Optional" check, e.g.:
     //   - Optional.IsCollectionDefined(Messages) ... writer.WritePropertyName("messages"u8)
     //   - Optional.IsDefined(Model) ... writer.WritePropertyName("model"u8)
-    private static WritePropertyNameAdditionalReplacementInfo _readonlyStatusReplacementInfo = new("Status", "status", isCollection: false); 
     private static readonly Dictionary<string, List<WritePropertyNameAdditionalReplacementInfo>> TypeNameToWritePropertyNameAdditionalConditionMap = new()
     {
         ["ChatCompletionOptions"] =
@@ -38,17 +37,6 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
             [
                 new("Id", "id", isCollection: false),
             ],
-        ["ApplyPatchCallItem"] = [_readonlyStatusReplacementInfo],
-        ["CodeInterpreterCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ComputerCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ComputerCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["FileSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["FunctionCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["FunctionCallOutputResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ImageGenerationCallResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["MessageResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["ReasoningResponseItem"] = [_readonlyStatusReplacementInfo],
-        ["WebSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
     };
     private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =
         new("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");

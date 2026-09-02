@@ -33,6 +33,8 @@ namespace OpenAI.Responses
 
         public string CallId { get; set; }
 
+        public ApplyPatchCallStatus? Status { get; set; }
+
         public ApplyPatchOperation Operation { get; set; }
 
         public string CreatedBy { get; set; }

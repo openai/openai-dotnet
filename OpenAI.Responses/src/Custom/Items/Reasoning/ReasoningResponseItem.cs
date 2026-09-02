@@ -7,12 +7,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ReasoningItemResource")]
 public partial class ReasoningResponseItem
 {
-    // CUSTOM:
-    // - Made nullable because this is an optional property.
-    // - Added setter because this is an optional property in an input/output type.
-    [CodeGenMember("Status")]
-    public ReasoningStatus? Status { get; set; }
-
     // CUSTOM: Added for convenience.
     public ReasoningResponseItem(string summaryText) : this(summaryParts: [new ReasoningSummaryTextPart(summaryText)])
     {
