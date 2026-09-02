@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeCustomRetentionRatioTruncation : RealtimeCustomTruncation, IJsonModel<RealtimeCustomRetentionRatioTruncation>
     {
-        internal RealtimeCustomRetentionRatioTruncation() : this(InternalRealtimeTruncationBaseTypeGA.RetentionRatio, default, default, null)
+        public RealtimeCustomRetentionRatioTruncation() : this(InternalRealtimeTruncationBaseTypeGA.RetentionRatio, default, default, null)
         {
         }
 

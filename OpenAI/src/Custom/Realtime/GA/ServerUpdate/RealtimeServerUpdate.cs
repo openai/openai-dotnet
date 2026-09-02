@@ -7,6 +7,8 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventGA")]
+[CodeGenVisibility(nameof(RealtimeServerUpdate), CodeGenVisibility.ProtectedInternal, typeof(RealtimeServerUpdateKind))]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RealtimeServerUpdate
 {
 }

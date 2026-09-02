@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted>
     {
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted() : this(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionCompleted, default, null, null, default, null, null, null)
+        public RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted() : this(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionCompleted, default, null, null, default, null, null, null)
         {
         }
 
@@ -102,17 +102,17 @@ namespace OpenAI.Realtime
                     Patch.WriteTo(writer, "$.logprobs"u8);
                 }
             }
-            else if (Optional.IsCollectionDefined(Logprobs))
+            else if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities))
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Logprobs.Count; i++)
+                for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
                 {
-                    if (Logprobs[i].Patch.IsRemoved("$"u8))
+                    if (TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(Logprobs[i], options);
+                    writer.WriteObjectValue(TranscriptionTokenLogProbabilities[i], options);
                 }
                 Patch.WriteTo(writer, "$.logprobs"u8);
                 writer.WriteEndArray();
@@ -146,7 +146,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -154,13 +154,13 @@ namespace OpenAI.Realtime
             string itemId = default;
             int contentIndex = default;
             string transcript = default;
-            IList<RealtimeLogProbabilityDetails> logprobs = default;
+            IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
             RealtimeTranscriptionUsage usage = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
@@ -189,12 +189,12 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    List<RealtimeLogProbabilityDetails> array = new List<RealtimeLogProbabilityDetails>();
+                    List<RealtimeTokenLogProbabilityDetails> array = new List<RealtimeTokenLogProbabilityDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(RealtimeLogProbabilityDetails.DeserializeRealtimeLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
+                        array.Add(RealtimeTokenLogProbabilityDetails.DeserializeRealtimeTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
                     }
-                    logprobs = array;
+                    transcriptionTokenLogProbabilities = array;
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -211,7 +211,7 @@ namespace OpenAI.Realtime
                 itemId,
                 contentIndex,
                 transcript,
-                logprobs ?? new ChangeTrackingList<RealtimeLogProbabilityDetails>(),
+                transcriptionTokenLogProbabilities ?? new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>(),
                 usage);
         }
 
@@ -231,13 +231,13 @@ namespace OpenAI.Realtime
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
                 if (currentSlice.IsEmpty)
                 {
-                    return TryResolveLogprobsArray(out value);
+                    return TryResolveTranscriptionTokenLogProbabilitiesArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
                 {
                     return false;
                 }
-                return Logprobs[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return TranscriptionTokenLogProbabilities[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -261,7 +261,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                Logprobs[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                TranscriptionTokenLogProbabilities[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;
@@ -269,10 +269,10 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool TryResolveLogprobsArray(out JsonPatch.EncodedValue value)
+        private bool TryResolveTranscriptionTokenLogProbabilitiesArray(out JsonPatch.EncodedValue value)
         {
             value = default;
-            BinaryData data = ModelReaderWriter.Write(ActiveLogprobs(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            BinaryData data = ModelReaderWriter.Write(ActiveTranscriptionTokenLogProbabilities(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
             JsonPatch tempPatch = new JsonPatch();
             tempPatch.Set("$"u8, data.ToMemory().Span);
             return tempPatch.TryGetEncodedValue("$"u8, out value);
@@ -280,17 +280,17 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private IEnumerable<RealtimeLogProbabilityDetails> ActiveLogprobs()
+        private IEnumerable<RealtimeTokenLogProbabilityDetails> ActiveTranscriptionTokenLogProbabilities()
         {
-            if (!Optional.IsCollectionDefined(Logprobs))
+            if (!Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities))
             {
                 yield break;
             }
-            for (int i = 0; i < Logprobs.Count; i++)
+            for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
             {
-                if (!Logprobs[i].Patch.IsRemoved("$"u8))
+                if (!TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
                 {
-                    yield return Logprobs[i];
+                    yield return TranscriptionTokenLogProbabilities[i];
                 }
             }
         }

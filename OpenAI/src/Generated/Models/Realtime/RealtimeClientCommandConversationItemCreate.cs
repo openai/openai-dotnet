@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandConversationItemCreate : RealtimeClientCommand
     {
-        public RealtimeClientCommandConversationItemCreate(RealtimeItem item) : base(InternalRealtimeClientEventTypeGA.ConversationItemCreate)
+        public RealtimeClientCommandConversationItemCreate(RealtimeItem item) : base(RealtimeClientCommandKind.ConversationItemCreate)
         {
             Argument.AssertNotNull(item, nameof(item));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandConversationItemCreate(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId, string previousItemId, RealtimeItem item) : base(kind, patch)
+        internal RealtimeClientCommandConversationItemCreate(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId, string previousItemId, RealtimeItem item) : base(kind, patch)
         {
             EventId = eventId;
             PreviousItemId = previousItemId;
@@ -32,6 +32,6 @@ namespace OpenAI.Realtime
 
         public string PreviousItemId { get; set; }
 
-        public RealtimeItem Item { get; }
+        public RealtimeItem Item { get; set; }
     }
 }

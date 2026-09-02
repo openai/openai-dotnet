@@ -9,5 +9,5 @@ public partial class RealtimeTranscriptionDurationUsage
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Seconds")]
-    public TimeSpan Duration { get; }
+    public TimeSpan Duration { get; set; }
 }

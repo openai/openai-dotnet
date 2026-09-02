@@ -12,34 +12,32 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(string eventId, string itemId) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionDelta)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(string eventId, string itemId) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionDelta)
         {
             EventId = eventId;
             ItemId = itemId;
-            Logprobs = new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            TranscriptionTokenLogProbabilities = new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int? contentIndex, string delta, IList<RealtimeLogProbabilityDetails> logprobs) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int? contentIndex, string delta, IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             EventId = eventId;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Delta = delta;
-            Logprobs = logprobs ?? new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int? ContentIndex { get; }
+        public int? ContentIndex { get; set; }
 
-        public string Delta { get; }
-
-        public IList<RealtimeLogProbabilityDetails> Logprobs { get; }
+        public string Delta { get; set; }
     }
 }

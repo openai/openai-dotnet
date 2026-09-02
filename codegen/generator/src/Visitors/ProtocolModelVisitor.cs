@@ -19,6 +19,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     {
         "OpenAI.Containers",
         "OpenAI.Conversations",
+        "OpenAI.Realtime",
         "OpenAI.Responses",
     };
 

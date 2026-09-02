@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeCustomMcpToolChoice : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomMcpToolChoice>
     {
-        internal RealtimeCustomMcpToolChoice() : this(InternalToolChoiceBaseTypeGA.Mcp, default, null, null)
+        public RealtimeCustomMcpToolChoice() : this(InternalToolChoiceBaseTypeGA.Mcp, default, null, null)
         {
         }
 

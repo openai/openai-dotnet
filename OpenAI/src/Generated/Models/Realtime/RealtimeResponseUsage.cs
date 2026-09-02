@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeResponseUsage()
+        public RealtimeResponseUsage()
         {
         }
 
@@ -37,8 +37,8 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
+        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; set; }
 
-        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; set; }
     }
 }

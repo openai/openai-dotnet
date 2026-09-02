@@ -10,7 +10,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputTextDelta : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseOutputTextDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(InternalRealtimeServerEventTypeGA.ResponseOutputTextDelta)
+        internal RealtimeServerUpdateResponseOutputTextDelta(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(RealtimeServerUpdateKind.ResponseOutputTextDelta)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -21,7 +21,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputTextDelta(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputTextDelta(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string delta) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -32,16 +32,16 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public string Delta { get; }
+        public string Delta { get; set; }
     }
 }

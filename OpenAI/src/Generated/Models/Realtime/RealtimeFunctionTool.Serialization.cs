@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeFunctionTool : RealtimeTool, IJsonModel<RealtimeFunctionTool>
     {
-        internal RealtimeFunctionTool() : this(InternalRealtimeToolBaseTypeGA.Function, default, null, null, null)
+        public RealtimeFunctionTool() : this(InternalRealtimeToolBaseTypeGA.Function, default, null, null, null)
         {
         }
 

@@ -50,9 +50,6 @@ internal readonly partial struct InternalRealtimeTurnDetectionBaseTypeGA { }
 [CodeGenType("UnknownRealtimeTurnDetectionBaseGA")]
 internal partial class InternalUnknownRealtimeTurnDetectionBaseGA { }
 
-[CodeGenType("RealtimeServerEventTypeGA")]
-internal readonly partial struct InternalRealtimeServerEventTypeGA { }
-
 [CodeGenType("UnknownRealtimeServerEventGA")]
 internal partial class InternalUnknownRealtimeServerEventGA { }
 
@@ -79,9 +76,6 @@ internal readonly partial struct InternalTranscriptionTokenUsageBaseTypeGA { }
 
 [CodeGenType("UnknownTranscriptionTokenUsageBaseGA")]
 internal partial class InternalUnknownTranscriptionTokenUsageBaseGA { }
-
-[CodeGenType("RealtimeClientEventTypeGA")]
-internal readonly partial struct InternalRealtimeClientEventTypeGA { }
 
 [CodeGenType("UnknownRealtimeClientEventGA")]
 internal partial class InternalUnknownRealtimeClientEventGA { }

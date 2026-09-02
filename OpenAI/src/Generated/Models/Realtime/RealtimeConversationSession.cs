@@ -39,11 +39,11 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public RealtimeClientSecret ClientSecret { get; }
+        public RealtimeClientSecret ClientSecret { get; set; }
 
         public IList<RealtimeOutputModality> OutputModalities { get; }
 
-        public string Instructions { get; }
+        public string Instructions { get; set; }
 
         public IList<RealtimeTool> Tools { get; }
     }

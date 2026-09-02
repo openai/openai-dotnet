@@ -39,10 +39,10 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Value { get; }
+        public string Value { get; set; }
 
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresAt { get; set; }
 
-        public RealtimeSession Session { get; }
+        public RealtimeSession Session { get; set; }
     }
 }
