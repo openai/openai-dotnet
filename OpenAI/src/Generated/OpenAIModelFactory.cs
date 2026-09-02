@@ -1015,9 +1015,9 @@ namespace OpenAI
                 default);
         }
 
-        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default)
+        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default, int cacheWriteTokenCount = default)
         {
-            return new ResponseInputTokenUsageDetails(cachedTokenCount, default);
+            return new ResponseInputTokenUsageDetails(cachedTokenCount, cacheWriteTokenCount, default);
         }
 
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)
