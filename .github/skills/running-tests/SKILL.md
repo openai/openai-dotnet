@@ -35,14 +35,14 @@ This installs the `test-proxy` tool required by the test framework.
 
 ## Agent Rules
 
-Agents and ordinary CI must run tests only in `Playback` mode with
+Agents and ordinary CI must run recorded client tests only in `Playback` mode with
 auto-recording explicitly disabled. Never run `Record` or `Live` mode, even
 when a recording is missing or stale. These settings avoid test runs that require
 unavailable credentials; they are not a security boundary. Never request, read,
 accept, or use real API keys or other credentials.
 
-Every agent test invocation must explicitly set the test mode and the separate
-auto-recording setting, and target only `./tests/OpenAI.Tests.csproj`. The full
+Every agent invocation of recorded client tests must explicitly set the test mode
+and the separate auto-recording setting, and target `./tests/OpenAI.Tests.csproj`. The full
 solution includes example projects that can bypass Playback and contact the live
 service. In PowerShell:
 
@@ -58,6 +58,11 @@ In Bash:
 CLIENTMODEL_TEST_MODE=Playback CLIENTMODEL_DISABLE_AUTO_RECORDING=true \
   dotnet test ./tests/OpenAI.Tests.csproj
 ```
+
+Focused offline test projects that do not contact the OpenAI service or require
+credentials are also permitted. For example, run the generator visitor suite with
+`dotnet test codegen/generator/test/`. Playback settings do not apply to that
+offline suite. Agents must still never test the full `OpenAI.slnx` solution.
 
 If a recorded test needs new recordings or updated recordings, you must follow the instructions below to ask a human to capture them for you instead of trying to capture them yourself.
 

@@ -25,7 +25,7 @@ The following tools are required for development:
 
 ### Optional: VS Code Dev Container / Codespaces
 
-This repository includes a `.devcontainer/devcontainer.json` for contributors who prefer a containerized dev environment, such as the VS Code Dev Containers extension or GitHub Codespaces. It installs the required .NET SDK, Node.js, and PowerShell, then restores `OpenAI.slnx` on first create. The container defaults tests to Playback mode and separately disables auto-recording. GitHub Codespaces must keep both defaults unless explicitly approved; only authorized contributors on an approved local machine may override `CLIENTMODEL_TEST_MODE` and `CLIENTMODEL_DISABLE_AUTO_RECORDING` for Record or Live testing.
+This repository includes a `.devcontainer/devcontainer.json` for contributors who prefer a containerized dev environment, such as the VS Code Dev Containers extension or GitHub Codespaces. It installs the required .NET SDK, Node.js, and PowerShell, then restores `OpenAI.slnx` on first create. The container defaults tests to Playback mode and separately disables auto-recording. GitHub Codespaces must keep both defaults; only authorized contributors on an approved local machine may override `CLIENTMODEL_TEST_MODE` and `CLIENTMODEL_DISABLE_AUTO_RECORDING` for Record or Live testing.
 
 ## Building the Library
 

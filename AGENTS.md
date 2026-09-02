@@ -5,11 +5,13 @@ before making changes.
 
 ## Agent Test Execution
 
-Agents must run only `./tests/OpenAI.Tests.csproj`, with
+For recorded client tests, agents must target `./tests/OpenAI.Tests.csproj`, with
 `CLIENTMODEL_TEST_MODE=Playback` and
 `CLIENTMODEL_DISABLE_AUTO_RECORDING=true`; never run `Record` or `Live` mode
 or test the full `OpenAI.slnx` solution, which includes examples that can
 bypass Playback and contact the live service.
+Focused offline test projects, such as `codegen/generator/test/`, may also be
+run when they do not contact the OpenAI service or require credentials.
 These settings avoid test runs that require unavailable credentials; they are
 not a security boundary.
 
