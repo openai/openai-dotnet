@@ -334,39 +334,17 @@ namespace OpenAI.Assistants {
         public static bool operator !=(MessageFailureReason left, MessageFailureReason right);
         public override readonly string ToString();
     }
-    public readonly partial struct MessageImageDetail : IEquatable<MessageImageDetail> {
-        public MessageImageDetail(string value);
-        public static MessageImageDetail Auto { get; }
-        public static MessageImageDetail High { get; }
-        public static MessageImageDetail Low { get; }
-        public readonly bool Equals(MessageImageDetail other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(MessageImageDetail left, MessageImageDetail right);
-        public static implicit operator MessageImageDetail(string value);
-        public static implicit operator MessageImageDetail?(string value);
-        public static bool operator !=(MessageImageDetail left, MessageImageDetail right);
-        public override readonly string ToString();
+    public enum MessageImageDetail {
+        Auto = 0,
+        Low = 1,
+        High = 2
     }
     public class MessageModificationOptions : IJsonModel<MessageModificationOptions>, IPersistableModel<MessageModificationOptions> {
         public IDictionary<string, string> Metadata { get; }
     }
-    public readonly partial struct MessageRole : IEquatable<MessageRole> {
-        public MessageRole(string value);
-        public static MessageRole Assistant { get; }
-        public static MessageRole User { get; }
-        public readonly bool Equals(MessageRole other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(MessageRole left, MessageRole right);
-        public static implicit operator MessageRole(string value);
-        public static implicit operator MessageRole?(string value);
-        public static bool operator !=(MessageRole left, MessageRole right);
-        public override readonly string ToString();
+    public enum MessageRole {
+        User = 0,
+        Assistant = 1
     }
     public readonly partial struct MessageStatus : IEquatable<MessageStatus> {
         public MessageStatus(string value);
@@ -587,34 +565,12 @@ namespace OpenAI.Assistants {
         public RunStepFileSearchResultContentKind Kind { get; }
         public string Text { get; }
     }
-    public readonly partial struct RunStepFileSearchResultContentKind : IEquatable<RunStepFileSearchResultContentKind> {
-        public RunStepFileSearchResultContentKind(string value);
-        public static RunStepFileSearchResultContentKind Text { get; }
-        public readonly bool Equals(RunStepFileSearchResultContentKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RunStepFileSearchResultContentKind left, RunStepFileSearchResultContentKind right);
-        public static implicit operator RunStepFileSearchResultContentKind(string value);
-        public static implicit operator RunStepFileSearchResultContentKind?(string value);
-        public static bool operator !=(RunStepFileSearchResultContentKind left, RunStepFileSearchResultContentKind right);
-        public override readonly string ToString();
+    public enum RunStepFileSearchResultContentKind {
+        Text = 0
     }
-    public readonly partial struct RunStepKind : IEquatable<RunStepKind> {
-        public RunStepKind(string value);
-        public static RunStepKind CreatedMessage { get; }
-        public static RunStepKind ToolCall { get; }
-        public readonly bool Equals(RunStepKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RunStepKind left, RunStepKind right);
-        public static implicit operator RunStepKind(string value);
-        public static implicit operator RunStepKind?(string value);
-        public static bool operator !=(RunStepKind left, RunStepKind right);
-        public override readonly string ToString();
+    public enum RunStepKind {
+        CreatedMessage = 0,
+        ToolCall = 1
     }
     public readonly partial struct RunStepStatus : IEquatable<RunStepStatus> {
         public RunStepStatus(string value);
@@ -650,21 +606,10 @@ namespace OpenAI.Assistants {
         public string Id { get; }
         public RunStepToolCallKind Kind { get; }
     }
-    public readonly partial struct RunStepToolCallKind : IEquatable<RunStepToolCallKind> {
-        public RunStepToolCallKind(string value);
-        public static RunStepToolCallKind CodeInterpreter { get; }
-        public static RunStepToolCallKind FileSearch { get; }
-        public static RunStepToolCallKind Function { get; }
-        public readonly bool Equals(RunStepToolCallKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RunStepToolCallKind left, RunStepToolCallKind right);
-        public static implicit operator RunStepToolCallKind(string value);
-        public static implicit operator RunStepToolCallKind?(string value);
-        public static bool operator !=(RunStepToolCallKind left, RunStepToolCallKind right);
-        public override readonly string ToString();
+    public enum RunStepToolCallKind {
+        CodeInterpreter = 0,
+        FileSearch = 1,
+        Function = 2
     }
     public class RunStepUpdate : StreamingUpdate<RunStep> {
     }
