@@ -589,7 +589,7 @@ namespace OpenAI
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
-            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
+            return new InternalUnknownAnnotation(new ResponseMessageAnnotationKind(kind), default);
         }
 
         public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default, string filename = default)
@@ -652,7 +652,7 @@ namespace OpenAI
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
         {
-            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), default);
+            return new InternalUnknownComputerAction(new ComputerCallActionKind(kind), default);
         }
 
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
@@ -2003,11 +2003,6 @@ namespace OpenAI
             return new RunStepFileSearchResult(fileId, fileName, score, content.ToList(), additionalBinaryDataProperties: null);
         }
 
-        public static RunStepFileSearchResultContent RunStepFileSearchResultContent(string text = default)
-        {
-            return new RunStepFileSearchResultContent(RunStepFileSearchResultContentKind.Text, text, additionalBinaryDataProperties: null);
-        }
-
         public static RunStepError RunStepError(RunStepErrorCode code = default, string message = default)
         {
             return new RunStepError(code, message, additionalBinaryDataProperties: null);
@@ -2326,7 +2321,7 @@ namespace OpenAI
 
         public static ModerationInputPart ModerationInputPart(string kind = default)
         {
-            return new InternalUnknownModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownModerationInputPart(new ModerationInputPartKind(kind), additionalBinaryDataProperties: null);
         }
 
         public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)

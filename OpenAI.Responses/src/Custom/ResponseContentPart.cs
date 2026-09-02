@@ -11,13 +11,13 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemContent")]
 public partial class ResponseContentPart
 {
-    // CUSTOM: Renamed to "Kind" and converted to public enum from internal extensible type.
+    // CUSTOM: Renamed to "Kind" and converted to extensible enum from internal extensible type.
     [CodeGenMember("Type")]
     internal InternalItemContentType InternalType { get; set; }
     public ResponseContentPartKind Kind
     {
-        get => InternalType.ToString().ToResponseContentPartKind();
-        private set => InternalType = value.ToSerialString();
+        get => new ResponseContentPartKind(InternalType.ToString());
+        private set => InternalType = value.ToString();
     }
 
     // CUSTOM: Exposed input text properties.

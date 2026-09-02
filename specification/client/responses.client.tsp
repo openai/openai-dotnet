@@ -276,10 +276,25 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(DotNetGetResponseOptions);
 @@dynamicModel(DotNetGlobalToolCallApprovalPolicy);
 @@dynamicModel(DotNetCustomToolCallApprovalPolicy);
+@@dynamicModel(ResponseStatus);
+@@dynamicModel(MessageStatus);
+@@dynamicModel(FunctionCallStatus);
+@@dynamicModel(FileSearchCallStatus);
+@@dynamicModel(WebSearchCallStatus);
+@@dynamicModel(CodeInterpreterCallStatus);
+@@dynamicModel(ImageGenerationCallStatus);
+@@dynamicModel(ReasoningStatus);
+@@dynamicModel(ComputerCallActionMouseButton);
+@@dynamicModel(ComputerCallOutputStatus);
+@@dynamicModel(ComputerCallStatus);
+@@dynamicModel(FunctionCallOutputStatus);
 @@dynamicModel(DotNetToolCallApprovalPolicy);
 @@dynamicModel(DotNetCodeInterpreterToolContainer);
 // client/models/common.models.tsp models
 @@dynamicModel(DotNetResponseServiceTier);
+// Extensible enum types (named unions)
+@@dynamicModel(ComputerActionType);
+@@dynamicModel(AnnotationType);
 // models_streaming.tsp
 @@dynamicModel(ResponseStreamEvent);
 @@dynamicModel(ResponseAudioDeltaEvent);
