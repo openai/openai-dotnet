@@ -92,7 +92,7 @@ namespace OpenAI.Assistants
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new RunStepToolCallKind(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToRunStepToolCallKind();
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
