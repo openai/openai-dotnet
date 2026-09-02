@@ -62,7 +62,7 @@ namespace OpenAI.Assistants
             if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.Value.ToString());
+                writer.WriteStringValue(Role.Value.ToSerialString());
             }
             if (Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
@@ -126,7 +126,7 @@ namespace OpenAI.Assistants
                     {
                         continue;
                     }
-                    role = new MessageRole(prop.Value.GetString());
+                    role = prop.Value.GetString().ToMessageRole();
                     continue;
                 }
                 if (prop.NameEquals("content"u8))

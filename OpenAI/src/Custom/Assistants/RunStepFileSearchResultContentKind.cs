@@ -4,5 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Assistants;
 
 // CUSTOM: Renamed.
+[Experimental("OPENAI001")]
 [CodeGenType("RunStepDetailsToolCallsFileSearchResultObjectContentType")]
-public readonly partial struct RunStepFileSearchResultContentKind { }
+public enum RunStepFileSearchResultContentKind
+{
+    Text,
+}

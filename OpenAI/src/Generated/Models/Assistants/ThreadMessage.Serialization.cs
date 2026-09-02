@@ -135,7 +135,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToString());
+                writer.WriteStringValue(Role.ToSerialString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
@@ -321,7 +321,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    role = new MessageRole(prop.Value.GetString());
+                    role = prop.Value.GetString().ToMessageRole();
                     continue;
                 }
                 if (prop.NameEquals("content"u8))

@@ -1988,7 +1988,7 @@ namespace OpenAI
 
         public static RunStepToolCall RunStepToolCall(string kind = default, string id = default)
         {
-            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(new RunStepToolCallKind(kind), id, additionalBinaryDataProperties: null);
+            return new UnknownRunStepDetailsToolCallsObjectToolCallsObject(kind.ToRunStepToolCallKind(), id, additionalBinaryDataProperties: null);
         }
 
         public static RunStepCodeInterpreterOutput RunStepCodeInterpreterOutput(string kind = default)

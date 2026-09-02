@@ -62,7 +62,7 @@ namespace OpenAI.Assistants
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
+                writer.WriteStringValue(Kind.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
