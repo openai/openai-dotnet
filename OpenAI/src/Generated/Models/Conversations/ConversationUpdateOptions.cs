@@ -20,8 +20,6 @@ namespace OpenAI.Conversations
         public ConversationUpdateOptions(IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(metadata, nameof(metadata));
-
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
