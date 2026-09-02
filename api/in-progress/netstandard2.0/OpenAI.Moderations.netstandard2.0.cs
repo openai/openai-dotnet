@@ -47,6 +47,7 @@ namespace OpenAI.Moderations {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
+        public ModerationInputPart(ModerationInputPartKind kind);
         public Uri ImageUri { get; }
         public ModerationInputPartKind Kind { get; }
         public string Text { get; }

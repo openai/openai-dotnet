@@ -4,11 +4,11 @@
       "RequestUri": "https://api.openai.com/v1/images/generations",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "82",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
@@ -20,14 +20,13 @@
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
           "X-Request-ID",
-          "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093f19fb9627538-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a347f5056a59b9df-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "519",
+        "Content-Length": "517",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -40,7 +39,7 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "created": 1781048048,
+        "created": 1788304345,
         "background": "opaque",
         "data": [
           {
@@ -51,7 +50,7 @@
           }
         ],
         "output_format": "png",
-        "quality": "medium",
+        "quality": "high",
         "size": "1024x1024",
         "usage": {
           "input_tokens": 22,
@@ -59,12 +58,12 @@
             "image_tokens": 0,
             "text_tokens": 22
           },
-          "output_tokens": 2112,
+          "output_tokens": 8320,
           "output_tokens_details": {
-            "image_tokens": 2112,
+            "image_tokens": 8320,
             "text_tokens": 0
           },
-          "total_tokens": 2134
+          "total_tokens": 8342
         }
       }
     },
@@ -76,7 +75,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "messages": [
@@ -108,9 +107,8 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093f202e8d37538-SEA",
+        "CF-Ray": "a347f5b2acc8b9df-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "855",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -119,6 +117,7 @@
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
@@ -126,23 +125,23 @@
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-input-images": "49999",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999225",
+        "x-ratelimit-remaining-tokens": "149999227",
         "x-ratelimit-reset-input-images": "1ms",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp0FN3NizOp3pZ2T27ZF5eSiQVdcK",
+        "id": "chatcmpl-EJRwQSg7rqpOF7llmXIshdDMx4Epo",
         "object": "chat.completion",
-        "created": 1781048049,
+        "created": 1788304346,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image shows a stop sign, which is an octagonal shape. The sign has a bright red background with bold white letters spelling the word \"STOP.\" It is mounted on a gray metal pole. The background of the image appears to be plain and white, emphasizing the sign.",
+              "content": "The image features a standard stop sign, which is octagonal in shape and primarily red. The word \"STOP\" is prominently displayed in white letters, centered on the sign. It is mounted on a gray metal pole. The background appears to be plain and light-colored, emphasizing the sign itself.",
               "refusal": null,
               "annotations": []
             },
@@ -152,8 +151,8 @@
         ],
         "usage": {
           "prompt_tokens": 25515,
-          "completion_tokens": 56,
-          "total_tokens": 25571,
+          "completion_tokens": 59,
+          "total_tokens": 25574,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -177,7 +176,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "messages": [
@@ -209,9 +208,8 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093f211bf8c7538-SEA",
+        "CF-Ray": "a347f5bdfeb7b9df-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "997",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -220,6 +218,7 @@
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
@@ -234,16 +233,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp0FQ9SmaBePA0PibVOzUaCCv4tJ6",
+        "id": "chatcmpl-EJRwShdYjDHYsOrhRa3wVlxcE1qNh",
         "object": "chat.completion",
-        "created": 1781048052,
+        "created": 1788304348,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image depicts a stop sign, which is octagonal in shape. The background color of the sign is red, and it features the word \"STOP\" prominently displayed in white uppercase letters. The sign is mounted on a pole that has holes for installation, indicating it is meant to be placed at an intersection or near a road to alert drivers to halt. The overall design follows standard traffic sign conventions.",
+              "content": "The image depicts a red stop sign in an octagonal shape, with the word \"STOP\" prominently displayed in white letters. The design is simple and clear, making it easily recognizable as a traffic sign intended to instruct drivers to halt. The sign is mounted on a vertical pole, typical for road signage.",
               "refusal": null,
               "annotations": []
             },
@@ -253,8 +252,8 @@
         ],
         "usage": {
           "prompt_tokens": 25515,
-          "completion_tokens": 80,
-          "total_tokens": 25595,
+          "completion_tokens": 61,
+          "total_tokens": 25576,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

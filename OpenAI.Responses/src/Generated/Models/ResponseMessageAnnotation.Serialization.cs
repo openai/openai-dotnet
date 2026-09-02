@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownAnnotation))]
     public partial class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>
     {
         internal ResponseMessageAnnotation()
