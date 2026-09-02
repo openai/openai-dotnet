@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>
     {
-        internal RealtimeTranscriptionSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription, default, null, null, default, null, null)
+        public RealtimeTranscriptionSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Transcription, default, null, null, default, null, null)
         {
         }
 

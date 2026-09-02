@@ -10,14 +10,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseDone(string eventId, RealtimeResponse response) : base(InternalRealtimeServerEventTypeGA.ResponseDone)
+        internal RealtimeServerUpdateResponseDone(string eventId, RealtimeResponse response) : base(RealtimeServerUpdateKind.ResponseDone)
         {
             EventId = eventId;
             Response = response;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeResponse response) : base(kind, patch)
+        internal RealtimeServerUpdateResponseDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, RealtimeResponse response) : base(kind, patch)
         {
             EventId = eventId;
             Response = response;
@@ -25,8 +25,8 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public RealtimeResponse Response { get; }
+        public RealtimeResponse Response { get; set; }
     }
 }

@@ -2638,9 +2638,9 @@ namespace OpenAI
             return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
         }
 
-        public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        public static RealtimeTokenLogProbabilityDetails RealtimeTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
-            return new RealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+            return new RealtimeTokenLogProbabilityDetails(token, logProbability, utf8Bytes, default);
         }
 
         public static RealtimeItem RealtimeItem(string kind = default)
@@ -2764,51 +2764,51 @@ namespace OpenAI
 
         public static RealtimeServerUpdate RealtimeServerUpdate(string kind = default)
         {
-            return new InternalUnknownRealtimeServerEventGA(new InternalRealtimeServerEventTypeGA(kind), default);
+            return new InternalUnknownRealtimeServerEventGA(new RealtimeServerUpdateKind(kind), default);
         }
 
         public static RealtimeServerUpdateError RealtimeServerUpdateError(string eventId = default, RealtimeError error = default)
         {
-            return new RealtimeServerUpdateError(InternalRealtimeServerEventTypeGA.Error, default, eventId, error);
+            return new RealtimeServerUpdateError(RealtimeServerUpdateKind.Error, default, eventId, error);
         }
 
         public static RealtimeServerUpdateSessionCreated RealtimeServerUpdateSessionCreated(string eventId = default, RealtimeSession session = default)
         {
-            return new RealtimeServerUpdateSessionCreated(InternalRealtimeServerEventTypeGA.SessionCreated, default, eventId, session);
+            return new RealtimeServerUpdateSessionCreated(RealtimeServerUpdateKind.SessionCreated, default, eventId, session);
         }
 
         public static RealtimeServerUpdateSessionUpdated RealtimeServerUpdateSessionUpdated(string eventId = default, RealtimeSession session = default)
         {
-            return new RealtimeServerUpdateSessionUpdated(InternalRealtimeServerEventTypeGA.SessionUpdated, default, eventId, session);
+            return new RealtimeServerUpdateSessionUpdated(RealtimeServerUpdateKind.SessionUpdated, default, eventId, session);
         }
 
         public static RealtimeServerUpdateConversationItemAdded RealtimeServerUpdateConversationItemAdded(string eventId = default, string previousItemId = default, RealtimeItem item = default)
         {
-            return new RealtimeServerUpdateConversationItemAdded(InternalRealtimeServerEventTypeGA.ConversationItemAdded, default, eventId, previousItemId, item);
+            return new RealtimeServerUpdateConversationItemAdded(RealtimeServerUpdateKind.ConversationItemAdded, default, eventId, previousItemId, item);
         }
 
         public static RealtimeServerUpdateConversationItemDone RealtimeServerUpdateConversationItemDone(string eventId = default, string previousItemId = default, RealtimeItem item = default)
         {
-            return new RealtimeServerUpdateConversationItemDone(InternalRealtimeServerEventTypeGA.ConversationItemDone, default, eventId, previousItemId, item);
+            return new RealtimeServerUpdateConversationItemDone(RealtimeServerUpdateKind.ConversationItemDone, default, eventId, previousItemId, item);
         }
 
         public static RealtimeServerUpdateConversationItemRetrieved RealtimeServerUpdateConversationItemRetrieved(string eventId = default, RealtimeItem item = default)
         {
-            return new RealtimeServerUpdateConversationItemRetrieved(InternalRealtimeServerEventTypeGA.ConversationItemRetrieved, default, eventId, item);
+            return new RealtimeServerUpdateConversationItemRetrieved(RealtimeServerUpdateKind.ConversationItemRetrieved, default, eventId, item);
         }
 
-        public static RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(string eventId = default, string itemId = default, int contentIndex = default, string transcript = default, IEnumerable<RealtimeLogProbabilityDetails> logprobs = default, RealtimeTranscriptionUsage usage = default)
+        public static RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(string eventId = default, string itemId = default, int contentIndex = default, string transcript = default, IEnumerable<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default, RealtimeTranscriptionUsage usage = default)
         {
-            logprobs ??= new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
 
             return new RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(
-                InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionCompleted,
+                RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionCompleted,
                 default,
                 eventId,
                 itemId,
                 contentIndex,
                 transcript,
-                logprobs.ToList(),
+                transcriptionTokenLogProbabilities.ToList(),
                 usage);
         }
 
@@ -2838,24 +2838,24 @@ namespace OpenAI
             return new RealtimeTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, default);
         }
 
-        public static RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(string eventId = default, string itemId = default, int? contentIndex = default, string delta = default, IEnumerable<RealtimeLogProbabilityDetails> logprobs = default)
+        public static RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(string eventId = default, string itemId = default, int? contentIndex = default, string delta = default, IEnumerable<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
         {
-            logprobs ??= new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
 
             return new RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(
-                InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionDelta,
+                RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionDelta,
                 default,
                 eventId,
                 itemId,
                 contentIndex,
                 delta,
-                logprobs.ToList());
+                transcriptionTokenLogProbabilities.ToList());
         }
 
         public static RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(string eventId = default, string itemId = default, int contentIndex = default, string text = default, string id = default, string speaker = default, float start = default, float end = default)
         {
             return new RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment(
-                InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionSegment,
+                RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionSegment,
                 default,
                 eventId,
                 itemId,
@@ -2870,7 +2870,7 @@ namespace OpenAI
         public static RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId = default, string itemId = default, int contentIndex = default, RealtimeError error = default)
         {
             return new RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(
-                InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionFailed,
+                RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionFailed,
                 default,
                 eventId,
                 itemId,
@@ -2881,7 +2881,7 @@ namespace OpenAI
         public static RealtimeServerUpdateConversationItemTruncated RealtimeServerUpdateConversationItemTruncated(string eventId = default, string itemId = default, int contentIndex = default, TimeSpan audioEndTime = default)
         {
             return new RealtimeServerUpdateConversationItemTruncated(
-                InternalRealtimeServerEventTypeGA.ConversationItemTruncated,
+                RealtimeServerUpdateKind.ConversationItemTruncated,
                 default,
                 eventId,
                 itemId,
@@ -2891,38 +2891,38 @@ namespace OpenAI
 
         public static RealtimeServerUpdateConversationItemDeleted RealtimeServerUpdateConversationItemDeleted(string eventId = default, string itemId = default)
         {
-            return new RealtimeServerUpdateConversationItemDeleted(InternalRealtimeServerEventTypeGA.ConversationItemDeleted, default, eventId, itemId);
+            return new RealtimeServerUpdateConversationItemDeleted(RealtimeServerUpdateKind.ConversationItemDeleted, default, eventId, itemId);
         }
 
         public static RealtimeServerUpdateInputAudioBufferCommitted RealtimeServerUpdateInputAudioBufferCommitted(string eventId = default, string previousItemId = default, string itemId = default)
         {
-            return new RealtimeServerUpdateInputAudioBufferCommitted(InternalRealtimeServerEventTypeGA.InputAudioBufferCommitted, default, eventId, previousItemId, itemId);
+            return new RealtimeServerUpdateInputAudioBufferCommitted(RealtimeServerUpdateKind.InputAudioBufferCommitted, default, eventId, previousItemId, itemId);
         }
 
         public static RealtimeServerUpdateInputAudioBufferDtmfEventReceived RealtimeServerUpdateInputAudioBufferDtmfEventReceived(string @event = default, DateTimeOffset receivedAt = default)
         {
-            return new RealtimeServerUpdateInputAudioBufferDtmfEventReceived(InternalRealtimeServerEventTypeGA.InputAudioBufferDtmfEventReceived, default, @event, receivedAt);
+            return new RealtimeServerUpdateInputAudioBufferDtmfEventReceived(RealtimeServerUpdateKind.InputAudioBufferDtmfEventReceived, default, @event, receivedAt);
         }
 
         public static RealtimeServerUpdateInputAudioBufferCleared RealtimeServerUpdateInputAudioBufferCleared(string eventId = default)
         {
-            return new RealtimeServerUpdateInputAudioBufferCleared(InternalRealtimeServerEventTypeGA.InputAudioBufferCleared, default, eventId);
+            return new RealtimeServerUpdateInputAudioBufferCleared(RealtimeServerUpdateKind.InputAudioBufferCleared, default, eventId);
         }
 
         public static RealtimeServerUpdateInputAudioBufferSpeechStarted RealtimeServerUpdateInputAudioBufferSpeechStarted(string eventId = default, TimeSpan audioStartTime = default, string itemId = default)
         {
-            return new RealtimeServerUpdateInputAudioBufferSpeechStarted(InternalRealtimeServerEventTypeGA.InputAudioBufferSpeechStarted, default, eventId, audioStartTime, itemId);
+            return new RealtimeServerUpdateInputAudioBufferSpeechStarted(RealtimeServerUpdateKind.InputAudioBufferSpeechStarted, default, eventId, audioStartTime, itemId);
         }
 
         public static RealtimeServerUpdateInputAudioBufferSpeechStopped RealtimeServerUpdateInputAudioBufferSpeechStopped(string eventId = default, TimeSpan audioEndTime = default, string itemId = default)
         {
-            return new RealtimeServerUpdateInputAudioBufferSpeechStopped(InternalRealtimeServerEventTypeGA.InputAudioBufferSpeechStopped, default, eventId, audioEndTime, itemId);
+            return new RealtimeServerUpdateInputAudioBufferSpeechStopped(RealtimeServerUpdateKind.InputAudioBufferSpeechStopped, default, eventId, audioEndTime, itemId);
         }
 
         public static RealtimeServerUpdateInputAudioBufferTimeoutTriggered RealtimeServerUpdateInputAudioBufferTimeoutTriggered(string eventId = default, TimeSpan audioStartTime = default, TimeSpan audioEndTime = default, string itemId = default)
         {
             return new RealtimeServerUpdateInputAudioBufferTimeoutTriggered(
-                InternalRealtimeServerEventTypeGA.InputAudioBufferTimeoutTriggered,
+                RealtimeServerUpdateKind.InputAudioBufferTimeoutTriggered,
                 default,
                 eventId,
                 audioStartTime,
@@ -2932,7 +2932,7 @@ namespace OpenAI
 
         public static RealtimeServerUpdateResponseCreated RealtimeServerUpdateResponseCreated(string eventId = default, RealtimeResponse response = default)
         {
-            return new RealtimeServerUpdateResponseCreated(InternalRealtimeServerEventTypeGA.ResponseCreated, default, eventId, response);
+            return new RealtimeServerUpdateResponseCreated(RealtimeServerUpdateKind.ResponseCreated, default, eventId, response);
         }
 
         public static RealtimeResponseStatusDetails RealtimeResponseStatusDetails(RealtimeResponseStatusErrorKind? kind = default, RealtimeResponseStatusReason? reason = default, RealtimeError error = default)
@@ -2984,13 +2984,13 @@ namespace OpenAI
 
         public static RealtimeServerUpdateResponseDone RealtimeServerUpdateResponseDone(string eventId = default, RealtimeResponse response = default)
         {
-            return new RealtimeServerUpdateResponseDone(InternalRealtimeServerEventTypeGA.ResponseDone, default, eventId, response);
+            return new RealtimeServerUpdateResponseDone(RealtimeServerUpdateKind.ResponseDone, default, eventId, response);
         }
 
         public static RealtimeServerUpdateResponseOutputItemAdded RealtimeServerUpdateResponseOutputItemAdded(string eventId = default, string responseId = default, int outputIndex = default, RealtimeItem item = default)
         {
             return new RealtimeServerUpdateResponseOutputItemAdded(
-                InternalRealtimeServerEventTypeGA.ResponseOutputItemAdded,
+                RealtimeServerUpdateKind.ResponseOutputItemAdded,
                 default,
                 eventId,
                 responseId,
@@ -3001,7 +3001,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputItemDone RealtimeServerUpdateResponseOutputItemDone(string eventId = default, string responseId = default, int outputIndex = default, RealtimeItem item = default)
         {
             return new RealtimeServerUpdateResponseOutputItemDone(
-                InternalRealtimeServerEventTypeGA.ResponseOutputItemDone,
+                RealtimeServerUpdateKind.ResponseOutputItemDone,
                 default,
                 eventId,
                 responseId,
@@ -3012,7 +3012,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseContentPartAdded RealtimeServerUpdateResponseContentPartAdded(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, RealtimeResponseContentPart part = default)
         {
             return new RealtimeServerUpdateResponseContentPartAdded(
-                InternalRealtimeServerEventTypeGA.ResponseContentPartAdded,
+                RealtimeServerUpdateKind.ResponseContentPartAdded,
                 default,
                 eventId,
                 responseId,
@@ -3030,7 +3030,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseContentPartDone RealtimeServerUpdateResponseContentPartDone(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, RealtimeResponseContentPart part = default)
         {
             return new RealtimeServerUpdateResponseContentPartDone(
-                InternalRealtimeServerEventTypeGA.ResponseContentPartDone,
+                RealtimeServerUpdateKind.ResponseContentPartDone,
                 default,
                 eventId,
                 responseId,
@@ -3043,7 +3043,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputTextDelta RealtimeServerUpdateResponseOutputTextDelta(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
         {
             return new RealtimeServerUpdateResponseOutputTextDelta(
-                InternalRealtimeServerEventTypeGA.ResponseOutputTextDelta,
+                RealtimeServerUpdateKind.ResponseOutputTextDelta,
                 default,
                 eventId,
                 responseId,
@@ -3056,7 +3056,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputTextDone RealtimeServerUpdateResponseOutputTextDone(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
         {
             return new RealtimeServerUpdateResponseOutputTextDone(
-                InternalRealtimeServerEventTypeGA.ResponseOutputTextDone,
+                RealtimeServerUpdateKind.ResponseOutputTextDone,
                 default,
                 eventId,
                 responseId,
@@ -3069,7 +3069,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputAudioTranscriptDelta RealtimeServerUpdateResponseOutputAudioTranscriptDelta(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
         {
             return new RealtimeServerUpdateResponseOutputAudioTranscriptDelta(
-                InternalRealtimeServerEventTypeGA.ResponseOutputAudioTranscriptDelta,
+                RealtimeServerUpdateKind.ResponseOutputAudioTranscriptDelta,
                 default,
                 eventId,
                 responseId,
@@ -3082,7 +3082,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputAudioTranscriptDone RealtimeServerUpdateResponseOutputAudioTranscriptDone(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string transcript = default)
         {
             return new RealtimeServerUpdateResponseOutputAudioTranscriptDone(
-                InternalRealtimeServerEventTypeGA.ResponseOutputAudioTranscriptDone,
+                RealtimeServerUpdateKind.ResponseOutputAudioTranscriptDone,
                 default,
                 eventId,
                 responseId,
@@ -3095,7 +3095,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputAudioDelta RealtimeServerUpdateResponseOutputAudioDelta(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, BinaryData delta = default)
         {
             return new RealtimeServerUpdateResponseOutputAudioDelta(
-                InternalRealtimeServerEventTypeGA.ResponseOutputAudioDelta,
+                RealtimeServerUpdateKind.ResponseOutputAudioDelta,
                 default,
                 eventId,
                 responseId,
@@ -3108,7 +3108,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseOutputAudioDone RealtimeServerUpdateResponseOutputAudioDone(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default)
         {
             return new RealtimeServerUpdateResponseOutputAudioDone(
-                InternalRealtimeServerEventTypeGA.ResponseOutputAudioDone,
+                RealtimeServerUpdateKind.ResponseOutputAudioDone,
                 default,
                 eventId,
                 responseId,
@@ -3120,7 +3120,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseFunctionCallArgumentsDelta RealtimeServerUpdateResponseFunctionCallArgumentsDelta(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, string callId = default, BinaryData delta = default)
         {
             return new RealtimeServerUpdateResponseFunctionCallArgumentsDelta(
-                InternalRealtimeServerEventTypeGA.ResponseFunctionCallArgumentsDelta,
+                RealtimeServerUpdateKind.ResponseFunctionCallArgumentsDelta,
                 default,
                 eventId,
                 responseId,
@@ -3133,7 +3133,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseFunctionCallArgumentsDone RealtimeServerUpdateResponseFunctionCallArgumentsDone(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, string callId = default, BinaryData functionArguments = default, string functionName = default)
         {
             return new RealtimeServerUpdateResponseFunctionCallArgumentsDone(
-                InternalRealtimeServerEventTypeGA.ResponseFunctionCallArgumentsDone,
+                RealtimeServerUpdateKind.ResponseFunctionCallArgumentsDone,
                 default,
                 eventId,
                 responseId,
@@ -3147,7 +3147,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseMcpCallArgumentsDelta RealtimeServerUpdateResponseMcpCallArgumentsDelta(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, BinaryData delta = default, string obfuscation = default)
         {
             return new RealtimeServerUpdateResponseMcpCallArgumentsDelta(
-                InternalRealtimeServerEventTypeGA.ResponseMcpCallArgumentsDelta,
+                RealtimeServerUpdateKind.ResponseMcpCallArgumentsDelta,
                 default,
                 eventId,
                 responseId,
@@ -3160,7 +3160,7 @@ namespace OpenAI
         public static RealtimeServerUpdateResponseMcpCallArgumentsDone RealtimeServerUpdateResponseMcpCallArgumentsDone(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, BinaryData toolArguments = default)
         {
             return new RealtimeServerUpdateResponseMcpCallArgumentsDone(
-                InternalRealtimeServerEventTypeGA.ResponseMcpCallArgumentsDone,
+                RealtimeServerUpdateKind.ResponseMcpCallArgumentsDone,
                 default,
                 eventId,
                 responseId,
@@ -3171,39 +3171,39 @@ namespace OpenAI
 
         public static RealtimeServerUpdateResponseMcpCallInProgress RealtimeServerUpdateResponseMcpCallInProgress(string eventId = default, int outputIndex = default, string itemId = default)
         {
-            return new RealtimeServerUpdateResponseMcpCallInProgress(InternalRealtimeServerEventTypeGA.ResponseMcpCallInProgress, default, eventId, outputIndex, itemId);
+            return new RealtimeServerUpdateResponseMcpCallInProgress(RealtimeServerUpdateKind.ResponseMcpCallInProgress, default, eventId, outputIndex, itemId);
         }
 
         public static RealtimeServerUpdateResponseMcpCallCompleted RealtimeServerUpdateResponseMcpCallCompleted(string eventId = default, int outputIndex = default, string itemId = default)
         {
-            return new RealtimeServerUpdateResponseMcpCallCompleted(InternalRealtimeServerEventTypeGA.ResponseMcpCallCompleted, default, eventId, outputIndex, itemId);
+            return new RealtimeServerUpdateResponseMcpCallCompleted(RealtimeServerUpdateKind.ResponseMcpCallCompleted, default, eventId, outputIndex, itemId);
         }
 
         public static RealtimeServerUpdateResponseMcpCallFailed RealtimeServerUpdateResponseMcpCallFailed(string eventId = default, int outputIndex = default, string itemId = default)
         {
-            return new RealtimeServerUpdateResponseMcpCallFailed(InternalRealtimeServerEventTypeGA.ResponseMcpCallFailed, default, eventId, outputIndex, itemId);
+            return new RealtimeServerUpdateResponseMcpCallFailed(RealtimeServerUpdateKind.ResponseMcpCallFailed, default, eventId, outputIndex, itemId);
         }
 
         public static RealtimeServerUpdateMcpListToolsInProgress RealtimeServerUpdateMcpListToolsInProgress(string eventId = default, string itemId = default)
         {
-            return new RealtimeServerUpdateMcpListToolsInProgress(InternalRealtimeServerEventTypeGA.McpListToolsInProgress, default, eventId, itemId);
+            return new RealtimeServerUpdateMcpListToolsInProgress(RealtimeServerUpdateKind.McpListToolsInProgress, default, eventId, itemId);
         }
 
         public static RealtimeServerUpdateMcpListToolsCompleted RealtimeServerUpdateMcpListToolsCompleted(string eventId = default, string itemId = default)
         {
-            return new RealtimeServerUpdateMcpListToolsCompleted(InternalRealtimeServerEventTypeGA.McpListToolsCompleted, default, eventId, itemId);
+            return new RealtimeServerUpdateMcpListToolsCompleted(RealtimeServerUpdateKind.McpListToolsCompleted, default, eventId, itemId);
         }
 
         public static RealtimeServerUpdateMcpListToolsFailed RealtimeServerUpdateMcpListToolsFailed(string eventId = default, string itemId = default)
         {
-            return new RealtimeServerUpdateMcpListToolsFailed(InternalRealtimeServerEventTypeGA.McpListToolsFailed, default, eventId, itemId);
+            return new RealtimeServerUpdateMcpListToolsFailed(RealtimeServerUpdateKind.McpListToolsFailed, default, eventId, itemId);
         }
 
         public static RealtimeServerUpdateRateLimitsUpdated RealtimeServerUpdateRateLimitsUpdated(string eventId = default, IEnumerable<RealtimeRateLimitDetails> rateLimitDetails = default)
         {
             rateLimitDetails ??= new ChangeTrackingList<RealtimeRateLimitDetails>();
 
-            return new RealtimeServerUpdateRateLimitsUpdated(InternalRealtimeServerEventTypeGA.RateLimitsUpdated, default, eventId, rateLimitDetails.ToList());
+            return new RealtimeServerUpdateRateLimitsUpdated(RealtimeServerUpdateKind.RateLimitsUpdated, default, eventId, rateLimitDetails.ToList());
         }
 
         public static RealtimeRateLimitDetails RealtimeRateLimitDetails(RealtimeRateLimitName? name = default, int? limit = default, int? remainingCount = default, TimeSpan? timeUntilReset = default)
@@ -3213,68 +3213,68 @@ namespace OpenAI
 
         public static RealtimeServerUpdateConversationItemCreated RealtimeServerUpdateConversationItemCreated(string eventId = default, string previousItemId = default, RealtimeItem item = default)
         {
-            return new RealtimeServerUpdateConversationItemCreated(InternalRealtimeServerEventTypeGA.ConversationItemCreated, default, eventId, previousItemId, item);
+            return new RealtimeServerUpdateConversationItemCreated(RealtimeServerUpdateKind.ConversationItemCreated, default, eventId, previousItemId, item);
         }
 
         public static RealtimeServerUpdateConversationCreated RealtimeServerUpdateConversationCreated(string eventId = default, RealtimeConversation conversation = default)
         {
-            return new RealtimeServerUpdateConversationCreated(InternalRealtimeServerEventTypeGA.ConversationCreated, default, eventId, conversation);
+            return new RealtimeServerUpdateConversationCreated(RealtimeServerUpdateKind.ConversationCreated, default, eventId, conversation);
         }
 
         public static RealtimeServerUpdateOutputAudioBufferStarted RealtimeServerUpdateOutputAudioBufferStarted(string eventId = default, string responseId = default)
         {
-            return new RealtimeServerUpdateOutputAudioBufferStarted(InternalRealtimeServerEventTypeGA.OutputAudioBufferStarted, default, eventId, responseId);
+            return new RealtimeServerUpdateOutputAudioBufferStarted(RealtimeServerUpdateKind.OutputAudioBufferStarted, default, eventId, responseId);
         }
 
         public static RealtimeServerUpdateOutputAudioBufferStopped RealtimeServerUpdateOutputAudioBufferStopped(string eventId = default, string responseId = default)
         {
-            return new RealtimeServerUpdateOutputAudioBufferStopped(InternalRealtimeServerEventTypeGA.OutputAudioBufferStopped, default, eventId, responseId);
+            return new RealtimeServerUpdateOutputAudioBufferStopped(RealtimeServerUpdateKind.OutputAudioBufferStopped, default, eventId, responseId);
         }
 
         public static RealtimeServerUpdateOutputAudioBufferCleared RealtimeServerUpdateOutputAudioBufferCleared(string eventId = default, string responseId = default)
         {
-            return new RealtimeServerUpdateOutputAudioBufferCleared(InternalRealtimeServerEventTypeGA.OutputAudioBufferCleared, default, eventId, responseId);
+            return new RealtimeServerUpdateOutputAudioBufferCleared(RealtimeServerUpdateKind.OutputAudioBufferCleared, default, eventId, responseId);
         }
 
         public static RealtimeClientCommand RealtimeClientCommand(string kind = default)
         {
-            return new InternalUnknownRealtimeClientEventGA(new InternalRealtimeClientEventTypeGA(kind), default);
+            return new InternalUnknownRealtimeClientEventGA(new RealtimeClientCommandKind(kind), default);
         }
 
         public static RealtimeClientCommandSessionUpdate RealtimeClientCommandSessionUpdate(string eventId = default, RealtimeSessionOptions sessionOptions = default)
         {
-            return new RealtimeClientCommandSessionUpdate(InternalRealtimeClientEventTypeGA.SessionUpdate, default, eventId, sessionOptions);
+            return new RealtimeClientCommandSessionUpdate(RealtimeClientCommandKind.SessionUpdate, default, eventId, sessionOptions);
         }
 
         public static RealtimeClientCommandInputAudioBufferAppend RealtimeClientCommandInputAudioBufferAppend(string eventId = default, BinaryData audioBytes = default)
         {
-            return new RealtimeClientCommandInputAudioBufferAppend(InternalRealtimeClientEventTypeGA.InputAudioBufferAppend, default, eventId, audioBytes);
+            return new RealtimeClientCommandInputAudioBufferAppend(RealtimeClientCommandKind.InputAudioBufferAppend, default, eventId, audioBytes);
         }
 
         public static RealtimeClientCommandInputAudioBufferCommit RealtimeClientCommandInputAudioBufferCommit(string eventId = default)
         {
-            return new RealtimeClientCommandInputAudioBufferCommit(InternalRealtimeClientEventTypeGA.InputAudioBufferCommit, default, eventId);
+            return new RealtimeClientCommandInputAudioBufferCommit(RealtimeClientCommandKind.InputAudioBufferCommit, default, eventId);
         }
 
         public static RealtimeClientCommandInputAudioBufferClear RealtimeClientCommandInputAudioBufferClear(string eventId = default)
         {
-            return new RealtimeClientCommandInputAudioBufferClear(InternalRealtimeClientEventTypeGA.InputAudioBufferClear, default, eventId);
+            return new RealtimeClientCommandInputAudioBufferClear(RealtimeClientCommandKind.InputAudioBufferClear, default, eventId);
         }
 
         public static RealtimeClientCommandConversationItemCreate RealtimeClientCommandConversationItemCreate(string eventId = default, string previousItemId = default, RealtimeItem item = default)
         {
-            return new RealtimeClientCommandConversationItemCreate(InternalRealtimeClientEventTypeGA.ConversationItemCreate, default, eventId, previousItemId, item);
+            return new RealtimeClientCommandConversationItemCreate(RealtimeClientCommandKind.ConversationItemCreate, default, eventId, previousItemId, item);
         }
 
         public static RealtimeClientCommandConversationItemRetrieve RealtimeClientCommandConversationItemRetrieve(string eventId = default, string itemId = default)
         {
-            return new RealtimeClientCommandConversationItemRetrieve(InternalRealtimeClientEventTypeGA.ConversationItemRetrieve, default, eventId, itemId);
+            return new RealtimeClientCommandConversationItemRetrieve(RealtimeClientCommandKind.ConversationItemRetrieve, default, eventId, itemId);
         }
 
         public static RealtimeClientCommandConversationItemTruncate RealtimeClientCommandConversationItemTruncate(string eventId = default, string itemId = default, int contentIndex = default, TimeSpan audioEndTime = default)
         {
             return new RealtimeClientCommandConversationItemTruncate(
-                InternalRealtimeClientEventTypeGA.ConversationItemTruncate,
+                RealtimeClientCommandKind.ConversationItemTruncate,
                 default,
                 eventId,
                 itemId,
@@ -3284,12 +3284,12 @@ namespace OpenAI
 
         public static RealtimeClientCommandConversationItemDelete RealtimeClientCommandConversationItemDelete(string eventId = default, string itemId = default)
         {
-            return new RealtimeClientCommandConversationItemDelete(InternalRealtimeClientEventTypeGA.ConversationItemDelete, default, eventId, itemId);
+            return new RealtimeClientCommandConversationItemDelete(RealtimeClientCommandKind.ConversationItemDelete, default, eventId, itemId);
         }
 
         public static RealtimeClientCommandResponseCreate RealtimeClientCommandResponseCreate(string eventId = default, RealtimeResponseOptions responseOptions = default)
         {
-            return new RealtimeClientCommandResponseCreate(InternalRealtimeClientEventTypeGA.ResponseCreate, default, eventId, responseOptions);
+            return new RealtimeClientCommandResponseCreate(RealtimeClientCommandKind.ResponseCreate, default, eventId, responseOptions);
         }
 
         public static RealtimeResponseOptions RealtimeResponseOptions(IEnumerable<RealtimeOutputModality> outputModalities = default, string instructions = default, RealtimeResponseAudioOptions audioOptions = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<RealtimeItem> inputItems = default)
@@ -3314,12 +3314,12 @@ namespace OpenAI
 
         public static RealtimeClientCommandResponseCancel RealtimeClientCommandResponseCancel(string eventId = default, string responseId = default)
         {
-            return new RealtimeClientCommandResponseCancel(InternalRealtimeClientEventTypeGA.ResponseCancel, default, eventId, responseId);
+            return new RealtimeClientCommandResponseCancel(RealtimeClientCommandKind.ResponseCancel, default, eventId, responseId);
         }
 
         public static RealtimeClientCommandOutputAudioBufferClear RealtimeClientCommandOutputAudioBufferClear(string eventId = default)
         {
-            return new RealtimeClientCommandOutputAudioBufferClear(InternalRealtimeClientEventTypeGA.OutputAudioBufferClear, default, eventId);
+            return new RealtimeClientCommandOutputAudioBufferClear(RealtimeClientCommandKind.OutputAudioBufferClear, default, eventId);
         }
 
         public static RunStepUpdateCodeInterpreterOutput RunStepUpdateCodeInterpreterOutput(string kind = default)

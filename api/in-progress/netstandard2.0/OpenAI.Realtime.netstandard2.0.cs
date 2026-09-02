@@ -15,12 +15,12 @@ namespace OpenAI.Realtime {
         public static implicit operator BinaryContent(CreateClientSecretOptions createClientSecretOptions);
     }
     public class CreateClientSecretResult : IJsonModel<CreateClientSecretResult>, IPersistableModel<CreateClientSecretResult> {
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresAt { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public RealtimeSession Session { get; }
-        public string Value { get; }
+        public RealtimeSession Session { get; set; }
+        public string Value { get; set; }
         public static explicit operator CreateClientSecretResult(ClientResult result);
     }
     public class RealtimeAudioFormat : IJsonModel<RealtimeAudioFormat>, IPersistableModel<RealtimeAudioFormat> {
@@ -67,64 +67,96 @@ namespace OpenAI.Realtime {
         public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
     }
     public class RealtimeClientCommand : IJsonModel<RealtimeClientCommand>, IPersistableModel<RealtimeClientCommand> {
+        protected internal RealtimeClientCommand(RealtimeClientCommandKind kind);
+        public RealtimeClientCommandKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeClientCommandConversationItemCreate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemCreate>, IPersistableModel<RealtimeClientCommandConversationItemCreate> {
-        public RealtimeClientCommandConversationItemCreate(RealtimeItem item);
+        public RealtimeClientCommandConversationItemCreate() : base(default);
+        public RealtimeClientCommandConversationItemCreate(RealtimeItem item) : base(default);
         public string EventId { get; set; }
-        public RealtimeItem Item { get; }
+        public RealtimeItem Item { get; set; }
         public string PreviousItemId { get; set; }
     }
     public class RealtimeClientCommandConversationItemDelete : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemDelete>, IPersistableModel<RealtimeClientCommandConversationItemDelete> {
-        public RealtimeClientCommandConversationItemDelete(string itemId);
+        public RealtimeClientCommandConversationItemDelete() : base(default);
+        public RealtimeClientCommandConversationItemDelete(string itemId) : base(default);
         public string EventId { get; set; }
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
     public class RealtimeClientCommandConversationItemRetrieve : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemRetrieve>, IPersistableModel<RealtimeClientCommandConversationItemRetrieve> {
-        public RealtimeClientCommandConversationItemRetrieve(string itemId);
+        public RealtimeClientCommandConversationItemRetrieve() : base(default);
+        public RealtimeClientCommandConversationItemRetrieve(string itemId) : base(default);
         public string EventId { get; set; }
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
     public class RealtimeClientCommandConversationItemTruncate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemTruncate>, IPersistableModel<RealtimeClientCommandConversationItemTruncate> {
-        public RealtimeClientCommandConversationItemTruncate(string itemId, int contentIndex, TimeSpan audioEndTime);
-        public TimeSpan AudioEndTime { get; }
-        public int ContentIndex { get; }
+        public RealtimeClientCommandConversationItemTruncate() : base(default);
+        public RealtimeClientCommandConversationItemTruncate(string itemId, int contentIndex, TimeSpan audioEndTime) : base(default);
+        public TimeSpan AudioEndTime { get; set; }
+        public int ContentIndex { get; set; }
         public string EventId { get; set; }
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
     public class RealtimeClientCommandInputAudioBufferAppend : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferAppend>, IPersistableModel<RealtimeClientCommandInputAudioBufferAppend> {
-        public RealtimeClientCommandInputAudioBufferAppend(BinaryData audioBytes);
-        public BinaryData AudioBytes { get; }
+        public RealtimeClientCommandInputAudioBufferAppend() : base(default);
+        public RealtimeClientCommandInputAudioBufferAppend(BinaryData audioBytes) : base(default);
+        public BinaryData AudioBytes { get; set; }
         public string EventId { get; set; }
     }
     public class RealtimeClientCommandInputAudioBufferClear : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferClear>, IPersistableModel<RealtimeClientCommandInputAudioBufferClear> {
-        public RealtimeClientCommandInputAudioBufferClear();
+        public RealtimeClientCommandInputAudioBufferClear() : base(default);
         public string EventId { get; set; }
     }
     public class RealtimeClientCommandInputAudioBufferCommit : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferCommit>, IPersistableModel<RealtimeClientCommandInputAudioBufferCommit> {
-        public RealtimeClientCommandInputAudioBufferCommit();
+        public RealtimeClientCommandInputAudioBufferCommit() : base(default);
         public string EventId { get; set; }
     }
+    public readonly partial struct RealtimeClientCommandKind : IEquatable<RealtimeClientCommandKind> {
+        public RealtimeClientCommandKind(string value);
+        public static RealtimeClientCommandKind ConversationItemCreate { get; }
+        public static RealtimeClientCommandKind ConversationItemDelete { get; }
+        public static RealtimeClientCommandKind ConversationItemRetrieve { get; }
+        public static RealtimeClientCommandKind ConversationItemTruncate { get; }
+        public static RealtimeClientCommandKind InputAudioBufferAppend { get; }
+        public static RealtimeClientCommandKind InputAudioBufferClear { get; }
+        public static RealtimeClientCommandKind InputAudioBufferCommit { get; }
+        public static RealtimeClientCommandKind OutputAudioBufferClear { get; }
+        public static RealtimeClientCommandKind ResponseCancel { get; }
+        public static RealtimeClientCommandKind ResponseCreate { get; }
+        public static RealtimeClientCommandKind SessionUpdate { get; }
+        public readonly bool Equals(RealtimeClientCommandKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeClientCommandKind left, RealtimeClientCommandKind right);
+        public static implicit operator RealtimeClientCommandKind(string value);
+        public static implicit operator RealtimeClientCommandKind?(string value);
+        public static bool operator !=(RealtimeClientCommandKind left, RealtimeClientCommandKind right);
+        public override readonly string ToString();
+    }
     public class RealtimeClientCommandOutputAudioBufferClear : RealtimeClientCommand, IJsonModel<RealtimeClientCommandOutputAudioBufferClear>, IPersistableModel<RealtimeClientCommandOutputAudioBufferClear> {
-        public RealtimeClientCommandOutputAudioBufferClear();
+        public RealtimeClientCommandOutputAudioBufferClear() : base(default);
         public string EventId { get; set; }
     }
     public class RealtimeClientCommandResponseCancel : RealtimeClientCommand, IJsonModel<RealtimeClientCommandResponseCancel>, IPersistableModel<RealtimeClientCommandResponseCancel> {
-        public RealtimeClientCommandResponseCancel();
+        public RealtimeClientCommandResponseCancel() : base(default);
         public string EventId { get; set; }
         public string ResponseId { get; set; }
     }
     public class RealtimeClientCommandResponseCreate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandResponseCreate>, IPersistableModel<RealtimeClientCommandResponseCreate> {
-        public RealtimeClientCommandResponseCreate();
+        public RealtimeClientCommandResponseCreate() : base(default);
         public string EventId { get; set; }
         public RealtimeResponseOptions ResponseOptions { get; set; }
     }
     public class RealtimeClientCommandSessionUpdate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandSessionUpdate>, IPersistableModel<RealtimeClientCommandSessionUpdate> {
-        public RealtimeClientCommandSessionUpdate(RealtimeSessionOptions sessionOptions);
+        public RealtimeClientCommandSessionUpdate() : base(default);
+        public RealtimeClientCommandSessionUpdate(RealtimeSessionOptions sessionOptions) : base(default);
         public string EventId { get; set; }
-        public RealtimeSessionOptions SessionOptions { get; }
+        public RealtimeSessionOptions SessionOptions { get; set; }
     }
     public class RealtimeClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -133,11 +165,11 @@ namespace OpenAI.Realtime {
         public string UserAgentApplicationId { get; set; }
     }
     public class RealtimeClientSecret : IJsonModel<RealtimeClientSecret>, IPersistableModel<RealtimeClientSecret> {
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresAt { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public string Value { get; }
+        public string Value { get; set; }
     }
     public readonly partial struct RealtimeClientSecretExpirationAnchor : IEquatable<RealtimeClientSecretExpirationAnchor> {
         public RealtimeClientSecretExpirationAnchor(string value);
@@ -165,16 +197,17 @@ namespace OpenAI.Realtime {
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public class RealtimeConversation : IJsonModel<RealtimeConversation>, IPersistableModel<RealtimeConversation> {
-        public string Id { get; }
+        public string Id { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeConversationSession : RealtimeSession, IJsonModel<RealtimeConversationSession>, IPersistableModel<RealtimeConversationSession> {
+        public RealtimeConversationSession();
         public RealtimeConversationSessionAudioOptions AudioOptions { get; set; }
-        public RealtimeClientSecret ClientSecret { get; }
+        public RealtimeClientSecret ClientSecret { get; set; }
         public IList<RealtimeIncludedProperty> IncludedProperties { get; }
-        public string Instructions { get; }
+        public string Instructions { get; set; }
         public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
         public string Model { get; set; }
         public IList<RealtimeOutputModality> OutputModalities { get; }
@@ -222,6 +255,7 @@ namespace OpenAI.Realtime {
         public RealtimeVoice? Voice { get; set; }
     }
     public class RealtimeCustomFunctionToolChoice : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomFunctionToolChoice>, IPersistableModel<RealtimeCustomFunctionToolChoice> {
+        public RealtimeCustomFunctionToolChoice();
         public RealtimeCustomFunctionToolChoice(string functionName);
         public string FunctionName { get; set; }
     }
@@ -233,11 +267,13 @@ namespace OpenAI.Realtime {
         public RealtimeMcpToolFilter ToolsNeverRequiringApproval { get; set; }
     }
     public class RealtimeCustomMcpToolChoice : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomMcpToolChoice>, IPersistableModel<RealtimeCustomMcpToolChoice> {
+        public RealtimeCustomMcpToolChoice();
         public RealtimeCustomMcpToolChoice(string serverLabel);
         public string McpToolName { get; set; }
         public string ServerLabel { get; set; }
     }
     public class RealtimeCustomRetentionRatioTruncation : RealtimeCustomTruncation, IJsonModel<RealtimeCustomRetentionRatioTruncation>, IPersistableModel<RealtimeCustomRetentionRatioTruncation> {
+        public RealtimeCustomRetentionRatioTruncation();
         public RealtimeCustomRetentionRatioTruncation(float retentionRatio);
         public float RetentionRatio { get; set; }
         public RealtimeRetentionRatioTokenLimitDetails TokenLimitDetails { get; set; }
@@ -339,12 +375,13 @@ namespace OpenAI.Realtime {
         public string EventId { get; set; }
         public string Kind { get; set; }
         public string Message { get; set; }
-        public string ParameterName { get; }
+        public string ParameterName { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeFunctionCallItem : RealtimeItem, IJsonModel<RealtimeFunctionCallItem>, IPersistableModel<RealtimeFunctionCallItem> {
+        public RealtimeFunctionCallItem();
         public RealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
@@ -353,6 +390,7 @@ namespace OpenAI.Realtime {
         public RealtimeFunctionCallStatus? Status { get; set; }
     }
     public class RealtimeFunctionCallOutputItem : RealtimeItem, IJsonModel<RealtimeFunctionCallOutputItem>, IPersistableModel<RealtimeFunctionCallOutputItem> {
+        public RealtimeFunctionCallOutputItem();
         public RealtimeFunctionCallOutputItem(string callId, string functionOutput);
         public string CallId { get; set; }
         public string FunctionOutput { get; set; }
@@ -392,9 +430,10 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeFunctionTool : RealtimeTool, IJsonModel<RealtimeFunctionTool>, IPersistableModel<RealtimeFunctionTool> {
+        public RealtimeFunctionTool();
         public RealtimeFunctionTool(string functionName);
         public string FunctionDescription { get; set; }
-        public string FunctionName { get; }
+        public string FunctionName { get; set; }
         public BinaryData FunctionParameters { get; set; }
     }
     public readonly partial struct RealtimeImageDetailLevel : IEquatable<RealtimeImageDetailLevel> {
@@ -428,16 +467,19 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeInputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputAudioMessageContentPart>, IPersistableModel<RealtimeInputAudioMessageContentPart> {
+        public RealtimeInputAudioMessageContentPart();
         public RealtimeInputAudioMessageContentPart(BinaryData audioBytes);
         public BinaryData AudioBytes { get; set; }
         public string Transcript { get; set; }
     }
     public class RealtimeInputImageMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputImageMessageContentPart>, IPersistableModel<RealtimeInputImageMessageContentPart> {
+        public RealtimeInputImageMessageContentPart();
         public RealtimeInputImageMessageContentPart(Uri imageUri);
         public RealtimeImageDetailLevel? Detail { get; set; }
         public Uri ImageUri { get; set; }
     }
     public class RealtimeInputTextMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputTextMessageContentPart>, IPersistableModel<RealtimeInputTextMessageContentPart> {
+        public RealtimeInputTextMessageContentPart();
         public RealtimeInputTextMessageContentPart(string text);
         public string Text { get; set; }
     }
@@ -458,14 +500,6 @@ namespace OpenAI.Realtime {
         public static RealtimeMessageItem CreateUserMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts);
         public static RealtimeMessageItem CreateUserMessageItem(string inputTextContent);
     }
-    public class RealtimeLogProbabilityDetails : IJsonModel<RealtimeLogProbabilityDetails>, IPersistableModel<RealtimeLogProbabilityDetails> {
-        public float LogProbability { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        public string Token { get; }
-        public ReadOnlyMemory<byte> Utf8Bytes { get; }
-    }
     public class RealtimeMaxOutputTokenCount : IJsonModel<RealtimeMaxOutputTokenCount>, IPersistableModel<RealtimeMaxOutputTokenCount> {
         public RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
         public RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
@@ -478,6 +512,7 @@ namespace OpenAI.Realtime {
         public static implicit operator RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
     }
     public class RealtimeMcpTool : RealtimeTool, IJsonModel<RealtimeMcpTool>, IPersistableModel<RealtimeMcpTool> {
+        public RealtimeMcpTool();
         public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId);
         public RealtimeMcpTool(string serverLabel, Uri serverUri);
         public RealtimeMcpToolFilter AllowedTools { get; set; }
@@ -501,6 +536,7 @@ namespace OpenAI.Realtime {
         public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
     }
     public class RealtimeMcpToolCallApprovalRequestItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalRequestItem>, IPersistableModel<RealtimeMcpToolCallApprovalRequestItem> {
+        public RealtimeMcpToolCallApprovalRequestItem();
         public RealtimeMcpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
         public string Id { get; set; }
         public string ServerLabel { get; set; }
@@ -508,6 +544,7 @@ namespace OpenAI.Realtime {
         public string ToolName { get; set; }
     }
     public class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalResponseItem>, IPersistableModel<RealtimeMcpToolCallApprovalResponseItem> {
+        public RealtimeMcpToolCallApprovalResponseItem();
         public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved);
         public string ApprovalRequestId { get; set; }
         public bool Approved { get; set; }
@@ -515,6 +552,7 @@ namespace OpenAI.Realtime {
         public string Reason { get; set; }
     }
     public class RealtimeMcpToolCallItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallItem>, IPersistableModel<RealtimeMcpToolCallItem> {
+        public RealtimeMcpToolCallItem();
         public RealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
         public string ApprovalRequestId { get; set; }
         public RealtimeError Error { get; set; }
@@ -546,6 +584,7 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeMcpToolDefinition : IJsonModel<RealtimeMcpToolDefinition>, IPersistableModel<RealtimeMcpToolDefinition> {
+        public RealtimeMcpToolDefinition();
         public RealtimeMcpToolDefinition(string name, BinaryData inputSchema);
         public BinaryData Annotations { get; set; }
         public string Description { get; set; }
@@ -556,6 +595,7 @@ namespace OpenAI.Realtime {
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeMcpToolDefinitionListItem : RealtimeItem, IJsonModel<RealtimeMcpToolDefinitionListItem>, IPersistableModel<RealtimeMcpToolDefinitionListItem> {
+        public RealtimeMcpToolDefinitionListItem();
         public RealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions);
         public string Id { get; set; }
         public string ServerLabel { get; set; }
@@ -574,6 +614,7 @@ namespace OpenAI.Realtime {
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeMessageItem : RealtimeItem, IJsonModel<RealtimeMessageItem>, IPersistableModel<RealtimeMessageItem> {
+        public RealtimeMessageItem();
         public RealtimeMessageItem(RealtimeMessageRole role, IEnumerable<RealtimeMessageContentPart> content);
         public IList<RealtimeMessageContentPart> Content { get; }
         public string Id { get; set; }
@@ -613,6 +654,7 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeNoiseReduction : IJsonModel<RealtimeNoiseReduction>, IPersistableModel<RealtimeNoiseReduction> {
+        public RealtimeNoiseReduction();
         public RealtimeNoiseReduction(RealtimeNoiseReductionKind kind);
         public RealtimeNoiseReductionKind Kind { get; set; }
         [Serialization.JsonIgnore]
@@ -635,6 +677,7 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeOutputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeOutputAudioMessageContentPart>, IPersistableModel<RealtimeOutputAudioMessageContentPart> {
+        public RealtimeOutputAudioMessageContentPart();
         public RealtimeOutputAudioMessageContentPart(BinaryData audioBytes, string transcript);
         public BinaryData AudioBytes { get; set; }
         public string Transcript { get; set; }
@@ -655,6 +698,7 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeOutputTextMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeOutputTextMessageContentPart>, IPersistableModel<RealtimeOutputTextMessageContentPart> {
+        public RealtimeOutputTextMessageContentPart();
         public RealtimeOutputTextMessageContentPart(string text);
         public string Text { get; set; }
     }
@@ -663,19 +707,19 @@ namespace OpenAI.Realtime {
     }
     public class RealtimePcmAudioFormat : RealtimeAudioFormat, IJsonModel<RealtimePcmAudioFormat>, IPersistableModel<RealtimePcmAudioFormat> {
         public RealtimePcmAudioFormat();
-        public int Rate { get; }
+        public int Rate { get; set; }
     }
     public class RealtimePcmuAudioFormat : RealtimeAudioFormat, IJsonModel<RealtimePcmuAudioFormat>, IPersistableModel<RealtimePcmuAudioFormat> {
         public RealtimePcmuAudioFormat();
     }
     public class RealtimeRateLimitDetails : IJsonModel<RealtimeRateLimitDetails>, IPersistableModel<RealtimeRateLimitDetails> {
-        public int? Limit { get; }
-        public RealtimeRateLimitName? Name { get; }
+        public int? Limit { get; set; }
+        public RealtimeRateLimitName? Name { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int? RemainingCount { get; }
-        public TimeSpan? TimeUntilReset { get; }
+        public int? RemainingCount { get; set; }
+        public TimeSpan? TimeUntilReset { get; set; }
     }
     public readonly partial struct RealtimeRateLimitName : IEquatable<RealtimeRateLimitName> {
         public RealtimeRateLimitName(string value);
@@ -693,34 +737,34 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeResponse : IJsonModel<RealtimeResponse>, IPersistableModel<RealtimeResponse> {
-        public RealtimeResponseAudioOptions AudioOptions { get; }
-        public string ConversationId { get; }
-        public string Id { get; }
-        public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
+        public RealtimeResponseAudioOptions AudioOptions { get; set; }
+        public string ConversationId { get; set; }
+        public string Id { get; set; }
+        public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
         public IDictionary<string, BinaryData> Metadata { get; }
         public IList<RealtimeItem> OutputItems { get; }
         public IList<RealtimeOutputModality> OutputModalities { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public RealtimeResponseStatus? Status { get; }
-        public RealtimeResponseStatusDetails StatusDetails { get; }
-        public RealtimeResponseUsage Usage { get; }
+        public RealtimeResponseStatus? Status { get; set; }
+        public RealtimeResponseStatusDetails StatusDetails { get; set; }
+        public RealtimeResponseUsage Usage { get; set; }
     }
     public class RealtimeResponseAudioOptions : IJsonModel<RealtimeResponseAudioOptions>, IPersistableModel<RealtimeResponseAudioOptions> {
-        public RealtimeResponseOutputAudioOptions OutputAudioOptions { get; }
+        public RealtimeResponseOutputAudioOptions OutputAudioOptions { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeResponseContentPart : IJsonModel<RealtimeResponseContentPart>, IPersistableModel<RealtimeResponseContentPart> {
-        public BinaryData Audio { get; }
-        public RealtimeResponseContentPartKind? Kind { get; }
+        public BinaryData Audio { get; set; }
+        public RealtimeResponseContentPartKind? Kind { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public string Text { get; }
-        public string Transcript { get; }
+        public string Text { get; set; }
+        public string Transcript { get; set; }
     }
     public readonly partial struct RealtimeResponseContentPartKind : IEquatable<RealtimeResponseContentPartKind> {
         public RealtimeResponseContentPartKind(string value);
@@ -753,22 +797,22 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeResponseInputCachedTokenUsageDetails : IJsonModel<RealtimeResponseInputCachedTokenUsageDetails>, IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
-        public int? ImageTokenCount { get; }
+        public int? AudioTokenCount { get; set; }
+        public int? ImageTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int? TextTokenCount { get; }
+        public int? TextTokenCount { get; set; }
     }
     public class RealtimeResponseInputTokenUsageDetails : IJsonModel<RealtimeResponseInputTokenUsageDetails>, IPersistableModel<RealtimeResponseInputTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
-        public int? CachedTokenCount { get; }
-        public RealtimeResponseInputCachedTokenUsageDetails CachedTokenDetails { get; }
-        public int? ImageTokenCount { get; }
+        public int? AudioTokenCount { get; set; }
+        public int? CachedTokenCount { get; set; }
+        public RealtimeResponseInputCachedTokenUsageDetails CachedTokenDetails { get; set; }
+        public int? ImageTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int? TextTokenCount { get; }
+        public int? TextTokenCount { get; set; }
     }
     public class RealtimeResponseOptions : IJsonModel<RealtimeResponseOptions>, IPersistableModel<RealtimeResponseOptions> {
         public RealtimeResponseAudioOptions AudioOptions { get; set; }
@@ -792,11 +836,11 @@ namespace OpenAI.Realtime {
         public RealtimeVoice? Voice { get; set; }
     }
     public class RealtimeResponseOutputTokenUsageDetails : IJsonModel<RealtimeResponseOutputTokenUsageDetails>, IPersistableModel<RealtimeResponseOutputTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
+        public int? AudioTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int? TextTokenCount { get; }
+        public int? TextTokenCount { get; set; }
     }
     public readonly partial struct RealtimeResponseStatus : IEquatable<RealtimeResponseStatus> {
         public RealtimeResponseStatus(string value);
@@ -817,12 +861,12 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeResponseStatusDetails : IJsonModel<RealtimeResponseStatusDetails>, IPersistableModel<RealtimeResponseStatusDetails> {
-        public RealtimeError Error { get; }
-        public RealtimeResponseStatusErrorKind? Kind { get; }
+        public RealtimeError Error { get; set; }
+        public RealtimeResponseStatusErrorKind? Kind { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public RealtimeResponseStatusReason? Reason { get; }
+        public RealtimeResponseStatusReason? Reason { get; set; }
     }
     public readonly partial struct RealtimeResponseStatusErrorKind : IEquatable<RealtimeResponseStatusErrorKind> {
         public RealtimeResponseStatusErrorKind(string value);
@@ -859,14 +903,14 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class RealtimeResponseUsage : IJsonModel<RealtimeResponseUsage>, IPersistableModel<RealtimeResponseUsage> {
-        public int? InputTokenCount { get; }
-        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
-        public int? OutputTokenCount { get; }
-        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        public int? InputTokenCount { get; set; }
+        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; set; }
+        public int? OutputTokenCount { get; set; }
+        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int? TotalTokenCount { get; }
+        public int? TotalTokenCount { get; set; }
     }
     public class RealtimeRetentionRatioTokenLimitDetails : IJsonModel<RealtimeRetentionRatioTokenLimitDetails>, IPersistableModel<RealtimeRetentionRatioTokenLimitDetails> {
         public int? MaxPostInstructionsTokenCount { get; set; }
@@ -898,271 +942,378 @@ namespace OpenAI.Realtime {
         public bool? InterruptResponseEnabled { get; set; }
     }
     public class RealtimeServerUpdate : IJsonModel<RealtimeServerUpdate>, IPersistableModel<RealtimeServerUpdate> {
+        protected internal RealtimeServerUpdate(RealtimeServerUpdateKind kind);
+        public RealtimeServerUpdateKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
     public class RealtimeServerUpdateConversationCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationCreated>, IPersistableModel<RealtimeServerUpdateConversationCreated> {
-        public RealtimeConversation Conversation { get; }
-        public string EventId { get; }
+        public RealtimeServerUpdateConversationCreated() : base(default);
+        public RealtimeConversation Conversation { get; set; }
+        public string EventId { get; set; }
     }
     public class RealtimeServerUpdateConversationItemAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemAdded>, IPersistableModel<RealtimeServerUpdateConversationItemAdded> {
-        public string EventId { get; }
-        public RealtimeItem Item { get; }
-        public string PreviousItemId { get; }
+        public RealtimeServerUpdateConversationItemAdded() : base(default);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; set; }
+        public string PreviousItemId { get; set; }
     }
     public class RealtimeServerUpdateConversationItemCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemCreated>, IPersistableModel<RealtimeServerUpdateConversationItemCreated> {
-        public string EventId { get; }
-        public RealtimeItem Item { get; }
-        public string PreviousItemId { get; }
+        public RealtimeServerUpdateConversationItemCreated() : base(default);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; set; }
+        public string PreviousItemId { get; set; }
     }
     public class RealtimeServerUpdateConversationItemDeleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemDeleted>, IPersistableModel<RealtimeServerUpdateConversationItemDeleted> {
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateConversationItemDeleted() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateConversationItemDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemDone>, IPersistableModel<RealtimeServerUpdateConversationItemDone> {
-        public string EventId { get; }
-        public RealtimeItem Item { get; }
-        public string PreviousItemId { get; }
+        public RealtimeServerUpdateConversationItemDone() : base(default);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; set; }
+        public string PreviousItemId { get; set; }
     }
     public class RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted> {
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public IList<RealtimeLogProbabilityDetails> Logprobs { get; }
-        public string Transcript { get; }
-        public RealtimeTranscriptionUsage Usage { get; }
+        public RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted() : base(default);
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Transcript { get; set; }
+        public IList<RealtimeTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
+        public RealtimeTranscriptionUsage Usage { get; set; }
     }
     public class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta> {
-        public int? ContentIndex { get; }
-        public string Delta { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public IList<RealtimeLogProbabilityDetails> Logprobs { get; }
+        public RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta() : base(default);
+        public int? ContentIndex { get; set; }
+        public string Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public IList<RealtimeTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
     }
     public class RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed> {
-        public int ContentIndex { get; }
-        public RealtimeError Error { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed() : base(default);
+        public int ContentIndex { get; set; }
+        public RealtimeError Error { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment> {
-        public int ContentIndex { get; }
-        public float End { get; }
-        public string EventId { get; }
-        public string Id { get; }
-        public string ItemId { get; }
-        public string Speaker { get; }
-        public float Start { get; }
-        public string Text { get; }
+        public RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment() : base(default);
+        public int ContentIndex { get; set; }
+        public float End { get; set; }
+        public string EventId { get; set; }
+        public string Id { get; set; }
+        public string ItemId { get; set; }
+        public string Speaker { get; set; }
+        public float Start { get; set; }
+        public string Text { get; set; }
     }
     public class RealtimeServerUpdateConversationItemRetrieved : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemRetrieved>, IPersistableModel<RealtimeServerUpdateConversationItemRetrieved> {
-        public string EventId { get; }
-        public RealtimeItem Item { get; }
+        public RealtimeServerUpdateConversationItemRetrieved() : base(default);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; set; }
     }
     public class RealtimeServerUpdateConversationItemTruncated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemTruncated>, IPersistableModel<RealtimeServerUpdateConversationItemTruncated> {
-        public TimeSpan AudioEndTime { get; }
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateConversationItemTruncated() : base(default);
+        public TimeSpan AudioEndTime { get; set; }
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateError : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateError>, IPersistableModel<RealtimeServerUpdateError> {
-        public RealtimeError Error { get; }
-        public string EventId { get; }
+        public RealtimeServerUpdateError() : base(default);
+        public RealtimeError Error { get; set; }
+        public string EventId { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferCleared : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferCleared>, IPersistableModel<RealtimeServerUpdateInputAudioBufferCleared> {
-        public string EventId { get; }
+        public RealtimeServerUpdateInputAudioBufferCleared() : base(default);
+        public string EventId { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferCommitted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferCommitted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted> {
-        public string EventId { get; }
-        public string ItemId { get; }
-        public string PreviousItemId { get; }
+        public RealtimeServerUpdateInputAudioBufferCommitted() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string PreviousItemId { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferDtmfEventReceived : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived>, IPersistableModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived> {
-        public string Event { get; }
-        public DateTimeOffset ReceivedAt { get; }
+        public RealtimeServerUpdateInputAudioBufferDtmfEventReceived() : base(default);
+        public string Event { get; set; }
+        public DateTimeOffset ReceivedAt { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferSpeechStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStarted> {
-        public TimeSpan AudioStartTime { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateInputAudioBufferSpeechStarted() : base(default);
+        public TimeSpan AudioStartTime { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferSpeechStopped : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStopped>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStopped> {
-        public TimeSpan AudioEndTime { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateInputAudioBufferSpeechStopped() : base(default);
+        public TimeSpan AudioEndTime { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateInputAudioBufferTimeoutTriggered : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferTimeoutTriggered>, IPersistableModel<RealtimeServerUpdateInputAudioBufferTimeoutTriggered> {
-        public TimeSpan AudioEndTime { get; }
-        public TimeSpan AudioStartTime { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateInputAudioBufferTimeoutTriggered() : base(default);
+        public TimeSpan AudioEndTime { get; set; }
+        public TimeSpan AudioStartTime { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+    }
+    public readonly partial struct RealtimeServerUpdateKind : IEquatable<RealtimeServerUpdateKind> {
+        public RealtimeServerUpdateKind(string value);
+        public static RealtimeServerUpdateKind ConversationCreated { get; }
+        public static RealtimeServerUpdateKind ConversationItemAdded { get; }
+        public static RealtimeServerUpdateKind ConversationItemCreated { get; }
+        public static RealtimeServerUpdateKind ConversationItemDeleted { get; }
+        public static RealtimeServerUpdateKind ConversationItemDone { get; }
+        public static RealtimeServerUpdateKind ConversationItemInputAudioTranscriptionCompleted { get; }
+        public static RealtimeServerUpdateKind ConversationItemInputAudioTranscriptionDelta { get; }
+        public static RealtimeServerUpdateKind ConversationItemInputAudioTranscriptionFailed { get; }
+        public static RealtimeServerUpdateKind ConversationItemInputAudioTranscriptionSegment { get; }
+        public static RealtimeServerUpdateKind ConversationItemRetrieved { get; }
+        public static RealtimeServerUpdateKind ConversationItemTruncated { get; }
+        public static RealtimeServerUpdateKind Error { get; }
+        public static RealtimeServerUpdateKind InputAudioBufferCleared { get; }
+        public static RealtimeServerUpdateKind InputAudioBufferCommitted { get; }
+        public static RealtimeServerUpdateKind InputAudioBufferDtmfEventReceived { get; }
+        public static RealtimeServerUpdateKind InputAudioBufferSpeechStarted { get; }
+        public static RealtimeServerUpdateKind InputAudioBufferSpeechStopped { get; }
+        public static RealtimeServerUpdateKind InputAudioBufferTimeoutTriggered { get; }
+        public static RealtimeServerUpdateKind McpListToolsCompleted { get; }
+        public static RealtimeServerUpdateKind McpListToolsFailed { get; }
+        public static RealtimeServerUpdateKind McpListToolsInProgress { get; }
+        public static RealtimeServerUpdateKind OutputAudioBufferCleared { get; }
+        public static RealtimeServerUpdateKind OutputAudioBufferStarted { get; }
+        public static RealtimeServerUpdateKind OutputAudioBufferStopped { get; }
+        public static RealtimeServerUpdateKind RateLimitsUpdated { get; }
+        public static RealtimeServerUpdateKind ResponseContentPartAdded { get; }
+        public static RealtimeServerUpdateKind ResponseContentPartDone { get; }
+        public static RealtimeServerUpdateKind ResponseCreated { get; }
+        public static RealtimeServerUpdateKind ResponseDone { get; }
+        public static RealtimeServerUpdateKind ResponseFunctionCallArgumentsDelta { get; }
+        public static RealtimeServerUpdateKind ResponseFunctionCallArgumentsDone { get; }
+        public static RealtimeServerUpdateKind ResponseMcpCallArgumentsDelta { get; }
+        public static RealtimeServerUpdateKind ResponseMcpCallArgumentsDone { get; }
+        public static RealtimeServerUpdateKind ResponseMcpCallCompleted { get; }
+        public static RealtimeServerUpdateKind ResponseMcpCallFailed { get; }
+        public static RealtimeServerUpdateKind ResponseMcpCallInProgress { get; }
+        public static RealtimeServerUpdateKind ResponseOutputAudioDelta { get; }
+        public static RealtimeServerUpdateKind ResponseOutputAudioDone { get; }
+        public static RealtimeServerUpdateKind ResponseOutputAudioTranscriptDelta { get; }
+        public static RealtimeServerUpdateKind ResponseOutputAudioTranscriptDone { get; }
+        public static RealtimeServerUpdateKind ResponseOutputItemAdded { get; }
+        public static RealtimeServerUpdateKind ResponseOutputItemDone { get; }
+        public static RealtimeServerUpdateKind ResponseOutputTextDelta { get; }
+        public static RealtimeServerUpdateKind ResponseOutputTextDone { get; }
+        public static RealtimeServerUpdateKind SessionCreated { get; }
+        public static RealtimeServerUpdateKind SessionUpdated { get; }
+        public readonly bool Equals(RealtimeServerUpdateKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeServerUpdateKind left, RealtimeServerUpdateKind right);
+        public static implicit operator RealtimeServerUpdateKind(string value);
+        public static implicit operator RealtimeServerUpdateKind?(string value);
+        public static bool operator !=(RealtimeServerUpdateKind left, RealtimeServerUpdateKind right);
+        public override readonly string ToString();
     }
     public class RealtimeServerUpdateMcpListToolsCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateMcpListToolsCompleted>, IPersistableModel<RealtimeServerUpdateMcpListToolsCompleted> {
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateMcpListToolsCompleted() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateMcpListToolsFailed : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateMcpListToolsFailed>, IPersistableModel<RealtimeServerUpdateMcpListToolsFailed> {
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateMcpListToolsFailed() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateMcpListToolsInProgress : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateMcpListToolsInProgress>, IPersistableModel<RealtimeServerUpdateMcpListToolsInProgress> {
-        public string EventId { get; }
-        public string ItemId { get; }
+        public RealtimeServerUpdateMcpListToolsInProgress() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
     }
     public class RealtimeServerUpdateOutputAudioBufferCleared : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferCleared>, IPersistableModel<RealtimeServerUpdateOutputAudioBufferCleared> {
-        public string EventId { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateOutputAudioBufferCleared() : base(default);
+        public string EventId { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateOutputAudioBufferStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferStarted>, IPersistableModel<RealtimeServerUpdateOutputAudioBufferStarted> {
-        public string EventId { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateOutputAudioBufferStarted() : base(default);
+        public string EventId { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateOutputAudioBufferStopped : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferStopped>, IPersistableModel<RealtimeServerUpdateOutputAudioBufferStopped> {
-        public string EventId { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateOutputAudioBufferStopped() : base(default);
+        public string EventId { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateRateLimitsUpdated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateRateLimitsUpdated>, IPersistableModel<RealtimeServerUpdateRateLimitsUpdated> {
-        public string EventId { get; }
+        public RealtimeServerUpdateRateLimitsUpdated() : base(default);
+        public string EventId { get; set; }
         public IList<RealtimeRateLimitDetails> RateLimitDetails { get; }
     }
     public class RealtimeServerUpdateResponseContentPartAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseContentPartAdded>, IPersistableModel<RealtimeServerUpdateResponseContentPartAdded> {
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public RealtimeResponseContentPart Part { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseContentPartAdded() : base(default);
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public RealtimeResponseContentPart Part { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseContentPartDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseContentPartDone>, IPersistableModel<RealtimeServerUpdateResponseContentPartDone> {
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public RealtimeResponseContentPart Part { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseContentPartDone() : base(default);
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public RealtimeResponseContentPart Part { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseCreated>, IPersistableModel<RealtimeServerUpdateResponseCreated> {
-        public string EventId { get; }
-        public RealtimeResponse Response { get; }
+        public RealtimeServerUpdateResponseCreated() : base(default);
+        public string EventId { get; set; }
+        public RealtimeResponse Response { get; set; }
     }
     public class RealtimeServerUpdateResponseDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseDone>, IPersistableModel<RealtimeServerUpdateResponseDone> {
-        public string EventId { get; }
-        public RealtimeResponse Response { get; }
+        public RealtimeServerUpdateResponseDone() : base(default);
+        public string EventId { get; set; }
+        public RealtimeResponse Response { get; set; }
     }
     public class RealtimeServerUpdateResponseFunctionCallArgumentsDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseFunctionCallArgumentsDelta>, IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDelta> {
-        public string CallId { get; }
-        public BinaryData Delta { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseFunctionCallArgumentsDelta() : base(default);
+        public string CallId { get; set; }
+        public BinaryData Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseFunctionCallArgumentsDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>, IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone> {
-        public string CallId { get; }
-        public string EventId { get; }
-        public BinaryData FunctionArguments { get; }
-        public string FunctionName { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseFunctionCallArgumentsDone() : base(default);
+        public string CallId { get; set; }
+        public string EventId { get; set; }
+        public BinaryData FunctionArguments { get; set; }
+        public string FunctionName { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseMcpCallArgumentsDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>, IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta> {
-        public BinaryData Delta { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public string Obfuscation { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseMcpCallArgumentsDelta() : base(default);
+        public BinaryData Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Obfuscation { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseMcpCallArgumentsDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallArgumentsDone>, IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDone> {
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        public BinaryData ToolArguments { get; }
+        public RealtimeServerUpdateResponseMcpCallArgumentsDone() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
+        public BinaryData ToolArguments { get; set; }
     }
     public class RealtimeServerUpdateResponseMcpCallCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallCompleted>, IPersistableModel<RealtimeServerUpdateResponseMcpCallCompleted> {
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
+        public RealtimeServerUpdateResponseMcpCallCompleted() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
     }
     public class RealtimeServerUpdateResponseMcpCallFailed : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallFailed>, IPersistableModel<RealtimeServerUpdateResponseMcpCallFailed> {
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
+        public RealtimeServerUpdateResponseMcpCallFailed() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
     }
     public class RealtimeServerUpdateResponseMcpCallInProgress : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallInProgress>, IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress> {
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
+        public RealtimeServerUpdateResponseMcpCallInProgress() : base(default);
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputAudioDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioDelta>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioDelta> {
-        public int ContentIndex { get; }
-        public BinaryData Delta { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseOutputAudioDelta() : base(default);
+        public int ContentIndex { get; set; }
+        public BinaryData Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputAudioDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioDone>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioDone> {
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseOutputAudioDone() : base(default);
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputAudioTranscriptDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDelta>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioTranscriptDelta> {
-        public int ContentIndex { get; }
-        public string Delta { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseOutputAudioTranscriptDelta() : base(default);
+        public int ContentIndex { get; set; }
+        public string Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputAudioTranscriptDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone> {
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        public string Transcript { get; }
+        public RealtimeServerUpdateResponseOutputAudioTranscriptDone() : base(default);
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
+        public string Transcript { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputItemAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputItemAdded>, IPersistableModel<RealtimeServerUpdateResponseOutputItemAdded> {
-        public string EventId { get; }
-        public RealtimeItem Item { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseOutputItemAdded() : base(default);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputItemDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputItemDone>, IPersistableModel<RealtimeServerUpdateResponseOutputItemDone> {
-        public string EventId { get; }
-        public RealtimeItem Item { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseOutputItemDone() : base(default);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputTextDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputTextDelta>, IPersistableModel<RealtimeServerUpdateResponseOutputTextDelta> {
-        public int ContentIndex { get; }
-        public string Delta { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
+        public RealtimeServerUpdateResponseOutputTextDelta() : base(default);
+        public int ContentIndex { get; set; }
+        public string Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
     }
     public class RealtimeServerUpdateResponseOutputTextDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputTextDone>, IPersistableModel<RealtimeServerUpdateResponseOutputTextDone> {
-        public int ContentIndex { get; }
-        public string EventId { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        public string Text { get; }
+        public RealtimeServerUpdateResponseOutputTextDone() : base(default);
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+        public string ResponseId { get; set; }
+        public string Text { get; set; }
     }
     public class RealtimeServerUpdateSessionCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateSessionCreated>, IPersistableModel<RealtimeServerUpdateSessionCreated> {
-        public string EventId { get; }
-        public RealtimeSession Session { get; }
+        public RealtimeServerUpdateSessionCreated() : base(default);
+        public string EventId { get; set; }
+        public RealtimeSession Session { get; set; }
     }
     public class RealtimeServerUpdateSessionUpdated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateSessionUpdated>, IPersistableModel<RealtimeServerUpdateSessionUpdated> {
-        public string EventId { get; }
-        public RealtimeSession Session { get; }
+        public RealtimeServerUpdateSessionUpdated() : base(default);
+        public string EventId { get; set; }
+        public RealtimeSession Session { get; set; }
     }
     public class RealtimeServerVadTurnDetection : RealtimeTurnDetection, IJsonModel<RealtimeServerVadTurnDetection>, IPersistableModel<RealtimeServerVadTurnDetection> {
         public RealtimeServerVadTurnDetection();
@@ -1231,6 +1382,14 @@ namespace OpenAI.Realtime {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
+    public class RealtimeTokenLogProbabilityDetails : IJsonModel<RealtimeTokenLogProbabilityDetails>, IPersistableModel<RealtimeTokenLogProbabilityDetails> {
+        public float LogProbability { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; set; }
+        public ReadOnlyMemory<byte> Utf8Bytes { get; set; }
+    }
     public class RealtimeTool : IJsonModel<RealtimeTool>, IPersistableModel<RealtimeTool> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1259,21 +1418,23 @@ namespace OpenAI.Realtime {
         public static implicit operator RealtimeTracing(RealtimeDefaultTracing defaultTracing);
     }
     public class RealtimeTranscriptionDurationUsage : RealtimeTranscriptionUsage, IJsonModel<RealtimeTranscriptionDurationUsage>, IPersistableModel<RealtimeTranscriptionDurationUsage> {
-        public TimeSpan Duration { get; }
+        public RealtimeTranscriptionDurationUsage();
+        public TimeSpan Duration { get; set; }
     }
     public class RealtimeTranscriptionInputTokenUsageDetails : IJsonModel<RealtimeTranscriptionInputTokenUsageDetails>, IPersistableModel<RealtimeTranscriptionInputTokenUsageDetails> {
-        public int? AudioTokenCount { get; }
+        public int? AudioTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int? TextTokenCount { get; }
+        public int? TextTokenCount { get; set; }
     }
     public class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>, IPersistableModel<RealtimeTranscriptionSession> {
+        public RealtimeTranscriptionSession();
         public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
-        public DateTimeOffset? ExpiresAt { get; }
-        public string Id { get; }
+        public DateTimeOffset? ExpiresAt { get; set; }
+        public string Id { get; set; }
         public IList<RealtimeIncludedProperty> IncludedProperties { get; }
-        public string Object { get; }
+        public string Object { get; set; }
     }
     public class RealtimeTranscriptionSessionAudioOptions : IJsonModel<RealtimeTranscriptionSessionAudioOptions>, IPersistableModel<RealtimeTranscriptionSessionAudioOptions> {
         public RealtimeTranscriptionSessionInputAudioOptions InputAudioOptions { get; set; }
@@ -1297,10 +1458,11 @@ namespace OpenAI.Realtime {
         public IList<RealtimeIncludedProperty> IncludedProperties { get; }
     }
     public class RealtimeTranscriptionTokenUsage : RealtimeTranscriptionUsage, IJsonModel<RealtimeTranscriptionTokenUsage>, IPersistableModel<RealtimeTranscriptionTokenUsage> {
-        public int InputTokenCount { get; }
-        public RealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
-        public int OutputTokenCount { get; }
-        public int TotalTokenCount { get; }
+        public RealtimeTranscriptionTokenUsage();
+        public int InputTokenCount { get; set; }
+        public RealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; set; }
+        public int OutputTokenCount { get; set; }
+        public int TotalTokenCount { get; set; }
     }
     public class RealtimeTranscriptionUsage : IJsonModel<RealtimeTranscriptionUsage>, IPersistableModel<RealtimeTranscriptionUsage> {
         [Serialization.JsonIgnore]

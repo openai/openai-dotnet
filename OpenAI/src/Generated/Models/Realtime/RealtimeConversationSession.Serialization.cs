@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeConversationSession : RealtimeSession, IJsonModel<RealtimeConversationSession>
     {
-        internal RealtimeConversationSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime, default, null, null, null, null, null, null, null, null, null, null, null)
+        public RealtimeConversationSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime, default, null, null, null, null, null, null, null, null, null, null, null)
         {
         }
 

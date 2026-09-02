@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalResponseItem>
     {
-        internal RealtimeMcpToolCallApprovalResponseItem() : this(InternalRealtimeConversationItemTypeGA.McpApprovalResponse, default, null, null, default, null)
+        public RealtimeMcpToolCallApprovalResponseItem() : this(InternalRealtimeConversationItemTypeGA.McpApprovalResponse, default, null, null, default, null)
         {
         }
 

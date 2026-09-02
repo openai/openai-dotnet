@@ -16,7 +16,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeResponseContentPart()
+        public RealtimeResponseContentPart()
         {
         }
 
@@ -36,12 +36,12 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public RealtimeResponseContentPartKind? Kind { get; }
+        public RealtimeResponseContentPartKind? Kind { get; set; }
 
-        public string Text { get; }
+        public string Text { get; set; }
 
-        public BinaryData Audio { get; }
+        public BinaryData Audio { get; set; }
 
-        public string Transcript { get; }
+        public string Transcript { get; set; }
     }
 }

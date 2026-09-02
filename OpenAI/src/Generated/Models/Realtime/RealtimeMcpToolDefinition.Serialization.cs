@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolDefinition : IJsonModel<RealtimeMcpToolDefinition>
     {
-        internal RealtimeMcpToolDefinition()
+        public RealtimeMcpToolDefinition()
         {
         }
 

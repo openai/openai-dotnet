@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeErrorGA : IJsonModel<InternalRealtimeErrorGA>
     {
-        internal InternalRealtimeErrorGA()
+        public InternalRealtimeErrorGA()
         {
         }
 

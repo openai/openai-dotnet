@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeTranscriptionTokenUsage : RealtimeTranscriptionUsage, IJsonModel<RealtimeTranscriptionTokenUsage>
     {
-        internal RealtimeTranscriptionTokenUsage() : this(InternalTranscriptionTokenUsageBaseTypeGA.Tokens, default, default, null, default, default)
+        public RealtimeTranscriptionTokenUsage() : this(InternalTranscriptionTokenUsageBaseTypeGA.Tokens, default, default, null, default, default)
         {
         }
 

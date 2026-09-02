@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMessageItem : RealtimeItem, IJsonModel<RealtimeMessageItem>
     {
-        internal RealtimeMessageItem() : this(InternalRealtimeConversationItemTypeGA.Message, default, null, default, default, default, null)
+        public RealtimeMessageItem() : this(InternalRealtimeConversationItemTypeGA.Message, default, null, default, default, default, null)
         {
         }
 

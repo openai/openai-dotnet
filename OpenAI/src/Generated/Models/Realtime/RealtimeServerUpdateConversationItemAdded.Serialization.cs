@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateConversationItemAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemAdded>
     {
-        internal RealtimeServerUpdateConversationItemAdded() : this(InternalRealtimeServerEventTypeGA.ConversationItemAdded, default, null, null, null)
+        public RealtimeServerUpdateConversationItemAdded() : this(RealtimeServerUpdateKind.ConversationItemAdded, default, null, null, null)
         {
         }
 
@@ -112,7 +112,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -123,7 +123,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeInputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputAudioMessageContentPart>
     {
-        internal RealtimeInputAudioMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputAudio, default, null, null)
+        public RealtimeInputAudioMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputAudio, default, null, null)
         {
         }
 

@@ -10,14 +10,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateError : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateError(string eventId, RealtimeError error) : base(InternalRealtimeServerEventTypeGA.Error)
+        internal RealtimeServerUpdateError(string eventId, RealtimeError error) : base(RealtimeServerUpdateKind.Error)
         {
             EventId = eventId;
             Error = error;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateError(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeError error) : base(kind, patch)
+        internal RealtimeServerUpdateError(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, RealtimeError error) : base(kind, patch)
         {
             EventId = eventId;
             Error = error;
@@ -25,8 +25,8 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public RealtimeError Error { get; }
+        public RealtimeError Error { get; set; }
     }
 }

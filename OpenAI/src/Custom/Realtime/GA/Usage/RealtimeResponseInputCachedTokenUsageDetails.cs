@@ -8,13 +8,13 @@ public partial class RealtimeResponseInputCachedTokenUsageDetails
 {
     // CUSTOM: Renamed.
     [CodeGenMember("TextTokens")]
-    public int? TextTokenCount { get; }
+    public int? TextTokenCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("ImageTokens")]
-    public int? ImageTokenCount { get; }
+    public int? ImageTokenCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("AudioTokens")]
-    public int? AudioTokenCount { get; }
+    public int? AudioTokenCount { get; set; }
 }

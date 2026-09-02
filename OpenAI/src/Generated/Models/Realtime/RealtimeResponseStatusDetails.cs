@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeResponseStatusDetails()
+        public RealtimeResponseStatusDetails()
         {
         }
 
@@ -35,10 +35,10 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public RealtimeResponseStatusErrorKind? Kind { get; }
+        public RealtimeResponseStatusErrorKind? Kind { get; set; }
 
-        public RealtimeResponseStatusReason? Reason { get; }
+        public RealtimeResponseStatusReason? Reason { get; set; }
 
-        public RealtimeError Error { get; }
+        public RealtimeError Error { get; set; }
     }
 }

@@ -33,10 +33,10 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Id { get; }
+        public string Id { get; set; }
 
-        public string Object { get; }
+        public string Object { get; set; }
 
-        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? ExpiresAt { get; set; }
     }
 }

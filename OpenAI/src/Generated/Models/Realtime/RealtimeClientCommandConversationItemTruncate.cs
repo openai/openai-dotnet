@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandConversationItemTruncate : RealtimeClientCommand
     {
-        public RealtimeClientCommandConversationItemTruncate(string itemId, int contentIndex, TimeSpan audioEndTime) : base(InternalRealtimeClientEventTypeGA.ConversationItemTruncate)
+        public RealtimeClientCommandConversationItemTruncate(string itemId, int contentIndex, TimeSpan audioEndTime) : base(RealtimeClientCommandKind.ConversationItemTruncate)
         {
             Argument.AssertNotNull(itemId, nameof(itemId));
 
@@ -22,7 +22,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandConversationItemTruncate(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, TimeSpan audioEndTime) : base(kind, patch)
+        internal RealtimeClientCommandConversationItemTruncate(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, TimeSpan audioEndTime) : base(kind, patch)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -33,8 +33,8 @@ namespace OpenAI.Realtime
 
         public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
     }
 }

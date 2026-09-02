@@ -12,40 +12,38 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(string eventId, string itemId, int contentIndex, string transcript, RealtimeTranscriptionUsage usage) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionCompleted)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(string eventId, string itemId, int contentIndex, string transcript, RealtimeTranscriptionUsage usage) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionCompleted)
         {
             EventId = eventId;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Transcript = transcript;
-            Logprobs = new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            TranscriptionTokenLogProbabilities = new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
             Usage = usage;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, string transcript, IList<RealtimeLogProbabilityDetails> logprobs, RealtimeTranscriptionUsage usage) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, string transcript, IList<RealtimeTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, RealtimeTranscriptionUsage usage) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             EventId = eventId;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Transcript = transcript;
-            Logprobs = logprobs ?? new ChangeTrackingList<RealtimeLogProbabilityDetails>();
+            TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<RealtimeTokenLogProbabilityDetails>();
             Usage = usage;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public string Transcript { get; }
+        public string Transcript { get; set; }
 
-        public IList<RealtimeLogProbabilityDetails> Logprobs { get; }
-
-        public RealtimeTranscriptionUsage Usage { get; }
+        public RealtimeTranscriptionUsage Usage { get; set; }
     }
 }
