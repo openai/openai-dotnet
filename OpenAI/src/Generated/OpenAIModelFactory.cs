@@ -2195,17 +2195,17 @@ namespace OpenAI
             return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
         }
 
-        public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
+        public static OpenAIFileCollection OpenAIFileCollection(string @object = default, IEnumerable<OpenAIFile> data = default, string firstId = default, string lastId = default, bool hasMore = default)
         {
             data ??= new ChangeTrackingList<OpenAIFile>();
 
             return new OpenAIFileCollection(
-                data.ToList(),
                 @object,
+                data.ToList(),
                 firstId,
                 lastId,
                 hasMore,
-                serializedAdditionalRawData: null);
+                additionalBinaryDataProperties: null);
         }
 
         public static FileDeletionResult FileDeletionResult(string fileId = default, bool deleted = default)
@@ -2636,6 +2636,11 @@ namespace OpenAI
         public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
         {
             return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
+        }
+
+        public static FileCollectionOptions FileCollectionOptions(FilePurpose? purpose = default, string afterId = default, int? pageSizeLimit = default, FileCollectionOrder? order = default)
+        {
+            return new FileCollectionOptions(purpose, afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
         public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)

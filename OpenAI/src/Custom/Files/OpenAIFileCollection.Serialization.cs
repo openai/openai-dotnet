@@ -85,7 +85,7 @@ public partial class OpenAIFileCollection : IJsonModel<OpenAIFileCollection>
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new OpenAIFileCollection(data, @object, firstId, lastId, hasMore, serializedAdditionalRawData);
+        return new OpenAIFileCollection(@object, data, firstId, lastId, hasMore, serializedAdditionalRawData);
     }
 
 }
