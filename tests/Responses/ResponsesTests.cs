@@ -441,7 +441,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<string> reasoningTextDeltas = [];
         string finalOutput = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
             {

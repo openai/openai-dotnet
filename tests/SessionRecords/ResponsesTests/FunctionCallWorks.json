@@ -1,0 +1,475 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "611",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "name": "get_weather_at_location",
+            "description": "Gets the weather at a specified location, optionally specifying units for temperature",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "C",
+                    "F",
+                    "K"
+                  ]
+                }
+              },
+              "required": [
+                "location",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What should I wear for the weather in San Francisco, CA?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a34f1fc2689a9617-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2620",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999710",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0afe5ac30952fe8b006a98814d44b487d0ae976f5f55a33627",
+        "object": "response",
+        "created_at": 1788379469,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1788379469,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
+        "output": [
+          {
+            "id": "fc_0afe5ac30952fe8b006a98814dc5c487d085657d036ff9024f",
+            "type": "function_call",
+            "status": "completed",
+            "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"F\"}",
+            "call_id": "call_JL040fMNLmZgE0Sxbxok43g4",
+            "name": "get_weather_at_location"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": "in_memory",
+        "reasoning": {
+          "context": null,
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "description": "Gets the weather at a specified location, optionally specifying units for temperature",
+            "name": "get_weather_at_location",
+            "output_schema": null,
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "C",
+                    "F",
+                    "K"
+                  ]
+                }
+              },
+              "required": [
+                "location",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 74,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 24,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 98
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "665",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+      },
+      "RequestBody": {
+        "previous_response_id": "resp_0afe5ac30952fe8b006a98814d44b487d0ae976f5f55a33627",
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "name": "get_weather_at_location",
+            "description": "Gets the weather at a specified location, optionally specifying units for temperature",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "C",
+                    "F",
+                    "K"
+                  ]
+                }
+              },
+              "required": [
+                "location",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "input": [
+          {
+            "type": "function_call_output",
+            "call_id": "call_JL040fMNLmZgE0Sxbxok43g4",
+            "output": "22 celcius and windy"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a34f1fc8aa989617-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3352",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999670",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0afe5ac30952fe8b006a98814e3ed487d097383a63582b0149",
+        "object": "response",
+        "created_at": 1788379470,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1788379472,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "moderation": null,
+        "output": [
+          {
+            "id": "msg_0afe5ac30952fe8b006a98814ee85487d08ed37399add77b59",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "The weather in San Francisco is currently around 72°F (22°C) and windy. Here are some recommendations for what to wear:\n\n1. **Light Layering**: A light sweater or long-sleeve shirt is ideal since temperatures can change, especially in the evening.\n2. **Windbreaker or Light Jacket**: To protect against the wind, a windbreaker will keep you comfortable.\n3. **Comfortable Pants**: Lightweight pants or jeans are a good option.\n4. **Footwear**: Comfortable shoes for walking are a must, especially if you plan to explore the city.\n5. **Accessories**: Consider a scarf or hat if you feel the chill from the wind.\n\nEnjoy your time in San Francisco!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": "resp_0afe5ac30952fe8b006a98814d44b487d0ae976f5f55a33627",
+        "prompt_cache_key": null,
+        "prompt_cache_retention": "in_memory",
+        "reasoning": {
+          "context": null,
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
+        "tools": [
+          {
+            "type": "function",
+            "description": "Gets the weather at a specified location, optionally specifying units for temperature",
+            "name": "get_weather_at_location",
+            "output_schema": null,
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "C",
+                    "F",
+                    "K"
+                  ]
+                }
+              },
+              "required": [
+                "location",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 113,
+          "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+          },
+          "output_tokens": 150,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 263
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_0afe5ac30952fe8b006a98814e3ed487d097383a63582b0149/input_items",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a34f1fd9cca29617-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1060",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "fc_0afe5ac30952fe8b006a98814e466087d0ac5d4841bb267923",
+            "type": "function_call_output",
+            "status": "completed",
+            "call_id": "call_JL040fMNLmZgE0Sxbxok43g4",
+            "output": "22 celcius and windy"
+          },
+          {
+            "id": "fc_0afe5ac30952fe8b006a98814dc5c487d085657d036ff9024f",
+            "type": "function_call",
+            "status": "completed",
+            "arguments": "{\"location\":\"San Francisco, CA\",\"unit\":\"F\"}",
+            "call_id": "call_JL040fMNLmZgE0Sxbxok43g4",
+            "name": "get_weather_at_location"
+          },
+          {
+            "id": "msg_0afe5ac30952fe8b006a98814d4a8487d091b647fd63f0eda2",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What should I wear for the weather in San Francisco, CA?"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "fc_0afe5ac30952fe8b006a98814e466087d0ac5d4841bb267923",
+        "has_more": false,
+        "last_id": "msg_0afe5ac30952fe8b006a98814d4a8487d091b647fd63f0eda2"
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

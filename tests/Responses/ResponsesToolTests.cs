@@ -120,7 +120,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolCallItemId = null;
         FunctionCallResponseItem completedFunctionToolCall = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate argumentsDeltaUpdate)
             {
@@ -265,7 +265,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolCallItemId = null;
         CustomToolCallItem completedCustomToolCall = null;
 
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(options))
         {
             if (update is StreamingResponseCustomToolCallInputDeltaUpdate inputDeltaUpdate)
             {
