@@ -11,23 +11,23 @@ namespace OpenAI.Videos
     internal partial class VideoClientGetVideosCollectionResult : CollectionResult
     {
         private readonly VideoClient _client;
-        private readonly int? _limit;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
-        private readonly string _after;
+        private readonly string _afterId;
         private readonly RequestOptions _options;
 
-        public VideoClientGetVideosCollectionResult(VideoClient client, int? limit, string order, string after, RequestOptions options)
+        public VideoClientGetVideosCollectionResult(VideoClient client, int? pageSizeLimit, string order, string afterId, RequestOptions options)
         {
             _client = client;
-            _limit = limit;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
-            _after = after;
+            _afterId = afterId;
             _options = options;
         }
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetVideosRequest(_limit, _order, _after, _options);
+            PipelineMessage message = _client.CreateGetVideosRequest(_pageSizeLimit, _order, _afterId, _options);
             yield return GetNextResponse(message);
         }
 
