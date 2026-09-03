@@ -1090,6 +1090,12 @@ model ResponseUsage {
      * [More on prompt caching](/docs/guides/prompt-caching).
      */
     cached_tokens: int32;
+
+    /**
+     * The number of input tokens newly written to the cache.
+     * [More on prompt caching](/docs/guides/prompt-caching).
+     */
+    cache_write_tokens: int32;
   };
 
   /** The number of output tokens. */
@@ -1671,7 +1677,6 @@ model DeleteResponseResponse {
   object: "response.deleted";
   deleted: boolean;
 }
-
 
 @access(Access.public)
 @usage(Usage.input)

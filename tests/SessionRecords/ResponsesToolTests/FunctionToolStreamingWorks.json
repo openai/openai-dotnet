@@ -1,0 +1,128 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "705",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "name": "get_weather_at_location",
+            "description": "Gets the weather at a specified location, optionally specifying units for temperature",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "location": {
+                  "type": "string"
+                },
+                "unit": {
+                  "type": "string",
+                  "enum": [
+                    "C",
+                    "F",
+                    "K"
+                  ]
+                }
+              },
+              "required": [
+                "location",
+                "unit"
+              ],
+              "additionalProperties": false
+            },
+            "strict": true
+          }
+        ],
+        "tool_choice": {
+          "type": "function",
+          "name": "get_weather_at_location"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What should I wear for the weather in San Francisco, CA?"
+              }
+            ]
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
+        "Alt-Svc": "h3=\":443\"",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a32eb6914f4a680b-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: response.created\n",
+        "data: {\"type\":\"response.created\",\"response\":{\"id\":\"resp_0efaed9f1deaf0e9006a9351c0441c87d0b2a10bdeadce69d1\",\"object\":\"response\",\"created_at\":1788039616,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"moderation\":null,\"output\":[],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":\"in_memory\",\"reasoning\":{\"context\":null,\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":{\"type\":\"function\",\"name\":\"get_weather_at_location\"},\"tool_usage\":{\"image_gen\":{\"input_tokens\":0,\"input_tokens_details\":{\"image_tokens\":0,\"text_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"image_tokens\":0,\"text_tokens\":0},\"total_tokens\":0},\"web_search\":{\"num_requests\":0}},\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"output_schema\":null,\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\",\"unit\"],\"additionalProperties\":false},\"strict\":true}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":0}\n\n",
+        "event: response.in_progress\n",
+        "data: {\"type\":\"response.in_progress\",\"response\":{\"id\":\"resp_0efaed9f1deaf0e9006a9351c0441c87d0b2a10bdeadce69d1\",\"object\":\"response\",\"created_at\":1788039616,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"moderation\":null,\"output\":[],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":\"in_memory\",\"reasoning\":{\"context\":null,\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":{\"type\":\"function\",\"name\":\"get_weather_at_location\"},\"tool_usage\":{\"image_gen\":{\"input_tokens\":0,\"input_tokens_details\":{\"image_tokens\":0,\"text_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"image_tokens\":0,\"text_tokens\":0},\"total_tokens\":0},\"web_search\":{\"num_requests\":0}},\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"output_schema\":null,\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\",\"unit\"],\"additionalProperties\":false},\"strict\":true}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":1}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"type\":\"function_call\",\"status\":\"in_progress\",\"arguments\":\"\",\"call_id\":\"call_qhXV6DQEZjbWPC51jqVwS4gh\",\"name\":\"get_weather_at_location\"},\"output_index\":0,\"sequence_number\":2}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"{\\\"\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"DtSDTwpNT9atfd\",\"output_index\":0,\"sequence_number\":3}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"location\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"MjaPZVem\",\"output_index\":0,\"sequence_number\":4}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"\\\":\\\"\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"bnawqwfk4X5NV\",\"output_index\":0,\"sequence_number\":5}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"San\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"DfZiSqxEz2rOo\",\"output_index\":0,\"sequence_number\":6}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\" Francisco\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"z0q0lP\",\"output_index\":0,\"sequence_number\":7}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\",\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"kmMOj6F7fOaflOK\",\"output_index\":0,\"sequence_number\":8}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\" CA\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"iTIvYAwZij8Pl\",\"output_index\":0,\"sequence_number\":9}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"\\\",\\\"\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"VVYCA8hZBXulg\",\"output_index\":0,\"sequence_number\":10}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"unit\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"1cFNh8GwrBsC\",\"output_index\":0,\"sequence_number\":11}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"\\\":\\\"\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"6ngXjgVmlznbO\",\"output_index\":0,\"sequence_number\":12}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"C\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"SdlJLGWAt4lVA2W\",\"output_index\":0,\"sequence_number\":13}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"delta\":\"\\\"}\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"obfuscation\":\"dgq1pcCnrYntp7\",\"output_index\":0,\"sequence_number\":14}\n\n",
+        "event: response.function_call_arguments.done\n",
+        "data: {\"type\":\"response.function_call_arguments.done\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco, CA\\\",\\\"unit\\\":\\\"C\\\"}\",\"item_id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"output_index\":0,\"sequence_number\":15}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"type\":\"function_call\",\"status\":\"completed\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco, CA\\\",\\\"unit\\\":\\\"C\\\"}\",\"call_id\":\"call_qhXV6DQEZjbWPC51jqVwS4gh\",\"name\":\"get_weather_at_location\"},\"output_index\":0,\"sequence_number\":16}\n\n",
+        "event: response.completed\n",
+        "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp_0efaed9f1deaf0e9006a9351c0441c87d0b2a10bdeadce69d1\",\"object\":\"response\",\"created_at\":1788039616,\"status\":\"completed\",\"background\":false,\"completed_at\":1788039616,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"moderation\":null,\"output\":[{\"id\":\"fc_0efaed9f1deaf0e9006a9351c0b2d087d0af07db9b6b5f7051\",\"type\":\"function_call\",\"status\":\"completed\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco, CA\\\",\\\"unit\\\":\\\"C\\\"}\",\"call_id\":\"call_qhXV6DQEZjbWPC51jqVwS4gh\",\"name\":\"get_weather_at_location\"}],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":\"in_memory\",\"reasoning\":{\"context\":null,\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":{\"type\":\"function\",\"name\":\"get_weather_at_location\"},\"tool_usage\":{\"image_gen\":{\"input_tokens\":0,\"input_tokens_details\":{\"image_tokens\":0,\"text_tokens\":0},\"output_tokens\":0,\"output_tokens_details\":{\"image_tokens\":0,\"text_tokens\":0},\"total_tokens\":0},\"web_search\":{\"num_requests\":0}},\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"output_schema\":null,\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\",\"unit\"],\"additionalProperties\":false},\"strict\":true}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":85,\"input_tokens_details\":{\"cache_write_tokens\":0,\"cached_tokens\":0},\"output_tokens\":13,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":98},\"user\":null,\"metadata\":{}},\"sequence_number\":17}\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

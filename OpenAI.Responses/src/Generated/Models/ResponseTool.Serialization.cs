@@ -123,6 +123,8 @@ namespace OpenAI.Responses
                         return McpTool.DeserializeMcpTool(element, data, options);
                     case "apply_patch":
                         return ApplyPatchTool.DeserializeApplyPatchTool(element, data, options);
+                    case "custom":
+                        return CustomTool.DeserializeCustomTool(element, data, options);
                 }
             }
             return InternalUnknownTool.DeserializeInternalUnknownTool(element, data, options);

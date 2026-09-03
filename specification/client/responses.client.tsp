@@ -89,6 +89,15 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
 
+@@clientName(CustomTool.name, "ToolName");
+@@clientName(CustomTool.description, "ToolDescription");
+@@clientName(CustomTool.format, "ToolFormat");
+
+@@clientName(CustomToolCallItem.name, "ToolName");
+@@alternateType(CustomToolCallOutputItem.output, ItemContent[]);
+
+@@clientName(ResponseCustomToolCallInputDeltaEvent.delta, "InputDelta");
+
 @@clientName(FunctionTool.name, "FunctionName");
 @@clientName(FunctionTool.description, "FunctionDescription");
 @@clientName(FunctionTool.parameters, "FunctionParameters");
@@ -134,6 +143,7 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(Response.prompt_cache_retention, "PromptCacheRetentionPolicy");
 @@clientName(PromptCacheRetention.`24h`, "Max24Hours");
 @@clientName(ResponsesReasoningEffort.xhigh, "ExtraHigh");
+@@clientName(ResponseUsage.input_tokens_details::type.cache_write_tokens, "CacheWriteTokenCount");
 
 // ------------ JsonPatch ------------
 
@@ -329,3 +339,13 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ResponseQueuedEvent);
 @@dynamicModel(ResponseCustomToolCallInputDeltaEvent);
 @@dynamicModel(ResponseCustomToolCallInputDoneEvent);
+@@dynamicModel(CustomTool);
+@@dynamicModel(CustomToolFormatType);
+@@dynamicModel(CustomToolFormat);
+@@dynamicModel(CustomToolTextFormat);
+@@dynamicModel(CustomToolGrammarFormat);
+@@dynamicModel(CustomToolGrammarFormatSyntax);
+@@dynamicModel(CustomToolCallItem);
+@@dynamicModel(CustomToolCallStatus);
+@@dynamicModel(CustomToolCallOutputItem);
+@@dynamicModel(CustomToolCallOutputStatus);
