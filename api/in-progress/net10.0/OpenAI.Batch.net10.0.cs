@@ -25,9 +25,9 @@ namespace OpenAI.Batch {
         public virtual ClientResult GetBatch(string batchId, RequestOptions options);
         public virtual Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options);
         public virtual CollectionResult<BatchJob> GetBatches(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetBatches(string afterId, int? pageSizeLimit, RequestOptions options);
+        public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options);
         public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetBatchesAsync(string afterId, int? pageSizeLimit, RequestOptions options);
+        public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
     }
     [Experimental("SCME0002")]
     public sealed class BatchClientSettings : ClientSettings {

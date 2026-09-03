@@ -77,9 +77,9 @@ namespace OpenAI.Assistants {
         public virtual Task<ClientResult> GetAssistantAsync(string assistantId, RequestOptions options);
         public virtual Task<ClientResult<Assistant>> GetAssistantAsync(string assistantId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<Assistant> GetAssistants(AssistantCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetAssistants(int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options);
+        public virtual CollectionResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(AssistantCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetAssistantsAsync(int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options);
+        public virtual AsyncCollectionResult GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult GetMessage(string threadId, string messageId, RequestOptions options);
         public virtual ClientResult<ThreadMessage> GetMessage(string threadId, string messageId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options);

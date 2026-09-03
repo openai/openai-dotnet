@@ -22,19 +22,19 @@ namespace OpenAI.FineTuning
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetFineTuningCheckpointPermissions(string fineTunedModelCheckpoint, string afterId, int? pageSizeLimit, string order, string projectId, RequestOptions options)
+        public virtual ClientResult GetFineTuningCheckpointPermissions(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
 
-            using PipelineMessage message = CreateGetFineTuningCheckpointPermissionsRequest(fineTunedModelCheckpoint, afterId, pageSizeLimit, order, projectId, options);
+            using PipelineMessage message = CreateGetFineTuningCheckpointPermissionsRequest(fineTunedModelCheckpoint, after, limit, order, projectId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetFineTuningCheckpointPermissionsAsync(string fineTunedModelCheckpoint, string afterId, int? pageSizeLimit, string order, string projectId, RequestOptions options)
+        public virtual async Task<ClientResult> GetFineTuningCheckpointPermissionsAsync(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(fineTunedModelCheckpoint, nameof(fineTunedModelCheckpoint));
 
-            using PipelineMessage message = CreateGetFineTuningCheckpointPermissionsRequest(fineTunedModelCheckpoint, afterId, pageSizeLimit, order, projectId, options);
+            using PipelineMessage message = CreateGetFineTuningCheckpointPermissionsRequest(fineTunedModelCheckpoint, after, limit, order, projectId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

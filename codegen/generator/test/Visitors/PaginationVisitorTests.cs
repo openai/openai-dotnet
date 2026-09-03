@@ -51,6 +51,58 @@ public class PaginationVisitorTests
             Is.EqualTo("RunStepCollectionOptions"));
     }
 
+    [TestCase("AssistantClient", "GetAssistants")]
+    [TestCase("BatchClient", "GetBatches")]
+    [TestCase("ChatClient", "GetChatCompletions")]
+    [TestCase("ChatClient", "GetChatCompletionMessages")]
+    [TestCase("FineTuningClient", "GetFineTuningCheckpointPermissions")]
+    [TestCase("VectorStoreClient", "GetVectorStores")]
+    [TestCase("VectorStoreClient", "GetVectorStoreFiles")]
+    [TestCase("VectorStoreClient", "GetVectorStoreFilesInBatch")]
+    [TestCase("VideoClient", "GetVideos")]
+    public void VisitMethod_RestoresLegacyNamesOnPublicProtocolOverloads(string clientName, string methodName)
+    {
+        foreach (string suffix in new[] { "", "Async" })
+        {
+            var type = new TestTypeProvider(clientName);
+            var method = new MethodProvider(
+                new MethodSignature(methodName + suffix, $"", MethodSignatureModifiers.Public,
+                    typeof(CollectionResult), $"",
+                    [
+                        new ParameterProvider("pageSizeLimit", $"", typeof(int?)),
+                        new ParameterProvider("order", $"", typeof(string)),
+                        new ParameterProvider("afterId", $"", typeof(string)),
+                        new ParameterProvider("beforeId", $"", typeof(string)),
+                        new ParameterProvider("options", $"", typeof(RequestOptions)),
+                    ]), MethodBodyStatement.Empty, type);
+
+            new TestPaginationVisitor().Apply(method);
+
+            Assert.That(method.Signature.Parameters.Select(parameter => parameter.Name),
+                Is.EqualTo(new[] { "limit", "order", "after", "before", "options" }));
+        }
+    }
+
+    [Test]
+    public void VisitMethod_DoesNotRenameParametersOnOtherClients()
+    {
+        var type = new TestTypeProvider("InternalAssistantClient");
+        var method = new MethodProvider(
+            new MethodSignature("GetAssistants", $"", MethodSignatureModifiers.Public,
+                typeof(CollectionResult), $"",
+                [
+                    new ParameterProvider("pageSizeLimit", $"", typeof(int?)),
+                    new ParameterProvider("afterId", $"", typeof(string)),
+                    new ParameterProvider("beforeId", $"", typeof(string)),
+                    new ParameterProvider("options", $"", typeof(RequestOptions)),
+                ]), MethodBodyStatement.Empty, type);
+
+        new TestPaginationVisitor().Apply(method);
+
+        Assert.That(method.Signature.Parameters.Select(parameter => parameter.Name),
+            Is.EqualTo(new[] { "pageSizeLimit", "afterId", "beforeId", "options" }));
+    }
+
     private sealed class TestPaginationVisitor : PaginationVisitor
     {
         public MethodProvider? Apply(MethodProvider method) => base.VisitMethod(method);
@@ -58,7 +110,14 @@ public class PaginationVisitorTests
 
     private sealed class TestTypeProvider : TypeProvider
     {
-        protected override string BuildName() => nameof(TestTypeProvider);
+        private readonly string _name;
+
+        public TestTypeProvider(string name = nameof(TestTypeProvider))
+        {
+            _name = name;
+        }
+
+        protected override string BuildName() => _name;
         protected override string BuildRelativeFilePath() => $"{Name}.cs";
     }
 
