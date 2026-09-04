@@ -64,6 +64,46 @@ public class RetryAfterTests
         }
     }
 
+    [TestCase(false, 429, "ar-SA")]
+    [TestCase(true, 503, "ar-SA")]
+    [TestCase(false, 429, "th-TH")]
+    [TestCase(true, 503, "th-TH")]
+    public void UnrecognizedFutureHttpDateReturnsOriginalError(bool useAsync, int status, string culture)
+    {
+        CultureInfo previousCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+            string hint = DateTimeOffset.UtcNow.AddMinutes(1).ToString("R", CultureInfo.InvariantCulture);
+            ExcessiveDelayReturnsOriginalErrorWithoutWaiting(useAsync, status, hint);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previousCulture;
+        }
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    [SetCulture("en-US")]
+    public void SupportedFutureHttpDateKeepsExistingRetryPolicy(bool useAsync)
+    {
+        string hint = DateTimeOffset.UtcNow.AddMinutes(1).ToString("R", CultureInfo.InvariantCulture);
+        DateTimeOffset retryAt = DateTimeOffset.Parse(hint, CultureInfo.InvariantCulture);
+        using SyntheticHandler handler = new(429, hint, succeedOnRetry: true);
+        using HttpClient http = new(handler);
+        RecordingRetryPolicy policy = new();
+        OpenAIModelClient client = CreateClient(http, policy);
+        DateTimeOffset startedAt = DateTimeOffset.UtcNow;
+
+        ClientResult result = Send(client, useAsync).GetAwaiter().GetResult();
+
+        Assert.That(result.GetRawResponse().Status, Is.EqualTo(200));
+        Assert.That(handler.Calls, Is.EqualTo(2));
+        Assert.That(policy.Waits, Has.Count.EqualTo(1));
+        Assert.That(policy.Waits[0], Is.InRange(retryAt - DateTimeOffset.UtcNow, retryAt - startedAt));
+    }
+
     [TestCase(false, "2147483647")]
     [TestCase(true, "2147483647")]
     [TestCase(false, "2147483648")]

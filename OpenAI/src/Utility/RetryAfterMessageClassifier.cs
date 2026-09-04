@@ -17,7 +17,7 @@ internal sealed class RetryAfterMessageClassifier(PipelineMessageClassifier inne
 
     public override bool TryClassify(PipelineMessage message, Exception exception, out bool isRetriable)
     {
-        if (message.Response?.Headers.TryGetValue("Retry-After", out string value) == true && ExceedsTimerLimit(value))
+        if (message.Response?.Headers.TryGetValue("Retry-After", out string value) == true && CannotHonorDelay(value))
         {
             isRetriable = false;
             return true;
@@ -26,7 +26,7 @@ internal sealed class RetryAfterMessageClassifier(PipelineMessageClassifier inne
         return inner.TryClassify(message, exception, out isRetriable);
     }
 
-    private static bool ExceedsTimerLimit(string value)
+    private static bool CannotHonorDelay(string value)
     {
         // Standard delay-seconds have no fixed digit limit. Parsing without
         // Int32 overflow distinguishes excessive valid integers from bad input.
@@ -35,7 +35,16 @@ internal sealed class RetryAfterMessageClassifier(PipelineMessageClassifier inne
             return seconds > int.MaxValue / 1000;
         }
 
-        return DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset retryAt)
-            && retryAt - DateTimeOffset.UtcNow > s_maximumDelay;
+        if (!DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset retryAt))
+        {
+            return false;
+        }
+
+        TimeSpan delay = retryAt - DateTimeOffset.UtcNow;
+        // The native retry policy parses dates using the current culture. A
+        // different interpretation could turn a future minimum into backoff.
+        return delay > s_maximumDelay
+            || (delay > TimeSpan.Zero
+                && (!DateTimeOffset.TryParse(value, out DateTimeOffset nativeRetryAt) || nativeRetryAt != retryAt));
     }
 }
