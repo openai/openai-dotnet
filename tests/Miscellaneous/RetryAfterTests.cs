@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -41,6 +42,26 @@ public class RetryAfterTests
         Assert.That(actualHint, Is.EqualTo(hint));
         Assert.That(error.GetRawResponse().Headers.TryGetValue("x-request-id", out string requestId), Is.True);
         Assert.That(requestId, Is.EqualTo("synthetic-request"));
+    }
+
+    [TestCase(false, 429, "fr-FR")]
+    [TestCase(true, 503, "fr-FR")]
+    [TestCase(false, 429, "ar-SA")]
+    [TestCase(true, 503, "ar-SA")]
+    [TestCase(false, 429, "th-TH")]
+    [TestCase(true, 503, "th-TH")]
+    public void ExcessiveHttpDateIsIndependentOfCurrentCulture(bool useAsync, int status, string culture)
+    {
+        CultureInfo previousCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+            ExcessiveDelayReturnsOriginalErrorWithoutWaiting(useAsync, status, "Thu, 01 Jan 2099 00:00:00 GMT");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previousCulture;
+        }
     }
 
     [TestCase(false, "2147483647")]

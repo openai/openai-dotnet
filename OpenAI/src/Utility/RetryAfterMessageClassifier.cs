@@ -35,7 +35,7 @@ internal sealed class RetryAfterMessageClassifier(PipelineMessageClassifier inne
             return seconds > int.MaxValue / 1000;
         }
 
-        return DateTimeOffset.TryParse(value, out DateTimeOffset retryAt)
-            && retryAt - DateTimeOffset.Now > s_maximumDelay;
+        return DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset retryAt)
+            && retryAt - DateTimeOffset.UtcNow > s_maximumDelay;
     }
 }
