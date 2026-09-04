@@ -12,7 +12,7 @@ public partial class ChatMessageContent
         {
             writer.WriteNullValue();
         }
-        else if (Count == 1 && this[0].Kind == ChatMessageContentPartKind.Text)
+        else if (Count == 1 && this[0].Kind == ChatMessageContentPartKind.Text && !HasPatchOperations(this[0]))
         {
             writer.WriteStringValue(this[0].Text);
         }
@@ -26,6 +26,13 @@ public partial class ChatMessageContent
             writer.WriteEndArray();
         }
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private static bool HasPatchOperations(ChatMessageContentPart part)
+    {
+        return part.Patch.ToBinaryData().ToMemory().Length > 2;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     internal static ChatMessageContent DeserializeChatMessageContent(JsonElement element, ModelReaderWriterOptions options = null)
     {

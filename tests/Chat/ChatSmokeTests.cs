@@ -493,6 +493,34 @@ public class ChatSmokeTests : ClientTestBase
         Assert.That(serializedMessage, Does.Contain("openai.com/test"));
     }
 
+#pragma warning disable SCME0001
+    [Test]
+    public void SerializeSinglePatchedTextContentAsArray()
+    {
+        BinaryData cacheControl = BinaryData.FromString("""{"type":"ephemeral"}""");
+
+        ChatMessageContentPart systemPart = ChatMessageContentPart.CreateTextPart("You are a helpful assistant.");
+        systemPart.Patch.Set("$.cache_control"u8, cacheControl);
+        using JsonDocument systemJson = JsonDocument.Parse(ModelReaderWriter.Write(new SystemChatMessage(systemPart)));
+
+        JsonElement systemContent = systemJson.RootElement.GetProperty("content");
+        Assert.That(systemContent.ValueKind, Is.EqualTo(JsonValueKind.Array));
+        Assert.That(systemContent.GetArrayLength(), Is.EqualTo(1));
+        Assert.That(systemContent[0].GetProperty("text").GetString(), Is.EqualTo("You are a helpful assistant."));
+        Assert.That(systemContent[0].GetProperty("cache_control").GetProperty("type").GetString(), Is.EqualTo("ephemeral"));
+
+        ChatMessageContentPart toolPart = ChatMessageContentPart.CreateTextPart("{\"price\":1}");
+        toolPart.Patch.Set("$.cache_control"u8, cacheControl);
+        using JsonDocument toolJson = JsonDocument.Parse(ModelReaderWriter.Write(new ToolChatMessage("call_1", toolPart)));
+
+        JsonElement toolContent = toolJson.RootElement.GetProperty("content");
+        Assert.That(toolContent.ValueKind, Is.EqualTo(JsonValueKind.Array));
+        Assert.That(toolContent.GetArrayLength(), Is.EqualTo(1));
+        Assert.That(toolContent[0].GetProperty("text").GetString(), Is.EqualTo("{\"price\":1}"));
+        Assert.That(toolContent[0].GetProperty("cache_control").GetProperty("type").GetString(), Is.EqualTo("ephemeral"));
+    }
+#pragma warning restore SCME0001
+
     [Test]
     public void CanSerializeChatMessage()
     {
