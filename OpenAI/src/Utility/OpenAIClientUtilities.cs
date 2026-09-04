@@ -30,7 +30,12 @@ internal static class OpenAIClientUtilities
     {
         return ClientPipeline.Create(
             options: options,
-            perCallPolicies: [CreateAddCustomHeadersPolicy(userAgentApplicationId, organizationId, projectId)],
+            perCallPolicies:
+            [
+                CreateAddCustomHeadersPolicy(userAgentApplicationId, organizationId, projectId),
+                new GenericActionPipelinePolicy(message =>
+                    message.ResponseClassifier = new RetryAfterMessageClassifier(message.ResponseClassifier)),
+            ],
             perTryPolicies: [authenticationPolicy],
             beforeTransportPolicies: []);
     }
