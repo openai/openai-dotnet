@@ -11,14 +11,14 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
 - Windows
 
     ```powershell
-    # Install .NET 10 SDK Preview
+    # Install the .NET 10 SDK
     winget install Microsoft.DotNet.SDK.10
     ```
 
 - macOS
 
     ```bash
-    # Install .NET 10 SDK Preview
+    # Install the .NET 10 SDK
     brew tap isen-ng/dotnet-sdk-versions
     brew install --cask dotnet-sdk10
     ```
@@ -30,18 +30,14 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
 
 ### 2. Verify installation
 
-After installation, verify you have the correct versions:
+After installation, verify that the required SDK is available:
 
 ```powershell
 # Check installed SDKs
 dotnet --list-sdks
-
-# Check version from the docs directory (should show 10.x)
-cd docs
-dotnet --version
 ```
 
-You should see output similar to:
+The output should include version 10.0.400 or a compatible later SDK, for example:
 
 ```text
 10.0.400
@@ -122,7 +118,7 @@ echo $env:OPENAI_API_KEY
 
 ## Running the samples
 
-The samples use .NET 10's new single-file application feature. Each `.cs` file in the guides folder is a standalone application.
+The samples use .NET 10's single-file application feature. Each `.cs` file under the `docs` folder is a standalone application.
 
 ### 1. Navigate to the docs directory
 
@@ -132,13 +128,15 @@ cd docs
 
 ### 2. Run a sample
 
+This repository uses central package management, while the standalone samples specify their own package versions. Disable central package management for the file-based app when running a sample:
+
 ```powershell
 # Example: Run the simple chat prompt sample
-dotnet run quickstart/responses/developer_quickstart.cs
+dotnet run -p:ManagePackageVersionsCentrally=false quickstart/responses/developer_quickstart.cs
 
 # Run other samples
-dotnet run guides/text/responses/responses_simpleprompt.cs
-dotnet run guides/text/responses/responses_roles.cs
+dotnet run -p:ManagePackageVersionsCentrally=false guides/text/responses/responses_simpleprompt.cs
+dotnet run -p:ManagePackageVersionsCentrally=false guides/text/responses/responses_roles.cs
 ```
 
 ### 3. Expected output
@@ -151,21 +149,28 @@ Under a velvet-purple sky, a gentle unicorn named Luna sprinkled stardust over t
 
 ## Sample file structure
 
-The samples are organized as follows:
+The sample directories are organized as follows:
 
 ```text
 docs/
-├── global.json                         # Specifies .NET 10 preview SDK
-├── README.MD                           # Basic usage instructions
+├── README.md                           # Basic usage instructions
 ├── guides/
-│   └── text/
-│       ├── chat/
-│           └── ...                     # Chat handling samples
-│       └── responses/
-│           └── ...                     # Response handling samples
-├── quickstart/
+│   ├── images-vision/
+│   ├── mcp/
+│   ├── streaming-responses/
+│   ├── text/
+│   │   ├── chat/
+│   │   │   └── ...                     # Chat handling samples
+│   │   └── responses/
+│   │       └── ...                     # Response handling samples
+│   ├── tools/
+│   ├── tools-connectors-mcp/
+│   └── tools-web-search/
+├── overview/
 │   └── responses/
-│       └── ...                         # Response handling samples
+└── quickstart/
+    └── responses/
+        └── ...                         # Response handling samples
 ```
 
 ## Understanding the single-file format
@@ -184,41 +189,33 @@ using OpenAI.Responses;          // Regular C# code follows
 
 ## Troubleshooting
 
-### Problem: "No package found matching input criteria"
+### Problem: `dotnet --version` does not show 10.0.400 or a compatible later SDK
 
-- **Solution**: The .NET 10 preview packages might not be available yet. Try installing from the official Microsoft download page instead.
-
-### Problem: `dotnet --version` shows 9.x instead of 10.x
-
-- **Solution**: You need to install the .NET 10 **SDK** (not just the runtime). The `global.json` file in the guides directory requires the SDK.
+- **Solution**: Install the .NET 10 **SDK** (not just the runtime). The `global.json` file in the repository root requires version 10.0.400 or a compatible later SDK.
 
 ### Problem: "Couldn't find a project to run"
 
-- **Solution**: Make sure you're running the command from the `docs/guides` directory and providing the correct path to the `.cs` file.
+- **Solution**: Make sure you're running the command from the `docs` directory and providing the correct path to the `.cs` file.
 
 ### Problem: "The property directive needs to have two parts"
 
-- **Solution**: The property directive format should be `#:property PropertyName PropertyValue` (space-separated, not equals sign).
+- **Solution**: The property directive format should be `#:property PropertyName=PropertyValue`, using an equals sign.
 
 ### Problem: API errors
 
 - **Solution**:
   - Verify your `OPENAI_API_KEY` environment variable is set correctly
   - Check that your API key is valid and has sufficient credits
-  - Ensure you're using a valid model name (e.g., "gpt-4", "gpt-3.5-turbo")
+  - Ensure the model used by the sample is supported and available to your account
 
 ### Problem: Build errors about missing packages
 
-- **Solution**: The package directives should automatically download dependencies. If not, try:
-
-  ```powershell
-  dotnet restore
-  ```
+- **Solution**: The package directives restore dependencies automatically when you run a sample. If restore fails, verify that you can access the NuGet sources configured by the repository and retry the same `dotnet run` command.
 
 ## Additional resources
 
 - [OpenAI .NET SDK Documentation](https://github.com/openai/openai-dotnet)
-- [.NET 10 Preview Documentation](https://docs.microsoft.com/dotnet/core/whats-new/dotnet-10)
+- [.NET 10 Documentation](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview)
 - [OpenAI API Documentation](https://platform.openai.com/docs)
 - [Single-File Applications in .NET 10](https://devblogs.microsoft.com/dotnet/announcing-dotnet-run-app/)
 
@@ -226,7 +223,7 @@ using OpenAI.Responses;          // Regular C# code follows
 
 Once you have the basic samples working, you can:
 
-1. **Explore other samples** in the `text/` directory
+1. **Explore other samples** in the `guides/text/` directory
 2. **Modify the prompts** in the sample files to experiment with different outputs
 3. **Create your own samples** following the same single-file format
 4. **Integrate the OpenAI SDK** into your own .NET applications
