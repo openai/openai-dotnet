@@ -12,16 +12,17 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
 
     ```powershell
     # Install the .NET 10 SDK
-    winget install Microsoft.DotNet.SDK.10
+    winget install --id Microsoft.DotNet.SDK.10 --exact
     ```
 
 - macOS
 
     ```bash
     # Install the .NET 10 SDK
-    brew tap isen-ng/dotnet-sdk-versions
-    brew install --cask dotnet-sdk10
+    brew install --cask dotnet-sdk
     ```
+
+    If Homebrew installs a newer major version instead of a compatible .NET 10 SDK, use the manual download option below.
 
 #### Option B: Manual download
 
@@ -118,7 +119,7 @@ echo $env:OPENAI_API_KEY
 
 ## Running the samples
 
-The samples use .NET 10's single-file application feature. Each `.cs` file under the `docs` folder is a standalone application.
+The samples use .NET 10's file-based apps feature, which runs a C# file without a project file. Each `.cs` file under the `docs` folder is a standalone application.
 
 ### 1. Navigate to the docs directory
 
@@ -173,7 +174,7 @@ docs/
         └── ...                         # Response handling samples
 ```
 
-## Understanding the single-file format
+## Understanding the file-based app format
 
 Each sample file contains special directives at the top:
 
@@ -189,7 +190,7 @@ using OpenAI.Responses;          // Regular C# code follows
 
 ## Troubleshooting
 
-### Problem: `dotnet --version` does not show 10.0.400 or a compatible later SDK
+### Problem: `dotnet --list-sdks` does not include 10.0.400 or a compatible later .NET 10 SDK
 
 - **Solution**: Install the .NET 10 **SDK** (not just the runtime). The `global.json` file in the repository root requires version 10.0.400 or a compatible later SDK.
 
@@ -217,7 +218,7 @@ using OpenAI.Responses;          // Regular C# code follows
 - [OpenAI .NET SDK Documentation](https://github.com/openai/openai-dotnet)
 - [.NET 10 Documentation](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-10/overview)
 - [OpenAI API Documentation](https://platform.openai.com/docs)
-- [Single-File Applications in .NET 10](https://devblogs.microsoft.com/dotnet/announcing-dotnet-run-app/)
+- [File-based apps in .NET 10](https://learn.microsoft.com/dotnet/core/sdk/file-based-apps)
 
 ## Next steps
 
@@ -225,7 +226,7 @@ Once you have the basic samples working, you can:
 
 1. **Explore other samples** in the `guides/text/` directory
 2. **Modify the prompts** in the sample files to experiment with different outputs
-3. **Create your own samples** following the same single-file format
+3. **Create your own samples** following the same file-based app format
 4. **Integrate the OpenAI SDK** into your own .NET applications
 
 Happy coding with OpenAI and .NET 10! 🚀
