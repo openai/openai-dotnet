@@ -768,19 +768,25 @@ model ResponseQueuedEvent extends ResponseStreamEvent {
   response: Response;
 }
 
+// --------- Custom Tool ---------
+
 /** Emitted when there is a delta (partial update) to the input of a custom tool call. */
 model ResponseCustomToolCallInputDeltaEvent extends ResponseStreamEvent {
   /** The event type identifier. */
   type: ResponseStreamEventType.response_custom_tool_call_input_delta;
 
-  /** The index of the output this delta applies to. */
-  output_index: integer;
+  /** The incremental input data (delta) for the custom tool call. */
+  delta: string;
 
   /** Unique identifier for the API item associated with this event. */
   item_id: string;
 
-  /** The incremental input data (delta) for the custom tool call. */
-  delta: string;
+  /** The index of the output this delta applies to. */
+  output_index: integer;
+
+  // feat: multi-agent
+  /** The agent that owns this multi-agent streaming event. */
+  agent?: BetaAgentTag | null;
 }
 
 /** Emitted when the input for a custom tool call is complete. */
@@ -788,12 +794,16 @@ model ResponseCustomToolCallInputDoneEvent extends ResponseStreamEvent {
   /** The event type identifier. */
   type: ResponseStreamEventType.response_custom_tool_call_input_done;
 
-  /** The index of the output this event applies to. */
-  output_index: integer;
+  /** The complete input data for the custom tool call. */
+  input: string;
 
   /** Unique identifier for the API item associated with this event. */
   item_id: string;
 
-  /** The complete input data for the custom tool call. */
-  input: string;
+  /** The index of the output this event applies to. */
+  output_index: integer;
+
+  // feat: multi-agent
+  /** The agent that owns this multi-agent streaming event. */
+  agent?: BetaAgentTag | null;
 }

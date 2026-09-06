@@ -129,6 +129,7 @@ namespace OpenAI.Responses
         public virtual ClientResult GetInputTokenCount(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateGetInputTokenCountRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -137,6 +138,7 @@ namespace OpenAI.Responses
         public virtual async Task<ClientResult> GetInputTokenCountAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateGetInputTokenCountRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
@@ -145,6 +147,7 @@ namespace OpenAI.Responses
         public virtual ClientResult CompactResponse(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateCompactResponseRequest(content, contentType, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
@@ -153,6 +156,7 @@ namespace OpenAI.Responses
         public virtual async Task<ClientResult> CompactResponseAsync(BinaryContent content, string contentType, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNullOrEmpty(contentType, nameof(contentType));
 
             using PipelineMessage message = CreateCompactResponseRequest(content, contentType, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));

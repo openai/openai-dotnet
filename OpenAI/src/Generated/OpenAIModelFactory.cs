@@ -567,6 +567,21 @@ namespace OpenAI
             return new ApplyPatchTool(ResponseToolKind.ApplyPatch, default);
         }
 
+        public static CustomToolFormat CustomToolFormat(string kind = default)
+        {
+            return new InternalUnknownCustomToolFormat(new CustomToolFormatKind(kind), default);
+        }
+
+        public static CustomToolGrammarFormat CustomToolGrammarFormat(string definition = default, CustomToolGrammarFormatSyntax syntax = default)
+        {
+            return new CustomToolGrammarFormat(CustomToolFormatKind.Grammar, default, definition, syntax);
+        }
+
+        public static CustomToolTextFormat CustomToolTextFormat()
+        {
+            return new CustomToolTextFormat(CustomToolFormatKind.Text, default);
+        }
+
         public static ResponseContentPart ResponseContentPart(string internalType = default)
         {
             return new InternalUnknownItemContent(new InternalItemContentType(internalType), default);
@@ -1000,9 +1015,9 @@ namespace OpenAI
                 default);
         }
 
-        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default)
+        public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default, int cacheWriteTokenCount = default)
         {
-            return new ResponseInputTokenUsageDetails(cachedTokenCount, default);
+            return new ResponseInputTokenUsageDetails(cachedTokenCount, cacheWriteTokenCount, default);
         }
 
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)

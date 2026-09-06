@@ -6,12 +6,13 @@ using System.IO;
 namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
-/// Routes generated Responses source files into the physical OpenAI.Responses tree
-/// while keeping them in the unified OpenAI package and generated context.
+/// Routes generated Responses source files into the input library's physical Responses tree
+/// while keeping them in the unified package and generated context.
 /// </summary>
 public class ResponsesDirectoryVisitor : ScmLibraryVisitor
 {
-    private const string ResponsesNamespace = "OpenAI.Responses";
+    private static string ResponsesNamespace =>
+        $"{ScmCodeModelGenerator.Instance.InputLibrary.InputNamespace.Name}.Responses";
 
     protected override TypeProvider VisitType(TypeProvider type)
     {
@@ -30,7 +31,7 @@ public class ResponsesDirectoryVisitor : ScmLibraryVisitor
                 {
                     generatedRelativePath = Path.Combine("Models", Path.GetRelativePath(responsesModelRoot, generatedRelativePath));
                 }
-                type.Update(relativeFilePath: Path.Combine("..", "OpenAI.Responses", "src", "Generated", generatedRelativePath));
+                type.Update(relativeFilePath: Path.Combine("..", ResponsesNamespace, "src", "Generated", generatedRelativePath));
             }
         }
 

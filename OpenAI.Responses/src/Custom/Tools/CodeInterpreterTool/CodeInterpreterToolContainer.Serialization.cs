@@ -10,6 +10,14 @@ public partial class CodeInterpreterToolContainer
     // CUSTOM: Edited to remove calls to WriteStartObject() and WriteEndObject(). 
     void IJsonModel<CodeInterpreterToolContainer>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
         JsonModelWriteCore(writer, options);
     }
 
@@ -24,11 +32,11 @@ public partial class CodeInterpreterToolContainer
         {
             throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support writing '{format}' format.");
         }
-        if (Optional.IsDefined(ContainerId) && _patch.Contains("$.container_id"u8) != true)
+        if (Optional.IsDefined(ContainerId))
         {
             writer.WriteStringValue(ContainerId);
         }
-        if (Optional.IsDefined(ContainerConfiguration) && _patch.Contains("$.container"u8) != true)
+        else if (Optional.IsDefined(ContainerConfiguration))
         {
             writer.WriteObjectValue(ContainerConfiguration, options);
         }
@@ -54,11 +62,36 @@ public partial class CodeInterpreterToolContainer
         {
             containerId = element.GetString();
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             container = CodeInterpreterToolContainerConfiguration.DeserializeCodeInterpreterToolContainerConfiguration(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected code interpreter tool container to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new CodeInterpreterToolContainer(containerId, container, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return ContainerConfiguration is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && ContainerConfiguration.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (ContainerConfiguration is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        ContainerConfiguration.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }

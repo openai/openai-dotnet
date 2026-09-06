@@ -1,3 +1,4 @@
+using OpenAI;
 using OpenAI.Responses;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -2,10 +2,60 @@
 
 ## (Unreleased)
 
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Aditya Singh _([GitHub](https://github.com/adityasingh2400))_
+- JS van Dijk _([GitHub](https://github.com/hogeheer499-commits))_
+- Rohan Santhosh Kumar _([GitHub](https://github.com/Rohan5commit))_
+- King Star _([GitHub](https://github.com/jstar0))_
+- Trask Stalnaker _([GitHub](https://github.com/trask))_
+
+### Features Added
+
+- OpenAI.Chat:
+  - Added opt-in support for the latest experimental OpenTelemetry GenAI semantic conventions supported by this library. Set `OTEL_SEMCONV_STABILITY_OPT_IN` to include `gen_ai_latest_experimental` to emit `gen_ai.provider.name` instead of `gen_ai.system`. The default remains compatible with OpenTelemetry GenAI Semantic Conventions v1.27.0. GenAI histograms now also advertise the recommended explicit bucket boundaries. _(A community contribution, courtesy of [trask](https://github.com/trask))_
+- OpenAI.Responses:
+  - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, or `AllTurns`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
+  - Added the `CacheWriteTokenCount` property to `ResponseInputTokenUsageDetails`, which reports the number of input tokens newly written to the prompt cache.
+
+### Bugs Fixed
+
+- OpenAI.Realtime:
+  - Fixed WebSocket endpoint construction for custom endpoints that already end in `/realtime/`, avoiding duplicate path segments. _(A community contribution, courtesy of [jstar0](https://github.com/jstar0))_
+- Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. This affects all streaming APIs, including `OpenAI.Assistants`, `OpenAI.Chat`, `OpenAI.Responses`, and `OpenAI.Audio`, on both the synchronous and asynchronous paths. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
+- Reduced memory pressure when creating binary-backed image and file content. Base64 data URIs now use a single string allocation on modern target frameworks, and computer screenshot output uses the shared encoding path.
+
+### Other Changes
+
+- OpenAI.Realtime:
+  - Updated the function-calling example to parse and validate model-provided arguments before invoking the local function. _(A community contribution, courtesy of [Rohan5commit](https://github.com/Rohan5commit))_
+
+## 2.13.0 (2026-08-10)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- [@fallintoplace](https://github.com/fallintoplace)
+- [@hogeheer499](https://github.com/hogeheer499)
+
 ### Features Added
 
 - Requests now include structured SDK platform metadata headers (`X-Stainless-Lang`, `X-Stainless-Package-Version`, `X-Stainless-Runtime`, `X-Stainless-Runtime-Version`, `X-Stainless-OS`, and `X-Stainless-Arch`), bringing the .NET library to parity with the other official OpenAI SDKs. These restate information already present in the `User-Agent` header in a machine-parseable form, plus the process CPU architecture, so consumers no longer need to parse the user agent string. Any value you set yourself is preserved. The `User-Agent` header itself is unchanged.
 - Added an opt-out for SDK telemetry, via the `OpenAI.DisableTelemetry` `AppContext` switch or the `OPENAI_DISABLE_TELEMETRY` environment variable. When enabled, the library sends neither the `X-Stainless-*` headers nor the `User-Agent` header that it would otherwise add. See [Telemetry and privacy](https://github.com/openai/openai-dotnet/blob/main/docs/Observability.md#telemetry-and-privacy) for details.
+
+### Bugs Fixed
+
+- OpenAI.Chat:
+  - Fixed an issue where creating Base64 data URIs from large image and file payloads could cause unnecessary memory pressure by copying the entire payload before encoding.
+- OpenAI.Conversations:
+  - Fixed an issue where multiple `include` values on conversation item list, create, and retrieve requests were incorrectly serialized as a single comma-delimited query value instead of repeated `include[]` parameters, causing requests to fail with HTTP 400 responses.
+- OpenAI.Responses:
+  - Fixed an issue where the `Kind` property of `ResponseContentPart` could not be set correctly.
+  - Fixed an issue where creating Base64 data URIs from large image and file payloads could cause unnecessary memory pressure by copying the entire payload before encoding.
+  - Fixed an issue where `Patch` would not propagate correctly through the `McpToolCallApprovalPolicy` and `CodeInterpreterToolContainer` types.
 
 ### Other Changes
 

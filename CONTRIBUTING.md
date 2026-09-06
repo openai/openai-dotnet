@@ -19,7 +19,7 @@ Thank you for your interest in contributing to the OpenAI .NET library! This gui
 
 The following tools are required for development:
 
-- **.NET SDK 10.0.100+** — Required version is specified in `global.json`. Install from the [.NET download page](https://dotnet.microsoft.com/download/dotnet/10.0).
+- **.NET SDK 10.0.400+** — Required version is specified in `global.json`. Install from the [.NET download page](https://dotnet.microsoft.com/download/dotnet/10.0).
 - **Node.js** — Required for TypeSpec compilation and code generation. Install from [nodejs.org](https://nodejs.org/).
 - **PowerShell** — Required for running development scripts. Available by default on Windows; install [PowerShell Core](https://github.com/PowerShell/PowerShell) on macOS/Linux.
 
@@ -112,7 +112,7 @@ When making changes that affect the public API surface, run the export script to
 ./scripts/Export-Api.ps1
 ```
 
-This generates API listing files under `api/<tfm>/` (for example, `api/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`) that document the public API for each target framework.
+This generates API listing files under `api/in-progress/<tfm>/` (for example, `api/in-progress/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`) that document the public API for each target framework.
 
 ### API Compatibility Check
 

@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>
+    public partial class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>
     {
-        public StreamingResponseCustomToolCallInputDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, default, default, default, null, null)
+        public StreamingResponseCustomToolCallInputDeltaUpdate() : this(StreamingResponseUpdateKind.ResponseCustomToolCallInputDelta, default, default, null, null, default, null)
         {
         }
 
@@ -73,20 +73,25 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.output_index"u8))
+            if (!Patch.Contains("$.delta"u8))
             {
-                writer.WritePropertyName("output_index"u8);
-                writer.WriteNumberValue(OutputIndex);
+                writer.WritePropertyName("delta"u8);
+                writer.WriteStringValue(InputDelta);
             }
             if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (!Patch.Contains("$.delta"u8))
+            if (!Patch.Contains("$.output_index"u8))
             {
-                writer.WritePropertyName("delta"u8);
-                writer.WriteStringValue(Delta);
+                writer.WritePropertyName("output_index"u8);
+                writer.WriteNumberValue(OutputIndex);
+            }
+            if (Optional.IsDefined(Agent) && !Patch.Contains("$.agent"u8))
+            {
+                writer.WritePropertyName("agent"u8);
+                writer.WriteObjectValue(Agent, options);
             }
 
             Patch.WriteTo(writer);
@@ -117,9 +122,10 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            int outputIndex = default;
+            string inputDelta = default;
             string itemId = default;
-            string delta = default;
+            int outputIndex = default;
+            InternalBetaAgentTag agent = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -132,9 +138,9 @@ namespace OpenAI.Responses
                     sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("output_index"u8))
+                if (prop.NameEquals("delta"u8))
                 {
-                    outputIndex = prop.Value.GetInt32();
+                    inputDelta = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("item_id"u8))
@@ -142,9 +148,19 @@ namespace OpenAI.Responses
                     itemId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("delta"u8))
+                if (prop.NameEquals("output_index"u8))
                 {
-                    delta = prop.Value.GetString();
+                    outputIndex = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("agent"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        agent = null;
+                        continue;
+                    }
+                    agent = InternalBetaAgentTag.DeserializeInternalBetaAgentTag(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -153,9 +169,38 @@ namespace OpenAI.Responses
                 kind,
                 sequenceNumber,
                 patch,
-                outputIndex,
+                inputDelta,
                 itemId,
-                delta);
+                outputIndex,
+                agent);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("agent"u8))
+            {
+                return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("agent"u8))
+            {
+                Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

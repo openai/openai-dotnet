@@ -4,6 +4,7 @@ import "@typespec/openapi";
 import "./models.tsp";
 import "./models_items.tsp";
 import "./models_streaming.tsp";
+import "./models_tools.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;

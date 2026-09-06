@@ -15,6 +15,10 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+        internal CodeInterpreterToolContainer()
+        {
+        }
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal CodeInterpreterToolContainer(string containerId, CodeInterpreterToolContainerConfiguration containerConfiguration, in JsonPatch patch)
         {
@@ -28,6 +32,6 @@ namespace OpenAI.Responses
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal ref JsonPatch Patch => ref _patch;
     }
 }
