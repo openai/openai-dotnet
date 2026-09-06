@@ -462,6 +462,34 @@ public partial class ResponsesSmokeTests
         AssertExpectedRefusalPart(deserializedFilePart);
     }
 
+    [TestCase("auto")]
+    [TestCase("current_turn")]
+    [TestCase("all_turns")]
+    public void ReasoningContextSerialization(string context)
+    {
+        ResponseReasoningOptions options = new()
+        {
+            Context = new ResponseReasoningContext(context),
+        };
+
+        BinaryData serializedOptions = ModelReaderWriter.Write(options);
+        Assert.That(serializedOptions.ToString(), Is.EqualTo($$"""{"context":"{{context}}"}"""));
+
+        ResponseReasoningOptions deserializedOptions =
+            ModelReaderWriter.Read<ResponseReasoningOptions>(serializedOptions);
+        Assert.That(deserializedOptions.Context?.ToString(), Is.EqualTo(context));
+    }
+
+    [Test]
+    public void ResponseResultDeserializesReasoningContext()
+    {
+        ResponseResult response = ModelReaderWriter.Read<ResponseResult>(
+            BinaryData.FromString("""{"id":"resp_123","reasoning":{"context":"all_turns"}}"""));
+
+        Assert.That(response.ReasoningOptions, Is.Not.Null);
+        Assert.That(response.ReasoningOptions.Context, Is.EqualTo(ResponseReasoningContext.AllTurns));
+    }
+
     private static void AssertSerializationRoundTrip<T>(
         string serializedJson,
         Action<T> instanceAssertionsAction)
@@ -729,6 +757,93 @@ public partial class ResponsesSmokeTests
             Assert.That(allowedToolsProperty.TryGetProperty("read_only", out JsonElement readOnlyProperty), Is.True);
             Assert.That(readOnlyProperty.GetBoolean(), Is.True);
         }
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void DeserializeCustomToolCallOutput(bool useShorthandInput)
+    {
+        const string outputText = "hello world";
+        BinaryData data = BinaryData.FromString(useShorthandInput
+            ? $$"""
+            {
+                "type": "custom_tool_call_output",
+                "call_id": "call_123",
+                "output": "{{outputText}}"
+            }
+            """
+            : $$"""
+            {
+                "type": "custom_tool_call_output",
+                "call_id": "call_123",
+                "output": [
+                    {
+                        "type": "input_text",
+                        "text": "{{outputText}}"
+                    }
+                ]
+            }
+            """);
+
+        CustomToolCallOutputItem item = ModelReaderWriter.Read<CustomToolCallOutputItem>(data);
+
+        Assert.That(item.Output, Has.Count.EqualTo(1));
+        Assert.That(item.Output[0].Kind, Is.EqualTo(ResponseContentPartKind.InputText));
+        Assert.That(item.Output[0].Text, Is.EqualTo(outputText));
+
+        using JsonDocument serializedItem = JsonDocument.Parse(ModelReaderWriter.Write(item));
+        JsonElement output = serializedItem.RootElement.GetProperty("output");
+        Assert.That(output.ValueKind, Is.EqualTo(JsonValueKind.Array));
+        Assert.That(output.GetArrayLength(), Is.EqualTo(1));
+        Assert.That(output[0].GetProperty("type").GetString(), Is.EqualTo("input_text"));
+        Assert.That(output[0].GetProperty("text").GetString(), Is.EqualTo(outputText));
+    }
+
+    [Test]
+    public void DeserializeCustomToolCallOutputPreservesLonghandFields()
+    {
+        BinaryData data = BinaryData.FromString("""
+        {
+            "type": "custom_tool_call_output",
+            "call_id": "call_123",
+            "output": [
+                {
+                    "type": "input_image",
+                    "file_id": "file_123",
+                    "detail": "high"
+                }
+            ]
+        }
+        """);
+
+        CustomToolCallOutputItem item = ModelReaderWriter.Read<CustomToolCallOutputItem>(data);
+
+        Assert.That(item.Output, Has.Count.EqualTo(1));
+        Assert.That(item.Output[0].Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
+        Assert.That(item.Output[0].InputImageFileId, Is.EqualTo("file_123"));
+        Assert.That(item.Output[0].InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
+
+        using JsonDocument serializedItem = JsonDocument.Parse(ModelReaderWriter.Write(item));
+        JsonElement output = serializedItem.RootElement.GetProperty("output")[0];
+        Assert.That(output.GetProperty("file_id").GetString(), Is.EqualTo("file_123"));
+        Assert.That(output.GetProperty("detail").GetString(), Is.EqualTo("high"));
+    }
+
+    [TestCase("null")]
+    [TestCase("{}")]
+    [TestCase("42")]
+    [TestCase("true")]
+    public void DeserializeCustomToolCallOutputRejectsUnsupportedJsonShapes(string output)
+    {
+        BinaryData data = BinaryData.FromString($$"""
+        {
+            "type": "custom_tool_call_output",
+            "call_id": "call_123",
+            "output": {{output}}
+        }
+        """);
+
+        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<CustomToolCallOutputItem>(data));
     }
 
     [Test]

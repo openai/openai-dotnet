@@ -102,8 +102,10 @@ internal sealed class CertificateFixture : IDisposable
                 notBefore,
                 notAfter,
                 CreateSerialNumber());
-        X509Certificate2 clientCertificate =
+        using X509Certificate2 ephemeralClientCertificate =
             clientPublicCertificate.CopyWithPrivateKey(clientKey);
+        X509Certificate2 clientCertificate =
+            LoadPkcs12(ephemeralClientCertificate.Export(X509ContentType.Pkcs12));
 
         using RSA serverKey = RSA.Create(2048);
         CertificateRequest serverRequest = CreateCertificateRequest(
@@ -123,8 +125,10 @@ internal sealed class CertificateFixture : IDisposable
                 notBefore,
                 notAfter,
                 CreateSerialNumber());
-        X509Certificate2 serverCertificate =
+        using X509Certificate2 ephemeralServerCertificate =
             serverPublicCertificate.CopyWithPrivateKey(serverKey);
+        X509Certificate2 serverCertificate =
+            LoadPkcs12(ephemeralServerCertificate.Export(X509ContentType.Pkcs12));
 
         return new CertificateFixture(
             rootCertificate,
@@ -225,5 +229,24 @@ internal sealed class CertificateFixture : IDisposable
         serialNumber[0] &= 0x7F;
         serialNumber[^1] |= 0x01;
         return serialNumber;
+    }
+
+    private static X509Certificate2 LoadPkcs12(byte[] pfx)
+    {
+        // Schannel cannot use the ephemeral key from CopyWithPrivateKey. Reloading
+        // creates a provider-backed key that is removed when the certificate is disposed.
+#if NET9_0_OR_GREATER
+        return X509CertificateLoader.LoadPkcs12(
+            pfx,
+            password: null,
+            X509KeyStorageFlags.DefaultKeySet | X509KeyStorageFlags.Exportable);
+#else
+#pragma warning disable SYSLIB0057
+        return new X509Certificate2(
+            pfx,
+            password: (string)null,
+            X509KeyStorageFlags.DefaultKeySet | X509KeyStorageFlags.Exportable);
+#pragma warning restore SYSLIB0057
+#endif
     }
 }

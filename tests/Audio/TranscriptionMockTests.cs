@@ -206,12 +206,12 @@ public partial class TranscriptionMockTests : ClientTestBase
     private async ValueTask<AudioTranscription> InvokeTranscribeAudioSyncOrAsync(OpenAIClientOptions clientOptions, AudioSourceKind audioSourceKind)
     {
         AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential, clientOptions));
-        string filename = "audio_french.wav";
+        string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
-            using FileStream audio = File.OpenRead(path);
+            using Stream audio = new MemoryStream([0x01, 0x02, 0x03, 0x04, 0x05]);
 
             return await client.TranscribeAudioAsync(audio, filename);
         }
