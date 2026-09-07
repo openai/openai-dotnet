@@ -994,6 +994,27 @@ public class ChatSmokeTests : ClientTestBase
     }
 
     [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    [TestCase(null)]
+    public void StreamingUsagePreferenceRoundTrips(bool? includeUsage)
+    {
+        ChatCompletionOptions options = new()
+        {
+            IncludeUsageInStreaming = includeUsage
+        };
+
+        BinaryData serialized = ModelReaderWriter.Write(options);
+
+        ChatCompletionOptions deserialized =
+            ModelReaderWriter.Read<ChatCompletionOptions>(serialized);
+
+        Assert.That(
+            deserialized.IncludeUsageInStreaming,
+            Is.EqualTo(includeUsage));
+    }
+
+    [Test]
     public void StableImageContentPartSerialization()
     {
         string base64HelloWorld = Convert.ToBase64String(Encoding.UTF8.GetBytes("hello world"));
