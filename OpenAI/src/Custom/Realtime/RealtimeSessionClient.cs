@@ -368,7 +368,16 @@ public partial class RealtimeSessionClient : IDisposable
 
     public virtual IEnumerable<RealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        foreach (ClientResult protocolEvent in ReceiveUpdates(cancellationToken.ToRequestOptions()))
+        {
+            using PipelineResponse response = protocolEvent.GetRawResponse();
+            RealtimeServerUpdate nextUpdate = ModelReaderWriter.Read<RealtimeServerUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            // Skip null updates (e.g., conversation.item.done events that are intentionally ignored)
+            if (nextUpdate is not null)
+            {
+                yield return nextUpdate;
+            }
+        }
     }
 
     public virtual async Task SendCommandAsync(RealtimeClientCommand command, CancellationToken cancellationToken = default)

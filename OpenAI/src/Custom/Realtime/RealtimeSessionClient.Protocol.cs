@@ -103,7 +103,7 @@ public partial class RealtimeSessionClient
         {
             _receiveCollectionResult ??= new(WebSocket, options?.CancellationToken ?? default);
         }
-        await foreach (ClientResult result in _receiveCollectionResult)
+        await foreach (ClientResult result in _receiveCollectionResult.ConfigureAwait(false))
         {
             BinaryData incomingMessage = result?.GetRawResponse()?.Content;
             if (incomingMessage is not null)
@@ -116,7 +116,25 @@ public partial class RealtimeSessionClient
 
     public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options)
     {
-        throw new NotImplementedException();
+        CancellationToken cancellationToken = options?.CancellationToken ?? default;
+        IAsyncEnumerator<ClientResult> enumerator = new AsyncWebsocketMessageResultEnumerator(WebSocket, cancellationToken);
+        try
+        {
+            while (enumerator.MoveNextAsync().ConfigureAwait(false).GetAwaiter().GetResult())
+            {
+                ClientResult result = enumerator.Current;
+                BinaryData incomingMessage = result?.GetRawResponse()?.Content;
+                if (incomingMessage is not null)
+                {
+                    _parentClient?.RaiseOnReceivingCommand(this, incomingMessage);
+                }
+                yield return result;
+            }
+        }
+        finally
+        {
+            enumerator.DisposeAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+        }
     }
 
     private static Uri BuildSessionUri(Uri endpoint, string model, string intent)

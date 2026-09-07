@@ -38,7 +38,7 @@ internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<
         WebsocketPipelineResponse websocketPipelineResponse = new();
         for (int partialMessageCount = 1; !websocketPipelineResponse.IsComplete; partialMessageCount++)
         {
-            WebSocketReceiveResult receiveResult = await _webSocket.ReceiveAsync(new(_receiveBuffer), _cancellationToken);
+            WebSocketReceiveResult receiveResult = await _webSocket.ReceiveAsync(new(_receiveBuffer), _cancellationToken).ConfigureAwait(false);
             if (receiveResult.CloseStatus.HasValue)
             {
                 Current = null;

@@ -3,8 +3,14 @@ using OpenAI.Realtime;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.WebSockets;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Realtime;
 
@@ -133,6 +139,27 @@ public class RealtimeUnitTests
     }
 
     [Test]
+    public void ReceiveUpdatesSynchronouslyEnumeratesProtocolUpdates()
+    {
+        TestRealtimeSessionClient client = new();
+
+        ClientResult result = client.ReceiveUpdates(new RequestOptions()).Single();
+
+        Assert.That(result.GetRawResponse().Content.ToString(), Does.Contain("item_1"));
+    }
+
+    [Test]
+    public void ReceiveUpdatesSynchronouslyDeserializesTypedUpdates()
+    {
+        TestRealtimeSessionClient client = new();
+
+        RealtimeServerUpdate update = client.ReceiveUpdates().Single();
+
+        Assert.That(update, Is.InstanceOf<RealtimeServerUpdateConversationItemDeleted>());
+        Assert.That(((RealtimeServerUpdateConversationItemDeleted)update).ItemId, Is.EqualTo("item_1"));
+    }
+
+    [Test]
     public void AudioEndMsSerializesAsInteger()
     {
         // A TimeSpan with sub-millisecond precision that would produce a fractional double
@@ -158,5 +185,50 @@ public class RealtimeUnitTests
             BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.That(field, Is.Not.Null, "RealtimeClient should expose its WebSocket endpoint field");
         return (Uri)field.GetValue(client);
+    }
+
+    private sealed class TestRealtimeSessionClient : RealtimeSessionClient
+    {
+        public TestRealtimeSessionClient()
+            : base(new ApiKeyCredential("test-key"), new Uri("wss://example.com/v1/realtime"), "gpt-realtime", null, null)
+        {
+            WebSocket = new TestWebSocket(
+                """{"type":"conversation.item.deleted","event_id":"evt_1","item_id":"item_1"}""");
+        }
+    }
+
+    private sealed class TestWebSocket : WebSocket
+    {
+        private readonly byte[] _message;
+        private bool _messageReceived;
+
+        public TestWebSocket(string message) => _message = Encoding.UTF8.GetBytes(message);
+
+        public override WebSocketCloseStatus? CloseStatus => _messageReceived ? WebSocketCloseStatus.NormalClosure : null;
+        public override string CloseStatusDescription => null;
+        public override WebSocketState State => _messageReceived ? WebSocketState.Closed : WebSocketState.Open;
+        public override string SubProtocol => null;
+
+        public override void Abort() => _messageReceived = true;
+        public override Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken)
+            => Task.CompletedTask;
+        public override Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken)
+            => Task.CompletedTask;
+        public override void Dispose() => _messageReceived = true;
+
+        public override Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken)
+        {
+            if (_messageReceived)
+            {
+                return Task.FromResult(new WebSocketReceiveResult(0, WebSocketMessageType.Close, true, WebSocketCloseStatus.NormalClosure, null));
+            }
+
+            _message.CopyTo(buffer.Array, buffer.Offset);
+            _messageReceived = true;
+            return Task.FromResult(new WebSocketReceiveResult(_message.Length, WebSocketMessageType.Text, true));
+        }
+
+        public override Task SendAsync(ArraySegment<byte> buffer, WebSocketMessageType messageType, bool endOfMessage, CancellationToken cancellationToken)
+            => Task.CompletedTask;
     }
 }
