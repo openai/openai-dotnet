@@ -52,9 +52,20 @@ public class AssistantsMockTests : ClientTestBase
 
         // Without the token the mock transport answers 200 and the call succeeds, so
         // reaching this assertion at all depends on the token being forwarded.
-        Assert.That(
-            async () => await client.ModifyAssistantAsync("asst_abc", new AssistantModificationOptions(), cancellationSource.Token),
-            Throws.InstanceOf<OperationCanceledException>());
+        // Branch on IsAsync so the synchronous overload is exercised too, since that
+        // is the one this change fixes.
+        if (IsAsync)
+        {
+            Assert.That(
+                async () => await client.ModifyAssistantAsync("asst_abc", new AssistantModificationOptions(), cancellationSource.Token),
+                Throws.InstanceOf<OperationCanceledException>());
+        }
+        else
+        {
+            Assert.That(
+                () => client.ModifyAssistant("asst_abc", new AssistantModificationOptions(), cancellationSource.Token),
+                Throws.InstanceOf<OperationCanceledException>());
+        }
 
         await Task.CompletedTask;
     }
