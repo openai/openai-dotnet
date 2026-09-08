@@ -976,6 +976,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
+        public MessageResponseItem(MessageRole role) : base(default);
         public IList<ResponseContentPart> Content { get; }
         public MessageRole Role { get; }
         public MessageStatus? Status { get; set; }
@@ -1097,9 +1098,11 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseContentPartKind : IEquatable<ResponseContentPartKind> {
         public ResponseContentPartKind(string value);
+        public static ResponseContentPartKind InputAudio { get; }
         public static ResponseContentPartKind InputFile { get; }
         public static ResponseContentPartKind InputImage { get; }
         public static ResponseContentPartKind InputText { get; }
+        public static ResponseContentPartKind OutputAudio { get; }
         public static ResponseContentPartKind OutputText { get; }
         public static ResponseContentPartKind Refusal { get; }
         public readonly bool Equals(ResponseContentPartKind other);
@@ -1711,25 +1714,15 @@ namespace OpenAI.Responses {
         public static ResponseToolChoice CreateWebSearchChoice();
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseToolChoiceKind : IEquatable<ResponseToolChoiceKind> {
-        public ResponseToolChoiceKind(string value);
-        public static ResponseToolChoiceKind Auto { get; }
-        public static ResponseToolChoiceKind Computer { get; }
-        public static ResponseToolChoiceKind FileSearch { get; }
-        public static ResponseToolChoiceKind Function { get; }
-        public static ResponseToolChoiceKind None { get; }
-        public static ResponseToolChoiceKind Required { get; }
-        public static ResponseToolChoiceKind WebSearch { get; }
-        public readonly bool Equals(ResponseToolChoiceKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
-        public static implicit operator ResponseToolChoiceKind(string value);
-        public static implicit operator ResponseToolChoiceKind?(string value);
-        public static bool operator !=(ResponseToolChoiceKind left, ResponseToolChoiceKind right);
-        public override readonly string ToString();
+    public enum ResponseToolChoiceKind {
+        Unknown = 0,
+        Auto = 1,
+        None = 2,
+        Required = 3,
+        Function = 4,
+        FileSearch = 5,
+        WebSearch = 6,
+        Computer = 7
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
