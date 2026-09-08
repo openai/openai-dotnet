@@ -16,7 +16,7 @@ on:
       - '.github/workflows/integrity-checks.yml'
       - 'scripts/Invoke-CodeGen.ps1'
       - 'scripts/Export-Api.ps1'
-      - 'scripts/ApiExport/**'
+      - 'scripts/_Export-Api/**'
       - 'api/**'
       - 'Directory.Build.props'
       - 'Directory.Build.targets'

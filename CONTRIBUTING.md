@@ -114,20 +114,6 @@ When making changes that affect the public API surface, run the export script to
 
 This generates API listing files under `api/in-progress/<tfm>/` (for example, `api/in-progress/netstandard2.0/OpenAI.Chat.netstandard2.0.cs`) that document the public API for each target framework.
 
-To regenerate `api/released` from the published NuGet package version recorded in
-`api/api-version.txt`, run:
-
-```powershell
-./scripts/Export-Api.ps1 -Released
-```
-
-The released listings use the current GenAPI version and export formatting while
-describing the public API in the published package. Source API changes normally
-require only the default export. Changes to GenAPI, export formatting, splitting,
-or generated headers require running both commands and committing both sets of
-listings. Temporary package and restore files are written below the ignored
-`artifacts/api/` directory and removed automatically.
-
 ### API Compatibility Check
 
 To check for breaking changes against a baseline version:
@@ -164,6 +150,5 @@ Before submitting a pull request, please ensure:
 
 - [ ] All tests pass (`dotnet test OpenAI.slnx`)
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/in-progress/` files
-- [ ] If you modified GenAPI or API export formatting, also run `./scripts/Export-Api.ps1 -Released` and commit the updated `api/released/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
