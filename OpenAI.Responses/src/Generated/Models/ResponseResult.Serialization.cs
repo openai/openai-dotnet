@@ -712,26 +712,50 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
+                if (ReasoningOptions is null)
+                {
+                    return false;
+                }
                 return ReasoningOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
             }
             if (local.StartsWith("text"u8))
             {
+                if (TextOptions is null)
+                {
+                    return false;
+                }
                 return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
             }
             if (local.StartsWith("error"u8))
             {
+                if (Error is null)
+                {
+                    return false;
+                }
                 return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
             }
             if (local.StartsWith("incomplete_details"u8))
             {
+                if (IncompleteStatusDetails is null)
+                {
+                    return false;
+                }
                 return IncompleteStatusDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], out value);
             }
             if (local.StartsWith("usage"u8))
             {
+                if (Usage is null)
+                {
+                    return false;
+                }
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
             }
             if (local.StartsWith("conversation"u8))
             {
+                if (ConversationOptions is null)
+                {
+                    return false;
+                }
                 return ConversationOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
             }
             if (local.StartsWith("tools"u8))
