@@ -494,7 +494,7 @@ function Invoke-ReleasedApiExport {
     $versionPath = Join-Path $RepositoryRoot "api" "api-version.txt"
     $toolManifestPath = Join-Path $RepositoryRoot ".config" "dotnet-tools.json"
     $nugetConfigPath = Join-Path $RepositoryRoot "nuget.config"
-    $resolverProjectPath = Join-Path $RepositoryRoot "scripts" "ApiExport" "ReleasedApiReferenceResolver.csproj"
+    $resolverProjectPath = Join-Path $RepositoryRoot "scripts" "_Export-Api" "AssemblyReferenceResolver.csproj"
     $outputDirectory = Join-Path $RepositoryRoot "api" "released"
 
     if (-not (Test-Path $versionPath -PathType Leaf)) {
