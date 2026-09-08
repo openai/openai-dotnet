@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeServerUpdate(InternalRealtimeServerEventTypeGA kind)
+        internal RealtimeServerUpdate(InternalRealtimeServerEventTypeGA kind)
         {
             Kind = kind;
         }

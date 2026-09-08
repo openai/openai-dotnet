@@ -220,7 +220,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveTokenLogProbabilitiesArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TokenLogProbabilities.Count)
                 {
                     return false;
                 }
@@ -239,7 +239,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TokenLogProbabilities.Count)
                 {
                     return false;
                 }

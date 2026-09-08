@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -49,6 +50,13 @@ namespace OpenAI.Audio
 
         string IPersistableModel<InternalSpeechAudioDeltaEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
+        public static explicit operator InternalSpeechAudioDeltaEvent(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalSpeechAudioDeltaEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalSpeechAudioDeltaEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -71,7 +79,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteBase64StringValue(Audio.ToArray(), "D");
+                writer.WriteBase64StringValue(Audio, "D");
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

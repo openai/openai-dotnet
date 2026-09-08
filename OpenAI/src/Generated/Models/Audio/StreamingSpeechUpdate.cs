@@ -13,7 +13,7 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected StreamingSpeechUpdate(InternalDotNetCreateSpeechStreamingResponseType kind)
+        internal StreamingSpeechUpdate(InternalDotNetCreateSpeechStreamingResponseType kind)
         {
             Kind = kind;
         }

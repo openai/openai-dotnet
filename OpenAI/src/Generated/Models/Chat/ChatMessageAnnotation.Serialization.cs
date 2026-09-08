@@ -72,6 +72,11 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessageAnnotation)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.type"u8))
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
             if (!Patch.Contains("$.url_citation"u8))
             {
                 writer.WritePropertyName("url_citation"u8);
@@ -101,12 +106,18 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            string kind = default;
             InternalChatCompletionResponseMessageAnnotationUrlCitation urlCitation = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("url_citation"u8))
                 {
                     urlCitation = InternalChatCompletionResponseMessageAnnotationUrlCitation.DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(prop.Value, prop.Value.GetUtf8Bytes(), options);
@@ -114,7 +125,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatMessageAnnotation(urlCitation, patch);
+            return new ChatMessageAnnotation(kind, urlCitation, patch);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

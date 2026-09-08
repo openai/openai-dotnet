@@ -10,9 +10,11 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandResponseCreate : RealtimeClientCommand
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeClientCommandResponseCreate() : this(InternalRealtimeClientEventTypeGA.ResponseCreate, default, null, null)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeClientCommandResponseCreate(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeResponseOptions responseOptions) : base(kind, patch)

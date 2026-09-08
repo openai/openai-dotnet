@@ -10,7 +10,6 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    [PersistableModelProxy(typeof(InternalUnknownChatResponseFormat))]
     public partial class ChatResponseFormat : IJsonModel<ChatResponseFormat>
     {
         internal ChatResponseFormat()

@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeClientEventGA))]
     public partial class RealtimeClientCommand : IJsonModel<RealtimeClientCommand>
     {
         internal RealtimeClientCommand()

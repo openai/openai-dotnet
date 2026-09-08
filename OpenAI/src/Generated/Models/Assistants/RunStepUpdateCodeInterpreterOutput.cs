@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected RunStepUpdateCodeInterpreterOutput(InternalRunStepDetailsCodeInterpreterOutputType kind)
+        internal RunStepUpdateCodeInterpreterOutput(InternalRunStepDetailsCodeInterpreterOutputType kind)
         {
             Kind = kind;
         }

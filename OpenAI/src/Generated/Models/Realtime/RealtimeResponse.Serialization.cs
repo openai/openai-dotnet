@@ -392,7 +392,7 @@ namespace OpenAI.Realtime
                 {
                     return TryResolveOutputItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
                 {
                     return false;
                 }
@@ -431,7 +431,7 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
                 {
                     return false;
                 }

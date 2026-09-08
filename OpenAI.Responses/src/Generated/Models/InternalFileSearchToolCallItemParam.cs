@@ -11,11 +11,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFileSearchToolCallItemParam : InternalItemParam
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalFileSearchToolCallItemParam(IEnumerable<string> queries) : base(ResponseItemKind.FileSearchCall)
         {
             Queries = queries.ToList();
             Results = new ChangeTrackingList<FileSearchCallResult>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalFileSearchToolCallItemParam(ResponseItemKind kind, in JsonPatch patch, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, patch)

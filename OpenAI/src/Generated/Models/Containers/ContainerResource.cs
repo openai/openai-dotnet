@@ -16,13 +16,16 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ContainerResource(string id, string name, DateTimeOffset createdAt, string status)
         {
             Id = id;
             Name = name;
             CreatedAt = createdAt;
             Status = status;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ContainerResource(string id, string @object, string name, DateTimeOffset createdAt, string status, DateTimeOffset? lastActiveAt, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)

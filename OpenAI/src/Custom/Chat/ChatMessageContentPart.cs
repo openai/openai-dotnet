@@ -28,6 +28,9 @@ namespace OpenAI.Chat;
 ///     </list>
 /// </summary>
 [CodeGenType("ChatCompletionRequestMessageContentPart")]
+// CUSTOM: Suppress the generated discriminator constructors so Kind can remain read-only.
+[CodeGenSuppress(nameof(ChatMessageContentPart), typeof(ChatMessageContentPartKind))]
+[CodeGenSuppress(nameof(ChatMessageContentPart), typeof(ChatMessageContentPartKind), typeof(JsonPatch))]
 public partial class ChatMessageContentPart
 {
     private readonly ChatMessageContentPartKind _kind;
@@ -41,6 +44,15 @@ public partial class ChatMessageContentPart
     internal ChatMessageContentPart()
     {
     }
+
+    // CUSTOM: Replaces the suppressed generated discriminator constructor so derived types can set the read-only kind.
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    internal ChatMessageContentPart(ChatMessageContentPartKind kind, in JsonPatch patch)
+    {
+        _kind = kind;
+        _patch = patch;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     // CUSTOM: Added to support deserialization.
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

@@ -214,7 +214,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolveOutputsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Outputs.Count)
                 {
                     return false;
                 }
@@ -233,7 +233,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "outputs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Outputs.Count)
                 {
                     return false;
                 }

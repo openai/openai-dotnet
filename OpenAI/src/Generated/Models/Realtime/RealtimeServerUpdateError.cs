@@ -10,11 +10,14 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateError : RealtimeServerUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateError(string eventId, RealtimeError error) : base(InternalRealtimeServerEventTypeGA.Error)
         {
             EventId = eventId;
             Error = error;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateError(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeError error) : base(kind, patch)

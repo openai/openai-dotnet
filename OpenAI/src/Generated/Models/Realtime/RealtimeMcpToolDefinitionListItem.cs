@@ -13,6 +13,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpToolDefinitionListItem : RealtimeItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions) : base(InternalRealtimeConversationItemTypeGA.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -20,7 +21,9 @@ namespace OpenAI.Realtime
 
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeMcpToolDefinitionListItem(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch, string id, string serverLabel, IList<RealtimeMcpToolDefinition> toolDefinitions) : base(kind, patch)

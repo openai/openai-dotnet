@@ -11,17 +11,17 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId)
+        internal InternalUploadPart(string id, DateTimeOffset createdOn, string uploadId)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             UploadId = uploadId;
         }
 
-        internal InternalUploadPart(string id, DateTimeOffset createdAt, string uploadId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalUploadPart(string id, DateTimeOffset createdOn, string uploadId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             UploadId = uploadId;
             Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -29,7 +29,7 @@ namespace OpenAI.Files
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string UploadId { get; }
 
