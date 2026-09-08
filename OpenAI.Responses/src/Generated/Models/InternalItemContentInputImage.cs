@@ -8,54 +8,23 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputImage : ResponseContentPart
     {
-        private string _imageUri;
-        private bool _imageUriIsDefined;
-        private string _fileId;
-        private bool _fileIdIsDefined;
-
-        public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, default, null, null, default)
+        public InternalItemContentInputImage() : this(ResponseContentPartKind.InputImage, default, null, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-        internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
+        internal InternalItemContentInputImage(ResponseContentPartKind kind, in JsonPatch patch, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(kind, patch)
         {
-            _imageUri = imageUri;
-            _fileId = fileId;
+            ImageUri = imageUri;
+            FileId = fileId;
             Detail = detail;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public string ImageUri
-        {
-            get
-            {
-                return _imageUri;
-            }
-            set
-            {
-                _imageUri = value;
-                _imageUriIsDefined = true;
-            }
-        }
+        public string ImageUri { get; set; }
 
-        public string FileId
-        {
-            get
-            {
-                return _fileId;
-            }
-            set
-            {
-                _fileId = value;
-                _fileIdIsDefined = true;
-            }
-        }
+        public string FileId { get; set; }
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ResponseImageDetailLevel? Detail { get; set; }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

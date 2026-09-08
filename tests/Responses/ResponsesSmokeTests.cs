@@ -192,7 +192,7 @@ public partial class ResponsesSmokeTests
 
         AssertSerializationRoundTrip<ResponseToolChoice>(
             @"{""type"":""something_else""}",
-            toolChoice => Assert.That(toolChoice.Kind, Is.EqualTo(new ResponseToolChoiceKind("something_else"))));
+            toolChoice => Assert.That(toolChoice.Kind, Is.EqualTo(ResponseToolChoiceKind.Unknown)));
     }
 
     [Test]

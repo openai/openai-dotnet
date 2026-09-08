@@ -13,11 +13,10 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputText : ResponseContentPart, IJsonModel<InternalItemContentOutputText>
     {
-        public InternalItemContentOutputText() : this(InternalItemContentType.OutputText, default, null, null, null)
+        public InternalItemContentOutputText() : this(ResponseContentPartKind.OutputText, default, null, null, null)
         {
         }
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentOutputText>)this).GetFormatFromOptions(options) : options.Format;
@@ -32,7 +31,6 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support reading '{options.Format}' format.");
             }
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -136,7 +134,6 @@ namespace OpenAI.Responses
 
         InternalItemContentOutputText IJsonModel<InternalItemContentOutputText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentOutputText)JsonModelCreateCore(ref reader, options);
 
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentOutputText>)this).GetFormatFromOptions(options) : options.Format;
@@ -147,7 +144,6 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalItemContentOutputText(document.RootElement, null, options);
         }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalItemContentOutputText DeserializeInternalItemContentOutputText(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
@@ -155,7 +151,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalItemContentType internalType = default;
+            ResponseContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -166,7 +162,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    internalType = new InternalItemContentType(prop.Value.GetString());
+                    kind = new ResponseContentPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -200,7 +196,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputText(internalType, patch, internalText, annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>(), logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
+            return new InternalItemContentOutputText(kind, patch, internalText, annotations, logprobs ?? new ChangeTrackingList<ResponseTokenLogProbabilityDetails>());
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -316,7 +312,6 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ResponseMessageAnnotation> ActiveAnnotations()
         {
             if (!Optional.IsCollectionDefined(Annotations))
@@ -333,7 +328,6 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool TryResolveLogprobsArray(out JsonPatch.EncodedValue value)
@@ -347,7 +341,6 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private IEnumerable<ResponseTokenLogProbabilityDetails> ActiveLogprobs()
         {
             if (!Optional.IsCollectionDefined(Logprobs))
@@ -364,6 +357,5 @@ namespace OpenAI.Responses
             }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }
