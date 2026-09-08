@@ -8,13 +8,13 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputText : ResponseContentPart
     {
-        public InternalItemContentInputText(string internalText) : base(InternalItemContentType.InputText)
+        public InternalItemContentInputText(string internalText) : base(ResponseContentPartKind.InputText)
         {
             InternalText = internalText;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputText(InternalItemContentType internalType, in JsonPatch patch, string internalText) : base(internalType, patch)
+        internal InternalItemContentInputText(ResponseContentPartKind kind, in JsonPatch patch, string internalText) : base(kind, patch)
         {
             InternalText = internalText;
         }
