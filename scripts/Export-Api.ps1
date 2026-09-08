@@ -144,7 +144,7 @@ function Format-ApiListing {
 
 # Splits a formatted monolithic API listing into one file per namespace.
 # Writes each namespace block to <OutputDirectory>/<TargetFramework>/<Namespace>.<TargetFramework>.cs.
-function Split-Artifact {
+function Split-ApiListings {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Content,
@@ -185,24 +185,142 @@ function Split-Artifact {
     }
 }
 
+# Converts one raw GenAPI output file into validated, per-namespace API listings.
+function ConvertTo-ApiListings {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$InputPath,
+
+        [Parameter(Mandatory = $true)]
+        [string]$TargetFramework,
+
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$OutputDirectory,
+
+        [Parameter(Mandatory = $true)]
+        [string]$GeneratedHeader
+    )
+
+    if (-not (Test-Path $InputPath -PathType Leaf) -or (Get-Item $InputPath).Length -eq 0) {
+        throw "GenAPI did not produce a nonempty output file for $ProjectName $TargetFramework."
+    }
+
+    $content = Get-Content $InputPath -Raw
+    if ($content -cnotmatch '(?m)^namespace OpenAI') {
+        throw "GenAPI output contained no OpenAI namespace for $ProjectName $TargetFramework."
+    }
+
+    $content = Format-ApiListing -Content $content -GeneratedHeader $GeneratedHeader
+    Split-ApiListings -Content $content -TargetFramework $TargetFramework -ProjectName $ProjectName -OutputDirectory $OutputDirectory -GeneratedHeader $GeneratedHeader
+
+    $generatedFiles = @(Get-ChildItem (Join-Path $OutputDirectory $TargetFramework) -Filter "$ProjectName*.$TargetFramework.cs" -File)
+    if ($generatedFiles.Count -eq 0) {
+        throw "No formatted API listings were generated for $ProjectName $TargetFramework."
+    }
+    foreach ($generatedFile in $generatedFiles) {
+        $generatedContent = Get-Content $generatedFile.FullName -Raw
+        if (-not $generatedFile.Name.EndsWith(".$TargetFramework.cs", [StringComparison]::Ordinal) -or
+            -not $generatedContent.StartsWith($GeneratedHeader, [StringComparison]::Ordinal) -or
+            [regex]::Matches($generatedContent, '(?m)^namespace OpenAI').Count -ne 1) {
+            throw "Formatted API listing validation failed: $($generatedFile.FullName)"
+        }
+    }
+}
+
+# Creates a unique workspace with raw and formatted output directories for one export invocation.
+function New-ApiExportWorkspace {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("in-progress", "released")]
+        [string]$Mode
+    )
+
+    $invocationId = [guid]::NewGuid().ToString("N")
+    $workRoot = Join-Path $RepositoryRoot "artifacts" "api" "$Mode-$invocationId"
+    $rawDirectory = Join-Path $workRoot "raw"
+    $formattedDirectory = Join-Path $workRoot "formatted"
+    try {
+        @($rawDirectory, $formattedDirectory) | ForEach-Object {
+            New-Item -ItemType Directory -Path $_ -Force | Out-Null
+        }
+    }
+    catch {
+        Remove-ApiExportWorkspace -WorkRoot $workRoot
+        throw
+    }
+
+    return [pscustomobject]@{
+        WorkRoot = $workRoot
+        RawDirectory = $rawDirectory
+        FormattedDirectory = $formattedDirectory
+    }
+}
+
+# Removes an API export workspace and all of its intermediate files.
+function Remove-ApiExportWorkspace {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$WorkRoot
+    )
+
+    if (Test-Path $WorkRoot) {
+        Remove-Item $WorkRoot -Recurse -Force
+    }
+}
+
+# Replaces the generated API output tree with the fully validated staging tree.
+function Publish-ApiListings {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$StagingDirectory,
+
+        [Parameter(Mandatory = $true)]
+        [string]$OutputDirectory,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Mode
+    )
+
+    Write-Host "Promoting $Mode API listings..." -ForegroundColor Cyan
+    try {
+        if (Test-Path $OutputDirectory) {
+            Remove-Item $OutputDirectory -Recurse -Force
+        }
+        Move-Item $StagingDirectory $OutputDirectory
+    }
+    catch {
+        throw "Failed to promote $Mode API listings to '$OutputDirectory'; the output directory may be empty. $($_.Exception.Message)"
+    }
+}
+
+# Runs a dotnet command with structured arguments and optional output capture.
+# Output is inherited by default so interactive commands stream directly to the console.
 function Invoke-DotNetCommand {
     param(
         [Parameter(Mandatory = $true)]
         [string[]]$Arguments,
 
         [Parameter()]
-        [string]$WorkingDirectory
+        [string]$WorkingDirectory,
+
+        [Parameter()]
+        [switch]$RedirectOutput
     )
 
     # Use ArgumentList instead of building a single command string. This lets .NET
     # quote each path correctly on Windows and Unix, including paths with spaces
-    # such as "C:\Program Files\dotnet\...". Redirecting both streams also lets
-    # callers parse machine-readable stdout while retaining stderr diagnostics.
+    # such as "C:\Program Files\dotnet\...".
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
     $startInfo.FileName = "dotnet"
     $startInfo.UseShellExecute = $false
-    $startInfo.RedirectStandardOutput = $true
-    $startInfo.RedirectStandardError = $true
+    $startInfo.RedirectStandardOutput = $RedirectOutput
+    $startInfo.RedirectStandardError = $RedirectOutput
     if ($WorkingDirectory) {
         $startInfo.WorkingDirectory = $WorkingDirectory
     }
@@ -219,15 +337,16 @@ function Invoke-DotNetCommand {
             throw "Failed to start dotnet $($Arguments -join ' ')."
         }
 
-        # Read stdout and stderr concurrently. Reading one stream to completion
-        # before the other can deadlock when a child process fills the unread
-        # stream's operating-system buffer.
-        $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
-        $standardErrorTask = $process.StandardError.ReadToEndAsync()
-        $process.WaitForExit()
+        if ($RedirectOutput) {
+            # Read both streams concurrently so neither operating-system buffer
+            # can fill and block the child process.
+            $standardOutputTask = $process.StandardOutput.ReadToEndAsync()
+            $standardErrorTask = $process.StandardError.ReadToEndAsync()
+        }
 
-        $standardOutput = $standardOutputTask.GetAwaiter().GetResult()
-        $standardError = $standardErrorTask.GetAwaiter().GetResult()
+        $process.WaitForExit()
+        $standardOutput = if ($RedirectOutput) { $standardOutputTask.GetAwaiter().GetResult() } else { "" }
+        $standardError = if ($RedirectOutput) { $standardErrorTask.GetAwaiter().GetResult() } else { "" }
         $exitCode = $process.ExitCode
     }
     finally {
@@ -245,32 +364,20 @@ function Invoke-DotNetCommand {
     }
 }
 
-function Invoke-ReleasedApiExport {
+# Ensures the GenAPI task and tool versions match before either export mode runs.
+function Assert-GenApiVersionAlignment {
     param(
         [Parameter(Mandatory = $true)]
         [string]$RepositoryRoot
     )
 
-    $versionPath = Join-Path $RepositoryRoot "api" "api-version.txt"
     $toolManifestPath = Join-Path $RepositoryRoot ".config" "dotnet-tools.json"
     $packagesPropsPath = Join-Path $RepositoryRoot "Directory.Packages.props"
-    $nugetConfigPath = Join-Path $RepositoryRoot "nuget.config"
-    $resolverProjectPath = Join-Path $RepositoryRoot "scripts" "ApiExport" "ReleasedApiReferenceResolver.csproj"
-    $outputDirectory = Join-Path $RepositoryRoot "api" "released"
-
-    if (-not (Test-Path $versionPath -PathType Leaf)) {
-        throw "API version file was not found: $versionPath"
-    }
-
-    $apiVersion = (Get-Content $versionPath -Raw).Trim()
-    if ($apiVersion -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?$') {
-        throw "API version '$apiVersion' is not a valid package version."
-    }
 
     # Current-source export uses Microsoft.DotNet.GenAPI.Task while released
     # export uses Microsoft.DotNet.GenAPI.Tool. Both packages call the same GenAPI
     # implementation only when their versions match, so reject version drift
-    # rather than silently producing differently rendered baselines.
+    # before either mode can produce differently rendered baselines.
     $toolManifest = Get-Content $toolManifestPath -Raw | ConvertFrom-Json
     $genApiTool = $toolManifest.tools.'microsoft.dotnet.genapi.tool'
     if (-not $genApiTool -or [string]::IsNullOrWhiteSpace($genApiTool.version)) {
@@ -289,70 +396,157 @@ function Invoke-ReleasedApiExport {
     if ($genApiTool.version -ne $genApiTaskVersions[0]) {
         throw "GenAPI tool version '$($genApiTool.version)' must match task version '$($genApiTaskVersions[0])'."
     }
+}
 
-    Write-Host "Restoring Microsoft.DotNet.GenAPI.Tool $($genApiTool.version)..." -ForegroundColor Cyan
-    $toolRestore = Invoke-DotNetCommand -Arguments @(
-        "tool", "restore",
-        "--tool-manifest", $toolManifestPath,
-        "--configfile", $nugetConfigPath
+# Generates, validates, and publishes API listings from the current source tree.
+function Invoke-InProgressApiExport {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot
     )
-    if ($toolRestore.StandardOutput) {
-        Write-Host $toolRestore.StandardOutput.Trim()
+
+    $configuration = "Release"
+    $outputDirectory = Join-Path $RepositoryRoot "api" "in-progress"
+    $workspace = New-ApiExportWorkspace -RepositoryRoot $RepositoryRoot -Mode "in-progress"
+    $workRoot = $workspace.WorkRoot
+    $rawDirectory = $workspace.RawDirectory
+    $formattedDirectory = $workspace.FormattedDirectory
+
+    # Projects to export. Each entry has a project file path and the library name
+    # used as the prefix for the generated API files.
+    $projects = @(
+        @{
+            Name = "OpenAI"
+            Path = Join-Path $RepositoryRoot "OpenAI" "src" "OpenAI.csproj"
+        }
+    )
+
+    $propsPath = Join-Path $RepositoryRoot "Directory.Build.props"
+    $clientTargetFrameworks = ""
+    if (Test-Path $propsPath) {
+        $propsContent = Get-Content $propsPath -Raw
+        if ($propsContent -match '<ClientTargetFrameworks>([^<]+)</ClientTargetFrameworks>') {
+            $clientTargetFrameworks = $Matches[1]
+        }
+    }
+    if (-not $clientTargetFrameworks) {
+        throw "Could not find ClientTargetFrameworks in $propsPath."
     }
 
-    # Keep every download, restore, and generated intermediate under one unique
-    # ignored directory. For example, concurrent runs use different paths such as
-    # artifacts/api/released-a1b2... and cannot delete each other's state.
-    $invocationId = [guid]::NewGuid().ToString("N")
-    $workRoot = Join-Path $RepositoryRoot "artifacts" "api" "released-$invocationId"
+    $targetFrameworks = $clientTargetFrameworks -split ';' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    $generatedHeader = Get-GeneratedHeader
+
+    Write-Host "Generating in-progress API listings..." -ForegroundColor Cyan
+    Write-Host "  Configuration: $configuration"
+    Write-Host "  Target frameworks: $clientTargetFrameworks"
+    Write-Host "  Output directory: $outputDirectory"
+    Write-Host "  Work directory: $workRoot"
+    Write-Host ""
+
+    try {
+        foreach ($project in $projects) {
+            $projectName = $project.Name
+            $projectPath = $project.Path
+
+            $buildArgs = @(
+                "build"
+                $projectPath
+                "-t:ExportApi"
+                "-c:$configuration"
+                "-p:ExportingApi=true"
+                "-p:GenAPIOutputDirectory=$rawDirectory$([IO.Path]::DirectorySeparatorChar)"
+                "-m"
+            )
+
+            Write-Host "Generating raw API listing for $projectName..." -ForegroundColor Cyan
+            $null = Invoke-DotNetCommand -Arguments $buildArgs -WorkingDirectory $RepositoryRoot
+
+            Write-Host "Formatting API listings for $projectName..." -ForegroundColor Cyan
+
+            foreach ($targetFramework in $targetFrameworks) {
+                $rawOutputPath = Join-Path $rawDirectory "$projectName.$targetFramework.cs"
+                ConvertTo-ApiListings -InputPath $rawOutputPath -TargetFramework $targetFramework -ProjectName $projectName -OutputDirectory $formattedDirectory -GeneratedHeader $generatedHeader
+            }
+        }
+
+        Write-Host "Validating staged in-progress API listings..." -ForegroundColor Cyan
+        $expectedFrameworks = @($targetFrameworks | Sort-Object)
+        $stagedFrameworks = @(Get-ChildItem $formattedDirectory -Directory | ForEach-Object Name | Sort-Object)
+        if (@(Compare-Object $expectedFrameworks $stagedFrameworks).Count -ne 0) {
+            throw "Staged target frameworks do not match ClientTargetFrameworks."
+        }
+
+        Publish-ApiListings -StagingDirectory $formattedDirectory -OutputDirectory $outputDirectory -Mode "in-progress"
+        Write-Host "In-progress API generation completed successfully." -ForegroundColor Green
+    }
+    finally {
+        Remove-ApiExportWorkspace -WorkRoot $workRoot
+    }
+}
+
+# Generates, validates, and publishes API listings from the configured released package.
+function Invoke-ReleasedApiExport {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$RepositoryRoot
+    )
+
+    $versionPath = Join-Path $RepositoryRoot "api" "api-version.txt"
+    $toolManifestPath = Join-Path $RepositoryRoot ".config" "dotnet-tools.json"
+    $nugetConfigPath = Join-Path $RepositoryRoot "nuget.config"
+    $resolverProjectPath = Join-Path $RepositoryRoot "scripts" "ApiExport" "ReleasedApiReferenceResolver.csproj"
+    $outputDirectory = Join-Path $RepositoryRoot "api" "released"
+
+    if (-not (Test-Path $versionPath -PathType Leaf)) {
+        throw "API version file was not found: $versionPath"
+    }
+
+    $apiVersion = (Get-Content $versionPath -Raw).Trim()
+    if ($apiVersion -notmatch '^\d+\.\d+\.\d+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?$') {
+        throw "API version '$apiVersion' is not a valid package version."
+    }
+
+    $workspace = New-ApiExportWorkspace -RepositoryRoot $RepositoryRoot -Mode "released"
+    $workRoot = $workspace.WorkRoot
     $downloadDirectory = Join-Path $workRoot "download"
     $extractedDirectory = Join-Path $workRoot "extracted"
     $packagesDirectory = Join-Path $workRoot "packages"
     $objDirectory = Join-Path $workRoot "obj"
-    $rawDirectory = Join-Path $workRoot "raw"
-    $formattedDirectory = Join-Path $workRoot "formatted"
-    $backupDirectory = Join-Path (Split-Path $outputDirectory -Parent) "released-backup-$invocationId"
+    $rawDirectory = $workspace.RawDirectory
+    $formattedDirectory = $workspace.FormattedDirectory
     $releasedHeader = Get-GeneratedHeader -Released
 
+    Write-Host "Generating released API listings..." -ForegroundColor Cyan
+    Write-Host "  Package: OpenAI $apiVersion"
+    Write-Host "  Output directory: $outputDirectory"
+    Write-Host "  Work directory: $workRoot"
+    Write-Host ""
+
     try {
-        @($downloadDirectory, $extractedDirectory, $packagesDirectory, $objDirectory, $rawDirectory, $formattedDirectory) |
+        @($downloadDirectory, $extractedDirectory, $packagesDirectory, $objDirectory) |
             ForEach-Object { New-Item -ItemType Directory -Path $_ -Force | Out-Null }
 
+        Write-Host "Restoring Microsoft.DotNet.GenAPI.Tool..." -ForegroundColor Cyan
+        $null = Invoke-DotNetCommand -Arguments @(
+            "tool", "restore",
+            "--tool-manifest", $toolManifestPath,
+            "--configfile", $nugetConfigPath
+        )
+
         # NuGet's flat-container IDs and versions are normalized to lowercase.
-        # The SemVer 2 registration leaf supplies both the canonical package URL
-        # and a catalog record containing NuGet's SHA-512 package hash. Following
-        # that chain verifies that the bytes are the package NuGet registered;
-        # validating the extracted .nuspec below independently verifies identity.
+        # For example, OpenAI 2.13.0 is available at:
+        # https://api.nuget.org/v3-flatcontainer/openai/2.13.0/openai.2.13.0.nupkg
+        # The extracted .nuspec below verifies the downloaded package identity,
+        # and the restored-assembly hash comparison later verifies that NuGet's
+        # resolver selected the same OpenAI.dll that this archive contains.
         $normalizedVersion = $apiVersion.ToLowerInvariant()
-        $packageBaseUrl = "https://api.nuget.org/v3-flatcontainer/openai/$normalizedVersion/openai.$normalizedVersion.nupkg"
-        $registrationUrl = "https://api.nuget.org/v3/registration5-gz-semver2/openai/$normalizedVersion.json"
+        $packageUrl = "https://api.nuget.org/v3-flatcontainer/openai/$normalizedVersion/openai.$normalizedVersion.nupkg"
         $packagePath = Join-Path $downloadDirectory "OpenAI.$apiVersion.nupkg"
 
         Write-Host "Downloading OpenAI $apiVersion from NuGet.org..." -ForegroundColor Cyan
-        $registration = Invoke-RestMethod -Uri $registrationUrl
-        if ($registration.packageContent -ne $packageBaseUrl -or [string]::IsNullOrWhiteSpace($registration.catalogEntry)) {
-            throw "NuGet registration metadata for OpenAI $apiVersion was invalid."
-        }
-        $catalogEntry = Invoke-RestMethod -Uri $registration.catalogEntry
-        if ($catalogEntry.id -cne "OpenAI" -or $catalogEntry.version -ne $apiVersion -or
-            $catalogEntry.packageHashAlgorithm -cne "SHA512" -or [string]::IsNullOrWhiteSpace($catalogEntry.packageHash)) {
-            throw "NuGet catalog metadata for OpenAI $apiVersion was invalid."
-        }
-
-        Invoke-RestMethod -Uri $registration.packageContent -OutFile $packagePath
+        Invoke-RestMethod -Uri $packageUrl -OutFile $packagePath
         if (-not (Test-Path $packagePath -PathType Leaf) -or (Get-Item $packagePath).Length -eq 0) {
-            throw "Downloaded package is missing or empty: $packageBaseUrl"
-        }
-
-        try {
-            $expectedHash = [BitConverter]::ToString([Convert]::FromBase64String($catalogEntry.packageHash)).Replace("-", "")
-        }
-        catch {
-            throw "NuGet catalog metadata contained an invalid SHA-512 value for OpenAI $apiVersion."
-        }
-        $actualHash = (Get-FileHash $packagePath -Algorithm SHA512).Hash
-        if ($actualHash -ne $expectedHash) {
-            throw "SHA-512 verification failed for $packagePath."
+            throw "Downloaded package is missing or empty: $packageUrl"
         }
 
         [System.IO.Compression.ZipFile]::ExtractToDirectory($packagePath, $extractedDirectory)
@@ -387,12 +581,8 @@ function Invoke-ReleasedApiExport {
         if ($packageAssemblies.Count -eq 0) {
             throw "No lib/<tfm>/OpenAI.dll assets were found in OpenAI $apiVersion."
         }
-        $duplicateFrameworks = @($packageAssemblies | Group-Object TargetFramework | Where-Object Count -gt 1)
-        if ($duplicateFrameworks.Count -gt 0) {
-            throw "Duplicate target framework assets were found: $($duplicateFrameworks.Name -join ', ')."
-        }
 
-        Write-Host "Released package frameworks: $($packageAssemblies.TargetFramework -join ';')" -ForegroundColor Green
+        Write-Host "  Target frameworks: $($packageAssemblies.TargetFramework -join ';')"
 
         foreach ($packageAssembly in $packageAssemblies) {
             $targetFramework = $packageAssembly.TargetFramework
@@ -410,6 +600,8 @@ function Invoke-ReleasedApiExport {
             # Terminal logging is disabled so progress/ANSI output cannot corrupt
             # the JSON read from stdout.
             Write-Host "Resolving references for $targetFramework..." -ForegroundColor Cyan
+            # Redirect stdout because the MSBuild item query returns JSON that is
+            # parsed below rather than displayed as command output.
             $referenceQuery = Invoke-DotNetCommand -Arguments @(
                 "msbuild", $resolverProjectPath,
                 "-restore",
@@ -424,7 +616,7 @@ function Invoke-ReleasedApiExport {
                 "-nologo",
                 "-verbosity:quiet",
                 "-terminalLogger:off"
-            )
+            ) -RedirectOutput
 
             try {
                 $queryResult = $referenceQuery.StandardOutput | ConvertFrom-Json -Depth 100
@@ -496,12 +688,13 @@ function Invoke-ReleasedApiExport {
             }
             $genApiArguments += @("--output-path", $rawOutputPath)
 
-            Write-Host "Running GenAPI for OpenAI $apiVersion ($targetFramework)..." -ForegroundColor Cyan
-            $genApiResult = Invoke-DotNetCommand -Arguments $genApiArguments -WorkingDirectory $RepositoryRoot
-            $genApiOutput = @($genApiResult.StandardOutput, $genApiResult.StandardError) | Where-Object { $_ } | Join-String -Separator ([Environment]::NewLine)
-            if ($genApiOutput) {
-                Write-Host $genApiOutput.Trim()
-            }
+            Write-Host "Generating raw API listing for OpenAI ($targetFramework)..." -ForegroundColor Cyan
+            # Redirect output because this GenAPI version can report unresolved
+            # references while still returning exit code zero.
+            $genApiResult = Invoke-DotNetCommand -Arguments $genApiArguments -WorkingDirectory $RepositoryRoot -RedirectOutput
+            $genApiOutput = @($genApiResult.StandardOutput, $genApiResult.StandardError) |
+                Where-Object { $_ } |
+                Join-String -Separator ([Environment]::NewLine)
             # This GenAPI version reports some unresolved references as ordinary
             # messages and may still exit with code zero. Treat the known messages
             # as failures so a partial listing cannot be promoted as authoritative.
@@ -509,218 +702,35 @@ function Invoke-ReleasedApiExport {
             if ($genApiOutput -match 'Could not resolve reference|Could not find matching assembly|Could not find the provided path') {
                 throw "GenAPI reported an unresolved reference for $targetFramework."
             }
-            if (-not (Test-Path $rawOutputPath -PathType Leaf) -or (Get-Item $rawOutputPath).Length -eq 0) {
-                throw "GenAPI did not produce a nonempty output file for $targetFramework."
-            }
-
-            $content = Get-Content $rawOutputPath -Raw
-            if ($content -cnotmatch '(?m)^namespace OpenAI') {
-                throw "GenAPI output contained no OpenAI namespace for $targetFramework."
-            }
-            $content = Format-ApiListing -Content $content -GeneratedHeader $releasedHeader
-            Split-Artifact -Content $content -TargetFramework $targetFramework -ProjectName "OpenAI" -OutputDirectory $formattedDirectory -GeneratedHeader $releasedHeader
-
-            # Validate each framework while output is still isolated in staging.
-            # A net8.0 file must be named *.net8.0.cs, carry the released header,
-            # and contain exactly one namespace because Split-Artifact promises
-            # one namespace per file.
-            $stagedFiles = @(Get-ChildItem (Join-Path $formattedDirectory $targetFramework) -Filter "*.cs" -File)
-            if ($stagedFiles.Count -eq 0) {
-                throw "No formatted API listings were generated for $targetFramework."
-            }
-            foreach ($stagedFile in $stagedFiles) {
-                $stagedContent = Get-Content $stagedFile.FullName -Raw
-                if (-not $stagedFile.Name.EndsWith(".$targetFramework.cs", [StringComparison]::Ordinal) -or
-                    -not $stagedContent.StartsWith($releasedHeader, [StringComparison]::Ordinal) -or
-                    [regex]::Matches($stagedContent, '(?m)^namespace OpenAI').Count -ne 1) {
-                    throw "Formatted API listing validation failed: $($stagedFile.FullName)"
-                }
-            }
+            Write-Host "Formatting API listings for OpenAI ($targetFramework)..." -ForegroundColor Cyan
+            ConvertTo-ApiListings -InputPath $rawOutputPath -TargetFramework $targetFramework -ProjectName "OpenAI" -OutputDirectory $formattedDirectory -GeneratedHeader $releasedHeader
         }
 
+        Write-Host "Validating staged released API listings..." -ForegroundColor Cyan
         $expectedFrameworks = @($packageAssemblies.TargetFramework | Sort-Object)
         $stagedFrameworks = @(Get-ChildItem $formattedDirectory -Directory | ForEach-Object Name | Sort-Object)
         if (@(Compare-Object $expectedFrameworks $stagedFrameworks).Count -ne 0) {
             throw "Staged target frameworks do not match the package assets."
         }
 
-        # Replace the live tree only after every framework succeeds. The sequence
-        # is `released -> backup`, `formatted -> released`, then delete backup.
-        # If the second move fails, the catch restores the original directory, so
-        # consumers never observe a partly regenerated framework set.
-        Write-Host "Promoting released API listings..." -ForegroundColor Cyan
-        try {
-            if (Test-Path $outputDirectory) {
-                Move-Item $outputDirectory $backupDirectory
-            }
-            Move-Item $formattedDirectory $outputDirectory
-            if (Test-Path $backupDirectory) {
-                Remove-Item $backupDirectory -Recurse -Force
-            }
-        }
-        catch {
-            if (Test-Path $outputDirectory) {
-                Remove-Item $outputDirectory -Recurse -Force
-            }
-            if (Test-Path $backupDirectory) {
-                Move-Item $backupDirectory $outputDirectory
-            }
-            throw
-        }
+        Publish-ApiListings -StagingDirectory $formattedDirectory -OutputDirectory $outputDirectory -Mode "released"
 
         Write-Host "Released API generation completed successfully." -ForegroundColor Green
     }
     finally {
-        if (Test-Path $workRoot) {
-            Remove-Item $workRoot -Recurse -Force
-        }
+        Remove-ApiExportWorkspace -WorkRoot $workRoot
     }
 }
 
 # ── Main Script ───────────────────────────────────────────────────────────────
 
-$configuration = "Release"
-
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
+Assert-GenApiVersionAlignment -RepositoryRoot $repoRootPath
 
-# Branch before initializing or cleaning the current-source directories. This is
-# the ownership boundary that guarantees -Released cannot modify api/in-progress.
 if ($Released) {
     Invoke-ReleasedApiExport -RepositoryRoot $repoRootPath
     return
 }
 
-$outputDirectory = Join-Path $repoRootPath "api" "in-progress"
-$intermediateDirectory = Join-Path $repoRootPath "artifacts" "api"
-
-# Projects to export. Each entry has a project file path and the library name
-# used as the prefix for the generated API files.
-$projects = @(
-    @{
-        Name = "OpenAI"
-        Path = Join-Path $repoRootPath "OpenAI" "src" "OpenAI.csproj"
-    }
-)
-
-# Get ClientTargetFrameworks from Directory.Build.props
-$propsPath = Join-Path $repoRootPath "Directory.Build.props"
-$clientTargetFrameworks = ""
-if (Test-Path $propsPath) {
-    $propsContent = Get-Content $propsPath -Raw
-    if ($propsContent -match '<ClientTargetFrameworks>([^<]+)</ClientTargetFrameworks>') {
-        $clientTargetFrameworks = $Matches[1]
-    }
-}
-
-if (-not $clientTargetFrameworks) {
-    Write-Error "Could not find ClientTargetFrameworks in Directory.Build.props"
-    exit 1
-}
-
-$targetFrameworks = $clientTargetFrameworks -split ';' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-$generatedHeader = Get-GeneratedHeader
-
-Write-Host ""
-Write-Host "Target Frameworks: $clientTargetFrameworks" -ForegroundColor Green
-Write-Host "Configuration: $configuration"
-Write-Host ""
-
-# Ensure output directories exist and are clean (only remove generated .cs files, not other files like README.md)
-if (Test-Path $outputDirectory) {
-    Write-Host "Cleaning existing output directory..." -ForegroundColor Cyan
-    try {
-        foreach ($project in $projects) {
-            foreach ($targetFramework in $targetFrameworks) {
-                $targetFrameworkDirectory = Join-Path $outputDirectory $targetFramework
-                if (Test-Path $targetFrameworkDirectory) {
-                    Get-ChildItem -Path $targetFrameworkDirectory -Filter "$($project.Name)*.$targetFramework.cs" -Force | Remove-Item -Force
-                }
-                else {
-                    New-Item -ItemType Directory -Path $targetFrameworkDirectory -Force | Out-Null
-                }
-            }
-        }
-    }
-    catch {
-        Write-Warning "Failed to clean some items in output directory: $_"
-    }
-} else {
-    New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
-    Write-Host "Created output directory: $outputDirectory"
-}
-
-if (Test-Path $intermediateDirectory) {
-    Remove-Item -Path $intermediateDirectory -Recurse -Force
-}
-New-Item -ItemType Directory -Path $intermediateDirectory -Force | Out-Null
-
-Write-Host "Output Directory: $outputDirectory"
-Write-Host "Intermediate Directory: $intermediateDirectory"
-Write-Host ""
-
-foreach ($project in $projects) {
-    $projectName = $project.Name
-    $projectPath = $project.Path
-
-    Write-Host "================================================================" -ForegroundColor Cyan
-    Write-Host "Running GenAPI for $projectName..." -ForegroundColor Cyan
-    Write-Host "================================================================" -ForegroundColor Cyan
-    Write-Host ""
-
-    # Build the dotnet command arguments
-    $buildArgs = @(
-        "build"
-        $projectPath
-        "-t:ExportApi"
-        "-c:$configuration"
-        "-p:ExportingApi=true"
-        "-m"
-    )
-
-    # Run a single build command - the MSBuild target handles all frameworks
-    & dotnet @buildArgs
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "GenAPI failed for $projectName with exit code $LASTEXITCODE"
-        exit $LASTEXITCODE
-    }
-
-    Write-Host ""
-    Write-Host "Cleaning and splitting generated files for $projectName..." -ForegroundColor Cyan
-
-    foreach ($targetFramework in $targetFrameworks) {
-        $generatedFile = Join-Path $intermediateDirectory "$projectName.$targetFramework.cs"
-
-        if (-not (Test-Path $generatedFile)) {
-            throw "Expected generated API file was not found: $generatedFile"
-        }
-
-        Write-Host "  Processing $projectName.$targetFramework.cs..."
-
-        $content = Get-Content $generatedFile -Raw
-        $content = Format-ApiListing -Content $content -GeneratedHeader $generatedHeader
-        Split-Artifact -Content $content -TargetFramework $targetFramework -ProjectName $projectName -OutputDirectory $outputDirectory -GeneratedHeader $generatedHeader
-        Remove-Item -Path $generatedFile -Force
-    }
-
-    Write-Host ""
-}
-
-if (Test-Path $intermediateDirectory) {
-    Remove-Item -Path $intermediateDirectory -Recurse -Force
-}
-
-Write-Host "API generation completed successfully." -ForegroundColor Green
-Write-Host ""
-
-# List generated files
-Write-Host "Generated files:" -ForegroundColor Cyan
-foreach ($project in $projects) {
-    foreach ($targetFramework in $targetFrameworks) {
-        $targetFrameworkDirectory = Join-Path $outputDirectory $targetFramework
-        Get-ChildItem -Path $targetFrameworkDirectory -Filter "$($project.Name)*.$targetFramework.cs" | Sort-Object Name | ForEach-Object {
-            Write-Host "  - $targetFramework/$($_.Name)"
-        }
-    }
-}
-Write-Host ""
+Invoke-InProgressApiExport -RepositoryRoot $repoRootPath
