@@ -416,9 +416,9 @@ namespace OpenAI
             return new ResponseTextOptions(textFormat, default);
         }
 
-        public static ResponseTextFormat ResponseTextFormat(string internalType = default)
+        public static ResponseTextFormat ResponseTextFormat(string kind = default)
         {
-            return new InternalUnknownResponseTextFormatConfiguration(new InternalResponsesTextFormatType(internalType), default);
+            return new InternalUnknownResponseTextFormatConfiguration(new ResponseTextFormatKind(kind), default);
         }
 
         public static ResponseTool ResponseTool(string kind = default)
@@ -582,9 +582,9 @@ namespace OpenAI
             return new CustomToolTextFormat(CustomToolFormatKind.Text, default);
         }
 
-        public static ResponseContentPart ResponseContentPart(string internalType = default)
+        public static ResponseContentPart ResponseContentPart(string kind = default)
         {
-            return new InternalUnknownItemContent(new InternalItemContentType(internalType), default);
+            return new InternalUnknownItemContent(new ResponseContentPartKind(kind), default);
         }
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)

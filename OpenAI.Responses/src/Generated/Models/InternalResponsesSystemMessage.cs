@@ -11,13 +11,13 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesSystemMessage : MessageResponseItem
     {
-        public InternalResponsesSystemMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.System)
+        public InternalResponsesSystemMessage(IEnumerable<ResponseContentPart> internalContent) : base(MessageRole.System)
         {
             InternalContent = internalContent.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponsesSystemMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)
+        internal InternalResponsesSystemMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, MessageRole role, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, role)
         {
             // Plugin customization: ensure initialization of collections
             InternalContent = internalContent ?? new ChangeTrackingList<ResponseContentPart>();

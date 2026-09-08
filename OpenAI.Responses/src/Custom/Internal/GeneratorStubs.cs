@@ -31,7 +31,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemContentInputAudioFormat")] internal readonly partial struct InternalItemContentInputAudioFormat {}
 [CodeGenType("ItemContentInputImage")] internal partial class InternalItemContentInputImage {}
 [CodeGenType("ItemContentOutputAudio")] internal partial class InternalItemContentOutputAudio {}
-[CodeGenType("ItemContentType")] internal readonly partial struct InternalItemContentType {}
 [CodeGenType("ItemParam")] internal partial class InternalItemParam {}
 [CodeGenType("ItemReferenceItemParam")] internal partial class InternalItemReferenceItemParam {}
 [CodeGenType("LocationType")] internal readonly partial struct InternalWebSearchUserLocationKind {}
@@ -42,12 +41,10 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponsesAssistantMessageItemParam")] internal partial class InternalResponsesAssistantMessageItemParam {}
 [CodeGenType("ResponsesDeveloperMessageItemParam")] internal partial class InternalResponsesDeveloperMessageItemParam {}
 [CodeGenType("ResponsesMessageItemParam")] internal partial class InternalResponsesMessageItemParam {}
-[CodeGenType("ResponsesMessageRole")] internal readonly partial struct InternalResponsesMessageRole {}
 [CodeGenType("ResponsesSystemMessageItemParam")] internal partial class InternalResponsesSystemMessageItemParam {}
 [CodeGenType("ResponsesUserMessageItemParam")] internal partial class InternalResponsesUserMessageItemParam {}
 [CodeGenType("ResponseTextFormatConfigurationJsonObject")] internal partial class InternalResponsesTextFormatJsonObject {}
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}
-[CodeGenType("ResponseTextFormatConfigurationType")] internal readonly partial struct InternalResponsesTextFormatType {}
 [CodeGenType("ToolChoiceObject")] internal partial class InternalToolChoiceObject {}
 [CodeGenType("ToolChoiceObjectComputer")] internal partial class InternalToolChoiceObjectComputer {}
 [CodeGenType("ToolChoiceObjectFileSearch")] internal partial class InternalToolChoiceObjectFileSearch {}

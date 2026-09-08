@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesAssistantMessageItemParam : InternalResponsesMessageItemParam, IJsonModel<InternalResponsesAssistantMessageItemParam>
     {
-        public InternalResponsesAssistantMessageItemParam() : this(default, default, InternalResponsesMessageRole.Assistant, null)
+        public InternalResponsesAssistantMessageItemParam() : this(default, default, MessageRole.Assistant, null)
         {
         }
 
@@ -125,7 +125,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            InternalResponsesMessageRole role = default;
+            MessageRole role = default;
             IList<ResponseContentPart> content = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -136,7 +136,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    role = new InternalResponsesMessageRole(prop.Value.GetString());
+                    role = new MessageRole(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("content"u8))

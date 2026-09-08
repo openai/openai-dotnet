@@ -8,12 +8,12 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputImage : ResponseContentPart
     {
-        public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, default, null, null, default)
+        public InternalItemContentInputImage() : this(ResponseContentPartKind.InputImage, default, null, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
+        internal InternalItemContentInputImage(ResponseContentPartKind kind, in JsonPatch patch, string imageUri, string fileId, ResponseImageDetailLevel? detail) : base(kind, patch)
         {
             ImageUri = imageUri;
             FileId = fileId;
