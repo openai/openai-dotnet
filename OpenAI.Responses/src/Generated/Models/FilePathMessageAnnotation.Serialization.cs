@@ -117,7 +117,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToResponseMessageAnnotationKind();
+                    kind = new ResponseMessageAnnotationKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))

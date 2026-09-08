@@ -4,28 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
+// - Converted to extensible enum.
 [CodeGenType("ComputerActionType")]
-public enum ComputerCallActionKind
+public readonly partial struct ComputerCallActionKind
 {
-    Click,
-
-    DoubleClick,
-
-    Drag,
-
     [CodeGenMember("Keypress")]
-    KeyPress,
-
-    Move,
-
-    Screenshot,
-
-    Scroll,
-
-    Type,
-
-    Wait
+    public static ComputerCallActionKind KeyPress { get; } = new ComputerCallActionKind(KeypressValue);
 }

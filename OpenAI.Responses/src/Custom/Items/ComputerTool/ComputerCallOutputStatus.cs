@@ -4,13 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-[Experimental("OPENAI001")]
-[CodeGenType("ComputerToolCallOutputItemResourceStatus")]
-public enum ComputerCallOutputStatus
-{
-    InProgress,
-    Completed,
-    Incomplete
-}
+// - Converted to extensible enum.
+[CodeGenType("ComputerCallOutputStatus")]
+public readonly partial struct ComputerCallOutputStatus { }

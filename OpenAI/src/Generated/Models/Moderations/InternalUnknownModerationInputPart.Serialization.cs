@@ -91,7 +91,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToModerationInputPartKind();
+                    kind = new ModerationInputPartKind(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

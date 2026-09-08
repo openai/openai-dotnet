@@ -9,14 +9,9 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseTextFormatConfiguration")]
 public partial class ResponseTextFormat
 {
-    // CUSTOM: Renamed to "Kind" and converted to public enum from internal extensible type.
+    // CUSTOM: Renamed to "Kind".
     [CodeGenMember("Type")]
-    internal InternalResponsesTextFormatType InternalType { get; set;  }
-    public ResponseTextFormatKind Kind
-    {
-        get => InternalType.ToString().ToResponseTextFormatKind();
-        set => InternalType = value.ToSerialString();
-    }
+    public ResponseTextFormatKind Kind { get; set; }
 
     public static ResponseTextFormat CreateTextFormat() => new InternalResponsesTextFormatText();
 
@@ -28,7 +23,7 @@ public partial class ResponseTextFormat
         Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
 
          return new InternalResponsesTextFormatJsonSchema(
-            InternalResponsesTextFormatType.JsonSchema,
+            ResponseTextFormatKind.JsonSchema,
             patch: default,
             description: jsonSchemaFormatDescription,
             name: jsonSchemaFormatName,

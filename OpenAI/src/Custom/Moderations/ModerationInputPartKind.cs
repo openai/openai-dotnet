@@ -4,16 +4,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Moderations;
 
 // CUSTOM:
-// - Added Experimental attribute.
+// - Experimental attribute added by generator.
 // - Renamed.
-// - Plain enum type to convert from an extensible enum
-[Experimental("OPENAI001")]
+// - Converted to extensible enum.
 [CodeGenType("CreateModerationRequestInputType")]
-public enum ModerationInputPartKind
+public readonly partial struct ModerationInputPartKind
 {
-    [CodeGenMember("Text")]
-    Text,
-
     [CodeGenMember("ImageUrl")]
-    Image,
+    public static ModerationInputPartKind Image { get; } = new ModerationInputPartKind(ImageUrlValue);
 }

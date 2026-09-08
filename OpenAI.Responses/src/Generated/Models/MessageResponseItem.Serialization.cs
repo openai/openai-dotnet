@@ -77,12 +77,12 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToString());
             }
             if (!Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(InternalRole.ToString());
+                writer.WriteStringValue(Role.ToString());
             }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }

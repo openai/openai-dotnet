@@ -12,7 +12,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationImagePart : ModerationInputPart, IJsonModel<InternalModerationImagePart>
     {
-        internal InternalModerationImagePart() : this(default, null, null)
+        internal InternalModerationImagePart() : this(ModerationInputPartKind.Image, null, null)
         {
         }
 
@@ -97,7 +97,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString().ToModerationInputPartKind();
+                    kind = new ModerationInputPartKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("image_url"u8))

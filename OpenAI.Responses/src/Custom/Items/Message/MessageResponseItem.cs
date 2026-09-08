@@ -13,14 +13,9 @@ public partial class MessageResponseItem
     [CodeGenMember("Status")]
     public MessageStatus? Status { get; set; }
 
-    // CUSTOM: Expose public enum type with 'Unknown' using internal extensible role.
+    // CUSTOM: Renamed to "Role".
     [CodeGenMember("Role")]
-    internal InternalResponsesMessageRole InternalRole { get; set; }
-    public MessageRole Role
-    {
-        get => InternalRole.ToString().ToMessageRole();
-        private set => InternalRole = value.ToSerialString();
-    }
+    public MessageRole Role { get; private set; }
 
     // CUSTOM: Recombined content from derived types.
     public IList<ResponseContentPart> Content

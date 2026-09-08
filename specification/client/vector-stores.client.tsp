@@ -1,8 +1,10 @@
 import "../base/typespec/vector-stores/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
+import "@typespec/http-client-csharp";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
+using TypeSpec.HttpClient.CSharp;
 
 @@visibility(ListVectorStoresResponse.data, Lifecycle.Read);
 @@visibility(ListVectorStoreFilesResponse.data, Lifecycle.Read);
@@ -43,3 +45,6 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(updateVectorStoreFileAttributes, "VectorStores");
 @@clientLocation(retrieveVectorStoreFileContent, "VectorStores");
 @@clientLocation(searchVectorStore, "VectorStores");
+
+@@dynamicModel(VectorStoreStatus);
+@@dynamicModel(VectorStoreFileStatus);
