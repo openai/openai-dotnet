@@ -179,9 +179,9 @@ namespace OpenAI
             return new ChatMessage(role.ToChatMessageRole(), content, default);
         }
 
-        public static ChatMessageContentPart ChatMessageContentPart(string kind = default)
+        public static ChatMessageContentPart ChatMessageContentPart(ChatMessageContentPartKind kind = default)
         {
-            return new ChatMessageContentPart(kind.ToChatMessageContentPartKind(), default);
+            return new ChatMessageContentPart(kind, default);
         }
 
         public static SystemChatMessage SystemChatMessage(ChatMessageContent content = default, string participantName = default)
