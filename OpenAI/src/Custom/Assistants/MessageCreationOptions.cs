@@ -13,11 +13,6 @@ namespace OpenAI.Assistants;
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContent))]
 public partial class MessageCreationOptions
 {
-    // CUSTOM: Delegate to internal hydration constructor which initializes collections.
-    public MessageCreationOptions() : this(default, null, null, null, null)
-    {
-    }
-
     // CUSTOM: role is hidden, as this required property is promoted to a method parameter
 
     [CodeGenMember("Role")]

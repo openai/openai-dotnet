@@ -13,6 +13,10 @@ namespace OpenAI.Responses
 {
     public partial class McpTool : ResponseTool, IJsonModel<McpTool>
     {
+        public McpTool() : this(ResponseToolKind.Mcp, default, null, null, default, null, null, null, null, null)
+        {
+        }
+
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<McpTool>)this).GetFormatFromOptions(options) : options.Format;
