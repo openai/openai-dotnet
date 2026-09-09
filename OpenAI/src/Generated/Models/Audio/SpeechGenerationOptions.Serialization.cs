@@ -13,6 +13,10 @@ namespace OpenAI.Audio
 {
     public partial class SpeechGenerationOptions : IJsonModel<SpeechGenerationOptions>
     {
+        public SpeechGenerationOptions()
+        {
+        }
+
         [Experimental("OPENAI001")]
         protected virtual SpeechGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

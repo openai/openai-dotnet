@@ -13,6 +13,10 @@ namespace OpenAI.Containers
 {
     public partial class ContainerDeletionResult : IJsonModel<ContainerDeletionResult>
     {
+        public ContainerDeletionResult()
+        {
+        }
+
         protected virtual ContainerDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerDeletionResult>)this).GetFormatFromOptions(options) : options.Format;

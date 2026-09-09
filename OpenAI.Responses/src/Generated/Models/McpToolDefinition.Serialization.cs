@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class McpToolDefinition : IJsonModel<McpToolDefinition>
     {
+        public McpToolDefinition()
+        {
+        }
+
         protected virtual McpToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinition>)this).GetFormatFromOptions(options) : options.Format;

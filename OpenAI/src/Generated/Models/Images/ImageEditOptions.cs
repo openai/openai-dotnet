@@ -34,10 +34,6 @@ namespace OpenAI.Images
         }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
-        public ImageEditOptions()
-        {
-        }
-
         [Experimental("OPENAI001")]
         public ImageInputFidelity? InputFidelity { get; set; }
 
