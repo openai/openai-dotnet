@@ -13,6 +13,10 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>
     {
+        public FileSearchCallResponseItem() : this(ResponseItemKind.FileSearchCall, null, default, default, null, null)
+        {
+        }
+
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;

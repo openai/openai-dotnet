@@ -14,6 +14,10 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>
     {
+        public ChatCompletionOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, default, null, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default)
+        {
+        }
+
         [Experimental("OPENAI001")]
         protected virtual ChatCompletionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {

@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchFindInPageAction : WebSearchAction, IJsonModel<WebSearchFindInPageAction>
     {
+        public WebSearchFindInPageAction() : this(InternalWebSearchActionType.FindInPage, default, null, null)
+        {
+        }
+
         protected override WebSearchAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<WebSearchFindInPageAction>)this).GetFormatFromOptions(options) : options.Format;
