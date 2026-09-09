@@ -418,7 +418,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             }
             else if (update is RealtimeServerUpdateMcpListToolsFailed or RealtimeServerUpdateError)
             {
-                // Guard: fail fast if there is an problem with retrieving MCP tools.
+                // Guard: fail fast if there is a problem with retrieving MCP tools.
                 Assert.Fail($"{update.Kind.ToString()}: {ModelReaderWriter.Write(update)}");
             }
         }
