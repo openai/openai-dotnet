@@ -490,6 +490,25 @@ public partial class ResponsesSmokeTests
         Assert.That(response.ReasoningOptions.Context, Is.EqualTo(ResponseReasoningContext.AllTurns));
     }
 
+    [Test]
+    public void ResponseResultPatchReturnsNullForNullObjectProperties()
+    {
+        ResponseResult response = ModelReaderWriter.Read<ResponseResult>(
+            BinaryData.FromString("""{"reasoning":null,"text":null,"error":null,"incomplete_details":null,"usage":null,"conversation":null}"""));
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        Assert.Multiple(() =>
+        {
+            Assert.That(response.Patch.GetJson("$.reasoning"u8).ToString(), Is.EqualTo("null"));
+            Assert.That(response.Patch.GetJson("$.text"u8).ToString(), Is.EqualTo("null"));
+            Assert.That(response.Patch.GetJson("$.error"u8).ToString(), Is.EqualTo("null"));
+            Assert.That(response.Patch.GetJson("$.incomplete_details"u8).ToString(), Is.EqualTo("null"));
+            Assert.That(response.Patch.GetJson("$.usage"u8).ToString(), Is.EqualTo("null"));
+            Assert.That(response.Patch.GetJson("$.conversation"u8).ToString(), Is.EqualTo("null"));
+        });
+#pragma warning restore SCME0001
+    }
+
     private static void AssertSerializationRoundTrip<T>(
         string serializedJson,
         Action<T> instanceAssertionsAction)
