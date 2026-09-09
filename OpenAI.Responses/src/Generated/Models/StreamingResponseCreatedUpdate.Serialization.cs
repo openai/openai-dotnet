@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseCreatedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCreatedUpdate>
     {
+        public StreamingResponseCreatedUpdate() : this(StreamingResponseUpdateKind.ResponseCreated, default, default, null)
+        {
+        }
+
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCreatedUpdate>)this).GetFormatFromOptions(options) : options.Format;

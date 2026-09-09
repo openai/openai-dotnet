@@ -20,8 +20,6 @@ namespace OpenAI.Conversations
         public ConversationUpdateOptions(IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(metadata, nameof(metadata));
-
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
@@ -33,10 +31,6 @@ namespace OpenAI.Conversations
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        public ConversationUpdateOptions() : this(default)
-        {
-        }
 
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

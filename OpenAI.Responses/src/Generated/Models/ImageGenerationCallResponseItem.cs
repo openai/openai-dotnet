@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -14,8 +13,6 @@ namespace OpenAI.Responses
     {
         public ImageGenerationCallResponseItem(BinaryData imageResultBytes) : base(ResponseItemKind.ImageGenerationCall)
         {
-            Argument.AssertNotNull(imageResultBytes, nameof(imageResultBytes));
-
             ImageResultBytes = imageResultBytes;
         }
 

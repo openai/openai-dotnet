@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseMcpListToolsFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsFailedUpdate>
     {
+        public StreamingResponseMcpListToolsFailedUpdate() : this(StreamingResponseUpdateKind.ResponseMcpListToolsFailed, default, default, null, default)
+        {
+        }
+
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseMcpListToolsFailedUpdate>)this).GetFormatFromOptions(options) : options.Format;
