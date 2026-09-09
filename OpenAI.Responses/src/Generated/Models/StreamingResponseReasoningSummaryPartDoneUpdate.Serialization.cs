@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseReasoningSummaryPartDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryPartDoneUpdate>
     {
+        public StreamingResponseReasoningSummaryPartDoneUpdate() : this(StreamingResponseUpdateKind.ResponseReasoningSummaryPartDone, default, default, null, default, default, null)
+        {
+        }
+
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseReasoningSummaryPartDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;

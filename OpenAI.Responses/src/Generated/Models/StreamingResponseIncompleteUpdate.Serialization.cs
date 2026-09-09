@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseIncompleteUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseIncompleteUpdate>
     {
+        public StreamingResponseIncompleteUpdate() : this(StreamingResponseUpdateKind.ResponseIncomplete, default, default, null)
+        {
+        }
+
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
