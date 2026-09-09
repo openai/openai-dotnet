@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class ComputerTool : ResponseTool, IJsonModel<ComputerTool>
     {
+        public ComputerTool() : this(ResponseToolKind.ComputerUsePreview, default, default, default, default)
+        {
+        }
+
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ComputerTool>)this).GetFormatFromOptions(options) : options.Format;

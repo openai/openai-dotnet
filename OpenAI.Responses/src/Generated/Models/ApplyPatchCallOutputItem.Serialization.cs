@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class ApplyPatchCallOutputItem : ResponseItem, IJsonModel<ApplyPatchCallOutputItem>
     {
+        public ApplyPatchCallOutputItem() : this(ResponseItemKind.ApplyPatchCallOutput, null, default, null, default, null, null)
+        {
+        }
+
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ApplyPatchCallOutputItem>)this).GetFormatFromOptions(options) : options.Format;

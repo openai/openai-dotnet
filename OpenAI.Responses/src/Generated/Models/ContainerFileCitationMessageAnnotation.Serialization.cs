@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class ContainerFileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<ContainerFileCitationMessageAnnotation>
     {
+        public ContainerFileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.ContainerFileCitation, default, null, null, default, default, null)
+        {
+        }
+
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;

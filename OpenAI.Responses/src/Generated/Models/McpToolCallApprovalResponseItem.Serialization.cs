@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class McpToolCallApprovalResponseItem : ResponseItem, IJsonModel<McpToolCallApprovalResponseItem>
     {
+        public McpToolCallApprovalResponseItem() : this(ResponseItemKind.McpApprovalResponse, null, default, null, default, null)
+        {
+        }
+
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalResponseItem>)this).GetFormatFromOptions(options) : options.Format;
