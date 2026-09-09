@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "146",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "metadata": {
@@ -32,7 +32,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a32599c48cba703b-SEA",
+        "CF-RAY": "a12055487b21ba4e-SEA",
         "Connection": "keep-alive",
         "Content-Length": "164",
         "Content-Type": "application/json",
@@ -42,15 +42,16 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "conv_6a91dc81a944819688d8e25e87eedbe30e088d4314364ee9",
+        "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83",
         "object": "conversation",
-        "created_at": 1787944065,
+        "created_at": 1782520122,
         "metadata": {
           "topic": "test"
         }
@@ -64,7 +65,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "203",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -81,7 +82,7 @@
           }
         ],
         "conversation": {
-          "id": "conv_6a91dc81a944819688d8e25e87eedbe30e088d4314364ee9"
+          "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83"
         }
       },
       "StatusCode": 200,
@@ -93,9 +94,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a32599cbdf28703b-SEA",
+        "CF-Ray": "a120554cdf4eba4e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2127",
+        "Content-Length": "2109",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -114,17 +115,17 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0e088d4314364ee9006a91dc81f5208196aa0d2161e31a0723",
+        "id": "resp_0903dc172c433d83006a3f193a95148197a63e0918e859de99",
         "object": "response",
-        "created_at": 1787944066,
+        "created_at": 1782520122,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1787944066,
+        "completed_at": 1782520123,
         "conversation": {
-          "id": "conv_6a91dc81a944819688d8e25e87eedbe30e088d4314364ee9"
+          "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83"
         },
         "error": null,
         "frequency_penalty": 0.0,
@@ -136,7 +137,7 @@
         "moderation": null,
         "output": [
           {
-            "id": "msg_0e088d4314364ee9006a91dc829aac8196b1231828d5ed8b53",
+            "id": "msg_0903dc172c433d83006a3f193bcd28819790de018a308e0dde",
             "type": "message",
             "status": "completed",
             "content": [
@@ -144,7 +145,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Why don't skeletons fight each other?\n\nThey don't have the guts!"
+                "text": "Why did the scarecrow win an award?\n\nBecause he was outstanding in his field!"
               }
             ],
             "role": "assistant"
@@ -196,26 +197,25 @@
         "usage": {
           "input_tokens": 22,
           "input_tokens_details": {
-            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 15,
+          "output_tokens": 18,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 37
+          "total_tokens": 40
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a91dc81a944819688d8e25e87eedbe30e088d4314364ee9/items",
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83/items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -223,9 +223,9 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a32599d42f42703b-SEA",
+        "CF-RAY": "a12055596b88ba4e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1147",
+        "Content-Length": "1160",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -242,7 +242,7 @@
         "object": "list",
         "data": [
           {
-            "id": "msg_0e088d4314364ee9006a91dc829aac8196b1231828d5ed8b53",
+            "id": "msg_0903dc172c433d83006a3f193bcd28819790de018a308e0dde",
             "type": "message",
             "status": "completed",
             "content": [
@@ -250,13 +250,13 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Why don't skeletons fight each other?\n\nThey don't have the guts!"
+                "text": "Why did the scarecrow win an award?\n\nBecause he was outstanding in his field!"
               }
             ],
             "role": "assistant"
           },
           {
-            "id": "msg_0e088d4314364ee9006a91dc8237c08196815d830581a58f52",
+            "id": "msg_0903dc172c433d83006a3f193ad248819784f5f286a185c711",
             "type": "message",
             "status": "completed",
             "content": [
@@ -268,7 +268,7 @@
             "role": "user"
           },
           {
-            "id": "msg_6a91dc81a9888196ab444a357a9367370e088d4314364ee9",
+            "id": "msg_6a3f193a242081979148afa228b7e3ed0903dc172c433d83",
             "type": "message",
             "status": "completed",
             "content": [
@@ -280,18 +280,18 @@
             "role": "system"
           }
         ],
-        "first_id": "msg_0e088d4314364ee9006a91dc829aac8196b1231828d5ed8b53",
+        "first_id": "msg_0903dc172c433d83006a3f193bcd28819790de018a308e0dde",
         "has_more": false,
-        "last_id": "msg_6a91dc81a9888196ab444a357a9367370e088d4314364ee9"
+        "last_id": "msg_6a3f193a242081979148afa228b7e3ed0903dc172c433d83"
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a91dc81a944819688d8e25e87eedbe30e088d4314364ee9",
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83",
       "RequestMethod": "DELETE",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
+        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.9; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": null,
       "StatusCode": 200,
@@ -299,7 +299,7 @@
         "Access-Control-Expose-Headers": "CF-Ray",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "a32599d88a82703b-SEA",
+        "CF-RAY": "a120555accefba4e-SEA",
         "Connection": "keep-alive",
         "Content-Length": "122",
         "Content-Type": "application/json",
@@ -315,7 +315,7 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "conv_6a91dc81a944819688d8e25e87eedbe30e088d4314364ee9",
+        "id": "conv_6a3f193a23f08197a8aaeee38622750f0903dc172c433d83",
         "object": "conversation.deleted",
         "deleted": true
       }
