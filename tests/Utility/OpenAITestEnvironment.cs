@@ -31,7 +31,6 @@ namespace OpenAI.Tests;
 #pragma warning disable OPENAI001
 #pragma warning disable OPENAI002
 #pragma warning disable OPENAI003
-#pragma warning disable OPENAI004
 
 public class OpenAITestEnvironment : TestEnvironment
 {
