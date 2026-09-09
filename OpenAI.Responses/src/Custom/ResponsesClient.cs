@@ -265,13 +265,9 @@ public partial class ResponsesClient
                 + $"For non-streaming scenarios, call {nameof(CreateResponse)} instead.");
         }
 
-        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateCreateResponseRequest((BinaryContent)options, requestOptions);
-        message.BufferResponse = false;
-        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
-        ClientResult.FromResponse(response);
+        ClientResult result = CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions(streaming: true));
         return SseStreamingClientResult.Create(
-            response,
+            result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
@@ -301,12 +297,9 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to false when calling {nameof(CreateResponseStreamingAsync)}.");
         }
 
-        using PipelineMessage message = CreateCreateResponseRequest((BinaryContent)options, requestOptions);
-        message.BufferResponse = false;
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
-        ClientResult.FromResponse(response);
+        ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
         return SseStreamingClientResult.Create(
-            response,
+            result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken);
     }
@@ -488,19 +481,15 @@ public partial class ResponsesClient
                 + $"For non-streaming scenarios, call {nameof(GetResponse)} instead.");
         }
 
-        RequestOptions requestOptions = cancellationToken.ToRequestOptions(streaming: true);
-        using PipelineMessage message = CreateGetResponseRequest(
+        ClientResult result = GetResponse(
             responseId: options.ResponseId,
             include: options.IncludedProperties,
             stream: options.StreamingEnabled,
             startingAfter: options.StartingAfter,
             includeObfuscation: options.IncludeObfuscation,
-            requestOptions);
-        message.BufferResponse = false;
-        PipelineResponse response = Pipeline.ProcessMessage(message, requestOptions);
-        ClientResult.FromResponse(response);
+            cancellationToken.ToRequestOptions(streaming: true));
         return SseStreamingClientResult.Create(
-            response,
+            result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
@@ -531,18 +520,15 @@ public partial class ResponsesClient
             throw new InvalidOperationException($"{nameof(RequestOptions.BufferResponse)} must be set to false when calling {nameof(GetResponseStreamingAsync)}.");
         }
 
-        using PipelineMessage message = CreateGetResponseRequest(
+        ClientResult result = await GetResponseAsync(
             responseId: options.ResponseId,
             include: options.IncludedProperties,
             stream: options.StreamingEnabled,
             startingAfter: options.StartingAfter,
             includeObfuscation: options.IncludeObfuscation,
-            requestOptions);
-        message.BufferResponse = false;
-        PipelineResponse response = await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false);
-        ClientResult.FromResponse(response);
+            requestOptions).ConfigureAwait(false);
         return SseStreamingClientResult.Create(
-            response,
+            result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken);
     }
