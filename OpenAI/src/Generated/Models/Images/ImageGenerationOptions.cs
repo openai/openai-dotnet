@@ -31,10 +31,6 @@ namespace OpenAI.Images
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public ImageGenerationOptions()
-        {
-        }
-
         public GeneratedImageQuality? Quality { get; set; }
 
         public GeneratedImageFormat? ResponseFormat { get; set; }

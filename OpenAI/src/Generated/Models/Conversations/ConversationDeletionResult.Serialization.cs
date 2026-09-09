@@ -13,6 +13,10 @@ namespace OpenAI.Conversations
 {
     public partial class ConversationDeletionResult : IJsonModel<ConversationDeletionResult>
     {
+        public ConversationDeletionResult()
+        {
+        }
+
         protected virtual ConversationDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ConversationDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
