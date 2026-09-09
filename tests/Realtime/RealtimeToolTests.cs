@@ -87,7 +87,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             if (update is RealtimeServerUpdateResponseDone responseDone)
             {
                 responseDoneUpdateCount++;
-                toolCallItem = responseDone.Response.OutputItems.OfType<RealtimeMcpToolCallItem>().FirstOrDefault();
+                toolCallItem = responseDone.Response.OutputItems
+                    .OfType<RealtimeMcpToolCallItem>()
+                    .FirstOrDefault(item => item.ToolName == toolName);
 
                 Assert.That(toolCallItem, Is.Not.Null);
                 Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
@@ -273,8 +275,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             },
             CancellationToken);
 
-        // Approval requests arrive as conversation.item.done events. Approve each one
-        // because the model can issue another search after receiving a prior result.
         int approvalRequestUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
         int conversationItemDoneUpdateCount = 0;

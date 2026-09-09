@@ -546,6 +546,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         // Confirm there are no approval requests and that the tool was called.
         Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
+
+        McpToolCallItem toolCallItem = response.OutputItems
+            .OfType<McpToolCallItem>()
+            .FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
     }
 
     [RecordedTest]
@@ -600,6 +606,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response2 = await client.CreateResponseAsync(options);
         Assert.That(response2.OutputItems, Has.Count.GreaterThan(0));
         Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
+
+        McpToolCallItem toolCallItem = response2.OutputItems
+            .OfType<McpToolCallItem>()
+            .FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
     }
 
     [RecordedTest]
