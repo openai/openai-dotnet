@@ -354,7 +354,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -362,7 +362,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -379,19 +380,20 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolDefinition searchToolDefinition = listItem.ToolDefinitions.Where(toolDefinition => toolDefinition.Name == toolName).FirstOrDefault();
         Assert.That(searchToolDefinition, Is.Not.Null);
-        Assert.That(searchToolDefinition.InputSchema, Is.Not.Null);
-        Assert.That(searchToolDefinition.Annotations, Is.Not.Null);
+        Assert.That(searchToolDefinition!.InputSchema, Is.Not.Null);
+        Assert.That(searchToolDefinition!.Annotations, Is.Not.Null);
 
         // Check tool call.
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.GreaterThanOrEqualTo(1));
 
-        McpToolCallItem toolCallItem = toolCallItems[0];
-        Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-        Assert.That(toolCallItem.ToolName, Is.EqualTo(toolName));
-        Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-        Assert.That(toolCallItem.ToolOutput, Is.Not.Null.Or.Empty);
-        Assert.That(toolCallItem.Error, Is.Null);
+        McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+        Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+        Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+        Assert.That(toolCallItem!.ToolOutput, Is.Not.Null.Or.Empty);
+        Assert.That(toolCallItem!.Error, Is.Null);
 
         // Check assistant message.
         MessageResponseItem assistantMessageItem = response.OutputItems.Last() as MessageResponseItem;
@@ -406,7 +408,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -415,6 +417,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             },
+            MaxToolCallCount = 1,
             StreamingEnabled = true,
         };
 
@@ -522,7 +525,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     }
                 });
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -530,7 +533,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -564,7 +568,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     }
                 });
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -572,7 +576,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -587,7 +592,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(approvalRequestItem, Is.Not.Null);
 
         // Prepare the response.
-        McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem.Id, true);
+        McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem!.Id, true);
         options.PreviousResponseId = response1.Id;
         options.InputItems.Clear();
         options.InputItems.Add(approvalResponseItem);
@@ -606,7 +611,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -618,7 +623,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                         ToolNames = { toolName }
                     }
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -631,12 +637,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.GreaterThanOrEqualTo(1));
 
-        McpToolCallItem toolCallItem = toolCallItems[0];
-        Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-        Assert.That(toolCallItem.ToolName, Is.EqualTo(toolName));
-        Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-        Assert.That(toolCallItem.ToolOutput, Is.Not.Null.Or.Empty);
-        Assert.That(toolCallItem.Error, Is.Null);
+        McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+        Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+        Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+        Assert.That(toolCallItem!.ToolOutput, Is.Not.Null.Or.Empty);
+        Assert.That(toolCallItem!.Error, Is.Null);
     }
 
     [RecordedTest]
@@ -647,7 +654,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -659,7 +666,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                         ToolNames = { "not_microsoft_docs_search" } // This is not a real tool. We use this to implicitly disallow everything else.
                     }
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();

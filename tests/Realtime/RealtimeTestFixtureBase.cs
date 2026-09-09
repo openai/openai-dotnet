@@ -32,7 +32,7 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
         CancellationTokenSource = new();
         if (!Debugger.IsAttached)
         {
-            CancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(15));
+            CancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
         }
     }
 

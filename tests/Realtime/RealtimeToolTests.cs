@@ -53,11 +53,14 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
         // Now send the user message and request a response.
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
         int mcpCallArgumentsDeltaUpdateCount = 0;
@@ -87,10 +90,10 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 toolCallItem = responseDone.Response.OutputItems.OfType<RealtimeMcpToolCallItem>().FirstOrDefault();
 
                 Assert.That(toolCallItem, Is.Not.Null);
-                Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-                Assert.That(toolCallItem.ToolName, Is.EqualTo(toolName));
-                Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-                Assert.That(toolCallItem.Error, Is.Null);
+                Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+                Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+                Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+                Assert.That(toolCallItem!.Error, Is.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallInProgress)
@@ -108,7 +111,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 RealtimeMcpToolDefinition searchToolDefinition = listItem.ToolDefinitions
                     .Where(td => td.Name == toolName).FirstOrDefault();
                 Assert.That(searchToolDefinition, Is.Not.Null);
-                Assert.That(searchToolDefinition.InputSchema, Is.Not.Null);
+                Assert.That(searchToolDefinition!.InputSchema, Is.Not.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)
@@ -175,11 +178,14 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
         int mcpCallCompletedUpdateCount = 0;
@@ -257,16 +263,18 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
-        // Single loop: the approval request arrives as a conversation.item.done event.
-        // When found, approve it inline and keep listening for the tool call to complete.
-        bool approvalSent = false;
+        // Approval requests arrive as conversation.item.done events. Approve each one
+        // because the model can issue another search after receiving a prior result.
         int approvalRequestUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
         int conversationItemDoneUpdateCount = 0;
@@ -279,8 +287,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 conversationItemDoneUpdateCount++;
             }
 
-            if (!approvalSent
-                && update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolCallApprovalRequestItem approvalItem })
+            if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolCallApprovalRequestItem approvalItem })
             {
                 approvalRequestUpdateCount++;
 
@@ -289,9 +296,11 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                     new RealtimeMcpToolCallApprovalResponseItem(approvalItem.Id, approved: true),
                     CancellationToken);
                 await sessionClient.StartResponseAsync(
-                    new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+                    new RealtimeResponseOptions
+                    {
+                        OutputModalities = { RealtimeOutputModality.Text },
+                    },
                     CancellationToken);
-                approvalSent = true;
             }
 
             if (update is RealtimeServerUpdateResponseDone responseDone)
@@ -302,7 +311,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 }
             }
 
-            if (approvalSent && update is RealtimeServerUpdateResponseMcpCallCompleted)
+            if (update is RealtimeServerUpdateResponseMcpCallCompleted)
             {
                 mcpCallCompletedUpdateCount++;
                 break;
@@ -312,7 +321,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         Assert.That(approvalRequestUpdateCount, Is.GreaterThan(0));
         Assert.That(conversationItemDoneUpdateCount, Is.GreaterThan(0));
         Assert.That(responseDoneWithToolCallCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThan(0));
+        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(approvalRequestUpdateCount));
     }
 
     [Test]
@@ -351,11 +360,14 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
         int mcpCallCompletedUpdateCount = 0;
@@ -377,11 +389,14 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 Assert.That(outputItems.OfType<RealtimeMcpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
                 Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
 
-                RealtimeMcpToolCallItem toolCallItem = outputItems.OfType<RealtimeMcpToolCallItem>().First();
-                Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-                Assert.That(toolCallItem.ToolName, Is.EqualTo(toolName));
-                Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-                Assert.That(toolCallItem.Error, Is.Null);
+                RealtimeMcpToolCallItem toolCallItem = outputItems
+                    .OfType<RealtimeMcpToolCallItem>()
+                    .FirstOrDefault(item => item.ToolName == toolName);
+                Assert.That(toolCallItem, Is.Not.Null);
+                Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+                Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+                Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+                Assert.That(toolCallItem!.Error, Is.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)

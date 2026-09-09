@@ -6,12 +6,13 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "442",
+        "Content-Length": "463",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "model": "gpt-5",
+        "model": "gpt-5.6",
+        "max_tool_calls": 1,
         "tools": [
           {
             "type": "mcp",
@@ -48,9 +49,9 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a3848c9f38172b03-SEA",
+        "CF-Ray": "a389aba75beceb43-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "5106",
+        "Content-Length": "2807",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -63,45 +64,45 @@
         "x-ratelimit-limit-requests": "15000",
         "x-ratelimit-limit-tokens": "40000000",
         "x-ratelimit-remaining-requests": "14999",
-        "x-ratelimit-remaining-tokens": "39996778",
+        "x-ratelimit-remaining-tokens": "39999890",
         "x-ratelimit-reset-requests": "4ms",
-        "x-ratelimit-reset-tokens": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_05b625dd9648d54a006aa10d9991e087d0a6f078d162375028",
+        "id": "resp_0e51c638718a121d006aa1df5d7db887d0924e1e549d471949",
         "object": "response",
-        "created_at": 1788939673,
+        "created_at": 1788993373,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1788939722,
+        "completed_at": 1788993381,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
-        "max_tool_calls": null,
-        "model": "gpt-5-2025-08-07",
+        "max_tool_calls": 1,
+        "model": "gpt-5.6-sol",
         "moderation": null,
         "output": [
           {
-            "id": "mcpl_05b625dd9648d54a006aa10d99a53887d0baa493ee7e039e9e",
+            "id": "mcpl_0e51c638718a121d006aa1df5da49887d0b0069c952e21b105",
             "type": "mcp_list_tools",
             "server_label": "microsoft-learn",
             "tools": []
           },
           {
-            "id": "rs_05b625dd9648d54a006aa10d9ab70887d0ae7042b02665a7e9",
+            "id": "rs_0e51c638718a121d006aa1df603af887d0b68f931b362dba1d",
             "type": "reasoning",
             "content": [],
             "encrypted_content": "Sanitized",
             "summary": []
           },
           {
-            "id": "msg_05b625dd9648d54a006aa10dc31ed887d09a1976a721065795",
+            "id": "msg_0e51c638718a121d006aa1df61d31487d0b77bddda7b493e7c",
             "type": "message",
             "status": "completed",
             "content": [
@@ -109,9 +110,10 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Here are the most relevant Microsoft Learn resources for the Azure OpenAI Service:\n\nOverview and updates\n- Azure OpenAI Service docs hub: https://learn.microsoft.com/azure/ai-services/openai/\n- What’s new: https://learn.microsoft.com/azure/ai-services/openai/whats-new\n\nQuickstarts\n- Quickstart: Chat completions (REST and SDKs): https://learn.microsoft.com/azure/ai-services/openai/quickstart?tabs=python\n\nKey concepts\n- Models and regional availability: https://learn.microsoft.com/azure/ai-services/openai/concepts/models\n- On your data (grounding with your own content): https://learn.microsoft.com/azure/ai-services/openai/concepts/use-your-data\n- Safety system and content filtering: https://learn.microsoft.com/azure/ai-services/openai/concepts/safety-system\n- Quotas and limits: https://learn.microsoft.com/azure/ai-services/openai/quotas-limits\n\nHow-to guides\n- Function calling (tools): https://learn.microsoft.com/azure/ai-services/openai/how-to/function-calling\n- Vision (image understanding with GPT-4o): https://learn.microsoft.com/azure/ai-services/openai/how-to/gpt-with-vision\n- Embeddings: https://learn.microsoft.com/azure/ai-services/openai/how-to/embeddings\n- Fine-tuning: https://learn.microsoft.com/azure/ai-services/openai/how-to/fine-tuning\n- Batch requests: https://learn.microsoft.com/azure/ai-services/openai/how-to/batch\n- Assistants (overview): https://learn.microsoft.com/azure/ai-services/openai/assistants-overview\n\nSecurity, identity, and networking\n- Managed identity: https://learn.microsoft.com/azure/ai-services/openai/how-to/managed-identity\n- Role-based access control (RBAC): https://learn.microsoft.com/azure/ai-services/openai/how-to/role-based-access-control\n- Private endpoints (Private Link): https://learn.microsoft.com/azure/ai-services/openai/how-to/private-link\n\nReference\n- Azure OpenAI REST API reference (hub): https://learn.microsoft.com/azure/ai-services/openai/reference\n- Full REST reference set: https://learn.microsoft.com/rest/api/azureopenai/\n- Python SDK: https://learn.microsoft.com/python/api/overview/azure/ai-openai-readme\n- .NET SDK: https://learn.microsoft.com/dotnet/api/overview/azure/ai.openai-readme\n- JavaScript/TypeScript SDK: https://learn.microsoft.com/javascript/api/overview/azure/ai-openai-readme\n- Java SDK: https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme\n\nOperations and troubleshooting\n- Samples gallery: https://learn.microsoft.com/azure/ai-services/openai/samples\n- Troubleshooting guide: https://learn.microsoft.com/azure/ai-services/openai/troubleshoot\n\nTraining (Microsoft Learn modules)\n- Fundamentals of Azure OpenAI Service: https://learn.microsoft.com/training/modules/fundamentals-azure-openai/\n- Prompt engineering with Azure OpenAI: https://learn.microsoft.com/training/modules/prompt-engineering-azure-openai/\n\nIf you have a specific scenario (for example: chat with tools, RAG/on-your-data, fine-tuning, or networking/security), tell me and I can pull the exact pages and examples you need."
+                "text": "Microsoft Learn documentation for **Azure OpenAI Service**:\n\n- [Azure OpenAI Service documentation](https://learn.microsoft.com/azure/ai-services/openai/)\n- [What is Azure OpenAI Service?](https://learn.microsoft.com/azure/ai-services/openai/overview)\n- [Quickstart: Get started generating text](https://learn.microsoft.com/azure/ai-services/openai/chatgpt-quickstart)\n- [Azure OpenAI models](https://learn.microsoft.com/azure/ai-services/openai/concepts/models)\n- [REST API reference](https://learn.microsoft.com/azure/ai-services/openai/reference)\n- [Azure OpenAI pricing](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)\n\nMicrosoft Learn now also documents Azure OpenAI within **Azure AI Foundry** resources."
               }
             ],
+            "phase": "final_answer",
             "role": "assistant"
           }
         ],
@@ -119,9 +121,9 @@
         "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
-        "prompt_cache_retention": "in_memory",
+        "prompt_cache_retention": "24h",
         "reasoning": {
-          "context": "current_turn",
+          "context": "all_turns",
           "effort": "medium",
           "mode": "standard",
           "summary": null
@@ -172,7 +174,7 @@
           }
         ],
         "top_logprobs": 0,
-        "top_p": 1.0,
+        "top_p": 0.98,
         "truncation": "disabled",
         "usage": {
           "input_tokens": 126,
@@ -180,11 +182,11 @@
             "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 3445,
+          "output_tokens": 260,
           "output_tokens_details": {
-            "reasoning_tokens": 2688
+            "reasoning_tokens": 85
           },
-          "total_tokens": 3571
+          "total_tokens": 386
         },
         "user": null,
         "metadata": {}
