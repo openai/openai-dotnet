@@ -543,11 +543,11 @@
               {
                 "type": "text",
                 "text": {
-                  "value": "Filip's favorite food is cake\u30104:0\u2020favorite_foods.txt\u3011.",
+                  "value": "Filip's favorite food is cake【4:0†favorite_foods.txt】.",
                   "annotations": [
                     {
                       "type": "file_citation",
-                      "text": "\u30104:0\u2020favorite_foods.txt\u3011",
+                      "text": "【4:0†favorite_foods.txt】",
                       "start_index": 29,
                       "end_index": 53,
                       "file_citation": {
