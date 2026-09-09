@@ -1,4 +1,4 @@
-#pragma warning disable OPENAI004
+#pragma warning disable OPENAI001
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
