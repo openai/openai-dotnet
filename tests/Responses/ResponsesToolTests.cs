@@ -496,7 +496,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         Assert.That(mcpCallFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
         Assert.That(mcpCallInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpCallInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpCallInProgressUpdateCount - mcpCallFailedUpdateCount));
 
         Assert.That(mcpCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
         Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));
