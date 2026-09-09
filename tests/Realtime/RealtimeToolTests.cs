@@ -412,16 +412,16 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         {
             setupUpdates.Add(update);
 
-            if (update is RealtimeServerUpdateMcpListToolsCompleted or
-                RealtimeServerUpdateError)
+            if (update is RealtimeServerUpdateMcpListToolsCompleted)
             {
                 break;
             }
+            else if (update is RealtimeServerUpdateMcpListToolsFailed or RealtimeServerUpdateError)
+            {
+                // Guard: fail fast if there is an problem with retrieving MCP tools.
+                Assert.Fail($"{update.Kind.ToString()}: {ModelReaderWriter.Write(update)}");
+            }
         }
-
-        // Guard: fail fast if there is an error in setup.
-        RealtimeServerUpdateError setupError = setupUpdates.OfType<RealtimeServerUpdateError>().FirstOrDefault();
-        Assert.That(setupError, Is.Null, () => $"Setup error: {ModelReaderWriter.Write(setupError)}");
 
         return setupUpdates;
     }

@@ -501,11 +501,9 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         await sessionClient.ConfigureTranscriptionSessionAsync(options, CancellationToken);
 
-        // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
-        // transcription data arriving while audio is still being sent.
         string inputPath = Path.Join("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
         using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
-        _ = sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
+        await sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
 
         RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta deltaUpdate = null;
         RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted completedUpdate = null;
@@ -533,13 +531,13 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         Assert.That(deltaUpdate, Is.Not.Null);
         Assert.That(deltaUpdate!.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
-        Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
-        Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Empty);
+        Assert.That(deltaUpdate!.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(deltaUpdate!.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Empty);
 
         Assert.That(completedUpdate, Is.Not.Null);
         Assert.That(completedUpdate!.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
-        Assert.That(completedUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
-        Assert.That(completedUpdate.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Empty);
+        Assert.That(completedUpdate!.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(completedUpdate!.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Empty);
     }
 
     [Test]
