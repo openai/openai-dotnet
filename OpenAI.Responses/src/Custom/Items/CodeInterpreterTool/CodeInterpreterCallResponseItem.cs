@@ -4,10 +4,6 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed and made public.
 [CodeGenType("CodeInterpreterToolCallItemResource")]
-[CodeGenSuppress("CodeInterpreterCallResponseItem")]
 public partial class CodeInterpreterCallResponseItem
 {
-    public CodeInterpreterCallResponseItem() : this(ResponseItemKind.CodeInterpreterCall, null, default, default, null, null, null)
-    {
-    }
 }

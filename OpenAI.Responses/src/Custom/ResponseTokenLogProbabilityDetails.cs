@@ -6,13 +6,8 @@ namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("LogProb")]
-[CodeGenSuppress("ResponseTokenLogProbabilityDetails")]
 public partial class ResponseTokenLogProbabilityDetails
 {
-    public ResponseTokenLogProbabilityDetails() : this(null, default, default, null, default)
-    {
-    }
-
     // CUSTOM: Renamed.
     [CodeGenMember("Logprob")]
     public float LogProbability { get; set; }
