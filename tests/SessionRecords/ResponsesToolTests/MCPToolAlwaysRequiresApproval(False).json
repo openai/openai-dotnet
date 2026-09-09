@@ -6,22 +6,22 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "349",
+        "Content-Length": "425",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-5",
         "tools": [
           {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp",
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
             "require_approval": {
               "always": {
                 "tool_names": [
-                  "roll"
+                  "microsoft_docs_search"
                 ]
               }
             }
@@ -34,7 +34,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Roll 2d4+1"
+                "text": "Search Microsoft Learn documentation for the OpenAI service."
               }
             ]
           }
@@ -42,84 +42,143 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f0e103e8876a0-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a384898c79682b03-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2761",
+        "Content-Length": "6061",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:40:50 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "5433",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "5438",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999814",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5ef1c9f8881948abec8e8bd4254520d8a3d97386eda99",
+        "id": "resp_0fbffa2f648a62e4006aa10d1bb60c87d08adfa6cd4d63e3cb",
         "object": "response",
-        "created_at": 1758850844,
+        "created_at": 1788939547,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1788939551,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-5-2025-08-07",
+        "moderation": null,
         "output": [
           {
-            "id": "mcpl_68d5ef1cc07881949bc1b5b2bc8c83ee0d8a3d97386eda99",
+            "id": "mcpl_0fbffa2f648a62e4006aa10d1bc3ec87d0840c1fbf685074d8",
             "type": "mcp_list_tools",
-            "server_label": "dmcp",
+            "server_label": "microsoft-learn",
             "tools": [
               {
                 "annotations": {
-                  "read_only": false
+                  "read_only": true
                 },
-                "description": "\n  Given a string of text describing a dice roll in \n  Dungeons and Dragons, provide a result of the roll.\n\n  Example input: 2d6 + 1d4\n  Example output: 14\n",
+                "description": "Search official Microsoft/Azure documentation to find the most relevant and trustworthy content for a user's query. This tool returns up to 10 high-quality content chunks (each max 500 tokens), extracted from Microsoft Learn and other official sources. Each result includes the article title, URL, and a self-contained content excerpt optimized for fast retrieval and reasoning. Always use this tool to quickly ground your answers in accurate, first-party Microsoft/Azure knowledge.\n\n## Follow-up Pattern\nTo ensure completeness, use microsoft_docs_fetch when high-value pages are identified by search. The fetch tool complements search by providing the full detail. This is a required step for comprehensive results.",
                 "input_schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
                   "type": "object",
                   "properties": {
-                    "diceRollExpression": {
+                    "query": {
+                      "description": "a query or topic about Microsoft/Azure products, services, platforms, developer tools, frameworks, or APIs",
+                      "type": "string",
+                      "default": null
+                    }
+                  }
+                },
+                "name": "microsoft_docs_search"
+              },
+              {
+                "annotations": {
+                  "read_only": true
+                },
+                "description": "Search for code snippets and examples in official Microsoft Learn documentation. This tool retrieves relevant code samples from Microsoft documentation pages providing developers with practical implementation examples and best practices for Microsoft/Azure products and services related coding tasks. This tool will help you use the **LATEST OFFICIAL** code snippets to empower coding capabilities.\n\n## When to Use This Tool\n- When you are going to provide sample Microsoft/Azure related code snippets in your answers.\n- When you are **generating any Microsoft/Azure related code**.\n\n## Usage Pattern\nInput a descriptive query, or SDK/class/method name to retrieve related code samples. The optional parameter `language` can help to filter results.\n\nEligible values for `language` parameter include: csharp javascript typescript python powershell azurecli al sql java kusto cpp go rust ruby php",
+                "input_schema": {
+                  "type": "object",
+                  "properties": {
+                    "query": {
+                      "description": "a descriptive query, SDK name, method name or code snippet related to Microsoft/Azure products, services, platforms, developer tools, frameworks, APIs or SDKs",
+                      "type": "string"
+                    },
+                    "language": {
+                      "description": "Optional parameter specifying the programming language of code snippets to retrieve. Can significantly improve search quality if provided. Eligible values: csharp javascript typescript python powershell azurecli al sql java kusto cpp go rust ruby php",
+                      "type": "string",
+                      "default": null
+                    }
+                  },
+                  "required": [
+                    "query"
+                  ]
+                },
+                "name": "microsoft_code_sample_search"
+              },
+              {
+                "annotations": {
+                  "read_only": true
+                },
+                "description": "Fetch and convert a Microsoft Learn documentation webpage to markdown format. This tool retrieves the latest complete content of Microsoft documentation webpages including Azure, .NET, Microsoft 365, and other Microsoft technologies.\n\n## When to Use This Tool\n- When search results provide incomplete information or truncated content\n- When you need complete step-by-step procedures or tutorials\n- When you need troubleshooting sections, prerequisites, or detailed explanations\n- When search results reference a specific page that seems highly relevant\n- For comprehensive guides that require full context\n\n## Usage Pattern\nUse this tool AFTER microsoft_docs_search when you identify specific high-value pages that need complete content. The search tool gives you an overview; this tool gives you the complete picture.\n\n## URL Requirements\n- The URL must be a valid HTML documentation webpage from the microsoft.com domain\n- Binary files (PDF, DOCX, images, etc.) are not supported\n\n## Output Format\nmarkdown with headings, code blocks, tables, and links preserved.",
+                "input_schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "description": "URL of the Microsoft documentation page to read",
                       "type": "string"
                     }
                   },
                   "required": [
-                    "diceRollExpression"
-                  ],
-                  "additionalProperties": false
+                    "url"
+                  ]
                 },
-                "name": "roll"
+                "name": "microsoft_docs_fetch"
               }
             ]
           },
           {
-            "id": "rs_68d5ef1ec7788194a4680d7a666520c80d8a3d97386eda99",
+            "id": "rs_0fbffa2f648a62e4006aa10d1c979c87d093290811acfa6aae",
             "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
             "summary": []
           },
           {
-            "id": "mcpr_68d5ef21a0ac81948bcb026033d46e3d0d8a3d97386eda99",
+            "id": "mcpr_0fbffa2f648a62e4006aa10d1f4a8887d0805f6c9eaa462c34",
             "type": "mcp_approval_request",
-            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
-            "name": "roll",
-            "server_label": "dmcp"
+            "arguments": "{\"query\":\"Azure OpenAI Service Microsoft Learn documentation overview quickstart REST SDK content filter\"}",
+            "name": "microsoft_docs_search",
+            "server_label": "microsoft-learn"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": "current_turn",
           "effort": "medium",
+          "mode": "standard",
           "summary": null
         },
         "safety_identifier": null,
@@ -133,6 +192,24 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "mcp",
@@ -142,29 +219,30 @@
               "always": {
                 "read_only": null,
                 "tool_names": [
-                  "roll"
+                  "microsoft_docs_search"
                 ]
               },
               "never": null
             },
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp"
           }
         ],
         "top_logprobs": 0,
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 187,
+          "input_tokens": 801,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 219,
+          "output_tokens": 410,
           "output_tokens_details": {
-            "reasoning_tokens": 192
+            "reasoning_tokens": 320
           },
-          "total_tokens": 406
+          "total_tokens": 1211
         },
         "user": null,
         "metadata": {}
@@ -176,23 +254,23 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "467",
+        "Content-Length": "497",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_68d5ef1c9f8881948abec8e8bd4254520d8a3d97386eda99",
+        "previous_response_id": "resp_0fbffa2f648a62e4006aa10d1bb60c87d08adfa6cd4d63e3cb",
         "model": "gpt-5",
         "tools": [
           {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp",
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
             "require_approval": {
               "always": {
                 "tool_names": [
-                  "roll"
+                  "microsoft_docs_search"
                 ]
               }
             }
@@ -201,76 +279,94 @@
         "input": [
           {
             "type": "mcp_approval_response",
-            "approval_request_id": "mcpr_68d5ef21a0ac81948bcb026033d46e3d0d8a3d97386eda99",
+            "approval_request_id": "mcpr_0fbffa2f648a62e4006aa10d1f4a8887d0805f6c9eaa462c34",
             "approve": true
           }
         ]
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f0e350d1b76a0-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a38489a5bbb82b03-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2249",
+        "Content-Length": "24130",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:40:52 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "2201",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2212",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5ef2227c08194868ec69524e09ced0d8a3d97386eda99",
+        "id": "resp_0fbffa2f648a62e4006aa10d1fb60487d0ac9cc6f6ab1bb8f0",
         "object": "response",
-        "created_at": 1758850850,
+        "created_at": 1788939551,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1788939554,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-5-2025-08-07",
+        "moderation": null,
         "output": [
           {
-            "id": "mcp_68d5ef225e848194a8bf8fc89c49600f0d8a3d97386eda99",
+            "id": "mcp_0fbffa2f648a62e4006aa10d2000c487d084678cb4a222af80",
             "type": "mcp_call",
-            "approval_request_id": "mcpr_68d5ef21a0ac81948bcb026033d46e3d0d8a3d97386eda99",
-            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
+            "status": "completed",
+            "approval_request_id": "mcpr_0fbffa2f648a62e4006aa10d1f4a8887d0805f6c9eaa462c34",
+            "arguments": "{\"query\":\"Azure OpenAI Service Microsoft Learn documentation overview quickstart REST SDK content filter\"}",
             "error": null,
-            "name": "roll",
-            "output": "6",
-            "server_label": "dmcp"
+            "name": "microsoft_docs_search",
+            "output": "{\"results\": [{\"title\": \"Content filtering overview\", \"content\": \"# Content filtering overview\\nAzure OpenAI includes a content filtering system that works alongside core models, including image generation models. This system works by running both the prompt and completion through a set of classification models designed to detect and prevent the output of harmful content. The content filtering system detects and takes action on specific categories of potentially harmful content in both input prompts and output completions. Variations in API configurations and application design might affect completions and thus filtering behavior.\\nImportant\\nThe content filtering system isn't applied to prompts and completions processed by the audio models such as Whisper in Azure OpenAI in Azure AI Foundry Models. Learn more about the [Audio models in Azure OpenAI](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/models?tabs=standard-audio#standard-deployment-regional-models-by-endpoint).\\nIn addition to the content filtering system, Azure OpenAI performs monitoring to detect content and/or behaviors that suggest use of the service in a manner that might violate applicable product terms. For more information about understanding and mitigating risks associated with your application, see the [Transparency Note for Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/transparency-note?tabs=text). For more information about how data is processed for content filtering and abuse monitoring, see [Data, privacy, and security for Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/data-privacy#preventing-abuse-and-harmful-content-generation).\\nThe articles in this section provide information about the content filtering categories, the filtering severity levels and their configurability, and API scenarios to be considered in application design and implementation.\\nNote\\nNo prompts or completions are stored for the purposes of content filtering. No prompts or completions are used to train, retrain, or improve the content filtering system without your consent. For more information, see [Data, privacy, and security](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/data-privacy).\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter\"}, {\"title\": \"Use the Azure OpenAI Responses API\", \"content\": \"# Use the Azure OpenAI Responses API\\n## Handle guardrails and content filtering\\n### **REST**\\n```bash\\ncurl -X POST https://YOUR-RESOURCE-NAME.openai.azure.com/openai/v1/responses \\\\\\n  -H \\\"Content-Type: application/json\\\" \\\\\\n  -H \\\"api-key: $AZURE_OPENAI_API_KEY\\\" \\\\\\n  -d '{\\n    \\\"model\\\": \\\"MODEL_NAME\\\",\\n    \\\"input\\\": \\\"This is a test.\\\"\\n  }'\\n```\\nWhen guardrails block the input, the API returns HTTP 400 with the code `content_filter`:\\n```json\\n{\\n  \\\"error\\\": {\\n    \\\"code\\\": \\\"content_filter\\\",\\n    \\\"message\\\": \\\"The response was filtered due to the prompt triggering content management policy.\\\"\\n  }\\n}\\n```\\n### Read guardrail annotations\\nWhen a request succeeds, read the `content_filters` array from the response to inspect the guardrail results for the input and output.\\n### **Python**\\n### **C#**\\n### **JavaScript**\\n### **Java**\\n### **REST**\\n```bash\\ncurl -X POST https://YOUR-RESOURCE-NAME.openai.azure.com/openai/v1/responses \\\\\\n  -H \\\"Content-Type: application/json\\\" \\\\\\n  -H \\\"api-key: $AZURE_OPENAI_API_KEY\\\" \\\\\\n  -d '{\\n    \\\"model\\\": \\\"MODEL_NAME\\\",\\n    \\\"input\\\": \\\"This is a test.\\\"\\n  }'\\n```\\nThe `content_filters` array appears on the response object:\\nTo learn more about guardrail categories and severity levels, see [Guardrails overview](https://learn.microsoft.com/azure/foundry/guardrails/guardrails-overview) and [Work with annotations](https://learn.microsoft.com/azure/foundry/guardrails/how-to-create-guardrails#work-with-annotations).\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/openai/how-to/responses#handle-guardrails-and-content-filtering\"}, {\"title\": \"Work with Azure OpenAI content filtering in a .NET app\", \"content\": \"# Work with Azure OpenAI content filtering in a .NET app\\nThis article shows how to handle content filtering in a .NET app. Azure OpenAI Service includes a content filtering system that works alongside core models. It runs both the prompt and completion through an ensemble of classification models to detect and take action on specific categories of potentially harmful content in both input prompts and output completions. Variations in API configurations and application design might affect completions and thus filtering behavior.\\nFor a deeper exploration of content filtering concepts and concerns, see the [Content Filtering](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter) documentation.\\n## Prerequisites\\n1. An Azure account that has an active subscription. [Create an account for free](https://azure.microsoft.com/pricing/purchase-options/azure-account?cid=msft_learn).\\n2. [.NET SDK](https://dotnet.microsoft.com/download/visual-studio-sdks)\\n3. [Create and deploy an Azure OpenAI Service resource](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource)\", \"contentUrl\": \"https://learn.microsoft.com/dotnet/ai/how-to/content-filtering\"}, {\"title\": \"Work with Azure OpenAI content filtering in a .NET app\", \"content\": \"# Work with Azure OpenAI content filtering in a .NET app\\n## Configure and test the content filter\\nTo use the sample code in this article, you need to create and assign a content filter to your OpenAI model.\\n1. [Create and assign a content filter](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/content-filters) to your provisioned model.\\n2. Add the [`Azure.AI.OpenAI`](https://www.nuget.org/packages/Azure.AI.OpenAI) NuGet package to your project.\\n```dotnetcli\\n dotnet add package Azure.AI.OpenAI\\n```\\n Or, in .NET 10+:\\n```dotnetcli\\n dotnet package add Azure.AI.OpenAI\\n```\\n3. Create a simple chat completion flow in your .NET app using the `AzureOpenAiClient`. Replace the `YOUR_MODEL_ENDPOINT` and `YOUR_MODEL_DEPLOYMENT_NAME` values with your own.\\n```csharp\\n using Azure.AI.OpenAI;\\n using Azure.Identity;\\n using Microsoft.Extensions.AI;\\n\\n IChatClient client =\\n     new AzureOpenAIClient(\\n         new Uri(\\\"YOUR_MODEL_ENDPOINT\\\"),\\n         new DefaultAzureCredential()).GetChatClient(\\\"YOUR_MODEL_DEPLOYMENT_NAME\\\").AsIChatClient();\\n\\n try\\n {\\n     ChatResponse completion = await client.GetResponseAsync(\\\"YOUR_PROMPT\\\");\\n\\n     Console.WriteLine(completion.Messages.Single());\\n }\\n catch (Exception e)\\n {\\n     Console.WriteLine(e.Message);\\n }\\n```\\n4. Replace the `YOUR_PROMPT` placeholder with your own message and run the app to experiment with content filtering results. If you enter a prompt the AI considers unsafe, Azure OpenAI returns a `400 Bad Request` code. The app prints a message in the console similar to the following:\\n```output\\nThe response was filtered due to the prompt triggering Azure OpenAI's content management policy...\\n```\", \"contentUrl\": \"https://learn.microsoft.com/dotnet/ai/how-to/content-filtering#configure-and-test-the-content-filter\"}, {\"title\": \"Azure OpenAI library for TypeScript - 2.0.0\", \"content\": \"# Azure OpenAI library for TypeScript - 2.0.0\\n## Key concepts\\n### Assistants\\nSee [OpenAI's Assistants API overview](https://platform.openai.com/docs/assistants/overview).\\n### Audio transcription/translation and text-to-speech generation\\nSee [OpenAI Capabilities: Speech to text](https://platform.openai.com/docs/guides/speech-to-text/speech-to-text).\\n### Batch\\nSee [OpenAI's Batch API guide](https://platform.openai.com/docs/guides/batch).\\n### Chat completion\\nChat models take a list of messages as input and return a model-generated message as output. Although the chat format is designed to make multi-turn conversations easy, it's also useful for single-turn tasks without any conversation.\\nSee [OpenAI Capabilities: Chat completion](https://platform.openai.com/docs/guides/text-generation/chat-completions-api).\\n### Image generation\\nSee [OpenAI Capabilities: Image generation](https://platform.openai.com/docs/guides/images/introduction).\\n### Files\\nSee [OpenAI's Files API reference](https://platform.openai.com/docs/api-reference/files).\\n### Text embeddings\\nSee [OpenAI Capabilities: Embeddings](https://platform.openai.com/docs/guides/embeddings/embeddings).\\n## Examples\\nThis section provides examples of using the features of the Azure OpenAI Service. For additional examples, checkout the [samples folder](https://github.com/Azure/azure-sdk-for-js/blob/%40azure/openai_2.0.0/sdk/openai/openai/samples).\\n### Analyze Business Data\\nThis TypeScript example generates chat responses to input chat questions about your business data. The business data is provided through an Azure Cognitive Search index. To learn more about how to setup an Azure Cognitive Search index as a data source, see Quickstart: [Chat with Azure OpenAI models using your own data](https://learn.microsoft.com/en-us/azure/ai-services/openai/use-your-data-quickstart).\\n### Content-filtered Chat Completions\\nAzure OpenAI Service includes a content filtering system that works alongside core models. This system detects and takes action on specific categories of potentially harmful content in both input prompts and output completions. This example shows how to access those content filtering results.\", \"contentUrl\": \"https://learn.microsoft.com/javascript/api/overview/azure/openai-readme?view=azure-node-latest#key-concepts\"}, {\"title\": \"Content filtering annotations\", \"content\": \"# Content filtering annotations\\n## Output\\nThe following code snippet shows how to retrieve annotations when content was filtered:\\n**JavaScript**\\n[Azure OpenAI JavaScript SDK source code & samples](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/openai/openai)\\n**PowerShell**\\nThe `$response` object contains a property named `prompt_filter_results` that contains annotations about the filter results. If you prefer JSON to a .NET object, pipe the output to `ConvertTo-JSON` instead of `Format-List`.\\n```output\\nhate      : @{filtered=False; severity=safe}\\nself_harm : @{filtered=False; severity=safe}\\nsexual    : @{filtered=False; severity=safe}\\nviolence  : @{filtered=False; severity=safe}\\n```\\nFor details on the inference REST API endpoints for Azure OpenAI and how to create Chat and Completions, follow [Azure OpenAI REST API reference guidance](https://learn.microsoft.com/azure/ai-foundry/openai/reference). Annotations are returned for all scenarios when using any preview API version starting from `2023-06-01-preview`, as well as the GA API version `2024-02-01`.\\n## Groundedness\\n### Annotate mode\\nReturns offsets referencing the ungrounded completion content.\\n```json\\n{ \\n\\u2003\\u2003\\\"ungrounded_material\\\": { \\n    \\\"details\\\": [ \\n       { \\n         \\\"completion_end_offset\\\": 127, \\n         \\\"completion_start_offset\\\": 27 \\n       } \\n   ], \\n    \\\"detected\\\": true, \\n    \\\"filtered\\\": false \\n } \\n}\\n```\\n### Filter mode\\nBlocks completion content when ungrounded completion content was detected.\\n```json\\n{ \\\"ungrounded_material\\\": { \\n    \\\"detected\\\": true, \\n    \\\"filtered\\\": true \\n  } \\n}\\n```\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter-annotations#output\"}, {\"title\": \"Use the Azure OpenAI Responses API\", \"content\": \"# Use the Azure OpenAI Responses API\\n## Handle guardrails and content filtering\\nGuardrails (content filters) are applied at the deployment level and run automatically on every Responses API call, so they protect both the input you send and the output the model generates. You configure guardrails separately. For more information, see [Configure guardrails and controls](https://learn.microsoft.com/azure/foundry/guardrails/how-to-create-guardrails). This section shows how to detect and handle guardrail results when you call the Responses API.\\nThe Responses API surfaces guardrail results differently from chat completions. Instead of the `prompt_filter_results` and `content_filter_results` fields that chat completions return, the response object includes a top-level `content_filters` array. Each entry describes one filter result.\\n| Field | Description| \\n|  --- | ---  |\\n| `blocked` | Whether the content was blocked. |\\n| `source_type` | Whether the result applies to the `prompt` (input) or the `completion` (output). |\\n| `content_filter_results` | The category results, such as `hate`, `sexual`, `violence`, and `self_harm` with severity levels, plus optional categories such as `jailbreak`, `indirect_attack`, `protected_material_text`, and `protected_material_code`. |\\n| `content_filter_offsets` | The character offsets that the result applies to. |\\n\\nNote\\nThe `content_filters` array is a Microsoft Foundry extension that isn't part of the base OpenAI response schema, so the SDKs don't expose a typed property for it. Read it as a raw or extra field, as shown in the following examples.\\n### Detect blocked input\\nWhen guardrails block your input, the API returns an HTTP 400 error with the code `content_filter`. Catch this error to handle blocked prompts gracefully.\\n### **Python**\\n### **C#**\\n### **JavaScript**\\n### **Java**\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry/openai/how-to/responses#handle-guardrails-and-content-filtering\"}, {\"title\": \"Content filtering overview\", \"content\": \"# Content filtering overview\\n## Content filter types\\nThe content filtering system integrated in the Azure OpenAI contains:\\n1. Neural multi-class classification models aimed at detecting and filtering harmful content; the models cover four categories (hate, sexual, violence, and self-harm) across four severity levels (safe, low, medium, and high). Content detected at the 'safe' severity level is labeled in annotations but isn't subject to filtering and isn't configurable.\\n2. Other optional classification models aimed at detecting jailbreak risk and known content for text and code; these models are binary classifiers that flag whether user or model behavior qualifies as a jailbreak attack or match to known text or source code. The use of these models is optional, but use of protected material code model may be required for Customer Copyright Commitment coverage.\\n## Filter categories\\nThe following table summarizes the risk categories supported by Azure OpenAI's content filtering system.\\n| Category | Description| \\n|  --- | ---  |\\n| [Hate and Fairness](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-severity-levels) | Hate and fairness-related harms refer to any content that attacks or uses discriminatory language with reference to a person or Identity group based on certain differentiating attributes of these groups. This includes, but is not limited to:<br>- Race, ethnicity, nationality<br>- Gender identity groups and expression<br>- Sexual orientation<br>- Religion<br>- Personal appearance and body size<br>- Disability status<br>- Harassment and bullying |\\n| [Sexual](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-severity-levels) | Sexual describes language related to anatomical organs and genitals, romantic relationships and sexual acts, acts portrayed in erotic or affectionate terms, including those portrayed as an assault or a forced sexual violent act against one\\u2019s will. This includes but is not limited to:<br>- Vulgar content<br>- Prostitution<br>- Nudity and Pornography<br>- Abuse<br>- Child exploitation, child abuse, child grooming |\\n| [Violence](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-severity-levels) | Violence describes language related to physical actions intended to hurt, injure, damage, or kill someone or something; describes weapons, guns and related entities. This includes, but isn't limited to: <br>- Weapons<br>- Bullying and intimidation<br>- Terrorist and violent extremism<br>- Stalking |\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter#content-filter-types\"}, {\"title\": \"Quickstart: Generate images with Azure OpenAI in Azure AI Foundry Models (programming-language-typescript)\", \"content\": \"# Quickstart: Generate images with Azure OpenAI in Azure AI Foundry Models (programming-language-typescript)\\n## Output\\nThe URL of the generated image is printed to the console.\\n```console\\n== Batch Image Generation ==\\nImage generation result URL: <SAS URL>\\nImage generation result URL: <SAS URL>\\n```\\nNote\\nThe Image APIs come with a content moderation filter. If the service recognizes your prompt as harmful content, it won't return a generated image. For more information, see the [content filter](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter) article.\\n## Clean up resources\\nIf you want to clean up and remove an Azure OpenAI resource, you can delete the resource. Before deleting the resource, you must first delete any deployed models.\\n1. [Azure portal](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azportal#clean-up-resources)\\n2. [Azure CLI](https://learn.microsoft.com/azure/ai-services/multi-service-resource?pivots=azcli#clean-up-resources)\\n# Quickstart: Generate images with Azure OpenAI in Azure AI Foundry Models (programming-language-go)\\nNote\\nThe image generation API creates an image from a text prompt. It doesn't edit or create variations from existing images.\\nUse this guide to get started generating images with the Azure OpenAI SDK for Go.\\n[Library source code](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai) | [Package](https://pkg.go.dev/github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai) | [Samples](https://github.com/Azure/azure-sdk-for-go/tree/main/sdk/ai/azopenai)\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/dall-e-quickstart#output\"}, {\"title\": \"Content filtering overview\", \"content\": \"# Content filtering overview\\n## Filter categories\\n| Category | Description| \\n|  --- | ---  |\\n| [Self-Harm](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-severity-levels) | Self-harm describes language related to physical actions intended to purposely hurt, injure, damage one\\u2019s body or kill oneself. This includes, but isn't limited to: <br>- Eating Disorders<br>- Bullying and intimidation |\\n| [User Prompt Attacks](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-prompt-shields) | User prompt attacks are User Prompts designed to provoke the Generative AI model into exhibiting behaviors it was trained to avoid or to break the rules set in the System Message. Such attacks can vary from intricate roleplay to subtle subversion of the safety objective. |\\n| [Indirect Attacks](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-prompt-shields) | Indirect Attacks, also referred to as Indirect Prompt Attacks or Cross-Domain Prompt Injection Attacks, are a potential vulnerability where third parties place malicious instructions inside of documents that the Generative AI system can access and process. Requires [document embedding and formatting](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter-document-embedding). |\\n| [Groundedness](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-groundedness)^2^ | Groundedness detection flags whether the text responses of large language models (LLMs) are grounded in the source materials provided by the users. Ungrounded material refers to instances where the LLMs produce information that is non-factual or inaccurate from what was present in the source materials. Requires [document embedding and formatting](https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter-document-embedding). |\\n| [Protected Material for Text](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-protected-material)^1^ | Protected material text describes known text content (for example, song lyrics, articles, recipes, and selected web content) that can be outputted by large language models. |\\n| [Protected Material for Code](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/content-filter-protected-material) | Protected material code describes source code that matches a set of source code from public repositories, which can be outputted by large language models without proper citation of source repositories. |\\n\\n^1^ If you're an owner of text material and want to submit text content for protection, [file a request](https://aka.ms/protectedmaterialsform).\\n^2^ Not available in non-streaming scenarios; only available for streaming scenarios. The following regions support Groundedness Detection: Central US, East US, France Central, and Canada East\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/concepts/content-filter#filter-categories\"}]}",
+            "server_label": "microsoft-learn"
           },
           {
-            "id": "msg_68d5ef23e7e08194bdb3c8b847cafce30d8a3d97386eda99",
-            "type": "message",
-            "status": "completed",
-            "content": [
-              {
-                "type": "output_text",
-                "annotations": [],
-                "logprobs": [],
-                "text": "6"
-              }
-            ],
-            "role": "assistant"
+            "id": "rs_0fbffa2f648a62e4006aa10d210cfc87d0a3c02f96bb5fefde",
+            "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
+            "summary": []
+          },
+          {
+            "id": "mcpr_0fbffa2f648a62e4006aa10d2222f487d087381118d9d41834",
+            "type": "mcp_approval_request",
+            "arguments": "{\"query\":\"Azure OpenAI Service overview site:learn.microsoft.com azure ai foundry openai quickstart reference SDK REST\"}",
+            "name": "microsoft_docs_search",
+            "server_label": "microsoft-learn"
           }
         ],
         "parallel_tool_calls": true,
-        "previous_response_id": "resp_68d5ef1c9f8881948abec8e8bd4254520d8a3d97386eda99",
+        "presence_penalty": 0.0,
+        "previous_response_id": "resp_0fbffa2f648a62e4006aa10d1bb60c87d08adfa6cd4d63e3cb",
         "prompt_cache_key": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": "current_turn",
           "effort": "medium",
+          "mode": "standard",
           "summary": null
         },
         "safety_identifier": null,
@@ -284,6 +380,24 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "mcp",
@@ -293,29 +407,30 @@
               "always": {
                 "read_only": null,
                 "tool_names": [
-                  "roll"
+                  "microsoft_docs_search"
                 ]
               },
               "never": null
             },
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp"
           }
         ],
         "top_logprobs": 0,
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 425,
+          "input_tokens": 6017,
           "input_tokens_details": {
-            "cached_tokens": 0
+            "cache_write_tokens": 0,
+            "cached_tokens": 1152
           },
-          "output_tokens": 5,
+          "output_tokens": 137,
           "output_tokens_details": {
-            "reasoning_tokens": 0
+            "reasoning_tokens": 64
           },
-          "total_tokens": 430
+          "total_tokens": 6154
         },
         "user": null,
         "metadata": {}
@@ -323,6 +438,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

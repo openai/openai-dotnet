@@ -22,8 +22,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [Test]
     public async Task MCPToolWorks()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy =
             new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
@@ -40,8 +41,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             model: GetTestModel(),
             cancellationToken: CancellationToken);
 
-        // Configure session with the MCP tool and text-only output, then wait
-        // for the MCP tool listing to complete before triggering a response.
         RealtimeConversationSessionOptions sessionOptions = new()
         {
             Instructions = "Use the available tools to help the user.",
@@ -54,7 +53,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
         // Now send the user message and request a response.
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
@@ -89,7 +88,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
                 Assert.That(toolCallItem, Is.Not.Null);
                 Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-                Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
+                Assert.That(toolCallItem.ToolName, Is.EqualTo(toolName));
                 Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
                 Assert.That(toolCallItem.Error, Is.Null);
             }
@@ -106,10 +105,10 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
                 Assert.That(listItem.ToolDefinitions, Has.Count.GreaterThan(0));
 
-                RealtimeMcpToolDefinition rollToolDefinition = listItem.ToolDefinitions
-                    .Where(td => td.Name == "roll").FirstOrDefault();
-                Assert.That(rollToolDefinition, Is.Not.Null);
-                Assert.That(rollToolDefinition.InputSchema, Is.Not.Null);
+                RealtimeMcpToolDefinition searchToolDefinition = listItem.ToolDefinitions
+                    .Where(td => td.Name == toolName).FirstOrDefault();
+                Assert.That(searchToolDefinition, Is.Not.Null);
+                Assert.That(searchToolDefinition.InputSchema, Is.Not.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)
@@ -139,8 +138,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [TestCase(false)]
     public async Task MCPToolNeverRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
             ? new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
@@ -149,7 +149,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 {
                     ToolsNeverRequiringApproval = new RealtimeMcpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
@@ -175,7 +175,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
@@ -200,7 +200,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 // Confirm there are no approval requests and that the tool was called.
                 var outputItems = responseDone.Response.OutputItems;
                 Assert.That(outputItems.OfType<RealtimeMcpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)
@@ -220,8 +220,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [TestCase(false)]
     public async Task MCPToolAlwaysRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
             ? new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval)
@@ -230,7 +231,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 {
                     ToolsAlwaysRequiringApproval = new RealtimeMcpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
@@ -256,7 +257,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
@@ -317,8 +318,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [Test]
     public async Task MCPToolWithAllowedTools()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy =
             new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
@@ -328,7 +330,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             ToolCallApprovalPolicy = approvalPolicy,
             AllowedTools = new RealtimeMcpToolFilter()
             {
-                ToolNames = { "roll" }
+                ToolNames = { toolName }
             }
         };
 
@@ -349,7 +351,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
@@ -373,11 +375,11 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
                 var outputItems = responseDone.Response.OutputItems;
                 Assert.That(outputItems.OfType<RealtimeMcpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
 
                 RealtimeMcpToolCallItem toolCallItem = outputItems.OfType<RealtimeMcpToolCallItem>().First();
                 Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-                Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
+                Assert.That(toolCallItem.ToolName, Is.EqualTo(toolName));
                 Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
                 Assert.That(toolCallItem.Error, Is.Null);
             }

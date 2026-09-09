@@ -6,21 +6,21 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "362",
+        "Content-Length": "438",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-5",
         "tools": [
           {
             "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp",
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
             "allowed_tools": {
               "tool_names": [
-                "roll"
+                "microsoft_docs_search"
               ]
             },
             "require_approval": "never"
@@ -33,7 +33,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Roll 2d4+1"
+                "text": "Search Microsoft Learn documentation for the OpenAI service."
               }
             ]
           }
@@ -41,83 +41,103 @@
       },
       "StatusCode": 200,
       "ResponseHeaders": {
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f13a39ff576a0-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3848c542b702b03-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3099",
+        "Content-Length": "26234",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:44:38 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "5840",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "5850",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39993499",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "9ms",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5f000a8808190a33a81f4b42b340e0a895ebbc14105a4",
+        "id": "resp_0918cb9c38da2ada006aa10d8d87e487d098af418e73b25dcb",
         "object": "response",
-        "created_at": 1758851072,
+        "created_at": 1788939661,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1788939673,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
         "model": "gpt-5-2025-08-07",
+        "moderation": null,
         "output": [
           {
-            "id": "mcpl_68d5f000bb688190a13ce5309556b9a10a895ebbc14105a4",
+            "id": "mcpl_0918cb9c38da2ada006aa10d8d9d6087d0bc91ef87748e8fd2",
             "type": "mcp_list_tools",
-            "server_label": "dmcp",
+            "server_label": "microsoft-learn",
             "tools": [
               {
                 "annotations": {
-                  "read_only": false
+                  "read_only": true
                 },
-                "description": "\n  Given a string of text describing a dice roll in \n  Dungeons and Dragons, provide a result of the roll.\n\n  Example input: 2d6 + 1d4\n  Example output: 14\n",
+                "description": "Search official Microsoft/Azure documentation to find the most relevant and trustworthy content for a user's query. This tool returns up to 10 high-quality content chunks (each max 500 tokens), extracted from Microsoft Learn and other official sources. Each result includes the article title, URL, and a self-contained content excerpt optimized for fast retrieval and reasoning. Always use this tool to quickly ground your answers in accurate, first-party Microsoft/Azure knowledge.\n\n## Follow-up Pattern\nTo ensure completeness, use microsoft_docs_fetch when high-value pages are identified by search. The fetch tool complements search by providing the full detail. This is a required step for comprehensive results.",
                 "input_schema": {
-                  "$schema": "https://json-schema.org/draft/2020-12/schema",
                   "type": "object",
                   "properties": {
-                    "diceRollExpression": {
-                      "type": "string"
+                    "query": {
+                      "description": "a query or topic about Microsoft/Azure products, services, platforms, developer tools, frameworks, or APIs",
+                      "type": "string",
+                      "default": null
                     }
-                  },
-                  "required": [
-                    "diceRollExpression"
-                  ],
-                  "additionalProperties": false
+                  }
                 },
-                "name": "roll"
+                "name": "microsoft_docs_search"
               }
             ]
           },
           {
-            "id": "rs_68d5f002524881908e75c8f2a3520a510a895ebbc14105a4",
+            "id": "rs_0918cb9c38da2ada006aa10d8e333c87d0842569cf75d9f973",
             "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
             "summary": []
           },
           {
-            "id": "mcp_68d5f0047f888190af0f9ac70f7b76a90a895ebbc14105a4",
+            "id": "mcp_0918cb9c38da2ada006aa10d8fc57487d0b9776f8a0e7f2a9f",
             "type": "mcp_call",
+            "status": "completed",
             "approval_request_id": null,
-            "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
+            "arguments": "{\"query\":\"Azure OpenAI Service documentation\"}",
             "error": null,
-            "name": "roll",
-            "output": "9",
-            "server_label": "dmcp"
+            "name": "microsoft_docs_search",
+            "output": "{\"results\": [{\"title\": \"Intern project using Azure OpenAI - Microsoft Q&A\", \"content\": \"Intern project using Azure OpenAI - Microsoft Q&A Hello, I'm an intern on the Python services team. My project revolves around using the Azure OpenAI service. I was wondering if anyone with expertise using this service could meet with me this week to talk more about its capabilities? Or point me in the right direction to get the help I'm looking for. Thanks!\\n##Accepted Answers:\\nHi\\nAngel Alvarado Reyes\\n\\u2022\\nAzure Open AI documentation is robust and categorized into multiple section\\nMain Categories on the Azure OpenAI Documentation Site\\nOverview\\nIntroduction to Azure OpenAI Service\\nKey capabilities and use cases\\nSupported models (e.g., GPT-4, GPT-3.5, DALL\\u00b7E, Whisper)\\nQuickstarts\\nHow to get started with the service\\nSample apps and setup guides\\nHow-to Guides\\nDeploying models\\nUsing your own data (RAG)\\nPrompt engineering\\nFine-tuning models\\nConcepts\\nModel lifecycle\\nResponsible AI\\nContent filtering\\nAuthentication and authorization\\nTutorials\\nEnd-to-end examples\\nIntegration with other Azure services\\nReference\\nREST API reference\\nSDKs for Python, .NET, Java, JavaScript\\nResources\\nPricing\\nQuotas and limits\\nRegional availability\\nYou can start from\\nQuickstarts section\\nand gradually deep dive into all concepts like assistants, video generation, embedding, api_version etc\\nfrom concepts section.\\nAzure OpenAI documentation\\nFeel free to leverage windows copilot to understand any new concept or procure any sample usage based on documentation.\\nYou can post your queries here on forum if you are facing difficulties while developing any POCs.\\nThank you.\", \"contentUrl\": \"https://learn.microsoft.com/answers/a/2060260\"}, {\"title\": \"Azure OpenAI library for TypeScript - 2.0.0\", \"content\": \"# Azure OpenAI library for TypeScript - 2.0.0\\nThe [Azure OpenAI Service](https://azure.microsoft.com/products/ai-services/openai-service) provides access to advanced AI models for conversational, content creation, and data grounding use cases. The Azure OpenAI library for TypeScript is a companion to the official [OpenAI client library for JavaScript](https://www.npmjs.com/package/openai). The Azure OpenAI library provides additional strongly typed support for request and response models specific to Azure OpenAI scenarios.\\n#### ***Migrating from @azure/openai version 1 advisory* \\u26a0\\ufe0f**\\nCheckout the [Migration Guide](https://github.com/Azure/azure-sdk-for-js/blob/%40azure/openai_2.0.0/sdk/openai/openai/MIGRATION.md) for detailed instructions on how to update your application code from version 1.x of the Azure OpenAI client library to the `openai` library.\\nKey links:\\n1. [Source code](https://github.com/Azure/azure-sdk-for-js/blob/%40azure/openai_2.0.0/sdk/openai/openai/)\\n2. [Package (NPM)](https://www.npmjs.com/package/@azure/openai)\\n3. [API reference documentation](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-readme)\\n4. [Product documentation](https://azure.microsoft.com/products/ai-services/openai-service)\\n5. [Samples](https://github.com/Azure/azure-sdk-for-js/blob/%40azure/openai_2.0.0/sdk/openai/openai/samples)\", \"contentUrl\": \"https://learn.microsoft.com/javascript/api/overview/azure/openai-readme?view=azure-node-latest\"}, {\"title\": \"Generate code with Azure OpenAI Service - Training\", \"content\": \"# Generate code with Azure OpenAI Service\\r\\n\\r\\n- Module\\r\\n- 7 Units\\r\\n\\r\\n Intermediate \\r\\n\\r\\n AI Engineer \\r\\n\\r\\n Developer \\r\\n\\r\\n Solution Architect \\r\\n\\r\\n Student \\r\\n\\r\\n Azure OpenAI Service \\r\\n\\r\\n Azure \\r\\n\\r\\nThis module shows engineers how to use the Azure OpenAI Service to generate and improve code.\\r\\n\\r\\n##  Learning objectives \\r\\n\\r\\nBy the end of this module, you'll be able to:\\r\\n\\r\\n- Use natural language prompts to write code\\r\\n- Build unit tests and understand complex code with AI models\\r\\n- Generate comments and documentation for existing code\\r\\n\\r\\n## Prerequisites\\r\\n\\r\\n- Familiarity with Azure and the Azure portal.\\r\\n- An understanding of generative AI. You can learn more with [Introduction to Azure OpenAI Service](https://learn.microsoft.com/en-us/training/modules/explore-azure-openai/).\\r\\n- Experience programming with C# or Python. If you have no previous programming experience, we recommend you complete the [Take your first steps with C#](https://learn.microsoft.com/en-us/training/paths/csharp-first-steps/) or [Take your first steps with Python](https://learn.microsoft.com/en-us/training/paths/python-first-steps/) learning path before starting this one.\\r\\n- Before starting this module, we recommend you complete the previous modules in the [Develop AI solutions with Azure OpenAI](https://learn.microsoft.com/en-us/training/paths/develop-ai-solutions-azure-openai/) learning path.\\r\\n\\r\\n## Get started with Azure\\r\\n\\r\\nChoose the Azure account that's right for you. Pay as you go or try Azure free for up to 30 days. [Sign up.](https://azure.microsoft.com/pricing/purchase-options/azure-account?icid=msft_learn)\\r\\n\\r\\nTake the module assessment\\r\\n\\r\\n Module Assessment Results\\r\\n\\r\\nAssess your understanding of this module. Sign in and answer all questions correctly to earn a pass designation on your profile.\\r\\n\\r\\n- [Introduction](https://learn.microsoft.com/training/modules/generate-code-azure-openai/1-introduction)\\r\\n- [Construct code from natural language](https://learn.microsoft.com/training/modules/generate-code-azure-openai/2-construct-code-natural-language)\\r\\n- [Complete code and assist the development process](https://learn.microsoft.com/training/modules/generate-code-azure-openai/3-complete-code-assist-development)\\r\\n- [Fix bugs and improve your code](https://learn.microsoft.com/training/modules/generate-code-azure-openai/4-fix-bugs-improve-code)\\r\\n- [Exercise - Generate and improve code with Azure OpenAI Service](https://learn.microsoft.com/training/modules/generate-code-azure-openai/5-exercise)\\r\\n- [Module assessment](https://learn.microsoft.com/training/modules/generate-code-azure-openai/6-knowledge-check)\\r\\n- [Summary](https://learn.microsoft.com/training/modules/generate-code-azure-openai/7-summary)\\r\\n\\r\\nTake the module assessment\\r\\n\\r\\n Module Assessment Results\\r\\n\\r\\nAssess your understanding of this module. Sign in and answer all questions correctly to earn a pass designation on your profile.\", \"contentUrl\": \"https://learn.microsoft.com/training/modules/generate-code-azure-openai/\"}, {\"title\": \"Azure OpenAI client library for .NET - version 2.1.0\", \"content\": \"# Azure OpenAI client library for .NET - version 2.1.0\\nThe Azure OpenAI client library for .NET is a companion to the official [OpenAI client library for .NET](https://github.com/openai/openai-dotnet). The Azure OpenAI library configures a client for use with Azure OpenAI and provides additional strongly typed extension support for request and response models specific to Azure OpenAI scenarios.\\nAzure OpenAI is a managed service that allows developers to deploy, tune, and generate content from OpenAI models on Azure resources.\\n[Source code](https://github.com/Azure/azure-sdk-for-net/blob/Azure.AI.OpenAI_2.1.0/sdk/openai/Azure.AI.OpenAI/src) | [Package (NuGet)](https://www.nuget.org/packages/Azure.AI.OpenAI) | [API reference documentation](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/reference) | [Product documentation](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/) | [Samples](https://github.com/Azure/azure-sdk-for-net/blob/Azure.AI.OpenAI_2.1.0/sdk/openai/Azure.AI.OpenAI/tests/Samples)\", \"contentUrl\": \"https://learn.microsoft.com/dotnet/api/overview/azure/ai.openai-readme?view=azure-dotnet\"}, {\"title\": \"Azure OpenAI client library for Java - version 1.0.0-beta.16\", \"content\": \"# Azure OpenAI client library for Java - version 1.0.0-beta.16\\n## Examples\\nSee sample [Text to Speech](https://github.com/Azure/azure-sdk-for-java/blob/azure-ai-openai_1.0.0-beta.16/sdk/openai/azure-ai-openai/src/samples/java/com/azure/ai/openai/usage/TextToSpeechSample.java) for a complete sample. Please refer to the service documentation for a conceptual discussion of [Text to Speech](https://learn.microsoft.com/en-us/azure/ai-services/openai/text-to-speech-quickstart?tabs=command-line).\\n### File operations\\nThe OpenAI service supports `upload`, `get`, `list`, and `delete` operations for interacting File APIs with OpenAI service.\\nFor a complete sample example, see sample [File Operations](https://github.com/Azure/azure-sdk-for-java/blob/azure-ai-openai_1.0.0-beta.16/sdk/openai/azure-ai-openai/src/samples/java/com/azure/ai/openai/FileOperationsSample.java).\\n### Batch operations\\nThe OpenAI service supports `create`, `get`, `list`, and `delete` operations for interacting Batch APIs with OpenAI service. Use Batch API to send asynchronous groups of requests with 50% lower costs, a separate pool of significantly higher rate limits, and a clear 24-hour turnaround time. The service is ideal for processing jobs that don't require immediate responses.\\n```java\\nString fileId = \\\"{fileId-from-service-side}\\\";\\n// Create a batch\\nBatch batch = client.createBatch(new BatchCreateRequest(\\\"/chat/completions\\\", fileId, \\\"24h\\\"));\\n// Get single file\\nbyte[] fileContent = client.getFileContent(batch.getOutputFileId());\\n// List batches\\nPageableList<Batch> batchPageableList = client.listBatches();\\n// Cancel a batch\\nBatch cancelledBatch = client.cancelBatch(batch.getId());\\n```\\nFor a complete sample example, see sample [Batch Operations](https://github.com/Azure/azure-sdk-for-java/blob/azure-ai-openai_1.0.0-beta.16/sdk/openai/azure-ai-openai/src/samples/java/com/azure/ai/openai/BatchOperationsSample.java).\\n### Structured Outputs\\nStructured Outputs can be enabled by setting the parameter `strict: true` in an API call with either a defined `response format` or `function definitions`.\", \"contentUrl\": \"https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme?view=azure-java-preview#examples\"}, {\"title\": \"Azure OpenAI On Your Data API Reference (classic)\", \"content\": \"# Azure OpenAI On Your Data API Reference (classic)\\n**Applies only to:**![](https://learn.microsoft.com/azure/foundry/media/yes-icon.svg)**Foundry (classic) portal**. This article isn't available for the new Foundry portal. [Learn more about the new portal](https://learn.microsoft.com/azure/foundry/what-is-foundry).\\nNote\\nLinks in this article might open content in the new Microsoft Foundry documentation instead of the Foundry (classic) documentation you're viewing now.\\nImportant\\nAzure OpenAI On Your Data is deprecated and approaching retirement. The service will be retired on October 14, 2026\\nMicrosoft has stopped onboarding new models to Azure OpenAI On Your Data. This feature only supports the following models:\\n1. GPT\\u20114o (versions 2024\\u201105\\u201113, 2024\\u201108\\u201106, and 2024\\u201111\\u201120)\\n2. GPT-4o-mini (version 2024-07-18)\\nWe recommend that you migrate Azure OpenAI On Your Data workloads to [Foundry Agent Service](https://learn.microsoft.com/azure/foundry-classic/agents/overview) with [Foundry IQ](https://learn.microsoft.com/azure/foundry/agents/concepts/what-is-foundry-iq) to retrieve content and generate grounded answers from your data. To get started, see [Connect a Foundry IQ knowledge base](https://learn.microsoft.com/azure/foundry/agents/how-to/foundry-iq-connect).\\nThis article provides reference documentation for Python and REST for the new Azure OpenAI On Your Data API. The latest API version is `2024-05-01-preview`[Swagger spec](https://github.com/Azure/azure-rest-api-specs/tree/main/specification/cognitiveservices/data-plane/AzureOpenAI/inference/preview/2024-05-01-preview).\\nNote\\nSince API version `2024-02-15-preview` we introduced the following breaking changes comparing to earlier API versions:\\n1. The API path is changed from `/extensions/chat/completions` to `/chat/completions`.\\n2. The naming convention of property keys and enum values is changed from camel casing to snake casing. Example: `deploymentName` is changed to `deployment_name`.\\n3. The data source type `AzureCognitiveSearch` is changed to `azure_search`.\\n4. The citations and intent are moved from assistant message's context tool messages to assistant message's context root level with explicit schema defined.\", \"contentUrl\": \"https://learn.microsoft.com/azure/foundry-classic/openai/references/on-your-data\"}, {\"title\": \"Azure OpenAI client library for Java - version 1.0.0-beta.16\", \"content\": \"# Azure OpenAI client library for Java - version 1.0.0-beta.16\\n## Examples\\nFor a complete sample example, see sample [Audio Translation](https://github.com/Azure/azure-sdk-for-java/blob/azure-ai-openai_1.0.0-beta.16/sdk/openai/azure-ai-openai/src/samples/java/com/azure/ai/openai/usage/AudioTranslationSample.java). Please refer to the service documentation for a conceptual discussion of [Whisper](https://learn.microsoft.com/en-us/azure/ai-services/openai/whisper-quickstart?tabs=command-line).\\n### Text completions with images\\nCurrently, only available in OpenAI. For more details please visit the [OpenAI vision documentation page](https://platform.openai.com/docs/guides/vision). By providing image URLs, it is possible to use images along with prompts. For more details see the usage samples for [chat completions with images](https://github.com/Azure/azure-sdk-for-java/blob/azure-ai-openai_1.0.0-beta.16/sdk/openai/azure-ai-openai/src/samples/java/com/azure/ai/openai/usage/GetChatCompletionsVisionSample.java).\\n### Tool calls\\n**Tools** extend chat completions by allowing an assistant to invoke defined functions and other capabilities in the process of fulfilling a chat completions request. To use chat tools, start by defining a function tool:\\n### Text To Speech\\nThe OpenAI service starts supporting `text to speech` with the introduction of `tts` models. The following code snippet shows how to use the service to convert text to speech.\\n```java\\nString deploymentOrModelId = \\\"{azure-open-ai-deployment-model-id}\\\";\\nSpeechGenerationOptions options = new SpeechGenerationOptions(\\n        \\\"Today is a wonderful day to build something people love!\\\",\\n        SpeechVoice.ALLOY);\\nBinaryData speech = client.generateSpeechFromText(deploymentOrModelId, options);\\n// Checkout your generated speech in the file system.\\nPath path = Paths.get(\\\"{your-local-file-path}/speech.wav\\\");\\nFiles.write(path, speech.toBytes());\\n```\", \"contentUrl\": \"https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme?view=azure-java-preview#examples\"}, {\"title\": \"What is Azure OpenAI in Azure AI Foundry Models?\", \"content\": \"# What is Azure OpenAI in Azure AI Foundry Models?\\n## Get started with Azure OpenAI\\nTo get started with Azure OpenAI, you need to create an Azure OpenAI resource in your Azure subscription.\\nStart with the [Create and deploy an Azure OpenAI resource](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource) guide.\\n1. You can create a resource via Azure portal, Azure CLI, or Azure PowerShell.\\n2. When you have an Azure OpenAI resource, you can deploy a model such as GPT-4o.\\n3. When you have a deployed model, you can:\\n3.1. Try out the [Azure AI Foundry portal](https://ai.azure.com/?cid=learnDocs) playgrounds to explore the capabilities of the models.\\n3.2. You can also just start making API calls to the service using the REST API or SDKs.\\nFor example, you can try [real-time audio](https://learn.microsoft.com/azure/ai-foundry/openai/realtime-audio-quickstart) in the playgrounds or via code.\\nNote\\nA Limited Access registration form is required to access some Azure OpenAI models or features. Learn more on the [Azure OpenAI Limited Access page](https://learn.microsoft.com/en-us/azure/ai-foundry/responsible-ai/openai/limited-access).\\n## Comparing Azure OpenAI and OpenAI\\nAzure OpenAI gives customers advanced language AI with OpenAI GPT-4, GPT-3, Codex, GPT-image-1 (preview), DALL-E, speech to text, and text to speech models with the security and enterprise promise of Azure. Azure OpenAI co-develops the APIs with OpenAI, ensuring compatibility and a smooth transition from one to the other.\\nWith Azure OpenAI, customers get the security capabilities of Microsoft Azure while running the same models as OpenAI. Azure OpenAI offers private networking, regional availability, and responsible AI content filtering.\", \"contentUrl\": \"https://learn.microsoft.com/azure/ai-foundry/openai/overview#get-started-with-azure-openai\"}, {\"title\": \"Deploy the Azure OpenAI Service using Bicep\", \"content\": \"# Deploy the Azure OpenAI Service using Bicep\\nImportant\\nAs of January 2026, the AI Shell project is no longer being actively maintained. This project should be considered archived from an engineering standpoint.\\nIn AIShell, the **openai-gpt** agent can be used with a public OpenAI instance or an Azure OpenAI deployment. We recommend using the Azure OpenAI Service because it has additional features and provides better manageability. This article provides the step-by-step instructions to deploy and instance of the Azure OpenAI Service using Bicep.\\nTo use AIShell with the Azure OpenAI Service, you need the following Azure resources:\\n1. An Azure OpenAI Service account - a resource that contains multiple different model deployments.\\n2. An Azure OpenAI Deployment - a model deployment that can be called using an API to generate responses.\\n## Prerequisites\\nBefore you begin, ensure you have the following prerequisites:\\n1. An active Azure subscription\\n2. [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) or [Azure PowerShell](https://learn.microsoft.com/en-us/powershell/azure/install-azure-powershell) installed locally or access to Azure Cloud Shell\\n3. Proper permissions to create resources in your Azure subscription\", \"contentUrl\": \"https://learn.microsoft.com/powershell/utility-modules/aishell/developer/deploy-azure-openai?view=ps-modules\"}, {\"title\": \"Azure OpenAI library for TypeScript - 2.0.0\", \"content\": \"# Azure OpenAI library for TypeScript - 2.0.0\\n## Getting started\\n### Currently supported environments\\n1. [LTS versions of Node.js](https://github.com/nodejs/release#release-schedule)\\n2. Latest versions of Safari, Chrome, Edge, and Firefox.\\n### Prerequisites\\nIf you'd like to use an Azure OpenAI resource, you must have an [Azure subscription](https://azure.microsoft.com/free/dotnet/) and [Azure OpenAI access](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/overview#how-do-i-get-access-to-azure-openai). For more information, see [Quickstart: Get started generating text using Azure OpenAI Service](https://learn.microsoft.com/en-us/azure/cognitive-services/openai/quickstart).\\n### Install both `openai` and `@azure/openai`\\nInstall the Azure OpenAI client library and the OpenAI library for JavaScript with `npm`:\\n```bash\\nnpm install openai @azure/openai\\n```\\n### Create and authenticate a `AzureOpenAI`\\nThere are several ways to authenticate with the Azure OpenAI service and the recommended way is to use Microsoft Entra ID for secure, keyless authentication via the [Azure Identity library](https://learn.microsoft.com/en-us/javascript/api/overview/azure/identity-readme?view=azure-node-latest). To get started:\\n1. Install the [Azure Identity package](https://www.npmjs.com/package/@azure/identity):\\n```bash\\n npm install @azure/identity\\n```\\n2. Create a token provider by calling the `getBearerTokenProvider` with the desired credential type. For example, [DefaultAzureCredential](https://learn.microsoft.com/en-us/javascript/api/@azure/identity/defaultazurecredential?view=azure-node-latest):\\n```js\\n import { DefaultAzureCredential, getBearerTokenProvider } from \\\"@azure/identity\\\";\\n\\n const credential = new DefaultAzureCredential();\\n const scope = \\\"https://cognitiveservices.azure.com/.default\\\";\\n const azureADTokenProvider = getBearerTokenProvider(credential, scope);\\n```\\n3. Create the client by passing in the token provider:\\n```js\\n import { AzureOpenAI } from \\\"openai\\\";\\n\\n const deployment = \\\"Your deployment name\\\";\\n const apiVersion = \\\"2024-10-21\\\";\\n const client = new AzureOpenAI({ azureADTokenProvider, deployment, apiVersion });\\n```\\nGrant access to your Azure OpenAI resource to your trusted entities by following instructions in [How to configure Azure OpenAI Service with Microsoft Entra ID authentication](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/managed-identity).\", \"contentUrl\": \"https://learn.microsoft.com/javascript/api/overview/azure/openai-readme?view=azure-node-latest#getting-started\"}]}",
+            "server_label": "microsoft-learn"
           },
           {
-            "id": "msg_68d5f0061f8c81909ec8a277de34eda70a895ebbc14105a4",
+            "id": "rs_0918cb9c38da2ada006aa10d90aeec87d09b2d6f74e135ab3b",
+            "type": "reasoning",
+            "content": [],
+            "encrypted_content": "Sanitized",
+            "summary": []
+          },
+          {
+            "id": "msg_0918cb9c38da2ada006aa10d96d68487d0b3255074374a09c7",
             "type": "message",
             "status": "completed",
             "content": [
@@ -125,17 +145,21 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "You rolled 9."
+                "text": "Here are relevant Microsoft Learn pages for Azure OpenAI Service:\n\n- What is Azure OpenAI in Azure AI Foundry Models? (overview, getting started)\n  https://learn.microsoft.com/azure/ai-foundry/openai/overview#get-started-with-azure-openai\n\n- Create and deploy an Azure OpenAI resource (how-to)\n  https://learn.microsoft.com/azure/ai-foundry/openai/how-to/create-resource\n\n- Azure OpenAI library for TypeScript/JavaScript (SDK readme, setup, samples)\n  https://learn.microsoft.com/javascript/api/overview/azure/openai-readme?view=azure-node-latest\n\n- Azure OpenAI client library for .NET (SDK readme, links to API reference and samples)\n  https://learn.microsoft.com/dotnet/api/overview/azure/ai.openai-readme?view=azure-dotnet\n\n- Azure OpenAI client library for Java (SDK readme, examples)\n  https://learn.microsoft.com/java/api/overview/azure/ai-openai-readme?view=azure-java-preview\n\n- Training module: Generate code with Azure OpenAI Service\n  https://learn.microsoft.com/training/modules/generate-code-azure-openai/\n\n- Azure OpenAI On Your Data API Reference (classic) – deprecated/retiring; migration guidance to Foundry Agents\n  https://learn.microsoft.com/azure/foundry-classic/openai/references/on-your-data\n\n- Deploy the Azure OpenAI Service using Bicep (AIShell doc; shows required resources)\n  https://learn.microsoft.com/powershell/utility-modules/aishell/developer/deploy-azure-openai?view=ps-modules\n\nWant me to pull details from any of these (for example, quickstarts, REST API reference, model availability, or authentication setup)?"
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": "in_memory",
         "reasoning": {
+          "context": "current_turn",
           "effort": "medium",
+          "mode": "standard",
           "summary": null
         },
         "safety_identifier": null,
@@ -149,35 +173,54 @@
           "verbosity": "medium"
         },
         "tool_choice": "auto",
+        "tool_usage": {
+          "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+              "image_tokens": 0,
+              "text_tokens": 0
+            },
+            "total_tokens": 0
+          },
+          "web_search": {
+            "num_requests": 0
+          }
+        },
         "tools": [
           {
             "type": "mcp",
             "allowed_tools": {
               "read_only": null,
               "tool_names": [
-                "roll"
+                "microsoft_docs_search"
               ]
             },
             "headers": null,
             "require_approval": "never",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "server_description": "A Microsoft Learn MCP server for searching documentation.",
+            "server_label": "microsoft-learn",
+            "server_url": "https://learn.microsoft.com/api/mcp"
           }
         ],
         "top_logprobs": 0,
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 488,
+          "input_tokens": 5526,
           "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
           },
-          "output_tokens": 101,
+          "output_tokens": 1499,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 1024
           },
-          "total_tokens": 589
+          "total_tokens": 7025
         },
         "user": null,
         "metadata": {}
@@ -185,6 +228,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }
