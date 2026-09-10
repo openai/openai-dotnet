@@ -26,15 +26,14 @@ For safety, the example accepts only these two HTTPS origins and the `/v1` base 
 
 ## Run the example
 
-From PowerShell at the repository root, set the environment variables for the
-current process and run the explicit example test:
+Run this live example only when authorized; it sends a real request with API and client-certificate credentials. Load `OPENAI_API_KEY`, `OPENAI_CLIENT_PFX_PATH`, and any required `OPENAI_CLIENT_PFX_PASSWORD` from the environment or an approved secrets manager. Never inline, print, commit, or record real credentials.
+
+From PowerShell at the repository root, select Live mode, independently disable auto-recording, and run the explicit example test:
 
 ```powershell
-$env:OPENAI_API_KEY = "sk-..."
-$env:OPENAI_CLIENT_PFX_PATH = "C:\path\to\client-chain.pfx"
-$env:OPENAI_CLIENT_PFX_PASSWORD = "optional-password"
-
-dotnet test .\examples\OpenAI.Examples.csproj `
+$env:CLIENTMODEL_TEST_MODE = "Live"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./examples/OpenAI.Examples.csproj `
   --framework net10.0 `
   -- NUnit.Where="test == 'OpenAI.Examples.MutualTlsExamples.Example01_MutualTlsAsync'"
 ```
@@ -58,10 +57,12 @@ verify the TLS chain, API key, HTTP request, and deserialized SDK response. They
 also verify that missing or untrusted client credentials fail closed and that
 the certificate-bearing handler does not follow redirects.
 
-Run these deterministic tests from PowerShell:
+Run these deterministic, loopback-only tests from PowerShell:
 
 ```powershell
-dotnet test .\tests\OpenAI.Tests.csproj `
+$env:CLIENTMODEL_TEST_MODE = "Playback"
+$env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
+dotnet test ./tests/OpenAI.Tests.csproj `
   --filter "TestCategory=MutualTls"
 ```
 
