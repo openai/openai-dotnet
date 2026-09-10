@@ -159,7 +159,7 @@ namespace OpenAI.Realtime
                 writer.WriteStartArray();
                 for (int i = 0; i < Tools.Count; i++)
                 {
-                    if (Tools[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -358,37 +358,69 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("client_secret"u8))
             {
+                if (ClientSecret == null)
+                {
+                    return false;
+                }
                 return ClientSecret.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("client_secret"u8.Length)], out value);
             }
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             if (local.StartsWith("tracing"u8))
             {
+                if (Tracing == null)
+                {
+                    return false;
+                }
                 return Tracing.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tracing"u8.Length)], out value);
             }
             if (local.StartsWith("tool_choice"u8))
             {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
                 return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
             }
             if (local.StartsWith("max_output_tokens"u8))
             {
+                if (MaxOutputTokenCount == null)
+                {
+                    return false;
+                }
                 return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
             }
             if (local.StartsWith("truncation"u8))
             {
+                if (Truncation == null)
+                {
+                    return false;
+                }
                 return Truncation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("truncation"u8.Length)], out value);
             }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -405,31 +437,55 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("client_secret"u8))
             {
+                if (ClientSecret == null)
+                {
+                    return false;
+                }
                 ClientSecret.Patch.Set([.. "$"u8, .. local.Slice("client_secret"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tracing"u8))
             {
+                if (Tracing == null)
+                {
+                    return false;
+                }
                 Tracing.Patch.Set([.. "$"u8, .. local.Slice("tracing"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tool_choice"u8))
             {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
                 ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("max_output_tokens"u8))
             {
+                if (MaxOutputTokenCount == null)
+                {
+                    return false;
+                }
                 MaxOutputTokenCount.Patch.Set([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("truncation"u8))
             {
+                if (Truncation == null)
+                {
+                    return false;
+                }
                 Truncation.Patch.Set([.. "$"u8, .. local.Slice("truncation"u8.Length)], value);
                 return true;
             }
@@ -437,7 +493,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -468,7 +532,7 @@ namespace OpenAI.Realtime
             }
             for (int i = 0; i < Tools.Count; i++)
             {
-                if (!Tools[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Tools[i];
                 }

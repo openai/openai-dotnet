@@ -147,6 +147,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("token_limits"u8))
             {
+                if (TokenLimitDetails == null)
+                {
+                    return false;
+                }
                 return TokenLimitDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("token_limits"u8.Length)], out value);
             }
             return false;
@@ -160,6 +164,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("token_limits"u8))
             {
+                if (TokenLimitDetails == null)
+                {
+                    return false;
+                }
                 TokenLimitDetails.Patch.Set([.. "$"u8, .. local.Slice("token_limits"u8.Length)], value);
                 return true;
             }

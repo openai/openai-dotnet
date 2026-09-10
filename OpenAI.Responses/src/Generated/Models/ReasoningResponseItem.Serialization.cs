@@ -98,7 +98,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < SummaryParts.Count; i++)
                 {
-                    if (SummaryParts[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.summary[{i}]")) || SummaryParts[i] != null && SummaryParts[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -201,11 +201,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "summary"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (SummaryParts == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveSummaryPartsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= SummaryParts.Count)
+                {
+                    return false;
+                }
+                if (SummaryParts[index] == null)
                 {
                     return false;
                 }
@@ -224,7 +232,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "summary"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (SummaryParts == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= SummaryParts.Count)
+                {
+                    return false;
+                }
+                if (SummaryParts[index] == null)
                 {
                     return false;
                 }
@@ -255,7 +271,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < SummaryParts.Count; i++)
             {
-                if (!SummaryParts[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.summary[{i}]")) && (SummaryParts[i] == null || !SummaryParts[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return SummaryParts[i];
                 }

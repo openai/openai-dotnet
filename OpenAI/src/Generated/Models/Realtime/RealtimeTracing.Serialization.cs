@@ -65,6 +65,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_tracing"u8))
             {
+                if (CustomTracing == null)
+                {
+                    return false;
+                }
                 return CustomTracing.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("custom_tracing"u8.Length)], out value);
             }
             return false;
@@ -78,6 +82,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_tracing"u8))
             {
+                if (CustomTracing == null)
+                {
+                    return false;
+                }
                 CustomTracing.Patch.Set([.. "$"u8, .. local.Slice("custom_tracing"u8.Length)], value);
                 return true;
             }

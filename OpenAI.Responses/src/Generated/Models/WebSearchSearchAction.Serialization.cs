@@ -117,7 +117,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < Sources.Count; i++)
                 {
-                    if (Sources[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.sources[{i}]")) || Sources[i] != null && Sources[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -219,11 +219,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "sources"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Sources == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveSourcesArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Sources.Count)
+                {
+                    return false;
+                }
+                if (Sources[index] == null)
                 {
                     return false;
                 }
@@ -242,7 +250,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "sources"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Sources == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Sources.Count)
+                {
+                    return false;
+                }
+                if (Sources[index] == null)
                 {
                     return false;
                 }
@@ -273,7 +289,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < Sources.Count; i++)
             {
-                if (!Sources[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.sources[{i}]")) && (Sources[i] == null || !Sources[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Sources[i];
                 }

@@ -65,6 +65,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_truncation"u8))
             {
+                if (CustomTruncation == null)
+                {
+                    return false;
+                }
                 return CustomTruncation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("custom_truncation"u8.Length)], out value);
             }
             return false;
@@ -78,6 +82,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_truncation"u8))
             {
+                if (CustomTruncation == null)
+                {
+                    return false;
+                }
                 CustomTruncation.Patch.Set([.. "$"u8, .. local.Slice("custom_truncation"u8.Length)], value);
                 return true;
             }

@@ -120,7 +120,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < TopLogProbabilities.Count; i++)
                 {
-                    if (TopLogProbabilities[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.top_logprobs[{i}]")) || TopLogProbabilities[i] != null && TopLogProbabilities[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -213,11 +213,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "top_logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (TopLogProbabilities == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveTopLogProbabilitiesArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TopLogProbabilities.Count)
+                {
+                    return false;
+                }
+                if (TopLogProbabilities[index] == null)
                 {
                     return false;
                 }
@@ -236,7 +244,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "top_logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (TopLogProbabilities == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TopLogProbabilities.Count)
+                {
+                    return false;
+                }
+                if (TopLogProbabilities[index] == null)
                 {
                     return false;
                 }
@@ -267,7 +283,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < TopLogProbabilities.Count; i++)
             {
-                if (!TopLogProbabilities[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.top_logprobs[{i}]")) && (TopLogProbabilities[i] == null || !TopLogProbabilities[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return TopLogProbabilities[i];
                 }

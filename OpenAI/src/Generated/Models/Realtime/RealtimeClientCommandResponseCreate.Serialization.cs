@@ -143,6 +143,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("response"u8))
             {
+                if (ResponseOptions == null)
+                {
+                    return false;
+                }
                 return ResponseOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("response"u8.Length)], out value);
             }
             return false;
@@ -156,6 +160,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("response"u8))
             {
+                if (ResponseOptions == null)
+                {
+                    return false;
+                }
                 ResponseOptions.Patch.Set([.. "$"u8, .. local.Slice("response"u8.Length)], value);
                 return true;
             }

@@ -132,6 +132,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("file"u8))
             {
+                if (File == null)
+                {
+                    return false;
+                }
                 return File.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("file"u8.Length)], out value);
             }
             return false;
@@ -145,6 +149,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("file"u8))
             {
+                if (File == null)
+                {
+                    return false;
+                }
                 File.Patch.Set([.. "$"u8, .. local.Slice("file"u8.Length)], value);
                 return true;
             }

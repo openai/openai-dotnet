@@ -136,6 +136,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("url_citation"u8))
             {
+                if (UrlCitation == null)
+                {
+                    return false;
+                }
                 return UrlCitation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("url_citation"u8.Length)], out value);
             }
             return false;
@@ -149,6 +153,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("url_citation"u8))
             {
+                if (UrlCitation == null)
+                {
+                    return false;
+                }
                 UrlCitation.Patch.Set([.. "$"u8, .. local.Slice("url_citation"u8.Length)], value);
                 return true;
             }

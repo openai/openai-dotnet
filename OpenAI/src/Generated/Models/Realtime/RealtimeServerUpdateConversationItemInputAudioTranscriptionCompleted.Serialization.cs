@@ -108,7 +108,7 @@ namespace OpenAI.Realtime
                 writer.WriteStartArray();
                 for (int i = 0; i < Logprobs.Count; i++)
                 {
-                    if (Logprobs[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || Logprobs[i] != null && Logprobs[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -223,17 +223,29 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
             }
             if (local.StartsWith("logprobs"u8))
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveLogprobsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
+                {
+                    return false;
+                }
+                if (Logprobs[index] == null)
                 {
                     return false;
                 }
@@ -250,6 +262,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
                 return true;
             }
@@ -257,7 +273,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
+                {
+                    return false;
+                }
+                if (Logprobs[index] == null)
                 {
                     return false;
                 }
@@ -288,7 +312,7 @@ namespace OpenAI.Realtime
             }
             for (int i = 0; i < Logprobs.Count; i++)
             {
-                if (!Logprobs[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) && (Logprobs[i] == null || !Logprobs[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Logprobs[i];
                 }

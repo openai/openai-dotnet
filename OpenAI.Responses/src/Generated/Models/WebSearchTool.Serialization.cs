@@ -164,10 +164,18 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("filters"u8))
             {
+                if (Filters == null)
+                {
+                    return false;
+                }
                 return Filters.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("filters"u8.Length)], out value);
             }
             if (local.StartsWith("user_location"u8))
             {
+                if (UserLocation == null)
+                {
+                    return false;
+                }
                 return UserLocation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("user_location"u8.Length)], out value);
             }
             return false;
@@ -181,11 +189,19 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("filters"u8))
             {
+                if (Filters == null)
+                {
+                    return false;
+                }
                 Filters.Patch.Set([.. "$"u8, .. local.Slice("filters"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("user_location"u8))
             {
+                if (UserLocation == null)
+                {
+                    return false;
+                }
                 UserLocation.Patch.Set([.. "$"u8, .. local.Slice("user_location"u8.Length)], value);
                 return true;
             }

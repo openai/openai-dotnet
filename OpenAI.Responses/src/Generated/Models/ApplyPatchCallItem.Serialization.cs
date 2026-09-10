@@ -182,6 +182,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("operation"u8))
             {
+                if (Operation == null)
+                {
+                    return false;
+                }
                 return Operation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("operation"u8.Length)], out value);
             }
             return false;
@@ -195,6 +199,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("operation"u8))
             {
+                if (Operation == null)
+                {
+                    return false;
+                }
                 Operation.Patch.Set([.. "$"u8, .. local.Slice("operation"u8.Length)], value);
                 return true;
             }

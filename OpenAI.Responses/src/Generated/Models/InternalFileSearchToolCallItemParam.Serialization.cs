@@ -116,7 +116,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < Results.Count; i++)
                 {
-                    if (Results[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]")) || Results[i] != null && Results[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -208,11 +208,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "results"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Results == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveResultsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Results.Count)
+                {
+                    return false;
+                }
+                if (Results[index] == null)
                 {
                     return false;
                 }
@@ -231,7 +239,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "results"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Results == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Results.Count)
+                {
+                    return false;
+                }
+                if (Results[index] == null)
                 {
                     return false;
                 }
@@ -262,7 +278,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < Results.Count; i++)
             {
-                if (!Results[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.results[{i}]")) && (Results[i] == null || !Results[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Results[i];
                 }

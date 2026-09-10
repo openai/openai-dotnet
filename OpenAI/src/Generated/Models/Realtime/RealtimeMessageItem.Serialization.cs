@@ -108,7 +108,7 @@ namespace OpenAI.Realtime
                 writer.WriteStartArray();
                 for (int i = 0; i < Content.Count; i++)
                 {
-                    if (Content[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || Content[i] != null && Content[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -217,11 +217,19 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Content == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveContentArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
+                {
+                    return false;
+                }
+                if (Content[index] == null)
                 {
                     return false;
                 }
@@ -240,7 +248,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Content == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
+                {
+                    return false;
+                }
+                if (Content[index] == null)
                 {
                     return false;
                 }
@@ -271,7 +287,7 @@ namespace OpenAI.Realtime
             }
             for (int i = 0; i < Content.Count; i++)
             {
-                if (!Content[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) && (Content[i] == null || !Content[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Content[i];
                 }

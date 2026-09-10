@@ -116,7 +116,7 @@ namespace OpenAI.Containers
                 writer.WriteStartArray();
                 for (int i = 0; i < DomainSecrets.Count; i++)
                 {
-                    if (DomainSecrets[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]")) || DomainSecrets[i] != null && DomainSecrets[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -208,11 +208,19 @@ namespace OpenAI.Containers
             {
                 int propertyLength = "domain_secrets"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (DomainSecrets == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveDomainSecretsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= DomainSecrets.Count)
+                {
+                    return false;
+                }
+                if (DomainSecrets[index] == null)
                 {
                     return false;
                 }
@@ -231,7 +239,15 @@ namespace OpenAI.Containers
             {
                 int propertyLength = "domain_secrets"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (DomainSecrets == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= DomainSecrets.Count)
+                {
+                    return false;
+                }
+                if (DomainSecrets[index] == null)
                 {
                     return false;
                 }
@@ -262,7 +278,7 @@ namespace OpenAI.Containers
             }
             for (int i = 0; i < DomainSecrets.Count; i++)
             {
-                if (!DomainSecrets[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]")) && (DomainSecrets[i] == null || !DomainSecrets[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return DomainSecrets[i];
                 }

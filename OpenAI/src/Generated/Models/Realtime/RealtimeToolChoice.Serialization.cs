@@ -65,6 +65,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_tool_choice"u8))
             {
+                if (CustomToolChoice == null)
+                {
+                    return false;
+                }
                 return CustomToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("custom_tool_choice"u8.Length)], out value);
             }
             return false;
@@ -78,6 +82,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_tool_choice"u8))
             {
+                if (CustomToolChoice == null)
+                {
+                    return false;
+                }
                 CustomToolChoice.Patch.Set([.. "$"u8, .. local.Slice("custom_tool_choice"u8.Length)], value);
                 return true;
             }
