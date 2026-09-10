@@ -69,7 +69,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         int conversationItemDoneUpdateCount = 0;
         int responseDoneUpdateCount = 0;
         RealtimeMcpToolCallItem toolCallItem = null;
-        RealtimeMcpToolDefinitionListItem toolDefinitionListItem = null;
 
         await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
@@ -105,7 +104,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolDefinitionListItem listItem })
             {
                 conversationItemDoneUpdateCount++;
-                toolDefinitionListItem = listItem;
 
                 Assert.That(listItem.ToolDefinitions, Has.Count.GreaterThan(0));
 
