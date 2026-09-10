@@ -186,7 +186,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             },
             CancellationToken);
 
-        int conversationItemDoneMcpToolDefinitionListUpdateCount = 0;
         int conversationItemDoneMcpToolApprovalRequestUpdateCount = 0;
         int conversationItemDoneMcpToolCallUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
@@ -196,14 +195,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         {
             if (update is RealtimeServerUpdateConversationItemDone conversationItemDone)
             {
-                if (conversationItemDone.Item is RealtimeMcpToolDefinitionListItem mcpToolDefinitionListItem)
-                {
-                    conversationItemDoneMcpToolDefinitionListUpdateCount++;
-
-                    Assert.That(mcpToolDefinitionListItem.ServerLabel, Is.EqualTo(serverLabel));
-                    Assert.That(mcpToolDefinitionListItem.ToolDefinitions, Has.Count.GreaterThan(0));
-                }
-                else if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
+                if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
                 {
                     conversationItemDoneMcpToolApprovalRequestUpdateCount++;
 
@@ -234,7 +226,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             }
         }
 
-        Assert.That(conversationItemDoneMcpToolDefinitionListUpdateCount, Is.EqualTo(1));
         Assert.That(conversationItemDoneMcpToolApprovalRequestUpdateCount, Is.EqualTo(0));
         Assert.That(conversationItemDoneMcpToolCallUpdateCount, Is.GreaterThanOrEqualTo(1));
         Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThanOrEqualTo(1));
@@ -292,7 +283,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             },
             CancellationToken);
 
-        int conversationItemDoneMcpToolDefinitionListUpdateCount = 0;
         int conversationItemDoneMcpToolApprovalRequestUpdateCount = 0;
         int conversationItemDoneMcpToolCallUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
@@ -302,14 +292,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         {
             if (update is RealtimeServerUpdateConversationItemDone conversationItemDone)
             {
-                if (conversationItemDone.Item is RealtimeMcpToolDefinitionListItem mcpToolDefinitionListItem)
-                {
-                    conversationItemDoneMcpToolDefinitionListUpdateCount++;
-
-                    Assert.That(mcpToolDefinitionListItem.ServerLabel, Is.EqualTo(serverLabel));
-                    Assert.That(mcpToolDefinitionListItem.ToolDefinitions, Has.Count.GreaterThan(0));
-                }
-                else if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
+                if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
                 {
                     conversationItemDoneMcpToolApprovalRequestUpdateCount++;
 
@@ -353,7 +336,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             }
         }
 
-        Assert.That(conversationItemDoneMcpToolDefinitionListUpdateCount, Is.EqualTo(1));
         Assert.That(conversationItemDoneMcpToolApprovalRequestUpdateCount, Is.GreaterThanOrEqualTo(1));
         Assert.That(conversationItemDoneMcpToolCallUpdateCount, Is.GreaterThanOrEqualTo(1));
         Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThanOrEqualTo(1));
