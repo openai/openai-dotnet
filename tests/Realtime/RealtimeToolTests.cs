@@ -190,37 +190,59 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             },
             CancellationToken);
 
+        int conversationItemDoneMcpToolDefinitionListUpdateCount = 0;
+        int conversationItemDoneMcpToolApprovalRequestUpdateCount = 0;
+        int conversationItemDoneMcpToolCallUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
-        int conversationItemDoneUpdateCount = 0;
         int responseDoneUpdateCount = 0;
 
         await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
-            if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolDefinitionListItem })
+            if (update is RealtimeServerUpdateConversationItemDone conversationItemDone)
             {
-                conversationItemDoneUpdateCount++;
+                if (conversationItemDone.Item is RealtimeMcpToolDefinitionListItem mcpToolDefinitionListItem)
+                {
+                    conversationItemDoneMcpToolDefinitionListUpdateCount++;
+
+                    Assert.That(mcpToolDefinitionListItem.ServerLabel, Is.EqualTo(serverLabel));
+                    Assert.That(mcpToolDefinitionListItem.ToolDefinitions, Has.Count.GreaterThan(0));
+                }
+                else if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
+                {
+                    conversationItemDoneMcpToolApprovalRequestUpdateCount++;
+
+                    Assert.Fail("Approvals should not be required.");
+                }
+                else if (conversationItemDone.Item is RealtimeMcpToolCallItem mcpToolCallItem)
+                {
+                    conversationItemDoneMcpToolCallUpdateCount++;
+
+                    Assert.That(mcpToolCallItem.ToolName, Is.EqualTo(toolName));
+                    Assert.That(mcpToolCallItem.ServerLabel, Is.EqualTo(serverLabel));
+                }
+            }
+
+            if (update is RealtimeServerUpdateResponseMcpCallCompleted mcpCallCompleted)
+            {
+                mcpCallCompletedUpdateCount++;
             }
 
             if (update is RealtimeServerUpdateResponseDone responseDone)
             {
                 responseDoneUpdateCount++;
-
-                // Confirm there are no approval requests and that the tool was called.
-                var outputItems = responseDone.Response.OutputItems;
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
             }
 
-            if (update is RealtimeServerUpdateResponseMcpCallCompleted)
+            if (mcpCallCompletedUpdateCount >= 1 && conversationItemDoneMcpToolCallUpdateCount >= 1 && responseDoneUpdateCount >= 1)
             {
-                mcpCallCompletedUpdateCount++;
                 break;
             }
         }
 
-        Assert.That(conversationItemDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(responseDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThan(0));
+        Assert.That(conversationItemDoneMcpToolDefinitionListUpdateCount, Is.EqualTo(1));
+        Assert.That(conversationItemDoneMcpToolApprovalRequestUpdateCount, Is.EqualTo(0));
+        Assert.That(conversationItemDoneMcpToolCallUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(responseDoneUpdateCount, Is.GreaterThanOrEqualTo(1));
     }
 
     [Test]
@@ -275,53 +297,72 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             },
             CancellationToken);
 
-        int approvalRequestUpdateCount = 0;
+        int conversationItemDoneMcpToolDefinitionListUpdateCount = 0;
+        int conversationItemDoneMcpToolApprovalRequestUpdateCount = 0;
+        int conversationItemDoneMcpToolCallUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
-        int conversationItemDoneUpdateCount = 0;
-        int responseDoneWithToolCallCount = 0;
+        int responseDoneUpdateCount = 0;
 
         await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
-            if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolDefinitionListItem })
+            if (update is RealtimeServerUpdateConversationItemDone conversationItemDone)
             {
-                conversationItemDoneUpdateCount++;
-            }
-
-            if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolCallApprovalRequestItem approvalItem })
-            {
-                approvalRequestUpdateCount++;
-
-                // Approve the tool call and request another response.
-                await sessionClient.AddItemAsync(
-                    new RealtimeMcpToolCallApprovalResponseItem(approvalItem.Id, approved: true),
-                    CancellationToken);
-                await sessionClient.StartResponseAsync(
-                    new RealtimeResponseOptions
-                    {
-                        OutputModalities = { RealtimeOutputModality.Text },
-                    },
-                    CancellationToken);
-            }
-
-            if (update is RealtimeServerUpdateResponseDone responseDone)
-            {
-                if (responseDone.Response.OutputItems.OfType<RealtimeMcpToolCallItem>().Any())
+                if (conversationItemDone.Item is RealtimeMcpToolDefinitionListItem mcpToolDefinitionListItem)
                 {
-                    responseDoneWithToolCallCount++;
+                    conversationItemDoneMcpToolDefinitionListUpdateCount++;
+
+                    Assert.That(mcpToolDefinitionListItem.ServerLabel, Is.EqualTo(serverLabel));
+                    Assert.That(mcpToolDefinitionListItem.ToolDefinitions, Has.Count.GreaterThan(0));
+                }
+                else if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
+                {
+                    conversationItemDoneMcpToolApprovalRequestUpdateCount++;
+
+                    Assert.That(approvalItem.ToolName, Is.EqualTo(toolName));
+                    Assert.That(approvalItem.ServerLabel, Is.EqualTo(serverLabel));
+
+                    // Approve the tool call and request another response.
+                    await sessionClient.AddItemAsync(
+                        new RealtimeMcpToolCallApprovalResponseItem(approvalItem.Id, approved: true),
+                        CancellationToken);
+
+                    await sessionClient.StartResponseAsync(
+                        new RealtimeResponseOptions
+                        {
+                            OutputModalities = { RealtimeOutputModality.Text },
+                        },
+                        CancellationToken);
+                }
+                else if (conversationItemDone.Item is RealtimeMcpToolCallItem mcpToolCallItem)
+                {
+                    conversationItemDoneMcpToolCallUpdateCount++;
+
+                    Assert.That(mcpToolCallItem.ToolName, Is.EqualTo(toolName));
+                    Assert.That(mcpToolCallItem.ServerLabel, Is.EqualTo(serverLabel));
                 }
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)
             {
                 mcpCallCompletedUpdateCount++;
+            }
+
+            if (update is RealtimeServerUpdateResponseDone responseDone)
+            {
+                responseDoneUpdateCount++;
+            }
+
+            if (mcpCallCompletedUpdateCount >= 1 && conversationItemDoneMcpToolCallUpdateCount >= 1 && responseDoneUpdateCount >= 2)
+            {
                 break;
             }
         }
 
-        Assert.That(approvalRequestUpdateCount, Is.GreaterThan(0));
-        Assert.That(conversationItemDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(responseDoneWithToolCallCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(approvalRequestUpdateCount));
+        Assert.That(conversationItemDoneMcpToolDefinitionListUpdateCount, Is.EqualTo(1));
+        Assert.That(conversationItemDoneMcpToolApprovalRequestUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(conversationItemDoneMcpToolCallUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(responseDoneUpdateCount, Is.GreaterThanOrEqualTo(2));
     }
 
     [Test]

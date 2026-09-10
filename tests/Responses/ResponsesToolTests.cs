@@ -385,7 +385,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         // Check tool call.
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
-        Assert.That(toolCallItems, Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
         Assert.That(toolCallItem, Is.Not.Null);
@@ -545,7 +545,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         // Confirm there are no approval requests and that the tool was called.
         Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-        Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = response.OutputItems
             .OfType<McpToolCallItem>()
@@ -605,7 +605,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponseResult response2 = await client.CreateResponseAsync(options);
         Assert.That(response2.OutputItems, Has.Count.GreaterThan(0));
-        Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = response2.OutputItems
             .OfType<McpToolCallItem>()
@@ -647,7 +647,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
 
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
-        Assert.That(toolCallItems, Has.Count.GreaterThanOrEqualTo(1));
+        Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
         Assert.That(toolCallItem, Is.Not.Null);
