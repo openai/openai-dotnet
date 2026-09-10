@@ -23,17 +23,27 @@ namespace OpenAI.Files
         public ClientPipeline Pipeline { get; }
 
         [Experimental("OPENAI001")]
-        public virtual ClientResult GetFiles(string purpose, int? limit, string order, string after, RequestOptions options)
+        public virtual CollectionResult GetFiles(string purpose, int? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetFilesRequest(purpose, limit, order, after, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new OpenAIFileClientGetFilesCollectionResult(
+                this,
+                purpose,
+                limit,
+                order,
+                after,
+                options);
         }
 
         [Experimental("OPENAI001")]
-        public virtual async Task<ClientResult> GetFilesAsync(string purpose, int? limit, string order, string after, RequestOptions options)
+        public virtual AsyncCollectionResult GetFilesAsync(string purpose, int? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetFilesRequest(purpose, limit, order, after, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new OpenAIFileClientGetFilesAsyncCollectionResult(
+                this,
+                purpose,
+                limit,
+                order,
+                after,
+                options);
         }
 
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null)
