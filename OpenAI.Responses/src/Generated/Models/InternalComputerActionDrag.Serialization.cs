@@ -88,7 +88,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < Path.Count; i++)
                 {
-                    if (Path[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.path[{i}]")) || Path[i] != null && Path[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -158,11 +158,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "path"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Path == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolvePathArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
+                {
+                    return false;
+                }
+                if (Path[index] == null)
                 {
                     return false;
                 }
@@ -181,7 +189,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "path"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Path == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
+                {
+                    return false;
+                }
+                if (Path[index] == null)
                 {
                     return false;
                 }
@@ -212,7 +228,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < Path.Count; i++)
             {
-                if (!Path[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.path[{i}]")) && (Path[i] == null || !Path[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Path[i];
                 }

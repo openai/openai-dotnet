@@ -175,6 +175,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("input_token_details"u8))
             {
+                if (InputTokenDetails == null)
+                {
+                    return false;
+                }
                 return InputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_token_details"u8.Length)], out value);
             }
             return false;
@@ -188,6 +192,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("input_token_details"u8))
             {
+                if (InputTokenDetails == null)
+                {
+                    return false;
+                }
                 InputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("input_token_details"u8.Length)], value);
                 return true;
             }

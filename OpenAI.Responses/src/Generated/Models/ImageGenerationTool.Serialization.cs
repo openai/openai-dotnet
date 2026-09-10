@@ -291,6 +291,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("input_image_mask"u8))
             {
+                if (InputImageMask == null)
+                {
+                    return false;
+                }
                 return InputImageMask.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_image_mask"u8.Length)], out value);
             }
             return false;
@@ -304,6 +308,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("input_image_mask"u8))
             {
+                if (InputImageMask == null)
+                {
+                    return false;
+                }
                 InputImageMask.Patch.Set([.. "$"u8, .. local.Slice("input_image_mask"u8.Length)], value);
                 return true;
             }

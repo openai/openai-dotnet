@@ -98,7 +98,7 @@ namespace OpenAI.Embeddings
                 writer.WriteStartArray();
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (Items[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -194,17 +194,29 @@ namespace OpenAI.Embeddings
 
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
             }
             if (local.StartsWith("data"u8))
             {
                 int propertyLength = "data"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Items == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveItemsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Items.Count)
+                {
+                    return false;
+                }
+                if (Items[index] == null)
                 {
                     return false;
                 }
@@ -221,6 +233,10 @@ namespace OpenAI.Embeddings
 
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
                 return true;
             }
@@ -228,7 +244,15 @@ namespace OpenAI.Embeddings
             {
                 int propertyLength = "data"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Items == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Items.Count)
+                {
+                    return false;
+                }
+                if (Items[index] == null)
                 {
                     return false;
                 }
@@ -259,7 +283,7 @@ namespace OpenAI.Embeddings
             }
             for (int i = 0; i < Items.Count; i++)
             {
-                if (!Items[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]")) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Items[i];
                 }

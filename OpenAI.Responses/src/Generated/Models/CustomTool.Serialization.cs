@@ -219,6 +219,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("format"u8))
             {
+                if (ToolFormat == null)
+                {
+                    return false;
+                }
                 return ToolFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
             }
             return false;
@@ -232,6 +236,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("format"u8))
             {
+                if (ToolFormat == null)
+                {
+                    return false;
+                }
                 ToolFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
                 return true;
             }

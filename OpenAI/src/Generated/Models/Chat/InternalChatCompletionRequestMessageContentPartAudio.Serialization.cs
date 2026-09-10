@@ -132,6 +132,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("input_audio"u8))
             {
+                if (InputAudio == null)
+                {
+                    return false;
+                }
                 return InputAudio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_audio"u8.Length)], out value);
             }
             return false;
@@ -145,6 +149,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("input_audio"u8))
             {
+                if (InputAudio == null)
+                {
+                    return false;
+                }
                 InputAudio.Patch.Set([.. "$"u8, .. local.Slice("input_audio"u8.Length)], value);
                 return true;
             }

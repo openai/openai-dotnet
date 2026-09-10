@@ -65,6 +65,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_policy"u8))
             {
+                if (CustomPolicy == null)
+                {
+                    return false;
+                }
                 return CustomPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("custom_policy"u8.Length)], out value);
             }
             return false;
@@ -78,6 +82,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("custom_policy"u8))
             {
+                if (CustomPolicy == null)
+                {
+                    return false;
+                }
                 CustomPolicy.Patch.Set([.. "$"u8, .. local.Slice("custom_policy"u8.Length)], value);
                 return true;
             }

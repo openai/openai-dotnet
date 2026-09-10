@@ -98,7 +98,7 @@ namespace OpenAI.Realtime
                 writer.WriteStartArray();
                 for (int i = 0; i < ToolDefinitions.Count; i++)
                 {
-                    if (ToolDefinitions[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || ToolDefinitions[i] != null && ToolDefinitions[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -180,11 +180,19 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolDefinitions == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolDefinitionsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
+                {
+                    return false;
+                }
+                if (ToolDefinitions[index] == null)
                 {
                     return false;
                 }
@@ -203,7 +211,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolDefinitions == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
+                {
+                    return false;
+                }
+                if (ToolDefinitions[index] == null)
                 {
                     return false;
                 }
@@ -234,7 +250,7 @@ namespace OpenAI.Realtime
             }
             for (int i = 0; i < ToolDefinitions.Count; i++)
             {
-                if (!ToolDefinitions[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) && (ToolDefinitions[i] == null || !ToolDefinitions[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolDefinitions[i];
                 }

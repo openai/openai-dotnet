@@ -93,7 +93,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < Output.Count; i++)
                 {
-                    if (Output[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) || Output[i] != null && Output[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -235,21 +235,37 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("agent"u8))
             {
+                if (Agent == null)
+                {
+                    return false;
+                }
                 return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
             }
             if (local.StartsWith("caller"u8))
             {
+                if (Caller == null)
+                {
+                    return false;
+                }
                 return Caller.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("caller"u8.Length)], out value);
             }
             if (local.StartsWith("output"u8))
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Output == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveOutputArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Output.Count)
+                {
+                    return false;
+                }
+                if (Output[index] == null)
                 {
                     return false;
                 }
@@ -266,11 +282,19 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("agent"u8))
             {
+                if (Agent == null)
+                {
+                    return false;
+                }
                 Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("caller"u8))
             {
+                if (Caller == null)
+                {
+                    return false;
+                }
                 Caller.Patch.Set([.. "$"u8, .. local.Slice("caller"u8.Length)], value);
                 return true;
             }
@@ -278,7 +302,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Output == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Output.Count)
+                {
+                    return false;
+                }
+                if (Output[index] == null)
                 {
                     return false;
                 }
@@ -309,7 +341,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < Output.Count; i++)
             {
-                if (!Output[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) && (Output[i] == null || !Output[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Output[i];
                 }

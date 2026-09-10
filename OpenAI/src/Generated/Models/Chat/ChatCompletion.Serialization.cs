@@ -106,7 +106,7 @@ namespace OpenAI.Chat
                 writer.WriteStartArray();
                 for (int i = 0; i < Choices.Count; i++)
                 {
-                    if (Choices[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) || Choices[i] != null && Choices[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -258,17 +258,29 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
             }
             if (local.StartsWith("choices"u8))
             {
                 int propertyLength = "choices"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Choices == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveChoicesArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
+                {
+                    return false;
+                }
+                if (Choices[index] == null)
                 {
                     return false;
                 }
@@ -285,6 +297,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
                 return true;
             }
@@ -292,7 +308,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "choices"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Choices == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Choices.Count)
+                {
+                    return false;
+                }
+                if (Choices[index] == null)
                 {
                     return false;
                 }
@@ -323,7 +347,7 @@ namespace OpenAI.Chat
             }
             for (int i = 0; i < Choices.Count; i++)
             {
-                if (!Choices[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.choices[{i}]")) && (Choices[i] == null || !Choices[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Choices[i];
                 }

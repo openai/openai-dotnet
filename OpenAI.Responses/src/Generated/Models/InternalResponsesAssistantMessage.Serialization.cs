@@ -88,7 +88,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < InternalContent.Count; i++)
                 {
-                    if (InternalContent[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || InternalContent[i] != null && InternalContent[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -186,11 +186,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (InternalContent == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveInternalContentArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InternalContent.Count)
+                {
+                    return false;
+                }
+                if (InternalContent[index] == null)
                 {
                     return false;
                 }
@@ -209,7 +217,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (InternalContent == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InternalContent.Count)
+                {
+                    return false;
+                }
+                if (InternalContent[index] == null)
                 {
                     return false;
                 }
@@ -240,7 +256,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < InternalContent.Count; i++)
             {
-                if (!InternalContent[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) && (InternalContent[i] == null || !InternalContent[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return InternalContent[i];
                 }

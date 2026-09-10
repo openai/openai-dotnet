@@ -132,6 +132,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("image_url"u8))
             {
+                if (ImageUrl == null)
+                {
+                    return false;
+                }
                 return ImageUrl.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("image_url"u8.Length)], out value);
             }
             return false;
@@ -145,6 +149,10 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("image_url"u8))
             {
+                if (ImageUrl == null)
+                {
+                    return false;
+                }
                 ImageUrl.Patch.Set([.. "$"u8, .. local.Slice("image_url"u8.Length)], value);
                 return true;
             }

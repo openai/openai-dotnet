@@ -99,7 +99,7 @@ namespace OpenAI.Chat
                 writer.WriteStartArray();
                 for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    if (ToolCalls[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) || ToolCalls[i] != null && ToolCalls[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -229,21 +229,37 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("audio"u8))
             {
+                if (Audio == null)
+                {
+                    return false;
+                }
                 return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             if (local.StartsWith("function_call"u8))
             {
+                if (FunctionCall == null)
+                {
+                    return false;
+                }
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolCalls == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolCallsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
+                {
+                    return false;
+                }
+                if (ToolCalls[index] == null)
                 {
                     return false;
                 }
@@ -260,11 +276,19 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("audio"u8))
             {
+                if (Audio == null)
+                {
+                    return false;
+                }
                 Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("function_call"u8))
             {
+                if (FunctionCall == null)
+                {
+                    return false;
+                }
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
                 return true;
             }
@@ -272,7 +296,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "tool_calls"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolCalls == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolCalls.Count)
+                {
+                    return false;
+                }
+                if (ToolCalls[index] == null)
                 {
                     return false;
                 }
@@ -303,7 +335,7 @@ namespace OpenAI.Chat
             }
             for (int i = 0; i < ToolCalls.Count; i++)
             {
-                if (!ToolCalls[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_calls[{i}]")) && (ToolCalls[i] == null || !ToolCalls[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolCalls[i];
                 }

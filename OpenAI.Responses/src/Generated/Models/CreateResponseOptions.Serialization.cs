@@ -188,7 +188,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < Tools.Count; i++)
                 {
-                    if (Tools[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || Tools[i] != null && Tools[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -221,7 +221,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < InputItems.Count; i++)
                 {
-                    if (InputItems[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) || InputItems[i] != null && InputItems[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -641,25 +641,45 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
+                if (ReasoningOptions == null)
+                {
+                    return false;
+                }
                 return ReasoningOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
             }
             if (local.StartsWith("text"u8))
             {
+                if (TextOptions == null)
+                {
+                    return false;
+                }
                 return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
             }
             if (local.StartsWith("conversation"u8))
             {
+                if (ConversationOptions == null)
+                {
+                    return false;
+                }
                 return ConversationOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
             }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -669,11 +689,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "input"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (InputItems == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveInputItemsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InputItems.Count)
+                {
+                    return false;
+                }
+                if (InputItems[index] == null)
                 {
                     return false;
                 }
@@ -690,16 +718,28 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
+                if (ReasoningOptions == null)
+                {
+                    return false;
+                }
                 ReasoningOptions.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("text"u8))
             {
+                if (TextOptions == null)
+                {
+                    return false;
+                }
                 TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("conversation"u8))
             {
+                if (ConversationOptions == null)
+                {
+                    return false;
+                }
                 ConversationOptions.Patch.Set([.. "$"u8, .. local.Slice("conversation"u8.Length)], value);
                 return true;
             }
@@ -707,7 +747,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Tools == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Tools.Count)
+                {
+                    return false;
+                }
+                if (Tools[index] == null)
                 {
                     return false;
                 }
@@ -718,7 +766,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "input"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (InputItems == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= InputItems.Count)
+                {
+                    return false;
+                }
+                if (InputItems[index] == null)
                 {
                     return false;
                 }
@@ -749,7 +805,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < Tools.Count; i++)
             {
-                if (!Tools[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) && (Tools[i] == null || !Tools[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Tools[i];
                 }
@@ -777,7 +833,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < InputItems.Count; i++)
             {
-                if (!InputItems[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) && (InputItems[i] == null || !InputItems[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return InputItems[i];
                 }

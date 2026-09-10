@@ -93,7 +93,7 @@ namespace OpenAI.Realtime
                 writer.WriteStartArray();
                 for (int i = 0; i < RateLimitDetails.Count; i++)
                 {
-                    if (RateLimitDetails[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) || RateLimitDetails[i] != null && RateLimitDetails[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -169,11 +169,19 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "rate_limits"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (RateLimitDetails == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveRateLimitDetailsArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
+                {
+                    return false;
+                }
+                if (RateLimitDetails[index] == null)
                 {
                     return false;
                 }
@@ -192,7 +200,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "rate_limits"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (RateLimitDetails == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
+                {
+                    return false;
+                }
+                if (RateLimitDetails[index] == null)
                 {
                     return false;
                 }
@@ -223,7 +239,7 @@ namespace OpenAI.Realtime
             }
             for (int i = 0; i < RateLimitDetails.Count; i++)
             {
-                if (!RateLimitDetails[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) && (RateLimitDetails[i] == null || !RateLimitDetails[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return RateLimitDetails[i];
                 }

@@ -106,10 +106,18 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("delta"u8))
             {
+                if (Delta == null)
+                {
+                    return false;
+                }
                 return Delta.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("delta"u8.Length)], out value);
             }
             if (local.StartsWith("logprobs"u8))
             {
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 return Logprobs.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("logprobs"u8.Length)], out value);
             }
             return false;
@@ -123,11 +131,19 @@ namespace OpenAI.Chat
 
             if (local.StartsWith("delta"u8))
             {
+                if (Delta == null)
+                {
+                    return false;
+                }
                 Delta.Patch.Set([.. "$"u8, .. local.Slice("delta"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("logprobs"u8))
             {
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 Logprobs.Patch.Set([.. "$"u8, .. local.Slice("logprobs"u8.Length)], value);
                 return true;
             }

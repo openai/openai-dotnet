@@ -108,7 +108,7 @@ namespace OpenAI.Responses
                 writer.WriteStartArray();
                 for (int i = 0; i < TokenLogProbabilities.Count; i++)
                 {
-                    if (TokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TokenLogProbabilities[i] != null && TokenLogProbabilities[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -216,11 +216,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (TokenLogProbabilities == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveTokenLogProbabilitiesArray(out value);
                 }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TokenLogProbabilities.Count)
+                {
+                    return false;
+                }
+                if (TokenLogProbabilities[index] == null)
                 {
                     return false;
                 }
@@ -239,7 +247,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (TokenLogProbabilities == null)
+                {
+                    return false;
+                }
                 if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= TokenLogProbabilities.Count)
+                {
+                    return false;
+                }
+                if (TokenLogProbabilities[index] == null)
                 {
                     return false;
                 }
@@ -270,7 +286,7 @@ namespace OpenAI.Responses
             }
             for (int i = 0; i < TokenLogProbabilities.Count; i++)
             {
-                if (!TokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) && (TokenLogProbabilities[i] == null || !TokenLogProbabilities[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return TokenLogProbabilities[i];
                 }

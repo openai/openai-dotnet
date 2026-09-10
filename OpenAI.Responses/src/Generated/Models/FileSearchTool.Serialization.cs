@@ -227,6 +227,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("ranking_options"u8))
             {
+                if (RankingOptions == null)
+                {
+                    return false;
+                }
                 return RankingOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("ranking_options"u8.Length)], out value);
             }
             return false;
@@ -240,6 +244,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("ranking_options"u8))
             {
+                if (RankingOptions == null)
+                {
+                    return false;
+                }
                 RankingOptions.Patch.Set([.. "$"u8, .. local.Slice("ranking_options"u8.Length)], value);
                 return true;
             }

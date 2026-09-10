@@ -159,6 +159,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("item"u8))
             {
+                if (Item == null)
+                {
+                    return false;
+                }
                 return Item.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("item"u8.Length)], out value);
             }
             return false;
@@ -172,6 +176,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("item"u8))
             {
+                if (Item == null)
+                {
+                    return false;
+                }
                 Item.Patch.Set([.. "$"u8, .. local.Slice("item"u8.Length)], value);
                 return true;
             }

@@ -143,6 +143,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("session"u8))
             {
+                if (SessionOptions == null)
+                {
+                    return false;
+                }
                 return SessionOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("session"u8.Length)], out value);
             }
             return false;
@@ -156,6 +160,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("session"u8))
             {
+                if (SessionOptions == null)
+                {
+                    return false;
+                }
                 SessionOptions.Patch.Set([.. "$"u8, .. local.Slice("session"u8.Length)], value);
                 return true;
             }

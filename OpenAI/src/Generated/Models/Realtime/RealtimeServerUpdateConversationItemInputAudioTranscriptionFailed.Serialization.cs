@@ -171,6 +171,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("error"u8))
             {
+                if (Error == null)
+                {
+                    return false;
+                }
                 return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
             }
             return false;
@@ -184,6 +188,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("error"u8))
             {
+                if (Error == null)
+                {
+                    return false;
+                }
                 Error.Patch.Set([.. "$"u8, .. local.Slice("error"u8.Length)], value);
                 return true;
             }
