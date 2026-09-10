@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    [PersistableModelProxy(typeof(InternalUnknownContainerNetworkPolicy))]
     public partial class ContainerNetworkPolicy : IJsonModel<ContainerNetworkPolicy>
     {
         internal ContainerNetworkPolicy()

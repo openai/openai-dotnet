@@ -79,7 +79,7 @@ namespace OpenAI.Files
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("upload_id") != true)
             {
@@ -133,7 +133,7 @@ namespace OpenAI.Files
                 return null;
             }
             string id = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string uploadId = default;
             string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -146,7 +146,7 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("upload_id"u8))
@@ -162,7 +162,7 @@ namespace OpenAI.Files
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUploadPart(id, createdAt, uploadId, @object, additionalBinaryDataProperties);
+            return new InternalUploadPart(id, createdOn, uploadId, @object, additionalBinaryDataProperties);
         }
     }
 }

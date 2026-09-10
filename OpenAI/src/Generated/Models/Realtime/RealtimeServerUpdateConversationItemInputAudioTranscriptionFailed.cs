@@ -10,13 +10,16 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : RealtimeServerUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId, string itemId, int contentIndex, RealtimeError error) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionFailed)
         {
             EventId = eventId;
             ItemId = itemId;
             ContentIndex = contentIndex;
             Error = error;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, patch)

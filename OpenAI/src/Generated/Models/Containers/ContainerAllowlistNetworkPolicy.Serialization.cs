@@ -212,7 +212,7 @@ namespace OpenAI.Containers
                 {
                     return TryResolveDomainSecretsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= DomainSecrets.Count)
                 {
                     return false;
                 }
@@ -231,7 +231,7 @@ namespace OpenAI.Containers
             {
                 int propertyLength = "domain_secrets"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= DomainSecrets.Count)
                 {
                     return false;
                 }

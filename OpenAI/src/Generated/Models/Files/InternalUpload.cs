@@ -11,26 +11,26 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt)
+        internal InternalUpload(string id, DateTimeOffset createdOn, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresOn)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Filename = filename;
             Bytes = bytes;
             Purpose = purpose;
             Status = status;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
         }
 
-        internal InternalUpload(string id, DateTimeOffset createdAt, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresAt, InternalUploadObject? @object, OpenAIFile @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalUpload(string id, DateTimeOffset createdOn, string filename, int bytes, string purpose, InternalUploadStatus status, DateTimeOffset expiresOn, InternalUploadObject? @object, OpenAIFile @file, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             Filename = filename;
             Bytes = bytes;
             Purpose = purpose;
             Status = status;
-            ExpiresAt = expiresAt;
+            ExpiresOn = expiresOn;
             Object = @object;
             File = @file;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -38,7 +38,7 @@ namespace OpenAI.Files
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string Filename { get; }
 
@@ -48,7 +48,7 @@ namespace OpenAI.Files
 
         internal InternalUploadStatus Status { get; }
 
-        public DateTimeOffset ExpiresAt { get; }
+        public DateTimeOffset ExpiresOn { get; }
 
         internal InternalUploadObject? Object { get; }
 

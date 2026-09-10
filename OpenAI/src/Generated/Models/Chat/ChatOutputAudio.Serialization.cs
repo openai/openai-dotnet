@@ -85,7 +85,7 @@ namespace OpenAI.Chat
             if (!Patch.Contains("$.data"u8))
             {
                 writer.WritePropertyName("data"u8);
-                writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytes, "D");
             }
             if (!Patch.Contains("$.transcript"u8))
             {

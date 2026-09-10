@@ -10,7 +10,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownItemResource))]
     public partial class ResponseItem : IJsonModel<ResponseItem>
     {
         internal ResponseItem()
@@ -157,6 +156,10 @@ namespace OpenAI.Responses
                         return ApplyPatchCallOutputItem.DeserializeApplyPatchCallOutputItem(element, data, options);
                     case "item_reference":
                         return ReferenceResponseItem.DeserializeReferenceResponseItem(element, data, options);
+                    case "custom_tool_call":
+                        return CustomToolCallItem.DeserializeCustomToolCallItem(element, data, options);
+                    case "custom_tool_call_output":
+                        return CustomToolCallOutputItem.DeserializeCustomToolCallOutputItem(element, data, options);
                 }
             }
             return InternalUnknownItemResource.DeserializeInternalUnknownItemResource(element, data, options);

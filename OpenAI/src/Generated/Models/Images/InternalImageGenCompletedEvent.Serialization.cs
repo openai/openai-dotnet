@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -49,6 +50,13 @@ namespace OpenAI.Images
 
         string IPersistableModel<InternalImageGenCompletedEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
+        public static explicit operator InternalImageGenCompletedEvent(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalImageGenCompletedEvent(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalImageGenCompletedEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -71,12 +79,12 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(B64Json.ToArray(), "D");
+                writer.WriteBase64StringValue(B64Json, "D");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -146,11 +154,11 @@ namespace OpenAI.Images
             }
             string kind = default;
             BinaryData b64Json = default;
-            DateTimeOffset createdAt = default;
-            InternalCreateImageSize1 size = default;
-            InternalCreateImageQuality1 quality = default;
-            InternalCreateImageBackground1 background = default;
-            InternalCreateImageOutputFormat1 outputFormat = default;
+            DateTimeOffset createdOn = default;
+            InternalCreateImageStreamingSize1 size = default;
+            InternalCreateImageStreamingQuality1 quality = default;
+            InternalCreateImageStreamingBackground1 background = default;
+            InternalCreateImageStreamingOutputFormat1 outputFormat = default;
             InternalImagesUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -167,27 +175,27 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
                 {
-                    size = new InternalCreateImageSize1(prop.Value.GetString());
+                    size = new InternalCreateImageStreamingSize1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
                 {
-                    quality = new InternalCreateImageQuality1(prop.Value.GetString());
+                    quality = new InternalCreateImageStreamingQuality1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
                 {
-                    background = new InternalCreateImageBackground1(prop.Value.GetString());
+                    background = new InternalCreateImageStreamingBackground1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
                 {
-                    outputFormat = new InternalCreateImageOutputFormat1(prop.Value.GetString());
+                    outputFormat = new InternalCreateImageStreamingOutputFormat1(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -201,7 +209,7 @@ namespace OpenAI.Images
             return new InternalImageGenCompletedEvent(
                 kind,
                 b64Json,
-                createdAt,
+                createdOn,
                 size,
                 quality,
                 background,

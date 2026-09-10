@@ -12,6 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ComputerCallOutputResponseItem : ResponseItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output) : base(ResponseItemKind.ComputerCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
@@ -20,7 +21,9 @@ namespace OpenAI.Responses
             CallId = callId;
             AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ComputerCallOutputResponseItem(ResponseItemKind kind, string id, in JsonPatch patch, ComputerCallOutputStatus? status, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, id, patch)

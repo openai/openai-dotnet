@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartAudio : ChatMessageContentPart, IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>
     {
-        internal InternalChatCompletionRequestMessageContentPartAudio()
+        internal InternalChatCompletionRequestMessageContentPartAudio() : this(default, default, null)
         {
         }
 
@@ -102,12 +102,18 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            ChatMessageContentPartKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default;
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = prop.Value.GetString().ToChatMessageContentPartKind();
+                    continue;
+                }
                 if (prop.NameEquals("input_audio"u8))
                 {
                     inputAudio = InternalChatCompletionRequestMessageContentPartAudioInputAudio.DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(prop.Value, prop.Value.GetUtf8Bytes(), options);
@@ -115,7 +121,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalChatCompletionRequestMessageContentPartAudio(patch, inputAudio);
+            return new InternalChatCompletionRequestMessageContentPartAudio(kind, patch, inputAudio);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

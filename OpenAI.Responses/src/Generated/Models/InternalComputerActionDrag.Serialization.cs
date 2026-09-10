@@ -162,7 +162,7 @@ namespace OpenAI.Responses
                 {
                     return TryResolvePathArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
                 {
                     return false;
                 }
@@ -181,7 +181,7 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "path"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Path.Count)
                 {
                     return false;
                 }

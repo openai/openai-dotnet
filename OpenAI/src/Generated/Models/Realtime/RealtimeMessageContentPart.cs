@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeMessageContentPart(InternalRealtimeConversationItemMessageContentPartTypeGA kind)
+        internal RealtimeMessageContentPart(InternalRealtimeConversationItemMessageContentPartTypeGA kind)
         {
             Kind = kind;
         }

@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownItemContent))]
     public partial class ResponseContentPart : IJsonModel<ResponseContentPart>
     {
         internal ResponseContentPart()

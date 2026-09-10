@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeTool(InternalRealtimeToolBaseTypeGA kind)
+        internal RealtimeTool(InternalRealtimeToolBaseTypeGA kind)
         {
             Kind = kind;
         }

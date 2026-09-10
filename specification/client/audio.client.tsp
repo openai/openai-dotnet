@@ -14,11 +14,15 @@ using Azure.ClientGenerator.Core;
 @@alternateType(CreateTranscriptionResponseVerboseJson.usage, CreateTranscriptionResponseJsonUsage);
 
 @@clientName(createSpeech, "GenerateSpeech");
+@@clientName(createSpeechStreaming, "GenerateSpeechStreaming");
 @@clientName(createTranscription, "TranscribeAudio");
+@@clientName(createTranscriptionStreaming, "TranscribeAudioStreaming");
 @@clientName(createTranslation, "TranslateAudio");
 
 @@clientLocation(createSpeech, "Audio");
+@@clientLocation(createSpeechStreaming, "Audio");
 @@clientLocation(createTranscription, "Audio");
+@@clientLocation(createTranscriptionStreaming, "Audio");
 @@clientLocation(createTranslation, "Audio");
 @@clientLocation(listVoiceConsents, "Audio");
 @@clientLocation(createVoiceConsent, "Audio");

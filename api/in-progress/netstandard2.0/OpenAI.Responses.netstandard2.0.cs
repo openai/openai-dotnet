@@ -243,8 +243,8 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ContainerFileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<ContainerFileCitationMessageAnnotation>, IPersistableModel<ContainerFileCitationMessageAnnotation> {
-        public ContainerFileCitationMessageAnnotation();
-        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename);
+        public ContainerFileCitationMessageAnnotation() : base(default);
+        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename) : base(default);
         public string ContainerId { get; set; }
         public int EndIndex { get; set; }
         public string FileId { get; set; }
@@ -292,16 +292,116 @@ namespace OpenAI.Responses {
         public McpToolFilter ToolsAlwaysRequiringApproval { get; set; }
         public McpToolFilter ToolsNeverRequiringApproval { get; set; }
     }
+    public class CustomTool : ResponseTool, IJsonModel<CustomTool>, IPersistableModel<CustomTool> {
+        public CustomTool() : base(default);
+        public CustomTool(string toolName) : base(default);
+        public string ToolDescription { get; set; }
+        public CustomToolFormat ToolFormat { get; set; }
+        public string ToolName { get; set; }
+    }
+    public class CustomToolCallItem : ResponseItem, IJsonModel<CustomToolCallItem>, IPersistableModel<CustomToolCallItem> {
+        public CustomToolCallItem() : base(default);
+        public CustomToolCallItem(string callId, string input, string toolName) : base(default);
+        public string CallId { get; set; }
+        public string Input { get; set; }
+        public CustomToolCallStatus? Status { get; set; }
+        public string ToolName { get; set; }
+    }
+    public class CustomToolCallOutputItem : ResponseItem, IJsonModel<CustomToolCallOutputItem>, IPersistableModel<CustomToolCallOutputItem> {
+        public CustomToolCallOutputItem() : base(default);
+        public CustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output) : base(default);
+        public string CallId { get; set; }
+        public IList<ResponseContentPart> Output { get; }
+        public CustomToolCallOutputStatus? Status { get; set; }
+    }
+    public readonly partial struct CustomToolCallOutputStatus : IEquatable<CustomToolCallOutputStatus> {
+        public CustomToolCallOutputStatus(string value);
+        public static CustomToolCallOutputStatus Completed { get; }
+        public static CustomToolCallOutputStatus Incomplete { get; }
+        public static CustomToolCallOutputStatus InProgress { get; }
+        public readonly bool Equals(CustomToolCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolCallOutputStatus left, CustomToolCallOutputStatus right);
+        public static implicit operator CustomToolCallOutputStatus(string value);
+        public static implicit operator CustomToolCallOutputStatus?(string value);
+        public static bool operator !=(CustomToolCallOutputStatus left, CustomToolCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct CustomToolCallStatus : IEquatable<CustomToolCallStatus> {
+        public CustomToolCallStatus(string value);
+        public static CustomToolCallStatus Completed { get; }
+        public static CustomToolCallStatus Incomplete { get; }
+        public static CustomToolCallStatus InProgress { get; }
+        public readonly bool Equals(CustomToolCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolCallStatus left, CustomToolCallStatus right);
+        public static implicit operator CustomToolCallStatus(string value);
+        public static implicit operator CustomToolCallStatus?(string value);
+        public static bool operator !=(CustomToolCallStatus left, CustomToolCallStatus right);
+        public override readonly string ToString();
+    }
+    public class CustomToolFormat : IJsonModel<CustomToolFormat>, IPersistableModel<CustomToolFormat> {
+        protected internal CustomToolFormat(CustomToolFormatKind kind);
+        public CustomToolFormatKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public readonly partial struct CustomToolFormatKind : IEquatable<CustomToolFormatKind> {
+        public CustomToolFormatKind(string value);
+        public static CustomToolFormatKind Grammar { get; }
+        public static CustomToolFormatKind Text { get; }
+        public readonly bool Equals(CustomToolFormatKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolFormatKind left, CustomToolFormatKind right);
+        public static implicit operator CustomToolFormatKind(string value);
+        public static implicit operator CustomToolFormatKind?(string value);
+        public static bool operator !=(CustomToolFormatKind left, CustomToolFormatKind right);
+        public override readonly string ToString();
+    }
+    public class CustomToolGrammarFormat : CustomToolFormat, IJsonModel<CustomToolGrammarFormat>, IPersistableModel<CustomToolGrammarFormat> {
+        public CustomToolGrammarFormat() : base(default);
+        public CustomToolGrammarFormat(string definition, CustomToolGrammarFormatSyntax syntax) : base(default);
+        public string Definition { get; set; }
+        public CustomToolGrammarFormatSyntax Syntax { get; set; }
+    }
+    public readonly partial struct CustomToolGrammarFormatSyntax : IEquatable<CustomToolGrammarFormatSyntax> {
+        public CustomToolGrammarFormatSyntax(string value);
+        public static CustomToolGrammarFormatSyntax Lark { get; }
+        public static CustomToolGrammarFormatSyntax Regex { get; }
+        public readonly bool Equals(CustomToolGrammarFormatSyntax other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CustomToolGrammarFormatSyntax left, CustomToolGrammarFormatSyntax right);
+        public static implicit operator CustomToolGrammarFormatSyntax(string value);
+        public static implicit operator CustomToolGrammarFormatSyntax?(string value);
+        public static bool operator !=(CustomToolGrammarFormatSyntax left, CustomToolGrammarFormatSyntax right);
+        public override readonly string ToString();
+    }
+    public class CustomToolTextFormat : CustomToolFormat, IJsonModel<CustomToolTextFormat>, IPersistableModel<CustomToolTextFormat> {
+        public CustomToolTextFormat() : base(default);
+    }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
-        public FileCitationMessageAnnotation();
-        public FileCitationMessageAnnotation(string fileId, int index, string filename);
+        public FileCitationMessageAnnotation() : base(default);
+        public FileCitationMessageAnnotation(string fileId, int index, string filename) : base(default);
         public string FileId { get; set; }
         public string Filename { get; set; }
         public int Index { get; set; }
     }
     public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
-        public FilePathMessageAnnotation();
-        public FilePathMessageAnnotation(string fileId, int index);
+        public FilePathMessageAnnotation() : base(default);
+        public FilePathMessageAnnotation(string fileId, int index) : base(default);
         public string FileId { get; set; }
         public int Index { get; set; }
     }
@@ -863,6 +963,7 @@ namespace OpenAI.Responses {
     }
     public class ResponseInputTokenUsageDetails : IJsonModel<ResponseInputTokenUsageDetails>, IPersistableModel<ResponseInputTokenUsageDetails> {
         public int CachedTokenCount { get; set; }
+        public int CacheWriteTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -880,6 +981,8 @@ namespace OpenAI.Responses {
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
+        public static CustomToolCallItem CreateCustomToolCallItem(string callId, string input, string toolName);
+        public static CustomToolCallOutputItem CreateCustomToolCallOutputItem(string callId, IEnumerable<ResponseContentPart> output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
@@ -966,6 +1069,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
+        protected internal ResponseMessageAnnotation(ResponseMessageAnnotationKind kind);
         public ResponseMessageAnnotationKind Kind { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1248,6 +1352,7 @@ namespace OpenAI.Responses {
         public static ApplyPatchTool CreateApplyPatchTool();
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public static CustomTool CreateCustomTool(string toolName);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null, ImageGenerationToolAction? action = null);
@@ -1362,6 +1467,18 @@ namespace OpenAI.Responses {
     public class StreamingResponseCreatedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCreatedUpdate>, IPersistableModel<StreamingResponseCreatedUpdate> {
         public StreamingResponseCreatedUpdate() : base(default, default);
         public ResponseResult Response { get; set; }
+    }
+    public class StreamingResponseCustomToolCallInputDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDeltaUpdate>, IPersistableModel<StreamingResponseCustomToolCallInputDeltaUpdate> {
+        public StreamingResponseCustomToolCallInputDeltaUpdate() : base(default, default);
+        public string InputDelta { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
+    }
+    public class StreamingResponseCustomToolCallInputDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCustomToolCallInputDoneUpdate>, IPersistableModel<StreamingResponseCustomToolCallInputDoneUpdate> {
+        public StreamingResponseCustomToolCallInputDoneUpdate() : base(default, default);
+        public string Input { get; set; }
+        public string ItemId { get; set; }
+        public int OutputIndex { get; set; }
     }
     public class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>, IPersistableModel<StreamingResponseErrorUpdate> {
         public StreamingResponseErrorUpdate() : base(default, default);
@@ -1657,8 +1774,8 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
     }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
-        public UriCitationMessageAnnotation();
-        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
+        public UriCitationMessageAnnotation() : base(default);
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title) : base(default);
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
         public string Title { get; set; }

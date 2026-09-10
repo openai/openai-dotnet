@@ -10,12 +10,15 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerUsePreviewToolCallOutputItemParam : InternalItemParam
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(ResponseItemKind.ComputerCallOutput)
         {
             CallId = callId;
             AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalComputerUsePreviewToolCallOutputItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, patch)

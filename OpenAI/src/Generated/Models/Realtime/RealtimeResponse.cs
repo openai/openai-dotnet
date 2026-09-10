@@ -18,9 +18,11 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, null, default)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeResponse(string id, InternalRealtimeResponseGAObject? @object, RealtimeResponseStatus? status, RealtimeResponseStatusDetails statusDetails, IList<RealtimeItem> outputItems, IDictionary<string, BinaryData> metadata, RealtimeResponseAudioOptions audioOptions, RealtimeResponseUsage usage, string conversationId, IList<RealtimeOutputModality> outputModalities, RealtimeMaxOutputTokenCount maxOutputTokenCount, in JsonPatch patch)

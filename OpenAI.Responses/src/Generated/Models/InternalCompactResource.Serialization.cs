@@ -94,7 +94,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
@@ -145,7 +145,7 @@ namespace OpenAI.Responses
             string id = default;
             string @object = default;
             IList<ResponseItem> output = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             ResponseTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -172,7 +172,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -187,7 +187,7 @@ namespace OpenAI.Responses
                 id,
                 @object,
                 output,
-                createdAt,
+                createdOn,
                 usage,
                 additionalBinaryDataProperties);
         }
