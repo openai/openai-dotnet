@@ -55,15 +55,10 @@ namespace OpenAI.Realtime {
             add;
             remove;
         }
-        public virtual ClientResult<CreateClientSecretResult> CreateRealtimeClientSecret(CreateClientSecretOptions options, CancellationToken cancellationToken = default);
-        public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<CreateClientSecretResult>> CreateRealtimeClientSecretAsync(CreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
-        public virtual RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
-        public virtual RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
-        public virtual RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
     }
     public class RealtimeClientCommand : IJsonModel<RealtimeClientCommand>, IPersistableModel<RealtimeClientCommand> {
@@ -1181,44 +1176,25 @@ namespace OpenAI.Realtime {
     public class RealtimeSessionClient : IDisposable {
         protected internal RealtimeSessionClient(ApiKeyCredential credential, Uri endpoint, string model, string intent, RealtimeClient parentClient);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
-        public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
-        public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default);
         public virtual Task AddItemAsync(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
         public virtual Task AddItemAsync(RealtimeItem item, CancellationToken cancellationToken = default);
-        public virtual void CancelResponse(CancellationToken cancellationToken = default);
         public virtual Task CancelResponseAsync(CancellationToken cancellationToken = default);
-        public virtual void ClearInputAudio(CancellationToken cancellationToken = default);
         public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
-        public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
         public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
-        public virtual void ConfigureConversationSession(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureConversationSessionAsync(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual void ConfigureTranscriptionSession(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
         protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
-        public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
-        public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
-        public virtual IEnumerable<RealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
         public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
         public virtual IAsyncEnumerable<RealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
-        public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
         public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
-        public virtual void SendCommand(RealtimeClientCommand command, CancellationToken cancellationToken = default);
-        public virtual void SendCommand(BinaryData data, RequestOptions options);
         public virtual Task SendCommandAsync(RealtimeClientCommand command, CancellationToken cancellationToken = default);
         public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
-        public virtual void SendInputAudio(BinaryData audio, CancellationToken cancellationToken = default);
-        public virtual void SendInputAudio(Stream audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
-        public virtual void StartResponse(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
-        public virtual void StartResponse(CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
-        public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
     public class RealtimeSessionClientOptions {

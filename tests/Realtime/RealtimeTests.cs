@@ -1262,7 +1262,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             SessionOptions = conversationSessionOptions,
         };
 
-        CreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+        CreateClientSecretResult result = await client.CreateRealtimeClientSecretAsync(createClientSecretOptions, CancellationToken);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
@@ -1384,7 +1384,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             SessionOptions = transcriptionSessionOptions,
         };
 
-        CreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+        CreateClientSecretResult result = await client.CreateRealtimeClientSecretAsync(createClientSecretOptions, CancellationToken);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
