@@ -4,7 +4,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Net.ServerSentEvents;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
