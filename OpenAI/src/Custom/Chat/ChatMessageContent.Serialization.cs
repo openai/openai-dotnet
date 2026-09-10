@@ -30,7 +30,7 @@ public partial class ChatMessageContent
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     private static bool HasPatchOperations(ChatMessageContentPart part)
     {
-        return part.Patch.ToBinaryData().ToMemory().Length > 2;
+        return part.Patch.Contains("$"u8) || part.Patch.ToBinaryData().ToMemory().Length > 2;
     }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

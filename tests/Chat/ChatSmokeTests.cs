@@ -518,6 +518,72 @@ public class ChatSmokeTests : ClientTestBase
         Assert.That(toolContent.GetArrayLength(), Is.EqualTo(1));
         Assert.That(toolContent[0].GetProperty("text").GetString(), Is.EqualTo("{\"price\":1}"));
         Assert.That(toolContent[0].GetProperty("cache_control").GetProperty("type").GetString(), Is.EqualTo("ephemeral"));
+
+        ChatMessageContentPart rootPatchedPart = ChatMessageContentPart.CreateTextPart("ignored");
+        rootPatchedPart.Patch.Set("$"u8, BinaryData.FromString("{}"));
+        using JsonDocument rootPatchedJson = JsonDocument.Parse(ModelReaderWriter.Write(new SystemChatMessage(rootPatchedPart)));
+        Assert.That(rootPatchedJson.RootElement.GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.Array));
+        Assert.That(rootPatchedJson.RootElement.GetProperty("content")[0].EnumerateObject(), Is.Empty);
+    }
+#pragma warning restore SCME0001
+
+#pragma warning disable SCME0001
+    [Test]
+    public void ChatPatchReplacesContentWithoutDuplicateProperty()
+    {
+        SystemChatMessage message = new("original");
+        message.Patch.Set("$.content"u8, BinaryData.FromString("""[{"type":"text","text":"replacement"}]"""));
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(message));
+        Assert.That(CountProperties(json.RootElement, "content"), Is.EqualTo(1));
+        Assert.That(json.RootElement.GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("replacement"));
+    }
+
+    [Test]
+    public void ContentPartPatchHasPrecedenceOverModeledText()
+    {
+        ChatMessageContentPart replacement = ChatMessageContentPart.CreateTextPart("original");
+        replacement.Patch.Set("$.text"u8, "replacement");
+        using JsonDocument replacementJson = JsonDocument.Parse(ModelReaderWriter.Write(replacement));
+        Assert.That(CountProperties(replacementJson.RootElement, "text"), Is.EqualTo(1));
+        Assert.That(replacementJson.RootElement.GetProperty("text").GetString(), Is.EqualTo("replacement"));
+
+        ChatMessageContentPart removal = ChatMessageContentPart.CreateTextPart("original");
+        removal.Patch.Remove("$.text"u8);
+        using JsonDocument removalJson = JsonDocument.Parse(ModelReaderWriter.Write(removal));
+        Assert.That(CountProperties(removalJson.RootElement, "text"), Is.Zero);
+
+        ChatMessageContentPart nullValue = ChatMessageContentPart.CreateTextPart("original");
+        nullValue.Patch.SetNull("$.text"u8);
+        using JsonDocument nullJson = JsonDocument.Parse(ModelReaderWriter.Write(nullValue));
+        Assert.That(CountProperties(nullJson.RootElement, "text"), Is.EqualTo(1));
+        Assert.That(nullJson.RootElement.GetProperty("text").ValueKind, Is.EqualTo(JsonValueKind.Null));
+    }
+
+#pragma warning disable CS0618
+    [Test]
+    public void FunctionMessageKeepsStringContentWhenPartIsPatched()
+    {
+        FunctionChatMessage message = new("get_price", "1");
+        message.Content[0].Patch.Set("$.custom_property"u8, true);
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(message));
+        Assert.That(json.RootElement.GetProperty("content").ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(json.RootElement.GetProperty("content").GetString(), Is.EqualTo("1"));
+    }
+#pragma warning restore CS0618
+
+    private static int CountProperties(JsonElement element, string name)
+    {
+        int count = 0;
+        foreach (JsonProperty property in element.EnumerateObject())
+        {
+            if (property.NameEquals(name))
+            {
+                count++;
+            }
+        }
+        return count;
     }
 #pragma warning restore SCME0001
 
