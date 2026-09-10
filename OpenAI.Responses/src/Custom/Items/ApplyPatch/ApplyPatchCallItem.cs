@@ -6,9 +6,4 @@ namespace OpenAI.Responses;
 [CodeGenType("ApplyPatchToolCallItemResource")]
 public partial class ApplyPatchCallItem
 {
-    // CUSTOM:
-    // - Made nullable because this is an optional property.
-    // - Added setter because this is an optional property in an input/output type.
-    [CodeGenMember("Status")]
-    public ApplyPatchCallStatus? Status { get; set; }
 }

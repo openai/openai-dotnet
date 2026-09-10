@@ -114,6 +114,15 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
+    public void ReasoningResponseItemDeserializesNullStatus()
+    {
+        ReasoningResponseItem reasoningItem = ModelReaderWriter.Read<ReasoningResponseItem>(
+            BinaryData.FromString(@"{""type"":""reasoning"",""status"":null,""summary"":[]}"));
+
+        Assert.That(reasoningItem.Status, Is.Null);
+    }
+
+    [Test]
     public void ToolChoiceSerialization()
     {
         static void AssertChoiceEqual(ResponseToolChoice choice, string expected)

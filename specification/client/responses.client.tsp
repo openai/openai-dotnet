@@ -27,29 +27,15 @@ using TypeSpec.HttpClient.CSharp;
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);
 
-@@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
 @@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
 
-@@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
-
-@@visibility(ComputerToolCallOutputItemResource.status, Lifecycle.Read);
-
-@@visibility(FileSearchToolCallItemResource.status, Lifecycle.Read);
-
-@@visibility(FunctionToolCallItemResource.status, Lifecycle.Read);
 @@alternateType(FunctionToolCallItemResource.arguments, unknown);
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
 
-@@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
 @@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
 
-@@visibility(ReasoningItemResource.status, Lifecycle.Read);
 @@clientName(ReasoningItemResource.summary, "SummaryParts");
-
-@@visibility(WebSearchToolCallItemResource.status, Lifecycle.Read);
-
-@@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
 
 @@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
 @@clientName(MCPApprovalRequestItemResource.name, "ToolName");
@@ -66,14 +52,7 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(MCPListToolsItemResource.error, unknown | null);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
-@@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
-
-@@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
-
-// NOTE: Contrary to other tools, the "status" property of `ApplyPatchToolCallOutputItemResource`
-// is set by the client instead of being set by the server, and it is also required. The "status"
-// property is used to indicate if the client successfully applied the patch or not.
 
 // This is a data URL. Treat it as a string internally to avoid Uri limits.
 @@alternateType(ItemContentInputImage.image_url, string | null); 
