@@ -493,13 +493,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
 
-        Assert.That(mcpListToolsFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpListToolsFailedUpdateCount, Is.EqualTo(0));
         Assert.That(mcpListToolsInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount));
 
-        Assert.That(mcpCallFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpCallFailedUpdateCount, Is.EqualTo(0));
         Assert.That(mcpCallInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpCallInProgressUpdateCount - mcpCallFailedUpdateCount));
+        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpCallInProgressUpdateCount));
 
         Assert.That(mcpCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
         Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));

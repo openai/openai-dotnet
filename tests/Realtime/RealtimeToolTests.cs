@@ -48,8 +48,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        List<RealtimeServerUpdate> setupUpdates = await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         // Now send the user message and request a response.
         await sessionClient.AddItemAsync(
@@ -176,8 +175,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
             RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
@@ -283,8 +281,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
             RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
@@ -397,8 +394,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
             RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
