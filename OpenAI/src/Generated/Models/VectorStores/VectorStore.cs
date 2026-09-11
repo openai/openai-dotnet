@@ -49,8 +49,6 @@ namespace OpenAI.VectorStores
 
         public string Name { get; }
 
-        public long UsageBytes { get; }
-
         public VectorStoreFileCounts FileCounts { get; }
 
         public VectorStoreStatus Status { get; }
