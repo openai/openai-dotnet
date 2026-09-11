@@ -7,12 +7,16 @@ namespace OpenAI.Realtime;
 // * A CustomPolicy defined as an object.
 [CodeGenType("DotNetRealtimeToolCallApprovalPolicyGA")]
 [CodeGenVisibility(nameof(RealtimeMcpToolCallApprovalPolicy), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class RealtimeMcpToolCallApprovalPolicy
 {
     // CUSTOM: Added to support the corresponding component of the union.
     public RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy)
     {
         DefaultPolicy = defaultPolicy;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
@@ -21,6 +25,9 @@ public partial class RealtimeMcpToolCallApprovalPolicy
         Argument.AssertNotNull(customPolicy, nameof(customPolicy));
 
         CustomPolicy = customPolicy;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Removed setter.
