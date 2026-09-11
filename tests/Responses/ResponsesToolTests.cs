@@ -348,20 +348,22 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MCPToolWorks()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -376,21 +378,22 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         McpToolDefinitionListItem listItem = toolDefinitionListItems[0];
         Assert.That(listItem.ToolDefinitions, Has.Count.GreaterThan(0));
 
-        McpToolDefinition rollToolDefinition = listItem.ToolDefinitions.Where(toolDefinition => toolDefinition.Name == "roll").FirstOrDefault();
-        Assert.That(rollToolDefinition, Is.Not.Null);
-        Assert.That(rollToolDefinition.InputSchema, Is.Not.Null);
-        Assert.That(rollToolDefinition.Annotations, Is.Not.Null);
+        McpToolDefinition searchToolDefinition = listItem.ToolDefinitions.Where(toolDefinition => toolDefinition.Name == toolName).FirstOrDefault();
+        Assert.That(searchToolDefinition, Is.Not.Null);
+        Assert.That(searchToolDefinition!.InputSchema, Is.Not.Null);
+        Assert.That(searchToolDefinition!.Annotations, Is.Not.Null);
 
         // Check tool call.
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
-        McpToolCallItem toolCallItem = toolCallItems[0];
-        Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-        Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
-        Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-        Assert.That(toolCallItem.ToolOutput, Is.Not.Null.Or.Empty);
-        Assert.That(toolCallItem.Error, Is.Null);
+        McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+        Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+        Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+        Assert.That(toolCallItem!.ToolOutput, Is.Not.Null.Or.Empty);
+        Assert.That(toolCallItem!.Error, Is.Null);
 
         // Check assistant message.
         MessageResponseItem assistantMessageItem = response.OutputItems.Last() as MessageResponseItem;
@@ -400,20 +403,21 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MCPToolStreamingWorks()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             },
+            MaxToolCallCount = 1,
             StreamingEnabled = true,
         };
 
@@ -489,13 +493,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
 
-        Assert.That(mcpListToolsFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpListToolsFailedUpdateCount, Is.EqualTo(0));
         Assert.That(mcpListToolsInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount));
 
-        Assert.That(mcpCallFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpCallFailedUpdateCount, Is.EqualTo(0));
         Assert.That(mcpCallInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpCallInProgressUpdateCount));
 
         Assert.That(mcpCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
         Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));
@@ -506,8 +510,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [TestCase(false)]
     public async Task MCPToolNeverRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
             ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
@@ -516,19 +521,20 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 {
                     ToolsNeverRequiringApproval = new McpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -540,6 +546,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         // Confirm there are no approval requests and that the tool was called.
         Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+
+        McpToolCallItem toolCallItem = response.OutputItems
+            .OfType<McpToolCallItem>()
+            .FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
     }
 
     [RecordedTest]
@@ -547,8 +559,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [TestCase(false)]
     public async Task MCPToolAlwaysRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
             ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval)
@@ -557,19 +570,20 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 {
                     ToolsAlwaysRequiringApproval = new McpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -584,7 +598,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(approvalRequestItem, Is.Not.Null);
 
         // Prepare the response.
-        McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem.Id, true);
+        McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem!.Id, true);
         options.PreviousResponseId = response1.Id;
         options.InputItems.Clear();
         options.InputItems.Add(approvalResponseItem);
@@ -592,29 +606,37 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response2 = await client.CreateResponseAsync(options);
         Assert.That(response2.OutputItems, Has.Count.GreaterThan(0));
         Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+
+        McpToolCallItem toolCallItem = response2.OutputItems
+            .OfType<McpToolCallItem>()
+            .FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
     }
 
     [RecordedTest]
     public async Task MCPToolWithAllowedTools()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy,
                     AllowedTools = new McpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -627,35 +649,37 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
-        McpToolCallItem toolCallItem = toolCallItems[0];
-        Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-        Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
-        Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-        Assert.That(toolCallItem.ToolOutput, Is.Not.Null.Or.Empty);
-        Assert.That(toolCallItem.Error, Is.Null);
+        McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+        Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+        Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+        Assert.That(toolCallItem!.ToolOutput, Is.Not.Null.Or.Empty);
+        Assert.That(toolCallItem!.Error, Is.Null);
     }
 
     [RecordedTest]
     public async Task MCPToolWithDisallowedTools()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy,
                     AllowedTools = new McpToolFilter()
                     {
-                        ToolNames = { "not_roll" } // This is not a real tool. We use this to implicitly disallow everything else.
+                        ToolNames = { "not_microsoft_docs_search" } // This is not a real tool. We use this to implicitly disallow everything else.
                     }
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();

@@ -22,8 +22,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [Test]
     public async Task MCPToolWorks()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy =
             new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
@@ -31,7 +32,11 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         RealtimeMcpTool mcpTool = new(serverLabel, serverUri)
         {
             // ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            ToolCallApprovalPolicy = approvalPolicy
+            ToolCallApprovalPolicy = approvalPolicy,
+            AllowedTools = new RealtimeMcpToolFilter()
+            {
+                ToolNames = { toolName }
+            }
         };
 
         RealtimeClient client = GetTestClient();
@@ -40,8 +45,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             model: GetTestModel(),
             cancellationToken: CancellationToken);
 
-        // Configure session with the MCP tool and text-only output, then wait
-        // for the MCP tool listing to complete before triggering a response.
         RealtimeConversationSessionOptions sessionOptions = new()
         {
             Instructions = "Use the available tools to help the user.",
@@ -49,16 +52,18 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        List<RealtimeServerUpdate> setupUpdates = await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         // Now send the user message and request a response.
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
         int mcpCallArgumentsDeltaUpdateCount = 0;
@@ -68,7 +73,6 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         int conversationItemDoneUpdateCount = 0;
         int responseDoneUpdateCount = 0;
         RealtimeMcpToolCallItem toolCallItem = null;
-        RealtimeMcpToolDefinitionListItem toolDefinitionListItem = null;
 
         await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
@@ -85,13 +89,15 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             if (update is RealtimeServerUpdateResponseDone responseDone)
             {
                 responseDoneUpdateCount++;
-                toolCallItem = responseDone.Response.OutputItems.OfType<RealtimeMcpToolCallItem>().FirstOrDefault();
+                toolCallItem = responseDone.Response.OutputItems
+                    .OfType<RealtimeMcpToolCallItem>()
+                    .FirstOrDefault(item => item.ToolName == toolName);
 
                 Assert.That(toolCallItem, Is.Not.Null);
-                Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-                Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
-                Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-                Assert.That(toolCallItem.Error, Is.Null);
+                Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+                Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+                Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+                Assert.That(toolCallItem!.Error, Is.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallInProgress)
@@ -102,14 +108,13 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolDefinitionListItem listItem })
             {
                 conversationItemDoneUpdateCount++;
-                toolDefinitionListItem = listItem;
 
                 Assert.That(listItem.ToolDefinitions, Has.Count.GreaterThan(0));
 
-                RealtimeMcpToolDefinition rollToolDefinition = listItem.ToolDefinitions
-                    .Where(td => td.Name == "roll").FirstOrDefault();
-                Assert.That(rollToolDefinition, Is.Not.Null);
-                Assert.That(rollToolDefinition.InputSchema, Is.Not.Null);
+                RealtimeMcpToolDefinition searchToolDefinition = listItem.ToolDefinitions
+                    .Where(td => td.Name == toolName).FirstOrDefault();
+                Assert.That(searchToolDefinition, Is.Not.Null);
+                Assert.That(searchToolDefinition!.InputSchema, Is.Not.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)
@@ -139,8 +144,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [TestCase(false)]
     public async Task MCPToolNeverRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
             ? new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
@@ -149,13 +155,17 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 {
                     ToolsNeverRequiringApproval = new RealtimeMcpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
         RealtimeMcpTool mcpTool = new(serverLabel, serverUri)
         {
-            ToolCallApprovalPolicy = approvalPolicy
+            ToolCallApprovalPolicy = approvalPolicy,
+            AllowedTools = new RealtimeMcpToolFilter()
+            {
+                ToolNames = { toolName }
+            }
         };
 
         RealtimeClient client = GetTestClient();
@@ -171,48 +181,63 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
+        int conversationItemDoneMcpToolApprovalRequestUpdateCount = 0;
+        int conversationItemDoneMcpToolCallUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
-        int conversationItemDoneUpdateCount = 0;
         int responseDoneUpdateCount = 0;
 
         await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
-            if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolDefinitionListItem })
+            if (update is RealtimeServerUpdateConversationItemDone conversationItemDone)
             {
-                conversationItemDoneUpdateCount++;
+                if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
+                {
+                    conversationItemDoneMcpToolApprovalRequestUpdateCount++;
+
+                    Assert.Fail("Approvals should not be required.");
+                }
+                else if (conversationItemDone.Item is RealtimeMcpToolCallItem mcpToolCallItem)
+                {
+                    conversationItemDoneMcpToolCallUpdateCount++;
+
+                    Assert.That(mcpToolCallItem.ToolName, Is.EqualTo(toolName));
+                    Assert.That(mcpToolCallItem.ServerLabel, Is.EqualTo(serverLabel));
+                }
+            }
+
+            if (update is RealtimeServerUpdateResponseMcpCallCompleted mcpCallCompleted)
+            {
+                mcpCallCompletedUpdateCount++;
             }
 
             if (update is RealtimeServerUpdateResponseDone responseDone)
             {
                 responseDoneUpdateCount++;
-
-                // Confirm there are no approval requests and that the tool was called.
-                var outputItems = responseDone.Response.OutputItems;
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.EqualTo(1));
             }
 
-            if (update is RealtimeServerUpdateResponseMcpCallCompleted)
+            if (mcpCallCompletedUpdateCount >= 1 && conversationItemDoneMcpToolCallUpdateCount >= 1 && responseDoneUpdateCount >= 1)
             {
-                mcpCallCompletedUpdateCount++;
                 break;
             }
         }
 
-        Assert.That(conversationItemDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(responseDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThan(0));
+        Assert.That(conversationItemDoneMcpToolApprovalRequestUpdateCount, Is.EqualTo(0));
+        Assert.That(conversationItemDoneMcpToolCallUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(responseDoneUpdateCount, Is.GreaterThanOrEqualTo(1));
     }
 
     [Test]
@@ -220,8 +245,9 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
     [TestCase(false)]
     public async Task MCPToolAlwaysRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
             ? new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval)
@@ -230,13 +256,17 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
                 {
                     ToolsAlwaysRequiringApproval = new RealtimeMcpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
         RealtimeMcpTool mcpTool = new(serverLabel, serverUri)
         {
-            ToolCallApprovalPolicy = approvalPolicy
+            ToolCallApprovalPolicy = approvalPolicy,
+            AllowedTools = new RealtimeMcpToolFilter()
+            {
+                ToolNames = { toolName }
+            }
         };
 
         RealtimeClient client = GetTestClient();
@@ -252,73 +282,84 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
-        // Single loop: the approval request arrives as a conversation.item.done event.
-        // When found, approve it inline and keep listening for the tool call to complete.
-        bool approvalSent = false;
-        int approvalRequestUpdateCount = 0;
+        int conversationItemDoneMcpToolApprovalRequestUpdateCount = 0;
+        int conversationItemDoneMcpToolCallUpdateCount = 0;
         int mcpCallCompletedUpdateCount = 0;
-        int conversationItemDoneUpdateCount = 0;
-        int responseDoneWithToolCallCount = 0;
+        int responseDoneUpdateCount = 0;
 
         await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
-            if (update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolDefinitionListItem })
+            if (update is RealtimeServerUpdateConversationItemDone conversationItemDone)
             {
-                conversationItemDoneUpdateCount++;
+                if (conversationItemDone.Item is RealtimeMcpToolCallApprovalRequestItem approvalItem)
+                {
+                    conversationItemDoneMcpToolApprovalRequestUpdateCount++;
+
+                    Assert.That(approvalItem.ToolName, Is.EqualTo(toolName));
+                    Assert.That(approvalItem.ServerLabel, Is.EqualTo(serverLabel));
+
+                    // Approve the tool call and request another response.
+                    await sessionClient.AddItemAsync(
+                        new RealtimeMcpToolCallApprovalResponseItem(approvalItem.Id, approved: true),
+                        CancellationToken);
+
+                    await sessionClient.StartResponseAsync(
+                        new RealtimeResponseOptions
+                        {
+                            OutputModalities = { RealtimeOutputModality.Text },
+                        },
+                        CancellationToken);
+                }
+                else if (conversationItemDone.Item is RealtimeMcpToolCallItem mcpToolCallItem)
+                {
+                    conversationItemDoneMcpToolCallUpdateCount++;
+
+                    Assert.That(mcpToolCallItem.ToolName, Is.EqualTo(toolName));
+                    Assert.That(mcpToolCallItem.ServerLabel, Is.EqualTo(serverLabel));
+                }
             }
 
-            if (!approvalSent
-                && update is RealtimeServerUpdateConversationItemDone { Item: RealtimeMcpToolCallApprovalRequestItem approvalItem })
+            if (update is RealtimeServerUpdateResponseMcpCallCompleted)
             {
-                approvalRequestUpdateCount++;
-
-                // Approve the tool call and request another response.
-                await sessionClient.AddItemAsync(
-                    new RealtimeMcpToolCallApprovalResponseItem(approvalItem.Id, approved: true),
-                    CancellationToken);
-                await sessionClient.StartResponseAsync(
-                    new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
-                    CancellationToken);
-                approvalSent = true;
+                mcpCallCompletedUpdateCount++;
             }
 
             if (update is RealtimeServerUpdateResponseDone responseDone)
             {
-                if (responseDone.Response.OutputItems.OfType<RealtimeMcpToolCallItem>().Any())
-                {
-                    responseDoneWithToolCallCount++;
-                }
+                responseDoneUpdateCount++;
             }
 
-            if (approvalSent && update is RealtimeServerUpdateResponseMcpCallCompleted)
+            if (mcpCallCompletedUpdateCount >= 1 && conversationItemDoneMcpToolCallUpdateCount >= 1 && responseDoneUpdateCount >= 2)
             {
-                mcpCallCompletedUpdateCount++;
                 break;
             }
         }
 
-        Assert.That(approvalRequestUpdateCount, Is.GreaterThan(0));
-        Assert.That(conversationItemDoneUpdateCount, Is.GreaterThan(0));
-        Assert.That(responseDoneWithToolCallCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThan(0));
+        Assert.That(conversationItemDoneMcpToolApprovalRequestUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(conversationItemDoneMcpToolCallUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(mcpCallCompletedUpdateCount, Is.GreaterThanOrEqualTo(1));
+        Assert.That(responseDoneUpdateCount, Is.GreaterThanOrEqualTo(2));
     }
 
     [Test]
     public async Task MCPToolWithAllowedTools()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         RealtimeMcpToolCallApprovalPolicy approvalPolicy =
             new RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
@@ -328,7 +369,7 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             ToolCallApprovalPolicy = approvalPolicy,
             AllowedTools = new RealtimeMcpToolFilter()
             {
-                ToolNames = { "roll" }
+                ToolNames = { toolName }
             }
         };
 
@@ -345,15 +386,17 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
             Tools = { mcpTool },
         };
 
-        List<RealtimeServerUpdate> setupUpdates =
-            await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
+        await ConfigureSessionAndWaitForMcpToolsAsync(sessionClient, sessionOptions);
 
         await sessionClient.AddItemAsync(
-            RealtimeItem.CreateUserMessageItem("Roll 2d4+1"),
+            RealtimeItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service. You can only call an MCP tool at most once."),
             CancellationToken);
 
         await sessionClient.StartResponseAsync(
-            new RealtimeResponseOptions { OutputModalities = { RealtimeOutputModality.Text } },
+            new RealtimeResponseOptions
+            {
+                OutputModalities = { RealtimeOutputModality.Text },
+            },
             CancellationToken);
 
         int mcpCallCompletedUpdateCount = 0;
@@ -373,13 +416,16 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
                 var outputItems = responseDone.Response.OutputItems;
                 Assert.That(outputItems.OfType<RealtimeMcpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+                Assert.That(outputItems.OfType<RealtimeMcpToolCallItem>().ToList(), Has.Count.GreaterThanOrEqualTo(1));
 
-                RealtimeMcpToolCallItem toolCallItem = outputItems.OfType<RealtimeMcpToolCallItem>().First();
-                Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-                Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
-                Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-                Assert.That(toolCallItem.Error, Is.Null);
+                RealtimeMcpToolCallItem toolCallItem = outputItems
+                    .OfType<RealtimeMcpToolCallItem>()
+                    .FirstOrDefault(item => item.ToolName == toolName);
+                Assert.That(toolCallItem, Is.Not.Null);
+                Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+                Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+                Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+                Assert.That(toolCallItem!.Error, Is.Null);
             }
 
             if (update is RealtimeServerUpdateResponseMcpCallCompleted)
