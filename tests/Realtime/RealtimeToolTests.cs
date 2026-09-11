@@ -32,7 +32,11 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
         RealtimeMcpTool mcpTool = new(serverLabel, serverUri)
         {
             // ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            ToolCallApprovalPolicy = approvalPolicy
+            ToolCallApprovalPolicy = approvalPolicy,
+            AllowedTools = new RealtimeMcpToolFilter()
+            {
+                ToolNames = { toolName }
+            }
         };
 
         RealtimeClient client = GetTestClient();
@@ -157,7 +161,11 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
         RealtimeMcpTool mcpTool = new(serverLabel, serverUri)
         {
-            ToolCallApprovalPolicy = approvalPolicy
+            ToolCallApprovalPolicy = approvalPolicy,
+            AllowedTools = new RealtimeMcpToolFilter()
+            {
+                ToolNames = { toolName }
+            }
         };
 
         RealtimeClient client = GetTestClient();
@@ -254,7 +262,11 @@ public class RealtimeToolTests : RealtimeTestFixtureBase
 
         RealtimeMcpTool mcpTool = new(serverLabel, serverUri)
         {
-            ToolCallApprovalPolicy = approvalPolicy
+            ToolCallApprovalPolicy = approvalPolicy,
+            AllowedTools = new RealtimeMcpToolFilter()
+            {
+                ToolNames = { toolName }
+            }
         };
 
         RealtimeClient client = GetTestClient();
