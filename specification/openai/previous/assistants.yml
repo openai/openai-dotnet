@@ -1,0 +1,859 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Assistants
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Assistants
+  description: Build Assistants that can call models and use tools.
+paths:
+  /assistants:
+    get:
+      operationId: listAssistants
+      tags:
+      - Assistants
+      summary: Returns a list of assistants.
+      deprecated: true
+      parameters:
+      - name: limit
+        in: query
+        description: >-
+          A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: order
+        in: query
+        description: >-
+          Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: after
+        in: query
+        description: >-
+          A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+        schema:
+          type: string
+      - name: before
+        in: query
+        description: >-
+          A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListAssistantsResponse"
+    post:
+      operationId: createAssistant
+      tags:
+      - Assistants
+      summary: Create an assistant with a model and instructions.
+      deprecated: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAssistantRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssistantObject"
+  /assistants/{assistant_id}:
+    get:
+      operationId: getAssistant
+      tags:
+      - Assistants
+      summary: Retrieves an assistant.
+      deprecated: true
+      parameters:
+      - in: path
+        name: assistant_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the assistant to retrieve.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssistantObject"
+    post:
+      operationId: modifyAssistant
+      tags:
+      - Assistants
+      summary: Modifies an assistant.
+      deprecated: true
+      parameters:
+      - in: path
+        name: assistant_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the assistant to modify.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ModifyAssistantRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AssistantObject"
+    delete:
+      operationId: deleteAssistant
+      tags:
+      - Assistants
+      summary: Delete an assistant.
+      deprecated: true
+      parameters:
+      - in: path
+        name: assistant_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the assistant to delete.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteAssistantResponse"
+components:
+  schemas:
+    AssistantObject:
+      type: object
+      title: Assistant
+      description: Represents an `assistant` that can call the model and use tools.
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `assistant`.
+          type: string
+          enum:
+          - assistant
+          x-stainless-const: true
+        created_at:
+          description: The Unix timestamp (in seconds) for when the assistant was created.
+          type: integer
+          format: unixtime
+        name:
+          anyOf:
+          - description: |-
+              The name of the assistant. The maximum length is 256 characters.
+            type: string
+            maxLength: 256
+          - type: "null"
+        description:
+          anyOf:
+          - description: >-
+              The description of the assistant. The maximum length is 512 characters.
+            type: string
+            maxLength: 512
+          - type: "null"
+        model:
+          description: >-
+            ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
+          type: string
+        instructions:
+          anyOf:
+          - description: >-
+              The system instructions that the assistant uses. The maximum length is 256,000 characters.
+            type: string
+            maxLength: 256000
+          - type: "null"
+        tools:
+          description: >-
+            A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
+          default: []
+          type: array
+          maxItems: 128
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/AssistantToolsCode"
+            - $ref: "#/components/schemas/AssistantToolsFileSearch"
+            - $ref: "#/components/schemas/AssistantToolsFunction"
+        tool_resources:
+          anyOf:
+          - type: object
+            description: >-
+              A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
+            properties:
+              code_interpreter:
+                type: object
+                properties:
+                  file_ids:
+                    type: array
+                    description: >-
+                      A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter`` tool. There can be a maximum of 20 files associated with the tool.
+                    default: []
+                    maxItems: 20
+                    items:
+                      type: string
+              file_search:
+                type: object
+                properties:
+                  vector_store_ids:
+                    type: array
+                    description: >-
+                      The ID of the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
+                    maxItems: 1
+                    items:
+                      type: string
+          - type: "null"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        temperature:
+          anyOf:
+          - description: >-
+              What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+            type: number
+            minimum: 0
+            maximum: 2
+            default: 1
+            example: 1
+          - type: "null"
+        top_p:
+          anyOf:
+          - type: number
+            minimum: 0
+            maximum: 1
+            default: 1
+            example: 1
+            description: >-
+              An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+
+              We generally recommend altering this or temperature but not both.
+          - type: "null"
+        response_format:
+          anyOf:
+          - $ref: "#/components/schemas/AssistantsApiResponseFormatOption"
+          - type: "null"
+      required:
+      - id
+      - object
+      - created_at
+      - name
+      - description
+      - model
+      - instructions
+      - tools
+      - metadata
+      deprecated: true
+    AssistantsApiResponseFormatOption:
+      description: >-
+        Specifies the format that the model must output. Compatible with [GPT-4o](/docs/models#gpt-4o), [GPT-4 Turbo](/docs/models#gpt-4-turbo-and-gpt-4), and all GPT-3.5 Turbo models since `gpt-3.5-turbo-1106`.
+
+        Setting to `{ "type": "json_schema", "json_schema": {...} }` enables Structured Outputs which ensures the model will match your supplied JSON schema. Learn more in the [Structured Outputs guide](/docs/guides/structured-outputs).
+
+        Setting to `{ "type": "json_object" }` enables JSON mode, which ensures the message the model generates is valid JSON.
+
+        **Important:** when using JSON mode, you **must** also instruct the model to produce JSON yourself via a system or user message. Without this, the model may generate an unending stream of whitespace until the generation reaches the token limit, resulting in a long-running and seemingly "stuck" request. Also note that the message content may be partially cut off if `finish_reason="length"`, which indicates the generation exceeded `max_tokens` or the conversation exceeded the max context length.
+      oneOf:
+      - type: string
+        description: |-
+          `auto` is the default value
+        enum:
+        - auto
+        x-stainless-const: true
+      - $ref: "#/components/schemas/ResponseFormatText"
+      - $ref: "#/components/schemas/ResponseFormatJsonObject"
+      - $ref: "#/components/schemas/ResponseFormatJsonSchema"
+    AssistantSupportedModels:
+      type: string
+      enum:
+      - gpt-5
+      - gpt-5-mini
+      - gpt-5-nano
+      - gpt-5-2025-08-07
+      - gpt-5-mini-2025-08-07
+      - gpt-5-nano-2025-08-07
+      - gpt-4.1
+      - gpt-4.1-mini
+      - gpt-4.1-nano
+      - gpt-4.1-2025-04-14
+      - gpt-4.1-mini-2025-04-14
+      - gpt-4.1-nano-2025-04-14
+      - o3-mini
+      - o3-mini-2025-01-31
+      - o1
+      - o1-2024-12-17
+      - gpt-4o
+      - gpt-4o-2024-11-20
+      - gpt-4o-2024-08-06
+      - gpt-4o-2024-05-13
+      - gpt-4o-mini
+      - gpt-4o-mini-2024-07-18
+      - gpt-4.5-preview
+      - gpt-4.5-preview-2025-02-27
+      - gpt-4-turbo
+      - gpt-4-turbo-2024-04-09
+      - gpt-4-0125-preview
+      - gpt-4-turbo-preview
+      - gpt-4-1106-preview
+      - gpt-4-vision-preview
+      - gpt-4
+      - gpt-4-0314
+      - gpt-4-0613
+      - gpt-4-32k
+      - gpt-4-32k-0314
+      - gpt-4-32k-0613
+      - gpt-3.5-turbo
+      - gpt-3.5-turbo-16k
+      - gpt-3.5-turbo-0613
+      - gpt-3.5-turbo-1106
+      - gpt-3.5-turbo-0125
+      - gpt-3.5-turbo-16k-0613
+    AssistantToolsCode:
+      type: object
+      title: Code interpreter tool
+      properties:
+        type:
+          type: string
+          description: "The type of tool being defined: `code_interpreter`"
+          enum:
+          - code_interpreter
+          x-stainless-const: true
+      required:
+      - type
+    AssistantToolsFileSearch:
+      type: object
+      title: FileSearch tool
+      properties:
+        type:
+          type: string
+          description: "The type of tool being defined: `file_search`"
+          enum:
+          - file_search
+          x-stainless-const: true
+        file_search:
+          type: object
+          description: Overrides for the file search tool.
+          properties:
+            max_num_results:
+              type: integer
+              minimum: 1
+              maximum: 50
+              description: |-
+                The maximum number of results the file search tool should output. The default is 20 for `gpt-4*` models and 5 for `gpt-3.5-turbo`. This number should be between 1 and 50 inclusive.
+                Note that the file search tool may output fewer than `max_num_results` results. See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
+            ranking_options:
+              $ref: "#/components/schemas/FileSearchRankingOptions"
+      required:
+      - type
+    AssistantToolsFunction:
+      type: object
+      title: Function tool
+      properties:
+        type:
+          type: string
+          description: "The type of tool being defined: `function`"
+          enum:
+          - function
+          x-stainless-const: true
+        function:
+          $ref: "#/components/schemas/FunctionObject"
+      required:
+      - type
+      - function
+    CreateAssistantRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        model:
+          description: >-
+            ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
+          example: gpt-4o
+          anyOf:
+          - type: string
+          - $ref: "#/components/schemas/AssistantSupportedModels"
+        name:
+          anyOf:
+          - description: |-
+              The name of the assistant. The maximum length is 256 characters.
+            type: string
+            maxLength: 256
+          - type: "null"
+        description:
+          anyOf:
+          - description: >-
+              The description of the assistant. The maximum length is 512 characters.
+            type: string
+            maxLength: 512
+          - type: "null"
+        instructions:
+          anyOf:
+          - description: >-
+              The system instructions that the assistant uses. The maximum length is 256,000 characters.
+            type: string
+            maxLength: 256000
+          - type: "null"
+        reasoning_effort:
+          $ref: "#/components/schemas/ReasoningEffort"
+        tools:
+          description: >-
+            A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
+          default: []
+          type: array
+          maxItems: 128
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/AssistantToolsCode"
+            - $ref: "#/components/schemas/AssistantToolsFileSearch"
+            - $ref: "#/components/schemas/AssistantToolsFunction"
+        tool_resources:
+          anyOf:
+          - type: object
+            description: >-
+              A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
+            properties:
+              code_interpreter:
+                type: object
+                properties:
+                  file_ids:
+                    type: array
+                    description: >-
+                      A list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+                    default: []
+                    maxItems: 20
+                    items:
+                      type: string
+              file_search:
+                type: object
+                properties:
+                  vector_store_ids:
+                    type: array
+                    description: >-
+                      The [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
+                    maxItems: 1
+                    items:
+                      type: string
+                  vector_stores:
+                    type: array
+                    description: >-
+                      A helper to create a [vector store](/docs/api-reference/vector-stores/object) with file_ids and attach it to this assistant. There can be a maximum of 1 vector store attached to the assistant.
+                    maxItems: 1
+                    items:
+                      type: object
+                      properties:
+                        file_ids:
+                          type: array
+                          description: >-
+                            A list of [file](/docs/api-reference/files) IDs to add to the vector store. For vector stores created before Nov 2025, there can be a maximum of 10,000 files in a vector store. For vector stores created starting in Nov 2025, the limit is 100,000,000 files.
+                          maxItems: 100000000
+                          items:
+                            type: string
+                        chunking_strategy:
+                          type: object
+                          description: The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy.
+                          oneOf:
+                          - type: object
+                            title: Auto Chunking Strategy
+                            description: The default strategy. This strategy currently uses a `max_chunk_size_tokens` of `800` and `chunk_overlap_tokens` of `400`.
+                            additionalProperties: false
+                            properties:
+                              type:
+                                type: string
+                                description: Always `auto`.
+                                enum:
+                                - auto
+                                x-stainless-const: true
+                            required:
+                            - type
+                          - type: object
+                            title: Static Chunking Strategy
+                            additionalProperties: false
+                            properties:
+                              type:
+                                type: string
+                                description: Always `static`.
+                                enum:
+                                - static
+                                x-stainless-const: true
+                              static:
+                                type: object
+                                additionalProperties: false
+                                properties:
+                                  max_chunk_size_tokens:
+                                    type: integer
+                                    minimum: 100
+                                    maximum: 4096
+                                    description: The maximum number of tokens in each chunk. The default value is `800`. The minimum value is `100` and the maximum value is `4096`.
+                                  chunk_overlap_tokens:
+                                    type: integer
+                                    description: >-
+                                      The number of tokens that overlap between chunks. The default value is `400`.
+
+                                      Note that the overlap must not exceed half of `max_chunk_size_tokens`.
+                                required:
+                                - max_chunk_size_tokens
+                                - chunk_overlap_tokens
+                            required:
+                            - type
+                            - static
+                        metadata:
+                          $ref: "#/components/schemas/Metadata"
+                oneOf:
+                - required:
+                  - vector_store_ids
+                - required:
+                  - vector_stores
+          - type: "null"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        temperature:
+          anyOf:
+          - description: >-
+              What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+            type: number
+            minimum: 0
+            maximum: 2
+            default: 1
+            example: 1
+          - type: "null"
+        top_p:
+          anyOf:
+          - type: number
+            minimum: 0
+            maximum: 1
+            default: 1
+            example: 1
+            description: >-
+              An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+
+              We generally recommend altering this or temperature but not both.
+          - type: "null"
+        response_format:
+          anyOf:
+          - $ref: "#/components/schemas/AssistantsApiResponseFormatOption"
+          - type: "null"
+      required:
+      - model
+    DeleteAssistantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - assistant.deleted
+          x-stainless-const: true
+      required:
+      - id
+      - object
+      - deleted
+    FileSearchRanker:
+      type: string
+      description: The ranker to use for the file search. If not specified will use the `auto` ranker.
+      enum:
+      - auto
+      - default_2024_08_21
+    FileSearchRankingOptions:
+      title: File search tool call ranking options
+      type: object
+      description: |-
+        The ranking options for the file search. If not specified, the file search tool will use the `auto` ranker and a score_threshold of 0.
+        See the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.
+      properties:
+        ranker:
+          $ref: "#/components/schemas/FileSearchRanker"
+        score_threshold:
+          type: number
+          description: The score threshold for the file search. All values must be a floating point number between 0 and 1.
+          minimum: 0
+          maximum: 1
+      required:
+      - score_threshold
+    FunctionObject:
+      type: object
+      properties:
+        description:
+          type: string
+          description: A description of what the function does, used by the model to choose when and how to call the function.
+        name:
+          type: string
+          description: The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.
+        parameters:
+          $ref: "#/components/schemas/FunctionParameters"
+        strict:
+          anyOf:
+          - type: boolean
+            default: false
+            description: Whether to enable strict schema adherence when generating the function call. If set to true, the model will follow the exact schema defined in the `parameters` field. Only a subset of JSON Schema is supported when `strict` is `true`. Learn more about Structured Outputs in the [function calling guide](/docs/guides/function-calling).
+          - type: "null"
+      required:
+      - name
+    FunctionParameters:
+      type: object
+      description: >-
+        The parameters the functions accepts, described as a JSON Schema object. See the [guide](/docs/guides/function-calling) for examples, and the [JSON Schema reference](https://json-schema.org/understanding-json-schema/) for documentation about the format. 
+
+        Omitting `parameters` defines a function with an empty parameter list.
+      additionalProperties: true
+    ListAssistantsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/AssistantObject"
+        first_id:
+          type: string
+          example: asst_abc123
+        last_id:
+          type: string
+          example: asst_abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    Metadata:
+      anyOf:
+      - type: object
+        description: >-
+          Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format, and querying for objects via API or the dashboard.
+
+          Keys are strings with a maximum length of 64 characters. Values are strings with a maximum length of 512 characters.
+        additionalProperties:
+          type: string
+      - type: "null"
+    ModifyAssistantRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        model:
+          description: >-
+            ID of the model to use. You can use the [List models](/docs/api-reference/models/list) API to see all of your available models, or see our [Model overview](/docs/models) for descriptions of them.
+          anyOf:
+          - type: string
+          - $ref: "#/components/schemas/AssistantSupportedModels"
+        reasoning_effort:
+          $ref: "#/components/schemas/ReasoningEffort"
+        name:
+          anyOf:
+          - description: |-
+              The name of the assistant. The maximum length is 256 characters.
+            type: string
+            maxLength: 256
+          - type: "null"
+        description:
+          anyOf:
+          - description: >-
+              The description of the assistant. The maximum length is 512 characters.
+            type: string
+            maxLength: 512
+          - type: "null"
+        instructions:
+          anyOf:
+          - description: >-
+              The system instructions that the assistant uses. The maximum length is 256,000 characters.
+            type: string
+            maxLength: 256000
+          - type: "null"
+        tools:
+          description: >-
+            A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types `code_interpreter`, `file_search`, or `function`.
+          default: []
+          type: array
+          maxItems: 128
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/AssistantToolsCode"
+            - $ref: "#/components/schemas/AssistantToolsFileSearch"
+            - $ref: "#/components/schemas/AssistantToolsFunction"
+        tool_resources:
+          anyOf:
+          - type: object
+            description: >-
+              A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the `code_interpreter` tool requires a list of file IDs, while the `file_search` tool requires a list of vector store IDs.
+            properties:
+              code_interpreter:
+                type: object
+                properties:
+                  file_ids:
+                    type: array
+                    description: >-
+                      Overrides the list of [file](/docs/api-reference/files) IDs made available to the `code_interpreter` tool. There can be a maximum of 20 files associated with the tool.
+                    default: []
+                    maxItems: 20
+                    items:
+                      type: string
+              file_search:
+                type: object
+                properties:
+                  vector_store_ids:
+                    type: array
+                    description: >-
+                      Overrides the [vector store](/docs/api-reference/vector-stores/object) attached to this assistant. There can be a maximum of 1 vector store attached to the assistant.
+                    maxItems: 1
+                    items:
+                      type: string
+          - type: "null"
+        metadata:
+          $ref: "#/components/schemas/Metadata"
+        temperature:
+          anyOf:
+          - description: >-
+              What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.
+            type: number
+            minimum: 0
+            maximum: 2
+            default: 1
+            example: 1
+          - type: "null"
+        top_p:
+          anyOf:
+          - type: number
+            minimum: 0
+            maximum: 1
+            default: 1
+            example: 1
+            description: >-
+              An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+
+              We generally recommend altering this or temperature but not both.
+          - type: "null"
+        response_format:
+          anyOf:
+          - $ref: "#/components/schemas/AssistantsApiResponseFormatOption"
+          - type: "null"
+    ReasoningEffort:
+      anyOf:
+      - type: string
+        enum:
+        - none
+        - minimal
+        - low
+        - medium
+        - high
+        - xhigh
+        - max
+        default: medium
+        description: >-
+          Constrains effort on reasoning for reasoning models. Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, and `max`. Reducing reasoning effort can result in faster responses and fewer tokens used on reasoning in a response. Not all reasoning models support every value. See the [reasoning guide](https://platform.openai.com/docs/guides/reasoning) for model-specific support.
+      - type: "null"
+    ResponseFormatJsonObject:
+      type: object
+      title: JSON object
+      description: >-
+        JSON object response format. An older method of generating JSON responses. Using `json_schema` is recommended for models that support it. Note that the model will not generate JSON without a system or user message instructing it to do so.
+      properties:
+        type:
+          type: string
+          description: The type of response format being defined. Always `json_object`.
+          enum:
+          - json_object
+          x-stainless-const: true
+      required:
+      - type
+    ResponseFormatJsonSchema:
+      type: object
+      title: JSON schema
+      description: |-
+        JSON Schema response format. Used to generate structured JSON responses. Learn more about [Structured Outputs](/docs/guides/structured-outputs).
+      properties:
+        type:
+          type: string
+          description: The type of response format being defined. Always `json_schema`.
+          enum:
+          - json_schema
+          x-stainless-const: true
+        json_schema:
+          type: object
+          title: JSON schema
+          description: |-
+            Structured Outputs configuration options, including a JSON Schema.
+          properties:
+            description:
+              type: string
+              description: >-
+                A description of what the response format is for, used by the model to determine how to respond in the format.
+            name:
+              type: string
+              description: >-
+                The name of the response format. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.
+            schema:
+              $ref: "#/components/schemas/ResponseFormatJsonSchemaSchema"
+            strict:
+              anyOf:
+              - type: boolean
+                default: false
+                description: >-
+                  Whether to enable strict schema adherence when generating the output. If set to true, the model will always follow the exact schema defined in the `schema` field. Only a subset of JSON Schema is supported when `strict` is `true`. To learn more, read the [Structured Outputs guide](/docs/guides/structured-outputs).
+              - type: "null"
+          required:
+          - name
+      required:
+      - type
+      - json_schema
+    ResponseFormatJsonSchemaSchema:
+      type: object
+      title: JSON schema
+      description: |-
+        The schema for the response format, described as a JSON Schema object. Learn how to build JSON schemas [here](https://json-schema.org/).
+      additionalProperties: true
+    ResponseFormatText:
+      type: object
+      title: Text
+      description: |-
+        Default response format. Used to generate text responses.
+      properties:
+        type:
+          type: string
+          description: The type of response format being defined. Always `text`.
+          enum:
+          - text
+          x-stainless-const: true
+      required:
+      - type
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...

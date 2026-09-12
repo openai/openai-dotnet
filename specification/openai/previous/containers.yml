@@ -1,0 +1,605 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Containers
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+paths:
+  /containers:
+    get:
+      summary: List Containers
+      description: Lists containers.
+      operationId: ListContainers
+      parameters:
+      - name: limit
+        in: query
+        description: >-
+          A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: order
+        in: query
+        description: >-
+          Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: after
+        in: query
+        description: >-
+          A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+        schema:
+          type: string
+      - name: name
+        in: query
+        description: Filter results by container name.
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContainerListResource"
+    post:
+      summary: Create Container
+      description: Creates a container.
+      operationId: CreateContainer
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateContainerBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContainerResource"
+  /containers/{container_id}:
+    get:
+      summary: Retrieve Container
+      description: Retrieves a container.
+      operationId: RetrieveContainer
+      parameters:
+      - name: container_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContainerResource"
+    delete:
+      operationId: DeleteContainer
+      summary: Delete Container
+      description: Delete a container.
+      parameters:
+      - name: container_id
+        in: path
+        description: The ID of the container to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /containers/{container_id}/files:
+    post:
+      summary: >-
+        Create a Container File
+
+        You can send either a multipart/form-data request with the raw file content, or a JSON request with a file ID.
+      description: |-
+        Creates a container file.
+      operationId: CreateContainerFile
+      parameters:
+      - name: container_id
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateContainerFileBody"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateContainerFileBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContainerFileResource"
+    get:
+      summary: List Container files
+      description: Lists container files.
+      operationId: ListContainerFiles
+      parameters:
+      - name: container_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: >-
+          A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: order
+        in: query
+        description: >-
+          Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: after
+        in: query
+        description: >-
+          A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContainerFileListResource"
+  /containers/{container_id}/files/{file_id}:
+    get:
+      summary: Retrieve Container File
+      description: Retrieves a container file.
+      operationId: RetrieveContainerFile
+      parameters:
+      - name: container_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: file_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContainerFileResource"
+    delete:
+      operationId: DeleteContainerFile
+      summary: Delete Container File
+      description: Delete a container file.
+      parameters:
+      - name: container_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: file_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /containers/{container_id}/files/{file_id}/content:
+    get:
+      summary: Retrieve Container File Content
+      description: Retrieves a container file content.
+      operationId: RetrieveContainerFileContent
+      parameters:
+      - name: container_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: file_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+components:
+  schemas:
+    ContainerFileListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of container files.
+          items:
+            $ref: "#/components/schemas/ContainerFileResource"
+        first_id:
+          type: string
+          description: The ID of the first file in the list.
+        last_id:
+          type: string
+          description: The ID of the last file in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more files available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ContainerFileResource:
+      type: object
+      title: The container file object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        object:
+          type: string
+          description: The type of this object (`container.file`).
+        container_id:
+          type: string
+          description: The container this file belongs to.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the file was created.
+        bytes:
+          type: integer
+          description: Size of the file in bytes.
+        path:
+          type: string
+          description: Path of the file in the container.
+        source:
+          type: string
+          description: Source of the file (e.g., `user`, `assistant`).
+      required:
+      - id
+      - object
+      - created_at
+      - bytes
+      - container_id
+      - path
+      - source
+    ContainerListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of containers.
+          items:
+            $ref: "#/components/schemas/ContainerResource"
+        first_id:
+          type: string
+          description: The ID of the first container in the list.
+        last_id:
+          type: string
+          description: The ID of the last container in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more containers available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ContainerNetworkPolicyAllowlistParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - allowlist
+          description: Allow outbound network access only to specified domains. Always `allowlist`.
+          default: allowlist
+          x-stainless-const: true
+        allowed_domains:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          description: A list of allowed domains when type is `allowlist`.
+        domain_secrets:
+          items:
+            $ref: "#/components/schemas/ContainerNetworkPolicyDomainSecretParam"
+          type: array
+          minItems: 1
+          description: Optional domain-scoped secrets for allowlisted domains.
+      type: object
+      required:
+      - type
+      - allowed_domains
+    ContainerNetworkPolicyDisabledParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+      type: object
+      required:
+      - type
+    ContainerNetworkPolicyDomainSecretParam:
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          description: The domain associated with the secret.
+        name:
+          type: string
+          minLength: 1
+          description: The name of the secret to inject for the domain.
+        value:
+          type: string
+          maxLength: 10485760
+          minLength: 1
+          description: The secret value to inject for the domain.
+      type: object
+      required:
+      - domain
+      - name
+      - value
+    ContainerResource:
+      type: object
+      title: The container object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the container.
+        object:
+          type: string
+          description: The type of this object.
+        name:
+          type: string
+          description: Name of the container.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the container was created.
+        status:
+          type: string
+          description: Status of the container (e.g., active, deleted).
+        last_active_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the container was last active.
+        expires_after:
+          type: object
+          description: >-
+            The container will expire after this time period. The anchor is the reference point for the expiration. The minutes is the number of minutes after the anchor before the container expires.
+          properties:
+            anchor:
+              type: string
+              description: The reference point for the expiration.
+              enum:
+              - last_active_at
+            minutes:
+              type: integer
+              description: The number of minutes after the anchor before the container expires.
+        memory_limit:
+          type: string
+          description: The memory limit configured for the container.
+          enum:
+          - 1g
+          - 4g
+          - 16g
+          - 64g
+        network_policy:
+          description: Network access policy for the container.
+          type: object
+          properties:
+            type:
+              type: string
+              description: The network policy mode.
+              enum:
+              - allowlist
+              - disabled
+            allowed_domains:
+              type: array
+              description: Allowed outbound domains when `type` is `allowlist`.
+              items:
+                type: string
+          required:
+          - type
+      required:
+      - id
+      - object
+      - name
+      - created_at
+      - status
+      - id
+      - name
+      - created_at
+      - status
+    CreateContainerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the container to create.
+        file_ids:
+          type: array
+          description: IDs of files to copy to the container.
+          items:
+            type: string
+        expires_after:
+          type: object
+          description: Container expiration time in seconds relative to the 'anchor' time.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - last_active_at
+              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
+            minutes:
+              type: integer
+          required:
+          - anchor
+          - minutes
+        skills:
+          type: array
+          description: An optional list of skills referenced by id or inline data.
+          items:
+            oneOf:
+            - $ref: "#/components/schemas/SkillReferenceParam"
+            - $ref: "#/components/schemas/InlineSkillParam"
+            discriminator:
+              propertyName: type
+        memory_limit:
+          type: string
+          enum:
+          - 1g
+          - 4g
+          - 16g
+          - 64g
+          description: Optional memory limit for the container. Defaults to "1g".
+        network_policy:
+          description: Network access policy for the container.
+          oneOf:
+          - $ref: "#/components/schemas/ContainerNetworkPolicyDisabledParam"
+          - $ref: "#/components/schemas/ContainerNetworkPolicyAllowlistParam"
+          discriminator:
+            propertyName: type
+      required:
+      - name
+    CreateContainerFileBody:
+      type: object
+      properties:
+        file_id:
+          type: string
+          description: Name of the file to create.
+        file:
+          description: |-
+            The File object (not file name) to be uploaded.
+          type: string
+          format: binary
+      required: []
+    InlineSkillParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - inline
+          description: Defines an inline skill for this request.
+          default: inline
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the skill.
+        description:
+          type: string
+          description: The description of the skill.
+        source:
+          $ref: "#/components/schemas/InlineSkillSourceParam"
+          description: Inline skill payload
+      type: object
+      required:
+      - type
+      - name
+      - description
+      - source
+    InlineSkillSourceParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - base64
+          description: The type of the inline skill source. Must be `base64`.
+          default: base64
+          x-stainless-const: true
+        media_type:
+          type: string
+          enum:
+          - application/zip
+          description: The media type of the inline skill payload. Must be `application/zip`.
+          default: application/zip
+          x-stainless-const: true
+        data:
+          type: string
+          maxLength: 70254592
+          minLength: 1
+          description: Base64-encoded skill zip bundle.
+      type: object
+      required:
+      - type
+      - media_type
+      - data
+      description: Inline skill payload
+    SkillReferenceParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - skill_reference
+          description: References a skill created with the /v1/skills endpoint.
+          default: skill_reference
+          x-stainless-const: true
+        skill_id:
+          type: string
+          maxLength: 64
+          minLength: 1
+          description: The ID of the referenced skill.
+        version:
+          type: string
+          description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
+      type: object
+      required:
+      - type
+      - skill_id
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...

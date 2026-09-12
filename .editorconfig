@@ -6,16 +6,16 @@ root = true
 [*]
 trim_trailing_whitespace = true
 
-# Default settings:
-# A newline ending every file
-# Use 4 spaces as indentation
-[sdk/*/{Azure.*,System.*}/**]
+# C# files
+#
+# These rules apply to all hand-written C# in the repository. Generated output and the
+# exported API listings are excluded further down, since neither is edited by hand.
+[*.cs]
+# Basic formatting
 insert_final_newline = true
 indent_style = space
 indent_size = 4
 
-# C# files
-[src/*/{Custom.*}/**.cs]
 # New line preferences
 csharp_new_line_before_open_brace = all # vs-default: any
 csharp_new_line_before_else = true # vs-default: true
@@ -164,6 +164,17 @@ dotnet_style_require_accessibility_modifiers = for_non_interface_members:suggest
 
 # Analyzers
 dotnet_code_quality.ca1802.api_surface = private, internal
+
+# Generated code
+#
+# The TypeSpec emitter owns everything under src/Generated, and Export-Api.ps1 owns the API
+# listings under api/. Neither is hand-edited, so the style rules above do not apply. Marking
+# them as generated also keeps analyzers from reporting on them.
+[**/src/Generated/**.cs]
+generated_code = true
+
+[api/*.cs]
+generated_code = true
 
 # Xml project files
 [*.{csproj,vcxproj,vcxproj.filters,proj,nativeproj,locproj}]

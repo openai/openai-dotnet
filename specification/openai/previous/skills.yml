@@ -1,0 +1,565 @@
+openapi: 3.1.0
+info:
+  title: OpenAI API — Skills
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+paths:
+  /skills:
+    post:
+      tags:
+      - Skills
+      summary: Create a new skill.
+      operationId: CreateSkill
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateSkillBody"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSkillBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillResource"
+    get:
+      tags:
+      - Skills
+      summary: List all skills for the current project.
+      operationId: ListSkills
+      parameters:
+      - name: limit
+        in: query
+        description: Number of items to retrieve
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 100
+      - name: order
+        in: query
+        description: Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order.
+        required: false
+        schema:
+          $ref: "#/components/schemas/OrderEnum"
+      - name: after
+        in: query
+        description: Identifier for the last item from the previous pagination request
+        required: false
+        schema:
+          description: Identifier for the last item from the previous pagination request
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillListResource"
+  /skills/{skill_id}:
+    delete:
+      tags:
+      - Skills
+      summary: Delete a skill by its ID.
+      operationId: DeleteSkill
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill to delete.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletedSkillResource"
+    get:
+      tags:
+      - Skills
+      summary: Get a skill by its ID.
+      operationId: GetSkill
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill to retrieve.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillResource"
+    post:
+      tags:
+      - Skills
+      summary: Update the default version pointer for a skill.
+      operationId: UpdateSkillDefaultVersion
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetDefaultSkillVersionBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillResource"
+  /skills/{skill_id}/content:
+    get:
+      tags:
+      - Skills
+      summary: Download a skill zip bundle by its ID.
+      operationId: GetSkillContent
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill to download.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      responses:
+        "200":
+          description: The skill zip bundle.
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+  /skills/{skill_id}/versions:
+    post:
+      tags:
+      - Skills
+      summary: Create a new immutable skill version.
+      operationId: CreateSkillVersion
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill to version.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/schemas/CreateSkillVersionBody"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSkillVersionBody"
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillVersionResource"
+    get:
+      tags:
+      - Skills
+      summary: List skill versions for a skill.
+      operationId: ListSkillVersions
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      - name: limit
+        in: query
+        description: Number of versions to retrieve.
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          maximum: 100
+      - name: order
+        in: query
+        description: Sort order of results by version number.
+        required: false
+        schema:
+          $ref: "#/components/schemas/OrderEnum"
+      - name: after
+        in: query
+        description: The skill version ID to start after.
+        required: false
+        schema:
+          example: skillver_123
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillVersionListResource"
+  /skills/{skill_id}/versions/{version}:
+    get:
+      tags:
+      - Skills
+      summary: Get a specific skill version.
+      operationId: GetSkillVersion
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      - name: version
+        in: path
+        description: The version number to retrieve.
+        required: true
+        schema:
+          description: The version number to retrieve.
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillVersionResource"
+    delete:
+      tags:
+      - Skills
+      summary: Delete a skill version.
+      operationId: DeleteSkillVersion
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      - name: version
+        in: path
+        description: The skill version number.
+        required: true
+        schema:
+          description: The skill version number.
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeletedSkillVersionResource"
+  /skills/{skill_id}/versions/{version}/content:
+    get:
+      tags:
+      - Skills
+      summary: Download a skill version zip bundle.
+      operationId: GetSkillVersionContent
+      parameters:
+      - name: skill_id
+        in: path
+        description: The identifier of the skill.
+        required: true
+        schema:
+          example: skill_123
+          type: string
+      - name: version
+        in: path
+        description: The skill version number.
+        required: true
+        schema:
+          description: The skill version number.
+          type: string
+      responses:
+        "200":
+          description: The skill zip bundle.
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+            application/json:
+              schema:
+                type: string
+components:
+  schemas:
+    CreateSkillBody:
+      properties:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
+          - type: string
+            format: binary
+            description: Skill zip file to upload.
+      type: object
+      required:
+      - files
+      title: Create skill request
+      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
+    CreateSkillVersionBody:
+      properties:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
+          - type: string
+            format: binary
+            description: Skill zip file to upload.
+        default:
+          type: boolean
+          description: Whether to set this version as the default.
+      type: object
+      required:
+      - files
+      title: Create skill version request
+      description: Uploads a new immutable version of a skill.
+    DeletedSkillResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.deleted
+          default: skill.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+    DeletedSkillVersionResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.version.deleted
+          default: skill.version.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+        version:
+          type: string
+          description: The deleted skill version.
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+      - version
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    SetDefaultSkillVersionBody:
+      properties:
+        default_version:
+          type: string
+          description: The skill version number to set as default.
+      type: object
+      required:
+      - default_version
+      title: Update skill request
+      description: Updates the default version pointer for a skill.
+    SkillListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: "#/components/schemas/SkillResource"
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: "null"
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: "null"
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    SkillResource:
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the skill.
+        object:
+          type: string
+          enum:
+          - skill
+          description: The object type, which is `skill`.
+          default: skill
+          x-stainless-const: true
+        name:
+          type: string
+          description: Name of the skill.
+        description:
+          type: string
+          description: Description of the skill.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (seconds) for when the skill was created.
+        default_version:
+          type: string
+          description: Default version for the skill.
+        latest_version:
+          type: string
+          description: Latest version for the skill.
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - description
+      - created_at
+      - default_version
+      - latest_version
+    SkillVersionListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: "#/components/schemas/SkillVersionResource"
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: "null"
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: "null"
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    SkillVersionResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.version
+          description: The object type, which is `skill.version`.
+          default: skill.version
+          x-stainless-const: true
+        id:
+          type: string
+          description: Unique identifier for the skill version.
+        skill_id:
+          type: string
+          description: Identifier of the skill for this version.
+        version:
+          type: string
+          description: Version number for this skill.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (seconds) for when the version was created.
+        name:
+          type: string
+          description: Name of the skill version.
+        description:
+          type: string
+          description: Description of the skill version.
+      type: object
+      required:
+      - object
+      - id
+      - skill_id
+      - version
+      - created_at
+      - name
+      - description
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+...
