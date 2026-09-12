@@ -13,6 +13,10 @@ public partial class VectorStore
     [CodeGenMember("Object")]
     internal string Object { get; } = "vector_store";
 
+    // CUSTOM: Changed type.
+    /// <summary> The total number of bytes used by the files in the vector store. </summary>
+    public long UsageBytes { get; }
+
     /// <summary>
     /// Gets the policy that controls when this vector store will be automatically deleted.
     /// </summary>
