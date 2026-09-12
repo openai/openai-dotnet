@@ -13,18 +13,18 @@ namespace OpenAI.Chat
     internal partial class ChatClientGetChatCompletionsAsyncCollectionResultOfT : AsyncCollectionResult<ChatCompletion>
     {
         private readonly ChatClient _client;
-        private readonly string _after;
-        private readonly int? _limit;
+        private readonly string _afterId;
+        private readonly int? _pageSizeLimit;
         private readonly string _order;
         private readonly IDictionary<string, string> _metadata;
         private readonly string _model;
         private readonly RequestOptions _options;
 
-        public ChatClientGetChatCompletionsAsyncCollectionResultOfT(ChatClient client, string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
+        public ChatClientGetChatCompletionsAsyncCollectionResultOfT(ChatClient client, string afterId, int? pageSizeLimit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
             _client = client;
-            _after = after;
-            _limit = limit;
+            _afterId = afterId;
+            _pageSizeLimit = pageSizeLimit;
             _order = order;
             _metadata = metadata;
             _model = model;
@@ -33,7 +33,7 @@ namespace OpenAI.Chat
 
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
-            PipelineMessage message = _client.CreateGetChatCompletionsRequest(_after, _limit, _order, _metadata, _model, _options);
+            PipelineMessage message = _client.CreateGetChatCompletionsRequest(_afterId, _pageSizeLimit, _order, _metadata, _model, _options);
             string nextToken = null;
             while (true)
             {
@@ -48,7 +48,7 @@ namespace OpenAI.Chat
                 {
                     yield break;
                 }
-                message = _client.CreateGetChatCompletionsRequest(nextToken, _limit, _order, _metadata, _model, _options);
+                message = _client.CreateGetChatCompletionsRequest(nextToken, _pageSizeLimit, _order, _metadata, _model, _options);
             }
         }
 

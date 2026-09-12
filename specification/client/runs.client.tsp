@@ -37,3 +37,11 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(ListRunStepsResponse.data, Lifecycle.Read);
 @@visibility(ListRunsResponse.data, Lifecycle.Read);
+
+@@clientName(RunCollectionOptions.after, "AfterId");
+@@clientName(RunCollectionOptions.before, "BeforeId");
+@@clientName(RunCollectionOptions.limit, "PageSizeLimit");
+
+@@clientName(RunStepCollectionOptions.after, "AfterId");
+@@clientName(RunStepCollectionOptions.before, "BeforeId");
+@@clientName(RunStepCollectionOptions.limit, "PageSizeLimit");

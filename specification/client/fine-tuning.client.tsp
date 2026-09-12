@@ -4,6 +4,9 @@ import "@azure-tools/typespec-client-generator-core";
 using OpenAI;
 using Azure.ClientGenerator.Core;
 
+@@clientName(FineTuningCheckpointCollectionOptions.after, "AfterId");
+@@clientName(FineTuningCheckpointCollectionOptions.limit, "PageSizeLimit");
+
 @@access(FineTuneChatRequestInput, Access.public);
 @@usage(FineTuneChatRequestInput, Usage.input);
 

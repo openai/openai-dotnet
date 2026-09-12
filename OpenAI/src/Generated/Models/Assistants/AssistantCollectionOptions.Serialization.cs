@@ -100,17 +100,17 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string afterId = default;
-            string beforeId = default;
             int? pageSizeLimit = default;
             AssistantCollectionOrder? order = default;
+            string afterId = default;
+            string beforeId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties);
+            return new AssistantCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties);
         }
     }
 }

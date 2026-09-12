@@ -100,17 +100,17 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            string afterId = default;
-            string beforeId = default;
             int? pageSizeLimit = default;
             VectorStoreCollectionOrder? order = default;
+            string afterId = default;
+            string beforeId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties);
+            return new VectorStoreCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties);
         }
     }
 }

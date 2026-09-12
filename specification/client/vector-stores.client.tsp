@@ -24,6 +24,14 @@ using Azure.ClientGenerator.Core;
 @@clientName(createVectorStoreFile, "AddFileToVectorStore");
 @@clientName(createVectorStoreFileBatch, "AddFileBatchToVectorStore");
 
+@@clientName(VectorStoreCollectionOptions.after, "AfterId");
+@@clientName(VectorStoreCollectionOptions.before, "BeforeId");
+@@clientName(VectorStoreCollectionOptions.limit, "PageSizeLimit");
+
+@@clientName(VectorStoreFileCollectionOptions.after, "AfterId");
+@@clientName(VectorStoreFileCollectionOptions.before, "BeforeId");
+@@clientName(VectorStoreFileCollectionOptions.limit, "PageSizeLimit");
+
 @@clientLocation(listVectorStores, "VectorStores");
 @@clientLocation(createVectorStore, "VectorStores");
 @@clientLocation(deleteVectorStore, "VectorStores");

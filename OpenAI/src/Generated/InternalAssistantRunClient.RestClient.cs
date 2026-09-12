@@ -54,28 +54,28 @@ namespace OpenAI.Assistants
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetRunsRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateGetRunsRequest(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/threads/", false);
             uri.AppendPath(threadId, true);
             uri.AppendPath("/runs", false);
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {
                 uri.AppendQuery("order", order, true);
             }
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (before != null)
+            if (beforeId != null)
             {
-                uri.AppendQuery("before", before, true);
+                uri.AppendQuery("before", beforeId, true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -160,7 +160,7 @@ namespace OpenAI.Assistants
         }
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        internal virtual PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? pageSizeLimit, string order, string afterId, string beforeId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -169,21 +169,21 @@ namespace OpenAI.Assistants
             uri.AppendPath("/runs/", false);
             uri.AppendPath(runId, true);
             uri.AppendPath("/steps", false);
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {
                 uri.AppendQuery("order", order, true);
             }
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (before != null)
+            if (beforeId != null)
             {
-                uri.AppendQuery("before", before, true);
+                uri.AppendQuery("before", beforeId, true);
             }
             if (include != null && !(include is ChangeTrackingList<InternalIncludedRunStepProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {

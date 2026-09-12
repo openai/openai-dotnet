@@ -17,21 +17,39 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class PaginationVisitor : ScmLibraryVisitor
 {
-
-    private static readonly string[] _paginationParamsToReplace = ["after", "afterId", "before", "limit", "pageSizeLimit", "order", "model", "metadata", "filter"];
-    private static readonly Dictionary<string, string> _paramReplacementMap = new()
+    private static readonly HashSet<string> _paginationParamsToReplace = new(StringComparer.OrdinalIgnoreCase)
     {
-        { "after", "AfterId" },
+        "afterId", "beforeId", "pageSizeLimit", "order", "model", "metadata", "filter"
+    };
+    private static readonly Dictionary<string, string> _paramReplacementMap = new(StringComparer.OrdinalIgnoreCase)
+    {
         { "afterId", "AfterId" },
-        { "before", "BeforeId" },
-        { "limit", "PageSizeLimit" },
+        { "beforeId", "BeforeId" },
         { "pageSizeLimit", "PageSizeLimit" },
         { "order", "Order" },
         { "model", "Model" },
         { "metadata", "Metadata" },
         { "filter", "Filter" }
     };
-    private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
+    private static readonly Dictionary<string, string> _legacyProtocolParameterNames = new(StringComparer.OrdinalIgnoreCase)
+    {
+        { "afterId", "after" },
+        { "beforeId", "before" },
+        { "pageSizeLimit", "limit" }
+    };
+    private static readonly HashSet<(string ClientName, string MethodName)> _protocolMethodsWithLegacyParameterNames =
+    [
+        ("AssistantClient", "GetAssistants"),
+        ("BatchClient", "GetBatches"),
+        ("ChatClient", "GetChatCompletions"),
+        ("ChatClient", "GetChatCompletionMessages"),
+        ("FineTuningClient", "GetFineTuningCheckpointPermissions"),
+        ("VectorStoreClient", "GetVectorStores"),
+        ("VectorStoreClient", "GetVectorStoreFiles"),
+        ("VectorStoreClient", "GetVectorStoreFilesInBatch"),
+        ("VideoClient", "GetVideos")
+    ];
+    private static readonly Dictionary<string, (string ReturnType, string OptionsType, HashSet<string> ParamsToReplace)> _optionsReplacements = new()
     {
         {
             "GetChatCompletions",
@@ -131,6 +149,12 @@ public class PaginationVisitor : ScmLibraryVisitor
             return method;
         }
 
+        // Preserve the source-compatible named-argument surface on public protocol overloads.
+        if (TryPreserveLegacyProtocolParameterNames(method))
+        {
+            return method;
+        }
+
         // Try to handle GetRawPagesAsync methods for hasMore checks
         if (TryHandleGetRawPagesAsyncMethod(method))
         {
@@ -138,6 +162,41 @@ public class PaginationVisitor : ScmLibraryVisitor
         }
 
         return base.VisitMethod(method);
+    }
+
+    /// <summary>
+    /// Restores the legacy public parameter names on protocol overloads. Parameter names are part of
+    /// the C# source-compatibility surface because callers can use named arguments, even though they
+    /// are not represented in binary API compatibility checks.
+    /// </summary>
+    private static bool TryPreserveLegacyProtocolParameterNames(MethodProvider method)
+    {
+        if (!method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Public) ||
+            !method.Signature.Parameters.Any(parameter => parameter.Type.Name == "RequestOptions"))
+        {
+            return false;
+        }
+
+        string methodName = method.Signature.Name.EndsWith("Async", StringComparison.Ordinal)
+            ? method.Signature.Name[..^"Async".Length]
+            : method.Signature.Name;
+
+        if (!_protocolMethodsWithLegacyParameterNames.Contains((method.EnclosingType.Name, methodName)))
+        {
+            return false;
+        }
+
+        bool updated = false;
+        foreach (ParameterProvider parameter in method.Signature.Parameters)
+        {
+            if (_legacyProtocolParameterNames.TryGetValue(parameter.Name, out string? legacyName))
+            {
+                parameter.Update(name: legacyName);
+                updated = true;
+            }
+        }
+
+        return updated;
     }
 
     /// <summary>
