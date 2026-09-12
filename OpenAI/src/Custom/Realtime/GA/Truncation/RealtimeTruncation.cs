@@ -5,12 +5,16 @@ namespace OpenAI.Realtime;
 // CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeTruncationGA")]
 [CodeGenVisibility(nameof(RealtimeTruncation), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class RealtimeTruncation
 {
     // CUSTOM: Added to support the corresponding component of the union.
     public RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation)
     {
         DefaultTruncation = defaultTruncation;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
@@ -19,6 +23,9 @@ public partial class RealtimeTruncation
         Argument.AssertNotNull(customTruncation, nameof(customTruncation));
 
         CustomTruncation = customTruncation;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Removed setter.

@@ -56,41 +56,5 @@ namespace OpenAI.Realtime
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRealtimeToolChoice(document.RootElement, null, options);
         }
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-            value = default;
-
-            if (local.StartsWith("custom_tool_choice"u8))
-            {
-                if (CustomToolChoice == null)
-                {
-                    return false;
-                }
-                return CustomToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("custom_tool_choice"u8.Length)], out value);
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
-        {
-            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
-
-            if (local.StartsWith("custom_tool_choice"u8))
-            {
-                if (CustomToolChoice == null)
-                {
-                    return false;
-                }
-                CustomToolChoice.Patch.Set([.. "$"u8, .. local.Slice("custom_tool_choice"u8.Length)], value);
-                return true;
-            }
-            return false;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

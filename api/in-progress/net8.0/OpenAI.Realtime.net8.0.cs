@@ -580,10 +580,6 @@ namespace OpenAI.Realtime {
         public RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
         public int? CustomMaxOutputTokenCount { get; }
         public RealtimeDefaultMaxOutputTokenCount? DefaultMaxOutputTokenCount { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
         public static implicit operator RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
     }
@@ -607,10 +603,6 @@ namespace OpenAI.Realtime {
         public RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
         public RealtimeCustomMcpToolCallApprovalPolicy CustomPolicy { get; }
         public RealtimeDefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeCustomMcpToolCallApprovalPolicy customPolicy);
         public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
     }
@@ -1595,10 +1587,6 @@ namespace OpenAI.Realtime {
         public RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice);
         public RealtimeCustomToolChoice CustomToolChoice { get; }
         public RealtimeDefaultToolChoice? DefaultToolChoice { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeToolChoice(RealtimeCustomToolChoice customToolChoice);
         public static implicit operator RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice);
     }
@@ -1608,10 +1596,6 @@ namespace OpenAI.Realtime {
         public RealtimeTracing(RealtimeDefaultTracing defaultTracing);
         public RealtimeCustomTracing CustomTracing { get; }
         public RealtimeDefaultTracing? DefaultTracing { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeTracing(RealtimeCustomTracing customTracing);
         public static implicit operator RealtimeTracing(RealtimeDefaultTracing defaultTracing);
     }
@@ -1685,10 +1669,6 @@ namespace OpenAI.Realtime {
         public RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation);
         public RealtimeCustomTruncation CustomTruncation { get; }
         public RealtimeDefaultTruncation? DefaultTruncation { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
         public static implicit operator RealtimeTruncation(RealtimeCustomTruncation customTruncation);
         public static implicit operator RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation);
     }

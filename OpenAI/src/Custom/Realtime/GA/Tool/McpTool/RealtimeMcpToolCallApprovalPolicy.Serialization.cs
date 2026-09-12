@@ -30,16 +30,14 @@ public partial class RealtimeMcpToolCallApprovalPolicy
         {
             throw new FormatException($"The model {nameof(RealtimeMcpToolCallApprovalPolicy)} does not support writing '{format}' format.");
         }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        if (Optional.IsDefined(DefaultPolicy) && !Patch.Contains("$.default_policy"u8))
+        if (Optional.IsDefined(DefaultPolicy))
         {
             writer.WriteStringValue(DefaultPolicy.Value.ToString());
         }
-        if (Optional.IsDefined(CustomPolicy) && !Patch.Contains("$.custom_policy"u8))
+        else if (Optional.IsDefined(CustomPolicy))
         {
             writer.WriteObjectValue(CustomPolicy, options);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
@@ -60,11 +58,36 @@ public partial class RealtimeMcpToolCallApprovalPolicy
         {
             defaultPolicy = new RealtimeDefaultMcpToolCallApprovalPolicy(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             customPolicy = RealtimeCustomMcpToolCallApprovalPolicy.DeserializeRealtimeCustomMcpToolCallApprovalPolicy(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected realtime MCP tool call approval policy to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return CustomPolicy is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && CustomPolicy.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (CustomPolicy is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        CustomPolicy.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }
