@@ -32,6 +32,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Realtime:
   - Updated the function-calling example to parse and validate model-provided arguments before invoking the local function. _(A community contribution, courtesy of [Rohan5commit](https://github.com/Rohan5commit))_
 
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Realtime:
+  - The service and session operations on `RealtimeClient` and `RealtimeSessionClient` are now async-only. The synchronous service and session operations they previously exposed (session and client-secret creation, sending commands and audio, receiving updates, session configuration, and conversation item helpers) have been removed, along with the underlying synchronous connection path. Use the corresponding `*Async` APIs instead.
+
 ## 2.13.0 (2026-08-10)
 
 ### Acknowledgments
