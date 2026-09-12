@@ -21,5 +21,5 @@ public partial class RealtimeServerUpdateInputAudioBufferSpeechStarted
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioStartMs")]
-    public TimeSpan AudioStartTime { get; }
+    public TimeSpan AudioStartTime { get; set; }
 }

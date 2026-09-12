@@ -11,12 +11,12 @@ using System.Text.Json.Serialization;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public partial class RealtimeLogProbabilityDetails
+    public partial class RealtimeTokenLogProbabilityDetails
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte> utf8Bytes)
+        internal RealtimeTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte> utf8Bytes)
         {
             Token = token;
             LogProbability = logProbability;
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte> utf8Bytes, in JsonPatch patch)
+        internal RealtimeTokenLogProbabilityDetails(string token, float logProbability, ReadOnlyMemory<byte> utf8Bytes, in JsonPatch patch)
         {
             Token = token;
             LogProbability = logProbability;
@@ -38,6 +38,6 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Token { get; }
+        public string Token { get; set; }
     }
 }

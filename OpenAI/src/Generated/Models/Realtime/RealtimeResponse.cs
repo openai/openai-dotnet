@@ -19,7 +19,7 @@ namespace OpenAI.Realtime
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, null, default)
+        public RealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, null, default)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -49,19 +49,19 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Id { get; }
+        public string Id { get; set; }
 
-        internal InternalRealtimeResponseGAObject? Object { get; }
+        internal InternalRealtimeResponseGAObject? Object { get; set; }
 
-        public RealtimeResponseStatus? Status { get; }
+        public RealtimeResponseStatus? Status { get; set; }
 
-        public RealtimeResponseStatusDetails StatusDetails { get; }
+        public RealtimeResponseStatusDetails StatusDetails { get; set; }
 
         public IDictionary<string, BinaryData> Metadata { get; }
 
-        public RealtimeResponseUsage Usage { get; }
+        public RealtimeResponseUsage Usage { get; set; }
 
-        public string ConversationId { get; }
+        public string ConversationId { get; set; }
 
         public IList<RealtimeOutputModality> OutputModalities { get; }
     }

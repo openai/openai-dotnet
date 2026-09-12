@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeFunctionCallOutputItem : RealtimeItem, IJsonModel<RealtimeFunctionCallOutputItem>
     {
-        internal RealtimeFunctionCallOutputItem() : this(InternalRealtimeConversationItemTypeGA.FunctionCallOutput, default, null, default, default, null, null)
+        public RealtimeFunctionCallOutputItem() : this(InternalRealtimeConversationItemTypeGA.FunctionCallOutput, default, null, default, default, null, null)
         {
         }
 

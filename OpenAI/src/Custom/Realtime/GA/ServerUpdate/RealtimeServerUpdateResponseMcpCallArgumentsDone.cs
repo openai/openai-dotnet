@@ -15,5 +15,5 @@ public partial class RealtimeServerUpdateResponseMcpCallArgumentsDone
     // - Renamed.
     // - Changed type.
     [CodeGenMember("Arguments")]
-    public BinaryData ToolArguments { get; }
+    public BinaryData ToolArguments { get; set; }
 }

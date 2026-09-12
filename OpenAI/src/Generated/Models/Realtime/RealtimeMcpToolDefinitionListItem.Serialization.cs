@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolDefinitionListItem : RealtimeItem, IJsonModel<RealtimeMcpToolDefinitionListItem>
     {
-        internal RealtimeMcpToolDefinitionListItem() : this(InternalRealtimeConversationItemTypeGA.McpListTools, default, null, null, null)
+        public RealtimeMcpToolDefinitionListItem() : this(InternalRealtimeConversationItemTypeGA.McpListTools, default, null, null, null)
         {
         }
 

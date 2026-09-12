@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     public partial class RealtimeServerUpdateResponseContentPartDone : RealtimeServerUpdate
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseContentPartDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(InternalRealtimeServerEventTypeGA.ResponseContentPartDone)
+        internal RealtimeServerUpdateResponseContentPartDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(RealtimeServerUpdateKind.ResponseContentPartDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseContentPartDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(kind, patch)
+        internal RealtimeServerUpdateResponseContentPartDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, RealtimeResponseContentPart part) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -36,16 +36,16 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public RealtimeResponseContentPart Part { get; }
+        public RealtimeResponseContentPart Part { get; set; }
     }
 }

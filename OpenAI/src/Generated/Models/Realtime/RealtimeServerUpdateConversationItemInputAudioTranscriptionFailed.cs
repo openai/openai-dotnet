@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : RealtimeServerUpdate
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId, string itemId, int contentIndex, RealtimeError error) : base(InternalRealtimeServerEventTypeGA.ConversationItemInputAudioTranscriptionFailed)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(string eventId, string itemId, int contentIndex, RealtimeError error) : base(RealtimeServerUpdateKind.ConversationItemInputAudioTranscriptionFailed)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -22,7 +22,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, patch)
+        internal RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string itemId, int contentIndex, RealtimeError error) : base(kind, patch)
         {
             EventId = eventId;
             ItemId = itemId;
@@ -32,12 +32,12 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public RealtimeError Error { get; }
+        public RealtimeError Error { get; set; }
     }
 }

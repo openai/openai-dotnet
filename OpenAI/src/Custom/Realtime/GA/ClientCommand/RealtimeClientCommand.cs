@@ -7,6 +7,8 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeClientEventGA")]
+[CodeGenVisibility(nameof(RealtimeClientCommand), CodeGenVisibility.ProtectedInternal, typeof(RealtimeClientCommandKind))]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RealtimeClientCommand
 {
 }

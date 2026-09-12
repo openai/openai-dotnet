@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateInputAudioBufferSpeechStarted : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateInputAudioBufferSpeechStarted(string eventId, TimeSpan audioStartTime, string itemId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferSpeechStarted)
+        internal RealtimeServerUpdateInputAudioBufferSpeechStarted(string eventId, TimeSpan audioStartTime, string itemId) : base(RealtimeServerUpdateKind.InputAudioBufferSpeechStarted)
         {
             EventId = eventId;
             AudioStartTime = audioStartTime;
@@ -19,7 +19,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateInputAudioBufferSpeechStarted(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, TimeSpan audioStartTime, string itemId) : base(kind, patch)
+        internal RealtimeServerUpdateInputAudioBufferSpeechStarted(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, TimeSpan audioStartTime, string itemId) : base(kind, patch)
         {
             EventId = eventId;
             AudioStartTime = audioStartTime;
@@ -27,8 +27,8 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
     }
 }

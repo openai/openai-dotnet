@@ -9,7 +9,7 @@ namespace OpenAI.Realtime
     internal partial class InternalUnknownRealtimeClientEventGA : RealtimeClientCommand
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownRealtimeClientEventGA(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownRealtimeClientEventGA(RealtimeClientCommandKind kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

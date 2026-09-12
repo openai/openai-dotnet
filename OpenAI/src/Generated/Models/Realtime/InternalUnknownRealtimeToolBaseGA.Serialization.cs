@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeToolBaseGA : RealtimeTool, IJsonModel<RealtimeTool>
     {
-        internal InternalUnknownRealtimeToolBaseGA() : this(default, default)
+        public InternalUnknownRealtimeToolBaseGA() : this(default, default)
         {
         }
 
