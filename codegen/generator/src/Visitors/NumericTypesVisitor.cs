@@ -23,6 +23,8 @@ public class NumericTypesVisitor : ScmLibraryVisitor
 
         "OpenAI.Containers.ContainerFileResource.SizeInBytes",
 
+        "OpenAI.VectorStores.VectorStore.UsageBytes",
+
         "OpenAI.VectorStores.VectorStoreFile.UsageInBytes",
     };
 
