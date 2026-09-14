@@ -1297,6 +1297,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     size: ImageGenerationToolSize.W1024xH1024,
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     moderationLevel: ImageGenerationToolModerationLevel.Auto,
+                    partialImageCount: 1,
                     background: ImageGenerationToolBackground.Transparent)
             },
             StreamingEnabled = true,
@@ -1535,7 +1536,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+            ResponseItem.CreateUserMessageItem("Searching the internet, tell me about something good that happened today.")
         ];
 
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
@@ -1636,7 +1637,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+            ResponseItem.CreateUserMessageItem("Searching the internet, tell me about something good that happened today.")
         ];
 
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
@@ -1678,7 +1679,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+            ResponseItem.CreateUserMessageItem("Searching the internet, tell me about something good that happened today.")
         ];
 
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
