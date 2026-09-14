@@ -2,8 +2,10 @@ using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Assistants;
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Assistants;
@@ -19,6 +21,50 @@ public class AssistantsMockTests : ClientTestBase
 
     public AssistantsMockTests(bool isAsync) : base(isAsync)
     {
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task ModifyAssistantRespectsTheCancellationToken(bool canceled)
+    {
+        using CancellationTokenSource cancellationSource = new();
+        if (canceled)
+        {
+            cancellationSource.Cancel();
+        }
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
+                {"id":"asst_abc","object":"assistant","created_at":0,"model":"gpt-4o","name":"updated","tools":[]}
+                """))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+        AssistantModificationOptions modificationOptions = new() { Name = "updated" };
+
+        if (canceled)
+        {
+            if (IsAsync)
+            {
+                Assert.That(async () => await client.ModifyAssistantAsync("asst_abc", modificationOptions, cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+            else
+            {
+                Assert.That(() => client.ModifyAssistant("asst_abc", modificationOptions, cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+        }
+        else
+        {
+            Assistant assistant = IsAsync
+                ? await client.ModifyAssistantAsync("asst_abc", modificationOptions, cancellationSource.Token)
+                : client.ModifyAssistant("asst_abc", modificationOptions, cancellationSource.Token);
+            Assert.That(assistant.Name, Is.EqualTo("updated"));
+        }
     }
 
     [Test]
