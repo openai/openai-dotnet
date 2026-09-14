@@ -20,6 +20,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             MockHelpers.LoadMockGenerator(configurationJson: "{ \"package-name\": \"TestLibrary\" }");
         }
 
+        [TestCase("OpenAI.Agents")]
         [TestCase("OpenAI.Containers")]
         [TestCase("OpenAI.Conversations")]
         [TestCase("OpenAI.Realtime")]

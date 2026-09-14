@@ -20,6 +20,8 @@ namespace OpenAI {
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         [Experimental("OPENAI001")]
+        public virtual Agents.AgentClient GetAgentClient();
+        [Experimental("OPENAI001")]
         public virtual Assistants.AssistantClient GetAssistantClient();
         public virtual Audio.AudioClient GetAudioClient(string model);
         [Experimental("OPENAI001")]

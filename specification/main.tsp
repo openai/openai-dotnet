@@ -1,3 +1,4 @@
+import "./client/agents.client.tsp";
 import "./client/assistants.client.tsp";
 import "./client/audio.client.tsp";
 import "./client/batch.client.tsp";

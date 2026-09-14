@@ -1,4 +1,5 @@
 import "./administration";
+import "./agents";
 import "./audio";
 import "./assistants";
 import "./batch";
@@ -126,6 +127,12 @@ using TypeSpec.Http;
 @tagMetadata(
   "Assistants",
   #{ description: "Build Assistants that can call models and use tools." }
+)
+@tagMetadata(
+  "Agents",
+  #{
+    description: "Create and manage reusable agents that call models and use tools.",
+  }
 )
 /** The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details. */
 @OpenAPI.info(#{

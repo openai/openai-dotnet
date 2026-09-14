@@ -17,6 +17,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     // Namespaces that contain protocol models.
     private static readonly HashSet<string> _protocolModelNamespaces = new(StringComparer.OrdinalIgnoreCase)
     {
+        "OpenAI.Agents",
         "OpenAI.Containers",
         "OpenAI.Conversations",
         "OpenAI.Realtime",

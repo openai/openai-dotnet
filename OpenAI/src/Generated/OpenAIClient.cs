@@ -5,6 +5,8 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using OpenAI.Agents;
 
 namespace OpenAI
 {
@@ -13,6 +15,7 @@ namespace OpenAI
         private readonly Uri _endpoint;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
+        private AgentClient _cachedAgentClient;
 
         protected OpenAIClient()
         {
@@ -41,5 +44,11 @@ namespace OpenAI
         }
 
         public ClientPipeline Pipeline { get; }
+
+        [Experimental("OPENAI001")]
+        public virtual AgentClient GetAgentClient()
+        {
+            return Volatile.Read(ref _cachedAgentClient) ?? Interlocked.CompareExchange(ref _cachedAgentClient, new AgentClient(Pipeline, _endpoint), null) ?? _cachedAgentClient;
+        }
     }
 }

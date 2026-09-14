@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenAI.Agents;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
@@ -2056,6 +2057,256 @@ namespace OpenAI
                 status,
                 statusDetails,
                 additionalBinaryDataProperties: null);
+        }
+
+        public static AgentCreationOptions AgentCreationOptions(IDictionary<string, string> metadata = default, string name = default, string model = default, ReasoningParam reasoning = default, TextParam text = default, ServiceTierParam? serviceTier = default, string instructions = default, IEnumerable<PersistedAgentToolConfigParam> tools = default, MultiAgentConfigCurrentParam multiAgent = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<PersistedAgentToolConfigParam>();
+
+            return new AgentCreationOptions(
+                metadata,
+                name,
+                model,
+                reasoning,
+                text,
+                serviceTier,
+                instructions,
+                tools.ToList(),
+                multiAgent,
+                default);
+        }
+
+        public static ReasoningParam ReasoningParam(ReasoningEffortParam? effort = default, ReasoningSummaryParam? summary = default)
+        {
+            return new ReasoningParam(effort, summary, default);
+        }
+
+        public static TextParam TextParam(TextFormatParam format = default, VerbosityParam? verbosity = default)
+        {
+            return new TextParam(format, verbosity, default);
+        }
+
+        public static TextFormatParam TextFormatParam(string kind = default)
+        {
+            return new InternalUnknownTextFormatParam(new TextFormatType(kind), default);
+        }
+
+        public static TextFormatParamText TextFormatParamText()
+        {
+            return new TextFormatParamText(TextFormatType.Text, default);
+        }
+
+        public static TextFormatParamJsonSchema TextFormatParamJsonSchema(BinaryData schema = default)
+        {
+            return new TextFormatParamJsonSchema(TextFormatType.JsonSchema, default, schema);
+        }
+
+        public static PersistedAgentToolConfigParam PersistedAgentToolConfigParam(string kind = default)
+        {
+            return new InternalUnknownPersistedAgentToolConfigParam(new PersistedAgentToolType(kind), default);
+        }
+
+        public static PersistedAgentToolConfigParamFunction PersistedAgentToolConfigParamFunction(string name = default, string description = default, BinaryData parameters = default, bool? deferLoading = default)
+        {
+            return new PersistedAgentToolConfigParamFunction(
+                PersistedAgentToolType.Function,
+                default,
+                name,
+                description,
+                parameters,
+                deferLoading);
+        }
+
+        public static PersistedAgentToolConfigParamToolSearch PersistedAgentToolConfigParamToolSearch()
+        {
+            return new PersistedAgentToolConfigParamToolSearch(PersistedAgentToolType.ToolSearch, default);
+        }
+
+        public static PersistedAgentToolConfigParamProgrammaticToolCalling PersistedAgentToolConfigParamProgrammaticToolCalling(bool? enabled = default)
+        {
+            return new PersistedAgentToolConfigParamProgrammaticToolCalling(PersistedAgentToolType.ProgrammaticToolCalling, default, enabled);
+        }
+
+        public static PersistedAgentToolConfigParamMcp PersistedAgentToolConfigParamMcp(string serverLabel = default, string credentialId = default, PersistedMcpTransportConfigParam transport = default, BinaryData requestMetadata = default, IEnumerable<string> allowedTools = default, bool? @required = default, McpConnectionOriginParam? connectionOrigin = default)
+        {
+            allowedTools ??= new ChangeTrackingList<string>();
+
+            return new PersistedAgentToolConfigParamMcp(
+                PersistedAgentToolType.Mcp,
+                default,
+                serverLabel,
+                credentialId,
+                transport,
+                requestMetadata,
+                allowedTools.ToList(),
+                @required,
+                connectionOrigin);
+        }
+
+        public static PersistedMcpTransportConfigParam PersistedMcpTransportConfigParam(string kind = default)
+        {
+            return new InternalUnknownPersistedMcpTransportConfigParam(new PersistedMcpTransportType(kind), default);
+        }
+
+        public static PersistedMcpTransportConfigParamHttp PersistedMcpTransportConfigParamHttp(string serverUrl = default, IDictionary<string, string> headers = default)
+        {
+            headers ??= new ChangeTrackingDictionary<string, string>();
+
+            return new PersistedMcpTransportConfigParamHttp(PersistedMcpTransportType.Http, default, serverUrl, headers);
+        }
+
+        public static PersistedMcpTransportConfigParamStdio PersistedMcpTransportConfigParamStdio(string command = default, IEnumerable<string> args = default, string cwd = default, IEnumerable<string> envVars = default)
+        {
+            args ??= new ChangeTrackingList<string>();
+            envVars ??= new ChangeTrackingList<string>();
+
+            return new PersistedMcpTransportConfigParamStdio(
+                PersistedMcpTransportType.Stdio,
+                default,
+                command,
+                args.ToList(),
+                cwd,
+                envVars.ToList());
+        }
+
+        public static PersistedAgentToolConfigParamWebSearch PersistedAgentToolConfigParamWebSearch(WebSearchModeParam? mode = default, WebSearchContextSizeParam? contextSize = default, IEnumerable<string> allowedDomains = default, WebSearchLocationParam location = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new PersistedAgentToolConfigParamWebSearch(
+                PersistedAgentToolType.WebSearch,
+                default,
+                mode,
+                contextSize,
+                allowedDomains.ToList(),
+                location);
+        }
+
+        public static WebSearchLocationParam WebSearchLocationParam(string country = default, string region = default, string city = default, string timezone = default)
+        {
+            return new WebSearchLocationParam(country, region, city, timezone, default);
+        }
+
+        public static MultiAgentConfigCurrentParam MultiAgentConfigCurrentParam(bool enabled = default, int? maxConcurrentSubagents = default)
+        {
+            return new MultiAgentConfigCurrentParam(enabled, maxConcurrentSubagents, default);
+        }
+
+        public static ReasoningResource ReasoningResource(ReasoningEffortResource? effort = default, ReasoningSummaryResource? summary = default)
+        {
+            return new ReasoningResource(effort, summary, default);
+        }
+
+        public static TextResource TextResource(TextFormatResource format = default, VerbosityResource verbosity = default)
+        {
+            return new TextResource(format, verbosity, default);
+        }
+
+        public static TextFormatResource TextFormatResource(string kind = default)
+        {
+            return new InternalUnknownTextFormatResource(new TextFormatType(kind), default);
+        }
+
+        public static TextFormatResourceText TextFormatResourceText()
+        {
+            return new TextFormatResourceText(TextFormatType.Text, default);
+        }
+
+        public static TextFormatResourceJsonSchema TextFormatResourceJsonSchema(BinaryData schema = default)
+        {
+            return new TextFormatResourceJsonSchema(TextFormatType.JsonSchema, default, schema);
+        }
+
+        public static PersistedAgentToolResource PersistedAgentToolResource(string kind = default)
+        {
+            return new InternalUnknownPersistedAgentToolResource(new PersistedAgentToolType(kind), default);
+        }
+
+        public static PersistedAgentToolResourceFunction PersistedAgentToolResourceFunction(string name = default, string description = default, BinaryData parameters = default, bool deferLoading = default)
+        {
+            return new PersistedAgentToolResourceFunction(
+                PersistedAgentToolType.Function,
+                default,
+                name,
+                description,
+                parameters,
+                deferLoading);
+        }
+
+        public static PersistedAgentToolResourceToolSearch PersistedAgentToolResourceToolSearch()
+        {
+            return new PersistedAgentToolResourceToolSearch(PersistedAgentToolType.ToolSearch, default);
+        }
+
+        public static PersistedAgentToolResourceProgrammaticToolCalling PersistedAgentToolResourceProgrammaticToolCalling(bool enabled = default)
+        {
+            return new PersistedAgentToolResourceProgrammaticToolCalling(PersistedAgentToolType.ProgrammaticToolCalling, default, enabled);
+        }
+
+        public static PersistedAgentToolResourceMcp PersistedAgentToolResourceMcp(string serverLabel = default, string credentialId = default, PersistedMcpTransportResource transport = default, BinaryData requestMetadata = default, IEnumerable<string> allowedTools = default, bool @required = default, McpConnectionOriginResource connectionOrigin = default)
+        {
+            allowedTools ??= new ChangeTrackingList<string>();
+
+            return new PersistedAgentToolResourceMcp(
+                PersistedAgentToolType.Mcp,
+                default,
+                serverLabel,
+                credentialId,
+                transport,
+                requestMetadata,
+                allowedTools.ToList(),
+                @required,
+                connectionOrigin);
+        }
+
+        public static PersistedMcpTransportResource PersistedMcpTransportResource(string kind = default)
+        {
+            return new InternalUnknownPersistedMcpTransportResource(new PersistedMcpTransportType(kind), default);
+        }
+
+        public static PersistedMcpTransportResourceHttp PersistedMcpTransportResourceHttp(string serverUrl = default, IDictionary<string, string> headers = default)
+        {
+            headers ??= new ChangeTrackingDictionary<string, string>();
+
+            return new PersistedMcpTransportResourceHttp(PersistedMcpTransportType.Http, default, serverUrl, headers);
+        }
+
+        public static PersistedMcpTransportResourceStdio PersistedMcpTransportResourceStdio(string command = default, IEnumerable<string> args = default, string cwd = default, IEnumerable<string> envVars = default)
+        {
+            args ??= new ChangeTrackingList<string>();
+            envVars ??= new ChangeTrackingList<string>();
+
+            return new PersistedMcpTransportResourceStdio(
+                PersistedMcpTransportType.Stdio,
+                default,
+                command,
+                args.ToList(),
+                cwd,
+                envVars.ToList());
+        }
+
+        public static PersistedAgentToolResourceWebSearch PersistedAgentToolResourceWebSearch(WebSearchModeResource mode = default, WebSearchContextSizeResource contextSize = default, IEnumerable<string> allowedDomains = default, WebSearchLocationResource location = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new PersistedAgentToolResourceWebSearch(
+                PersistedAgentToolType.WebSearch,
+                default,
+                mode,
+                contextSize,
+                allowedDomains.ToList(),
+                location);
+        }
+
+        public static WebSearchLocationResource WebSearchLocationResource(string country = default, string region = default, string city = default, string timezone = default)
+        {
+            return new WebSearchLocationResource(country, region, city, timezone, default);
+        }
+
+        public static MultiAgentConfigResource MultiAgentConfigResource(bool enabled = default, int? maxConcurrentSubagents = default)
+        {
+            return new MultiAgentConfigResource(enabled, maxConcurrentSubagents, default);
         }
 
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)

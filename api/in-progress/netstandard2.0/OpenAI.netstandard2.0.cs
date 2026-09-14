@@ -16,6 +16,7 @@ namespace OpenAI {
         public OpenAIClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
+        public virtual Agents.AgentClient GetAgentClient();
         public virtual Assistants.AssistantClient GetAssistantClient();
         public virtual Audio.AudioClient GetAudioClient(string model);
         public virtual Batch.BatchClient GetBatchClient();
