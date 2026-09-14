@@ -1,6 +1,6 @@
 # Release History
 
-## (Unreleased)
+## 2.14.0 (2026-09-14)
 
 ### Acknowledgments
 
@@ -11,6 +11,8 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - Rohan Santhosh Kumar _([GitHub](https://github.com/Rohan5commit))_
 - King Star _([GitHub](https://github.com/jstar0))_
 - Trask Stalnaker _([GitHub](https://github.com/trask))_
+- cjc0013 _([GitHub](https://github.com/cjc0013))_
+- S.H Jeong _([GitHub](https://github.com/z0rimo))_
 
 ### Features Added
 

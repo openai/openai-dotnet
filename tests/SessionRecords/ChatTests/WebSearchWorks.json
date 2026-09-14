@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "141",
+        "Content-Length": "136",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.14.0 (.NET 10.0.12; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -17,15 +17,19 @@
             "content": "What was a positive news story from today?"
           }
         ],
-        "model": "gpt-4o-search-preview",
+        "model": "gpt-5-search-api",
         "web_search_options": {}
       },
       "StatusCode": 200,
       "ResponseHeaders": {
-        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Access-Control-Expose-Headers": [
+          "X-Request-ID",
+          "CF-Ray",
+          "CF-Ray"
+        ],
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cd1002a2b49a32e-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "a3b323c7bc1b227a-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -48,52 +52,70 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-7311b1fd-f110-46ca-8ab6-2c48f91095af",
+        "id": "chatcmpl-230c67c3-b523-469e-94b4-9557d0417955",
         "object": "chat.completion",
-        "created": 1770950842,
-        "model": "gpt-4o-search-preview-2025-03-11",
+        "created": 1789428218,
+        "model": "gpt-5-search-api-2025-10-14",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "Here are some positive news stories from February 13, 2026:\n\n**International News:**\n\n- **WHO Declares Mpox Outbreak Contained in Central Africa:** The World Health Organization announced that the mpox outbreak in Central African nations is now under control. Intensive vaccination campaigns and improved surveillance systems helped contain the spread, with over 2.5 million vaccine doses administered across affected regions. ([observervoice.com](https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai))\n\n- **European Union Announces €10 Billion Green Energy Fund for Developing Nations:** The European Union committed €10 billion to support renewable energy projects in developing countries over the next five years. This initiative aims to help nations transition from fossil fuels to clean energy, with priority given to Africa and Southeast Asian countries. ([observervoice.com](https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai))\n\n**Community News:**\n\n- **Community Soccer Match Promotes Positive Change in Pretoria:** In the Itireleng Squatter Camp in Pretoria, South Africa, a community soccer match was organized to motivate both young children and adults to embrace sports as a positive alternative to crime and drug abuse. The event aimed to inspire the community to choose healthier paths and to remind residents that positive change can begin with collective action. ([reutersconnect.com](https://www.reutersconnect.com/item/world-news-february-13-2026/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMVpVTUEwMDBFOVVKMjc?utm_source=openai))\n\n**Health and Wellness:**\n\n- **National Donor Day Celebrated at Iowa State Capitol:** Community members and advocates gathered in Des Moines to honor the power of donation. The event highlighted how Iowans make a difference every day through blood, organ, eye, and tissue donation, while also recognizing the many patients still waiting for lifesaving transplants. ([bloodcenter.org](https://www.bloodcenter.org/about/news/blog/feel-good-news--february-13-2026/?utm_source=openai))\n\nThese stories highlight significant progress in public health, environmental sustainability, community engagement, and the spirit of giving. ",
+              "content": "Here are a few uplifting news stories from today, September 14, 2026:\n\n---\n\n## Science & Tech Highlights\n\n- **NASA’s New Navigation Breakthrough in Orbit**  \n  NASA has successfully tested a system for satellites to navigate without relying on GPS. Instead, it uses other spacecraft and even space debris as landmarks. In just three days, the new system — called FALCON — improved the orbits of over 200 space objects fully autonomously. ([brightnewsdaily.com](https://brightnewsdaily.com/daily-brief/?utm_source=openai))\n\n- **Watching Empty Space Shape Light — Quantum Effect Seen**  \n  Scientists may have for the first time observed vacuum birefringence, a quantum effect predicted nearly 90 years ago by Werner Heisenberg, where “empty” space changes how light travels. The effect was spotted around a magnetar, a neutron star with an extremely powerful magnetic field. ([brightnewsdaily.com](https://brightnewsdaily.com/daily-brief/?utm_source=openai))\n\n---\n\n## Kindness & Conservation\n\n- **Saving a Rare Orchid in Australia**  \n  Volunteers and the Royal Botanic Gardens Victoria are making headway in rescuing the rosella spider orchid, a rare Australian plant. Their nursery now has *twice* the number of orchids as were estimated to exist in the wild when the project began, providing a more secure future for the species. ([brightnewsdaily.com](https://brightnewsdaily.com/daily-brief/?utm_source=openai))\n\n- **Towards ‘Fridge-Free’ Vaccines**  \n  A new vaccine production method could reduce the need for refrigeration, making vaccines far more accessible in low- and middle-income countries and cutting down on wasted doses. ([brightnewsdaily.com](https://brightnewsdaily.com/daily-brief/?utm_source=openai))\n\n---\n\n## Healthy Aging & Biology\n\n- **Keys to Keeping Minds Sharp with Age**  \n  A study has found that short-range connections in the brain — termed \"gray matter wiring\" — help maintain cognitive skills like language even as overall brain mass declines with age. These healthier connections just beneath the brain’s surface appear to preserve mental sharpness. ([sciencedaily.com](https://www.sciencedaily.com/news/top/science/?utm_source=openai))\n\n- **New Insights into High Blood Pressure**  \n  Researchers discovered nighttime hormone surges that routine medical tests often miss. These surges are linked to a frequently overlooked condition contributing to high blood pressure. Recognizing this could lead to better diagnosis and treatment. ([sciencedaily.com](https://www.sciencedaily.com/news/top/science/?utm_source=openai))\n\n---\n\nIf any of these caught your interest, I can dig deeper into that story. Do you want to explore one of them more closely?",
               "refusal": null,
               "annotations": [
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 553,
-                    "start_index": 427,
-                    "title": "Today’s School Assembly News Headlines (13 February) - Observer Voice",
-                    "url": "https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai"
+                    "end_index": 521,
+                    "start_index": 438,
+                    "title": "Today's Brief - Monday, September 14, 2026 | BrightNewsDaily",
+                    "url": "https://brightnewsdaily.com/daily-brief/?utm_source=openai"
                   }
                 },
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 1038,
-                    "start_index": 912,
-                    "title": "Today’s School Assembly News Headlines (13 February) - Observer Voice",
-                    "url": "https://observervoice.com/todays-school-assembly-news-headlines-13-february-2-183444/?utm_source=openai"
+                    "end_index": 957,
+                    "start_index": 874,
+                    "title": "Today's Brief - Monday, September 14, 2026 | BrightNewsDaily",
+                    "url": "https://brightnewsdaily.com/daily-brief/?utm_source=openai"
                   }
                 },
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 1648,
-                    "start_index": 1483,
-                    "title": "World News - February 13, 2026 | Reuters Connect",
-                    "url": "https://www.reutersconnect.com/item/world-news-february-13-2026/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMVpVTUEwMDBFOVVKMjc?utm_source=openai"
+                    "end_index": 1415,
+                    "start_index": 1332,
+                    "title": "Today's Brief - Monday, September 14, 2026 | BrightNewsDaily",
+                    "url": "https://brightnewsdaily.com/daily-brief/?utm_source=openai"
                   }
                 },
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 2130,
-                    "start_index": 2014,
-                    "title": "Feel Good News | February 13, 2026 - ImpactLife",
-                    "url": "https://www.bloodcenter.org/about/news/blog/feel-good-news--february-13-2026/?utm_source=openai"
+                    "end_index": 1720,
+                    "start_index": 1637,
+                    "title": "Today's Brief - Monday, September 14, 2026 | BrightNewsDaily",
+                    "url": "https://brightnewsdaily.com/daily-brief/?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 2169,
+                    "start_index": 2083,
+                    "title": "Top Science News -- ScienceDaily",
+                    "url": "https://www.sciencedaily.com/news/top/science/?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 2553,
+                    "start_index": 2467,
+                    "title": "Top Science News -- ScienceDaily",
+                    "url": "https://www.sciencedaily.com/news/top/science/?utm_source=openai"
                   }
                 }
               ]
@@ -102,9 +124,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 9,
-          "completion_tokens": 484,
-          "total_tokens": 493,
+          "prompt_tokens": 16334,
+          "completion_tokens": 530,
+          "total_tokens": 16864,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -116,7 +138,7 @@
             "rejected_prediction_tokens": 0
           }
         },
-        "system_fingerprint": ""
+        "system_fingerprint": null
       }
     }
   ],
