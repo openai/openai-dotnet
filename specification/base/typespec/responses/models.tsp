@@ -1689,7 +1689,7 @@ model DotNetGetResponseOptions {
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-union DotNetGlobalToolCallApprovalPolicy {
+union DotNetDefaultToolCallApprovalPolicy {
   string,
   AlwaysRequireApproval: "always",
   NeverRequireApproval: "never",
@@ -1708,7 +1708,7 @@ model DotNetCustomToolCallApprovalPolicy {
 @access(Access.public)
 @usage(Usage.input | Usage.output)
 model DotNetToolCallApprovalPolicy {
-  global_policy?: DotNetGlobalToolCallApprovalPolicy;
+  default_policy?: DotNetDefaultToolCallApprovalPolicy;
   custom_policy?: DotNetCustomToolCallApprovalPolicy;
 }
 

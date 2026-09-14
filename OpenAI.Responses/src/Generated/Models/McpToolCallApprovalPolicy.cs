@@ -23,9 +23,9 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy, CustomMcpToolCallApprovalPolicy customPolicy, in JsonPatch patch)
+        internal McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy? defaultPolicy, CustomMcpToolCallApprovalPolicy customPolicy, in JsonPatch patch)
         {
-            GlobalPolicy = globalPolicy;
+            DefaultPolicy = defaultPolicy;
             CustomPolicy = customPolicy;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);

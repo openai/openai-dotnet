@@ -534,12 +534,12 @@ public partial class ResponsesSmokeTests
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            policy = GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval;
+            policy = DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval;
         }
 
         Assert.Multiple(() =>
         {
-            Assert.That(policy.GlobalPolicy, Is.EqualTo(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval));
+            Assert.That(policy.DefaultPolicy, Is.EqualTo(DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval));
             Assert.That(policy.CustomPolicy, Is.Null);
         });
 
@@ -618,7 +618,7 @@ public partial class ResponsesSmokeTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(policy.GlobalPolicy, Is.Null);
+            Assert.That(policy.DefaultPolicy, Is.Null);
             Assert.That(policy.CustomPolicy, Is.Not.Null);
         });
 

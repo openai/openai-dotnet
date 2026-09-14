@@ -152,90 +152,390 @@ public class RealtimeUnitTests
     }
 
     [Test]
-    public void NonDiscriminatedUnionComponentsSerializeAndDeserialize()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeMaxOutputTokenCountAsString(bool fromRawJson)
     {
-        RealtimeMaxOutputTokenCount maxOutputTokenCount =
-            ModelReaderWriter.Read<RealtimeMaxOutputTokenCount>(BinaryData.FromString("42"));
-        RealtimeToolChoice toolChoice =
-            ModelReaderWriter.Read<RealtimeToolChoice>(BinaryData.FromString("""{"type":"function","name":"search"}"""));
-        RealtimeTracing tracing =
-            ModelReaderWriter.Read<RealtimeTracing>(BinaryData.FromString("""{"workflow_name":"test"}"""));
-        RealtimeTruncation truncation =
-            ModelReaderWriter.Read<RealtimeTruncation>(BinaryData.FromString("""{"type":"retention_ratio","retention_ratio":0.8}"""));
-        RealtimeMcpToolCallApprovalPolicy approvalPolicy =
-            ModelReaderWriter.Read<RealtimeMcpToolCallApprovalPolicy>(BinaryData.FromString("""{"always":{}}"""));
+        RealtimeMaxOutputTokenCount value = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeMaxOutputTokenCount>(BinaryData.FromString("\"inf\""))
+            : RealtimeDefaultMaxOutputTokenCount.Infinity;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(maxOutputTokenCount.CustomMaxOutputTokenCount, Is.EqualTo(42));
-            Assert.That(maxOutputTokenCount.DefaultMaxOutputTokenCount, Is.Null);
-            Assert.That(toolChoice.CustomToolChoice, Is.TypeOf<RealtimeCustomFunctionToolChoice>());
-            Assert.That(toolChoice.DefaultToolChoice, Is.Null);
-            Assert.That(tracing.CustomTracing.WorkflowName, Is.EqualTo("test"));
-            Assert.That(tracing.DefaultTracing, Is.Null);
-            Assert.That(truncation.CustomTruncation, Is.TypeOf<RealtimeCustomRetentionRatioTruncation>());
-            Assert.That(truncation.DefaultTruncation, Is.Null);
-            Assert.That(approvalPolicy.CustomPolicy, Is.Not.Null);
-            Assert.That(approvalPolicy.DefaultPolicy, Is.Null);
-            Assert.That(ModelReaderWriter.Write(maxOutputTokenCount).ToString(), Is.EqualTo("42"));
-            Assert.That(ModelReaderWriter.Write((RealtimeMaxOutputTokenCount)RealtimeDefaultMaxOutputTokenCount.Infinity).ToString(), Is.EqualTo("\"inf\""));
-            Assert.That(ModelReaderWriter.Write((RealtimeToolChoice)RealtimeDefaultToolChoice.Required).ToString(), Is.EqualTo("\"required\""));
-            Assert.That(ModelReaderWriter.Write((RealtimeTracing)RealtimeDefaultTracing.Auto).ToString(), Is.EqualTo("\"auto\""));
-            Assert.That(ModelReaderWriter.Write((RealtimeTruncation)RealtimeDefaultTruncation.Disabled).ToString(), Is.EqualTo("\"disabled\""));
-            Assert.That(ModelReaderWriter.Write((RealtimeMcpToolCallApprovalPolicy)RealtimeDefaultMcpToolCallApprovalPolicy.NeverRequireApproval).ToString(), Is.EqualTo("\"never\""));
-        });
+            Assert.That(value.DefaultMaxOutputTokenCount, Is.EqualTo(RealtimeDefaultMaxOutputTokenCount.Infinity));
+            Assert.That(value.CustomMaxOutputTokenCount, Is.Null);
+            Assert.That(ModelReaderWriter.Write(value).ToString(), Is.EqualTo("\"inf\""));
+        }
     }
 
     [Test]
-    public void NonDiscriminatedUnionsRejectUnsupportedJsonShapes()
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeMaxOutputTokenCountAsNumber(bool fromRawJson)
     {
-        Assert.Multiple(() =>
+        RealtimeMaxOutputTokenCount value = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeMaxOutputTokenCount>(BinaryData.FromString("42"))
+            : 42;
+
+        using (Assert.EnterMultipleScope())
         {
-            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeMaxOutputTokenCount>(BinaryData.FromString("{}")));
-            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeToolChoice>(BinaryData.FromString("42")));
-            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeTracing>(BinaryData.FromString("[]")));
-            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeTruncation>(BinaryData.FromString("true")));
-            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeMcpToolCallApprovalPolicy>(BinaryData.FromString("42")));
-        });
+            Assert.That(value.DefaultMaxOutputTokenCount, Is.Null);
+            Assert.That(value.CustomMaxOutputTokenCount, Is.EqualTo(42));
+            Assert.That(ModelReaderWriter.Write(value).ToString(), Is.EqualTo("42"));
+        }
     }
 
     [Test]
-    public void NonDiscriminatedUnionsPropagateJsonPatch()
+    public void DeserializeNullRealtimeMaxOutputTokenCount()
+    {
+        Assert.That(ModelReaderWriter.Read<RealtimeMaxOutputTokenCount>(BinaryData.FromString("null")), Is.Null);
+    }
+
+    [Test]
+    public void RealtimeMaxOutputTokenCountSupportsRootJsonPatchFromContainingModel()
     {
         RealtimeConversationSessionOptions options = new()
         {
             MaxOutputTokenCount = 42,
-            ToolChoice = new RealtimeCustomFunctionToolChoice("search"),
-            Tracing = new RealtimeCustomTracing(),
-            Truncation = new RealtimeCustomRetentionRatioTruncation(0.8f),
         };
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         options.Patch.Set("$.max_output_tokens"u8, "\"inf\""u8);
-        options.Patch.Set("$.tool_choice.additional_property"u8, "tool choice");
-        options.Patch.Set("$.tracing.additional_property"u8, "tracing");
-        options.Patch.Set("$.truncation.additional_property"u8, "truncation");
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
-        Assert.Multiple(() =>
+        Assert.That(json.RootElement.GetProperty("max_output_tokens").GetString(), Is.EqualTo("inf"));
+    }
+
+    [TestCase("{}")]
+    [TestCase("[]")]
+    [TestCase("true")]
+    public void DeserializeRealtimeMaxOutputTokenCountRejectsUnsupportedJsonShapes(string json)
+    {
+        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeMaxOutputTokenCount>(BinaryData.FromString(json)));
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeToolChoiceAsString(bool fromRawJson)
+    {
+        RealtimeToolChoice choice = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeToolChoice>(BinaryData.FromString("\"required\""))
+            : RealtimeDefaultToolChoice.Required;
+
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(json.RootElement.GetProperty("max_output_tokens").GetString(), Is.EqualTo("inf"));
-            Assert.That(json.RootElement.GetProperty("tool_choice").GetProperty("additional_property").GetString(), Is.EqualTo("tool choice"));
-            Assert.That(json.RootElement.GetProperty("tracing").GetProperty("additional_property").GetString(), Is.EqualTo("tracing"));
-            Assert.That(json.RootElement.GetProperty("truncation").GetProperty("additional_property").GetString(), Is.EqualTo("truncation"));
-        });
+            Assert.That(choice.DefaultToolChoice, Is.EqualTo(RealtimeDefaultToolChoice.Required));
+            Assert.That(choice.CustomToolChoice, Is.Null);
+            Assert.That(ModelReaderWriter.Write(choice).ToString(), Is.EqualTo("\"required\""));
+        }
     }
 
     [Test]
-    public void McpToolCallApprovalPolicyPropagatesJsonPatch()
+    public void RealtimeToolChoiceRejectsNullComponents()
+    {
+        Assert.Throws<ArgumentNullException>(() => new RealtimeToolChoice((RealtimeCustomToolChoice)null));
+    }
+
+    [Test]
+    public void RealtimeToolChoiceImplicitConversionsPreserveNull()
+    {
+        RealtimeCustomToolChoice customChoice = null;
+        RealtimeToolChoice choice = customChoice;
+
+        Assert.That(choice, Is.Null);
+    }
+
+    [Test]
+    public void DeserializeNullRealtimeToolChoice()
+    {
+        Assert.That(ModelReaderWriter.Read<RealtimeToolChoice>(BinaryData.FromString("null")), Is.Null);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeToolChoiceAsObject(bool fromRawJson)
+    {
+        const string json = """{"type":"function","name":"search","additional_property":true}""";
+        RealtimeToolChoice choice = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeToolChoice>(BinaryData.FromString(json))
+            : new RealtimeCustomFunctionToolChoice("search");
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(choice.DefaultToolChoice, Is.Null);
+            Assert.That(choice.CustomToolChoice, Is.TypeOf<RealtimeCustomFunctionToolChoice>());
+            Assert.That(
+                ModelReaderWriter.Write(choice).ToString(),
+                Is.EqualTo(fromRawJson ? json : """{"type":"function","name":"search"}"""));
+        }
+    }
+
+    [Test]
+    public void RealtimeToolChoicePropagatesJsonPatchToObjectComponent()
+    {
+        RealtimeConversationSessionOptions options = new() { ToolChoice = new RealtimeCustomFunctionToolChoice("search") };
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        options.Patch.Set("$.tool_choice.additional_property"u8, "patched");
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("tool_choice").GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+    }
+
+    [Test]
+    public void RealtimeToolChoiceSupportsRootJsonPatchFromContainingModel()
+    {
+        RealtimeConversationSessionOptions options = new() { ToolChoice = new RealtimeCustomFunctionToolChoice("search") };
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        options.Patch.Set("$.tool_choice"u8, "\"required\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("tool_choice").GetString(), Is.EqualTo("required"));
+    }
+
+    [TestCase("[]")]
+    [TestCase("42")]
+    [TestCase("true")]
+    public void DeserializeRealtimeToolChoiceRejectsUnsupportedJsonShapes(string json)
+    {
+        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeToolChoice>(BinaryData.FromString(json)));
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeTracingAsString(bool fromRawJson)
+    {
+        RealtimeTracing tracing = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeTracing>(BinaryData.FromString("\"auto\""))
+            : RealtimeDefaultTracing.Auto;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(tracing.DefaultTracing, Is.EqualTo(RealtimeDefaultTracing.Auto));
+            Assert.That(tracing.CustomTracing, Is.Null);
+            Assert.That(ModelReaderWriter.Write(tracing).ToString(), Is.EqualTo("\"auto\""));
+        }
+    }
+
+    [Test]
+    public void RealtimeTracingRejectsNullComponents()
+    {
+        Assert.Throws<ArgumentNullException>(() => new RealtimeTracing((RealtimeCustomTracing)null));
+    }
+
+    [Test]
+    public void RealtimeTracingImplicitConversionsPreserveNull()
+    {
+        RealtimeCustomTracing customTracing = null;
+        RealtimeTracing tracing = customTracing;
+        Assert.That(tracing, Is.Null);
+    }
+
+    [Test]
+    public void DeserializeNullRealtimeTracing()
+    {
+        Assert.That(ModelReaderWriter.Read<RealtimeTracing>(BinaryData.FromString("null")), Is.Null);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeTracingAsObject(bool fromRawJson)
+    {
+        const string json = """{"workflow_name":"test","additional_property":true}""";
+        RealtimeTracing tracing = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeTracing>(BinaryData.FromString(json))
+            : new RealtimeCustomTracing { WorkflowName = "test" };
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(tracing.DefaultTracing, Is.Null);
+            Assert.That(tracing.CustomTracing.WorkflowName, Is.EqualTo("test"));
+            Assert.That(
+                ModelReaderWriter.Write(tracing).ToString(),
+                Is.EqualTo(fromRawJson ? json : """{"workflow_name":"test"}"""));
+        }
+    }
+
+    [Test]
+    public void RealtimeTracingPropagatesJsonPatchToObjectComponent()
+    {
+        RealtimeConversationSessionOptions options = new() { Tracing = new RealtimeCustomTracing() };
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        options.Patch.Set("$.tracing.additional_property"u8, "patched");
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("tracing").GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+    }
+
+    [Test]
+    public void RealtimeTracingSupportsRootJsonPatchFromContainingModel()
+    {
+        RealtimeConversationSessionOptions options = new() { Tracing = new RealtimeCustomTracing() };
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        options.Patch.Set("$.tracing"u8, "\"auto\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("tracing").GetString(), Is.EqualTo("auto"));
+    }
+
+    [TestCase("[]")]
+    [TestCase("42")]
+    [TestCase("true")]
+    public void DeserializeRealtimeTracingRejectsUnsupportedJsonShapes(string json)
+    {
+        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeTracing>(BinaryData.FromString(json)));
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeTruncationAsString(bool fromRawJson)
+    {
+        RealtimeTruncation truncation = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeTruncation>(BinaryData.FromString("\"disabled\""))
+            : RealtimeDefaultTruncation.Disabled;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(truncation.DefaultTruncation, Is.EqualTo(RealtimeDefaultTruncation.Disabled));
+            Assert.That(truncation.CustomTruncation, Is.Null);
+            Assert.That(ModelReaderWriter.Write(truncation).ToString(), Is.EqualTo("\"disabled\""));
+        }
+    }
+
+    [Test]
+    public void RealtimeTruncationRejectsNullComponents()
+    {
+        Assert.Throws<ArgumentNullException>(() => new RealtimeTruncation((RealtimeCustomTruncation)null));
+    }
+
+    [Test]
+    public void RealtimeTruncationImplicitConversionsPreserveNull()
+    {
+        RealtimeCustomTruncation customTruncation = null;
+        RealtimeTruncation truncation = customTruncation;
+        Assert.That(truncation, Is.Null);
+    }
+
+    [Test]
+    public void DeserializeNullRealtimeTruncation()
+    {
+        Assert.That(ModelReaderWriter.Read<RealtimeTruncation>(BinaryData.FromString("null")), Is.Null);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeTruncationAsObject(bool fromRawJson)
+    {
+        const string json = """{"type":"retention_ratio","retention_ratio":0.8,"additional_property":true}""";
+        RealtimeTruncation truncation = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeTruncation>(BinaryData.FromString(json))
+            : new RealtimeCustomRetentionRatioTruncation(0.8f);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(truncation.DefaultTruncation, Is.Null);
+            Assert.That(truncation.CustomTruncation, Is.TypeOf<RealtimeCustomRetentionRatioTruncation>());
+            Assert.That(
+                ModelReaderWriter.Write(truncation).ToString(),
+                Is.EqualTo(fromRawJson ? json : """{"type":"retention_ratio","retention_ratio":0.8}"""));
+        }
+    }
+
+    [Test]
+    public void RealtimeTruncationPropagatesJsonPatchToObjectComponent()
+    {
+        RealtimeConversationSessionOptions options = new() { Truncation = new RealtimeCustomRetentionRatioTruncation(0.8f) };
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        options.Patch.Set("$.truncation.additional_property"u8, "patched");
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("truncation").GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+    }
+
+    [Test]
+    public void RealtimeTruncationSupportsRootJsonPatchFromContainingModel()
+    {
+        RealtimeConversationSessionOptions options = new() { Truncation = new RealtimeCustomRetentionRatioTruncation(0.8f) };
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        options.Patch.Set("$.truncation"u8, "\"disabled\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(options));
+        Assert.That(json.RootElement.GetProperty("truncation").GetString(), Is.EqualTo("disabled"));
+    }
+
+    [TestCase("[]")]
+    [TestCase("42")]
+    [TestCase("true")]
+    public void DeserializeRealtimeTruncationRejectsUnsupportedJsonShapes(string json)
+    {
+        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeTruncation>(BinaryData.FromString(json)));
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeMcpToolCallApprovalPolicyAsString(bool fromRawJson)
+    {
+        RealtimeMcpToolCallApprovalPolicy policy = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeMcpToolCallApprovalPolicy>(BinaryData.FromString("\"always\""))
+            : RealtimeDefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(policy.DefaultPolicy, Is.EqualTo(RealtimeDefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval));
+            Assert.That(policy.CustomPolicy, Is.Null);
+            Assert.That(ModelReaderWriter.Write(policy).ToString(), Is.EqualTo("\"always\""));
+        }
+    }
+
+    [Test]
+    public void RealtimeMcpToolCallApprovalPolicyRejectsNullComponents()
+    {
+        Assert.Throws<ArgumentNullException>(() => new RealtimeMcpToolCallApprovalPolicy((RealtimeCustomMcpToolCallApprovalPolicy)null));
+    }
+
+    [Test]
+    public void RealtimeMcpToolCallApprovalPolicyImplicitConversionsPreserveNull()
+    {
+        RealtimeCustomMcpToolCallApprovalPolicy customPolicy = null;
+        RealtimeMcpToolCallApprovalPolicy policy = customPolicy;
+        Assert.That(policy, Is.Null);
+    }
+
+    [Test]
+    public void DeserializeNullRealtimeMcpToolCallApprovalPolicy()
+    {
+        Assert.That(ModelReaderWriter.Read<RealtimeMcpToolCallApprovalPolicy>(BinaryData.FromString("null")), Is.Null);
+    }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeRealtimeMcpToolCallApprovalPolicyAsObject(bool fromRawJson)
+    {
+        const string json = """{"always":{},"additional_property":true}""";
+        RealtimeMcpToolCallApprovalPolicy policy = fromRawJson
+            ? ModelReaderWriter.Read<RealtimeMcpToolCallApprovalPolicy>(BinaryData.FromString(json))
+            : new RealtimeCustomMcpToolCallApprovalPolicy { ToolsAlwaysRequiringApproval = new RealtimeMcpToolFilter() };
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(policy.DefaultPolicy, Is.Null);
+            Assert.That(policy.CustomPolicy, Is.Not.Null);
+            Assert.That(
+                ModelReaderWriter.Write(policy).ToString(),
+                Is.EqualTo(fromRawJson ? json : """{"always":{}}"""));
+        }
+    }
+
+    [Test]
+    public void RealtimeMcpToolCallApprovalPolicyPropagatesJsonPatchToObjectComponent()
     {
         RealtimeMcpTool tool = new("test", new Uri("https://example.com"))
         {
-            ToolCallApprovalPolicy = new RealtimeCustomMcpToolCallApprovalPolicy
-            {
-                ToolsAlwaysRequiringApproval = new RealtimeMcpToolFilter()
-            }
+            ToolCallApprovalPolicy = new RealtimeCustomMcpToolCallApprovalPolicy { ToolsAlwaysRequiringApproval = new RealtimeMcpToolFilter() }
         };
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -249,7 +549,7 @@ public class RealtimeUnitTests
     }
 
     [Test]
-    public void McpToolCallApprovalPolicySupportsRootJsonPatch()
+    public void RealtimeMcpToolCallApprovalPolicySupportsRootJsonPatchFromContainingModel()
     {
         RealtimeMcpTool tool = new("test", new Uri("https://example.com"))
         {
@@ -264,9 +564,17 @@ public class RealtimeUnitTests
         Assert.That(json.RootElement.GetProperty("require_approval").GetString(), Is.EqualTo("never"));
     }
 
+    [TestCase("[]")]
+    [TestCase("42")]
+    [TestCase("true")]
+    public void DeserializeRealtimeMcpToolCallApprovalPolicyRejectsUnsupportedJsonShapes(string json)
+    {
+        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeMcpToolCallApprovalPolicy>(BinaryData.FromString(json)));
+    }
+
     [TestCase(true)]
     [TestCase(false)]
-    public void DeserializeMcpAllowedTools(bool useShorthandInput)
+    public void DeserializeRealtimeMcpAllowedTools(bool useShorthandInput)
     {
         BinaryData data = BinaryData.FromString(useShorthandInput
             ? """{"type":"mcp","server_label":"test","allowed_tools":["search"]}"""
@@ -278,6 +586,45 @@ public class RealtimeUnitTests
         Assert.That(tool.AllowedTools.IsReadOnly, Is.EqualTo(useShorthandInput ? null : true));
         using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
         Assert.That(json.RootElement.GetProperty("allowed_tools").ValueKind, Is.EqualTo(JsonValueKind.Object));
+    }
+
+    [Test]
+    public void DeserializeRealtimeMcpAllowedToolsPreservesLonghandFields()
+    {
+        RealtimeMcpTool tool = ModelReaderWriter.Read<RealtimeMcpTool>(BinaryData.FromString(
+            """{"type":"mcp","server_label":"test","allowed_tools":{"tool_names":["search"],"read_only":true}}"""));
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(tool.AllowedTools.ToolNames, Is.EqualTo(new[] { "search" }));
+            Assert.That(tool.AllowedTools.IsReadOnly, Is.True);
+        }
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement allowedTools = json.RootElement.GetProperty("allowed_tools");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(allowedTools.GetProperty("tool_names")[0].GetString(), Is.EqualTo("search"));
+            Assert.That(allowedTools.GetProperty("read_only").GetBoolean(), Is.True);
+        }
+    }
+
+    [TestCase("null", false)]
+    [TestCase("42", true)]
+    [TestCase("true", true)]
+    public void DeserializeRealtimeMcpAllowedToolsHandlesNullAndRejectsUnsupportedJsonShapes(string allowedTools, bool shouldThrow)
+    {
+        BinaryData data = BinaryData.FromString($$"""{"type":"mcp","server_label":"test","allowed_tools":{{allowedTools}}}""");
+
+        if (shouldThrow)
+        {
+            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeMcpTool>(data));
+        }
+        else
+        {
+            RealtimeMcpTool tool = ModelReaderWriter.Read<RealtimeMcpTool>(data);
+            Assert.That(tool.AllowedTools, Is.Null);
+        }
     }
 
     private static Uri GetWebSocketEndpoint(RealtimeClient client)

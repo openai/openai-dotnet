@@ -50,14 +50,14 @@ public partial class CustomMcpToolCallApprovalPolicy
 The string-literal component is represented by an extensible enum:
 
 ```csharp
-public readonly partial struct GlobalMcpToolCallApprovalPolicy : IEquatable<GlobalMcpToolCallApprovalPolicy>
+public readonly partial struct DefaultMcpToolCallApprovalPolicy : IEquatable<DefaultMcpToolCallApprovalPolicy>
 {
-    public GlobalMcpToolCallApprovalPolicy(string value);
+  public DefaultMcpToolCallApprovalPolicy(string value);
 
-    public static GlobalMcpToolCallApprovalPolicy AlwaysRequireApproval { get; }
-    public static GlobalMcpToolCallApprovalPolicy NeverRequireApproval { get; }
+  public static DefaultMcpToolCallApprovalPolicy AlwaysRequireApproval { get; }
+  public static DefaultMcpToolCallApprovalPolicy NeverRequireApproval { get; }
 
-    public static implicit operator GlobalMcpToolCallApprovalPolicy(string value);
+  public static implicit operator DefaultMcpToolCallApprovalPolicy(string value);
     public override string ToString();
 }
 ```
@@ -74,16 +74,16 @@ public partial class McpToolCallApprovalPolicy
     CustomPolicy = customPolicy;
   }
 
-  public McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy)
+  public McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy defaultPolicy)
   {
-    GlobalPolicy = globalPolicy;
+    DefaultPolicy = defaultPolicy;
   }
 
     public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
-    public GlobalMcpToolCallApprovalPolicy? GlobalPolicy { get; }
+    public DefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
 
     public static implicit operator McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy) => customPolicy is null ? null : new(customPolicy);
-    public static implicit operator McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy) => new(globalPolicy);
+    public static implicit operator McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy defaultPolicy) => new(defaultPolicy);
 }
 ```
 
@@ -108,7 +108,7 @@ if (policy.CustomPolicy is not null)
 {
     // ...
 }
-else if (policy.GlobalPolicy is not null)
+else if (policy.DefaultPolicy is not null)
 {
     // ...
 }
@@ -117,7 +117,7 @@ else if (policy.GlobalPolicy is not null)
 Implicit conversions allow callers to assign a component without explicitly constructing the wrapper:
 
 ```csharp
-McpToolCallApprovalPolicy policy = GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval;
+McpToolCallApprovalPolicy policy = DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval;
 ```
 
 ### Serialization requirements

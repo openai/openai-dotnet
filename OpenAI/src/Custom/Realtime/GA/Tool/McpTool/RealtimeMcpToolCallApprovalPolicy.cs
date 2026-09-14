@@ -2,9 +2,7 @@ using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Realtime;
 
-// CUSTOM: This type represents a non-discriminated union of the following components:
-// * A GlobalPolicy defined as an extensible enum.
-// * A CustomPolicy defined as an object.
+// CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeToolCallApprovalPolicyGA")]
 [CodeGenVisibility(nameof(RealtimeMcpToolCallApprovalPolicy), CodeGenVisibility.Internal)]
 [CodeGenVisibility("Patch", CodeGenVisibility.Internal)]

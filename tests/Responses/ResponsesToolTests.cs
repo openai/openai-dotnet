@@ -351,7 +351,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string serverLabel = "dmcp";
         Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
@@ -403,7 +403,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string serverLabel = "dmcp";
         Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
@@ -510,7 +510,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
-            ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+            ? new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
             : new McpToolCallApprovalPolicy(
                 new CustomMcpToolCallApprovalPolicy()
                 {
@@ -551,7 +551,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
-            ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval)
+            ? new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval)
             : new McpToolCallApprovalPolicy(
                 new CustomMcpToolCallApprovalPolicy()
                 {
@@ -600,7 +600,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string serverLabel = "dmcp";
         Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
@@ -641,7 +641,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string serverLabel = "dmcp";
         Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
