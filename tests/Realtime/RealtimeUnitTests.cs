@@ -609,16 +609,63 @@ public class RealtimeUnitTests
         }
     }
 
+    [Test]
+    public void DeserializeEmptyRealtimeMcpAllowedTools()
+    {
+        RealtimeMcpTool tool = ModelReaderWriter.Read<RealtimeMcpTool>(BinaryData.FromString(
+            """{"type":"mcp","server_label":"test","allowed_tools":[]}"""));
+
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Is.Empty);
+
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.AllowedTools.Patch.Set("$.additional_property"u8, "\"patched\""u8);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement allowedTools = json.RootElement.GetProperty("allowed_tools");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(allowedTools.GetProperty("tool_names").GetArrayLength(), Is.Zero);
+            Assert.That(allowedTools.GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+        }
+    }
+
+    [Test]
+    public void DeserializeRealtimeMcpAllowedToolsWithEmptyToolNames()
+    {
+        RealtimeMcpTool tool = ModelReaderWriter.Read<RealtimeMcpTool>(BinaryData.FromString(
+            """{"type":"mcp","server_label":"test","allowed_tools":{"tool_names":[]}}"""));
+
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Is.Empty);
+
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.AllowedTools.Patch.Set("$.additional_property"u8, "\"patched\""u8);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement allowedTools = json.RootElement.GetProperty("allowed_tools");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(allowedTools.GetProperty("tool_names").GetArrayLength(), Is.Zero);
+            Assert.That(allowedTools.GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+        }
+    }
+
     [TestCase("null", false)]
     [TestCase("42", true)]
     [TestCase("true", true)]
+    [TestCase("[42]", true)]
+    [TestCase("[{}]", true)]
+    [TestCase("[true]", true)]
     public void DeserializeRealtimeMcpAllowedToolsHandlesNullAndRejectsUnsupportedJsonShapes(string allowedTools, bool shouldThrow)
     {
         BinaryData data = BinaryData.FromString($$"""{"type":"mcp","server_label":"test","allowed_tools":{{allowedTools}}}""");
 
         if (shouldThrow)
         {
-            Assert.Throws<JsonException>(() => ModelReaderWriter.Read<RealtimeMcpTool>(data));
+            Assert.Throws<InvalidOperationException>(() => ModelReaderWriter.Read<RealtimeMcpTool>(data));
         }
         else
         {

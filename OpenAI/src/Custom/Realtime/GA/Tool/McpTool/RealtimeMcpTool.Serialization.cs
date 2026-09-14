@@ -1,5 +1,7 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
@@ -26,7 +28,8 @@ public partial class RealtimeMcpTool : IJsonModel<RealtimeMcpTool>
 
         if (property.Value.ValueKind == JsonValueKind.Array)
         {
-            allowedTools = new RealtimeMcpToolFilter();
+            // Initialize the collection to respect an empty array during normalization.
+            allowedTools = new RealtimeMcpToolFilter(new List<string>(), default, default);
             foreach (JsonElement item in property.Value.EnumerateArray())
             {
                 allowedTools.ToolNames.Add(item.ValueKind == JsonValueKind.Null ? null : item.GetString());
@@ -34,6 +37,6 @@ public partial class RealtimeMcpTool : IJsonModel<RealtimeMcpTool>
             return;
         }
 
-        throw new JsonException($"Expected allowed_tools to be null, an object, or an array but found {property.Value.ValueKind}.");
+        throw new InvalidOperationException($"Expected allowed_tools to be null, an object, or an array but found {property.Value.ValueKind}.");
     }
 }
