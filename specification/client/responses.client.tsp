@@ -253,7 +253,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(DotNetItemReferenceItemResource);
 @@dynamicModel(DotNetResponseItemCollectionOrder);
 @@dynamicModel(DotNetGetResponseOptions);
-@@dynamicModel(DotNetGlobalToolCallApprovalPolicy);
+@@dynamicModel(DotNetDefaultToolCallApprovalPolicy);
 @@dynamicModel(DotNetCustomToolCallApprovalPolicy);
 @@dynamicModel(DotNetToolCallApprovalPolicy);
 @@dynamicModel(DotNetCodeInterpreterToolContainer);

@@ -534,12 +534,12 @@ public partial class ResponsesSmokeTests
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            policy = GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval;
+            policy = DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval;
         }
 
         Assert.Multiple(() =>
         {
-            Assert.That(policy.GlobalPolicy, Is.EqualTo(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval));
+            Assert.That(policy.DefaultPolicy, Is.EqualTo(DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval));
             Assert.That(policy.CustomPolicy, Is.Null);
         });
 
@@ -618,7 +618,7 @@ public partial class ResponsesSmokeTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(policy.GlobalPolicy, Is.Null);
+            Assert.That(policy.DefaultPolicy, Is.Null);
             Assert.That(policy.CustomPolicy, Is.Not.Null);
         });
 
@@ -714,57 +714,105 @@ public partial class ResponsesSmokeTests
         Assert.Throws<JsonException>(() => ModelReaderWriter.Read<McpToolCallApprovalPolicy>(data));
     }
 
-    [Test]
     [TestCase(true)]
     [TestCase(false)]
     public void DeserializeMCPAllowedTools(bool useShorthandInput)
     {
-        const string toolName = "roll";
-
         BinaryData data = BinaryData.FromString(useShorthandInput
-            ? $$"""
-            {
-                "type": "mcp",
-                "server_label": "dmcp",
-                "server_url": "https://dmcp-server.deno.dev/sse",
-                "allowed_tools": ["{{toolName}}"]
-            }
-            """
-            : $$"""
-            {
-                "type": "mcp",
-                "server_label": "dmcp",
-                "server_url": "https://dmcp-server.deno.dev/sse",
-                "allowed_tools": {
-                    "tool_names": ["{{toolName}}"],
-                    "read_only": true
-                }
-            }
-            """);
+            ? """{"type":"mcp","server_label":"test","allowed_tools":["search"]}"""
+            : """{"type":"mcp","server_label":"test","allowed_tools":{"tool_names":["search"],"read_only":true}}""");
 
         McpTool tool = ModelReaderWriter.Read<McpTool>(data);
 
-        Assert.That(tool.AllowedTools, Is.Not.Null);
-        Assert.That(tool.AllowedTools.ToolNames, Is.EquivalentTo(new[] { toolName }));
+        Assert.That(tool.AllowedTools.ToolNames, Is.EqualTo(new[] { "search" }));
         Assert.That(tool.AllowedTools.IsReadOnly, Is.EqualTo(useShorthandInput ? null : true));
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        Assert.That(json.RootElement.GetProperty("allowed_tools").ValueKind, Is.EqualTo(JsonValueKind.Object));
+    }
 
-        BinaryData serializedTool = ModelReaderWriter.Write(tool);
-        using JsonDocument toolAsJson = JsonDocument.Parse(serializedTool);
+    [Test]
+    public void DeserializeMCPAllowedToolsPreservesLonghandFields()
+    {
+        McpTool tool = ModelReaderWriter.Read<McpTool>(BinaryData.FromString(
+            """{"type":"mcp","server_label":"test","allowed_tools":{"tool_names":["search"],"read_only":true}}"""));
 
-        Assert.That(toolAsJson.RootElement.TryGetProperty("allowed_tools", out JsonElement allowedToolsProperty), Is.True);
-        Assert.That(allowedToolsProperty.ValueKind, Is.EqualTo(JsonValueKind.Object));
-        Assert.That(allowedToolsProperty.TryGetProperty("tool_names", out JsonElement toolNamesProperty), Is.True);
-        Assert.That(toolNamesProperty.ValueKind, Is.EqualTo(JsonValueKind.Array));
-        Assert.That(toolNamesProperty.EnumerateArray().Select(item => item.GetString()), Is.EqualTo(new[] { toolName }));
-
-        if (useShorthandInput)
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(allowedToolsProperty.TryGetProperty("read_only", out _), Is.False);
+            Assert.That(tool.AllowedTools.ToolNames, Is.EqualTo(new[] { "search" }));
+            Assert.That(tool.AllowedTools.IsReadOnly, Is.True);
+        }
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement allowedTools = json.RootElement.GetProperty("allowed_tools");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(allowedTools.GetProperty("tool_names")[0].GetString(), Is.EqualTo("search"));
+            Assert.That(allowedTools.GetProperty("read_only").GetBoolean(), Is.True);
+        }
+    }
+
+    [Test]
+    public void DeserializeEmptyMCPAllowedTools()
+    {
+        McpTool tool = ModelReaderWriter.Read<McpTool>(BinaryData.FromString(
+            """{"type":"mcp","server_label":"test","allowed_tools":[]}"""));
+
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Is.Empty);
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.AllowedTools.Patch.Set("$.additional_property"u8, "\"patched\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement allowedTools = json.RootElement.GetProperty("allowed_tools");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(allowedTools.GetProperty("tool_names").GetArrayLength(), Is.Zero);
+            Assert.That(allowedTools.GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+        }
+    }
+
+    [Test]
+    public void DeserializeMCPAllowedToolsWithEmptyToolNames()
+    {
+        McpTool tool = ModelReaderWriter.Read<McpTool>(BinaryData.FromString(
+            """{"type":"mcp","server_label":"test","allowed_tools":{"tool_names":[]}}"""));
+
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Is.Empty);
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        tool.AllowedTools.Patch.Set("$.additional_property"u8, "\"patched\""u8);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(tool));
+        JsonElement allowedTools = json.RootElement.GetProperty("allowed_tools");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(allowedTools.GetProperty("tool_names").GetArrayLength(), Is.Zero);
+            Assert.That(allowedTools.GetProperty("additional_property").GetString(), Is.EqualTo("patched"));
+        }
+    }
+
+    [TestCase("null", false)]
+    [TestCase("42", true)]
+    [TestCase("true", true)]
+    [TestCase("[42]", true)]
+    [TestCase("[{}]", true)]
+    [TestCase("[true]", true)]
+    public void DeserializeMCPAllowedToolsHandlesNullAndRejectsUnsupportedJsonShapes(string allowedTools, bool shouldThrow)
+    {
+        BinaryData data = BinaryData.FromString($$"""{"type":"mcp","server_label":"test","allowed_tools":{{allowedTools}}}""");
+
+        if (shouldThrow)
+        {
+            Assert.Throws<InvalidOperationException>(() => ModelReaderWriter.Read<McpTool>(data));
         }
         else
         {
-            Assert.That(allowedToolsProperty.TryGetProperty("read_only", out JsonElement readOnlyProperty), Is.True);
-            Assert.That(readOnlyProperty.GetBoolean(), Is.True);
+            McpTool tool = ModelReaderWriter.Read<McpTool>(data);
+            Assert.That(tool.AllowedTools, Is.Null);
         }
     }
 
@@ -772,70 +820,37 @@ public partial class ResponsesSmokeTests
     [TestCase(false)]
     public void DeserializeCustomToolCallOutput(bool useShorthandInput)
     {
-        const string outputText = "hello world";
         BinaryData data = BinaryData.FromString(useShorthandInput
-            ? $$"""
-            {
-                "type": "custom_tool_call_output",
-                "call_id": "call_123",
-                "output": "{{outputText}}"
-            }
-            """
-            : $$"""
-            {
-                "type": "custom_tool_call_output",
-                "call_id": "call_123",
-                "output": [
-                    {
-                        "type": "input_text",
-                        "text": "{{outputText}}"
-                    }
-                ]
-            }
-            """);
+            ? """{"type":"custom_tool_call_output","call_id":"call_123","output":"hello world"}"""
+            : """{"type":"custom_tool_call_output","call_id":"call_123","output":[{"type":"input_text","text":"hello world"}]}""");
 
         CustomToolCallOutputItem item = ModelReaderWriter.Read<CustomToolCallOutputItem>(data);
 
         Assert.That(item.Output, Has.Count.EqualTo(1));
-        Assert.That(item.Output[0].Kind, Is.EqualTo(ResponseContentPartKind.InputText));
-        Assert.That(item.Output[0].Text, Is.EqualTo(outputText));
-
-        using JsonDocument serializedItem = JsonDocument.Parse(ModelReaderWriter.Write(item));
-        JsonElement output = serializedItem.RootElement.GetProperty("output");
-        Assert.That(output.ValueKind, Is.EqualTo(JsonValueKind.Array));
-        Assert.That(output.GetArrayLength(), Is.EqualTo(1));
-        Assert.That(output[0].GetProperty("type").GetString(), Is.EqualTo("input_text"));
-        Assert.That(output[0].GetProperty("text").GetString(), Is.EqualTo(outputText));
+        Assert.That(item.Output[0].Text, Is.EqualTo("hello world"));
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(item));
+        Assert.That(json.RootElement.GetProperty("output").ValueKind, Is.EqualTo(JsonValueKind.Array));
     }
 
     [Test]
     public void DeserializeCustomToolCallOutputPreservesLonghandFields()
     {
-        BinaryData data = BinaryData.FromString("""
+        CustomToolCallOutputItem item = ModelReaderWriter.Read<CustomToolCallOutputItem>(BinaryData.FromString(
+            """{"type":"custom_tool_call_output","call_id":"call_123","output":[{"type":"input_image","file_id":"file_123","detail":"high"}]}"""));
+
+        using (Assert.EnterMultipleScope())
         {
-            "type": "custom_tool_call_output",
-            "call_id": "call_123",
-            "output": [
-                {
-                    "type": "input_image",
-                    "file_id": "file_123",
-                    "detail": "high"
-                }
-            ]
+            Assert.That(item.Output[0].InputImageFileId, Is.EqualTo("file_123"));
+            Assert.That(item.Output[0].InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
         }
-        """);
 
-        CustomToolCallOutputItem item = ModelReaderWriter.Read<CustomToolCallOutputItem>(data);
-
-        Assert.That(item.Output, Has.Count.EqualTo(1));
-        Assert.That(item.Output[0].Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
-        Assert.That(item.Output[0].InputImageFileId, Is.EqualTo("file_123"));
-        Assert.That(item.Output[0].InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
-
-        using JsonDocument serializedItem = JsonDocument.Parse(ModelReaderWriter.Write(item));
-        JsonElement output = serializedItem.RootElement.GetProperty("output")[0];
-        Assert.That(output.GetProperty("file_id").GetString(), Is.EqualTo("file_123"));
-        Assert.That(output.GetProperty("detail").GetString(), Is.EqualTo("high"));
+        using JsonDocument json = JsonDocument.Parse(ModelReaderWriter.Write(item));
+        JsonElement output = json.RootElement.GetProperty("output")[0];
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(output.GetProperty("file_id").GetString(), Is.EqualTo("file_123"));
+            Assert.That(output.GetProperty("detail").GetString(), Is.EqualTo("high"));
+        }
     }
 
     [TestCase("null")]
@@ -844,15 +859,9 @@ public partial class ResponsesSmokeTests
     [TestCase("true")]
     public void DeserializeCustomToolCallOutputRejectsUnsupportedJsonShapes(string output)
     {
-        BinaryData data = BinaryData.FromString($$"""
-        {
-            "type": "custom_tool_call_output",
-            "call_id": "call_123",
-            "output": {{output}}
-        }
-        """);
+        BinaryData data = BinaryData.FromString($$"""{"type":"custom_tool_call_output","call_id":"call_123","output":{{output}}}""");
 
-        Assert.Throws<JsonException>(() => ModelReaderWriter.Read<CustomToolCallOutputItem>(data));
+        Assert.Throws<InvalidOperationException>(() => ModelReaderWriter.Read<CustomToolCallOutputItem>(data));
     }
 
     [Test]

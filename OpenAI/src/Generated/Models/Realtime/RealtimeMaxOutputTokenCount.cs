@@ -31,6 +31,6 @@ namespace OpenAI.Realtime
         [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
-        public ref JsonPatch Patch => ref _patch;
+        internal ref JsonPatch Patch => ref _patch;
     }
 }

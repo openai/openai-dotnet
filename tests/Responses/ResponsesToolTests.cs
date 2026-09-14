@@ -352,7 +352,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
         string toolName = "microsoft_docs_search";
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
@@ -406,7 +406,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string serverLabel = "microsoft-learn";
         Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
@@ -515,7 +515,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
-            ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+            ? new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
             : new McpToolCallApprovalPolicy(
                 new CustomMcpToolCallApprovalPolicy()
                 {
@@ -564,7 +564,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
-            ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval)
+            ? new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval)
             : new McpToolCallApprovalPolicy(
                 new CustomMcpToolCallApprovalPolicy()
                 {
@@ -621,7 +621,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
         string toolName = "microsoft_docs_search";
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
@@ -664,7 +664,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         string serverLabel = "microsoft-learn";
         Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
         CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {

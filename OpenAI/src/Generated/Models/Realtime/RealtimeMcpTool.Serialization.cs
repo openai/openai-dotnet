@@ -238,12 +238,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("allowed_tools"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        allowedTools = null;
-                        continue;
-                    }
-                    allowedTools = RealtimeMcpToolFilter.DeserializeRealtimeMcpToolFilter(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    DeserializeAllowedToolsValue(prop, ref allowedTools, options);
                     continue;
                 }
                 if (prop.NameEquals("require_approval"u8))

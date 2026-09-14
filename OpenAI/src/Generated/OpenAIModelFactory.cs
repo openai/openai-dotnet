@@ -2634,9 +2634,9 @@ namespace OpenAI
             return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
         }
 
-        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
+        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy? defaultPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
         {
-            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
+            return new McpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
         }
 
         public static RealtimeTokenLogProbabilityDetails RealtimeTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
