@@ -133,6 +133,36 @@ public class RealtimeUnitTests
     }
 
     [Test]
+    public void FactoryPreservesCredentialAndPipeline()
+    {
+        ApiKeyCredential credential = new("test-key");
+        OpenAIClient parent = new(credential, new OpenAIClientOptions
+        {
+            Endpoint = new Uri("https://custom.openai.com/v1"),
+        });
+
+        RealtimeClient client = parent.GetRealtimeClient();
+
+        // The WebSocket path needs the original credential, including later key updates.
+        Assert.That(GetKeyCredential(client), Is.SameAs(credential));
+        Assert.That(client.Pipeline, Is.SameAs(parent.Pipeline));
+        Assert.That(GetWebSocketEndpoint(client), Is.EqualTo(new Uri("wss://custom.openai.com/v1/realtime")));
+    }
+
+    [Test]
+    public void FactoryWithAuthenticationPolicyPreservesPipelineWithoutKeyCredential()
+    {
+        AuthenticationPolicy policy = ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(
+            new ApiKeyCredential("test-key"), "Authorization", "Bearer");
+        OpenAIClient parent = new(policy);
+
+        RealtimeClient client = parent.GetRealtimeClient();
+
+        Assert.That(client.Pipeline, Is.SameAs(parent.Pipeline));
+        Assert.That(GetKeyCredential(client), Is.Null);
+    }
+
+    [Test]
     public void AudioEndMsSerializesAsInteger()
     {
         // A TimeSpan with sub-millisecond precision that would produce a fractional double
@@ -672,6 +702,15 @@ public class RealtimeUnitTests
             RealtimeMcpTool tool = ModelReaderWriter.Read<RealtimeMcpTool>(data);
             Assert.That(tool.AllowedTools, Is.Null);
         }
+    }
+
+    private static ApiKeyCredential GetKeyCredential(RealtimeClient client)
+    {
+        FieldInfo field = typeof(RealtimeClient).GetField(
+            "_keyCredential",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(field, Is.Not.Null, "RealtimeClient should retain its WebSocket credential");
+        return (ApiKeyCredential)field.GetValue(client);
     }
 
     private static Uri GetWebSocketEndpoint(RealtimeClient client)
