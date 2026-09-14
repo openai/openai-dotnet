@@ -137,7 +137,7 @@ A union wrapper is a JSON value, not a JSON object with properties corresponding
 
 The union wrapper's patch support must follow these rules:
 
-1. Make the generated `Patch` property internal by applying `[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]` to the customization class. Do not expose synthetic component paths such as `$.global_policy` or `$.custom_policy` to callers.
+1. Make the generated `Patch` property internal by applying `[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]` to the customization class. Do not expose synthetic component paths such as `$.default_policy` or `$.custom_policy` to callers.
 2. Implement the patch propagators `PropagateSet` and `PropagateGet` to reflect the union's wire representation rather than the synthetic TypeSpec model.
 3. Initialize the propagators along all valid construction paths. Call `_patch.SetPropagators(PropagateSet, PropagateGet)` in each component constructor because those constructors initialize their components directly.
 4. Keep a patch for `$` on the wrapper by returning `false` from both propagators for that path. Before normal serialization, write the raw root patch when `Patch.Contains("$"u8)` is true. This supports replacing the complete union value through a containing model, such as patching `$.require_approval` from an object to a string.
