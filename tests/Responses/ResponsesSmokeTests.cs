@@ -64,7 +64,7 @@ public partial class ResponsesSmokeTests
     public async Task StreamingResponseCanProcessUnknownEvent()
     {
         const string unknownEventKind = "response.unknown";
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent($$"""
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent($$"""
             data: {"type":"response.output_text.delta","sequence_number":0,"item_id":"item_1","output_index":0,"content_index":0,"delta":"Hello"}
 
             data: {"type":"{{unknownEventKind}}","sequence_number":1}

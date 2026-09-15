@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeFunctionTool : RealtimeTool, IJsonModel<RealtimeFunctionTool>
     {
-        public RealtimeFunctionTool() : this(InternalRealtimeToolBaseTypeGA.Function, default, null, null, null)
+        public RealtimeFunctionTool() : this(RealtimeToolKind.Function, default, null, null, null)
         {
         }
 
@@ -119,7 +119,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeToolBaseTypeGA kind = default;
+            RealtimeToolKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -130,7 +130,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeToolBaseTypeGA(prop.Value.GetString());
+                    kind = new RealtimeToolKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("name"u8))

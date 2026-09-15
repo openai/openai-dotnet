@@ -59,25 +59,23 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 ### Bugs Fixed
 
-- OpenAI.Audio:
+- OpenAI.Assistants:
   - Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
 - OpenAI.Chat:
   - Reduced memory pressure when creating binary-backed image and file content. Base64 data URIs now use a single string allocation on modern target frameworks, and computer screenshot output uses the shared encoding path.
-  - Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
 - OpenAI.Realtime:
   - Fixed WebSocket endpoint construction for custom endpoints that already end in `/realtime/`, avoiding duplicate path segments. _(A community contribution, courtesy of [jstar0](https://github.com/jstar0))_
   - Fixed an issue with `JsonPatch` not propagating correctly through certain types.
 - OpenAI.Responses:
-  - Fixed an issue where the `Status` property of `ResponseItem` was not deserialized correctly when `null`.
+  - Fixed an issue where the `Status` property of the derived types of `ResponseItem` was not deserialized correctly when `null`.
   - Reduced memory pressure when creating binary-backed image and file content. Base64 data URIs now use a single string allocation on modern target frameworks, and computer screenshot output uses the shared encoding path.
-  - Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
 - OpenAI.VectorStores:
   - Fixed an issue where the `UsageBytes` property of `VectorStore` was incorrectly deserialized using `GetInt32()` instead of `GetInt64()`.
 
 ### Other Changes
 
-- OpenAI.Realtime:
-  - Updated the function-calling example to parse and validate model-provided arguments before invoking the local function. _(A community contribution, courtesy of [Rohan5commit](https://github.com/Rohan5commit))_
+- Updated the Realtime example for function calling to parse and validate model-provided arguments before invoking the local function. _(A community contribution, courtesy of [Rohan5commit](https://github.com/Rohan5commit))_
+- Updated the `System.ClientModel` dependency to version 1.15.0. For more information, see the [System.ClientModel changelog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.15.0/sdk/core/System.ClientModel/CHANGELOG.md).
 
 ### Breaking Changes in Experimental APIs
 

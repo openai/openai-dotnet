@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeFunctionCallItem : RealtimeItem
     {
-        public RealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments) : base(InternalRealtimeConversationItemTypeGA.FunctionCall)
+        public RealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments) : base(RealtimeItemKind.FunctionCall)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(functionName, nameof(functionName));
@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeFunctionCallItem(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch, string id, InternalRealtimeConversationItemFunctionCallGAObject? @object, RealtimeFunctionCallStatus? status, string callId, string functionName, BinaryData functionArguments) : base(kind, patch)
+        internal RealtimeFunctionCallItem(RealtimeItemKind kind, in JsonPatch patch, string id, InternalRealtimeConversationItemFunctionCallGAObject? @object, RealtimeFunctionCallStatus? status, string callId, string functionName, BinaryData functionArguments) : base(kind, patch)
         {
             Id = id;
             Object = @object;

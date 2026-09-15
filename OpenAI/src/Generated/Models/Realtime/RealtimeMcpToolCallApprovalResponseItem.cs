@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem
     {
-        public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(InternalRealtimeConversationItemTypeGA.McpApprovalResponse)
+        public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(RealtimeItemKind.McpApprovalResponse)
         {
             Argument.AssertNotNull(approvalRequestId, nameof(approvalRequestId));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpToolCallApprovalResponseItem(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch, string id, string approvalRequestId, bool approved, string reason) : base(kind, patch)
+        internal RealtimeMcpToolCallApprovalResponseItem(RealtimeItemKind kind, in JsonPatch patch, string id, string approvalRequestId, bool approved, string reason) : base(kind, patch)
         {
             Id = id;
             ApprovalRequestId = approvalRequestId;

@@ -32,9 +32,6 @@ internal readonly partial struct InternalRealtimeTruncationBaseTypeGA { }
 [CodeGenType("UnknownRealtimeTruncationBaseGA")]
 internal partial class InternalUnknownRealtimeTruncationBaseGA { }
 
-[CodeGenType("RealtimeToolBaseTypeGA")]
-internal readonly partial struct InternalRealtimeToolBaseTypeGA { }
-
 [CodeGenType("UnknownRealtimeToolBaseGA")]
 internal partial class InternalUnknownRealtimeToolBaseGA { }
 
@@ -52,9 +49,6 @@ internal partial class InternalUnknownRealtimeTurnDetectionBaseGA { }
 
 [CodeGenType("UnknownRealtimeServerEventGA")]
 internal partial class InternalUnknownRealtimeServerEventGA { }
-
-[CodeGenType("RealtimeConversationItemTypeGA")]
-internal readonly partial struct InternalRealtimeConversationItemTypeGA { }
 
 [CodeGenType("UnknownRealtimeConversationItemGA")]
 internal partial class InternalUnknownRealtimeConversationItemGA { }

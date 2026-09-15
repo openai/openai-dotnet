@@ -1760,12 +1760,12 @@ namespace OpenAI
 
         public static RealtimeTool RealtimeTool(string kind = default)
         {
-            return new RealtimeTool(new InternalRealtimeToolBaseTypeGA(kind), default);
+            return new RealtimeTool(new RealtimeToolKind(kind), default);
         }
 
         public static RealtimeFunctionTool RealtimeFunctionTool(string functionName = default, string functionDescription = default, BinaryData functionParameters = default)
         {
-            return new RealtimeFunctionTool(InternalRealtimeToolBaseTypeGA.Function, default, functionName, functionDescription, functionParameters);
+            return new RealtimeFunctionTool(RealtimeToolKind.Function, default, functionName, functionDescription, functionParameters);
         }
 
         public static RealtimeMcpTool RealtimeMcpTool(string serverLabel = default, Uri serverUri = default, RealtimeMcpToolConnectorId? connectorId = default, string authorizationToken = default, string serverDescription = default, IDictionary<string, string> headers = default, RealtimeMcpToolFilter allowedTools = default, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy = default)
@@ -1773,7 +1773,7 @@ namespace OpenAI
             headers ??= new ChangeTrackingDictionary<string, string>();
 
             return new RealtimeMcpTool(
-                InternalRealtimeToolBaseTypeGA.Mcp,
+                RealtimeToolKind.Mcp,
                 default,
                 serverLabel,
                 serverUri,
@@ -2646,13 +2646,13 @@ namespace OpenAI
 
         public static RealtimeItem RealtimeItem(string kind = default)
         {
-            return new RealtimeItem(new InternalRealtimeConversationItemTypeGA(kind), default);
+            return new RealtimeItem(new RealtimeItemKind(kind), default);
         }
 
         public static RealtimeMcpToolCallApprovalResponseItem RealtimeMcpToolCallApprovalResponseItem(string id = default, string approvalRequestId = default, bool approved = default, string reason = default)
         {
             return new RealtimeMcpToolCallApprovalResponseItem(
-                InternalRealtimeConversationItemTypeGA.McpApprovalResponse,
+                RealtimeItemKind.McpApprovalResponse,
                 default,
                 id,
                 approvalRequestId,
@@ -2664,7 +2664,7 @@ namespace OpenAI
         {
             toolDefinitions ??= new ChangeTrackingList<RealtimeMcpToolDefinition>();
 
-            return new RealtimeMcpToolDefinitionListItem(InternalRealtimeConversationItemTypeGA.McpListTools, default, id, serverLabel, toolDefinitions.ToList());
+            return new RealtimeMcpToolDefinitionListItem(RealtimeItemKind.McpListTools, default, id, serverLabel, toolDefinitions.ToList());
         }
 
         public static RealtimeMcpToolDefinition RealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
@@ -2675,7 +2675,7 @@ namespace OpenAI
         public static RealtimeMcpToolCallItem RealtimeMcpToolCallItem(string id = default, string serverLabel = default, string toolName = default, BinaryData toolArguments = default, string approvalRequestId = default, string toolOutput = default, RealtimeError error = default)
         {
             return new RealtimeMcpToolCallItem(
-                InternalRealtimeConversationItemTypeGA.McpCall,
+                RealtimeItemKind.McpCall,
                 default,
                 id,
                 serverLabel,
@@ -2700,7 +2700,7 @@ namespace OpenAI
         public static RealtimeMcpToolCallApprovalRequestItem RealtimeMcpToolCallApprovalRequestItem(string id = default, string serverLabel = default, string toolName = default, BinaryData toolArguments = default)
         {
             return new RealtimeMcpToolCallApprovalRequestItem(
-                InternalRealtimeConversationItemTypeGA.McpApprovalRequest,
+                RealtimeItemKind.McpApprovalRequest,
                 default,
                 id,
                 serverLabel,
