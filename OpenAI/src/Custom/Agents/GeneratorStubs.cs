@@ -4,6 +4,7 @@ namespace OpenAI.Agents;
 
 [CodeGenType("Agent")] public partial class Agent {}
 [CodeGenType("AgentCreationOptions")] public partial class AgentCreationOptions {}
+[CodeGenType("AgentModificationOptions")] public partial class AgentModificationOptions {}
 [CodeGenType("McpConnectionOriginParam")] public readonly partial struct McpConnectionOriginParam {}
 [CodeGenType("McpConnectionOriginResource")] public readonly partial struct McpConnectionOriginResource {}
 [CodeGenType("MultiAgentConfigCurrentParam")] public partial class MultiAgentConfigCurrentParam {}

@@ -38,3 +38,21 @@ op retrieveAgent(
   @path
   agent_id: string,
 ): AgentResource;
+
+/**
+ * Updates a reusable agent by ID. See
+ * [agent configuration](https://developers.openai.com/api/docs/guides/agents-api/configuration).
+ */
+@summary("Update an agent")
+@post
+@route("agents/{agent_id}")
+@tag("Agents")
+op updateAgent(
+  /** The ID of the reusable agent. */
+  @path
+  agent_id: string,
+
+  /** Fields to replace on the existing reusable agent. */
+  @body
+  agent: UpdateAgentParams,
+): AgentResource;

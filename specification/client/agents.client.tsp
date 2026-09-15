@@ -11,10 +11,12 @@ using TypeSpec.HttpClient.CSharp;
 // Route the agent operations and their models into the OpenAI.Agents namespace.
 @@clientLocation(createAgent, "Agents");
 @@clientLocation(retrieveAgent, "Agents");
+@@clientLocation(updateAgent, "Agents");
 
 // ------------ Model names ------------
 
 @@clientName(CreateAgentParams, "AgentCreationOptions");
+@@clientName(UpdateAgentParams, "AgentModificationOptions");
 @@clientName(AgentResource, "Agent");
 
 // ------------ Free-form JSON payloads ------------
@@ -32,6 +34,7 @@ using TypeSpec.HttpClient.CSharp;
 // Match the house style used by Realtime/Responses: models round-trip unknown
 // properties and expose the implicit BinaryContent conversion used by convenience methods.
 @@dynamicModel(CreateAgentParams);
+@@dynamicModel(UpdateAgentParams);
 @@dynamicModel(AgentResource);
 @@dynamicModel(ReasoningParam);
 @@dynamicModel(ReasoningResource);

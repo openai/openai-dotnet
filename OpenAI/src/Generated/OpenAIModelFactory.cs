@@ -2309,6 +2309,24 @@ namespace OpenAI
             return new MultiAgentConfigResource(enabled, maxConcurrentSubagents, default);
         }
 
+        public static AgentModificationOptions AgentModificationOptions(string model = default, ReasoningParam reasoning = default, TextParam text = default, ServiceTierParam? serviceTier = default, string instructions = default, MultiAgentConfigCurrentParam multiAgent = default, IDictionary<string, string> metadata = default, string name = default, IEnumerable<PersistedAgentToolConfigParam> tools = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<PersistedAgentToolConfigParam>();
+
+            return new AgentModificationOptions(
+                model,
+                reasoning,
+                text,
+                serviceTier,
+                instructions,
+                multiAgent,
+                metadata,
+                name,
+                tools.ToList(),
+                default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);

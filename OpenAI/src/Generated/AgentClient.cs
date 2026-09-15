@@ -92,5 +92,41 @@ namespace OpenAI.Agents
             ClientResult result = await RetrieveAgentAsync(agentId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((Agent)result, result.GetRawResponse());
         }
+
+        public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateAgentRequest(agentId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> UpdateAgentAsync(string agentId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateAgentRequest(agentId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<Agent> UpdateAgent(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+            Argument.AssertNotNull(agent, nameof(agent));
+
+            ClientResult result = UpdateAgent(agentId, agent, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((Agent)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+            Argument.AssertNotNull(agent, nameof(agent));
+
+            ClientResult result = await UpdateAgentAsync(agentId, agent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((Agent)result, result.GetRawResponse());
+        }
     }
 }

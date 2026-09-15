@@ -38,6 +38,10 @@ namespace OpenAI.Agents {
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
         public virtual Task<ClientResult<Agent>> RetrieveAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<Agent> UpdateAgent(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
+        public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> UpdateAgentAsync(string agentId, BinaryContent content, RequestOptions options = null);
     }
     [Experimental("OPENAI001")]
     public class AgentCreationOptions : IJsonModel<AgentCreationOptions>, IPersistableModel<AgentCreationOptions> {
@@ -57,6 +61,23 @@ namespace OpenAI.Agents {
         public TextParam Text { get; set; }
         public IList<PersistedAgentToolConfigParam> Tools { get; set; }
         public static implicit operator BinaryContent(AgentCreationOptions agentCreationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentModificationOptions : IJsonModel<AgentModificationOptions>, IPersistableModel<AgentModificationOptions> {
+        public string Instructions { get; set; }
+        public IDictionary<string, string> Metadata { get; set; }
+        public string Model { get; set; }
+        public MultiAgentConfigCurrentParam MultiAgent { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public ReasoningParam Reasoning { get; set; }
+        public ServiceTierParam? ServiceTier { get; set; }
+        public TextParam Text { get; set; }
+        public IList<PersistedAgentToolConfigParam> Tools { get; set; }
+        public static implicit operator BinaryContent(AgentModificationOptions agentModificationOptions);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct McpConnectionOriginParam : IEquatable<McpConnectionOriginParam> {
