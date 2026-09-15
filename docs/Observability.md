@@ -6,7 +6,7 @@
 OpenAI .NET library is instrumented with distributed tracing and metrics using .NET [tracing](https://learn.microsoft.com/dotnet/core/diagnostics/distributed-tracing)
 and [metrics](https://learn.microsoft.com/dotnet/core/diagnostics/metrics-instrumentation) API and supports [OpenTelemetry](https://learn.microsoft.com/dotnet/core/diagnostics/observability-with-otel).
 
-OpenAI .NET instrumentation follows [OpenTelemetry Semantic Conventions for Generative AI systems](https://github.com/open-telemetry/semantic-conventions/tree/main/docs/gen-ai).
+OpenAI .NET instrumentation follows [OpenTelemetry Semantic Conventions for Generative AI systems](https://github.com/open-telemetry/semantic-conventions-genai/tree/main/docs/gen-ai).
 
 ### How to enable
 
@@ -65,6 +65,7 @@ When this opt-in is enabled, the instrumentation emits attributes following the
 Notable changes include:
 
 - The `gen_ai.system` attribute is replaced by `gen_ai.provider.name`.
+- Responses telemetry identifies the API with `openai.api.type=responses` and records available response, conversation, service-tier, reasoning, output-type, and detailed token-usage attributes.
 
 The default behavior (without the opt-in) remains unchanged and continues to emit v1.27.0 conventions.
 
@@ -73,6 +74,13 @@ The default behavior (without the opt-in) remains unchanged and continues to emi
 The following sources and meters are available:
 
 - `OpenAI.ChatClient` - records traces and metrics for `ChatClient` operations (except streaming and protocol methods which are not instrumented yet)
+- `OpenAI.ResponsesClient` - records traces and metrics for non-streaming `CreateResponse` operations. Streaming, protocol, retrieval, cancellation, deletion, and input-item methods are not instrumented yet.
+
+### OpenTelemetry data and privacy
+
+Responses OpenTelemetry instrumentation records operational details such as model names, response and conversation identifiers, service tiers, token counts, finish reasons, and errors.
+
+Responses instrumentation does not record prompts, generated output, instructions, tool definitions, tool arguments or results, metadata, safety identifiers, end-user identifiers, prompt cache keys, or multimodal payloads. The OpenTelemetry GenAI semantic conventions classify content attributes as opt-in. Enabling this library's experimental OpenTelemetry instrumentation does not opt in to content capture.
 
 ## Telemetry and privacy
 
