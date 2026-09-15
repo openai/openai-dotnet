@@ -36,6 +36,14 @@ Thank you to our developer community members who helped to make the OpenAI clien
     - Added the `RealtimeServerUpdateKind` extensible enum.
     - Added the `Kind` property to `RealtimeServerUpdate`.
     - Added a `protected internal` constructor to `RealtimeServerUpdate` that takes a `RealtimeServerUpdateKind` parameter.
+  - Added extensibility to the `RealtimeItem` class hierarchy.
+    - Added the `RealtimeItemKind` extensible enum.
+    - Added the `Kind` property to `RealtimeItem`.
+    - Added a `protected internal` constructor to `RealtimeItem` that takes a `RealtimeItemKind` parameter.
+  - Added extensibility to the `RealtimeTool` class hierarchy.
+    - Added the `RealtimeToolKind` extensible enum.
+    - Added the `Kind` property to `RealtimeTool`.
+    - Added a `protected internal` constructor to `RealtimeTool` that takes a `RealtimeToolKind` parameter.
 - OpenAI.Responses:
   - Added support for Custom tools, which work in much the same way as JSON schema-driven Function tools, but rather than providing the model explicit instructions on what input your tool requires, the model can pass an arbitrary string back to your tool instead. This is useful to avoid unnecessarily wrapping a response in JSON, or to apply a custom grammar to the response.
     - Added the following derived types of `ResponseTool`:
