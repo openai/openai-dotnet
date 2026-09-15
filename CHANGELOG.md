@@ -1,5 +1,15 @@
 # Release History
 
+## (Unreleased)
+
+### Acknowledgments
+
+### Features Added
+
+### Bugs Fixed
+
+### Other Changes
+
 ## 2.14.0 (2026-09-15)
 
 ### Acknowledgments
