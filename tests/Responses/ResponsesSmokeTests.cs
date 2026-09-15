@@ -1,14 +1,15 @@
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
-using OpenAI.Tests;
 using OpenAI.Responses;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Responses;
 
@@ -57,6 +58,45 @@ public partial class ResponsesSmokeTests
         Assert.That(result, Is.Not.Null);
         Assert.That(observedEndpoint, Is.Not.Null);
         Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("example.invalid/custom/responses/endpoint"));
+    }
+
+    [Test]
+    public async Task StreamingResponseCanProcessUnknownEvent()
+    {
+        const string unknownEventKind = "response.unknown";
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent($$"""
+            data: {"type":"response.output_text.delta","sequence_number":0,"item_id":"item_1","output_index":0,"content_index":0,"delta":"Hello"}
+
+            data: {"type":"{{unknownEventKind}}","sequence_number":1}
+
+            data: {"type":"response.output_text.delta","sequence_number":2,"item_id":"item_1","output_index":0,"content_index":0,"delta":" world"}
+
+            data: [DONE]
+            """);
+        ResponsesClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = false,
+            },
+        };
+        ResponsesClient client = new(new ApiKeyCredential("key"), options);
+        CreateResponseOptions createOptions = new()
+        {
+            Model = "model",
+            StreamingEnabled = true,
+        };
+
+        List<StreamingResponseUpdate> receivedUpdates = [];
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(createOptions))
+        {
+            receivedUpdates.Add(update);
+        }
+
+        Assert.That(receivedUpdates, Has.Count.EqualTo(3));
+        Assert.That(receivedUpdates[0], Is.InstanceOf<StreamingResponseOutputTextDeltaUpdate>());
+        Assert.That(receivedUpdates[1].Kind, Is.EqualTo(new StreamingResponseUpdateKind(unknownEventKind)));
+        Assert.That(receivedUpdates[2], Is.InstanceOf<StreamingResponseOutputTextDeltaUpdate>());
     }
 
     [Test]

@@ -54,7 +54,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Added support for new reasoning capabilities.
     - Added the `ExtraHigh` and `Max` values to the `ResponseReasoningEffortLevel` extensible enum.
   - Added support for specifying the amount of reasoning context preserved across turns.
-    - Added the `ResponseReasoningContent` extensible enum with the `Auto`, `CurrentTurn`, and `AllTurns` values. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
+    - Added the `ResponseReasoningContext` extensible enum with the `Auto`, `CurrentTurn`, and `AllTurns` values. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
     - Added the `Context` property to `ResponseReasoningOptions`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
 
 ### Bugs Fixed
