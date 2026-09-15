@@ -58,5 +58,19 @@ namespace OpenAI.Agents
             message.Apply(options);
             return message;
         }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateDeleteAgentRequest(string agentId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/", false);
+            uri.AppendPath(agentId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
     }
 }

@@ -128,5 +128,37 @@ namespace OpenAI.Agents
             ClientResult result = await UpdateAgentAsync(agentId, agent, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((Agent)result, result.GetRawResponse());
         }
+
+        public virtual ClientResult DeleteAgent(string agentId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+
+            using PipelineMessage message = CreateDeleteAgentRequest(agentId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+
+            using PipelineMessage message = CreateDeleteAgentRequest(agentId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+
+            ClientResult result = DeleteAgent(agentId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentDeletionResult>> DeleteAgentAsync(string agentId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(agentId, nameof(agentId));
+
+            ClientResult result = await DeleteAgentAsync(agentId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentDeletionResult)result, result.GetRawResponse());
+        }
     }
 }

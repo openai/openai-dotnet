@@ -31,6 +31,10 @@ namespace OpenAI.Agents {
         public virtual ClientResult CreateAgent(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> CreateAgentAsync(AgentCreationOptions agent, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateAgentAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult DeleteAgent(string agentId, RequestOptions options);
+        public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options);
+        public virtual Task<ClientResult<AgentDeletionResult>> DeleteAgentAsync(string agentId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveAgent(string agentId, RequestOptions options);
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
@@ -56,6 +60,14 @@ namespace OpenAI.Agents {
         public TextParam Text { get; set; }
         public IList<PersistedAgentToolConfigParam> Tools { get; set; }
         public static implicit operator BinaryContent(AgentCreationOptions agentCreationOptions);
+    }
+    public class AgentDeletionResult : IJsonModel<AgentDeletionResult>, IPersistableModel<AgentDeletionResult> {
+        public string AgentId { get; set; }
+        public bool Deleted { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentDeletionResult(ClientResult result);
     }
     public class AgentModificationOptions : IJsonModel<AgentModificationOptions>, IPersistableModel<AgentModificationOptions> {
         public string Instructions { get; set; }

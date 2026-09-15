@@ -35,6 +35,9 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentCreationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentCreationOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentDeletionResult is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentDeletionResult is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentModificationOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentModificationOptions is experimental and may change in future versions.

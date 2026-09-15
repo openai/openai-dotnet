@@ -12,12 +12,15 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(createAgent, "Agents");
 @@clientLocation(retrieveAgent, "Agents");
 @@clientLocation(updateAgent, "Agents");
+@@clientLocation(deleteAgent, "Agents");
 
 // ------------ Model names ------------
 
 @@clientName(CreateAgentParams, "AgentCreationOptions");
 @@clientName(UpdateAgentParams, "AgentModificationOptions");
 @@clientName(AgentResource, "Agent");
+@@clientName(DeletedAgentResource, "AgentDeletionResult");
+@@clientName(DeletedAgentResource.id, "AgentId");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -36,6 +39,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(CreateAgentParams);
 @@dynamicModel(UpdateAgentParams);
 @@dynamicModel(AgentResource);
+@@dynamicModel(DeletedAgentResource);
 @@dynamicModel(ReasoningParam);
 @@dynamicModel(ReasoningResource);
 @@dynamicModel(TextParam);

@@ -339,3 +339,23 @@ model AgentResource {
   /** The resolved configuration for creating and coordinating subagents. */
   multi_agent: MultiAgentConfigResource;
 }
+
+// --------- Delete agent ---------
+
+/** The object type. Always `agent.deleted`. */
+union AgentDeletedObject {
+  string,
+  agent_deleted: "agent.deleted",
+}
+
+/** A deleted reusable agent. */
+model DeletedAgentResource {
+  /** The ID of the deleted agent. */
+  id: string;
+
+  /** The object type. Always `agent.deleted`. */
+  object: AgentDeletedObject;
+
+  /** Whether the agent was deleted. Always `true`. */
+  deleted: boolean;
+}

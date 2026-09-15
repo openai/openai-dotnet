@@ -56,3 +56,17 @@ op updateAgent(
   @body
   agent: UpdateAgentParams,
 ): AgentResource;
+
+/**
+ * Deletes a reusable agent by ID. See
+ * [agent configuration](https://developers.openai.com/api/docs/guides/agents-api/configuration).
+ */
+@summary("Delete an agent")
+@delete
+@route("agents/{agent_id}")
+@tag("Agents")
+op deleteAgent(
+  /** The ID of the reusable agent. */
+  @path
+  agent_id: string,
+): DeletedAgentResource;
