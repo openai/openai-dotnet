@@ -14,7 +14,7 @@ namespace OpenAI.Realtime
     public partial class RealtimeMcpTool : RealtimeTool
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeMcpTool(InternalRealtimeToolBaseTypeGA kind, in JsonPatch patch, string serverLabel, Uri serverUri, RealtimeMcpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, RealtimeMcpToolFilter allowedTools, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
+        internal RealtimeMcpTool(RealtimeToolKind kind, in JsonPatch patch, string serverLabel, Uri serverUri, RealtimeMcpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, RealtimeMcpToolFilter allowedTools, RealtimeMcpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
