@@ -47,6 +47,57 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentModificationOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSession is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSession))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSession is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionCollectionPage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionCreationOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionDeletionResult is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionModificationOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionModificationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolConfigParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamFunction is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolConfigParamFunction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamFunction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamMcp is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolConfigParamMcp))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamMcp is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamProgrammaticToolCalling is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolConfigParamProgrammaticToolCalling))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamProgrammaticToolCalling is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamToolSearch is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolConfigParamToolSearch))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamToolSearch is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamWebSearch is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolConfigParamWebSearch))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParamWebSearch is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolResourceFunction is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolResourceFunction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolResourceFunction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolResourceMcp is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolResourceMcp))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolResourceMcp is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolResourceProgrammaticToolCalling is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolResourceProgrammaticToolCalling))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolResourceProgrammaticToolCalling is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolResourceWebSearch is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentToolResourceWebSearch))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolResourceWebSearch is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.ApplyPatchCallItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ApplyPatchCallItem))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.ApplyPatchCallItem is experimental and may change in future versions.
@@ -454,6 +505,21 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ImageTokenUsage))]
 #pragma warning restore OPENAI001 // global::OpenAI.Images.ImageTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ImageVariationOptions))]
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.InputContentParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(InputContentParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.InputContentParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.InputContentParamInputImage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(InputContentParamInputImage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.InputContentParamInputImage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.InputContentParamInputText is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(InputContentParamInputText))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.InputContentParamInputText is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.InputMessageParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(InputMessageParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.InputMessageParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.InputTokensDetailsResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(InputTokensDetailsResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.InputTokensDetailsResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(InternalAddUploadPartRequest))]
     [ModelReaderWriterBuildable(typeof(InternalAssistantsError))]
     [ModelReaderWriterBuildable(typeof(InternalAssistantsErrorResponse))]
@@ -830,6 +896,8 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextDoneEvent))]
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextDoneEventLogprobs))]
     [ModelReaderWriterBuildable(typeof(InternalTranscriptTextSegmentEvent))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownAgentToolConfigParam))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownAgentToolResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownAnnotation))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownApplyPatchOperation))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownAssistantsResponseFormat))]
@@ -860,10 +928,13 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownEvalRunDataSourceParams))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownEvalTextFormatConfiguration))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownEvalTool))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownInputContentParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownItemContent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownItemResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownLocation))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownMcpTransportConfigParam))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownMcpTransportResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownMessageContent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownModerationInputPart))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownPersistedAgentToolConfigParam))]
@@ -885,6 +956,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponsesMessageItemResourceItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseTextFormatConfiguration))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownSessionRequiredActionResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTextFormatParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTextFormatResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTool))]
@@ -946,6 +1018,24 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.McpToolFilter is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpToolFilter))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.McpToolFilter is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpTransportConfigParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpTransportConfigParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpTransportConfigParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpTransportConfigParamHttp is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpTransportConfigParamHttp))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpTransportConfigParamHttp is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpTransportConfigParamStdio is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpTransportConfigParamStdio))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpTransportConfigParamStdio is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpTransportResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpTransportResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpTransportResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpTransportResourceHttp is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpTransportResourceHttp))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpTransportResourceHttp is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpTransportResourceStdio is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpTransportResourceStdio))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpTransportResourceStdio is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Assistants.MessageCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(MessageCollectionOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Assistants.MessageCollectionOptions is experimental and may change in future versions.
@@ -989,6 +1079,9 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(OpenAIFileCollection))]
     [ModelReaderWriterBuildable(typeof(OpenAIModel))]
     [ModelReaderWriterBuildable(typeof(OpenAIModelCollection))]
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.OutputTokensDetailsResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(OutputTokensDetailsResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.OutputTokensDetailsResource is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.PersistedAgentToolConfigParam is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(PersistedAgentToolConfigParam))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.PersistedAgentToolConfigParam is experimental and may change in future versions.
@@ -1574,6 +1667,21 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunTruncationStrategy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunTruncationStrategy))]
 #pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunTruncationStrategy is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionAgentConfigParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionAgentConfigParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionAgentConfigParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionAgentResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionAgentResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionAgentResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionRequiredActionResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResourceEnvironmentConnection is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionRequiredActionResourceEnvironmentConnection))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResourceEnvironmentConnection is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResourceFunctionCall is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionRequiredActionResourceFunctionCall))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResourceFunctionCall is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SpeechGenerationOptions))]
 #pragma warning disable OPENAI001 // global::OpenAI.Audio.SpeechTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SpeechTokenUsage))]
@@ -1804,6 +1912,9 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Assistants.ThreadRun is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ThreadRun))]
 #pragma warning restore OPENAI001 // global::OpenAI.Assistants.ThreadRun is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.TokenUsageResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(TokenUsageResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.TokenUsageResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolChatMessage))]
 #pragma warning disable OPENAI001 // global::OpenAI.Assistants.ToolConstraint is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ToolConstraint))]

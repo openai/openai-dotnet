@@ -31,22 +31,42 @@ namespace OpenAI.Agents {
         public virtual ClientResult CreateAgent(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> CreateAgentAsync(AgentCreationOptions agent, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateAgentAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<AgentSession> CreateAgentSession(AgentSessionCreationOptions session, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateAgentSession(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<AgentSession>> CreateAgentSessionAsync(AgentSessionCreationOptions session, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateAgentSessionAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteAgent(string agentId, RequestOptions options);
         public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options);
         public virtual Task<ClientResult<AgentDeletionResult>> DeleteAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DeleteAgentSession(string sessionId, RequestOptions options);
+        public virtual ClientResult<AgentSessionDeletionResult> DeleteAgentSession(string sessionId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteAgentSessionAsync(string sessionId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSessionDeletionResult>> DeleteAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<Agent> GetAgents(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgents(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<Agent> GetAgentsAsync(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentsAsync(int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSession> GetAgentSessions(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessions(int? limit, string order, string agentId, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSession> GetAgentSessionsAsync(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionsAsync(int? limit, string order, string agentId, string after, RequestOptions options);
         public virtual ClientResult RetrieveAgent(string agentId, RequestOptions options);
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
         public virtual Task<ClientResult<Agent>> RetrieveAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentSession(string sessionId, RequestOptions options);
+        public virtual ClientResult<AgentSession> RetrieveAgentSession(string sessionId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentSessionAsync(string sessionId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSession>> RetrieveAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
         public virtual ClientResult<Agent> UpdateAgent(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
         public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateAgentAsync(string agentId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<AgentSession> UpdateAgentSession(string sessionId, AgentSessionModificationOptions session, CancellationToken cancellationToken = default);
+        public virtual ClientResult UpdateAgentSession(string sessionId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<AgentSession>> UpdateAgentSessionAsync(string sessionId, AgentSessionModificationOptions session, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> UpdateAgentSessionAsync(string sessionId, BinaryContent content, RequestOptions options = null);
     }
     public class AgentCollectionOptions : IJsonModel<AgentCollectionOptions>, IPersistableModel<AgentCollectionOptions> {
         public string After { get; set; }
@@ -119,6 +139,218 @@ namespace OpenAI.Agents {
         public IList<PersistedAgentToolConfigParam> Tools { get; set; }
         public static implicit operator BinaryContent(AgentModificationOptions agentModificationOptions);
     }
+    public class AgentSession : IJsonModel<AgentSession>, IPersistableModel<AgentSession> {
+        public SessionAgentResource Agent { get; set; }
+        public int CreatedAt { get; set; }
+        public BinaryData Environment { get; set; }
+        public string Error { get; set; }
+        public string Id { get; set; }
+        public int LastActiveAt { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public IList<SessionRequiredActionResource> RequiredActions { get; }
+        public SessionStatusResource Status { get; set; }
+        public TokenUsageResource Usage { get; set; }
+        public IList<string> VaultIds { get; }
+        public static explicit operator AgentSession(ClientResult result);
+    }
+    public class AgentSessionCollectionOptions : IJsonModel<AgentSessionCollectionOptions>, IPersistableModel<AgentSessionCollectionOptions> {
+        public string After { get; set; }
+        public string AgentId { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionCollectionOrder? Order { get; set; }
+    }
+    public readonly partial struct AgentSessionCollectionOrder : IEquatable<AgentSessionCollectionOrder> {
+        public AgentSessionCollectionOrder(string value);
+        public static AgentSessionCollectionOrder Ascending { get; }
+        public static AgentSessionCollectionOrder Descending { get; }
+        public readonly bool Equals(AgentSessionCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionCollectionOrder left, AgentSessionCollectionOrder right);
+        public static implicit operator AgentSessionCollectionOrder(string value);
+        public static implicit operator AgentSessionCollectionOrder?(string value);
+        public static bool operator !=(AgentSessionCollectionOrder left, AgentSessionCollectionOrder right);
+        public override readonly string ToString();
+    }
+    public class AgentSessionCollectionPage : IJsonModel<AgentSessionCollectionPage>, IPersistableModel<AgentSessionCollectionPage> {
+        public IList<AgentSession> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionCollectionPage(ClientResult result);
+    }
+    public class AgentSessionCreationOptions : IJsonModel<AgentSessionCreationOptions>, IPersistableModel<AgentSessionCreationOptions> {
+        public AgentSessionCreationOptions();
+        public AgentSessionCreationOptions(BinaryData environment);
+        public SessionAgentConfigParam Agent { get; set; }
+        public string AgentId { get; set; }
+        public BinaryData Environment { get; set; }
+        public BinaryData Input { get; set; }
+        public IDictionary<string, string> Metadata { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public bool? Stream { get; set; }
+        public IList<string> VaultIds { get; set; }
+        public static implicit operator BinaryContent(AgentSessionCreationOptions agentSessionCreationOptions);
+    }
+    public class AgentSessionDeletionResult : IJsonModel<AgentSessionDeletionResult>, IPersistableModel<AgentSessionDeletionResult> {
+        public string AgentSessionId { get; set; }
+        public bool Deleted { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionDeletionResult(ClientResult result);
+    }
+    public class AgentSessionModificationOptions : IJsonModel<AgentSessionModificationOptions>, IPersistableModel<AgentSessionModificationOptions> {
+        public IDictionary<string, string> Metadata { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(AgentSessionModificationOptions agentSessionModificationOptions);
+    }
+    public class AgentToolConfigParam : IJsonModel<AgentToolConfigParam>, IPersistableModel<AgentToolConfigParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class AgentToolConfigParamFunction : AgentToolConfigParam, IJsonModel<AgentToolConfigParamFunction>, IPersistableModel<AgentToolConfigParamFunction> {
+        public AgentToolConfigParamFunction();
+        public AgentToolConfigParamFunction(string name, string description, BinaryData parameters);
+        public bool? DeferLoading { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public BinaryData Parameters { get; set; }
+    }
+    public class AgentToolConfigParamMcp : AgentToolConfigParam, IJsonModel<AgentToolConfigParamMcp>, IPersistableModel<AgentToolConfigParamMcp> {
+        public AgentToolConfigParamMcp();
+        public AgentToolConfigParamMcp(string serverLabel, McpTransportConfigParam transport);
+        public IList<string> AllowedTools { get; set; }
+        public McpConnectionOriginParam? ConnectionOrigin { get; set; }
+        public string CredentialId { get; set; }
+        public BinaryData RequestMetadata { get; set; }
+        public bool? Required { get; set; }
+        public string ServerLabel { get; set; }
+        public McpTransportConfigParam Transport { get; set; }
+    }
+    public class AgentToolConfigParamProgrammaticToolCalling : AgentToolConfigParam, IJsonModel<AgentToolConfigParamProgrammaticToolCalling>, IPersistableModel<AgentToolConfigParamProgrammaticToolCalling> {
+        public AgentToolConfigParamProgrammaticToolCalling();
+        public bool? Enabled { get; set; }
+    }
+    public class AgentToolConfigParamToolSearch : AgentToolConfigParam, IJsonModel<AgentToolConfigParamToolSearch>, IPersistableModel<AgentToolConfigParamToolSearch> {
+        public AgentToolConfigParamToolSearch();
+    }
+    public class AgentToolConfigParamWebSearch : AgentToolConfigParam, IJsonModel<AgentToolConfigParamWebSearch>, IPersistableModel<AgentToolConfigParamWebSearch> {
+        public AgentToolConfigParamWebSearch();
+        public IList<string> AllowedDomains { get; set; }
+        public WebSearchContextSizeParam? ContextSize { get; set; }
+        public WebSearchLocationParam Location { get; set; }
+        public WebSearchModeParam? Mode { get; set; }
+    }
+    public class AgentToolResource : IJsonModel<AgentToolResource>, IPersistableModel<AgentToolResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class AgentToolResourceFunction : AgentToolResource, IJsonModel<AgentToolResourceFunction>, IPersistableModel<AgentToolResourceFunction> {
+        public AgentToolResourceFunction();
+        public bool DeferLoading { get; set; }
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public BinaryData Parameters { get; set; }
+    }
+    public class AgentToolResourceMcp : AgentToolResource, IJsonModel<AgentToolResourceMcp>, IPersistableModel<AgentToolResourceMcp> {
+        public AgentToolResourceMcp();
+        public IList<string> AllowedTools { get; }
+        public McpConnectionOriginResource ConnectionOrigin { get; set; }
+        public string CredentialId { get; set; }
+        public BinaryData RequestMetadata { get; set; }
+        public bool Required { get; set; }
+        public string ServerLabel { get; set; }
+        public McpTransportResource Transport { get; set; }
+    }
+    public class AgentToolResourceProgrammaticToolCalling : AgentToolResource, IJsonModel<AgentToolResourceProgrammaticToolCalling>, IPersistableModel<AgentToolResourceProgrammaticToolCalling> {
+        public AgentToolResourceProgrammaticToolCalling();
+        public bool Enabled { get; set; }
+    }
+    public class AgentToolResourceWebSearch : AgentToolResource, IJsonModel<AgentToolResourceWebSearch>, IPersistableModel<AgentToolResourceWebSearch> {
+        public AgentToolResourceWebSearch();
+        public IList<string> AllowedDomains { get; }
+        public WebSearchContextSizeResource ContextSize { get; set; }
+        public WebSearchLocationResource Location { get; set; }
+        public WebSearchModeResource Mode { get; set; }
+    }
+    public readonly partial struct AgentToolType : IEquatable<AgentToolType> {
+        public AgentToolType(string value);
+        public static AgentToolType Function { get; }
+        public static AgentToolType Mcp { get; }
+        public static AgentToolType ProgrammaticToolCalling { get; }
+        public static AgentToolType ToolSearch { get; }
+        public static AgentToolType WebSearch { get; }
+        public readonly bool Equals(AgentToolType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentToolType left, AgentToolType right);
+        public static implicit operator AgentToolType(string value);
+        public static implicit operator AgentToolType?(string value);
+        public static bool operator !=(AgentToolType left, AgentToolType right);
+        public override readonly string ToString();
+    }
+    public class InputContentParam : IJsonModel<InputContentParam>, IPersistableModel<InputContentParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class InputContentParamInputImage : InputContentParam, IJsonModel<InputContentParamInputImage>, IPersistableModel<InputContentParamInputImage> {
+        public InputContentParamInputImage();
+        public InputContentParamInputImage(string imageUrl);
+        public string ImageUrl { get; set; }
+    }
+    public class InputContentParamInputText : InputContentParam, IJsonModel<InputContentParamInputText>, IPersistableModel<InputContentParamInputText> {
+        public InputContentParamInputText();
+        public InputContentParamInputText(string text);
+        public string Text { get; set; }
+    }
+    public readonly partial struct InputContentType : IEquatable<InputContentType> {
+        public InputContentType(string value);
+        public static InputContentType InputImage { get; }
+        public static InputContentType InputText { get; }
+        public readonly bool Equals(InputContentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InputContentType left, InputContentType right);
+        public static implicit operator InputContentType(string value);
+        public static implicit operator InputContentType?(string value);
+        public static bool operator !=(InputContentType left, InputContentType right);
+        public override readonly string ToString();
+    }
+    public class InputMessageParam : IJsonModel<InputMessageParam>, IPersistableModel<InputMessageParam> {
+        public InputMessageParam();
+        public InputMessageParam(IEnumerable<InputContentParam> content);
+        public IList<InputContentParam> Content { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class InputTokensDetailsResource : IJsonModel<InputTokensDetailsResource>, IPersistableModel<InputTokensDetailsResource> {
+        public int CachedTokens { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
     public readonly partial struct McpConnectionOriginParam : IEquatable<McpConnectionOriginParam> {
         public McpConnectionOriginParam(string value);
         public static McpConnectionOriginParam Environment { get; }
@@ -149,6 +381,58 @@ namespace OpenAI.Agents {
         public static bool operator !=(McpConnectionOriginResource left, McpConnectionOriginResource right);
         public override readonly string ToString();
     }
+    public class McpTransportConfigParam : IJsonModel<McpTransportConfigParam>, IPersistableModel<McpTransportConfigParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class McpTransportConfigParamHttp : McpTransportConfigParam, IJsonModel<McpTransportConfigParamHttp>, IPersistableModel<McpTransportConfigParamHttp> {
+        public McpTransportConfigParamHttp();
+        public McpTransportConfigParamHttp(string serverUrl);
+        public string Authorization { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
+        public string ServerUrl { get; set; }
+    }
+    public class McpTransportConfigParamStdio : McpTransportConfigParam, IJsonModel<McpTransportConfigParamStdio>, IPersistableModel<McpTransportConfigParamStdio> {
+        public McpTransportConfigParamStdio();
+        public McpTransportConfigParamStdio(string command, string cwd);
+        public IList<string> Args { get; set; }
+        public string Command { get; set; }
+        public string Cwd { get; set; }
+        public IDictionary<string, string> Env { get; set; }
+        public IList<string> EnvVars { get; set; }
+    }
+    public class McpTransportResource : IJsonModel<McpTransportResource>, IPersistableModel<McpTransportResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class McpTransportResourceHttp : McpTransportResource, IJsonModel<McpTransportResourceHttp>, IPersistableModel<McpTransportResourceHttp> {
+        public McpTransportResourceHttp();
+        public string ServerUrl { get; set; }
+    }
+    public class McpTransportResourceStdio : McpTransportResource, IJsonModel<McpTransportResourceStdio>, IPersistableModel<McpTransportResourceStdio> {
+        public McpTransportResourceStdio();
+        public IList<string> Args { get; }
+        public string Command { get; set; }
+        public string Cwd { get; set; }
+        public IList<string> EnvVars { get; }
+    }
+    public readonly partial struct McpTransportType : IEquatable<McpTransportType> {
+        public McpTransportType(string value);
+        public static McpTransportType Http { get; }
+        public static McpTransportType Stdio { get; }
+        public readonly bool Equals(McpTransportType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(McpTransportType left, McpTransportType right);
+        public static implicit operator McpTransportType(string value);
+        public static implicit operator McpTransportType?(string value);
+        public static bool operator !=(McpTransportType left, McpTransportType right);
+        public override readonly string ToString();
+    }
     public class MultiAgentConfigCurrentParam : IJsonModel<MultiAgentConfigCurrentParam>, IPersistableModel<MultiAgentConfigCurrentParam> {
         public MultiAgentConfigCurrentParam();
         public MultiAgentConfigCurrentParam(bool enabled);
@@ -164,6 +448,12 @@ namespace OpenAI.Agents {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
+    }
+    public class OutputTokensDetailsResource : IJsonModel<OutputTokensDetailsResource>, IPersistableModel<OutputTokensDetailsResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int ReasoningTokens { get; set; }
     }
     public class PersistedAgentToolConfigParam : IJsonModel<PersistedAgentToolConfigParam>, IPersistableModel<PersistedAgentToolConfigParam> {
         [Serialization.JsonIgnore]
@@ -430,6 +720,80 @@ namespace OpenAI.Agents {
         public static bool operator !=(ServiceTierResource left, ServiceTierResource right);
         public override readonly string ToString();
     }
+    public class SessionAgentConfigParam : IJsonModel<SessionAgentConfigParam>, IPersistableModel<SessionAgentConfigParam> {
+        public string Instructions { get; set; }
+        public string Model { get; set; }
+        public MultiAgentConfigCurrentParam MultiAgent { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public ReasoningParam Reasoning { get; set; }
+        public ServiceTierParam? ServiceTier { get; set; }
+        public TextParam Text { get; set; }
+        public IList<AgentToolConfigParam> Tools { get; set; }
+    }
+    public class SessionAgentResource : IJsonModel<SessionAgentResource>, IPersistableModel<SessionAgentResource> {
+        public string Id { get; set; }
+        public string Instructions { get; set; }
+        public string Model { get; set; }
+        public MultiAgentConfigResource MultiAgent { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public ReasoningResource Reasoning { get; set; }
+        public ServiceTierResource ServiceTier { get; set; }
+        public TextResource Text { get; set; }
+        public IList<AgentToolResource> Tools { get; }
+    }
+    public class SessionRequiredActionResource : IJsonModel<SessionRequiredActionResource>, IPersistableModel<SessionRequiredActionResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class SessionRequiredActionResourceEnvironmentConnection : SessionRequiredActionResource, IJsonModel<SessionRequiredActionResourceEnvironmentConnection>, IPersistableModel<SessionRequiredActionResourceEnvironmentConnection> {
+        public SessionRequiredActionResourceEnvironmentConnection();
+        public string EnvironmentId { get; set; }
+    }
+    public class SessionRequiredActionResourceFunctionCall : SessionRequiredActionResource, IJsonModel<SessionRequiredActionResourceFunctionCall>, IPersistableModel<SessionRequiredActionResourceFunctionCall> {
+        public SessionRequiredActionResourceFunctionCall();
+        public BinaryData Arguments { get; set; }
+        public string CallId { get; set; }
+        public string Name { get; set; }
+        public string TurnId { get; set; }
+    }
+    public readonly partial struct SessionRequiredActionType : IEquatable<SessionRequiredActionType> {
+        public SessionRequiredActionType(string value);
+        public static SessionRequiredActionType EnvironmentConnection { get; }
+        public static SessionRequiredActionType FunctionCall { get; }
+        public readonly bool Equals(SessionRequiredActionType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionRequiredActionType left, SessionRequiredActionType right);
+        public static implicit operator SessionRequiredActionType(string value);
+        public static implicit operator SessionRequiredActionType?(string value);
+        public static bool operator !=(SessionRequiredActionType left, SessionRequiredActionType right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct SessionStatusResource : IEquatable<SessionStatusResource> {
+        public SessionStatusResource(string value);
+        public static SessionStatusResource Failed { get; }
+        public static SessionStatusResource Idle { get; }
+        public static SessionStatusResource InProgress { get; }
+        public static SessionStatusResource RequiresAction { get; }
+        public readonly bool Equals(SessionStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionStatusResource left, SessionStatusResource right);
+        public static implicit operator SessionStatusResource(string value);
+        public static implicit operator SessionStatusResource?(string value);
+        public static bool operator !=(SessionStatusResource left, SessionStatusResource right);
+        public override readonly string ToString();
+    }
     public class TextFormatParam : IJsonModel<TextFormatParam>, IPersistableModel<TextFormatParam> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -483,6 +847,16 @@ namespace OpenAI.Agents {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public VerbosityResource Verbosity { get; set; }
+    }
+    public class TokenUsageResource : IJsonModel<TokenUsageResource>, IPersistableModel<TokenUsageResource> {
+        public int InputTokens { get; set; }
+        public InputTokensDetailsResource InputTokensDetails { get; set; }
+        public int OutputTokens { get; set; }
+        public OutputTokensDetailsResource OutputTokensDetails { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int TotalTokens { get; set; }
     }
     public readonly partial struct VerbosityParam : IEquatable<VerbosityParam> {
         public VerbosityParam(string value);

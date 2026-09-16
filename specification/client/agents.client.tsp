@@ -13,6 +13,11 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(updateAgent, "Agents");
 @@clientLocation(deleteAgent, "Agents");
 @@clientLocation(listAgents, "Agents");
+@@clientLocation(createAgentSession, "Agents");
+@@clientLocation(retrieveAgentSession, "Agents");
+@@clientLocation(updateAgentSession, "Agents");
+@@clientLocation(deleteAgentSession, "Agents");
+@@clientLocation(listAgentSessions, "Agents");
 
 // ------------ Model names ------------
 
@@ -24,6 +29,15 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(AgentCollectionOrder.asc, "Ascending");
 @@clientName(AgentCollectionOrder.desc, "Descending");
 
+@@clientName(SessionResource, "AgentSession");
+@@clientName(CreateAgentSessionParams, "AgentSessionCreationOptions");
+@@clientName(UpdateAgentSessionParams, "AgentSessionModificationOptions");
+@@clientName(DeletedSessionResource, "AgentSessionDeletionResult");
+@@clientName(DeletedSessionResource.id, "AgentSessionId");
+@@clientName(SessionListResource, "AgentSessionCollectionPage");
+@@clientName(AgentSessionCollectionOrder.asc, "Ascending");
+@@clientName(AgentSessionCollectionOrder.desc, "Descending");
+
 // ------------ Free-form JSON payloads ------------
 
 // Function schemas and MCP metadata are arbitrary JSON; surface them as BinaryData.
@@ -33,6 +47,11 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(TextFormatResourceJsonSchema.schema, unknown);
 @@alternateType(PersistedAgentToolConfigParamMcp.request_metadata, unknown | null);
 @@alternateType(PersistedAgentToolResourceMcp.request_metadata, unknown);
+@@alternateType(AgentToolConfigParamFunction.parameters, unknown);
+@@alternateType(AgentToolResourceFunction.parameters, unknown);
+@@alternateType(AgentToolConfigParamMcp.request_metadata, unknown | null);
+@@alternateType(AgentToolResourceMcp.request_metadata, unknown);
+@@alternateType(SessionRequiredActionResourceFunctionCall.arguments, unknown);
 
 // ------------ Dynamic models ------------
 
@@ -73,3 +92,38 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(PersistedMcpTransportResource);
 @@dynamicModel(PersistedMcpTransportResourceHttp);
 @@dynamicModel(PersistedMcpTransportResourceStdio);
+
+@@dynamicModel(SessionResource);
+@@dynamicModel(CreateAgentSessionParams);
+@@dynamicModel(UpdateAgentSessionParams);
+@@dynamicModel(DeletedSessionResource);
+@@dynamicModel(SessionListResource);
+@@dynamicModel(SessionAgentResource);
+@@dynamicModel(SessionAgentConfigParam);
+@@dynamicModel(SessionRequiredActionResource);
+@@dynamicModel(SessionRequiredActionResourceFunctionCall);
+@@dynamicModel(SessionRequiredActionResourceEnvironmentConnection);
+@@dynamicModel(TokenUsageResource);
+@@dynamicModel(InputTokensDetailsResource);
+@@dynamicModel(OutputTokensDetailsResource);
+@@dynamicModel(AgentToolConfigParam);
+@@dynamicModel(AgentToolConfigParamFunction);
+@@dynamicModel(AgentToolConfigParamToolSearch);
+@@dynamicModel(AgentToolConfigParamProgrammaticToolCalling);
+@@dynamicModel(AgentToolConfigParamMcp);
+@@dynamicModel(AgentToolConfigParamWebSearch);
+@@dynamicModel(AgentToolResource);
+@@dynamicModel(AgentToolResourceFunction);
+@@dynamicModel(AgentToolResourceProgrammaticToolCalling);
+@@dynamicModel(AgentToolResourceMcp);
+@@dynamicModel(AgentToolResourceWebSearch);
+@@dynamicModel(McpTransportConfigParam);
+@@dynamicModel(McpTransportConfigParamHttp);
+@@dynamicModel(McpTransportConfigParamStdio);
+@@dynamicModel(McpTransportResource);
+@@dynamicModel(McpTransportResourceHttp);
+@@dynamicModel(McpTransportResourceStdio);
+@@dynamicModel(InputContentParam);
+@@dynamicModel(InputContentParamInputText);
+@@dynamicModel(InputContentParamInputImage);
+@@dynamicModel(InputMessageParam);

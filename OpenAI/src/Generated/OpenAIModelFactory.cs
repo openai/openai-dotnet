@@ -2340,6 +2340,288 @@ namespace OpenAI
                 default);
         }
 
+        public static AgentSessionCreationOptions AgentSessionCreationOptions(IDictionary<string, string> metadata = default, SessionAgentConfigParam agent = default, string agentId = default, BinaryData environment = default, IEnumerable<string> vaultIds = default, BinaryData input = default, bool? stream = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            vaultIds ??= new ChangeTrackingList<string>();
+
+            return new AgentSessionCreationOptions(
+                metadata,
+                agent,
+                agentId,
+                environment,
+                vaultIds.ToList(),
+                input,
+                stream,
+                default);
+        }
+
+        public static SessionAgentConfigParam SessionAgentConfigParam(string model = default, ReasoningParam reasoning = default, TextParam text = default, ServiceTierParam? serviceTier = default, string instructions = default, MultiAgentConfigCurrentParam multiAgent = default, IEnumerable<AgentToolConfigParam> tools = default)
+        {
+            tools ??= new ChangeTrackingList<AgentToolConfigParam>();
+
+            return new SessionAgentConfigParam(
+                model,
+                reasoning,
+                text,
+                serviceTier,
+                instructions,
+                multiAgent,
+                tools.ToList(),
+                default);
+        }
+
+        public static AgentToolConfigParam AgentToolConfigParam(string kind = default)
+        {
+            return new InternalUnknownAgentToolConfigParam(new AgentToolType(kind), default);
+        }
+
+        public static AgentToolConfigParamFunction AgentToolConfigParamFunction(string name = default, string description = default, BinaryData parameters = default, bool? deferLoading = default)
+        {
+            return new AgentToolConfigParamFunction(
+                AgentToolType.Function,
+                default,
+                name,
+                description,
+                parameters,
+                deferLoading);
+        }
+
+        public static AgentToolConfigParamToolSearch AgentToolConfigParamToolSearch()
+        {
+            return new AgentToolConfigParamToolSearch(AgentToolType.ToolSearch, default);
+        }
+
+        public static AgentToolConfigParamProgrammaticToolCalling AgentToolConfigParamProgrammaticToolCalling(bool? enabled = default)
+        {
+            return new AgentToolConfigParamProgrammaticToolCalling(AgentToolType.ProgrammaticToolCalling, default, enabled);
+        }
+
+        public static AgentToolConfigParamMcp AgentToolConfigParamMcp(string serverLabel = default, string credentialId = default, McpTransportConfigParam transport = default, BinaryData requestMetadata = default, IEnumerable<string> allowedTools = default, bool? @required = default, McpConnectionOriginParam? connectionOrigin = default)
+        {
+            allowedTools ??= new ChangeTrackingList<string>();
+
+            return new AgentToolConfigParamMcp(
+                AgentToolType.Mcp,
+                default,
+                serverLabel,
+                credentialId,
+                transport,
+                requestMetadata,
+                allowedTools.ToList(),
+                @required,
+                connectionOrigin);
+        }
+
+        public static McpTransportConfigParam McpTransportConfigParam(string kind = default)
+        {
+            return new InternalUnknownMcpTransportConfigParam(new McpTransportType(kind), default);
+        }
+
+        public static McpTransportConfigParamHttp McpTransportConfigParamHttp(string serverUrl = default, string authorization = default, IDictionary<string, string> headers = default)
+        {
+            headers ??= new ChangeTrackingDictionary<string, string>();
+
+            return new McpTransportConfigParamHttp(McpTransportType.Http, default, serverUrl, authorization, headers);
+        }
+
+        public static McpTransportConfigParamStdio McpTransportConfigParamStdio(string command = default, IEnumerable<string> args = default, string cwd = default, IDictionary<string, string> env = default, IEnumerable<string> envVars = default)
+        {
+            args ??= new ChangeTrackingList<string>();
+            env ??= new ChangeTrackingDictionary<string, string>();
+            envVars ??= new ChangeTrackingList<string>();
+
+            return new McpTransportConfigParamStdio(
+                McpTransportType.Stdio,
+                default,
+                command,
+                args.ToList(),
+                cwd,
+                env,
+                envVars.ToList());
+        }
+
+        public static AgentToolConfigParamWebSearch AgentToolConfigParamWebSearch(WebSearchModeParam? mode = default, WebSearchContextSizeParam? contextSize = default, IEnumerable<string> allowedDomains = default, WebSearchLocationParam location = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new AgentToolConfigParamWebSearch(
+                AgentToolType.WebSearch,
+                default,
+                mode,
+                contextSize,
+                allowedDomains.ToList(),
+                location);
+        }
+
+        public static InputContentParam InputContentParam(string kind = default)
+        {
+            return new InternalUnknownInputContentParam(new InputContentType(kind), default);
+        }
+
+        public static InputContentParamInputText InputContentParamInputText(string text = default)
+        {
+            return new InputContentParamInputText(InputContentType.InputText, default, text);
+        }
+
+        public static InputContentParamInputImage InputContentParamInputImage(string imageUrl = default)
+        {
+            return new InputContentParamInputImage(InputContentType.InputImage, default, imageUrl);
+        }
+
+        public static SessionRequiredActionResource SessionRequiredActionResource(string kind = default)
+        {
+            return new InternalUnknownSessionRequiredActionResource(new SessionRequiredActionType(kind), default);
+        }
+
+        public static SessionRequiredActionResourceFunctionCall SessionRequiredActionResourceFunctionCall(string turnId = default, string callId = default, string name = default, BinaryData arguments = default)
+        {
+            return new SessionRequiredActionResourceFunctionCall(
+                SessionRequiredActionType.FunctionCall,
+                default,
+                turnId,
+                callId,
+                name,
+                arguments);
+        }
+
+        public static SessionRequiredActionResourceEnvironmentConnection SessionRequiredActionResourceEnvironmentConnection(string environmentId = default)
+        {
+            return new SessionRequiredActionResourceEnvironmentConnection(SessionRequiredActionType.EnvironmentConnection, default, environmentId);
+        }
+
+        public static SessionAgentResource SessionAgentResource(string id = default, string name = default, string model = default, ReasoningResource reasoning = default, TextResource text = default, ServiceTierResource serviceTier = default, string instructions = default, IEnumerable<AgentToolResource> tools = default, MultiAgentConfigResource multiAgent = default)
+        {
+            tools ??= new ChangeTrackingList<AgentToolResource>();
+
+            return new SessionAgentResource(
+                id,
+                name,
+                model,
+                reasoning,
+                text,
+                serviceTier,
+                instructions,
+                tools.ToList(),
+                multiAgent,
+                default);
+        }
+
+        public static AgentToolResource AgentToolResource(string kind = default)
+        {
+            return new InternalUnknownAgentToolResource(new AgentToolType(kind), default);
+        }
+
+        public static AgentToolResourceFunction AgentToolResourceFunction(string name = default, string description = default, BinaryData parameters = default, bool deferLoading = default)
+        {
+            return new AgentToolResourceFunction(
+                AgentToolType.Function,
+                default,
+                name,
+                description,
+                parameters,
+                deferLoading);
+        }
+
+        public static AgentToolResourceProgrammaticToolCalling AgentToolResourceProgrammaticToolCalling(bool enabled = default)
+        {
+            return new AgentToolResourceProgrammaticToolCalling(AgentToolType.ProgrammaticToolCalling, default, enabled);
+        }
+
+        public static AgentToolResourceMcp AgentToolResourceMcp(string serverLabel = default, string credentialId = default, McpTransportResource transport = default, BinaryData requestMetadata = default, IEnumerable<string> allowedTools = default, bool @required = default, McpConnectionOriginResource connectionOrigin = default)
+        {
+            allowedTools ??= new ChangeTrackingList<string>();
+
+            return new AgentToolResourceMcp(
+                AgentToolType.Mcp,
+                default,
+                serverLabel,
+                credentialId,
+                transport,
+                requestMetadata,
+                allowedTools.ToList(),
+                @required,
+                connectionOrigin);
+        }
+
+        public static McpTransportResource McpTransportResource(string kind = default)
+        {
+            return new InternalUnknownMcpTransportResource(new McpTransportType(kind), default);
+        }
+
+        public static McpTransportResourceHttp McpTransportResourceHttp(string serverUrl = default)
+        {
+            return new McpTransportResourceHttp(McpTransportType.Http, default, serverUrl);
+        }
+
+        public static McpTransportResourceStdio McpTransportResourceStdio(string command = default, IEnumerable<string> args = default, string cwd = default, IEnumerable<string> envVars = default)
+        {
+            args ??= new ChangeTrackingList<string>();
+            envVars ??= new ChangeTrackingList<string>();
+
+            return new McpTransportResourceStdio(
+                McpTransportType.Stdio,
+                default,
+                command,
+                args.ToList(),
+                cwd,
+                envVars.ToList());
+        }
+
+        public static AgentToolResourceWebSearch AgentToolResourceWebSearch(WebSearchModeResource mode = default, WebSearchContextSizeResource contextSize = default, IEnumerable<string> allowedDomains = default, WebSearchLocationResource location = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new AgentToolResourceWebSearch(
+                AgentToolType.WebSearch,
+                default,
+                mode,
+                contextSize,
+                allowedDomains.ToList(),
+                location);
+        }
+
+        public static TokenUsageResource TokenUsageResource(int inputTokens = default, InputTokensDetailsResource inputTokensDetails = default, int outputTokens = default, OutputTokensDetailsResource outputTokensDetails = default, int totalTokens = default)
+        {
+            return new TokenUsageResource(
+                inputTokens,
+                inputTokensDetails,
+                outputTokens,
+                outputTokensDetails,
+                totalTokens,
+                default);
+        }
+
+        public static InputTokensDetailsResource InputTokensDetailsResource(int cachedTokens = default)
+        {
+            return new InputTokensDetailsResource(cachedTokens, default);
+        }
+
+        public static OutputTokensDetailsResource OutputTokensDetailsResource(int reasoningTokens = default)
+        {
+            return new OutputTokensDetailsResource(reasoningTokens, default);
+        }
+
+        public static AgentSessionModificationOptions AgentSessionModificationOptions(IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new AgentSessionModificationOptions(metadata, default);
+        }
+
+        public static AgentSessionCollectionPage AgentSessionCollectionPage(IEnumerable<AgentSession> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<AgentSession>();
+
+            return new AgentSessionCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -2728,6 +3010,11 @@ namespace OpenAI
         public static AgentCollectionOptions AgentCollectionOptions(int? limit = default, AgentCollectionOrder? order = default, string after = default)
         {
             return new AgentCollectionOptions(limit, order, after, additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionCollectionOptions AgentSessionCollectionOptions(int? limit = default, AgentSessionCollectionOrder? order = default, string agentId = default, string after = default)
+        {
+            return new AgentSessionCollectionOptions(limit, order, agentId, after, additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

@@ -10,3 +10,14 @@ namespace OpenAI.Agents;
 [CodeGenType("UnknownPersistedMcpTransportResource")] internal partial class InternalUnknownPersistedMcpTransportResource {}
 [CodeGenType("UnknownTextFormatParam")] internal partial class InternalUnknownTextFormatParam {}
 [CodeGenType("UnknownTextFormatResource")] internal partial class InternalUnknownTextFormatResource {}
+
+// ------------ Agent sessions ------------
+[CodeGenType("DeletedSessionObject")] internal readonly partial struct InternalDeletedSessionObject {}
+[CodeGenType("InputMessageParamType")] internal readonly partial struct InternalInputMessageParamType {}
+[CodeGenType("SessionObject")] internal readonly partial struct InternalSessionObject {}
+[CodeGenType("UnknownAgentToolConfigParam")] internal partial class InternalUnknownAgentToolConfigParam {}
+[CodeGenType("UnknownAgentToolResource")] internal partial class InternalUnknownAgentToolResource {}
+[CodeGenType("UnknownInputContentParam")] internal partial class InternalUnknownInputContentParam {}
+[CodeGenType("UnknownMcpTransportConfigParam")] internal partial class InternalUnknownMcpTransportConfigParam {}
+[CodeGenType("UnknownMcpTransportResource")] internal partial class InternalUnknownMcpTransportResource {}
+[CodeGenType("UnknownSessionRequiredActionResource")] internal partial class InternalUnknownSessionRequiredActionResource {}

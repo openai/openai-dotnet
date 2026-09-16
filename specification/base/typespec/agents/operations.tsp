@@ -23,7 +23,12 @@ op createAgent(
   /** Parameters for creating a reusable agent. */
   @body
   agent: CreateAgentParams,
-): AgentResource;
+): {
+  @statusCode statusCode: 201;
+
+  /** The created agent. */
+  @body agent: AgentResource;
+};
 
 /**
  * Retrieves a reusable agent by ID. See
@@ -83,3 +88,81 @@ op deleteAgent(
 op listAgents(
   ...AgentCollectionOptions,
 ): AgentCollection;
+
+/**
+ * Creates a Managed Agents session. Streaming is not yet modeled; this returns the session.
+ * See [running sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions).
+ */
+@summary("Create an agent session")
+@post
+@route("agents/sessions")
+@tag("Agents")
+op createAgentSession(
+  /** Parameters for creating a Managed Agents session. */
+  @body
+  session: CreateAgentSessionParams,
+): {
+  @statusCode statusCode: 201;
+
+  /** The created session. */
+  @body session: SessionResource;
+};
+
+/**
+ * Retrieves the current state of a Managed Agents session. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Retrieve an agent session")
+@get
+@route("agents/sessions/{session_id}")
+@tag("Agents")
+op retrieveAgentSession(
+  /** The ID of the session. */
+  @path
+  session_id: string,
+): SessionResource;
+
+/**
+ * Updates session metadata. Omitted fields are unchanged. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Update an agent session")
+@post
+@route("agents/sessions/{session_id}")
+@tag("Agents")
+op updateAgentSession(
+  /** The ID of the session. */
+  @path
+  session_id: string,
+
+  /** Fields to update on the existing session. */
+  @body
+  session: UpdateAgentSessionParams,
+): SessionResource;
+
+/**
+ * Removes a Managed Agents session from the public API. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Delete an agent session")
+@delete
+@route("agents/sessions/{session_id}")
+@tag("Agents")
+op deleteAgentSession(
+  /** The ID of the session. */
+  @path
+  session_id: string,
+): DeletedSessionResource;
+
+/**
+ * Lists Managed Agents sessions using ID-based pagination. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("List agent sessions")
+@get
+@route("agents/sessions")
+@tag("Agents")
+@list
+op listAgentSessions(
+  ...AgentSessionCollectionOptions,
+): SessionListResource;

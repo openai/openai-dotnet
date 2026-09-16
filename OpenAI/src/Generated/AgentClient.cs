@@ -180,5 +180,181 @@ namespace OpenAI.Agents
         {
             return new AgentClientGetAgentsAsyncCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.ToRequestOptions());
         }
+
+        public virtual ClientResult CreateAgentSession(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentSessionRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateAgentSessionAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentSessionRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSession> CreateAgentSession(AgentSessionCreationOptions session, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(session, nameof(session));
+
+            ClientResult result = CreateAgentSession(session, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSession)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSession>> CreateAgentSessionAsync(AgentSessionCreationOptions session, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(session, nameof(session));
+
+            ClientResult result = await CreateAgentSessionAsync(session, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSession)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult RetrieveAgentSession(string sessionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionRequest(sessionId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentSessionAsync(string sessionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionRequest(sessionId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSession> RetrieveAgentSession(string sessionId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            ClientResult result = RetrieveAgentSession(sessionId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSession)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSession>> RetrieveAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            ClientResult result = await RetrieveAgentSessionAsync(sessionId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSession)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult UpdateAgentSession(string sessionId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateAgentSessionRequest(sessionId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> UpdateAgentSessionAsync(string sessionId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateAgentSessionRequest(sessionId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSession> UpdateAgentSession(string sessionId, AgentSessionModificationOptions session, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(session, nameof(session));
+
+            ClientResult result = UpdateAgentSession(sessionId, session, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSession)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSession>> UpdateAgentSessionAsync(string sessionId, AgentSessionModificationOptions session, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(session, nameof(session));
+
+            ClientResult result = await UpdateAgentSessionAsync(sessionId, session, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSession)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteAgentSession(string sessionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            using PipelineMessage message = CreateDeleteAgentSessionRequest(sessionId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteAgentSessionAsync(string sessionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            using PipelineMessage message = CreateDeleteAgentSessionRequest(sessionId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSessionDeletionResult> DeleteAgentSession(string sessionId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            ClientResult result = DeleteAgentSession(sessionId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSessionDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSessionDeletionResult>> DeleteAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            ClientResult result = await DeleteAgentSessionAsync(sessionId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSessionDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetAgentSessions(int? limit, string order, string agentId, string after, RequestOptions options)
+        {
+            return new AgentClientGetAgentSessionsCollectionResult(
+                this,
+                limit,
+                order,
+                agentId,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionsAsync(int? limit, string order, string agentId, string after, RequestOptions options)
+        {
+            return new AgentClientGetAgentSessionsAsyncCollectionResult(
+                this,
+                limit,
+                order,
+                agentId,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSession> GetAgentSessions(int? limit = default, AgentSessionCollectionOrder? order = default, string agentId = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetAgentSessionsCollectionResultOfT(
+                this,
+                limit,
+                order?.ToString(),
+                agentId,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSession> GetAgentSessionsAsync(int? limit = default, AgentSessionCollectionOrder? order = default, string agentId = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetAgentSessionsAsyncCollectionResultOfT(
+                this,
+                limit,
+                order?.ToString(),
+                agentId,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
     }
 }
