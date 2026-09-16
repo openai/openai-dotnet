@@ -172,27 +172,27 @@ public partial class ResponsesSmokeTests
         }
 
         AssertChoiceEqual(
-            ResponseToolChoice.CreateAutoChoice(), @"""auto""");
+            ResponseDefaultToolChoice.Auto, @"""auto""");
         AssertChoiceEqual(
-            ResponseToolChoice.CreateNoneChoice(), @"""none""");
+            ResponseDefaultToolChoice.None, @"""none""");
         AssertChoiceEqual(
-            ResponseToolChoice.CreateRequiredChoice(), @"""required""");
+            ResponseDefaultToolChoice.Required, @"""required""");
         AssertChoiceEqual(
-            ResponseToolChoice.CreateFunctionChoice("foo"),
+            new ResponseCustomFunctionToolChoice("foo"),
             @"{""type"":""function"",""name"":""foo""}");
         AssertChoiceEqual(
-            ResponseToolChoice.CreateFileSearchChoice(),
+            new ResponseCustomFileSearchToolChoice(),
             @"{""type"":""file_search""}");
         AssertChoiceEqual(
-            ResponseToolChoice.CreateComputerChoice(),
+            new ResponseCustomComputerToolChoice(),
             @"{""type"":""computer_use_preview""}");
         AssertChoiceEqual(
-            ResponseToolChoice.CreateWebSearchChoice(),
+            new ResponseCustomWebSearchToolChoice(),
             @"{""type"":""web_search_preview""}");
 
         AssertSerializationRoundTrip<ResponseToolChoice>(
             @"{""type"":""something_else""}",
-            toolChoice => Assert.That(toolChoice.Kind, Is.EqualTo(ResponseToolChoiceKind.Unknown)));
+            toolChoice => Assert.That(toolChoice.CustomToolChoice, Is.Not.Null));
     }
 
     [Test]
