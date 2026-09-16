@@ -14,7 +14,6 @@ namespace OpenAI.Graders {
         public BinaryData LearningRateMultiplier { get; set; }
         public BinaryData NEpochs { get; set; }
     }
-    [PersistableModelProxy(typeof(UnknownGrader))]
     public class Grader : IJsonModel<Grader>, IPersistableModel<Grader> {
     }
     public class GraderClient {
