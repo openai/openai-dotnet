@@ -66,6 +66,22 @@ namespace OpenAI.Agents {
         public virtual CollectionResult GetAgentSessions(int? limit, string order, string agentId, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSession> GetAgentSessionsAsync(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentSessionsAsync(int? limit, string order, string agentId, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionItem> GetAgentSessionSubagentItems(string sessionId, string subagentId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionSubagentItems(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionSubagentItemsAsync(string sessionId, string subagentId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionSubagentItemsAsync(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionSubagent> GetAgentSessionSubagents(string sessionId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionSubagents(string sessionId, int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionSubagent> GetAgentSessionSubagentsAsync(string sessionId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionSubagentsAsync(string sessionId, int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionItem> GetAgentSessionSubagentTurnItems(string sessionId, string subagentId, string turnId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionSubagentTurnItems(string sessionId, string subagentId, string turnId, int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionSubagentTurnItemsAsync(string sessionId, string subagentId, string turnId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionSubagentTurnItemsAsync(string sessionId, string subagentId, string turnId, int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionTurn> GetAgentSessionSubagentTurns(string sessionId, string subagentId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionSubagentTurns(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionTurn> GetAgentSessionSubagentTurnsAsync(string sessionId, string subagentId, int? limit = null, AgentSessionSubagentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionSubagentTurnsAsync(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options);
         public virtual CollectionResult<AgentSessionTurn> GetAgentSessionTurns(string sessionId, int? limit = null, AgentSessionTurnCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgentSessionTurns(string sessionId, int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSessionTurn> GetAgentSessionTurnsAsync(string sessionId, int? limit = null, AgentSessionTurnCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
@@ -86,6 +102,14 @@ namespace OpenAI.Agents {
         public virtual Task<ClientResult<BinaryData>> RetrieveAgentSessionArtifactContentAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentSessionAsync(string sessionId, RequestOptions options);
         public virtual Task<ClientResult<AgentSession>> RetrieveAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentSessionSubagent(string sessionId, string subagentId, RequestOptions options);
+        public virtual ClientResult<AgentSessionSubagent> RetrieveAgentSessionSubagent(string sessionId, string subagentId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentSessionSubagentAsync(string sessionId, string subagentId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSessionSubagent>> RetrieveAgentSessionSubagentAsync(string sessionId, string subagentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentSessionSubagentTurn(string sessionId, string subagentId, string turnId, RequestOptions options);
+        public virtual ClientResult<AgentSessionTurn> RetrieveAgentSessionSubagentTurn(string sessionId, string subagentId, string turnId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentSessionSubagentTurnAsync(string sessionId, string subagentId, string turnId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSessionTurn>> RetrieveAgentSessionSubagentTurnAsync(string sessionId, string subagentId, string turnId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveAgentSessionTurn(string sessionId, string turnId, RequestOptions options);
         public virtual ClientResult<AgentSessionTurn> RetrieveAgentSessionTurn(string sessionId, string turnId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, RequestOptions options);
@@ -435,6 +459,91 @@ namespace OpenAI.Agents {
         public string Id { get; set; }
         public OutputItemStatusResource? Status { get; set; }
         public IList<SummaryTextResource> Summary { get; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionSubagent : IJsonModel<AgentSessionSubagent>, IPersistableModel<AgentSessionSubagent> {
+        public int? ClosedAt { get; set; }
+        public string Id { get; set; }
+        public IList<AgentContentResource> Instructions { get; }
+        public string Name { get; set; }
+        public int OpenedAt { get; set; }
+        public string ParentAgentId { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public SubagentStatusResource Status { get; set; }
+        public static explicit operator AgentSessionSubagent(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionSubagentCollectionOptions : IJsonModel<AgentSessionSubagentCollectionOptions>, IPersistableModel<AgentSessionSubagentCollectionOptions> {
+        public AgentSessionSubagentCollectionOptions();
+        public AgentSessionSubagentCollectionOptions(string sessionId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionSubagentCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentSessionSubagentCollectionOrder : IEquatable<AgentSessionSubagentCollectionOrder> {
+        public AgentSessionSubagentCollectionOrder(string value);
+        public static AgentSessionSubagentCollectionOrder Ascending { get; }
+        public static AgentSessionSubagentCollectionOrder Descending { get; }
+        public readonly bool Equals(AgentSessionSubagentCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionSubagentCollectionOrder left, AgentSessionSubagentCollectionOrder right);
+        public static implicit operator AgentSessionSubagentCollectionOrder(string value);
+        public static implicit operator AgentSessionSubagentCollectionOrder?(string value);
+        public static bool operator !=(AgentSessionSubagentCollectionOrder left, AgentSessionSubagentCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionSubagentCollectionPage : IJsonModel<AgentSessionSubagentCollectionPage>, IPersistableModel<AgentSessionSubagentCollectionPage> {
+        public IList<AgentSessionSubagent> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionSubagentCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionSubagentItemCollectionOptions : IJsonModel<AgentSessionSubagentItemCollectionOptions>, IPersistableModel<AgentSessionSubagentItemCollectionOptions> {
+        public AgentSessionSubagentItemCollectionOptions();
+        public AgentSessionSubagentItemCollectionOptions(string sessionId, string subagentId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionSubagentCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+        public string SubagentId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionSubagentTurnCollectionOptions : IJsonModel<AgentSessionSubagentTurnCollectionOptions>, IPersistableModel<AgentSessionSubagentTurnCollectionOptions> {
+        public AgentSessionSubagentTurnCollectionOptions();
+        public AgentSessionSubagentTurnCollectionOptions(string sessionId, string subagentId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionSubagentCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+        public string SubagentId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionSubagentTurnItemCollectionOptions : IJsonModel<AgentSessionSubagentTurnItemCollectionOptions>, IPersistableModel<AgentSessionSubagentTurnItemCollectionOptions> {
+        public AgentSessionSubagentTurnItemCollectionOptions();
+        public AgentSessionSubagentTurnItemCollectionOptions(string sessionId, string subagentId, string turnId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionSubagentCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+        public string SubagentId { get; set; }
         public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -1455,6 +1564,22 @@ namespace OpenAI.Agents {
         public static implicit operator SessionTurnItemType(string value);
         public static implicit operator SessionTurnItemType?(string value);
         public static bool operator !=(SessionTurnItemType left, SessionTurnItemType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct SubagentStatusResource : IEquatable<SubagentStatusResource> {
+        public SubagentStatusResource(string value);
+        public static SubagentStatusResource Active { get; }
+        public static SubagentStatusResource Closed { get; }
+        public readonly bool Equals(SubagentStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SubagentStatusResource left, SubagentStatusResource right);
+        public static implicit operator SubagentStatusResource(string value);
+        public static implicit operator SubagentStatusResource?(string value);
+        public static bool operator !=(SubagentStatusResource left, SubagentStatusResource right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]

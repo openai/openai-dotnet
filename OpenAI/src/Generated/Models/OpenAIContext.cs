@@ -95,6 +95,24 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionReasoningItemResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentSessionReasoningItemResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionReasoningItemResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionSubagent is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionSubagent))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionSubagent is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionSubagentCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentCollectionPage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionSubagentCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentItemCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionSubagentItemCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentItemCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentTurnCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionSubagentTurnCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentTurnCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentTurnItemCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionSubagentTurnItemCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionSubagentTurnItemCollectionOptions is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionTurn is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentSessionTurn))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionTurn is experimental and may change in future versions.

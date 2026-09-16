@@ -2938,6 +2938,19 @@ namespace OpenAI
                 recipientAgentId);
         }
 
+        public static AgentSessionSubagentCollectionPage AgentSessionSubagentCollectionPage(IEnumerable<AgentSessionSubagent> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<AgentSessionSubagent>();
+
+            return new AgentSessionSubagentCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -3352,6 +3365,45 @@ namespace OpenAI
         public static AgentSessionItemCollectionOptions AgentSessionItemCollectionOptions(string sessionId = default, int? limit = default, AgentSessionItemCollectionOrder? order = default, string after = default)
         {
             return new AgentSessionItemCollectionOptions(sessionId, limit, order, after, additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionSubagentCollectionOptions AgentSessionSubagentCollectionOptions(string sessionId = default, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default)
+        {
+            return new AgentSessionSubagentCollectionOptions(sessionId, limit, order, after, additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionSubagentItemCollectionOptions AgentSessionSubagentItemCollectionOptions(string sessionId = default, string subagentId = default, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default)
+        {
+            return new AgentSessionSubagentItemCollectionOptions(
+                sessionId,
+                subagentId,
+                limit,
+                order,
+                after,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionSubagentTurnCollectionOptions AgentSessionSubagentTurnCollectionOptions(string sessionId = default, string subagentId = default, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default)
+        {
+            return new AgentSessionSubagentTurnCollectionOptions(
+                sessionId,
+                subagentId,
+                limit,
+                order,
+                after,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionSubagentTurnItemCollectionOptions AgentSessionSubagentTurnItemCollectionOptions(string sessionId = default, string subagentId = default, string turnId = default, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default)
+        {
+            return new AgentSessionSubagentTurnItemCollectionOptions(
+                sessionId,
+                subagentId,
+                turnId,
+                limit,
+                order,
+                after,
+                additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

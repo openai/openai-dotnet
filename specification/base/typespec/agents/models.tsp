@@ -217,6 +217,7 @@ model CreateAgentParams {
    * Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.
    * Omission or null defaults to an empty map.
    */
+  @extension("x-oaiTypeLabel", "map")
   metadata?: Record<string> | null;
 
   /** A human-readable name for the agent. Omission or null leaves the agent unnamed. */
@@ -1019,4 +1020,183 @@ model SessionItemListResource {
 
   /** Whether there are more items to retrieve after this page. */
   has_more: boolean;
+}
+
+// ------------ Session subagents ------------
+
+/** The object type for a subagent. Always `agent.session.subagent`. */
+union SubagentObjectResource {
+  string,
+  agent_session_subagent: "agent.session.subagent",
+}
+
+/** The current status of a subagent. */
+union SubagentStatusResource {
+  /** The subagent remains available, including while idle between turns. */
+  active: "active",
+
+  /** The subagent is closed. */
+  closed: "closed",
+}
+
+/** A subagent created within a session. */
+model SubagentResource {
+  /** The ID of the subagent. */
+  id: string;
+
+  /** The object type. Always `agent.session.subagent`. */
+  object: SubagentObjectResource;
+
+  /** The ID of the session that owns the subagent. */
+  session_id: string;
+
+  /** The runner-assigned nickname, or null when unavailable. */
+  name: string | null;
+
+  /** Initial task content, or null when unavailable. */
+  @maxItems(2000)
+  instructions: AgentContentResource[] | null;
+
+  /** The ID of the agent that created this subagent. */
+  parent_agent_id: string;
+
+  /** The current status of the subagent. */
+  status: SubagentStatusResource;
+
+  /** The Unix timestamp, in seconds, when the subagent was first opened. */
+  opened_at: int64;
+
+  /** The Unix timestamp, in seconds, when the subagent was closed. Null while active. */
+  closed_at: int64 | null;
+}
+
+/** The order in which paginated subagents and their items are returned. */
+union AgentSessionSubagentCollectionOrder {
+  string,
+
+  /** Returns resources in ascending order. */
+  asc: "asc",
+
+  /** Returns resources in descending order. */
+  desc: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionSubagentCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The maximum number of subagents to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which subagents are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionSubagentCollectionOrder = AgentSessionSubagentCollectionOrder.desc;
+
+  /** Return subagents after this subagent ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+/** A page of session subagents. */
+model SubagentListResource {
+  /** The object type, which is always `list`. */
+  object: "list";
+
+  /** The subagents returned in this page, in the requested sort order. */
+  @pageItems
+  data: SubagentResource[];
+
+  /** The ID of the first subagent in `data`, or `null` if the page is empty. */
+  first_id: string | null;
+
+  /** The ID of the last subagent in `data`, or `null` if the page is empty. */
+  @continuationToken
+  last_id: string | null;
+
+  /** Whether there are more subagents to retrieve after this page. */
+  has_more: boolean;
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionSubagentItemCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The ID of the subagent. */
+  @path
+  subagent_id: string;
+
+  /** The maximum number of items to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which items are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionSubagentCollectionOrder = AgentSessionSubagentCollectionOrder.desc;
+
+  /** Return items after this item ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionSubagentTurnCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The ID of the subagent. */
+  @path
+  subagent_id: string;
+
+  /** The maximum number of turns to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which turns are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionSubagentCollectionOrder = AgentSessionSubagentCollectionOrder.desc;
+
+  /** Return turns after this turn ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionSubagentTurnItemCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The ID of the subagent. */
+  @path
+  subagent_id: string;
+
+  /** The ID of the turn. */
+  @path
+  turn_id: string;
+
+  /** The maximum number of items to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which items are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionSubagentCollectionOrder = AgentSessionSubagentCollectionOrder.desc;
+
+  /** Return items after this item ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
 }

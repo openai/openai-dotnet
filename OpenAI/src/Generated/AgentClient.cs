@@ -660,5 +660,321 @@ namespace OpenAI.Agents
                 after,
                 cancellationToken.ToRequestOptions());
         }
+
+        public virtual CollectionResult GetAgentSessionSubagents(string sessionId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionSubagentsCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionSubagentsAsync(string sessionId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionSubagentsAsyncCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionSubagent> GetAgentSessionSubagents(string sessionId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionSubagentsCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionSubagent> GetAgentSessionSubagentsAsync(string sessionId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionSubagentsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult RetrieveAgentSessionSubagent(string sessionId, string subagentId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionSubagentRequest(sessionId, subagentId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentSessionSubagentAsync(string sessionId, string subagentId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionSubagentRequest(sessionId, subagentId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSessionSubagent> RetrieveAgentSessionSubagent(string sessionId, string subagentId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            ClientResult result = RetrieveAgentSessionSubagent(sessionId, subagentId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSessionSubagent)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSessionSubagent>> RetrieveAgentSessionSubagentAsync(string sessionId, string subagentId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            ClientResult result = await RetrieveAgentSessionSubagentAsync(sessionId, subagentId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSessionSubagent)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetAgentSessionSubagentItems(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentItemsCollectionResult(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionSubagentItemsAsync(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentItemsAsyncCollectionResult(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionItem> GetAgentSessionSubagentItems(string sessionId, string subagentId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentItemsCollectionResultOfT(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionSubagentItemsAsync(string sessionId, string subagentId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentItemsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual CollectionResult GetAgentSessionSubagentTurns(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentTurnsCollectionResult(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionSubagentTurnsAsync(string sessionId, string subagentId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentTurnsAsyncCollectionResult(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionTurn> GetAgentSessionSubagentTurns(string sessionId, string subagentId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentTurnsCollectionResultOfT(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionTurn> GetAgentSessionSubagentTurnsAsync(string sessionId, string subagentId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+
+            return new AgentClientGetAgentSessionSubagentTurnsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                subagentId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult RetrieveAgentSessionSubagentTurn(string sessionId, string subagentId, string turnId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionSubagentTurnRequest(sessionId, subagentId, turnId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentSessionSubagentTurnAsync(string sessionId, string subagentId, string turnId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionSubagentTurnRequest(sessionId, subagentId, turnId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSessionTurn> RetrieveAgentSessionSubagentTurn(string sessionId, string subagentId, string turnId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            ClientResult result = RetrieveAgentSessionSubagentTurn(sessionId, subagentId, turnId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSessionTurn)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSessionTurn>> RetrieveAgentSessionSubagentTurnAsync(string sessionId, string subagentId, string turnId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            ClientResult result = await RetrieveAgentSessionSubagentTurnAsync(sessionId, subagentId, turnId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSessionTurn)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetAgentSessionSubagentTurnItems(string sessionId, string subagentId, string turnId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            return new AgentClientGetAgentSessionSubagentTurnItemsCollectionResult(
+                this,
+                sessionId,
+                subagentId,
+                turnId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionSubagentTurnItemsAsync(string sessionId, string subagentId, string turnId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            return new AgentClientGetAgentSessionSubagentTurnItemsAsyncCollectionResult(
+                this,
+                sessionId,
+                subagentId,
+                turnId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionItem> GetAgentSessionSubagentTurnItems(string sessionId, string subagentId, string turnId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            return new AgentClientGetAgentSessionSubagentTurnItemsCollectionResultOfT(
+                this,
+                sessionId,
+                subagentId,
+                turnId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionSubagentTurnItemsAsync(string sessionId, string subagentId, string turnId, int? limit = default, AgentSessionSubagentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(subagentId, nameof(subagentId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            return new AgentClientGetAgentSessionSubagentTurnItemsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                subagentId,
+                turnId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
     }
 }

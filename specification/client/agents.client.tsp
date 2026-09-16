@@ -25,6 +25,12 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(listAgentSessionTurns, "Agents");
 @@clientLocation(retrieveAgentSessionTurn, "Agents");
 @@clientLocation(listAgentSessionItems, "Agents");
+@@clientLocation(listAgentSessionSubagents, "Agents");
+@@clientLocation(retrieveAgentSessionSubagent, "Agents");
+@@clientLocation(listAgentSessionSubagentItems, "Agents");
+@@clientLocation(listAgentSessionSubagentTurns, "Agents");
+@@clientLocation(retrieveAgentSessionSubagentTurn, "Agents");
+@@clientLocation(listAgentSessionSubagentTurnItems, "Agents");
 
 // ------------ Model names ------------
 
@@ -61,6 +67,11 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(SessionItemListResource, "AgentSessionItemCollectionPage");
 @@clientName(AgentSessionItemCollectionOrder.asc, "Ascending");
 @@clientName(AgentSessionItemCollectionOrder.desc, "Descending");
+
+@@clientName(SubagentResource, "AgentSessionSubagent");
+@@clientName(SubagentListResource, "AgentSessionSubagentCollectionPage");
+@@clientName(AgentSessionSubagentCollectionOrder.asc, "Ascending");
+@@clientName(AgentSessionSubagentCollectionOrder.desc, "Descending");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -192,3 +203,6 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(WebSearchActionResourceOpenPage);
 @@dynamicModel(WebSearchActionResourceFindInPage);
 @@dynamicModel(WebSearchActionResourceOther);
+
+@@dynamicModel(SubagentResource);
+@@dynamicModel(SubagentListResource);

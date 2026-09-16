@@ -282,3 +282,95 @@ op retrieveAgentSessionTurn(
 op listAgentSessionItems(
   ...AgentSessionItemCollectionOptions,
 ): SessionItemListResource;
+
+/**
+ * Lists subagents in a session, including nested and closed subagents. See
+ * [subagent workflows](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+ */
+@summary("List session subagents")
+@get
+@route("agents/sessions/{session_id}/subagents")
+@tag("Agents")
+@list
+op listAgentSessionSubagents(
+  ...AgentSessionSubagentCollectionOptions,
+): SubagentListResource;
+
+/**
+ * Retrieves a subagent belonging to a session. See
+ * [subagent workflows](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+ */
+@summary("Retrieve a session subagent")
+@get
+@route("agents/sessions/{session_id}/subagents/{subagent_id}")
+@tag("Agents")
+op retrieveAgentSessionSubagent(
+  /** The ID of the session that owns the subagent. */
+  @path
+  session_id: string,
+
+  /** The ID of the subagent in this session. */
+  @path
+  subagent_id: string,
+): SubagentResource;
+
+/**
+ * Lists a subagent's own items across all of its turns. See
+ * [subagent workflows](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+ */
+@summary("List subagent items")
+@get
+@route("agents/sessions/{session_id}/subagents/{subagent_id}/items")
+@tag("Agents")
+@list
+op listAgentSessionSubagentItems(
+  ...AgentSessionSubagentItemCollectionOptions,
+): SessionItemListResource;
+
+/**
+ * Lists a subagent's turns. See
+ * [subagent workflows](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+ */
+@summary("List subagent turns")
+@get
+@route("agents/sessions/{session_id}/subagents/{subagent_id}/turns")
+@tag("Agents")
+@list
+op listAgentSessionSubagentTurns(
+  ...AgentSessionSubagentTurnCollectionOptions,
+): SessionTurnListResource;
+
+/**
+ * Retrieves a single turn belonging to a subagent. See
+ * [subagent workflows](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+ */
+@summary("Retrieve a subagent turn")
+@get
+@route("agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}")
+@tag("Agents")
+op retrieveAgentSessionSubagentTurn(
+  /** The ID of the session that owns the subagent. */
+  @path
+  session_id: string,
+
+  /** The ID of the subagent in this session. */
+  @path
+  subagent_id: string,
+
+  /** The ID of the turn. */
+  @path
+  turn_id: string,
+): TurnResource;
+
+/**
+ * Lists the items in a single subagent turn. See
+ * [subagent workflows](https://developers.openai.com/api/docs/guides/agents-api/multi-agent).
+ */
+@summary("List subagent turn items")
+@get
+@route("agents/sessions/{session_id}/subagents/{subagent_id}/turns/{turn_id}/items")
+@tag("Agents")
+@list
+op listAgentSessionSubagentTurnItems(
+  ...AgentSessionSubagentTurnItemCollectionOptions,
+): SessionItemListResource;

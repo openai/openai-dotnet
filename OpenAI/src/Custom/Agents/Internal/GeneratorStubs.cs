@@ -36,3 +36,6 @@ namespace OpenAI.Agents;
 [CodeGenType("UnknownInputContentResource")] internal partial class InternalUnknownInputContentResource {}
 [CodeGenType("UnknownMessageContentResource")] internal partial class InternalUnknownMessageContentResource {}
 [CodeGenType("UnknownWebSearchActionResource")] internal partial class InternalUnknownWebSearchActionResource {}
+
+// ------------ Session subagents ------------
+[CodeGenType("SubagentObjectResource")] internal readonly partial struct InternalSubagentObjectResource {}

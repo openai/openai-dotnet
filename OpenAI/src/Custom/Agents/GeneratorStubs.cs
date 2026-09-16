@@ -161,3 +161,13 @@ namespace OpenAI.Agents;
 [CodeGenType("WebSearchActionResourceOther")] public partial class WebSearchActionResourceOther {}
 [CodeGenType("WebSearchActionResourceSearch")] public partial class WebSearchActionResourceSearch {}
 [CodeGenType("WebSearchCallItemResource")] public partial class WebSearchCallItemResource {}
+
+// ------------ Session subagents ------------
+[CodeGenType("AgentSessionSubagent")] public partial class AgentSessionSubagent {}
+[CodeGenType("AgentSessionSubagentCollectionOptions")] public partial class AgentSessionSubagentCollectionOptions {}
+[CodeGenType("AgentSessionSubagentCollectionOrder")] public readonly partial struct AgentSessionSubagentCollectionOrder {}
+[CodeGenType("AgentSessionSubagentCollectionPage")] public partial class AgentSessionSubagentCollectionPage {}
+[CodeGenType("AgentSessionSubagentItemCollectionOptions")] public partial class AgentSessionSubagentItemCollectionOptions {}
+[CodeGenType("AgentSessionSubagentTurnCollectionOptions")] public partial class AgentSessionSubagentTurnCollectionOptions {}
+[CodeGenType("AgentSessionSubagentTurnItemCollectionOptions")] public partial class AgentSessionSubagentTurnItemCollectionOptions {}
+[CodeGenType("SubagentStatusResource")] public readonly partial struct SubagentStatusResource {}
