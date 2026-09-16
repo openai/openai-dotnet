@@ -101,3 +101,10 @@ namespace OpenAI.Agents;
 [CodeGenType("SessionRequiredActionType")] public readonly partial struct SessionRequiredActionType {}
 [CodeGenType("SessionStatusResource")] public readonly partial struct SessionStatusResource {}
 [CodeGenType("TokenUsageResource")] public partial class TokenUsageResource {}
+
+// ------------ Session artifacts ------------
+[CodeGenType("AgentSessionArtifact")] public partial class AgentSessionArtifact {}
+[CodeGenType("AgentSessionArtifactCollectionOptions")] public partial class AgentSessionArtifactCollectionOptions {}
+[CodeGenType("AgentSessionArtifactCollectionOrder")] public readonly partial struct AgentSessionArtifactCollectionOrder {}
+[CodeGenType("AgentSessionArtifactCollectionPage")] public partial class AgentSessionArtifactCollectionPage {}
+[CodeGenType("AgentSessionArtifactDeletionResult")] public partial class AgentSessionArtifactDeletionResult {}

@@ -706,3 +706,113 @@ model SessionListResource {
   /** Whether there are more sessions to retrieve after this page. */
   has_more: boolean;
 }
+
+// ------------ Session artifacts ------------
+
+/** The object type. Always `agent.session.artifact`. */
+union SessionArtifactObject {
+  string,
+  agent_session_artifact: "agent.session.artifact",
+}
+
+/** An immutable file published by a completed hosted session turn. */
+model SessionArtifactResource {
+  /** The immutable artifact ID. */
+  id: string;
+
+  /** The object type. Always `agent.session.artifact`. */
+  object: SessionArtifactObject;
+
+  /** The ID of the session that owns the artifact. */
+  session_id: string;
+
+  /** The ID of the environment that produced the artifact. */
+  environment_id: string;
+
+  /** The ID of the completed turn that published the artifact. */
+  turn_id: string;
+
+  /** The original absolute file path in the execution environment. */
+  path: string;
+
+  /** The immutable artifact size in bytes. */
+  @minValue(0)
+  size_bytes: int64;
+
+  /** The Unix timestamp, in seconds, when the artifact was published. */
+  created_at: int64;
+}
+
+/** The object type. Always `agent.session.artifact.deleted`. */
+union DeletedSessionArtifactObject {
+  string,
+  agent_session_artifact_deleted: "agent.session.artifact.deleted",
+}
+
+/** Confirmation that an immutable session artifact was deleted. */
+model DeletedSessionArtifactResource {
+  /** The ID of the deleted session artifact. */
+  id: string;
+
+  /** The object type. Always `agent.session.artifact.deleted`. */
+  object: DeletedSessionArtifactObject;
+
+  /** Whether the session artifact was deleted. Always `true`. */
+  deleted: boolean;
+}
+
+/** The order in which paginated session artifacts are returned. */
+union AgentSessionArtifactCollectionOrder {
+  string,
+
+  /** Returns artifacts in ascending order. */
+  asc: "asc",
+
+  /** Returns artifacts in descending order. */
+  desc: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionArtifactCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The maximum number of artifacts to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which artifacts are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionArtifactCollectionOrder = AgentSessionArtifactCollectionOrder.desc;
+
+  /** Only return artifacts produced by this environment. */
+  @query
+  environment_id?: string;
+
+  /** Return artifacts after this artifact ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+/** A page of session artifacts. */
+model SessionArtifactListResource {
+  /** The object type, which is always `list`. */
+  object: "list";
+
+  /** The artifacts returned in this page, in the requested sort order. */
+  @pageItems
+  data: SessionArtifactResource[];
+
+  /** The ID of the first artifact in `data`, or `null` if the page is empty. */
+  first_id: string | null;
+
+  /** The ID of the last artifact in `data`, or `null` if the page is empty. */
+  @continuationToken
+  last_id: string | null;
+
+  /** Whether there are more artifacts to retrieve after this page. */
+  has_more: boolean;
+}

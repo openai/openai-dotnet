@@ -356,5 +356,169 @@ namespace OpenAI.Agents
                 after,
                 cancellationToken.ToRequestOptions());
         }
+
+        public virtual CollectionResult GetAgentSessionArtifacts(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionArtifactsCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                environmentId,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionArtifactsAsync(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionArtifactsAsyncCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                environmentId,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionArtifact> GetAgentSessionArtifacts(string sessionId, int? limit = default, AgentSessionArtifactCollectionOrder? order = default, string environmentId = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionArtifactsCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                environmentId,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionArtifact> GetAgentSessionArtifactsAsync(string sessionId, int? limit = default, AgentSessionArtifactCollectionOrder? order = default, string environmentId = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionArtifactsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                environmentId,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult RetrieveAgentSessionArtifact(string sessionId, string artifactId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionArtifactRequest(sessionId, artifactId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentSessionArtifactAsync(string sessionId, string artifactId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionArtifactRequest(sessionId, artifactId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSessionArtifact> RetrieveAgentSessionArtifact(string sessionId, string artifactId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            ClientResult result = RetrieveAgentSessionArtifact(sessionId, artifactId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSessionArtifact)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSessionArtifact>> RetrieveAgentSessionArtifactAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            ClientResult result = await RetrieveAgentSessionArtifactAsync(sessionId, artifactId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSessionArtifact)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteAgentSessionArtifact(string sessionId, string artifactId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            using PipelineMessage message = CreateDeleteAgentSessionArtifactRequest(sessionId, artifactId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteAgentSessionArtifactAsync(string sessionId, string artifactId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            using PipelineMessage message = CreateDeleteAgentSessionArtifactRequest(sessionId, artifactId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSessionArtifactDeletionResult> DeleteAgentSessionArtifact(string sessionId, string artifactId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            ClientResult result = DeleteAgentSessionArtifact(sessionId, artifactId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSessionArtifactDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSessionArtifactDeletionResult>> DeleteAgentSessionArtifactAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            ClientResult result = await DeleteAgentSessionArtifactAsync(sessionId, artifactId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSessionArtifactDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult RetrieveAgentSessionArtifactContent(string sessionId, string artifactId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionArtifactContentRequest(sessionId, artifactId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentSessionArtifactContentAsync(string sessionId, string artifactId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionArtifactContentRequest(sessionId, artifactId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<BinaryData> RetrieveAgentSessionArtifactContent(string sessionId, string artifactId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            ClientResult result = RetrieveAgentSessionArtifactContent(sessionId, artifactId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<BinaryData>> RetrieveAgentSessionArtifactContentAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(artifactId, nameof(artifactId));
+
+            ClientResult result = await RetrieveAgentSessionArtifactContentAsync(sessionId, artifactId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
+        }
     }
 }

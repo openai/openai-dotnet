@@ -166,3 +166,75 @@ op deleteAgentSession(
 op listAgentSessions(
   ...AgentSessionCollectionOptions,
 ): SessionListResource;
+
+/**
+ * Lists artifacts published by a session's completed turns. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("List agent session artifacts")
+@get
+@route("agents/sessions/{session_id}/artifacts")
+@tag("Agents")
+@list
+op listAgentSessionArtifacts(
+  ...AgentSessionArtifactCollectionOptions,
+): SessionArtifactListResource;
+
+/**
+ * Retrieves a single session artifact's metadata. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Retrieve an agent session artifact")
+@get
+@route("agents/sessions/{session_id}/artifacts/{artifact_id}")
+@tag("Agents")
+op retrieveAgentSessionArtifact(
+  /** The ID of the session that owns the artifact. */
+  @path
+  session_id: string,
+
+  /** The immutable session artifact ID. */
+  @path
+  artifact_id: string,
+): SessionArtifactResource;
+
+/**
+ * Deletes a single session artifact. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Delete an agent session artifact")
+@delete
+@route("agents/sessions/{session_id}/artifacts/{artifact_id}")
+@tag("Agents")
+op deleteAgentSessionArtifact(
+  /** The ID of the session that owns the artifact. */
+  @path
+  session_id: string,
+
+  /** The immutable session artifact ID. */
+  @path
+  artifact_id: string,
+): DeletedSessionArtifactResource;
+
+/**
+ * Downloads the immutable contents of a session artifact. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Retrieve agent session artifact content")
+@get
+@route("agents/sessions/{session_id}/artifacts/{artifact_id}/content")
+@tag("Agents")
+op retrieveAgentSessionArtifactContent(
+  /** The ID of the session that owns the artifact. */
+  @path
+  session_id: string,
+
+  /** The immutable session artifact ID. */
+  @path
+  artifact_id: string,
+): {
+  @header contentType: "application/octet-stream";
+
+  /** The immutable artifact contents. */
+  @body content: bytes;
+};

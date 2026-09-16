@@ -188,5 +188,85 @@ namespace OpenAI.Agents
             message.Apply(options);
             return message;
         }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetAgentSessionArtifactsRequest(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/sessions/", false);
+            uri.AppendPath(sessionId, true);
+            uri.AppendPath("/artifacts", false);
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+            }
+            if (order != null)
+            {
+                uri.AppendQuery("order", order, true);
+            }
+            if (environmentId != null)
+            {
+                uri.AppendQuery("environment_id", environmentId, true);
+            }
+            if (after != null)
+            {
+                uri.AppendQuery("after", after, true);
+            }
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRetrieveAgentSessionArtifactRequest(string sessionId, string artifactId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/sessions/", false);
+            uri.AppendPath(sessionId, true);
+            uri.AppendPath("/artifacts/", false);
+            uri.AppendPath(artifactId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateDeleteAgentSessionArtifactRequest(string sessionId, string artifactId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/sessions/", false);
+            uri.AppendPath(sessionId, true);
+            uri.AppendPath("/artifacts/", false);
+            uri.AppendPath(artifactId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRetrieveAgentSessionArtifactContentRequest(string sessionId, string artifactId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/sessions/", false);
+            uri.AppendPath(sessionId, true);
+            uri.AppendPath("/artifacts/", false);
+            uri.AppendPath(artifactId, true);
+            uri.AppendPath("/content", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/octet-stream");
+            message.Apply(options);
+            return message;
+        }
     }
 }

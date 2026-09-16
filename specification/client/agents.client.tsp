@@ -18,6 +18,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(updateAgentSession, "Agents");
 @@clientLocation(deleteAgentSession, "Agents");
 @@clientLocation(listAgentSessions, "Agents");
+@@clientLocation(listAgentSessionArtifacts, "Agents");
+@@clientLocation(retrieveAgentSessionArtifact, "Agents");
+@@clientLocation(deleteAgentSessionArtifact, "Agents");
+@@clientLocation(retrieveAgentSessionArtifactContent, "Agents");
 
 // ------------ Model names ------------
 
@@ -37,6 +41,13 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(SessionListResource, "AgentSessionCollectionPage");
 @@clientName(AgentSessionCollectionOrder.asc, "Ascending");
 @@clientName(AgentSessionCollectionOrder.desc, "Descending");
+
+@@clientName(SessionArtifactResource, "AgentSessionArtifact");
+@@clientName(DeletedSessionArtifactResource, "AgentSessionArtifactDeletionResult");
+@@clientName(DeletedSessionArtifactResource.id, "AgentSessionArtifactId");
+@@clientName(SessionArtifactListResource, "AgentSessionArtifactCollectionPage");
+@@clientName(AgentSessionArtifactCollectionOrder.asc, "Ascending");
+@@clientName(AgentSessionArtifactCollectionOrder.desc, "Descending");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -127,3 +138,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(InputContentParamInputText);
 @@dynamicModel(InputContentParamInputImage);
 @@dynamicModel(InputMessageParam);
+
+@@dynamicModel(SessionArtifactResource);
+@@dynamicModel(DeletedSessionArtifactResource);
+@@dynamicModel(SessionArtifactListResource);

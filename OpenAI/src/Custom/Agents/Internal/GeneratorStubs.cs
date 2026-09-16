@@ -21,3 +21,7 @@ namespace OpenAI.Agents;
 [CodeGenType("UnknownMcpTransportConfigParam")] internal partial class InternalUnknownMcpTransportConfigParam {}
 [CodeGenType("UnknownMcpTransportResource")] internal partial class InternalUnknownMcpTransportResource {}
 [CodeGenType("UnknownSessionRequiredActionResource")] internal partial class InternalUnknownSessionRequiredActionResource {}
+
+// ------------ Session artifacts ------------
+[CodeGenType("DeletedSessionArtifactObject")] internal readonly partial struct InternalDeletedSessionArtifactObject {}
+[CodeGenType("SessionArtifactObject")] internal readonly partial struct InternalSessionArtifactObject {}

@@ -50,6 +50,18 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSession is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentSession))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSession is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionArtifact is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionArtifact))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionArtifact is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionArtifactCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionArtifactCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionArtifactCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionArtifactCollectionPage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionArtifactCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionArtifactCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionArtifactDeletionResult is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionArtifactDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionArtifactDeletionResult is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentSessionCollectionOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionCollectionOptions is experimental and may change in future versions.

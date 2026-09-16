@@ -2622,6 +2622,19 @@ namespace OpenAI
                 default);
         }
 
+        public static AgentSessionArtifactCollectionPage AgentSessionArtifactCollectionPage(IEnumerable<AgentSessionArtifact> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<AgentSessionArtifact>();
+
+            return new AgentSessionArtifactCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -3015,6 +3028,17 @@ namespace OpenAI
         public static AgentSessionCollectionOptions AgentSessionCollectionOptions(int? limit = default, AgentSessionCollectionOrder? order = default, string agentId = default, string after = default)
         {
             return new AgentSessionCollectionOptions(limit, order, agentId, after, additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionArtifactCollectionOptions AgentSessionArtifactCollectionOptions(string sessionId = default, int? limit = default, AgentSessionArtifactCollectionOrder? order = default, string environmentId = default, string after = default)
+        {
+            return new AgentSessionArtifactCollectionOptions(
+                sessionId,
+                limit,
+                order,
+                environmentId,
+                after,
+                additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

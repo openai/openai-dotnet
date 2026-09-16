@@ -44,12 +44,20 @@ namespace OpenAI.Agents {
         public virtual Task<ClientResult<AgentDeletionResult>> DeleteAgentAsync(string agentId, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteAgentSession(string sessionId, RequestOptions options);
         public virtual ClientResult<AgentSessionDeletionResult> DeleteAgentSession(string sessionId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DeleteAgentSessionArtifact(string sessionId, string artifactId, RequestOptions options);
+        public virtual ClientResult<AgentSessionArtifactDeletionResult> DeleteAgentSessionArtifact(string sessionId, string artifactId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteAgentSessionArtifactAsync(string sessionId, string artifactId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSessionArtifactDeletionResult>> DeleteAgentSessionArtifactAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentSessionAsync(string sessionId, RequestOptions options);
         public virtual Task<ClientResult<AgentSessionDeletionResult>> DeleteAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<Agent> GetAgents(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgents(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<Agent> GetAgentsAsync(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentsAsync(int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionArtifact> GetAgentSessionArtifacts(string sessionId, int? limit = null, AgentSessionArtifactCollectionOrder? order = null, string environmentId = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionArtifacts(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionArtifact> GetAgentSessionArtifactsAsync(string sessionId, int? limit = null, AgentSessionArtifactCollectionOrder? order = null, string environmentId = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionArtifactsAsync(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options);
         public virtual CollectionResult<AgentSession> GetAgentSessions(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgentSessions(int? limit, string order, string agentId, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSession> GetAgentSessionsAsync(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
@@ -60,6 +68,14 @@ namespace OpenAI.Agents {
         public virtual Task<ClientResult<Agent>> RetrieveAgentAsync(string agentId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveAgentSession(string sessionId, RequestOptions options);
         public virtual ClientResult<AgentSession> RetrieveAgentSession(string sessionId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentSessionArtifact(string sessionId, string artifactId, RequestOptions options);
+        public virtual ClientResult<AgentSessionArtifact> RetrieveAgentSessionArtifact(string sessionId, string artifactId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentSessionArtifactAsync(string sessionId, string artifactId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSessionArtifact>> RetrieveAgentSessionArtifactAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentSessionArtifactContent(string sessionId, string artifactId, RequestOptions options);
+        public virtual ClientResult<BinaryData> RetrieveAgentSessionArtifactContent(string sessionId, string artifactId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentSessionArtifactContentAsync(string sessionId, string artifactId, RequestOptions options);
+        public virtual Task<ClientResult<BinaryData>> RetrieveAgentSessionArtifactContentAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentSessionAsync(string sessionId, RequestOptions options);
         public virtual Task<ClientResult<AgentSession>> RetrieveAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
         public virtual ClientResult<Agent> UpdateAgent(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
@@ -170,6 +186,70 @@ namespace OpenAI.Agents {
         public TokenUsageResource Usage { get; set; }
         public IList<string> VaultIds { get; }
         public static explicit operator AgentSession(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionArtifact : IJsonModel<AgentSessionArtifact>, IPersistableModel<AgentSessionArtifact> {
+        public int CreatedAt { get; set; }
+        public string EnvironmentId { get; set; }
+        public string Id { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Path { get; set; }
+        public string SessionId { get; set; }
+        public int SizeBytes { get; set; }
+        public string TurnId { get; set; }
+        public static explicit operator AgentSessionArtifact(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionArtifactCollectionOptions : IJsonModel<AgentSessionArtifactCollectionOptions>, IPersistableModel<AgentSessionArtifactCollectionOptions> {
+        public AgentSessionArtifactCollectionOptions();
+        public AgentSessionArtifactCollectionOptions(string sessionId);
+        public string After { get; set; }
+        public string EnvironmentId { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionArtifactCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentSessionArtifactCollectionOrder : IEquatable<AgentSessionArtifactCollectionOrder> {
+        public AgentSessionArtifactCollectionOrder(string value);
+        public static AgentSessionArtifactCollectionOrder Ascending { get; }
+        public static AgentSessionArtifactCollectionOrder Descending { get; }
+        public readonly bool Equals(AgentSessionArtifactCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionArtifactCollectionOrder left, AgentSessionArtifactCollectionOrder right);
+        public static implicit operator AgentSessionArtifactCollectionOrder(string value);
+        public static implicit operator AgentSessionArtifactCollectionOrder?(string value);
+        public static bool operator !=(AgentSessionArtifactCollectionOrder left, AgentSessionArtifactCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionArtifactCollectionPage : IJsonModel<AgentSessionArtifactCollectionPage>, IPersistableModel<AgentSessionArtifactCollectionPage> {
+        public IList<AgentSessionArtifact> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionArtifactCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionArtifactDeletionResult : IJsonModel<AgentSessionArtifactDeletionResult>, IPersistableModel<AgentSessionArtifactDeletionResult> {
+        public string AgentSessionArtifactId { get; set; }
+        public bool Deleted { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionArtifactDeletionResult(ClientResult result);
     }
     [Experimental("OPENAI001")]
     public class AgentSessionCollectionOptions : IJsonModel<AgentSessionCollectionOptions>, IPersistableModel<AgentSessionCollectionOptions> {
