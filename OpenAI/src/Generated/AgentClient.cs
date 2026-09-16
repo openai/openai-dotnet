@@ -160,5 +160,25 @@ namespace OpenAI.Agents
             ClientResult result = await DeleteAgentAsync(agentId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((AgentDeletionResult)result, result.GetRawResponse());
         }
+
+        public virtual CollectionResult GetAgents(int? limit, string order, string after, RequestOptions options)
+        {
+            return new AgentClientGetAgentsCollectionResult(this, limit, order, after, options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentsAsync(int? limit, string order, string after, RequestOptions options)
+        {
+            return new AgentClientGetAgentsAsyncCollectionResult(this, limit, order, after, options);
+        }
+
+        public virtual CollectionResult<Agent> GetAgents(int? limit = default, AgentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetAgentsCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<Agent> GetAgentsAsync(int? limit = default, AgentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetAgentsAsyncCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.ToRequestOptions());
+        }
     }
 }

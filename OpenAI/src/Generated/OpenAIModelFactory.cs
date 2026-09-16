@@ -2327,6 +2327,19 @@ namespace OpenAI
                 default);
         }
 
+        public static AgentCollectionPage AgentCollectionPage(IEnumerable<Agent> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<Agent>();
+
+            return new AgentCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -2710,6 +2723,11 @@ namespace OpenAI
         public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default)
         {
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
+        }
+
+        public static AgentCollectionOptions AgentCollectionOptions(int? limit = default, AgentCollectionOrder? order = default, string after = default)
+        {
+            return new AgentCollectionOptions(limit, order, after, additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

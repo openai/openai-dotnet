@@ -8,11 +8,11 @@ using TypeSpec.HttpClient.CSharp;
 
 // ------------ Client and method names ------------
 
-// Route the agent operations and their models into the OpenAI.Agents namespace.
 @@clientLocation(createAgent, "Agents");
 @@clientLocation(retrieveAgent, "Agents");
 @@clientLocation(updateAgent, "Agents");
 @@clientLocation(deleteAgent, "Agents");
+@@clientLocation(listAgents, "Agents");
 
 // ------------ Model names ------------
 
@@ -21,6 +21,8 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(AgentResource, "Agent");
 @@clientName(DeletedAgentResource, "AgentDeletionResult");
 @@clientName(DeletedAgentResource.id, "AgentId");
+@@clientName(AgentCollectionOrder.asc, "Ascending");
+@@clientName(AgentCollectionOrder.desc, "Descending");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -34,12 +36,11 @@ using TypeSpec.HttpClient.CSharp;
 
 // ------------ Dynamic models ------------
 
-// Match the house style used by Realtime/Responses: models round-trip unknown
-// properties and expose the implicit BinaryContent conversion used by convenience methods.
 @@dynamicModel(CreateAgentParams);
 @@dynamicModel(UpdateAgentParams);
 @@dynamicModel(AgentResource);
 @@dynamicModel(DeletedAgentResource);
+@@dynamicModel(AgentCollection);
 @@dynamicModel(ReasoningParam);
 @@dynamicModel(ReasoningResource);
 @@dynamicModel(TextParam);

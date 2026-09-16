@@ -3,6 +3,9 @@ using Microsoft.TypeSpec.Generator.Customizations;
 namespace OpenAI.Agents;
 
 [CodeGenType("Agent")] public partial class Agent {}
+[CodeGenType("AgentCollection")] public partial class AgentCollectionPage {}
+[CodeGenType("AgentCollectionOptions")] public partial class AgentCollectionOptions {}
+[CodeGenType("AgentCollectionOrder")] public readonly partial struct AgentCollectionOrder {}
 [CodeGenType("AgentCreationOptions")] public partial class AgentCreationOptions {}
 [CodeGenType("AgentDeletionResult")] public partial class AgentDeletionResult {}
 [CodeGenType("AgentModificationOptions")] public partial class AgentModificationOptions {}

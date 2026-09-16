@@ -6,5 +6,4 @@ using TypeSpec.OpenAPI;
 
 namespace OpenAI;
 
-// Placeholder for Agents API streaming event models. Streaming event models will be added here
-// as streaming operations are introduced, mirroring the Responses layout.
+// Agent session streaming event models are added here as streaming operations are introduced.

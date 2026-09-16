@@ -6,5 +6,4 @@ using TypeSpec.OpenAPI;
 
 namespace OpenAI;
 
-// Placeholder for Agents API item models (e.g. session/turn items). Item models will be added
-// here as the corresponding operations are introduced, mirroring the Responses layout.
+// Agent session and turn item models are added here as those operations are introduced.

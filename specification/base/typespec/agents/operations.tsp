@@ -70,3 +70,16 @@ op deleteAgent(
   @path
   agent_id: string,
 ): DeletedAgentResource;
+
+/**
+ * Lists reusable agents in the current project. See
+ * [agent configuration](https://developers.openai.com/api/docs/guides/agents-api/configuration).
+ */
+@summary("List agents")
+@get
+@route("agents")
+@tag("Agents")
+@list
+op listAgents(
+  ...AgentCollectionOptions,
+): AgentCollection;

@@ -38,6 +38,10 @@ namespace OpenAI.Agents {
         public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options);
         public virtual Task<ClientResult<AgentDeletionResult>> DeleteAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<Agent> GetAgents(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgents(int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<Agent> GetAgentsAsync(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentsAsync(int? limit, string order, string after, RequestOptions options);
         public virtual ClientResult RetrieveAgent(string agentId, RequestOptions options);
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
@@ -46,6 +50,41 @@ namespace OpenAI.Agents {
         public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateAgentAsync(string agentId, BinaryContent content, RequestOptions options = null);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentCollectionOptions : IJsonModel<AgentCollectionOptions>, IPersistableModel<AgentCollectionOptions> {
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentCollectionOrder? Order { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentCollectionOrder : IEquatable<AgentCollectionOrder> {
+        public AgentCollectionOrder(string value);
+        public static AgentCollectionOrder Ascending { get; }
+        public static AgentCollectionOrder Descending { get; }
+        public readonly bool Equals(AgentCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentCollectionOrder left, AgentCollectionOrder right);
+        public static implicit operator AgentCollectionOrder(string value);
+        public static implicit operator AgentCollectionOrder?(string value);
+        public static bool operator !=(AgentCollectionOrder left, AgentCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class AgentCollectionPage : IJsonModel<AgentCollectionPage>, IPersistableModel<AgentCollectionPage> {
+        public IList<Agent> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentCollectionPage(ClientResult result);
     }
     [Experimental("OPENAI001")]
     public class AgentCreationOptions : IJsonModel<AgentCreationOptions>, IPersistableModel<AgentCreationOptions> {

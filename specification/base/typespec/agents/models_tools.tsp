@@ -6,8 +6,7 @@ using TypeSpec.OpenAPI;
 
 namespace OpenAI;
 
-// A credential-free tool available to a reusable agent. The `*ConfigParam` models are used on
-// requests (e.g. create/update agent) and the `*Resource` models are returned on responses.
+// Request tools use the `*ConfigParam` models; responses use the `*Resource` models.
 
 /** The type of a persisted agent tool. */
 union PersistedAgentToolType {
@@ -112,7 +111,7 @@ model WebSearchLocationResource {
   timezone: string | null;
 }
 
-// --------- Tool config params (request) ---------
+// ------------ Tool config params (request) ------------
 
 @discriminator("type")
 model PersistedAgentToolConfigParam {
@@ -245,7 +244,7 @@ model PersistedAgentToolConfigParamWebSearch
   location?: WebSearchLocationParam | null;
 }
 
-// --------- Tool resources (response) ---------
+// ------------ Tool resources (response) ------------
 
 @discriminator("type")
 model PersistedAgentToolResource {

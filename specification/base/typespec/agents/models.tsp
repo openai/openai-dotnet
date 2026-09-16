@@ -9,7 +9,7 @@ using TypeSpec.OpenAPI;
 
 namespace OpenAI;
 
-// --------- Reasoning ---------
+// ------------ Reasoning ------------
 
 /** The amount of reasoning effort the model should use. */
 union ReasoningEffortParam {
@@ -70,7 +70,7 @@ model ReasoningResource {
   summary: ReasoningSummaryResource | null;
 }
 
-// --------- Text ---------
+// ------------ Text ------------
 
 /** The output format for generated text. */
 union TextFormatType {
@@ -156,7 +156,7 @@ model TextResource {
   verbosity: VerbosityResource;
 }
 
-// --------- Service tier ---------
+// ------------ Service tier ------------
 
 /** The service tier used for model requests. */
 union ServiceTierParam {
@@ -185,7 +185,7 @@ union ServiceTierResource {
   fast: "fast",
 }
 
-// --------- Multi-agent ---------
+// ------------ Multi-agent ------------
 
 /** Explicit configuration for creating and coordinating subagents. */
 model MultiAgentConfigCurrentParam {
@@ -209,7 +209,7 @@ model MultiAgentConfigResource {
   max_concurrent_subagents: int64 | null;
 }
 
-// --------- Create agent ---------
+// ------------ Create agent ------------
 
 /** Parameters for creating a reusable agent. */
 model CreateAgentParams {
@@ -251,7 +251,7 @@ model CreateAgentParams {
   multi_agent?: MultiAgentConfigCurrentParam | null;
 }
 
-// --------- Update agent ---------
+// ------------ Update agent ------------
 
 /** Fields to replace on an existing reusable agent. */
 model UpdateAgentParams {
@@ -340,7 +340,7 @@ model AgentResource {
   multi_agent: MultiAgentConfigResource;
 }
 
-// --------- Delete agent ---------
+// ------------ Delete agent ------------
 
 /** The object type. Always `agent.deleted`. */
 union AgentDeletedObject {
@@ -358,4 +358,54 @@ model DeletedAgentResource {
 
   /** Whether the agent was deleted. Always `true`. */
   deleted: boolean;
+}
+
+// ------------ List agents ------------
+
+/** The order in which paginated agents are returned. */
+union AgentCollectionOrder {
+  string,
+
+  /** Returns agents in ascending order. */
+  asc: "asc",
+
+  /** Returns agents in descending order. */
+  desc: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentCollectionOptions {
+  /** The maximum number of agents to return. */
+  @query
+  limit?: integer;
+
+  /** The order in which agents are returned. Defaults to `desc`. */
+  @query
+  order?: AgentCollectionOrder = AgentCollectionOrder.desc;
+
+  /** Return agents after this agent ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+/** A page of reusable agents. */
+model AgentCollection {
+  /** The object type, which is always `list`. */
+  object: "list";
+
+  /** The agents returned in this page, in the requested sort order. */
+  @pageItems
+  data: AgentResource[];
+
+  /** The ID of the first agent in `data`, or `null` if the page is empty. */
+  first_id: string | null;
+
+  /** The ID of the last agent in `data`, or `null` if the page is empty. Pass this as `after` with the same order to fetch the next page. */
+  @continuationToken
+  last_id: string | null;
+
+  /** Whether there are more agents to retrieve after this page. */
+  has_more: boolean;
 }
