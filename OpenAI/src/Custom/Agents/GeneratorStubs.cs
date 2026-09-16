@@ -117,3 +117,47 @@ namespace OpenAI.Agents;
 [CodeGenType("SessionTurnErrorCodeResource")] public readonly partial struct SessionTurnErrorCodeResource {}
 [CodeGenType("SessionTurnErrorResource")] public partial class SessionTurnErrorResource {}
 [CodeGenType("TurnStatusResource")] public readonly partial struct TurnStatusResource {}
+
+// ------------ Session items ------------
+[CodeGenType("AgentContentResource")] public partial class AgentContentResource {}
+[CodeGenType("AgentContentType")] public readonly partial struct AgentContentType {}
+[CodeGenType("AgentMessageItemResource")] public partial class AgentMessageItemResource {}
+[CodeGenType("AgentSessionItem")] public partial class AgentSessionItem {}
+[CodeGenType("AgentSessionItemCollectionOptions")] public partial class AgentSessionItemCollectionOptions {}
+[CodeGenType("AgentSessionItemCollectionOrder")] public readonly partial struct AgentSessionItemCollectionOrder {}
+[CodeGenType("AgentSessionItemCollectionPage")] public partial class AgentSessionItemCollectionPage {}
+[CodeGenType("AgentSessionMessageContentType")] public readonly partial struct AgentSessionMessageContentType {}
+[CodeGenType("AgentSessionReasoningItemResource")] public partial class AgentSessionReasoningItemResource {}
+[CodeGenType("AgentSessionWebSearchActionType")] public readonly partial struct AgentSessionWebSearchActionType {}
+[CodeGenType("CloseSubagentCallItemResource")] public partial class CloseSubagentCallItemResource {}
+[CodeGenType("CommandExecutionItemResource")] public partial class CommandExecutionItemResource {}
+[CodeGenType("CreateSubagentCallItemResource")] public partial class CreateSubagentCallItemResource {}
+[CodeGenType("EncryptedContentResource")] public partial class EncryptedContentResource {}
+[CodeGenType("FunctionCallItemResource")] public partial class FunctionCallItemResource {}
+[CodeGenType("FunctionCallOutputItemResource")] public partial class FunctionCallOutputItemResource {}
+[CodeGenType("FunctionCallStatusResource")] public readonly partial struct FunctionCallStatusResource {}
+[CodeGenType("InputContentResource")] public partial class InputContentResource {}
+[CodeGenType("InputContentResourceInputImage")] public partial class InputContentResourceInputImage {}
+[CodeGenType("InputContentResourceInputText")] public partial class InputContentResourceInputText {}
+[CodeGenType("InterruptSubagentCallItemResource")] public partial class InterruptSubagentCallItemResource {}
+[CodeGenType("McpCallItemResource")] public partial class McpCallItemResource {}
+[CodeGenType("MessageContentResource")] public partial class MessageContentResource {}
+[CodeGenType("MessageContentResourceInputImage")] public partial class MessageContentResourceInputImage {}
+[CodeGenType("MessageContentResourceInputText")] public partial class MessageContentResourceInputText {}
+[CodeGenType("MessageContentResourceOutputText")] public partial class MessageContentResourceOutputText {}
+[CodeGenType("MessageItemResource")] public partial class MessageItemResource {}
+[CodeGenType("MessagePhaseResource")] public readonly partial struct MessagePhaseResource {}
+[CodeGenType("OutputItemStatusResource")] public readonly partial struct OutputItemStatusResource {}
+[CodeGenType("OutputTextResource")] public partial class OutputTextResource {}
+[CodeGenType("ResumeSubagentCallItemResource")] public partial class ResumeSubagentCallItemResource {}
+[CodeGenType("SendSubagentInputCallItemResource")] public partial class SendSubagentInputCallItemResource {}
+[CodeGenType("SessionMessageRoleResource")] public readonly partial struct SessionMessageRoleResource {}
+[CodeGenType("SessionTurnItemType")] public readonly partial struct SessionTurnItemType {}
+[CodeGenType("SummaryTextResource")] public partial class SummaryTextResource {}
+[CodeGenType("WaitForSubagentsCallItemResource")] public partial class WaitForSubagentsCallItemResource {}
+[CodeGenType("WebSearchActionResource")] public partial class WebSearchActionResource {}
+[CodeGenType("WebSearchActionResourceFindInPage")] public partial class WebSearchActionResourceFindInPage {}
+[CodeGenType("WebSearchActionResourceOpenPage")] public partial class WebSearchActionResourceOpenPage {}
+[CodeGenType("WebSearchActionResourceOther")] public partial class WebSearchActionResourceOther {}
+[CodeGenType("WebSearchActionResourceSearch")] public partial class WebSearchActionResourceSearch {}
+[CodeGenType("WebSearchCallItemResource")] public partial class WebSearchCallItemResource {}

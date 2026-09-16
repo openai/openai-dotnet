@@ -224,6 +224,7 @@ model CreateAgentParams {
   name?: string | null;
 
   /** The model to use for the agent. The requested model name is preserved. */
+  @maxLength(1048576)
   `model`: string;
 
   /** Configuration for model reasoning. Omission uses the model's default effort. */
@@ -239,6 +240,7 @@ model CreateAgentParams {
    * Additional instructions appended to the agent's default base instructions.
    * Omit or set to null to add no custom instructions.
    */
+   @maxLength(1048576)
   instructions?: string | null;
 
   /** Tools available to the agent. Defaults to an empty list. */
@@ -962,5 +964,59 @@ model SessionTurnListResource {
   last_id: string | null;
 
   /** Whether there are more turns to retrieve after this page. */
+  has_more: boolean;
+}
+
+// ------------ Session items ------------
+
+/** The order in which paginated session items are returned. */
+union AgentSessionItemCollectionOrder {
+  string,
+
+  /** Returns items in ascending order. */
+  asc: "asc",
+
+  /** Returns items in descending order. */
+  desc: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionItemCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The maximum number of items to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which items are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionItemCollectionOrder = AgentSessionItemCollectionOrder.desc;
+
+  /** Return items after this item ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+/** A page of session turn items. */
+model SessionItemListResource {
+  /** The object type, which is always `list`. */
+  object: "list";
+
+  /** The items returned in this page, in the requested sort order. */
+  @pageItems
+  data: SessionTurnItemResource[];
+
+  /** The ID of the first item in `data`, or `null` if the page is empty. */
+  first_id: string | null;
+
+  /** The ID of the last item in `data`, or `null` if the page is empty. */
+  @continuationToken
+  last_id: string | null;
+
+  /** Whether there are more items to retrieve after this page. */
   has_more: boolean;
 }

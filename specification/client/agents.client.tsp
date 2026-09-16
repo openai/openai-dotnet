@@ -24,6 +24,7 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(retrieveAgentSessionArtifactContent, "Agents");
 @@clientLocation(listAgentSessionTurns, "Agents");
 @@clientLocation(retrieveAgentSessionTurn, "Agents");
+@@clientLocation(listAgentSessionItems, "Agents");
 
 // ------------ Model names ------------
 
@@ -55,6 +56,11 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(SessionTurnListResource, "AgentSessionTurnCollectionPage");
 @@clientName(AgentSessionTurnCollectionOrder.asc, "Ascending");
 @@clientName(AgentSessionTurnCollectionOrder.desc, "Descending");
+
+@@clientName(SessionTurnItemResource, "AgentSessionItem");
+@@clientName(SessionItemListResource, "AgentSessionItemCollectionPage");
+@@clientName(AgentSessionItemCollectionOrder.asc, "Ascending");
+@@clientName(AgentSessionItemCollectionOrder.desc, "Descending");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -153,3 +159,36 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(TurnResource);
 @@dynamicModel(SessionTurnErrorResource);
 @@dynamicModel(SessionTurnListResource);
+
+@@dynamicModel(SessionTurnItemResource);
+@@dynamicModel(SessionItemListResource);
+@@dynamicModel(MessageItemResource);
+@@dynamicModel(AgentSessionReasoningItemResource);
+@@dynamicModel(FunctionCallItemResource);
+@@dynamicModel(FunctionCallOutputItemResource);
+@@dynamicModel(AgentMessageItemResource);
+@@dynamicModel(McpCallItemResource);
+@@dynamicModel(WebSearchCallItemResource);
+@@dynamicModel(CommandExecutionItemResource);
+@@dynamicModel(CreateSubagentCallItemResource);
+@@dynamicModel(SendSubagentInputCallItemResource);
+@@dynamicModel(ResumeSubagentCallItemResource);
+@@dynamicModel(WaitForSubagentsCallItemResource);
+@@dynamicModel(InterruptSubagentCallItemResource);
+@@dynamicModel(CloseSubagentCallItemResource);
+@@dynamicModel(MessageContentResource);
+@@dynamicModel(MessageContentResourceInputText);
+@@dynamicModel(MessageContentResourceInputImage);
+@@dynamicModel(MessageContentResourceOutputText);
+@@dynamicModel(AgentContentResource);
+@@dynamicModel(OutputTextResource);
+@@dynamicModel(EncryptedContentResource);
+@@dynamicModel(InputContentResource);
+@@dynamicModel(InputContentResourceInputText);
+@@dynamicModel(InputContentResourceInputImage);
+@@dynamicModel(SummaryTextResource);
+@@dynamicModel(WebSearchActionResource);
+@@dynamicModel(WebSearchActionResourceSearch);
+@@dynamicModel(WebSearchActionResourceOpenPage);
+@@dynamicModel(WebSearchActionResourceFindInPage);
+@@dynamicModel(WebSearchActionResourceOther);

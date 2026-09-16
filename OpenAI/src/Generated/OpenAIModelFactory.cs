@@ -2653,6 +2653,291 @@ namespace OpenAI
             return new SessionTurnErrorResource(code, message, default);
         }
 
+        public static AgentSessionItemCollectionPage AgentSessionItemCollectionPage(IEnumerable<AgentSessionItem> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<AgentSessionItem>();
+
+            return new AgentSessionItemCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
+        public static AgentSessionItem AgentSessionItem(string kind = default)
+        {
+            return new InternalUnknownAgentSessionItem(new SessionTurnItemType(kind), default);
+        }
+
+        public static MessageItemResource MessageItemResource(string id = default, string turnId = default, SessionMessageRoleResource role = default, IEnumerable<MessageContentResource> content = default, OutputItemStatusResource status = default, MessagePhaseResource? phase = default)
+        {
+            content ??= new ChangeTrackingList<MessageContentResource>();
+
+            return new MessageItemResource(
+                SessionTurnItemType.Message,
+                default,
+                id,
+                turnId,
+                role,
+                content.ToList(),
+                status,
+                phase);
+        }
+
+        public static MessageContentResource MessageContentResource(string kind = default)
+        {
+            return new InternalUnknownMessageContentResource(new AgentSessionMessageContentType(kind), default);
+        }
+
+        public static MessageContentResourceInputText MessageContentResourceInputText(string text = default)
+        {
+            return new MessageContentResourceInputText(AgentSessionMessageContentType.InputText, default, text);
+        }
+
+        public static MessageContentResourceInputImage MessageContentResourceInputImage(string imageUrl = default)
+        {
+            return new MessageContentResourceInputImage(AgentSessionMessageContentType.InputImage, default, imageUrl);
+        }
+
+        public static MessageContentResourceOutputText MessageContentResourceOutputText(string text = default)
+        {
+            return new MessageContentResourceOutputText(AgentSessionMessageContentType.OutputText, default, text);
+        }
+
+        public static AgentSessionReasoningItemResource AgentSessionReasoningItemResource(string id = default, string turnId = default, IEnumerable<SummaryTextResource> summary = default, OutputItemStatusResource? status = default)
+        {
+            summary ??= new ChangeTrackingList<SummaryTextResource>();
+
+            return new AgentSessionReasoningItemResource(
+                SessionTurnItemType.Reasoning,
+                default,
+                id,
+                turnId,
+                summary.ToList(),
+                status);
+        }
+
+        public static FunctionCallItemResource FunctionCallItemResource(string id = default, string turnId = default, string callId = default, string name = default, BinaryData arguments = default, FunctionCallStatusResource status = default)
+        {
+            return new FunctionCallItemResource(
+                SessionTurnItemType.FunctionCall,
+                default,
+                id,
+                turnId,
+                callId,
+                name,
+                arguments,
+                status);
+        }
+
+        public static FunctionCallOutputItemResource FunctionCallOutputItemResource(string id = default, string turnId = default, string callId = default, FunctionCallStatusResource status = default, BinaryData output = default, string error = default)
+        {
+            return new FunctionCallOutputItemResource(
+                SessionTurnItemType.FunctionCallOutput,
+                default,
+                id,
+                turnId,
+                callId,
+                status,
+                output,
+                error);
+        }
+
+        public static InputContentResource InputContentResource(string kind = default)
+        {
+            return new InternalUnknownInputContentResource(new InputContentType(kind), default);
+        }
+
+        public static InputContentResourceInputText InputContentResourceInputText(string text = default)
+        {
+            return new InputContentResourceInputText(InputContentType.InputText, default, text);
+        }
+
+        public static InputContentResourceInputImage InputContentResourceInputImage(string imageUrl = default)
+        {
+            return new InputContentResourceInputImage(InputContentType.InputImage, default, imageUrl);
+        }
+
+        public static AgentMessageItemResource AgentMessageItemResource(string id = default, string turnId = default, string senderAgentId = default, string recipientAgentId = default, IEnumerable<AgentContentResource> content = default)
+        {
+            content ??= new ChangeTrackingList<AgentContentResource>();
+
+            return new AgentMessageItemResource(
+                SessionTurnItemType.AgentMessage,
+                default,
+                id,
+                turnId,
+                senderAgentId,
+                recipientAgentId,
+                content.ToList());
+        }
+
+        public static AgentContentResource AgentContentResource(string kind = default)
+        {
+            return new InternalUnknownAgentContentResource(new AgentContentType(kind), default);
+        }
+
+        public static OutputTextResource OutputTextResource(string text = default)
+        {
+            return new OutputTextResource(AgentContentType.OutputText, default, text);
+        }
+
+        public static EncryptedContentResource EncryptedContentResource(string encryptedContent = default)
+        {
+            return new EncryptedContentResource(AgentContentType.EncryptedContent, default, encryptedContent);
+        }
+
+        public static McpCallItemResource McpCallItemResource(string id = default, string turnId = default, string serverLabel = default, string name = default, BinaryData arguments = default, FunctionCallStatusResource status = default, BinaryData output = default, BinaryData error = default)
+        {
+            return new McpCallItemResource(
+                SessionTurnItemType.McpCall,
+                default,
+                id,
+                turnId,
+                serverLabel,
+                name,
+                arguments,
+                status,
+                output,
+                error);
+        }
+
+        public static WebSearchCallItemResource WebSearchCallItemResource(string id = default, string turnId = default, OutputItemStatusResource status = default, WebSearchActionResource action = default)
+        {
+            return new WebSearchCallItemResource(
+                SessionTurnItemType.WebSearchCall,
+                default,
+                id,
+                turnId,
+                status,
+                action);
+        }
+
+        public static WebSearchActionResource WebSearchActionResource(string kind = default)
+        {
+            return new InternalUnknownWebSearchActionResource(new AgentSessionWebSearchActionType(kind), default);
+        }
+
+        public static WebSearchActionResourceSearch WebSearchActionResourceSearch(string query = default, IEnumerable<string> queries = default)
+        {
+            queries ??= new ChangeTrackingList<string>();
+
+            return new WebSearchActionResourceSearch(AgentSessionWebSearchActionType.Search, default, query, queries.ToList());
+        }
+
+        public static WebSearchActionResourceOpenPage WebSearchActionResourceOpenPage(string url = default)
+        {
+            return new WebSearchActionResourceOpenPage(AgentSessionWebSearchActionType.OpenPage, default, url);
+        }
+
+        public static WebSearchActionResourceFindInPage WebSearchActionResourceFindInPage(string url = default, string pattern = default)
+        {
+            return new WebSearchActionResourceFindInPage(AgentSessionWebSearchActionType.FindInPage, default, url, pattern);
+        }
+
+        public static WebSearchActionResourceOther WebSearchActionResourceOther()
+        {
+            return new WebSearchActionResourceOther(AgentSessionWebSearchActionType.Other, default);
+        }
+
+        public static CommandExecutionItemResource CommandExecutionItemResource(string id = default, string turnId = default, string command = default, string cwd = default, FunctionCallStatusResource status = default, string output = default, int? exitCode = default, int? durationMs = default)
+        {
+            return new CommandExecutionItemResource(
+                SessionTurnItemType.CommandExecution,
+                default,
+                id,
+                turnId,
+                command,
+                cwd,
+                status,
+                output,
+                exitCode,
+                durationMs);
+        }
+
+        public static CreateSubagentCallItemResource CreateSubagentCallItemResource(string id = default, string turnId = default, FunctionCallStatusResource status = default, string agentId = default, IEnumerable<AgentContentResource> content = default, string model = default, string reasoningEffort = default)
+        {
+            content ??= new ChangeTrackingList<AgentContentResource>();
+
+            return new CreateSubagentCallItemResource(
+                SessionTurnItemType.CreateSubagentCall,
+                default,
+                id,
+                turnId,
+                status,
+                agentId,
+                content.ToList(),
+                model,
+                reasoningEffort);
+        }
+
+        public static SendSubagentInputCallItemResource SendSubagentInputCallItemResource(string id = default, string turnId = default, FunctionCallStatusResource status = default, string senderAgentId = default, string recipientAgentId = default, IEnumerable<AgentContentResource> content = default)
+        {
+            content ??= new ChangeTrackingList<AgentContentResource>();
+
+            return new SendSubagentInputCallItemResource(
+                SessionTurnItemType.SendSubagentInputCall,
+                default,
+                id,
+                turnId,
+                status,
+                senderAgentId,
+                recipientAgentId,
+                content.ToList());
+        }
+
+        public static ResumeSubagentCallItemResource ResumeSubagentCallItemResource(string id = default, string turnId = default, FunctionCallStatusResource status = default, string senderAgentId = default, string recipientAgentId = default)
+        {
+            return new ResumeSubagentCallItemResource(
+                SessionTurnItemType.ResumeSubagentCall,
+                default,
+                id,
+                turnId,
+                status,
+                senderAgentId,
+                recipientAgentId);
+        }
+
+        public static WaitForSubagentsCallItemResource WaitForSubagentsCallItemResource(string id = default, string turnId = default, FunctionCallStatusResource status = default, string senderAgentId = default, IEnumerable<string> recipientAgentIds = default)
+        {
+            recipientAgentIds ??= new ChangeTrackingList<string>();
+
+            return new WaitForSubagentsCallItemResource(
+                SessionTurnItemType.WaitForSubagentsCall,
+                default,
+                id,
+                turnId,
+                status,
+                senderAgentId,
+                recipientAgentIds.ToList());
+        }
+
+        public static InterruptSubagentCallItemResource InterruptSubagentCallItemResource(string id = default, string turnId = default, FunctionCallStatusResource status = default, string senderAgentId = default, string recipientAgentId = default)
+        {
+            return new InterruptSubagentCallItemResource(
+                SessionTurnItemType.InterruptSubagentCall,
+                default,
+                id,
+                turnId,
+                status,
+                senderAgentId,
+                recipientAgentId);
+        }
+
+        public static CloseSubagentCallItemResource CloseSubagentCallItemResource(string id = default, string turnId = default, FunctionCallStatusResource status = default, string senderAgentId = default, string recipientAgentId = default)
+        {
+            return new CloseSubagentCallItemResource(
+                SessionTurnItemType.CloseSubagentCall,
+                default,
+                id,
+                turnId,
+                status,
+                senderAgentId,
+                recipientAgentId);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -3062,6 +3347,11 @@ namespace OpenAI
         public static AgentSessionTurnCollectionOptions AgentSessionTurnCollectionOptions(string sessionId = default, int? limit = default, AgentSessionTurnCollectionOrder? order = default, string after = default)
         {
             return new AgentSessionTurnCollectionOptions(sessionId, limit, order, after, additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionItemCollectionOptions AgentSessionItemCollectionOptions(string sessionId = default, int? limit = default, AgentSessionItemCollectionOrder? order = default, string after = default)
+        {
+            return new AgentSessionItemCollectionOptions(sessionId, limit, order, after, additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

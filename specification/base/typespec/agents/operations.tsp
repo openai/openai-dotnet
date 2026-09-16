@@ -269,3 +269,16 @@ op retrieveAgentSessionTurn(
   @path
   turn_id: string,
 ): TurnResource;
+
+/**
+ * Lists items in a session using ID-based pagination. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("List agent session items")
+@get
+@route("agents/sessions/{session_id}/items")
+@tag("Agents")
+@list
+op listAgentSessionItems(
+  ...AgentSessionItemCollectionOptions,
+): SessionItemListResource;

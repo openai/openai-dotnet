@@ -28,3 +28,11 @@ namespace OpenAI.Agents;
 
 // ------------ Session turns ------------
 [CodeGenType("TurnObjectResource")] internal readonly partial struct InternalTurnObjectResource {}
+
+// ------------ Session items ------------
+[CodeGenType("SummaryTextResourceType")] internal readonly partial struct InternalSummaryTextResourceType {}
+[CodeGenType("UnknownAgentContentResource")] internal partial class InternalUnknownAgentContentResource {}
+[CodeGenType("UnknownAgentSessionItem")] internal partial class InternalUnknownAgentSessionItem {}
+[CodeGenType("UnknownInputContentResource")] internal partial class InternalUnknownInputContentResource {}
+[CodeGenType("UnknownMessageContentResource")] internal partial class InternalUnknownMessageContentResource {}
+[CodeGenType("UnknownWebSearchActionResource")] internal partial class InternalUnknownWebSearchActionResource {}

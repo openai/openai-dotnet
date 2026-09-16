@@ -58,6 +58,10 @@ namespace OpenAI.Agents {
         public virtual CollectionResult GetAgentSessionArtifacts(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSessionArtifact> GetAgentSessionArtifactsAsync(string sessionId, int? limit = null, AgentSessionArtifactCollectionOrder? order = null, string environmentId = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentSessionArtifactsAsync(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionItem> GetAgentSessionItems(string sessionId, int? limit = null, AgentSessionItemCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionItems(string sessionId, int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionItemsAsync(string sessionId, int? limit = null, AgentSessionItemCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionItemsAsync(string sessionId, int? limit, string order, string after, RequestOptions options);
         public virtual CollectionResult<AgentSession> GetAgentSessions(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgentSessions(int? limit, string order, string agentId, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSession> GetAgentSessionsAsync(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
@@ -131,6 +135,29 @@ namespace OpenAI.Agents {
         public static explicit operator AgentCollectionPage(ClientResult result);
     }
     [Experimental("OPENAI001")]
+    public class AgentContentResource : IJsonModel<AgentContentResource>, IPersistableModel<AgentContentResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentContentType : IEquatable<AgentContentType> {
+        public AgentContentType(string value);
+        public static AgentContentType EncryptedContent { get; }
+        public static AgentContentType OutputText { get; }
+        public readonly bool Equals(AgentContentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentContentType left, AgentContentType right);
+        public static implicit operator AgentContentType(string value);
+        public static implicit operator AgentContentType?(string value);
+        public static bool operator !=(AgentContentType left, AgentContentType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class AgentCreationOptions : IJsonModel<AgentCreationOptions>, IPersistableModel<AgentCreationOptions> {
         public AgentCreationOptions();
         public AgentCreationOptions(string model);
@@ -158,6 +185,15 @@ namespace OpenAI.Agents {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static explicit operator AgentDeletionResult(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentMessageItemResource : AgentSessionItem, IJsonModel<AgentMessageItemResource>, IPersistableModel<AgentMessageItemResource> {
+        public AgentMessageItemResource();
+        public IList<AgentContentResource> Content { get; }
+        public string Id { get; set; }
+        public string RecipientAgentId { get; set; }
+        public string SenderAgentId { get; set; }
+        public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
     public class AgentModificationOptions : IJsonModel<AgentModificationOptions>, IPersistableModel<AgentModificationOptions> {
@@ -323,6 +359,68 @@ namespace OpenAI.Agents {
         public static explicit operator AgentSessionDeletionResult(ClientResult result);
     }
     [Experimental("OPENAI001")]
+    public class AgentSessionItem : IJsonModel<AgentSessionItem>, IPersistableModel<AgentSessionItem> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionItemCollectionOptions : IJsonModel<AgentSessionItemCollectionOptions>, IPersistableModel<AgentSessionItemCollectionOptions> {
+        public AgentSessionItemCollectionOptions();
+        public AgentSessionItemCollectionOptions(string sessionId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionItemCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentSessionItemCollectionOrder : IEquatable<AgentSessionItemCollectionOrder> {
+        public AgentSessionItemCollectionOrder(string value);
+        public static AgentSessionItemCollectionOrder Ascending { get; }
+        public static AgentSessionItemCollectionOrder Descending { get; }
+        public readonly bool Equals(AgentSessionItemCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionItemCollectionOrder left, AgentSessionItemCollectionOrder right);
+        public static implicit operator AgentSessionItemCollectionOrder(string value);
+        public static implicit operator AgentSessionItemCollectionOrder?(string value);
+        public static bool operator !=(AgentSessionItemCollectionOrder left, AgentSessionItemCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionItemCollectionPage : IJsonModel<AgentSessionItemCollectionPage>, IPersistableModel<AgentSessionItemCollectionPage> {
+        public IList<AgentSessionItem> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionItemCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentSessionMessageContentType : IEquatable<AgentSessionMessageContentType> {
+        public AgentSessionMessageContentType(string value);
+        public static AgentSessionMessageContentType InputImage { get; }
+        public static AgentSessionMessageContentType InputText { get; }
+        public static AgentSessionMessageContentType OutputText { get; }
+        public readonly bool Equals(AgentSessionMessageContentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionMessageContentType left, AgentSessionMessageContentType right);
+        public static implicit operator AgentSessionMessageContentType(string value);
+        public static implicit operator AgentSessionMessageContentType?(string value);
+        public static bool operator !=(AgentSessionMessageContentType left, AgentSessionMessageContentType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class AgentSessionModificationOptions : IJsonModel<AgentSessionModificationOptions>, IPersistableModel<AgentSessionModificationOptions> {
         public IDictionary<string, string> Metadata { get; set; }
         [Serialization.JsonIgnore]
@@ -330,6 +428,14 @@ namespace OpenAI.Agents {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static implicit operator BinaryContent(AgentSessionModificationOptions agentSessionModificationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionReasoningItemResource : AgentSessionItem, IJsonModel<AgentSessionReasoningItemResource>, IPersistableModel<AgentSessionReasoningItemResource> {
+        public AgentSessionReasoningItemResource();
+        public string Id { get; set; }
+        public OutputItemStatusResource? Status { get; set; }
+        public IList<SummaryTextResource> Summary { get; }
+        public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
     public class AgentSessionTurn : IJsonModel<AgentSessionTurn>, IPersistableModel<AgentSessionTurn> {
@@ -386,6 +492,24 @@ namespace OpenAI.Agents {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static explicit operator AgentSessionTurnCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentSessionWebSearchActionType : IEquatable<AgentSessionWebSearchActionType> {
+        public AgentSessionWebSearchActionType(string value);
+        public static AgentSessionWebSearchActionType FindInPage { get; }
+        public static AgentSessionWebSearchActionType OpenPage { get; }
+        public static AgentSessionWebSearchActionType Other { get; }
+        public static AgentSessionWebSearchActionType Search { get; }
+        public readonly bool Equals(AgentSessionWebSearchActionType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionWebSearchActionType left, AgentSessionWebSearchActionType right);
+        public static implicit operator AgentSessionWebSearchActionType(string value);
+        public static implicit operator AgentSessionWebSearchActionType?(string value);
+        public static bool operator !=(AgentSessionWebSearchActionType left, AgentSessionWebSearchActionType right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class AgentToolConfigParam : IJsonModel<AgentToolConfigParam>, IPersistableModel<AgentToolConfigParam> {
@@ -491,6 +615,81 @@ namespace OpenAI.Agents {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class CloseSubagentCallItemResource : AgentSessionItem, IJsonModel<CloseSubagentCallItemResource>, IPersistableModel<CloseSubagentCallItemResource> {
+        public CloseSubagentCallItemResource();
+        public string Id { get; set; }
+        public string RecipientAgentId { get; set; }
+        public string SenderAgentId { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CommandExecutionItemResource : AgentSessionItem, IJsonModel<CommandExecutionItemResource>, IPersistableModel<CommandExecutionItemResource> {
+        public CommandExecutionItemResource();
+        public string Command { get; set; }
+        public string Cwd { get; set; }
+        public int? DurationMs { get; set; }
+        public int? ExitCode { get; set; }
+        public string Id { get; set; }
+        public string Output { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateSubagentCallItemResource : AgentSessionItem, IJsonModel<CreateSubagentCallItemResource>, IPersistableModel<CreateSubagentCallItemResource> {
+        public CreateSubagentCallItemResource();
+        public string AgentId { get; set; }
+        public IList<AgentContentResource> Content { get; }
+        public string Id { get; set; }
+        public string Model { get; set; }
+        public string ReasoningEffort { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class EncryptedContentResource : AgentContentResource, IJsonModel<EncryptedContentResource>, IPersistableModel<EncryptedContentResource> {
+        public EncryptedContentResource();
+        public string EncryptedContent { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class FunctionCallItemResource : AgentSessionItem, IJsonModel<FunctionCallItemResource>, IPersistableModel<FunctionCallItemResource> {
+        public FunctionCallItemResource();
+        public BinaryData Arguments { get; set; }
+        public string CallId { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class FunctionCallOutputItemResource : AgentSessionItem, IJsonModel<FunctionCallOutputItemResource>, IPersistableModel<FunctionCallOutputItemResource> {
+        public FunctionCallOutputItemResource();
+        public string CallId { get; set; }
+        public string Error { get; set; }
+        public string Id { get; set; }
+        public BinaryData Output { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct FunctionCallStatusResource : IEquatable<FunctionCallStatusResource> {
+        public FunctionCallStatusResource(string value);
+        public static FunctionCallStatusResource Completed { get; }
+        public static FunctionCallStatusResource Failed { get; }
+        public static FunctionCallStatusResource Incomplete { get; }
+        public static FunctionCallStatusResource InProgress { get; }
+        public readonly bool Equals(FunctionCallStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(FunctionCallStatusResource left, FunctionCallStatusResource right);
+        public static implicit operator FunctionCallStatusResource(string value);
+        public static implicit operator FunctionCallStatusResource?(string value);
+        public static bool operator !=(FunctionCallStatusResource left, FunctionCallStatusResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class InputContentParam : IJsonModel<InputContentParam>, IPersistableModel<InputContentParam> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -507,6 +706,23 @@ namespace OpenAI.Agents {
     public class InputContentParamInputText : InputContentParam, IJsonModel<InputContentParamInputText>, IPersistableModel<InputContentParamInputText> {
         public InputContentParamInputText();
         public InputContentParamInputText(string text);
+        public string Text { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class InputContentResource : IJsonModel<InputContentResource>, IPersistableModel<InputContentResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class InputContentResourceInputImage : InputContentResource, IJsonModel<InputContentResourceInputImage>, IPersistableModel<InputContentResourceInputImage> {
+        public InputContentResourceInputImage();
+        public string ImageUrl { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class InputContentResourceInputText : InputContentResource, IJsonModel<InputContentResourceInputText>, IPersistableModel<InputContentResourceInputText> {
+        public InputContentResourceInputText();
         public string Text { get; set; }
     }
     [Experimental("OPENAI001")]
@@ -542,6 +758,27 @@ namespace OpenAI.Agents {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class InterruptSubagentCallItemResource : AgentSessionItem, IJsonModel<InterruptSubagentCallItemResource>, IPersistableModel<InterruptSubagentCallItemResource> {
+        public InterruptSubagentCallItemResource();
+        public string Id { get; set; }
+        public string RecipientAgentId { get; set; }
+        public string SenderAgentId { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class McpCallItemResource : AgentSessionItem, IJsonModel<McpCallItemResource>, IPersistableModel<McpCallItemResource> {
+        public McpCallItemResource();
+        public BinaryData Arguments { get; set; }
+        public BinaryData Error { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public BinaryData Output { get; set; }
+        public string ServerLabel { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct McpConnectionOriginParam : IEquatable<McpConnectionOriginParam> {
@@ -637,6 +874,54 @@ namespace OpenAI.Agents {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class MessageContentResource : IJsonModel<MessageContentResource>, IPersistableModel<MessageContentResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class MessageContentResourceInputImage : MessageContentResource, IJsonModel<MessageContentResourceInputImage>, IPersistableModel<MessageContentResourceInputImage> {
+        public MessageContentResourceInputImage();
+        public string ImageUrl { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class MessageContentResourceInputText : MessageContentResource, IJsonModel<MessageContentResourceInputText>, IPersistableModel<MessageContentResourceInputText> {
+        public MessageContentResourceInputText();
+        public string Text { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class MessageContentResourceOutputText : MessageContentResource, IJsonModel<MessageContentResourceOutputText>, IPersistableModel<MessageContentResourceOutputText> {
+        public MessageContentResourceOutputText();
+        public string Text { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class MessageItemResource : AgentSessionItem, IJsonModel<MessageItemResource>, IPersistableModel<MessageItemResource> {
+        public MessageItemResource();
+        public IList<MessageContentResource> Content { get; }
+        public string Id { get; set; }
+        public MessagePhaseResource? Phase { get; set; }
+        public SessionMessageRoleResource Role { get; set; }
+        public OutputItemStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct MessagePhaseResource : IEquatable<MessagePhaseResource> {
+        public MessagePhaseResource(string value);
+        public static MessagePhaseResource Commentary { get; }
+        public static MessagePhaseResource FinalAnswer { get; }
+        public readonly bool Equals(MessagePhaseResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(MessagePhaseResource left, MessagePhaseResource right);
+        public static implicit operator MessagePhaseResource(string value);
+        public static implicit operator MessagePhaseResource?(string value);
+        public static bool operator !=(MessagePhaseResource left, MessagePhaseResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class MultiAgentConfigCurrentParam : IJsonModel<MultiAgentConfigCurrentParam>, IPersistableModel<MultiAgentConfigCurrentParam> {
         public MultiAgentConfigCurrentParam();
         public MultiAgentConfigCurrentParam(bool enabled);
@@ -655,6 +940,28 @@ namespace OpenAI.Agents {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct OutputItemStatusResource : IEquatable<OutputItemStatusResource> {
+        public OutputItemStatusResource(string value);
+        public static OutputItemStatusResource Completed { get; }
+        public static OutputItemStatusResource Incomplete { get; }
+        public static OutputItemStatusResource InProgress { get; }
+        public readonly bool Equals(OutputItemStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(OutputItemStatusResource left, OutputItemStatusResource right);
+        public static implicit operator OutputItemStatusResource(string value);
+        public static implicit operator OutputItemStatusResource?(string value);
+        public static bool operator !=(OutputItemStatusResource left, OutputItemStatusResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class OutputTextResource : AgentContentResource, IJsonModel<OutputTextResource>, IPersistableModel<OutputTextResource> {
+        public OutputTextResource();
+        public string Text { get; set; }
     }
     [Experimental("OPENAI001")]
     public class OutputTokensDetailsResource : IJsonModel<OutputTokensDetailsResource>, IPersistableModel<OutputTokensDetailsResource> {
@@ -926,6 +1233,25 @@ namespace OpenAI.Agents {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class ResumeSubagentCallItemResource : AgentSessionItem, IJsonModel<ResumeSubagentCallItemResource>, IPersistableModel<ResumeSubagentCallItemResource> {
+        public ResumeSubagentCallItemResource();
+        public string Id { get; set; }
+        public string RecipientAgentId { get; set; }
+        public string SenderAgentId { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SendSubagentInputCallItemResource : AgentSessionItem, IJsonModel<SendSubagentInputCallItemResource>, IPersistableModel<SendSubagentInputCallItemResource> {
+        public SendSubagentInputCallItemResource();
+        public IList<AgentContentResource> Content { get; }
+        public string Id { get; set; }
+        public string RecipientAgentId { get; set; }
+        public string SenderAgentId { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public readonly partial struct ServiceTierParam : IEquatable<ServiceTierParam> {
         public ServiceTierParam(string value);
         public static ServiceTierParam Auto { get; }
@@ -992,6 +1318,22 @@ namespace OpenAI.Agents {
         public ServiceTierResource ServiceTier { get; set; }
         public TextResource Text { get; set; }
         public IList<AgentToolResource> Tools { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct SessionMessageRoleResource : IEquatable<SessionMessageRoleResource> {
+        public SessionMessageRoleResource(string value);
+        public static SessionMessageRoleResource Assistant { get; }
+        public static SessionMessageRoleResource User { get; }
+        public readonly bool Equals(SessionMessageRoleResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionMessageRoleResource left, SessionMessageRoleResource right);
+        public static implicit operator SessionMessageRoleResource(string value);
+        public static implicit operator SessionMessageRoleResource?(string value);
+        public static bool operator !=(SessionMessageRoleResource left, SessionMessageRoleResource right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class SessionRequiredActionResource : IJsonModel<SessionRequiredActionResource>, IPersistableModel<SessionRequiredActionResource> {
@@ -1086,6 +1428,42 @@ namespace OpenAI.Agents {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct SessionTurnItemType : IEquatable<SessionTurnItemType> {
+        public SessionTurnItemType(string value);
+        public static SessionTurnItemType AgentMessage { get; }
+        public static SessionTurnItemType CloseSubagentCall { get; }
+        public static SessionTurnItemType CommandExecution { get; }
+        public static SessionTurnItemType CreateSubagentCall { get; }
+        public static SessionTurnItemType FunctionCall { get; }
+        public static SessionTurnItemType FunctionCallOutput { get; }
+        public static SessionTurnItemType InterruptSubagentCall { get; }
+        public static SessionTurnItemType McpCall { get; }
+        public static SessionTurnItemType Message { get; }
+        public static SessionTurnItemType Reasoning { get; }
+        public static SessionTurnItemType ResumeSubagentCall { get; }
+        public static SessionTurnItemType SendSubagentInputCall { get; }
+        public static SessionTurnItemType WaitForSubagentsCall { get; }
+        public static SessionTurnItemType WebSearchCall { get; }
+        public readonly bool Equals(SessionTurnItemType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionTurnItemType left, SessionTurnItemType right);
+        public static implicit operator SessionTurnItemType(string value);
+        public static implicit operator SessionTurnItemType?(string value);
+        public static bool operator !=(SessionTurnItemType left, SessionTurnItemType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class SummaryTextResource : IJsonModel<SummaryTextResource>, IPersistableModel<SummaryTextResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Text { get; set; }
     }
     [Experimental("OPENAI001")]
     public class TextFormatParam : IJsonModel<TextFormatParam>, IPersistableModel<TextFormatParam> {
@@ -1219,6 +1597,51 @@ namespace OpenAI.Agents {
         public static implicit operator VerbosityResource?(string value);
         public static bool operator !=(VerbosityResource left, VerbosityResource right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class WaitForSubagentsCallItemResource : AgentSessionItem, IJsonModel<WaitForSubagentsCallItemResource>, IPersistableModel<WaitForSubagentsCallItemResource> {
+        public WaitForSubagentsCallItemResource();
+        public string Id { get; set; }
+        public IList<string> RecipientAgentIds { get; }
+        public string SenderAgentId { get; set; }
+        public FunctionCallStatusResource Status { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionResource : IJsonModel<WebSearchActionResource>, IPersistableModel<WebSearchActionResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionResourceFindInPage : WebSearchActionResource, IJsonModel<WebSearchActionResourceFindInPage>, IPersistableModel<WebSearchActionResourceFindInPage> {
+        public WebSearchActionResourceFindInPage();
+        public string Pattern { get; set; }
+        public string Url { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionResourceOpenPage : WebSearchActionResource, IJsonModel<WebSearchActionResourceOpenPage>, IPersistableModel<WebSearchActionResourceOpenPage> {
+        public WebSearchActionResourceOpenPage();
+        public string Url { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionResourceOther : WebSearchActionResource, IJsonModel<WebSearchActionResourceOther>, IPersistableModel<WebSearchActionResourceOther> {
+        public WebSearchActionResourceOther();
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchActionResourceSearch : WebSearchActionResource, IJsonModel<WebSearchActionResourceSearch>, IPersistableModel<WebSearchActionResourceSearch> {
+        public WebSearchActionResourceSearch();
+        public IList<string> Queries { get; }
+        public string Query { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class WebSearchCallItemResource : AgentSessionItem, IJsonModel<WebSearchCallItemResource>, IPersistableModel<WebSearchCallItemResource> {
+        public WebSearchCallItemResource();
+        public WebSearchActionResource Action { get; set; }
+        public string Id { get; set; }
+        public OutputItemStatusResource Status { get; set; }
+        public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct WebSearchContextSizeParam : IEquatable<WebSearchContextSizeParam> {

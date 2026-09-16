@@ -608,5 +608,57 @@ namespace OpenAI.Agents
             ClientResult result = await RetrieveAgentSessionTurnAsync(sessionId, turnId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((AgentSessionTurn)result, result.GetRawResponse());
         }
+
+        public virtual CollectionResult GetAgentSessionItems(string sessionId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionItemsCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionItemsAsync(string sessionId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionItemsAsyncCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionItem> GetAgentSessionItems(string sessionId, int? limit = default, AgentSessionItemCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionItemsCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionItemsAsync(string sessionId, int? limit = default, AgentSessionItemCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionItemsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
     }
 }
