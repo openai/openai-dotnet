@@ -3,17 +3,19 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectComputer : InternalToolChoiceObject
+    [Experimental("OPENAI001")]
+    public partial class ResponseCustomMcpToolChoice : ResponseCustomToolChoice
     {
-        public InternalToolChoiceObjectComputer() : this(InternalToolChoiceObjectType.Computer, default)
+        public ResponseCustomMcpToolChoice() : this(InternalResponseCustomToolChoiceKind.Mcp, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObjectComputer(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

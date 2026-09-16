@@ -582,6 +582,51 @@ namespace OpenAI
             return new CustomToolTextFormat(CustomToolFormatKind.Text, default);
         }
 
+        public static ResponseToolChoice ResponseToolChoice(ResponseDefaultToolChoice? defaultToolChoice = default, ResponseCustomToolChoice customToolChoice = default)
+        {
+            return new ResponseToolChoice(defaultToolChoice, customToolChoice, default);
+        }
+
+        public static ResponseCustomToolChoice ResponseCustomToolChoice(string kind = default)
+        {
+            return new InternalUnknownToolChoiceObject(new InternalResponseCustomToolChoiceKind(kind), default);
+        }
+
+        public static ResponseCustomFileSearchToolChoice ResponseCustomFileSearchToolChoice()
+        {
+            return new ResponseCustomFileSearchToolChoice(InternalResponseCustomToolChoiceKind.FileSearch, default);
+        }
+
+        public static ResponseCustomComputerToolChoice ResponseCustomComputerToolChoice()
+        {
+            return new ResponseCustomComputerToolChoice(InternalResponseCustomToolChoiceKind.Computer, default);
+        }
+
+        public static ResponseCustomWebSearchToolChoice ResponseCustomWebSearchToolChoice()
+        {
+            return new ResponseCustomWebSearchToolChoice(InternalResponseCustomToolChoiceKind.WebSearch, default);
+        }
+
+        public static ResponseCustomImageGenerationToolChoice ResponseCustomImageGenerationToolChoice()
+        {
+            return new ResponseCustomImageGenerationToolChoice(InternalResponseCustomToolChoiceKind.ImageGeneration, default);
+        }
+
+        public static ResponseCustomCodeInterpreterToolChoice ResponseCustomCodeInterpreterToolChoice()
+        {
+            return new ResponseCustomCodeInterpreterToolChoice(InternalResponseCustomToolChoiceKind.CodeInterpreter, default);
+        }
+
+        public static ResponseCustomMcpToolChoice ResponseCustomMcpToolChoice()
+        {
+            return new ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind.Mcp, default);
+        }
+
+        public static ResponseCustomFunctionToolChoice ResponseCustomFunctionToolChoice(string functionName = default)
+        {
+            return new ResponseCustomFunctionToolChoice(InternalResponseCustomToolChoiceKind.Function, default, functionName);
+        }
+
         public static ResponseContentPart ResponseContentPart(string internalType = default)
         {
             return new ResponseContentPart(new InternalItemContentType(internalType), default);
