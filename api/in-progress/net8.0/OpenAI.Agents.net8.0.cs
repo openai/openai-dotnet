@@ -38,6 +38,10 @@ namespace OpenAI.Agents {
         public virtual ClientResult CreateAgentSession(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<AgentSession>> CreateAgentSessionAsync(AgentSessionCreationOptions session, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateAgentSessionAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CreateAgentSessionEvents(string sessionId, CreateSessionEventsParams events, string idempotencyKey = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateAgentSessionEvents(string sessionId, BinaryContent content, string idempotencyKey = null, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateAgentSessionEventsAsync(string sessionId, CreateSessionEventsParams events, string idempotencyKey = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateAgentSessionEventsAsync(string sessionId, BinaryContent content, string idempotencyKey = null, RequestOptions options = null);
         public virtual ClientResult DeleteAgent(string agentId, RequestOptions options);
         public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options);
@@ -58,6 +62,8 @@ namespace OpenAI.Agents {
         public virtual CollectionResult GetAgentSessionArtifacts(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSessionArtifact> GetAgentSessionArtifactsAsync(string sessionId, int? limit = null, AgentSessionArtifactCollectionOrder? order = null, string environmentId = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentSessionArtifactsAsync(string sessionId, int? limit, string order, string environmentId, string after, RequestOptions options);
+        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GetAgentSessionEventsAsync(string sessionId, RequestOptions options);
+        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GetAgentSessionEventsAsync(string sessionId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<AgentSessionItem> GetAgentSessionItems(string sessionId, int? limit = null, AgentSessionItemCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgentSessionItems(string sessionId, int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSessionItem> GetAgentSessionItemsAsync(string sessionId, int? limit = null, AgentSessionItemCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
@@ -745,6 +751,17 @@ namespace OpenAI.Agents {
         public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class CreateSessionEventsParams : IJsonModel<CreateSessionEventsParams>, IPersistableModel<CreateSessionEventsParams> {
+        public CreateSessionEventsParams();
+        public CreateSessionEventsParams(IEnumerable<SessionInputParam> events);
+        public IList<SessionInputParam> Events { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(CreateSessionEventsParams createSessionEventsParams);
+    }
+    [Experimental("OPENAI001")]
     public class CreateSubagentCallItemResource : AgentSessionItem, IJsonModel<CreateSubagentCallItemResource>, IPersistableModel<CreateSubagentCallItemResource> {
         public CreateSubagentCallItemResource();
         public string AgentId { get; set; }
@@ -1427,6 +1444,475 @@ namespace OpenAI.Agents {
         public ServiceTierResource ServiceTier { get; set; }
         public TextResource Text { get; set; }
         public IList<AgentToolResource> Tools { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEnvironmentErrorResource : IJsonModel<SessionEnvironmentErrorResource>, IPersistableModel<SessionEnvironmentErrorResource> {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEnvironmentStateResource : IJsonModel<SessionEnvironmentStateResource>, IPersistableModel<SessionEnvironmentStateResource> {
+        public SessionEnvironmentErrorResource Error { get; set; }
+        public string Id { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public SessionEnvironmentStatusResource Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct SessionEnvironmentStatusResource : IEquatable<SessionEnvironmentStatusResource> {
+        public SessionEnvironmentStatusResource(string value);
+        public static SessionEnvironmentStatusResource Connected { get; }
+        public static SessionEnvironmentStatusResource Disconnected { get; }
+        public static SessionEnvironmentStatusResource Failed { get; }
+        public static SessionEnvironmentStatusResource Pending { get; }
+        public static SessionEnvironmentStatusResource Ready { get; }
+        public readonly bool Equals(SessionEnvironmentStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionEnvironmentStatusResource left, SessionEnvironmentStatusResource right);
+        public static implicit operator SessionEnvironmentStatusResource(string value);
+        public static implicit operator SessionEnvironmentStatusResource?(string value);
+        public static bool operator !=(SessionEnvironmentStatusResource left, SessionEnvironmentStatusResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class SessionErrorResource : IJsonModel<SessionErrorResource>, IPersistableModel<SessionErrorResource> {
+        public string Code { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        public string Param { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentOutputCommandExecutionOutputDelta : IJsonModel<SessionEventAgentOutputCommandExecutionOutputDelta>, IPersistableModel<SessionEventAgentOutputCommandExecutionOutputDelta> {
+        public string Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionCreated : IJsonModel<SessionEventAgentSessionCreated>, IPersistableModel<SessionEventAgentSessionCreated> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSession Session { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionEnvironmentConnected : IJsonModel<SessionEventAgentSessionEnvironmentConnected>, IPersistableModel<SessionEventAgentSessionEnvironmentConnected> {
+        public SessionEnvironmentStateResource Environment { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionEnvironmentDisconnected : IJsonModel<SessionEventAgentSessionEnvironmentDisconnected>, IPersistableModel<SessionEventAgentSessionEnvironmentDisconnected> {
+        public SessionEnvironmentStateResource Environment { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionEnvironmentFailed : IJsonModel<SessionEventAgentSessionEnvironmentFailed>, IPersistableModel<SessionEventAgentSessionEnvironmentFailed> {
+        public SessionEnvironmentStateResource Environment { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionEnvironmentPending : IJsonModel<SessionEventAgentSessionEnvironmentPending>, IPersistableModel<SessionEventAgentSessionEnvironmentPending> {
+        public SessionEnvironmentStateResource Environment { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionEnvironmentReady : IJsonModel<SessionEventAgentSessionEnvironmentReady>, IPersistableModel<SessionEventAgentSessionEnvironmentReady> {
+        public SessionEnvironmentStateResource Environment { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionFailed : IJsonModel<SessionEventAgentSessionFailed>, IPersistableModel<SessionEventAgentSessionFailed> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSession Session { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionIdle : IJsonModel<SessionEventAgentSessionIdle>, IPersistableModel<SessionEventAgentSessionIdle> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSession Session { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionInProgress : IJsonModel<SessionEventAgentSessionInProgress>, IPersistableModel<SessionEventAgentSessionInProgress> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSession Session { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionRequiresAction : IJsonModel<SessionEventAgentSessionRequiresAction>, IPersistableModel<SessionEventAgentSessionRequiresAction> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSession Session { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionSubagentActive : IJsonModel<SessionEventAgentSessionSubagentActive>, IPersistableModel<SessionEventAgentSessionSubagentActive> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSessionSubagent Subagent { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionSubagentClosed : IJsonModel<SessionEventAgentSessionSubagentClosed>, IPersistableModel<SessionEventAgentSessionSubagentClosed> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSessionSubagent Subagent { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionSubagentCreated : IJsonModel<SessionEventAgentSessionSubagentCreated>, IPersistableModel<SessionEventAgentSessionSubagentCreated> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public AgentSessionSubagent Subagent { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnCancelled : IJsonModel<SessionEventAgentSessionTurnCancelled>, IPersistableModel<SessionEventAgentSessionTurnCancelled> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public AgentSessionTurn Turn { get; set; }
+        public string TurnId { get; set; }
+        public TokenUsageResource Usage { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnCompleted : IJsonModel<SessionEventAgentSessionTurnCompleted>, IPersistableModel<SessionEventAgentSessionTurnCompleted> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public AgentSessionTurn Turn { get; set; }
+        public string TurnId { get; set; }
+        public TokenUsageResource Usage { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnContentPartAdded : IJsonModel<SessionEventAgentSessionTurnContentPartAdded>, IPersistableModel<SessionEventAgentSessionTurnContentPartAdded> {
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        public OutputTextResource Part { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnContentPartDone : IJsonModel<SessionEventAgentSessionTurnContentPartDone>, IPersistableModel<SessionEventAgentSessionTurnContentPartDone> {
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        public OutputTextResource Part { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnCreated : IJsonModel<SessionEventAgentSessionTurnCreated>, IPersistableModel<SessionEventAgentSessionTurnCreated> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public AgentSessionTurn Turn { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnFailed : IJsonModel<SessionEventAgentSessionTurnFailed>, IPersistableModel<SessionEventAgentSessionTurnFailed> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public AgentSessionTurn Turn { get; set; }
+        public string TurnId { get; set; }
+        public TokenUsageResource Usage { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnInProgress : IJsonModel<SessionEventAgentSessionTurnInProgress>, IPersistableModel<SessionEventAgentSessionTurnInProgress> {
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public AgentSessionTurn Turn { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnItemAdded : IJsonModel<SessionEventAgentSessionTurnItemAdded>, IPersistableModel<SessionEventAgentSessionTurnItemAdded> {
+        public string EventId { get; set; }
+        public AgentSessionItem Item { get; set; }
+        public string Kind { get; set; }
+        public int? OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnItemDone : IJsonModel<SessionEventAgentSessionTurnItemDone>, IPersistableModel<SessionEventAgentSessionTurnItemDone> {
+        public string EventId { get; set; }
+        public AgentSessionItem Item { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnOutputTextDelta : IJsonModel<SessionEventAgentSessionTurnOutputTextDelta>, IPersistableModel<SessionEventAgentSessionTurnOutputTextDelta> {
+        public int ContentIndex { get; set; }
+        public string Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnOutputTextDone : IJsonModel<SessionEventAgentSessionTurnOutputTextDone>, IPersistableModel<SessionEventAgentSessionTurnOutputTextDone> {
+        public int ContentIndex { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public string Text { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnReasoningSummaryPartAdded : IJsonModel<SessionEventAgentSessionTurnReasoningSummaryPartAdded>, IPersistableModel<SessionEventAgentSessionTurnReasoningSummaryPartAdded> {
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        public SummaryTextResource Part { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public int SummaryIndex { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnReasoningSummaryPartDone : IJsonModel<SessionEventAgentSessionTurnReasoningSummaryPartDone>, IPersistableModel<SessionEventAgentSessionTurnReasoningSummaryPartDone> {
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        public SummaryTextResource Part { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public int SummaryIndex { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnReasoningSummaryTextDelta : IJsonModel<SessionEventAgentSessionTurnReasoningSummaryTextDelta>, IPersistableModel<SessionEventAgentSessionTurnReasoningSummaryTextDelta> {
+        public string Delta { get; set; }
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public int SummaryIndex { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventAgentSessionTurnReasoningSummaryTextDone : IJsonModel<SessionEventAgentSessionTurnReasoningSummaryTextDone>, IPersistableModel<SessionEventAgentSessionTurnReasoningSummaryTextDone> {
+        public string EventId { get; set; }
+        public string ItemId { get; set; }
+        public string Kind { get; set; }
+        public int OutputIndex { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public int SummaryIndex { get; set; }
+        public string Text { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionEventError : IJsonModel<SessionEventError>, IPersistableModel<SessionEventError> {
+        public SessionErrorResource Error { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionInputParam : IJsonModel<SessionInputParam>, IPersistableModel<SessionInputParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionInputParamAgentSessionInputCancel : SessionInputParam, IJsonModel<SessionInputParamAgentSessionInputCancel>, IPersistableModel<SessionInputParamAgentSessionInputCancel> {
+        public SessionInputParamAgentSessionInputCancel();
+    }
+    [Experimental("OPENAI001")]
+    public class SessionInputParamAgentSessionInputMessage : SessionInputParam, IJsonModel<SessionInputParamAgentSessionInputMessage>, IPersistableModel<SessionInputParamAgentSessionInputMessage> {
+        public SessionInputParamAgentSessionInputMessage();
+        public SessionInputParamAgentSessionInputMessage(IEnumerable<InputMessageParam> input);
+        public IList<InputMessageParam> Input { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class SessionInputParamAgentSessionInputToolResult : SessionInputParam, IJsonModel<SessionInputParamAgentSessionInputToolResult>, IPersistableModel<SessionInputParamAgentSessionInputToolResult> {
+        public SessionInputParamAgentSessionInputToolResult();
+        public SessionInputParamAgentSessionInputToolResult(string turnId, string callId, bool success);
+        public string CallId { get; set; }
+        public string Error { get; set; }
+        public BinaryData Output { get; set; }
+        public bool Success { get; set; }
+        public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct SessionInputType : IEquatable<SessionInputType> {
+        public SessionInputType(string value);
+        public static SessionInputType Cancel { get; }
+        public static SessionInputType Message { get; }
+        public static SessionInputType ToolResult { get; }
+        public readonly bool Equals(SessionInputType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionInputType left, SessionInputType right);
+        public static implicit operator SessionInputType(string value);
+        public static implicit operator SessionInputType?(string value);
+        public static bool operator !=(SessionInputType left, SessionInputType right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct SessionMessageRoleResource : IEquatable<SessionMessageRoleResource> {

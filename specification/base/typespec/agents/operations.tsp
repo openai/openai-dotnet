@@ -1,5 +1,6 @@
 import "@typespec/http";
 import "@typespec/openapi";
+import "@typespec/sse";
 
 import "./models.tsp";
 import "./models_items.tsp";
@@ -8,6 +9,7 @@ import "./models_tools.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
+using TypeSpec.SSE;
 
 namespace OpenAI;
 
@@ -374,3 +376,41 @@ op retrieveAgentSessionSubagentTurn(
 op listAgentSessionSubagentTurnItems(
   ...AgentSessionSubagentTurnItemCollectionOptions,
 ): SessionItemListResource;
+
+/**
+ * Streams live events for an agent session as server-sent events. See
+ * [session events](https://developers.openai.com/api/docs/guides/agents-api/sessions/events).
+ */
+@summary("Stream agent session events")
+@get
+@route("agents/sessions/{session_id}/events")
+@tag("Agents")
+op listAgentSessionEvents(
+  /** The ID of the session. */
+  @path
+  session_id: string,
+): SSEStream<SessionEvent>;
+
+/**
+ * Submits message, cancellation, or tool-result events to a managed agent session. See
+ * [session events](https://developers.openai.com/api/docs/guides/agents-api/sessions/events).
+ */
+@summary("Create agent session input events")
+@post
+@route("agents/sessions/{session_id}/events")
+@tag("Agents")
+op createAgentSessionEvents(
+  /** The ID of the session. */
+  @path
+  session_id: string,
+
+  /** An optional client-generated key that makes retries of submitted messages idempotent. */
+  @header("Idempotency-Key")
+  idempotencyKey?: string,
+
+  /** The input events to submit to the session. */
+  @body
+  events: CreateSessionEventsParams,
+): {
+  @statusCode statusCode: 202;
+};

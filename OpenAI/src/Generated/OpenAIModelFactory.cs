@@ -2951,6 +2951,350 @@ namespace OpenAI
                 default);
         }
 
+        public static SessionEventError SessionEventError(string eventId = default, string sessionId = default, SessionErrorResource error = default)
+        {
+            return new SessionEventError("error", eventId, sessionId, error, default);
+        }
+
+        public static SessionErrorResource SessionErrorResource(string kind = default, string code = default, string message = default, string @param = default)
+        {
+            return new SessionErrorResource(kind, code, message, @param, default);
+        }
+
+        public static SessionEventAgentSessionEnvironmentReady SessionEventAgentSessionEnvironmentReady(string eventId = default, string sessionId = default, string turnId = default, SessionEnvironmentStateResource environment = default)
+        {
+            return new SessionEventAgentSessionEnvironmentReady(
+                "agent.session.environment.ready",
+                eventId,
+                sessionId,
+                turnId,
+                environment,
+                default);
+        }
+
+        public static SessionEnvironmentStateResource SessionEnvironmentStateResource(string id = default, string kind = default, SessionEnvironmentStatusResource status = default, SessionEnvironmentErrorResource error = default)
+        {
+            return new SessionEnvironmentStateResource(id, kind, status, error, default);
+        }
+
+        public static SessionEnvironmentErrorResource SessionEnvironmentErrorResource(string kind = default, string code = default, string message = default)
+        {
+            return new SessionEnvironmentErrorResource(kind, code, message, default);
+        }
+
+        public static SessionEventAgentOutputCommandExecutionOutputDelta SessionEventAgentOutputCommandExecutionOutputDelta(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, string delta = default)
+        {
+            return new SessionEventAgentOutputCommandExecutionOutputDelta(
+                "agent.output.command_execution_output.delta",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                delta,
+                default);
+        }
+
+        public static SessionEventAgentSessionCreated SessionEventAgentSessionCreated(string eventId = default, AgentSession session = default)
+        {
+            return new SessionEventAgentSessionCreated("agent.session.created", eventId, session, default);
+        }
+
+        public static SessionEventAgentSessionTurnCreated SessionEventAgentSessionTurnCreated(string eventId = default, string sessionId = default, string turnId = default, AgentSessionTurn turn = default)
+        {
+            return new SessionEventAgentSessionTurnCreated(
+                "agent.session.turn.created",
+                eventId,
+                sessionId,
+                turnId,
+                turn,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnInProgress SessionEventAgentSessionTurnInProgress(string eventId = default, string sessionId = default, string turnId = default, AgentSessionTurn turn = default)
+        {
+            return new SessionEventAgentSessionTurnInProgress(
+                "agent.session.turn.in_progress",
+                eventId,
+                sessionId,
+                turnId,
+                turn,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnCompleted SessionEventAgentSessionTurnCompleted(string eventId = default, string sessionId = default, string turnId = default, AgentSessionTurn turn = default, TokenUsageResource usage = default)
+        {
+            return new SessionEventAgentSessionTurnCompleted(
+                "agent.session.turn.completed",
+                eventId,
+                sessionId,
+                turnId,
+                turn,
+                usage,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnFailed SessionEventAgentSessionTurnFailed(string eventId = default, string sessionId = default, string turnId = default, AgentSessionTurn turn = default, TokenUsageResource usage = default)
+        {
+            return new SessionEventAgentSessionTurnFailed(
+                "agent.session.turn.failed",
+                eventId,
+                sessionId,
+                turnId,
+                turn,
+                usage,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnCancelled SessionEventAgentSessionTurnCancelled(string eventId = default, string sessionId = default, string turnId = default, AgentSessionTurn turn = default, TokenUsageResource usage = default)
+        {
+            return new SessionEventAgentSessionTurnCancelled(
+                "agent.session.turn.cancelled",
+                eventId,
+                sessionId,
+                turnId,
+                turn,
+                usage,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnItemAdded SessionEventAgentSessionTurnItemAdded(string eventId = default, string sessionId = default, string turnId = default, int? outputIndex = default, AgentSessionItem item = default)
+        {
+            return new SessionEventAgentSessionTurnItemAdded(
+                "agent.session.turn.item.added",
+                eventId,
+                sessionId,
+                turnId,
+                outputIndex,
+                item,
+                default);
+        }
+
+        public static SessionEventAgentSessionIdle SessionEventAgentSessionIdle(string eventId = default, AgentSession session = default)
+        {
+            return new SessionEventAgentSessionIdle("agent.session.idle", eventId, session, default);
+        }
+
+        public static SessionEventAgentSessionInProgress SessionEventAgentSessionInProgress(string eventId = default, AgentSession session = default)
+        {
+            return new SessionEventAgentSessionInProgress("agent.session.in_progress", eventId, session, default);
+        }
+
+        public static SessionEventAgentSessionRequiresAction SessionEventAgentSessionRequiresAction(string eventId = default, AgentSession session = default)
+        {
+            return new SessionEventAgentSessionRequiresAction("agent.session.requires_action", eventId, session, default);
+        }
+
+        public static SessionEventAgentSessionFailed SessionEventAgentSessionFailed(string eventId = default, AgentSession session = default)
+        {
+            return new SessionEventAgentSessionFailed("agent.session.failed", eventId, session, default);
+        }
+
+        public static SessionEventAgentSessionEnvironmentPending SessionEventAgentSessionEnvironmentPending(string eventId = default, string sessionId = default, string turnId = default, SessionEnvironmentStateResource environment = default)
+        {
+            return new SessionEventAgentSessionEnvironmentPending(
+                "agent.session.environment.pending",
+                eventId,
+                sessionId,
+                turnId,
+                environment,
+                default);
+        }
+
+        public static SessionEventAgentSessionEnvironmentConnected SessionEventAgentSessionEnvironmentConnected(string eventId = default, string sessionId = default, string turnId = default, SessionEnvironmentStateResource environment = default)
+        {
+            return new SessionEventAgentSessionEnvironmentConnected(
+                "agent.session.environment.connected",
+                eventId,
+                sessionId,
+                turnId,
+                environment,
+                default);
+        }
+
+        public static SessionEventAgentSessionEnvironmentDisconnected SessionEventAgentSessionEnvironmentDisconnected(string eventId = default, string sessionId = default, string turnId = default, SessionEnvironmentStateResource environment = default)
+        {
+            return new SessionEventAgentSessionEnvironmentDisconnected(
+                "agent.session.environment.disconnected",
+                eventId,
+                sessionId,
+                turnId,
+                environment,
+                default);
+        }
+
+        public static SessionEventAgentSessionEnvironmentFailed SessionEventAgentSessionEnvironmentFailed(string eventId = default, string sessionId = default, string turnId = default, SessionEnvironmentStateResource environment = default)
+        {
+            return new SessionEventAgentSessionEnvironmentFailed(
+                "agent.session.environment.failed",
+                eventId,
+                sessionId,
+                turnId,
+                environment,
+                default);
+        }
+
+        public static SessionEventAgentSessionSubagentCreated SessionEventAgentSessionSubagentCreated(string eventId = default, AgentSessionSubagent subagent = default)
+        {
+            return new SessionEventAgentSessionSubagentCreated("agent.session.subagent.created", eventId, subagent, default);
+        }
+
+        public static SessionEventAgentSessionSubagentActive SessionEventAgentSessionSubagentActive(string eventId = default, AgentSessionSubagent subagent = default)
+        {
+            return new SessionEventAgentSessionSubagentActive("agent.session.subagent.active", eventId, subagent, default);
+        }
+
+        public static SessionEventAgentSessionSubagentClosed SessionEventAgentSessionSubagentClosed(string eventId = default, AgentSessionSubagent subagent = default)
+        {
+            return new SessionEventAgentSessionSubagentClosed("agent.session.subagent.closed", eventId, subagent, default);
+        }
+
+        public static SessionEventAgentSessionTurnItemDone SessionEventAgentSessionTurnItemDone(string eventId = default, string sessionId = default, string turnId = default, int outputIndex = default, AgentSessionItem item = default)
+        {
+            return new SessionEventAgentSessionTurnItemDone(
+                "agent.session.turn.item.done",
+                eventId,
+                sessionId,
+                turnId,
+                outputIndex,
+                item,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnContentPartAdded SessionEventAgentSessionTurnContentPartAdded(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int contentIndex = default, OutputTextResource part = default)
+        {
+            return new SessionEventAgentSessionTurnContentPartAdded(
+                "agent.session.turn.content_part.added",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                contentIndex,
+                part,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnContentPartDone SessionEventAgentSessionTurnContentPartDone(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int contentIndex = default, OutputTextResource part = default)
+        {
+            return new SessionEventAgentSessionTurnContentPartDone(
+                "agent.session.turn.content_part.done",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                contentIndex,
+                part,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnOutputTextDelta SessionEventAgentSessionTurnOutputTextDelta(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string delta = default)
+        {
+            return new SessionEventAgentSessionTurnOutputTextDelta(
+                "agent.session.turn.output_text.delta",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                contentIndex,
+                delta,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnOutputTextDone SessionEventAgentSessionTurnOutputTextDone(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
+        {
+            return new SessionEventAgentSessionTurnOutputTextDone(
+                "agent.session.turn.output_text.done",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                contentIndex,
+                text,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnReasoningSummaryPartAdded SessionEventAgentSessionTurnReasoningSummaryPartAdded(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int summaryIndex = default, SummaryTextResource part = default)
+        {
+            return new SessionEventAgentSessionTurnReasoningSummaryPartAdded(
+                "agent.session.turn.reasoning_summary_part.added",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                part,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnReasoningSummaryTextDelta SessionEventAgentSessionTurnReasoningSummaryTextDelta(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int summaryIndex = default, string delta = default)
+        {
+            return new SessionEventAgentSessionTurnReasoningSummaryTextDelta(
+                "agent.session.turn.reasoning_summary_text.delta",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                delta,
+                default);
+        }
+
+        public static SessionEventAgentSessionTurnReasoningSummaryTextDone SessionEventAgentSessionTurnReasoningSummaryTextDone(string eventId = default, string sessionId = default, string turnId = default, string itemId = default, int outputIndex = default, int summaryIndex = default, string text = default)
+        {
+            return new SessionEventAgentSessionTurnReasoningSummaryTextDone(
+                "agent.session.turn.reasoning_summary_text.done",
+                eventId,
+                sessionId,
+                turnId,
+                itemId,
+                outputIndex,
+                summaryIndex,
+                text,
+                default);
+        }
+
+        public static CreateSessionEventsParams CreateSessionEventsParams(IEnumerable<SessionInputParam> events = default)
+        {
+            events ??= new ChangeTrackingList<SessionInputParam>();
+
+            return new CreateSessionEventsParams(events.ToList(), default);
+        }
+
+        public static SessionInputParam SessionInputParam(string kind = default)
+        {
+            return new InternalUnknownSessionInputParam(new SessionInputType(kind), default);
+        }
+
+        public static SessionInputParamAgentSessionInputMessage SessionInputParamAgentSessionInputMessage(IEnumerable<InputMessageParam> input = default)
+        {
+            input ??= new ChangeTrackingList<InputMessageParam>();
+
+            return new SessionInputParamAgentSessionInputMessage(SessionInputType.Message, default, input.ToList());
+        }
+
+        public static SessionInputParamAgentSessionInputCancel SessionInputParamAgentSessionInputCancel()
+        {
+            return new SessionInputParamAgentSessionInputCancel(SessionInputType.Cancel, default);
+        }
+
+        public static SessionInputParamAgentSessionInputToolResult SessionInputParamAgentSessionInputToolResult(string turnId = default, string callId = default, bool success = default, BinaryData output = default, string error = default)
+        {
+            return new SessionInputParamAgentSessionInputToolResult(
+                SessionInputType.ToolResult,
+                default,
+                turnId,
+                callId,
+                success,
+                output,
+                error);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);

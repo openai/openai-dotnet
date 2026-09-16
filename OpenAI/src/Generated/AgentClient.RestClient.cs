@@ -12,10 +12,13 @@ namespace OpenAI.Agents
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
         private static PipelineMessageClassifier _pipelineMessageClassifier201;
+        private static PipelineMessageClassifier _pipelineMessageClassifier202;
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         private static PipelineMessageClassifier PipelineMessageClassifier201 => _pipelineMessageClassifier201 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 201 });
+
+        private static PipelineMessageClassifier PipelineMessageClassifier202 => _pipelineMessageClassifier202 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 202 });
 
         // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateAgentRequest(BinaryContent content, RequestOptions options)
@@ -485,6 +488,41 @@ namespace OpenAI.Agents
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetAgentSessionEventsRequest(string sessionId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/sessions/", false);
+            uri.AppendPath(sessionId, true);
+            uri.AppendPath("/events", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "text/event-stream");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateCreateAgentSessionEventsRequest(string sessionId, BinaryContent content, string idempotencyKey, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/sessions/", false);
+            uri.AppendPath(sessionId, true);
+            uri.AppendPath("/events", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier202);
+            PipelineRequest request = message.Request;
+            if (idempotencyKey != null)
+            {
+                request.Headers.Set("Idempotency-Key", idempotencyKey);
+            }
+            request.Headers.Set("Content-Type", "application/json");
+            request.Content = content;
             message.Apply(options);
             return message;
         }

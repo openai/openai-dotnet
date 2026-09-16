@@ -31,6 +31,8 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(listAgentSessionSubagentTurns, "Agents");
 @@clientLocation(retrieveAgentSessionSubagentTurn, "Agents");
 @@clientLocation(listAgentSessionSubagentTurnItems, "Agents");
+@@clientLocation(listAgentSessionEvents, "Agents");
+@@clientLocation(createAgentSessionEvents, "Agents");
 
 // ------------ Model names ------------
 
@@ -206,3 +208,45 @@ using TypeSpec.HttpClient.CSharp;
 
 @@dynamicModel(SubagentResource);
 @@dynamicModel(SubagentListResource);
+
+// Session events (streamed as raw SSE; models are deserialization targets that keep spec names).
+@@dynamicModel(SessionErrorResource);
+@@dynamicModel(SessionEnvironmentErrorResource);
+@@dynamicModel(SessionEnvironmentStateResource);
+@@dynamicModel(SessionEventError);
+@@dynamicModel(SessionEventAgentSessionEnvironmentReady);
+@@dynamicModel(SessionEventAgentOutputCommandExecutionOutputDelta);
+@@dynamicModel(SessionEventAgentSessionCreated);
+@@dynamicModel(SessionEventAgentSessionTurnCreated);
+@@dynamicModel(SessionEventAgentSessionTurnInProgress);
+@@dynamicModel(SessionEventAgentSessionTurnCompleted);
+@@dynamicModel(SessionEventAgentSessionTurnFailed);
+@@dynamicModel(SessionEventAgentSessionTurnCancelled);
+@@dynamicModel(SessionEventAgentSessionTurnItemAdded);
+@@dynamicModel(SessionEventAgentSessionIdle);
+@@dynamicModel(SessionEventAgentSessionInProgress);
+@@dynamicModel(SessionEventAgentSessionRequiresAction);
+@@dynamicModel(SessionEventAgentSessionFailed);
+@@dynamicModel(SessionEventAgentSessionEnvironmentPending);
+@@dynamicModel(SessionEventAgentSessionEnvironmentConnected);
+@@dynamicModel(SessionEventAgentSessionEnvironmentDisconnected);
+@@dynamicModel(SessionEventAgentSessionEnvironmentFailed);
+@@dynamicModel(SessionEventAgentSessionSubagentCreated);
+@@dynamicModel(SessionEventAgentSessionSubagentActive);
+@@dynamicModel(SessionEventAgentSessionSubagentClosed);
+@@dynamicModel(SessionEventAgentSessionTurnItemDone);
+@@dynamicModel(SessionEventAgentSessionTurnContentPartAdded);
+@@dynamicModel(SessionEventAgentSessionTurnContentPartDone);
+@@dynamicModel(SessionEventAgentSessionTurnOutputTextDelta);
+@@dynamicModel(SessionEventAgentSessionTurnOutputTextDone);
+@@dynamicModel(SessionEventAgentSessionTurnReasoningSummaryPartAdded);
+@@dynamicModel(SessionEventAgentSessionTurnReasoningSummaryPartDone);
+@@dynamicModel(SessionEventAgentSessionTurnReasoningSummaryTextDelta);
+@@dynamicModel(SessionEventAgentSessionTurnReasoningSummaryTextDone);
+
+// Session input events.
+@@dynamicModel(SessionInputParam);
+@@dynamicModel(SessionInputParamAgentSessionInputMessage);
+@@dynamicModel(SessionInputParamAgentSessionInputCancel);
+@@dynamicModel(SessionInputParamAgentSessionInputToolResult);
+@@dynamicModel(CreateSessionEventsParams);

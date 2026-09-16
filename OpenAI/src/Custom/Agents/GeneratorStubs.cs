@@ -171,3 +171,45 @@ namespace OpenAI.Agents;
 [CodeGenType("AgentSessionSubagentTurnCollectionOptions")] public partial class AgentSessionSubagentTurnCollectionOptions {}
 [CodeGenType("AgentSessionSubagentTurnItemCollectionOptions")] public partial class AgentSessionSubagentTurnItemCollectionOptions {}
 [CodeGenType("SubagentStatusResource")] public readonly partial struct SubagentStatusResource {}
+
+// ------------ Session events ------------
+[CodeGenType("CreateSessionEventsParams")] public partial class CreateSessionEventsParams {}
+[CodeGenType("SessionEnvironmentErrorResource")] public partial class SessionEnvironmentErrorResource {}
+[CodeGenType("SessionEnvironmentStateResource")] public partial class SessionEnvironmentStateResource {}
+[CodeGenType("SessionEnvironmentStatusResource")] public readonly partial struct SessionEnvironmentStatusResource {}
+[CodeGenType("SessionErrorResource")] public partial class SessionErrorResource {}
+[CodeGenType("SessionEventAgentOutputCommandExecutionOutputDelta")] public partial class SessionEventAgentOutputCommandExecutionOutputDelta {}
+[CodeGenType("SessionEventAgentSessionCreated")] public partial class SessionEventAgentSessionCreated {}
+[CodeGenType("SessionEventAgentSessionEnvironmentConnected")] public partial class SessionEventAgentSessionEnvironmentConnected {}
+[CodeGenType("SessionEventAgentSessionEnvironmentDisconnected")] public partial class SessionEventAgentSessionEnvironmentDisconnected {}
+[CodeGenType("SessionEventAgentSessionEnvironmentFailed")] public partial class SessionEventAgentSessionEnvironmentFailed {}
+[CodeGenType("SessionEventAgentSessionEnvironmentPending")] public partial class SessionEventAgentSessionEnvironmentPending {}
+[CodeGenType("SessionEventAgentSessionEnvironmentReady")] public partial class SessionEventAgentSessionEnvironmentReady {}
+[CodeGenType("SessionEventAgentSessionFailed")] public partial class SessionEventAgentSessionFailed {}
+[CodeGenType("SessionEventAgentSessionIdle")] public partial class SessionEventAgentSessionIdle {}
+[CodeGenType("SessionEventAgentSessionInProgress")] public partial class SessionEventAgentSessionInProgress {}
+[CodeGenType("SessionEventAgentSessionRequiresAction")] public partial class SessionEventAgentSessionRequiresAction {}
+[CodeGenType("SessionEventAgentSessionSubagentActive")] public partial class SessionEventAgentSessionSubagentActive {}
+[CodeGenType("SessionEventAgentSessionSubagentClosed")] public partial class SessionEventAgentSessionSubagentClosed {}
+[CodeGenType("SessionEventAgentSessionSubagentCreated")] public partial class SessionEventAgentSessionSubagentCreated {}
+[CodeGenType("SessionEventAgentSessionTurnCancelled")] public partial class SessionEventAgentSessionTurnCancelled {}
+[CodeGenType("SessionEventAgentSessionTurnCompleted")] public partial class SessionEventAgentSessionTurnCompleted {}
+[CodeGenType("SessionEventAgentSessionTurnContentPartAdded")] public partial class SessionEventAgentSessionTurnContentPartAdded {}
+[CodeGenType("SessionEventAgentSessionTurnContentPartDone")] public partial class SessionEventAgentSessionTurnContentPartDone {}
+[CodeGenType("SessionEventAgentSessionTurnCreated")] public partial class SessionEventAgentSessionTurnCreated {}
+[CodeGenType("SessionEventAgentSessionTurnFailed")] public partial class SessionEventAgentSessionTurnFailed {}
+[CodeGenType("SessionEventAgentSessionTurnInProgress")] public partial class SessionEventAgentSessionTurnInProgress {}
+[CodeGenType("SessionEventAgentSessionTurnItemAdded")] public partial class SessionEventAgentSessionTurnItemAdded {}
+[CodeGenType("SessionEventAgentSessionTurnItemDone")] public partial class SessionEventAgentSessionTurnItemDone {}
+[CodeGenType("SessionEventAgentSessionTurnOutputTextDelta")] public partial class SessionEventAgentSessionTurnOutputTextDelta {}
+[CodeGenType("SessionEventAgentSessionTurnOutputTextDone")] public partial class SessionEventAgentSessionTurnOutputTextDone {}
+[CodeGenType("SessionEventAgentSessionTurnReasoningSummaryPartAdded")] public partial class SessionEventAgentSessionTurnReasoningSummaryPartAdded {}
+[CodeGenType("SessionEventAgentSessionTurnReasoningSummaryPartDone")] public partial class SessionEventAgentSessionTurnReasoningSummaryPartDone {}
+[CodeGenType("SessionEventAgentSessionTurnReasoningSummaryTextDelta")] public partial class SessionEventAgentSessionTurnReasoningSummaryTextDelta {}
+[CodeGenType("SessionEventAgentSessionTurnReasoningSummaryTextDone")] public partial class SessionEventAgentSessionTurnReasoningSummaryTextDone {}
+[CodeGenType("SessionEventError")] public partial class SessionEventError {}
+[CodeGenType("SessionInputParam")] public partial class SessionInputParam {}
+[CodeGenType("SessionInputParamAgentSessionInputCancel")] public partial class SessionInputParamAgentSessionInputCancel {}
+[CodeGenType("SessionInputParamAgentSessionInputMessage")] public partial class SessionInputParamAgentSessionInputMessage {}
+[CodeGenType("SessionInputParamAgentSessionInputToolResult")] public partial class SessionInputParamAgentSessionInputToolResult {}
+[CodeGenType("SessionInputType")] public readonly partial struct SessionInputType {}

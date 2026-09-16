@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.ServerSentEvents;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
@@ -975,6 +976,62 @@ namespace OpenAI.Agents
                 order?.ToString(),
                 after,
                 cancellationToken.ToRequestOptions());
+        }
+
+#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GetAgentSessionEventsAsync(string sessionId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            using PipelineMessage message = CreateGetAgentSessionEventsRequest(sessionId, options);
+            message.BufferResponse = false;
+            return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+#pragma warning restore SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public virtual async Task<AsyncStreamingClientResult<SseItem<BinaryData>>> GetAgentSessionEventsAsync(string sessionId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            using PipelineMessage message = CreateGetAgentSessionEventsRequest(sessionId, cancellationToken.ToRequestOptions());
+            message.BufferResponse = false;
+            return AsyncStreamingClientResult.CreateSse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false), null, cancellationToken);
+        }
+#pragma warning restore SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public virtual ClientResult CreateAgentSessionEvents(string sessionId, BinaryContent content, string idempotencyKey = default, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentSessionEventsRequest(sessionId, content, idempotencyKey, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateAgentSessionEventsAsync(string sessionId, BinaryContent content, string idempotencyKey = default, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentSessionEventsRequest(sessionId, content, idempotencyKey, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult CreateAgentSessionEvents(string sessionId, CreateSessionEventsParams events, string idempotencyKey = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(events, nameof(events));
+
+            return CreateAgentSessionEvents(sessionId, events, idempotencyKey, cancellationToken.ToRequestOptions());
+        }
+
+        public virtual async Task<ClientResult> CreateAgentSessionEventsAsync(string sessionId, CreateSessionEventsParams events, string idempotencyKey = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNull(events, nameof(events));
+
+            return await CreateAgentSessionEventsAsync(sessionId, events, idempotencyKey, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         }
     }
 }

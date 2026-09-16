@@ -404,6 +404,9 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.CreateResponseOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateResponseOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.CreateResponseOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateSessionEventsParams is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateSessionEventsParams))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateSessionEventsParams is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateSubagentCallItemResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateSubagentCallItemResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateSubagentCallItemResource is experimental and may change in future versions.
@@ -1044,6 +1047,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponsesMessageItemResourceItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseTextFormatConfiguration))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownSessionInputParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownSessionRequiredActionResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTextFormatParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTextFormatResource))]
@@ -1792,6 +1796,117 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionAgentResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SessionAgentResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionAgentResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEnvironmentErrorResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEnvironmentErrorResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEnvironmentErrorResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEnvironmentStateResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEnvironmentStateResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEnvironmentStateResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionErrorResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionErrorResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionErrorResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentOutputCommandExecutionOutputDelta is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentOutputCommandExecutionOutputDelta))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentOutputCommandExecutionOutputDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionCreated is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionCreated))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentConnected is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionEnvironmentConnected))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentConnected is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentDisconnected is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionEnvironmentDisconnected))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentDisconnected is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentFailed is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionEnvironmentFailed))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentFailed is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentPending is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionEnvironmentPending))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentPending is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentReady is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionEnvironmentReady))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionEnvironmentReady is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionFailed is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionFailed))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionFailed is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionIdle is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionIdle))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionIdle is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionInProgress is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionInProgress))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionInProgress is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionRequiresAction is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionRequiresAction))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionRequiresAction is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionSubagentActive is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionSubagentActive))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionSubagentActive is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionSubagentClosed is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionSubagentClosed))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionSubagentClosed is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionSubagentCreated is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionSubagentCreated))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionSubagentCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnCancelled is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnCancelled))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnCancelled is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnCompleted is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnCompleted))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnCompleted is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnContentPartAdded is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnContentPartAdded))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnContentPartAdded is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnContentPartDone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnContentPartDone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnContentPartDone is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnCreated is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnCreated))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnCreated is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnFailed is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnFailed))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnFailed is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnInProgress is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnInProgress))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnInProgress is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnItemAdded is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnItemAdded))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnItemAdded is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnItemDone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnItemDone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnItemDone is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnOutputTextDelta is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnOutputTextDelta))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnOutputTextDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnOutputTextDone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnOutputTextDone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnOutputTextDone is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryPartAdded is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnReasoningSummaryPartAdded))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryPartAdded is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryPartDone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnReasoningSummaryPartDone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryPartDone is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryTextDelta is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnReasoningSummaryTextDelta))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryTextDelta is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryTextDone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventAgentSessionTurnReasoningSummaryTextDone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventAgentSessionTurnReasoningSummaryTextDone is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionEventError is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionEventError))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionEventError is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionInputParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionInputParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionInputParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionInputParamAgentSessionInputCancel is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionInputParamAgentSessionInputCancel))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionInputParamAgentSessionInputCancel is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionInputParamAgentSessionInputMessage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionInputParamAgentSessionInputMessage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionInputParamAgentSessionInputMessage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionInputParamAgentSessionInputToolResult is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionInputParamAgentSessionInputToolResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionInputParamAgentSessionInputToolResult is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SessionRequiredActionResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResource is experimental and may change in future versions.

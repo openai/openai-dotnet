@@ -39,3 +39,7 @@ namespace OpenAI.Agents;
 
 // ------------ Session subagents ------------
 [CodeGenType("SubagentObjectResource")] internal readonly partial struct InternalSubagentObjectResource {}
+
+// ------------ Session events ------------
+[CodeGenType("ListAgentSessionEventsStatus1")] internal readonly partial struct InternalListAgentSessionEventsStatus1 {}
+[CodeGenType("UnknownSessionInputParam")] internal partial class InternalUnknownSessionInputParam {}
