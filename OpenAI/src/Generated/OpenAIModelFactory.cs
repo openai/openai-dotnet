@@ -2635,6 +2635,24 @@ namespace OpenAI
                 default);
         }
 
+        public static AgentSessionTurnCollectionPage AgentSessionTurnCollectionPage(IEnumerable<AgentSessionTurn> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<AgentSessionTurn>();
+
+            return new AgentSessionTurnCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
+        public static SessionTurnErrorResource SessionTurnErrorResource(SessionTurnErrorCodeResource code = default, string message = default)
+        {
+            return new SessionTurnErrorResource(code, message, default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -3039,6 +3057,11 @@ namespace OpenAI
                 environmentId,
                 after,
                 additionalBinaryDataProperties: null);
+        }
+
+        public static AgentSessionTurnCollectionOptions AgentSessionTurnCollectionOptions(string sessionId = default, int? limit = default, AgentSessionTurnCollectionOrder? order = default, string after = default)
+        {
+            return new AgentSessionTurnCollectionOptions(sessionId, limit, order, after, additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

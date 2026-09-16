@@ -25,3 +25,6 @@ namespace OpenAI.Agents;
 // ------------ Session artifacts ------------
 [CodeGenType("DeletedSessionArtifactObject")] internal readonly partial struct InternalDeletedSessionArtifactObject {}
 [CodeGenType("SessionArtifactObject")] internal readonly partial struct InternalSessionArtifactObject {}
+
+// ------------ Session turns ------------
+[CodeGenType("TurnObjectResource")] internal readonly partial struct InternalTurnObjectResource {}

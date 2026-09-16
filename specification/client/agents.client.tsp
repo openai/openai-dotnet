@@ -22,6 +22,8 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(retrieveAgentSessionArtifact, "Agents");
 @@clientLocation(deleteAgentSessionArtifact, "Agents");
 @@clientLocation(retrieveAgentSessionArtifactContent, "Agents");
+@@clientLocation(listAgentSessionTurns, "Agents");
+@@clientLocation(retrieveAgentSessionTurn, "Agents");
 
 // ------------ Model names ------------
 
@@ -48,6 +50,11 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(SessionArtifactListResource, "AgentSessionArtifactCollectionPage");
 @@clientName(AgentSessionArtifactCollectionOrder.asc, "Ascending");
 @@clientName(AgentSessionArtifactCollectionOrder.desc, "Descending");
+
+@@clientName(TurnResource, "AgentSessionTurn");
+@@clientName(SessionTurnListResource, "AgentSessionTurnCollectionPage");
+@@clientName(AgentSessionTurnCollectionOrder.asc, "Ascending");
+@@clientName(AgentSessionTurnCollectionOrder.desc, "Descending");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -142,3 +149,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(SessionArtifactResource);
 @@dynamicModel(DeletedSessionArtifactResource);
 @@dynamicModel(SessionArtifactListResource);
+
+@@dynamicModel(TurnResource);
+@@dynamicModel(SessionTurnErrorResource);
+@@dynamicModel(SessionTurnListResource);

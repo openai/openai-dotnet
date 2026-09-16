@@ -108,3 +108,12 @@ namespace OpenAI.Agents;
 [CodeGenType("AgentSessionArtifactCollectionOrder")] public readonly partial struct AgentSessionArtifactCollectionOrder {}
 [CodeGenType("AgentSessionArtifactCollectionPage")] public partial class AgentSessionArtifactCollectionPage {}
 [CodeGenType("AgentSessionArtifactDeletionResult")] public partial class AgentSessionArtifactDeletionResult {}
+
+// ------------ Session turns ------------
+[CodeGenType("AgentSessionTurn")] public partial class AgentSessionTurn {}
+[CodeGenType("AgentSessionTurnCollectionOptions")] public partial class AgentSessionTurnCollectionOptions {}
+[CodeGenType("AgentSessionTurnCollectionOrder")] public readonly partial struct AgentSessionTurnCollectionOrder {}
+[CodeGenType("AgentSessionTurnCollectionPage")] public partial class AgentSessionTurnCollectionPage {}
+[CodeGenType("SessionTurnErrorCodeResource")] public readonly partial struct SessionTurnErrorCodeResource {}
+[CodeGenType("SessionTurnErrorResource")] public partial class SessionTurnErrorResource {}
+[CodeGenType("TurnStatusResource")] public readonly partial struct TurnStatusResource {}

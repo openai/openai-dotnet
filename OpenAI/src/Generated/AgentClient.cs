@@ -520,5 +520,93 @@ namespace OpenAI.Agents
             ClientResult result = await RetrieveAgentSessionArtifactContentAsync(sessionId, artifactId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
+
+        public virtual CollectionResult GetAgentSessionTurns(string sessionId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionTurnsCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentSessionTurnsAsync(string sessionId, int? limit, string order, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionTurnsAsyncCollectionResult(
+                this,
+                sessionId,
+                limit,
+                order,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<AgentSessionTurn> GetAgentSessionTurns(string sessionId, int? limit = default, AgentSessionTurnCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionTurnsCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<AgentSessionTurn> GetAgentSessionTurnsAsync(string sessionId, int? limit = default, AgentSessionTurnCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+
+            return new AgentClientGetAgentSessionTurnsAsyncCollectionResultOfT(
+                this,
+                sessionId,
+                limit,
+                order?.ToString(),
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult RetrieveAgentSessionTurn(string sessionId, string turnId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionTurnRequest(sessionId, turnId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            using PipelineMessage message = CreateRetrieveAgentSessionTurnRequest(sessionId, turnId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<AgentSessionTurn> RetrieveAgentSessionTurn(string sessionId, string turnId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            ClientResult result = RetrieveAgentSessionTurn(sessionId, turnId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((AgentSessionTurn)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<AgentSessionTurn>> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(sessionId, nameof(sessionId));
+            Argument.AssertNotNullOrEmpty(turnId, nameof(turnId));
+
+            ClientResult result = await RetrieveAgentSessionTurnAsync(sessionId, turnId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((AgentSessionTurn)result, result.GetRawResponse());
+        }
     }
 }

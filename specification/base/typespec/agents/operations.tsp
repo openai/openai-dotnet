@@ -238,3 +238,34 @@ op retrieveAgentSessionArtifactContent(
   /** The immutable artifact contents. */
   @body content: bytes;
 };
+
+/**
+ * Lists turns in a session using ID-based pagination. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("List agent session turns")
+@get
+@route("agents/sessions/{session_id}/turns")
+@tag("Agents")
+@list
+op listAgentSessionTurns(
+  ...AgentSessionTurnCollectionOptions,
+): SessionTurnListResource;
+
+/**
+ * Retrieves a single turn in a session. See
+ * [managing sessions](https://developers.openai.com/api/docs/guides/agents-api/sessions/manage).
+ */
+@summary("Retrieve an agent session turn")
+@get
+@route("agents/sessions/{session_id}/turns/{turn_id}")
+@tag("Agents")
+op retrieveAgentSessionTurn(
+  /** The ID of the session that owns the turn. */
+  @path
+  session_id: string,
+
+  /** The ID of the turn. */
+  @path
+  turn_id: string,
+): TurnResource;

@@ -62,6 +62,10 @@ namespace OpenAI.Agents {
         public virtual CollectionResult GetAgentSessions(int? limit, string order, string agentId, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSession> GetAgentSessionsAsync(int? limit = null, AgentSessionCollectionOrder? order = null, string agentId = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentSessionsAsync(int? limit, string order, string agentId, string after, RequestOptions options);
+        public virtual CollectionResult<AgentSessionTurn> GetAgentSessionTurns(string sessionId, int? limit = null, AgentSessionTurnCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentSessionTurns(string sessionId, int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<AgentSessionTurn> GetAgentSessionTurnsAsync(string sessionId, int? limit = null, AgentSessionTurnCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentSessionTurnsAsync(string sessionId, int? limit, string order, string after, RequestOptions options);
         public virtual ClientResult RetrieveAgent(string agentId, RequestOptions options);
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
@@ -78,6 +82,10 @@ namespace OpenAI.Agents {
         public virtual Task<ClientResult<BinaryData>> RetrieveAgentSessionArtifactContentAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentSessionAsync(string sessionId, RequestOptions options);
         public virtual Task<ClientResult<AgentSession>> RetrieveAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentSessionTurn(string sessionId, string turnId, RequestOptions options);
+        public virtual ClientResult<AgentSessionTurn> RetrieveAgentSessionTurn(string sessionId, string turnId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, RequestOptions options);
+        public virtual Task<ClientResult<AgentSessionTurn>> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, CancellationToken cancellationToken = default);
         public virtual ClientResult<Agent> UpdateAgent(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
         public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
@@ -322,6 +330,62 @@ namespace OpenAI.Agents {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public static implicit operator BinaryContent(AgentSessionModificationOptions agentSessionModificationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionTurn : IJsonModel<AgentSessionTurn>, IPersistableModel<AgentSessionTurn> {
+        public string AgentId { get; set; }
+        public int? CompletedAt { get; set; }
+        public int CreatedAt { get; set; }
+        public SessionTurnErrorResource Error { get; set; }
+        public string Id { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string SessionId { get; set; }
+        public int? StartedAt { get; set; }
+        public TurnStatusResource Status { get; set; }
+        public string SubagentId { get; set; }
+        public TokenUsageResource Usage { get; set; }
+        public static explicit operator AgentSessionTurn(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionTurnCollectionOptions : IJsonModel<AgentSessionTurnCollectionOptions>, IPersistableModel<AgentSessionTurnCollectionOptions> {
+        public AgentSessionTurnCollectionOptions();
+        public AgentSessionTurnCollectionOptions(string sessionId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public AgentSessionTurnCollectionOrder? Order { get; set; }
+        public string SessionId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct AgentSessionTurnCollectionOrder : IEquatable<AgentSessionTurnCollectionOrder> {
+        public AgentSessionTurnCollectionOrder(string value);
+        public static AgentSessionTurnCollectionOrder Ascending { get; }
+        public static AgentSessionTurnCollectionOrder Descending { get; }
+        public readonly bool Equals(AgentSessionTurnCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(AgentSessionTurnCollectionOrder left, AgentSessionTurnCollectionOrder right);
+        public static implicit operator AgentSessionTurnCollectionOrder(string value);
+        public static implicit operator AgentSessionTurnCollectionOrder?(string value);
+        public static bool operator !=(AgentSessionTurnCollectionOrder left, AgentSessionTurnCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class AgentSessionTurnCollectionPage : IJsonModel<AgentSessionTurnCollectionPage>, IPersistableModel<AgentSessionTurnCollectionPage> {
+        public IList<AgentSessionTurn> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator AgentSessionTurnCollectionPage(ClientResult result);
     }
     [Experimental("OPENAI001")]
     public class AgentToolConfigParam : IJsonModel<AgentToolConfigParam>, IPersistableModel<AgentToolConfigParam> {
@@ -984,6 +1048,46 @@ namespace OpenAI.Agents {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct SessionTurnErrorCodeResource : IEquatable<SessionTurnErrorCodeResource> {
+        public SessionTurnErrorCodeResource(string value);
+        public static SessionTurnErrorCodeResource ActiveTurnNotSteerable { get; }
+        public static SessionTurnErrorCodeResource AuthenticationError { get; }
+        public static SessionTurnErrorCodeResource ConnectionFailed { get; }
+        public static SessionTurnErrorCodeResource ContextLengthExceeded { get; }
+        public static SessionTurnErrorCodeResource CreditBalanceExhausted { get; }
+        public static SessionTurnErrorCodeResource CyberPolicy { get; }
+        public static SessionTurnErrorCodeResource ExecutorVersionIncompatible { get; }
+        public static SessionTurnErrorCodeResource InternalError { get; }
+        public static SessionTurnErrorCodeResource InvalidRequest { get; }
+        public static SessionTurnErrorCodeResource RateLimitExceeded { get; }
+        public static SessionTurnErrorCodeResource RequestTimeout { get; }
+        public static SessionTurnErrorCodeResource ResourceNotFound { get; }
+        public static SessionTurnErrorCodeResource SandboxError { get; }
+        public static SessionTurnErrorCodeResource ServerError { get; }
+        public static SessionTurnErrorCodeResource ServerOverloaded { get; }
+        public static SessionTurnErrorCodeResource SessionBudgetExceeded { get; }
+        public static SessionTurnErrorCodeResource UsageLimitExceeded { get; }
+        public readonly bool Equals(SessionTurnErrorCodeResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(SessionTurnErrorCodeResource left, SessionTurnErrorCodeResource right);
+        public static implicit operator SessionTurnErrorCodeResource(string value);
+        public static implicit operator SessionTurnErrorCodeResource?(string value);
+        public static bool operator !=(SessionTurnErrorCodeResource left, SessionTurnErrorCodeResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class SessionTurnErrorResource : IJsonModel<SessionTurnErrorResource>, IPersistableModel<SessionTurnErrorResource> {
+        public SessionTurnErrorCodeResource Code { get; set; }
+        public string Message { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
     public class TextFormatParam : IJsonModel<TextFormatParam>, IPersistableModel<TextFormatParam> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1061,6 +1165,26 @@ namespace OpenAI.Agents {
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
         public int TotalTokens { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct TurnStatusResource : IEquatable<TurnStatusResource> {
+        public TurnStatusResource(string value);
+        public static TurnStatusResource Cancelled { get; }
+        public static TurnStatusResource Completed { get; }
+        public static TurnStatusResource Failed { get; }
+        public static TurnStatusResource InProgress { get; }
+        public static TurnStatusResource Queued { get; }
+        public static TurnStatusResource Waiting { get; }
+        public readonly bool Equals(TurnStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(TurnStatusResource left, TurnStatusResource right);
+        public static implicit operator TurnStatusResource(string value);
+        public static implicit operator TurnStatusResource?(string value);
+        public static bool operator !=(TurnStatusResource left, TurnStatusResource right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public readonly partial struct VerbosityParam : IEquatable<VerbosityParam> {

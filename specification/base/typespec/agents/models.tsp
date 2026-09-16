@@ -816,3 +816,151 @@ model SessionArtifactListResource {
   /** Whether there are more artifacts to retrieve after this page. */
   has_more: boolean;
 }
+
+// ------------ Session turns ------------
+
+/** The object type for a turn. Always `agent.session.turn`. */
+union TurnObjectResource {
+  string,
+  agent_session_turn: "agent.session.turn",
+}
+
+/** The current status of a turn. */
+union TurnStatusResource {
+  /** The turn is waiting to start. */
+  queued: "queued",
+
+  /** The turn is in progress. */
+  in_progress: "in_progress",
+
+  /** The turn is waiting for external input. */
+  waiting: "waiting",
+
+  /** The turn completed successfully. */
+  completed: "completed",
+
+  /** The turn failed. */
+  failed: "failed",
+
+  /** The turn was cancelled. */
+  cancelled: "cancelled",
+}
+
+/** Stable public categories for session request failures. */
+union SessionTurnErrorCodeResource {
+  string,
+  context_length_exceeded: "context_length_exceeded",
+  session_budget_exceeded: "session_budget_exceeded",
+  usage_limit_exceeded: "usage_limit_exceeded",
+  credit_balance_exhausted: "credit_balance_exhausted",
+  rate_limit_exceeded: "rate_limit_exceeded",
+  server_overloaded: "server_overloaded",
+  cyber_policy: "cyber_policy",
+  connection_failed: "connection_failed",
+  server_error: "server_error",
+  authentication_error: "authentication_error",
+  invalid_request: "invalid_request",
+  resource_not_found: "resource_not_found",
+  sandbox_error: "sandbox_error",
+  executor_version_incompatible: "executor_version_incompatible",
+  active_turn_not_steerable: "active_turn_not_steerable",
+  request_timeout: "request_timeout",
+  internal_error: "internal_error",
+}
+
+/** A customer-safe error describing why a session request failed. */
+model SessionTurnErrorResource {
+  /** A stable, machine-readable failure category. */
+  code: SessionTurnErrorCodeResource;
+
+  /** A customer-safe explanation of the failure. */
+  message: string;
+}
+
+/** The canonical public representation of a session turn. */
+model TurnResource {
+  /** The ID of the turn. */
+  id: string;
+
+  /** The object type. Always `agent.session.turn`. */
+  object: TurnObjectResource;
+
+  /** The ID of the session that owns the turn. */
+  session_id: string;
+
+  /** The ID of the agent that ran the turn. */
+  agent_id: string;
+
+  /** The ID of the subagent that ran the turn, if applicable. */
+  subagent_id: string | null;
+
+  /** The current status of the turn. */
+  status: TurnStatusResource;
+
+  /** The Unix timestamp, in seconds, used to order the turn by creation time. */
+  created_at: int64;
+
+  /** The Unix timestamp, in seconds, when the turn started. */
+  started_at: int64 | null;
+
+  /** The Unix timestamp, in seconds, when the turn reached a terminal state. */
+  completed_at: int64 | null;
+
+  /** A customer-safe error. Non-null only for a failed turn. */
+  error: SessionTurnErrorResource | null;
+
+  /** Best-effort token usage for the turn, or null if unknown. */
+  usage: TokenUsageResource | null;
+}
+
+/** The order in which paginated session turns are returned. */
+union AgentSessionTurnCollectionOrder {
+  string,
+
+  /** Returns turns in ascending order. */
+  asc: "asc",
+
+  /** Returns turns in descending order. */
+  desc: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model AgentSessionTurnCollectionOptions {
+  /** The ID of the session. */
+  @path
+  session_id: string;
+
+  /** The maximum number of turns to return, between 1 and 100. */
+  @query
+  limit?: integer;
+
+  /** The order in which turns are returned. Defaults to `desc`. */
+  @query
+  order?: AgentSessionTurnCollectionOrder = AgentSessionTurnCollectionOrder.desc;
+
+  /** Return turns after this turn ID in the selected order. */
+  @query
+  @continuationToken
+  after?: string;
+}
+
+/** A page of session turns. */
+model SessionTurnListResource {
+  /** The object type, which is always `list`. */
+  object: "list";
+
+  /** The turns returned in this page, in the requested sort order. */
+  @pageItems
+  data: TurnResource[];
+
+  /** The ID of the first turn in `data`, or `null` if the page is empty. */
+  first_id: string | null;
+
+  /** The ID of the last turn in `data`, or `null` if the page is empty. */
+  @continuationToken
+  last_id: string | null;
+
+  /** Whether there are more turns to retrieve after this page. */
+  has_more: boolean;
+}

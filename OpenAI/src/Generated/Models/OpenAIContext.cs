@@ -77,6 +77,15 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionModificationOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentSessionModificationOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionModificationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionTurn is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionTurn))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionTurn is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionTurnCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionTurnCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionTurnCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentSessionTurnCollectionPage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(AgentSessionTurnCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentSessionTurnCollectionPage is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.AgentToolConfigParam is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(AgentToolConfigParam))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.AgentToolConfigParam is experimental and may change in future versions.
@@ -1694,6 +1703,9 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResourceFunctionCall is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SessionRequiredActionResourceFunctionCall))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionRequiredActionResourceFunctionCall is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.SessionTurnErrorResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(SessionTurnErrorResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.SessionTurnErrorResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SpeechGenerationOptions))]
 #pragma warning disable OPENAI001 // global::OpenAI.Audio.SpeechTokenUsage is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(SpeechTokenUsage))]
