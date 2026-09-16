@@ -392,7 +392,7 @@ namespace OpenAI.Responses
                         toolChoice = null;
                         continue;
                     }
-                    toolChoice = prop.Value.GetUtf8Bytes();
+                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))

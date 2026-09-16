@@ -4,55 +4,63 @@ using System.Text.Json;
 
 namespace OpenAI.Responses;
 
-public partial class ResponseToolChoice : IJsonModel<ResponseToolChoice>
+public partial class ResponseToolChoice
 {
     void IJsonModel<ResponseToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance(this, SerializeResponseToolChoice, writer, options);
-
-    ResponseToolChoice IJsonModel<ResponseToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.DeserializeNewInstance(this, DeserializeResponseToolChoice, ref reader, options);
-
-    BinaryData IPersistableModel<ResponseToolChoice>.Write(ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.SerializeInstance(this, options);
-
-    ResponseToolChoice IPersistableModel<ResponseToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options)
-        => CustomSerializationHelpers.DeserializeNewInstance(this, DeserializeResponseToolChoice, data, options);
-
-    string IPersistableModel<ResponseToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-    internal static void SerializeResponseToolChoice(
-        ResponseToolChoice instance,
-        Utf8JsonWriter writer,
-        ModelReaderWriterOptions options)
     {
-        if (instance._toolChoiceOption is not null)
+#pragma warning disable SCME0001
+        if (Patch.Contains("$"u8))
         {
-            writer.WriteStringValue(instance._toolChoiceOption.ToString());
+            writer.WriteRawValue(Patch.GetJson("$"u8));
+            return;
         }
-        else if (instance._toolChoiceObject is not null)
-        {
-            writer.WriteObjectValue(instance._toolChoiceObject, options);
-        }
+#pragma warning restore SCME0001
+
+        JsonModelWriteCore(writer, options);
     }
 
-    internal static ResponseToolChoice DeserializeResponseToolChoice(
-        JsonElement element,
-        ModelReaderWriterOptions options)
+    protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+        string format = options.Format == "W" ? ((IPersistableModel<ResponseToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(ResponseToolChoice)} does not support writing '{format}' format.");
+        }
+
+#pragma warning disable SCME0001
+        if (Optional.IsDefined(DefaultToolChoice) && !Patch.Contains("$.default_tool_choice"u8))
+        {
+            writer.WriteStringValue(DefaultToolChoice.Value.ToString());
+        }
+        if (Optional.IsDefined(CustomToolChoice) && !Patch.Contains("$.custom_tool_choice"u8))
+        {
+            writer.WriteObjectValue(CustomToolChoice, options);
+        }
+#pragma warning restore SCME0001
+    }
+
+    internal static ResponseToolChoice DeserializeResponseToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+    {
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        ResponseDefaultToolChoice? defaultToolChoice = default;
+        ResponseCustomToolChoice customToolChoice = default;
+#pragma warning disable SCME0001
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001
+
         if (element.ValueKind == JsonValueKind.String)
         {
-            return new ResponseToolChoice(
-                new InternalToolChoiceOptions(element.GetString()));
+            defaultToolChoice = new ResponseDefaultToolChoice(element.GetString());
         }
-        else if (element.ValueKind == JsonValueKind.Object)
+        else
         {
-            return new ResponseToolChoice(
-                InternalToolChoiceObject
-                    .DeserializeInternalToolChoiceObject(
-                        element,
-                        element.GetUtf8Bytes(),
-                        options));
+            customToolChoice = ResponseCustomToolChoice.DeserializeResponseCustomToolChoice(element, element.GetUtf8Bytes(), options);
         }
-        return null;
+
+        return new ResponseToolChoice(defaultToolChoice, customToolChoice, patch);
     }
 }
