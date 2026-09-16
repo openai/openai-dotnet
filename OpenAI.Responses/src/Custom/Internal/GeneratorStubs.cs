@@ -66,9 +66,9 @@ namespace OpenAI.Responses;
 [CodeGenType("LocalShellToolCallOutputItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallOutputItemResourceStatus {}
 [CodeGenType("LocalShellTool")] internal partial class InternalLocalShellTool {}
 [CodeGenType("MCPToolRequireApproval1")] internal partial class InternalMCPToolRequireApproval1 {}
-[CodeGenType("ToolChoiceObjectImageGen")] internal partial class InternalToolChoiceObjectImageGen {}
-[CodeGenType("ToolChoiceObjectCodeInterpreter")] internal partial class InternalToolChoiceObjectCodeInterpreter {}
-[CodeGenType("ToolChoiceObjectMCP")] internal partial class InternalToolChoiceObjectMCP {}
+[CodeGenType("ToolChoiceObjectImageGen")] public partial class ResponseCustomImageGenerationToolChoice {}
+[CodeGenType("ToolChoiceObjectCodeInterpreter")] public partial class ResponseCustomCodeInterpreterToolChoice {}
+[CodeGenType("ToolChoiceObjectMCP")] public partial class ResponseCustomMcpToolChoice {}
 [CodeGenType("ImageGenToolCallItemParam")] internal partial class InternalImageGenToolCallItemParam {}
 [CodeGenType("ImageGenToolModel")] internal partial struct InternalImageGenToolModel { }
 [CodeGenType("CodeInterpreterToolCallItemParam")] internal partial class InternalCodeInterpreterToolCallItemParam {}
