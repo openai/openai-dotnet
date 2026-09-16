@@ -126,14 +126,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
                 writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(ToolChoice, options);
             }
             if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
@@ -190,7 +183,7 @@ namespace OpenAI.Responses
             InternalTruncationEnum? truncation = default;
             string instructions = default;
             BinaryData conversation = default;
-            BinaryData toolChoice = default;
+            ResponseToolChoice toolChoice = default;
             bool? parallelToolCalls = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -295,7 +288,7 @@ namespace OpenAI.Responses
                         toolChoice = null;
                         continue;
                     }
-                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
+                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))

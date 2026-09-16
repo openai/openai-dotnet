@@ -4,19 +4,19 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownToolChoiceObject : ResponseCustomToolChoice, IJsonModel<ResponseCustomToolChoice>
+    [PersistableModelProxy(typeof(InternalUnknownToolChoiceObject))]
+    public partial class ResponseCustomToolChoice : IJsonModel<ResponseCustomToolChoice>
     {
-        public InternalUnknownToolChoiceObject() : this(default, default)
+        internal ResponseCustomToolChoice()
         {
         }
 
-        protected override ResponseCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ResponseCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -31,7 +31,7 @@ namespace OpenAI.Responses
             }
         }
 
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -64,23 +64,25 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ResponseCustomToolChoice)} does not support writing '{format}' format.");
             }
-            base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-            Patch.WriteTo(writer);
+            if (!Patch.Contains("$.type"u8))
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
+            }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ResponseCustomToolChoice IJsonModel<ResponseCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override ResponseCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ResponseCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -91,26 +93,33 @@ namespace OpenAI.Responses
             return DeserializeResponseCustomToolChoice(document.RootElement, null, options);
         }
 
-        internal static InternalUnknownToolChoiceObject DeserializeInternalUnknownToolChoiceObject(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseCustomToolChoice DeserializeResponseCustomToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalResponseCustomToolChoiceKind kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            foreach (var prop in element.EnumerateObject())
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
-                if (prop.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    kind = new InternalResponseCustomToolChoiceKind(prop.Value.GetString());
-                    continue;
+                    case "file_search":
+                        return ResponseCustomFileSearchToolChoice.DeserializeResponseCustomFileSearchToolChoice(element, data, options);
+                    case "computer_use_preview":
+                        return ResponseCustomComputerToolChoice.DeserializeResponseCustomComputerToolChoice(element, data, options);
+                    case "web_search_preview":
+                        return ResponseCustomWebSearchToolChoice.DeserializeResponseCustomWebSearchToolChoice(element, data, options);
+                    case "image_generation":
+                        return ResponseCustomImageGenerationToolChoice.DeserializeResponseCustomImageGenerationToolChoice(element, data, options);
+                    case "code_interpreter":
+                        return ResponseCustomCodeInterpreterToolChoice.DeserializeResponseCustomCodeInterpreterToolChoice(element, data, options);
+                    case "mcp":
+                        return ResponseCustomMcpToolChoice.DeserializeResponseCustomMcpToolChoice(element, data, options);
+                    case "function":
+                        return ResponseCustomFunctionToolChoice.DeserializeResponseCustomFunctionToolChoice(element, data, options);
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownToolChoiceObject(kind, patch);
+            return InternalUnknownToolChoiceObject.DeserializeInternalUnknownToolChoiceObject(element, data, options);
         }
     }
 }
