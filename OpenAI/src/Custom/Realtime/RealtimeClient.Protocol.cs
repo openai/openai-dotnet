@@ -19,17 +19,6 @@ public partial class RealtimeClient
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary> Start a new Realtime conversation session. </summary>
-    public virtual RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(model, nameof(model));
-        return StartSession(
-            model: model,
-            intent: null,
-            options: options,
-            cancellationToken: cancellationToken);
-    }
-
     /// <summary> Start a new Realtime transcription session. </summary>
     public virtual async Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
@@ -38,16 +27,6 @@ public partial class RealtimeClient
             intent: "transcription",
             options: options,
             cancellationToken: cancellationToken).ConfigureAwait(false);
-    }
-
-    /// <summary> Start a new Realtime transcription session. </summary>
-    public virtual RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
-    {
-        return StartSession(
-            model: null,
-            intent: "transcription",
-            options: options,
-            cancellationToken: cancellationToken);
     }
 
     /// <summary> Starts a new realtime session. </summary>
@@ -82,11 +61,5 @@ public partial class RealtimeClient
         {
             sessionClient?.Dispose();
         }
-    }
-
-    /// <summary> Starts a new realtime session. </summary>
-    public virtual RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
-    {
-        return StartSessionAsync(model, intent, options, cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 }

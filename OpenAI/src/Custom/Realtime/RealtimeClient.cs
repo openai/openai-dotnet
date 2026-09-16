@@ -3,9 +3,14 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 
 namespace OpenAI.Realtime;
 
+// CUSTOM:
+// - Suppressed the generated synchronous overloads (client is now async-only).
+[CodeGenSuppress("CreateRealtimeClientSecret", typeof(BinaryContent), typeof(RequestOptions))]
+[CodeGenSuppress("CreateRealtimeClientSecret", typeof(CreateClientSecretOptions), typeof(CancellationToken))]
 [CodeGenType("Realtime")]
 public partial class RealtimeClient
 {

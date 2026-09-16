@@ -18,6 +18,7 @@ namespace OpenAI.Tests.Realtime;
 #pragma warning disable OPENAI002
 
 [LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
+[TestFixture(true)]
 public class RealtimeTests : RealtimeTestFixtureBase
 {
     public enum TestAudioSendType { WithAudioStreamHelper, WithManualAudioChunks }
@@ -1326,7 +1327,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             SessionOptions = conversationSessionOptions,
         };
 
-        CreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+        CreateClientSecretResult result = await client.CreateRealtimeClientSecretAsync(createClientSecretOptions, CancellationToken);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
@@ -1448,7 +1449,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             SessionOptions = transcriptionSessionOptions,
         };
 
-        CreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+        CreateClientSecretResult result = await client.CreateRealtimeClientSecretAsync(createClientSecretOptions, CancellationToken);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);

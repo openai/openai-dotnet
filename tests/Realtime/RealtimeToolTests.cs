@@ -12,6 +12,7 @@ namespace OpenAI.Tests.Realtime;
 #pragma warning disable OPENAI002
 
 [LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
+[TestFixture(true)]
 public class RealtimeToolTests : RealtimeTestFixtureBase
 {
     public RealtimeToolTests(bool isAsync) : base(isAsync, RecordedTestMode.Live)

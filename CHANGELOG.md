@@ -107,6 +107,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.VectorStores:
   - Changed the type of the `UsageBytes` property of `VectorStore` from `int` to `long`.
 
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Realtime:
+  - The service and session operations on `RealtimeClient` and `RealtimeSessionClient` are now async-only. The synchronous service and session operations they previously exposed (session and client-secret creation, sending commands and audio, receiving updates, session configuration, and conversation item helpers) have been removed, along with the underlying synchronous connection path. Use the corresponding `*Async` APIs instead.
+
 ## 2.13.0 (2026-08-10)
 
 ### Acknowledgments
