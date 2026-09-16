@@ -38,7 +38,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new(TestModel.Responses, inputItems)
         {
             Tools = { s_GetWeatherAtLocationTool },
-            ToolChoice = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName),
+            ToolChoice = new ResponseCustomFunctionToolChoice(s_GetWeatherAtLocationToolName),
             StoredOutputEnabled = !isStateless
         };
 
@@ -87,7 +87,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Assert.That(options.InputItems.Count, Is.EqualTo(0));
         }
 
-        options.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        options.ToolChoice = ResponseDefaultToolChoice.Auto;
         options.InputItems.Add(functionCallOutput);
 
         // Second turn.
@@ -110,7 +110,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new(TestModel.Responses, inputItems)
         {
             Tools = { s_GetWeatherAtLocationTool },
-            ToolChoice = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName),
+            ToolChoice = new ResponseCustomFunctionToolChoice(s_GetWeatherAtLocationToolName),
             StreamingEnabled = true,
         };
 
@@ -181,7 +181,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new("gpt-5.6", inputItems)
         {
             Tools = { customTool },
-            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            ToolChoice = ResponseDefaultToolChoice.Required,
             StoredOutputEnabled = !isStateless,
         };
 
@@ -225,7 +225,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Assert.That(options.InputItems.Count, Is.EqualTo(0));
         }
 
-        options.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        options.ToolChoice = ResponseDefaultToolChoice.Auto;
         options.InputItems.Add(customToolOutput);
 
         // Second turn.
@@ -256,7 +256,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new("gpt-5.6", inputItems)
         {
             Tools = { customTool },
-            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            ToolChoice = ResponseDefaultToolChoice.Required,
             StreamingEnabled = true,
         };
 
@@ -319,7 +319,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new("gpt-5.6", inputItems)
         {
             Tools = { customTool },
-            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            ToolChoice = ResponseDefaultToolChoice.Required,
         };
 
         ResponseResult response = await client.CreateResponseAsync(options);
@@ -1555,7 +1555,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     SearchContextSize = WebSearchToolContextSize.Low
                 }
             },
-            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            ToolChoice = new ResponseCustomWebSearchToolChoice(),
             IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
         };
 
@@ -1598,7 +1598,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions createResponseOptions = new("gpt-5.1", inputItems)
         {
             Tools = { new WebSearchTool() },
-            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            ToolChoice = new ResponseCustomWebSearchToolChoice(),
             ReasoningOptions = new() { ReasoningEffortLevel = ResponseReasoningEffortLevel.High },
             IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
         };
@@ -1649,7 +1649,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
         {
             Tools = { new WebSearchPreviewTool() },
-            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            ToolChoice = new ResponseCustomWebSearchToolChoice(),
             IncludedProperties = { IncludedResponseProperty.WebSearchCallActionSources }
         };
 
@@ -1699,7 +1699,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     SearchContextSize = WebSearchToolContextSize.Low
                 }
             },
-            ToolChoice = ResponseToolChoice.CreateWebSearchChoice(),
+            ToolChoice = new ResponseCustomWebSearchToolChoice(),
             StreamingEnabled = true,
         };
 
@@ -1818,7 +1818,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions responseOptions = new("gpt-5.1", inputItems)
         {
             Tools = { ResponseTool.CreateApplyPatchTool() },
-            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            ToolChoice = ResponseDefaultToolChoice.Required,
         };
 
         ResponseResult response = await client.CreateResponseAsync(responseOptions);
@@ -1874,7 +1874,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
 
         responseOptions.PreviousResponseId = response.Id;
-        responseOptions.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+    responseOptions.ToolChoice = ResponseDefaultToolChoice.Auto;
         responseOptions.InputItems.Clear();
 
         foreach (ApplyPatchCallItem applyPatchCall in applyPatchCalls)
