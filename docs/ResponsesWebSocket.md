@@ -98,4 +98,4 @@ Follow the [WebSocket protocol guide](https://developers.openai.com/api/docs/gui
 
 When using lanes, also consume the connection's default event stream: errors without `stream_id` arrive there once. Handle `invalid_stream_id`, `websocket_stream_limit_reached`, and `websocket_connection_limit_reached` explicitly; API errors alone do not close the SDK connection.
 
-Configure server compaction on a create command with `command.ContextManagement.Add(new ResponseContextManagement("compaction") { CompactThreshold = 10000 })`. This controls service conversation context, independently of local event buffering. Continue using the latest response ID and only new input after server compaction.
+Configure server compaction on a create command with `command.ContextManagement.Add(new ResponseContextManagement("compaction") { CompactThreshold = 10000 })`. This controls service conversation context, independently of local event buffering. Responses using automatic compaction cannot be steered; sending `response.steer` for them returns `steering_not_supported`. Continue using the latest response ID and only new input after server compaction.
