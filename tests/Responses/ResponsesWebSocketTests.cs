@@ -95,7 +95,9 @@ public class ResponsesWebSocketTests
         await using var server = await LocalServer.Start(async (_, socket) =>
         {
             await Receive(socket);
-            await Send(socket, Terminal(status, "resp_terminal"));
+            await Send(socket, Terminal(status, "resp_terminal").Replace("\"output\":[]", "\"output\":[" +
+                "{\"type\":\"message\",\"id\":\"msg_test\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"Checking.\",\"annotations\":[]} ]}," +
+                "{\"type\":\"function_call\",\"id\":\"fc_test\",\"call_id\":\"call_test\",\"name\":\"lookup\",\"arguments\":\"{}\",\"status\":\"completed\"}]"));
             await Receive(socket);
             await Send(socket, Terminal("completed", "resp_next"));
             await AwaitClose(socket);
@@ -103,8 +105,12 @@ public class ResponsesWebSocketTests
         await using (var connection = await Client(server).ConnectWebSocketAsync())
         {
             await connection.SendAsync(BinaryData.FromString(Create));
-            var terminal = await connection.ReceiveAsync();
-            Assert.That(terminal.RawData.ToString(), Does.Contain("resp_terminal"));
+            var terminal = await connection.ReceiveResponseAsync();
+            Assert.That(terminal.Id, Is.EqualTo("resp_terminal"));
+            Assert.That(terminal.Status, Is.EqualTo(Enum.Parse<ResponseStatus>(status, ignoreCase: true)));
+            Assert.That(terminal.GetOutputText(), Is.EqualTo("Checking."));
+            Assert.That(terminal.OutputItems.Count, Is.EqualTo(2));
+            Assert.That(((FunctionCallResponseItem)terminal.OutputItems[1]).CallId, Is.EqualTo("call_test"));
             await connection.SendAsync(BinaryData.FromString(Create));
             Assert.That((await connection.ReceiveAsync()).Update, Is.TypeOf<StreamingResponseCompletedUpdate>());
         }
@@ -643,6 +649,43 @@ public class ResponsesWebSocketTests
         }
     }
 
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task DefaultEventBufferOverflowsUnlessExplicitlyUnbounded(bool unbounded)
+    {
+        const int defaultLimit = 1024;
+        string Event(int index) => "{\"type\":\"future.event\",\"stream_id\":\"burst\",\"index\":" + index + "}";
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            await Receive(socket);
+            for (int i = 0; i <= defaultLimit; i++) await Send(socket, Event(i));
+            if (unbounded) await Send(socket, Terminal("completed", "resp_buffered"));
+            await AwaitClose(socket);
+        });
+        var options = new ResponseWebSocketOptions();
+        if (unbounded) options.MaxBufferedEvents = int.MaxValue;
+        await using (var connection = await Client(server).ConnectWebSocketAsync(options))
+        {
+            using var lane = connection.OpenLane("burst");
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await connection.SendAsync(BinaryData.FromString(Create), timeout.Token);
+            if (unbounded)
+                Assert.That((await connection.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_buffered"));
+            else
+                Assert.ThrowsAsync<InvalidDataException>(async () => await connection.ReceiveAsync(timeout.Token));
+            // No lane consumer has run: all accepted events must still be queued, in order.
+            for (int i = 0; i < defaultLimit + (unbounded ? 1 : 0); i++)
+                Assert.That((await lane.ReceiveAsync(timeout.Token)).RawData.ToString(), Is.EqualTo(Event(i)));
+            if (!unbounded)
+            {
+                Assert.ThrowsAsync<InvalidDataException>(async () => await lane.ReceiveAsync(timeout.Token));
+                Assert.ThrowsAsync<InvalidOperationException>(async () => await connection.SendAsync(BinaryData.FromString(Create)));
+            }
+        }
+        await server.Completed;
+        Assert.That(server.ConnectionCount, Is.EqualTo(1));
+    }
+
     [Test]
     public async Task ExplicitBufferedByteLimitKeepsAlreadyQueuedEvents()
     {
@@ -786,6 +829,20 @@ public class ResponsesWebSocketTests
             Assert.That(root.TryGetProperty("stream", out _), Is.False);
             Assert.That(root.TryGetProperty("background", out _), Is.False);
             await Send(socket, Terminal("completed", "resp_warmup", "warmup"));
+            using var next = JsonDocument.Parse(await Receive(socket));
+            Assert.That(next.RootElement.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_warmup"));
+            Assert.That(next.RootElement.GetProperty("input").GetArrayLength(), Is.EqualTo(1));
+            Assert.That(next.RootElement.GetProperty("input")[0].GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("Check the weather."));
+            await Send(socket, Terminal("completed", "resp_tool", "warmup").Replace("\"output\":[]",
+                "\"output\":[{\"type\":\"function_call\",\"id\":\"fc_weather\",\"call_id\":\"call_weather\",\"name\":\"weather\",\"arguments\":\"{}\"}]"));
+            using var tool = JsonDocument.Parse(await Receive(socket));
+            Assert.That(tool.RootElement.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_tool"));
+            var input = tool.RootElement.GetProperty("input");
+            Assert.That(input.GetArrayLength(), Is.EqualTo(1));
+            Assert.That(input[0].GetProperty("type").GetString(), Is.EqualTo("function_call_output"));
+            Assert.That(input[0].GetProperty("call_id").GetString(), Is.EqualTo("call_weather"));
+            Assert.That(input[0].GetProperty("output").GetString(), Is.EqualTo("Sunny"));
+            await Send(socket, Terminal("completed", "resp_after_tool", "warmup"));
             await AwaitClose(socket);
         });
         await using (var connection = await Client(server).ConnectWebSocketAsync())
@@ -793,8 +850,17 @@ public class ResponsesWebSocketTests
             using var lane = connection.OpenLane("warmup");
             var command = new ResponseWebSocketCreateCommand { Model = "test-model", Generate = false };
             await lane.SendAsync(command);
-            Assert.That((await lane.ReceiveResponseAsync()).Id, Is.EqualTo("resp_warmup"));
+            var warmup = await lane.ReceiveResponseAsync();
+            Assert.That(warmup.Id, Is.EqualTo("resp_warmup"));
             Assert.That(command.StreamId, Is.Null);
+            var next = new ResponseWebSocketCreateCommand { Model = "test-model", PreviousResponseId = warmup.Id };
+            next.InputItems.Add(ResponseItem.CreateUserMessageItem("Check the weather."));
+            await lane.SendAsync(next);
+            var response = await lane.ReceiveResponseAsync();
+            var tool = new ResponseWebSocketCreateCommand { Model = "test-model", PreviousResponseId = response.Id };
+            tool.InputItems.Add(ResponseItem.CreateFunctionCallOutputItem(((FunctionCallResponseItem)response.OutputItems[0]).CallId, "Sunny"));
+            await lane.SendAsync(tool);
+            Assert.That((await lane.ReceiveResponseAsync()).Id, Is.EqualTo("resp_after_tool"));
         }
         await server.Completed;
     }
@@ -830,12 +896,13 @@ public class ResponsesWebSocketTests
     {
         const string text = "Continue with \"details\"\nand examples.";
         const string raw = "{\"type\":\"response.steer\",\"previous_response_id\":\"resp_active\",\"input\":\"raw text\",\"custom\":true}";
-        await using var server = await LocalServer.Start(async (_, socket) =>
+        await using var server = await LocalServer.Start(async (context, socket) =>
         {
             using (var json = JsonDocument.Parse(await Receive(socket)))
             {
                 var root = json.RootElement;
                 Assert.That(root.GetProperty("type").GetString(), Is.EqualTo("response.steer"));
+                Assert.That(root.TryGetProperty("stream_id", out _), Is.False);
                 Assert.That(root.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_active"));
                 var message = root.GetProperty("input")[0];
                 Assert.That(message.GetProperty("role").GetString(), Is.EqualTo("user"));
@@ -859,7 +926,8 @@ public class ResponsesWebSocketTests
         });
         await using (var connection = await Client(server).ConnectWebSocketAsync())
         {
-            await connection.SendAsync(new ResponseWebSocketSteerCommand("resp_active", text));
+            using var lane = connection.OpenLane("active");
+            await lane.SendAsync(new ResponseWebSocketSteerCommand("resp_active", text));
             var message = new ResponseWebSocketSteerMessage();
             message.Content.Add(ResponseContentPart.CreateInputTextPart("Look at these files."));
             message.Content.Add(ResponseContentPart.CreateInputImagePart("file_image"));
@@ -917,19 +985,162 @@ public class ResponsesWebSocketTests
         await server.Completed;
     }
 
+    [TestCase("previous_response_not_found", "invalid_stream_id")]
+    [TestCase("websocket_stream_limit_reached", "websocket_connection_limit_reached")]
+    public async Task ProtocolErrorsKeepTheirScopeAndAllowExplicitRecovery(string laneCode, string connectionCode)
+    {
+        string Error(string code, string stream = null) => "{\"type\":\"error\",\"status\":400," +
+            (stream == null ? "" : "\"stream_id\":\"" + stream + "\",") +
+            "\"error\":{\"type\":\"invalid_request_error\",\"code\":\"" + code + "\",\"message\":\"Test error\"}}";
+        await using var server = await LocalServer.Start(async (context, socket) =>
+        {
+            await Receive(socket);
+            await Send(socket, Error(laneCode, "main"));
+            await Send(socket, Error(connectionCode));
+            await Send(socket, Terminal("completed", "resp_other", "other"));
+            using var recovery = JsonDocument.Parse(await Receive(socket));
+            Assert.That(recovery.RootElement.TryGetProperty("previous_response_id", out _), Is.False);
+            Assert.That(recovery.RootElement.GetProperty("input")[0].GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo("Retained context"));
+            await Send(socket, Terminal("completed", "resp_recovered", "main"));
+            await Send(socket, Terminal("completed", "resp_default"));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            using var main = connection.OpenLane("main");
+            using var other = connection.OpenLane("other");
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            await main.SendAsync(new ResponseWebSocketCreateCommand { Model = "test-model", PreviousResponseId = "resp_parent" }, timeout.Token);
+            var error = Assert.ThrowsAsync<ResponseWebSocketException>(async () => await main.ReceiveResponseAsync(timeout.Token));
+            Assert.That(error.Error.Error.Code, Is.EqualTo(laneCode));
+            Assert.That(((ResponseWebSocketErrorEvent)await connection.ReceiveAsync(timeout.Token)).Error.Code, Is.EqualTo(connectionCode));
+            Assert.That((await other.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_other"));
+            var recovery = new ResponseWebSocketCreateCommand { Model = "test-model", Store = false };
+            recovery.InputItems.Add(ResponseItem.CreateUserMessageItem("Retained context"));
+            await main.SendAsync(recovery, timeout.Token);
+            Assert.That((await main.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_recovered"));
+            Assert.That((await connection.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_default"));
+        }
+        await server.Completed;
+    }
+
+    [Test]
+    public async Task ForkBarrierAndCompactionPayloadsRemainApplicationControlled()
+    {
+        const string compacted = "[{\"type\":\"compaction\",\"encrypted_content\":\"opaque-context\"}]";
+        await using var server = await LocalServer.Start(async (context, socket) =>
+        {
+            using var fork = JsonDocument.Parse(await Receive(socket));
+            Assert.That(fork.RootElement.GetProperty("stream_id").GetString(), Is.EqualTo("fork"));
+            Assert.That(fork.RootElement.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_parent"));
+            await Send(socket, Terminal("in_progress", "resp_fork", "fork"));
+            using var source = JsonDocument.Parse(await Receive(socket));
+            Assert.That(source.RootElement.GetProperty("stream_id").GetString(), Is.EqualTo("main"));
+            Assert.That(source.RootElement.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_parent"));
+            Assert.That(source.RootElement.GetProperty("context_management")[0].GetProperty("compact_threshold").GetInt32(), Is.EqualTo(10000));
+            await Send(socket, Terminal("completed", "resp_main", "main"));
+            await Send(socket, Terminal("completed", "resp_fork", "fork"));
+            using var fresh = JsonDocument.Parse(await Receive(socket));
+            Assert.That(fresh.RootElement.TryGetProperty("previous_response_id", out _), Is.False);
+            Assert.That(fresh.RootElement.GetProperty("input").GetRawText(), Is.EqualTo(compacted));
+            await Send(socket, Terminal("completed", "resp_compacted"));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            using var main = connection.OpenLane("main");
+            using var fork = connection.OpenLane("fork");
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var command = new ResponseWebSocketCreateCommand { Model = "test-model", Store = false, PreviousResponseId = "resp_parent" };
+            await fork.SendAsync(command, timeout.Token);
+            Assert.That((await fork.ReceiveAsync(timeout.Token)).Update, Is.TypeOf<StreamingResponseInProgressUpdate>());
+            command.Patch.Set("$.context_management"u8, "[{\"type\":\"compaction\",\"compact_threshold\":10000}]"u8);
+            await main.SendAsync(command, timeout.Token);
+            Assert.That((await main.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_main"));
+            Assert.That((await fork.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_fork"));
+            await connection.SendAsync(BinaryData.FromString("{\"type\":\"response.create\",\"model\":\"test-model\",\"store\":false,\"input\":" + compacted + "}"), timeout.Token);
+            Assert.That((await connection.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_compacted"));
+        }
+        await server.Completed;
+    }
+
+    [Test]
+    public async Task CancelingAnActiveWriteAbortsWaitersWithoutReplaying()
+    {
+        await using var server = await LocalServer.Start((_, socket) => AwaitClose(socket));
+        PausedSendSocket transport = null;
+        var options = new ResponseWebSocketOptions
+        {
+            Connector = async (uri, headers, token) =>
+            {
+                var socket = new ClientWebSocket();
+                await socket.ConnectAsync(uri, token);
+                return transport = new PausedSendSocket(socket);
+            },
+        };
+        await using (var connection = await Client(server).ConnectWebSocketAsync(options))
+        {
+            using var cancellation = new CancellationTokenSource();
+            var send = connection.SendAsync(BinaryData.FromString(Create), cancellation.Token);
+            await transport.Started.Task.WaitAsync(TimeSpan.FromSeconds(10));
+            var receive = connection.ReceiveAsync();
+            cancellation.Cancel();
+            Assert.CatchAsync<OperationCanceledException>(async () => await send);
+            Assert.CatchAsync<OperationCanceledException>(async () => await receive.WaitAsync(TimeSpan.FromSeconds(10)));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await connection.SendAsync(BinaryData.FromString(Create)));
+            await server.Completed; // No command may reach the server, even after shutdown.
+        }
+        Assert.That(server.ConnectionCount, Is.EqualTo(1));
+    }
+
+    [Test]
+    public async Task RecoveryBoundsOpeningRetriesAndDoesNotRetryRestoration()
+    {
+        await using var server = await LocalServer.Start((_, socket) => AwaitClose(socket));
+        var options = new ResponseWebSocketOptions();
+        await using var original = await Client(server).ConnectWebSocketAsync(options);
+        int attempts = 0;
+        int restorations = 0;
+        var openingFailure = new IOException("Opening failed");
+        options.Connector = (_, _, _) => { attempts++; return Task.FromException<WebSocket>(openingFailure); };
+        Task Restore(ResponseWebSocketConnection _, CancellationToken token) { restorations++; return Task.CompletedTask; }
+        Assert.That(Assert.ThrowsAsync<IOException>(async () => await original.ReconnectAsync(Restore, maxAttempts: 3)), Is.SameAs(openingFailure));
+        Assert.That(attempts, Is.EqualTo(3));
+        Assert.That(restorations, Is.Zero);
+        using var canceled = new CancellationTokenSource();
+        canceled.Cancel();
+        Assert.CatchAsync<OperationCanceledException>(async () => await original.ReconnectAsync(Restore, 3, canceled.Token));
+        Assert.That(attempts, Is.EqualTo(3));
+
+        var restorationFailure = new InvalidOperationException("Restoration failed");
+        options.Connector = async (uri, headers, token) =>
+        {
+            attempts++;
+            var socket = new ClientWebSocket();
+            await socket.ConnectAsync(uri, token);
+            return new PausedSendSocket(socket) { DisposeFailure = new IOException("Cleanup failed") };
+        };
+        var error = Assert.ThrowsAsync<InvalidOperationException>(async () => await original.ReconnectAsync(
+            (_, _) => { restorations++; throw restorationFailure; }, maxAttempts: 3));
+        Assert.That(error, Is.SameAs(restorationFailure));
+        Assert.That(attempts, Is.EqualTo(4));
+        Assert.That(restorations, Is.EqualTo(1));
+    }
+
     private sealed class PausedSendSocket : WebSocket
     {
         private readonly WebSocket _socket;
         private int _sendCount;
         internal TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
         internal TaskCompletionSource Release { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        internal Exception DisposeFailure { get; set; }
         internal PausedSendSocket(WebSocket socket) => _socket = socket;
         public override WebSocketCloseStatus? CloseStatus => _socket.CloseStatus;
         public override string CloseStatusDescription => _socket.CloseStatusDescription;
         public override WebSocketState State => _socket.State;
         public override string SubProtocol => _socket.SubProtocol;
         public override void Abort() => _socket.Abort();
-        public override void Dispose() => _socket.Dispose();
+        public override void Dispose() { _socket.Dispose(); if (DisposeFailure != null) throw DisposeFailure; }
         public override Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken)
             => _socket.CloseAsync(closeStatus, statusDescription, cancellationToken);
         public override Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken)

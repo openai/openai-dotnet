@@ -68,16 +68,30 @@ Default limits are configurable per connection:
 | Limit | Default |
 | --- | --- |
 | Incoming or outgoing UTF-8 message | No byte limit (`0`) |
-| Buffered events across all lanes | `int.MaxValue` |
+| Buffered events across all lanes | 1,024 |
 | Buffered UTF-8 event bytes across all lanes | No byte limit (`0`) |
 | Concurrently admitted sends, including the active send | 16 |
 | Registered lanes | 64 |
 | Close handshake timeout | 2 seconds |
 
-Message and buffered-byte limits are opt-in: set `MaxMessageBytes` or `MaxBufferedBytes` to a positive value to enable a byte limit. Set `MaxBufferedEvents` to a smaller positive value to bound the number of queued events. An enabled message limit is checked while assembling fragments. Event count and enabled byte limits bound stored wire payloads; decoded model objects have additional overhead. Overflow fails the connection explicitly. A send rejected by the admission limit was not sent. Cancellation while waiting for send admission leaves the socket open. A failed or canceled physical write aborts the connection because delivery may be uncertain. Successful send completion means the command was written locally, not acknowledged by the service.
+The 1,024-event default accommodates bursts of hundreds of events while bounding how many events a slow or abandoned consumer retains. It applies across all lanes together. Set `MaxBufferedEvents` to a different positive budget, or explicitly opt into unbounded buffering with `int.MaxValue`. Overflow fails the connection; already queued events remain readable before receivers observe the failure.
+
+Message and buffered-byte limits are opt-in: set `MaxMessageBytes` or `MaxBufferedBytes` to a positive value to enable a byte limit. An enabled message limit is checked while assembling fragments. An event-count limit alone does not bound memory: individual payloads may be large and decoded model objects add overhead. A send rejected by the admission limit was not sent. Cancellation while waiting for send admission leaves the socket open. A failed or canceled physical write aborts the connection because delivery may be uncertain. Successful send completion means the command was written locally, not acknowledged by the service.
 
 ## Explicit recovery
 
 Recovery is opt-in. `ReconnectAsync` disposes the old connection, opens a fresh one, and calls the supplied restoration callback before returning it. `HasConnectionStateLoss` is true on the replacement. Connection-local service cache is lost, lane registrations are not copied, and no command is replayed automatically. Reconstruct any required application state in the callback. `maxAttempts` retries only opening the replacement; restoration is never retried automatically. Cancellation stops opening or cooperative restoration. If restoration fails, its replacement connection is disposed and the original restoration error is preserved.
 
 The replacement is a separate object owned by the caller. Closing or disposing the old connection affects only that object, even while recovery is in progress. Pass a cancellation token to `ReconnectAsync` to stop opening the replacement or cooperative restoration, and dispose the returned connection separately. An explicit reconnect can be requested after the old connection has already been closed or disposed.
+
+## Conversation state and service limits
+
+Follow the [WebSocket protocol guide](https://developers.openai.com/api/docs/guides/websocket-mode):
+
+- Chain from a warmup or completed response ID with only new input, including `ResponseItem.CreateFunctionCallOutputItem` for tool results.
+- Fork using the parent ID on another lane. With `store=false`, wait for that lane's `response.in_progress` before advancing the source. Reusing a lane without a parent starts a new conversation.
+- A same-lane 4xx/5xx evicts its cached parent; a failed cross-lane fork preserves the source's parent. On `previous_response_not_found`, explicitly restart with retained context and no parent. After reconnect, stored IDs may remain usable; connection-local state does not.
+- Server compaction continues the chain. Standalone `/responses/compact` output starts a new chain: preserve the complete returned input window and omit the parent. Use `Patch` or raw JSON for fields without typed properties.
+- The service permits 16 active responses, 32 distinct named streams, and 60-minute connections. Stream names use 1–256 letters, digits, underscores, hyphens, or periods. These are separate from local send/queue limits.
+
+When using lanes, also consume the connection's default event stream: errors without `stream_id` arrive there once. Handle `invalid_stream_id`, `websocket_stream_limit_reached`, and `websocket_connection_limit_reached` explicitly; API errors alone do not close the SDK connection.

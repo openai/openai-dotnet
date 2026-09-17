@@ -14,8 +14,8 @@ public class ResponseWebSocketOptions
 {
     /// <summary>Maximum UTF-8 bytes in an incoming or outgoing message. Zero (the default) means no byte limit.</summary>
     public int MaxMessageBytes { get; set; }
-    /// <summary>Maximum total buffered events across all lanes. Defaults to <see cref="int.MaxValue"/>.</summary>
-    public int MaxBufferedEvents { get; set; } = int.MaxValue;
+    /// <summary>Maximum total buffered events across all lanes. Defaults to 1024. Set to <see cref="int.MaxValue"/> to opt into unbounded buffering.</summary>
+    public int MaxBufferedEvents { get; set; } = 1024;
     /// <summary>Maximum total UTF-8 bytes buffered across all lanes. Zero (the default) means no byte limit.</summary>
     public int MaxBufferedBytes { get; set; }
     /// <summary>Maximum concurrently admitted sends, including the active send. Defaults to 16.</summary>
