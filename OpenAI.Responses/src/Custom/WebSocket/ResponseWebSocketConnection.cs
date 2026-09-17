@@ -49,13 +49,19 @@ public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable
     /// <summary>Reads the default event stream through a terminal response and returns its complete output.</summary>
     /// <remarks>Events with a named stream identifier are skipped. Use ReceiveAsync to observe unclaimed named-stream events.</remarks>
     public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default)
-        => ResponseWebSocketLane.ReadResponseAsync(ReceiveAsync, cancellationToken, defaultLane: true);
+        => ResponseWebSocketLane.ReadResponseAsync(_events, cancellationToken, defaultLane: true);
 
     /// <summary>Enumerates unclaimed events. Cancellation cancels the wait, not the socket.</summary>
+    /// <remarks>Owns the default event stream until enumeration ends or the enumerator is disposed.</remarks>
     public async IAsyncEnumerable<ResponseWebSocketServerEvent> GetEventsAsync(
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        while (true) yield return await ReceiveAsync(cancellationToken).ConfigureAwait(false);
+        _events.EnterRead();
+        try
+        {
+            while (true) yield return await _events.ReceiveCoreAsync(cancellationToken).ConfigureAwait(false);
+        }
+        finally { _events.ExitRead(); }
     }
 
     /// <summary>Reserves a stream identifier before sending commands for it. Each event has exactly one receiver.</summary>

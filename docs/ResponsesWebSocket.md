@@ -38,7 +38,7 @@ request policies run for direct and factory clients.
 
 These APIs are experimental (`OPENAI001`). A terminal completed, failed, or incomplete response ends one response, not its connection. `ReceiveResponseAsync` returns the complete terminal response snapshot with its status and all output items intact; it does not execute tools. A premature socket close throws rather than fabricating a completed response.
 
-For individual events, use `ReceiveAsync` or `GetEventsAsync`. Each event exposes its complete original `RawData`, including unknown event types and fields. Normal response events also expose a typed `Update`. A nested protocol error is a `ResponseWebSocketErrorEvent`; receiving one does not close the socket. The final-response helper throws `ResponseWebSocketException` for that error and preserves the typed error in its `Error` property. Only one receive operation may be active on each event stream.
+For individual events, use `ReceiveAsync` or `GetEventsAsync`. Each event exposes its complete original `RawData`, including unknown event types and fields. Normal response events also expose a typed `Update`. A nested protocol error is a `ResponseWebSocketErrorEvent`; receiving one does not close the socket. The final-response helper throws `ResponseWebSocketException` for that error and preserves the typed error in its `Error` property. Only one receive operation may be active on each event stream. A response helper owns its stream until it completes or is canceled; an event enumerator owns the default stream until enumeration ends or the enumerator is disposed. Competing receive calls are rejected, while separate lanes can receive independently.
 
 ## Lanes and warmup
 
@@ -59,7 +59,7 @@ await lane.SendAsync(new ResponseWebSocketCreateCommand
 
 ## Transport and limits
 
-The default upgrade uses HTTP/1.1 and rejects redirects. Configure proxy, client certificates, or TLS settings through `ResponseWebSocketOptions.ConfigureTransport`. The default adapter is available on .NET 8 and .NET 10. When using the `netstandard2.0` assembly, it requires a runtime that provides `ClientWebSocket.ConnectAsync(Uri, HttpMessageInvoker, CancellationToken)`; older runtimes must supply an explicit `Connector`.
+The default upgrade uses HTTP/1.1 and rejects redirects. Configure proxy, client certificates, or TLS settings through `ResponseWebSocketOptions.ConfigureTransport`. The default adapter is available on .NET 8, .NET 9, and .NET 10. When using the `netstandard2.0` assembly, it requires a runtime that provides `ClientWebSocket.ConnectAsync(Uri, HttpMessageInvoker, CancellationToken)`; older runtimes must supply an explicit `Connector`.
 
 An opaque custom HTTP transport also requires `Connector`, since its settings cannot safely be inferred. The connector receives the final URI and authenticated headers and must return an open `WebSocket` that honors cancellation and abort. It must not forward credentials across origins. The connection owns that socket, but it does not dispose a supplied shared HTTP client or other shared transport resources. Clients constructed from an opaque prebuilt pipeline cannot open a connection; construct them using the authentication policy and client options instead.
 

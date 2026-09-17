@@ -206,6 +206,65 @@ public class ResponsesWebSocketTests
     }
 
     [Test]
+    public async Task EventEnumeratorOwnsDefaultStreamUntilDisposed()
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            await Receive(socket);
+            await Send(socket, "{\"type\":\"future.event\"}");
+            await Send(socket, Terminal("completed", "resp_lane", "other"));
+            await Send(socket, Terminal("completed", "resp_default"));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            using var lane = connection.OpenLane("other");
+            await connection.SendAsync(BinaryData.FromString(Create), timeout.Token);
+            await using (var events = connection.GetEventsAsync(timeout.Token).GetAsyncEnumerator())
+            {
+                Assert.That(await events.MoveNextAsync(), Is.True);
+                Assert.That(events.Current.RawData.ToString(), Is.EqualTo("{\"type\":\"future.event\"}"));
+                Assert.ThrowsAsync<InvalidOperationException>(async () => await connection.ReceiveResponseAsync(timeout.Token));
+                Assert.ThrowsAsync<InvalidOperationException>(async () => await connection.ReceiveAsync(timeout.Token));
+                await using var competing = connection.GetEventsAsync(timeout.Token).GetAsyncEnumerator();
+                Assert.ThrowsAsync<InvalidOperationException>(async () => await competing.MoveNextAsync());
+                Assert.That((await lane.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_lane"));
+            }
+            Assert.That((await connection.ReceiveResponseAsync(timeout.Token)).Id, Is.EqualTo("resp_default"));
+        }
+        await server.Completed;
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task CanceledResponseHelperReleasesStreamOwnership(bool namedLane)
+    {
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            await Receive(socket);
+            await Send(socket, Terminal("completed", "resp_after_cancel", namedLane ? "lane" : null));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            using var lane = namedLane ? connection.OpenLane("lane") : null;
+            Func<CancellationToken, Task<ResponseResult>> receiveResponse = namedLane ? lane.ReceiveResponseAsync : connection.ReceiveResponseAsync;
+            Func<CancellationToken, Task<ResponseWebSocketServerEvent>> receive = namedLane ? lane.ReceiveAsync : connection.ReceiveAsync;
+            using var cancellation = new CancellationTokenSource();
+            var pending = receiveResponse(cancellation.Token);
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await receive(timeout.Token));
+            Assert.ThrowsAsync<InvalidOperationException>(async () => await receiveResponse(timeout.Token));
+            cancellation.Cancel();
+            Assert.CatchAsync<OperationCanceledException>(async () => await pending);
+            await connection.SendAsync(BinaryData.FromString(Create), timeout.Token);
+            Assert.That((await receiveResponse(timeout.Token)).Id, Is.EqualTo("resp_after_cancel"));
+        }
+        await server.Completed;
+    }
+
+    [Test]
     public async Task DefaultFinalResponseIgnoresDetachedAndUnregisteredStreamEvents()
     {
         await using var server = await LocalServer.Start(async (_, socket) =>

@@ -56,23 +56,31 @@ public sealed class ResponseWebSocketLane : IDisposable
     /// <summary>Reads to a terminal event and returns its complete response, including all output and tools.</summary>
     /// <remarks>Failed and incomplete responses are returned with their status intact. Protocol errors throw.</remarks>
     public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default)
-        => ReadResponseAsync(ReceiveAsync, cancellationToken, defaultLane: false);
+    {
+        ThrowIfDisposed();
+        return ReadResponseAsync(_events, cancellationToken, defaultLane: false);
+    }
 
     internal static async Task<ResponseResult> ReadResponseAsync(
-        Func<CancellationToken, Task<ResponseWebSocketServerEvent>> receive, CancellationToken cancellationToken, bool defaultLane)
+        ResponseWebSocketQueue events, CancellationToken cancellationToken, bool defaultLane)
     {
-        while (true)
+        events.EnterRead();
+        try
         {
-            var item = await receive(cancellationToken).ConfigureAwait(false);
-            if (defaultLane && !string.IsNullOrEmpty(item.StreamId)) continue;
-            if (item is ResponseWebSocketErrorEvent error) throw new ResponseWebSocketException(error);
-            switch (item.Update)
+            while (true)
             {
-                case StreamingResponseCompletedUpdate completed: return completed.Response;
-                case StreamingResponseFailedUpdate failed: return failed.Response;
-                case StreamingResponseIncompleteUpdate incomplete: return incomplete.Response;
+                var item = await events.ReceiveCoreAsync(cancellationToken).ConfigureAwait(false);
+                if (defaultLane && !string.IsNullOrEmpty(item.StreamId)) continue;
+                if (item is ResponseWebSocketErrorEvent error) throw new ResponseWebSocketException(error);
+                switch (item.Update)
+                {
+                    case StreamingResponseCompletedUpdate completed: return completed.Response;
+                    case StreamingResponseFailedUpdate failed: return failed.Response;
+                    case StreamingResponseIncompleteUpdate incomplete: return incomplete.Response;
+                }
             }
         }
+        finally { events.ExitRead(); }
     }
     /// <summary>Detaches this helper without closing the socket. Subsequent events are delivered by the connection.</summary>
     public void Dispose()

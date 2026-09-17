@@ -41,29 +41,39 @@ internal sealed class ResponseWebSocketQueue
         }
     }
 
-    internal async Task<ResponseWebSocketServerEvent> ReceiveAsync(CancellationToken cancellationToken)
+    internal void EnterRead()
     {
         if (Interlocked.Exchange(ref _receiving, 1) != 0)
             throw new InvalidOperationException("Only one receive operation may be active for an event stream.");
-        try
+    }
+
+    internal void ExitRead() => Volatile.Write(ref _receiving, 0);
+
+    internal async Task<ResponseWebSocketServerEvent> ReceiveAsync(CancellationToken cancellationToken)
+    {
+        EnterRead();
+        try { return await ReceiveCoreAsync(cancellationToken).ConfigureAwait(false); }
+        finally { ExitRead(); }
+    }
+
+    // The caller holds stream ownership for its entire receive operation.
+    internal async Task<ResponseWebSocketServerEvent> ReceiveCoreAsync(CancellationToken cancellationToken)
+    {
+        while (true)
         {
-            while (true)
+            Task changed;
+            lock (_gate)
             {
-                Task changed;
-                lock (_gate)
-                {
-                    cancellationToken.ThrowIfCancellationRequested();
-                    if (_items.Count > 0) { var item = _items.Dequeue(); _removed(item); return item; }
-                    if (_error != null) throw _error;
-                    changed = _changed.Task;
-                }
-                var canceled = NewSignal();
-                using (cancellationToken.Register(() => canceled.TrySetCanceled(cancellationToken)))
-                {
-                    await await Task.WhenAny(changed, canceled.Task).ConfigureAwait(false);
-                }
+                cancellationToken.ThrowIfCancellationRequested();
+                if (_items.Count > 0) { var item = _items.Dequeue(); _removed(item); return item; }
+                if (_error != null) throw _error;
+                changed = _changed.Task;
+            }
+            var canceled = NewSignal();
+            using (cancellationToken.Register(() => canceled.TrySetCanceled(cancellationToken)))
+            {
+                await await Task.WhenAny(changed, canceled.Task).ConfigureAwait(false);
             }
         }
-        finally { Volatile.Write(ref _receiving, 0); }
     }
 }
