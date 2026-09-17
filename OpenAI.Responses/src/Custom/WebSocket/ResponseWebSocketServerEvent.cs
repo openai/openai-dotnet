@@ -11,7 +11,7 @@ public partial class ResponseWebSocketServerEvent
 {
     /// <summary>The complete original event, including unknown fields and future event types.</summary>
     public BinaryData RawData { get; internal set; }
-    /// <summary>The ordinary Responses update, or null for a WebSocket error or unknown event type.</summary>
+    /// <summary>The Responses update for any response.* event, including unknown types; null for error and other event types.</summary>
     public StreamingResponseUpdate Update { get; internal set; }
 
     internal static ResponseWebSocketServerEvent Parse(BinaryData data)

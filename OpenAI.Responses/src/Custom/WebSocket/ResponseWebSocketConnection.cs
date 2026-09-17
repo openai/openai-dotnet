@@ -179,6 +179,7 @@ public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable
                 }
             }
         }
+        // Every reader failure must reach waiting receivers, including failures from a custom socket.
         catch (Exception error) { Fail(error); }
     }
 
@@ -212,9 +213,9 @@ public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable
         }
         // An injected transport can run cancellation callbacks. Do not invoke it under the routing lock.
         try { _lifetime.Cancel(); }
-        catch (AggregateException) { } // Preserve the error that initiated shutdown.
+        catch (AggregateException) { } // Cancellation callbacks must not replace the error that initiated shutdown.
         try { _socket.Abort(); }
-        catch (Exception) { } // Preserve the error that initiated shutdown.
+        catch (Exception) { } // A custom socket's cleanup must not replace the error that initiated shutdown.
     }
 
     /// <summary>Immediately ends the connection and unblocks all waiting operations.</summary>
@@ -259,13 +260,14 @@ public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable
             cancellationToken.ThrowIfCancellationRequested();
             ResponseWebSocketConnection replacement;
             try { replacement = await _open(cancellationToken).ConfigureAwait(false); }
+            // The caller opts into bounded retries; custom connectors can report opening failures with any exception type.
             catch when (attempt < maxAttempts && !cancellationToken.IsCancellationRequested) { continue; }
             replacement.HasConnectionStateLoss = true;
             try { await restore(replacement, cancellationToken).ConfigureAwait(false); return replacement; }
             catch
             {
                 try { await replacement.DisposeAsync().ConfigureAwait(false); }
-                catch (Exception) { } // Preserve the application restoration failure.
+                catch (Exception) { } // A custom socket's cleanup must not replace the application restoration failure.
                 throw;
             }
         }

@@ -65,7 +65,7 @@ internal sealed class ResponseWebSocketHandshake
         catch
         {
             try { transport.Socket?.Dispose(); }
-            catch (Exception) { } // Preserve the handshake or policy failure.
+            catch (Exception) { } // A custom socket's cleanup must not replace the handshake or policy failure.
             throw;
         }
     }

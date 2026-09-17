@@ -1530,14 +1530,16 @@ namespace OpenAI.Responses {
     }
     public class ResponseWebSocketSteerCommand : ResponseWebSocketCommand, IJsonModel<ResponseWebSocketSteerCommand>, IPersistableModel<ResponseWebSocketSteerCommand> {
         public ResponseWebSocketSteerCommand();
-        public ResponseWebSocketSteerCommand(string previousResponseId, BinaryData input);
-        public BinaryData Input { get; set; }
+        public ResponseWebSocketSteerCommand(string previousResponseId, IEnumerable<ResponseWebSocketSteerMessage> input);
+        public ResponseWebSocketSteerCommand(string previousResponseId, string input);
+        public IList<ResponseWebSocketSteerMessage> Input { get; }
         public string PreviousResponseId { get; set; }
     }
     public class ResponseWebSocketSteerMessage : IJsonModel<ResponseWebSocketSteerMessage>, IPersistableModel<ResponseWebSocketSteerMessage> {
         public ResponseWebSocketSteerMessage();
-        public ResponseWebSocketSteerMessage(BinaryData content);
-        public BinaryData Content { get; set; }
+        public ResponseWebSocketSteerMessage(IEnumerable<ResponseContentPart> content);
+        public ResponseWebSocketSteerMessage(string content);
+        public IList<ResponseContentPart> Content { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }

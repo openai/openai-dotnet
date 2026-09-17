@@ -91,5 +91,6 @@ public sealed class ResponseWebSocketLane : IDisposable
 public sealed class ResponseWebSocketException : Exception
 {
     public ResponseWebSocketErrorEvent Error { get; }
-    internal ResponseWebSocketException(ResponseWebSocketErrorEvent error) : base(error.Error.Message) => Error = error;
+    internal ResponseWebSocketException(ResponseWebSocketErrorEvent error)
+        : base(error.Error?.Message ?? "The server returned a WebSocket protocol error without a message.") => Error = error;
 }

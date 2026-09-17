@@ -55,6 +55,8 @@ await lane.SendAsync(new ResponseWebSocketCreateCommand
 
 `Generate = false` sends a warmup command. Lane sends add `stream_id` to `response.create` without modifying the supplied command. An existing different stream identifier is rejected. Steering commands use `previous_response_id` to select the target response and its lane; lane sends preserve these commands without adding `stream_id`. `previous_response_id` controls continuation independently of lane routing. Canceling a receive wait leaves the socket and other lanes open and does not consume an event. Disposing a lane discards its buffered events and detaches it; later events for that identifier reach the default stream. Disposing the connection aborts all operations.
 
+`new ResponseWebSocketSteerCommand(responseId, text)` constructs a steering command with one user message containing an input text part. Its `Input` collection also accepts `ResponseWebSocketSteerMessage` instances with typed text, image, and file parts in `Content`. Text constructors serialize to the message and content array forms. Use `SendAsync(BinaryData)` to send exact JSON, including string shorthand or custom fields.
+
 ## Transport and limits
 
 The default upgrade uses HTTP/1.1 and rejects redirects. Configure proxy, client certificates, or TLS settings through `ResponseWebSocketOptions.ConfigureTransport`. The default adapter is available on .NET 8 and .NET 10. When using the `netstandard2.0` assembly, it requires a runtime that provides `ClientWebSocket.ConnectAsync(Uri, HttpMessageInvoker, CancellationToken)`; older runtimes must supply an explicit `Connector`.

@@ -137,6 +137,30 @@ public class ResponsesWebSocketTests
         await server.Completed;
     }
 
+    [TestCase("{\"type\":\"error\"}")]
+    [TestCase("{\"type\":\"error\",\"error\":null}")]
+    public async Task MissingErrorDetailsPreserveProtocolExceptionAndConnection(string message)
+    {
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            await Receive(socket);
+            await Send(socket, message);
+            await Receive(socket);
+            await Send(socket, Terminal("completed", "resp_after_error"));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            await connection.SendAsync(BinaryData.FromString(Create));
+            var error = Assert.ThrowsAsync<ResponseWebSocketException>(async () => await connection.ReceiveResponseAsync());
+            Assert.That(error.Error.RawData.ToString(), Is.EqualTo(message));
+            Assert.That(error.Message, Is.EqualTo("The server returned a WebSocket protocol error without a message."));
+            await connection.SendAsync(BinaryData.FromString(Create));
+            Assert.That((await connection.ReceiveResponseAsync()).Id, Is.EqualTo("resp_after_error"));
+        }
+        await server.Completed;
+    }
+
     [Test]
     public async Task LanesShareOneReaderAndCanceledWaitDoesNotStealEvent()
     {
@@ -542,12 +566,10 @@ public class ResponsesWebSocketTests
         await using var origin = await LocalServer.Start((_, _) => Task.CompletedTask, target.Endpoint);
         var options = new ResponseWebSocketOptions();
         options.Headers["X-Custom-Credential"] = "secret-for-original-origin";
-        Exception failure = null;
-        ResponseWebSocketConnection connection = null;
-        try { connection = await Client(origin).ConnectWebSocketAsync(options); }
-        catch (Exception error) { failure = error; }
-        finally { if (connection != null) await connection.DisposeAsync(); }
-        Assert.That(failure, Is.Not.Null);
+        Assert.ThrowsAsync<WebSocketException>(async () =>
+        {
+            await using var connection = await Client(origin).ConnectWebSocketAsync(options);
+        });
         Assert.That(target.ConnectionCount, Is.Zero);
     }
 
@@ -670,6 +692,53 @@ public class ResponsesWebSocketTests
         Assert.That(retry.Calls, Is.Zero);
         Assert.That(connections, Is.Zero);
         return Task.CompletedTask;
+    }
+
+    [Test]
+    public async Task SteeringCommandsSupportTypedContentAndRawPayloads()
+    {
+        const string text = "Continue with \"details\"\nand examples.";
+        const string raw = "{\"type\":\"response.steer\",\"previous_response_id\":\"resp_active\",\"input\":\"raw text\",\"custom\":true}";
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            using (var json = JsonDocument.Parse(await Receive(socket)))
+            {
+                var root = json.RootElement;
+                Assert.That(root.GetProperty("type").GetString(), Is.EqualTo("response.steer"));
+                Assert.That(root.GetProperty("previous_response_id").GetString(), Is.EqualTo("resp_active"));
+                var message = root.GetProperty("input")[0];
+                Assert.That(message.GetProperty("role").GetString(), Is.EqualTo("user"));
+                Assert.That(message.GetProperty("content")[0].GetProperty("type").GetString(), Is.EqualTo("input_text"));
+                Assert.That(message.GetProperty("content")[0].GetProperty("text").GetString(), Is.EqualTo(text));
+            }
+            using (var json = JsonDocument.Parse(await Receive(socket)))
+            {
+                var message = json.RootElement.GetProperty("input")[0];
+                Assert.That(message.GetProperty("role").GetString(), Is.EqualTo("user"));
+                var content = message.GetProperty("content");
+                Assert.That(content[0].GetProperty("text").GetString(), Is.EqualTo("Look at these files."));
+                Assert.That(content[1].GetProperty("type").GetString(), Is.EqualTo("input_image"));
+                Assert.That(content[1].GetProperty("file_id").GetString(), Is.EqualTo("file_image"));
+                Assert.That(content[2].GetProperty("type").GetString(), Is.EqualTo("input_file"));
+                Assert.That(content[2].GetProperty("file_id").GetString(), Is.EqualTo("file_document"));
+            }
+            Assert.That(await Receive(socket), Is.EqualTo(raw));
+            await Send(socket, Terminal("completed", "resp_steered"));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            await connection.SendAsync(new ResponseWebSocketSteerCommand("resp_active", text));
+            var message = new ResponseWebSocketSteerMessage();
+            message.Content.Add(ResponseContentPart.CreateInputTextPart("Look at these files."));
+            message.Content.Add(ResponseContentPart.CreateInputImagePart("file_image"));
+            message.Content.Add(ResponseContentPart.CreateInputFilePart("file_document"));
+            var command = new ResponseWebSocketSteerCommand("resp_active", new[] { message });
+            await connection.SendAsync(command);
+            await connection.SendAsync(BinaryData.FromString(raw));
+            Assert.That((await connection.ReceiveResponseAsync()).Id, Is.EqualTo("resp_steered"));
+        }
+        await server.Completed;
     }
 
     [Test]
@@ -836,6 +905,7 @@ public class ResponsesWebSocketTests
                     await handler(context, socket);
                     server._completed.TrySetResult();
                 }
+                // Propagate every handler failure, including NUnit assertions, to the awaiting test.
                 catch (Exception error) { server._completed.TrySetException(error); }
             });
             await server._application.StartAsync();

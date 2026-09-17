@@ -2682,9 +2682,11 @@ namespace OpenAI
                 generate);
         }
 
-        public static ResponseWebSocketSteerCommand ResponseWebSocketSteerCommand(string previousResponseId = default, BinaryData input = default)
+        public static ResponseWebSocketSteerCommand ResponseWebSocketSteerCommand(string previousResponseId = default, IEnumerable<ResponseWebSocketSteerMessage> input = default)
         {
-            return new ResponseWebSocketSteerCommand(InternalResponseWebSocketCommandType.ResponseSteer, default, previousResponseId, input);
+            input ??= new ChangeTrackingList<ResponseWebSocketSteerMessage>();
+
+            return new ResponseWebSocketSteerCommand(InternalResponseWebSocketCommandType.ResponseSteer, default, previousResponseId, input.ToList());
         }
 
         public static ResponseWebSocketServerEvent ResponseWebSocketServerEvent(string kind = default, string streamId = default)

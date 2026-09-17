@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
@@ -78,17 +79,28 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
             }
-            if (!Patch.Contains("$.input"u8))
+            if (Patch.Contains("$.input"u8))
+            {
+                if (!Patch.IsRemoved("$.input"u8))
+                {
+                    writer.WritePropertyName("input"u8);
+                    Patch.WriteTo(writer, "$.input"u8);
+                }
+            }
+            else
             {
                 writer.WritePropertyName("input"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Input);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Input))
+                writer.WriteStartArray();
+                for (int i = 0; i < Input.Count; i++)
                 {
-                    JsonSerializer.Serialize(writer, document.RootElement);
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) || Input[i] != null && Input[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Input[i], options);
                 }
-#endif
+                Patch.WriteTo(writer, "$.input"u8);
+                writer.WriteEndArray();
             }
 
             Patch.WriteTo(writer);
@@ -119,7 +131,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string previousResponseId = default;
-            BinaryData input = default;
+            IList<ResponseWebSocketSteerMessage> input = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -134,12 +146,105 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
-                    input = BinaryData.FromString(prop.Value.GetRawText());
+                    List<ResponseWebSocketSteerMessage> array = new List<ResponseWebSocketSteerMessage>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseWebSocketSteerMessage.DeserializeResponseWebSocketSteerMessage(item, item.GetUtf8Bytes(), options));
+                    }
+                    input = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ResponseWebSocketSteerCommand(kind, patch, previousResponseId, input);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("input"u8))
+            {
+                int propertyLength = "input"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Input == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveInputArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Input.Count)
+                {
+                    return false;
+                }
+                if (Input[index] == null)
+                {
+                    return false;
+                }
+                return Input[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("input"u8))
+            {
+                int propertyLength = "input"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Input == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Input.Count)
+                {
+                    return false;
+                }
+                if (Input[index] == null)
+                {
+                    return false;
+                }
+                Input[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveInputArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveInput(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<ResponseWebSocketSteerMessage> ActiveInput()
+        {
+            if (!Optional.IsCollectionDefined(Input))
+            {
+                yield break;
+            }
+            for (int i = 0; i < Input.Count; i++)
+            {
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.input[{i}]")) && (Input[i] == null || !Input[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return Input[i];
+                }
+            }
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

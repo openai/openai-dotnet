@@ -33,16 +33,15 @@ model ResponseWebSocketSteerCommand extends ResponseWebSocketCommand {
   previous_response_id: string;
 
   /** The target response determines the lane; steering does not accept stream_id. */
-  input: string | ResponseWebSocketSteerMessage[];
+  input: ResponseWebSocketSteerMessage[];
 }
 
 /** A user message queued for a response continuation. */
 model ResponseWebSocketSteerMessage {
   type?: "message";
   role: "user";
-  content:
-    | string
-    | (ItemContentInputText | ItemContentInputImage | ItemContentInputFile)[];
+  /** Input text, image, or file content parts. */
+  content: ItemContent[];
 }
 
 union ResponseWebSocketServerEventType {

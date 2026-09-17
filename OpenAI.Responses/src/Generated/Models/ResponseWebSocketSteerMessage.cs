@@ -2,10 +2,11 @@
 
 #nullable disable
 
-using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.Json.Serialization;
 using OpenAI;
 
@@ -17,20 +18,25 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ResponseWebSocketSteerMessage(BinaryData content)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public ResponseWebSocketSteerMessage(IEnumerable<ResponseContentPart> content)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            Content = content;
+            Content = content.ToList();
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseWebSocketSteerMessage(InternalResponseWebSocketSteerMessageType? kind, string role, BinaryData content, in JsonPatch patch)
+        internal ResponseWebSocketSteerMessage(InternalResponseWebSocketSteerMessageType? kind, string role, IList<ResponseContentPart> content, in JsonPatch patch)
         {
+            // Plugin customization: ensure initialization of collections
             Kind = kind;
             Role = role;
-            Content = content;
+            Content = content ?? new ChangeTrackingList<ResponseContentPart>();
             _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -43,6 +49,6 @@ namespace OpenAI.Responses
 
         internal string Role { get; set; } = "user";
 
-        public BinaryData Content { get; set; }
+        public IList<ResponseContentPart> Content { get; }
     }
 }
