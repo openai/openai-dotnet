@@ -41,7 +41,9 @@ public partial class ChatMessage
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal void WriteContentProperty(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined())
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && !Patch.Contains("$.content"u8))
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         {
             writer.WritePropertyName("content"u8);
             Content.WriteTo(writer, options);
