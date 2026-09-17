@@ -111,6 +111,13 @@ namespace OpenAI.Responses;
 [CodeGenType("TruncationEnum")] internal readonly partial struct InternalTruncationEnum {}
 [CodeGenType("GetResponseContentType")] internal readonly partial struct InternalGetResponseContentType {}
 
+// Responses WebSocket.
+[CodeGenType("ResponseWebSocketCommandType")] internal readonly partial struct InternalResponseWebSocketCommandType {}
+[CodeGenType("ResponseWebSocketServerEventType")] internal readonly partial struct InternalResponseWebSocketServerEventType {}
+[CodeGenType("ResponseWebSocketSteerMessageType")] internal readonly partial struct InternalResponseWebSocketSteerMessageType {}
+[CodeGenType("UnknownResponseWebSocketCommand")] internal partial class InternalUnknownResponseWebSocketCommand {}
+[CodeGenType("UnknownResponseWebSocketServerEvent")] internal partial class InternalUnknownResponseWebSocketServerEvent {}
+
 // Multi-agent.
 [CodeGenType("BetaAgentTag")] internal partial class InternalBetaAgentTag { }
 

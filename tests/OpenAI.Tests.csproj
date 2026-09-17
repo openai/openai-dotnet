@@ -53,4 +53,7 @@
       <_Parameter2>$(MSBuildProjectDirectory)</_Parameter2>
     </AssemblyAttribute>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Responses/websocket_scenarios.json" LogicalName="ResponsesWebSocketScenarios.json" />
+  </ItemGroup>
 </Project>

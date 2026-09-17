@@ -255,6 +255,7 @@ namespace OpenAI.Responses {
         public CreateResponseOptions();
         public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems);
         public bool? BackgroundModeEnabled { get; set; }
+        public IList<ResponseContextManagement> ContextManagement { get; set; }
         public ResponseConversationOptions ConversationOptions { get; set; }
         public string EndUserId { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
@@ -866,6 +867,15 @@ namespace OpenAI.Responses {
         OutputText = 4,
         Refusal = 5
     }
+    public class ResponseContextManagement : IJsonModel<ResponseContextManagement>, IPersistableModel<ResponseContextManagement> {
+        public ResponseContextManagement();
+        public ResponseContextManagement(string kind);
+        public int? CompactThreshold { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
     public class ResponseConversationOptions : IJsonModel<ResponseConversationOptions>, IPersistableModel<ResponseConversationOptions> {
         public ResponseConversationOptions();
         public ResponseConversationOptions(string conversationId);
@@ -1217,6 +1227,7 @@ namespace OpenAI.Responses {
         public virtual Task<ClientResult<ResponseResult>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
         public virtual ClientResult CompactResponse(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> CompactResponseAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ResponseWebSocketConnection> ConnectWebSocketAsync(ResponseWebSocketOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> CreateResponse(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
@@ -1290,6 +1301,119 @@ namespace OpenAI.Responses {
         Queued = 3,
         Incomplete = 4,
         Failed = 5
+    }
+    public class ResponseSteerApplyPatchCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerApplyPatchCallOutput>, IPersistableModel<ResponseSteerApplyPatchCallOutput> {
+        public ResponseSteerApplyPatchCallOutput();
+        public string CallId { get; set; }
+    }
+    public class ResponseSteerComputerCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerComputerCallOutput>, IPersistableModel<ResponseSteerComputerCallOutput> {
+        public ResponseSteerComputerCallOutput();
+        public string CallId { get; set; }
+    }
+    public class ResponseSteerCustomToolCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerCustomToolCallOutput>, IPersistableModel<ResponseSteerCustomToolCallOutput> {
+        public ResponseSteerCustomToolCallOutput();
+        public string CallId { get; set; }
+    }
+    public class ResponseSteerError : IJsonModel<ResponseSteerError>, IPersistableModel<ResponseSteerError> {
+        public ResponseSteerErrorCode Code { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public readonly partial struct ResponseSteerErrorCode : IEquatable<ResponseSteerErrorCode> {
+        public ResponseSteerErrorCode(string value);
+        public static ResponseSteerErrorCode InvalidInput { get; }
+        public static ResponseSteerErrorCode ResponseAlreadyCompleted { get; }
+        public static ResponseSteerErrorCode ResponseNotActive { get; }
+        public static ResponseSteerErrorCode ResponseNotFound { get; }
+        public static ResponseSteerErrorCode SteeringNotSupported { get; }
+        public static ResponseSteerErrorCode SuccessorCreationFailed { get; }
+        public static ResponseSteerErrorCode TooManyPendingSteers { get; }
+        public readonly bool Equals(ResponseSteerErrorCode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseSteerErrorCode left, ResponseSteerErrorCode right);
+        public static implicit operator ResponseSteerErrorCode(string value);
+        public static implicit operator ResponseSteerErrorCode?(string value);
+        public static bool operator !=(ResponseSteerErrorCode left, ResponseSteerErrorCode right);
+        public override readonly string ToString();
+    }
+    public class ResponseSteerFailedSubmission : IJsonModel<ResponseSteerFailedSubmission>, IPersistableModel<ResponseSteerFailedSubmission> {
+        public string Id { get; set; }
+        public BinaryData Input { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string PreviousResponseId { get; set; }
+    }
+    public class ResponseSteerFunctionCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerFunctionCallOutput>, IPersistableModel<ResponseSteerFunctionCallOutput> {
+        public ResponseSteerFunctionCallOutput();
+        public string CallId { get; set; }
+        public string Name { get; set; }
+    }
+    public class ResponseSteerMcpApprovalResponse : ResponseSteerRequiredInput, IJsonModel<ResponseSteerMcpApprovalResponse>, IPersistableModel<ResponseSteerMcpApprovalResponse> {
+        public ResponseSteerMcpApprovalResponse();
+        public string ApprovalRequestId { get; set; }
+    }
+    public readonly partial struct ResponseSteerPendingReason : IEquatable<ResponseSteerPendingReason> {
+        public ResponseSteerPendingReason(string value);
+        public static ResponseSteerPendingReason WaitingForRequiredInput { get; }
+        public readonly bool Equals(ResponseSteerPendingReason other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseSteerPendingReason left, ResponseSteerPendingReason right);
+        public static implicit operator ResponseSteerPendingReason(string value);
+        public static implicit operator ResponseSteerPendingReason?(string value);
+        public static bool operator !=(ResponseSteerPendingReason left, ResponseSteerPendingReason right);
+        public override readonly string ToString();
+    }
+    public class ResponseSteerRequiredInput : IJsonModel<ResponseSteerRequiredInput>, IPersistableModel<ResponseSteerRequiredInput> {
+        public ResponseSteerRequiredInputKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public readonly partial struct ResponseSteerRequiredInputKind : IEquatable<ResponseSteerRequiredInputKind> {
+        public ResponseSteerRequiredInputKind(string value);
+        public static ResponseSteerRequiredInputKind ApplyPatchCallOutput { get; }
+        public static ResponseSteerRequiredInputKind ComputerCallOutput { get; }
+        public static ResponseSteerRequiredInputKind CustomToolCallOutput { get; }
+        public static ResponseSteerRequiredInputKind FunctionCallOutput { get; }
+        public static ResponseSteerRequiredInputKind McpApprovalResponse { get; }
+        public static ResponseSteerRequiredInputKind ShellCallOutput { get; }
+        public static ResponseSteerRequiredInputKind ToolSearchOutput { get; }
+        public readonly bool Equals(ResponseSteerRequiredInputKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseSteerRequiredInputKind left, ResponseSteerRequiredInputKind right);
+        public static implicit operator ResponseSteerRequiredInputKind(string value);
+        public static implicit operator ResponseSteerRequiredInputKind?(string value);
+        public static bool operator !=(ResponseSteerRequiredInputKind left, ResponseSteerRequiredInputKind right);
+        public override readonly string ToString();
+    }
+    public class ResponseSteerShellCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerShellCallOutput>, IPersistableModel<ResponseSteerShellCallOutput> {
+        public ResponseSteerShellCallOutput();
+        public string CallId { get; set; }
+    }
+    public class ResponseSteerSubmission : IJsonModel<ResponseSteerSubmission>, IPersistableModel<ResponseSteerSubmission> {
+        public string Id { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string PreviousResponseId { get; set; }
+    }
+    public class ResponseSteerToolSearchOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerToolSearchOutput>, IPersistableModel<ResponseSteerToolSearchOutput> {
+        public ResponseSteerToolSearchOutput();
+        public string CallId { get; set; }
+        public string Execution { get; set; }
     }
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
         public ResponseTextFormatKind Kind { get; set; }
@@ -1418,6 +1542,131 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    public class ResponseWebSocketCommand : IJsonModel<ResponseWebSocketCommand>, IPersistableModel<ResponseWebSocketCommand> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable {
+        public bool HasConnectionStateLoss { get; }
+        public void Abort();
+        public Task CloseAsync(CancellationToken cancellationToken = default);
+        public void Dispose();
+        public ValueTask DisposeAsync();
+        public IAsyncEnumerable<ResponseWebSocketServerEvent> GetEventsAsync(CancellationToken cancellationToken = default);
+        public ResponseWebSocketLane OpenLane(string streamId);
+        public Task<ResponseWebSocketServerEvent> ReceiveAsync(CancellationToken cancellationToken = default);
+        public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default);
+        public Task<ResponseWebSocketConnection> ReconnectAsync(Func<ResponseWebSocketConnection, CancellationToken, Task> restore, int maxAttempts = 1, CancellationToken cancellationToken = default);
+        public Task SendAsync(ResponseWebSocketCommand command, CancellationToken cancellationToken = default);
+        public Task SendAsync(BinaryData command, CancellationToken cancellationToken = default);
+    }
+    public class ResponseWebSocketContinuation : IJsonModel<ResponseWebSocketContinuation>, IPersistableModel<ResponseWebSocketContinuation> {
+        public string Message { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class ResponseWebSocketCreateCommand : ResponseWebSocketCommand, IJsonModel<ResponseWebSocketCreateCommand>, IPersistableModel<ResponseWebSocketCreateCommand> {
+        public ResponseWebSocketCreateCommand();
+        public IList<ResponseContextManagement> ContextManagement { get; set; }
+        public ResponseConversationOptions Conversation { get; set; }
+        public bool? Generate { get; set; }
+        public IList<IncludedResponseProperty> IncludedProperties { get; }
+        public IList<ResponseItem> InputItems { get; }
+        public string Instructions { get; set; }
+        public int? MaxOutputTokens { get; set; }
+        public int? MaxToolCalls { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; set; }
+        public bool? ParallelToolCalls { get; set; }
+        public string PreviousResponseId { get; set; }
+        public string PromptCacheKey { get; set; }
+        public ResponsePromptCacheRetentionPolicy? PromptCacheRetentionPolicy { get; set; }
+        public ResponseReasoningOptions Reasoning { get; set; }
+        public string SafetyIdentifier { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
+        public bool? Store { get; set; }
+        public string StreamId { get; set; }
+        public float? Temperature { get; set; }
+        public ResponseTextOptions Text { get; set; }
+        public ResponseToolChoice ToolChoice { get; set; }
+        public IList<ResponseTool> Tools { get; }
+        public int? TopLogprobs { get; set; }
+        public float? TopP { get; set; }
+        public ResponseTruncationMode? Truncation { get; set; }
+        public string User { get; set; }
+    }
+    public class ResponseWebSocketErrorDetails : IJsonModel<ResponseWebSocketErrorDetails>, IPersistableModel<ResponseWebSocketErrorDetails> {
+        public string Code { get; set; }
+        public IDictionary<string, string> Headers { get; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        public ResponseWebSocketMisalignment Misalignment { get; set; }
+        public string Param { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+    }
+    public class ResponseWebSocketErrorEvent : ResponseWebSocketServerEvent, IJsonModel<ResponseWebSocketErrorEvent>, IPersistableModel<ResponseWebSocketErrorEvent> {
+        public ResponseWebSocketErrorEvent();
+        public ResponseWebSocketErrorDetails Error { get; set; }
+        public int? SequenceNumber { get; set; }
+        public int? Status { get; set; }
+    }
+    public sealed class ResponseWebSocketException : Exception {
+        public ResponseWebSocketErrorEvent Error { get; }
+    }
+    public sealed class ResponseWebSocketLane : IDisposable {
+        public string StreamId { get; }
+        public void Dispose();
+        public Task<ResponseWebSocketServerEvent> ReceiveAsync(CancellationToken cancellationToken = default);
+        public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default);
+        public Task SendAsync(ResponseWebSocketCommand command, CancellationToken cancellationToken = default);
+    }
+    public class ResponseWebSocketMisalignment : IJsonModel<ResponseWebSocketMisalignment>, IPersistableModel<ResponseWebSocketMisalignment> {
+        public string DetailedExplanation { get; set; }
+        public string ErrorType { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public ResponseWebSocketContinuation Steer { get; set; }
+    }
+    public class ResponseWebSocketOptions {
+        public TimeSpan CloseTimeout { get; set; }
+        public Action<Net.Http.HttpClientHandler> ConfigureTransport { get; set; }
+        public Func<Uri, IReadOnlyDictionary<string, string>, CancellationToken, Task<Net.WebSockets.WebSocket>> Connector { get; set; }
+        public IDictionary<string, string> Headers { get; }
+        public int MaxBufferedBytes { get; set; }
+        public int MaxBufferedEvents { get; set; }
+        public int MaxLanes { get; set; }
+        public int MaxMessageBytes { get; set; }
+        public int MaxPendingSends { get; set; }
+    }
+    public class ResponseWebSocketServerEvent : IJsonModel<ResponseWebSocketServerEvent>, IPersistableModel<ResponseWebSocketServerEvent> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public BinaryData RawData { get; }
+        public string StreamId { get; set; }
+        public StreamingResponseUpdate Update { get; }
+    }
+    public class ResponseWebSocketSteerCommand : ResponseWebSocketCommand, IJsonModel<ResponseWebSocketSteerCommand>, IPersistableModel<ResponseWebSocketSteerCommand> {
+        public ResponseWebSocketSteerCommand();
+        public ResponseWebSocketSteerCommand(string previousResponseId, IEnumerable<ResponseWebSocketSteerMessage> input);
+        public ResponseWebSocketSteerCommand(string previousResponseId, string input);
+        public IList<ResponseWebSocketSteerMessage> Input { get; }
+        public string PreviousResponseId { get; set; }
+    }
+    public class ResponseWebSocketSteerMessage : IJsonModel<ResponseWebSocketSteerMessage>, IPersistableModel<ResponseWebSocketSteerMessage> {
+        public ResponseWebSocketSteerMessage();
+        public ResponseWebSocketSteerMessage(IEnumerable<ResponseContentPart> content);
+        public ResponseWebSocketSteerMessage(string content);
+        public IList<ResponseContentPart> Content { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
     }
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
         public StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : base(default, default);
@@ -1684,6 +1933,24 @@ namespace OpenAI.Responses {
         public int OutputIndex { get; set; }
         public string Refusal { get; set; }
     }
+    public class StreamingResponseSteerAcceptedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseSteerAcceptedUpdate>, IPersistableModel<StreamingResponseSteerAcceptedUpdate> {
+        public StreamingResponseSteerAcceptedUpdate() : base(default, default);
+        public ResponseSteerSubmission Steer { get; set; }
+        public string StreamId { get; set; }
+    }
+    public class StreamingResponseSteerFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseSteerFailedUpdate>, IPersistableModel<StreamingResponseSteerFailedUpdate> {
+        public StreamingResponseSteerFailedUpdate() : base(default, default);
+        public ResponseSteerError Error { get; set; }
+        public ResponseSteerFailedSubmission Steer { get; set; }
+        public string StreamId { get; set; }
+    }
+    public class StreamingResponseSteerPendingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseSteerPendingUpdate>, IPersistableModel<StreamingResponseSteerPendingUpdate> {
+        public StreamingResponseSteerPendingUpdate() : base(default, default);
+        public ResponseSteerPendingReason Reason { get; set; }
+        public IList<ResponseSteerRequiredInput> RequiredInput { get; }
+        public ResponseSteerSubmission Steer { get; set; }
+        public string StreamId { get; set; }
+    }
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
         protected internal StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber);
         public StreamingResponseUpdateKind Kind { get; }
@@ -1744,6 +2011,9 @@ namespace OpenAI.Responses {
         public static StreamingResponseUpdateKind ResponseReasoningTextDone { get; }
         public static StreamingResponseUpdateKind ResponseRefusalDelta { get; }
         public static StreamingResponseUpdateKind ResponseRefusalDone { get; }
+        public static StreamingResponseUpdateKind ResponseSteerAccepted { get; }
+        public static StreamingResponseUpdateKind ResponseSteerFailed { get; }
+        public static StreamingResponseUpdateKind ResponseSteerPending { get; }
         public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; }
         public static StreamingResponseUpdateKind ResponseWebSearchCallInProgress { get; }
         public static StreamingResponseUpdateKind ResponseWebSearchCallSearching { get; }

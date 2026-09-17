@@ -79,6 +79,29 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CreateResponseOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.context_management"u8))
+            {
+                if (!Patch.IsRemoved("$.context_management"u8))
+                {
+                    writer.WritePropertyName("context_management"u8);
+                    Patch.WriteTo(writer, "$.context_management"u8);
+                }
+            }
+            else if (Optional.IsCollectionDefined(ContextManagement))
+            {
+                writer.WritePropertyName("context_management"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < ContextManagement.Count; i++)
+                {
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.context_management[{i}]")) || ContextManagement[i] != null && ContextManagement[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(ContextManagement[i], options);
+                }
+                Patch.WriteTo(writer, "$.context_management"u8);
+                writer.WriteEndArray();
+            }
             if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
             {
                 writer.WritePropertyName("metadata"u8);
@@ -312,6 +335,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
+            IList<ResponseContextManagement> contextManagement = default;
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             int? topLogProbabilityCount = default;
@@ -343,6 +367,20 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("context_management"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ResponseContextManagement> array = new List<ResponseContextManagement>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ResponseContextManagement.DeserializeResponseContextManagement(item, item.GetUtf8Bytes(), options));
+                    }
+                    contextManagement = array;
+                    continue;
+                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -604,6 +642,7 @@ namespace OpenAI.Responses
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new CreateResponseOptions(
+                contextManagement ?? new ChangeTrackingList<ResponseContextManagement>(),
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 topLogProbabilityCount,
@@ -662,6 +701,28 @@ namespace OpenAI.Responses
                     return false;
                 }
                 return ConversationOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
+            }
+            if (local.StartsWith("context_management"u8))
+            {
+                int propertyLength = "context_management"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ContextManagement == null)
+                {
+                    return false;
+                }
+                if (currentSlice.IsEmpty)
+                {
+                    return TryResolveContextManagementArray(out value);
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ContextManagement.Count)
+                {
+                    return false;
+                }
+                if (ContextManagement[index] == null)
+                {
+                    return false;
+                }
+                return ContextManagement[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             if (local.StartsWith("tools"u8))
             {
@@ -743,6 +804,25 @@ namespace OpenAI.Responses
                 ConversationOptions.Patch.Set([.. "$"u8, .. local.Slice("conversation"u8.Length)], value);
                 return true;
             }
+            if (local.StartsWith("context_management"u8))
+            {
+                int propertyLength = "context_management"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ContextManagement == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ContextManagement.Count)
+                {
+                    return false;
+                }
+                if (ContextManagement[index] == null)
+                {
+                    return false;
+                }
+                ContextManagement[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
@@ -782,6 +862,34 @@ namespace OpenAI.Responses
                 return true;
             }
             return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool TryResolveContextManagementArray(out JsonPatch.EncodedValue value)
+        {
+            value = default;
+            BinaryData data = ModelReaderWriter.Write(ActiveContextManagement(), ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            JsonPatch tempPatch = new JsonPatch();
+            tempPatch.Set("$"u8, data.ToMemory().Span);
+            return tempPatch.TryGetEncodedValue("$"u8, out value);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private IEnumerable<ResponseContextManagement> ActiveContextManagement()
+        {
+            if (!Optional.IsCollectionDefined(ContextManagement))
+            {
+                yield break;
+            }
+            for (int i = 0; i < ContextManagement.Count; i++)
+            {
+                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.context_management[{i}]")) && (ContextManagement[i] == null || !ContextManagement[i].Patch.IsRemoved("$"u8)))
+                {
+                    yield return ContextManagement[i];
+                }
+            }
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

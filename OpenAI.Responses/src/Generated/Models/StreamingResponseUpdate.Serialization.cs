@@ -213,6 +213,12 @@ namespace OpenAI.Responses
                         return StreamingResponseCustomToolCallInputDeltaUpdate.DeserializeStreamingResponseCustomToolCallInputDeltaUpdate(element, data, options);
                     case "response.custom_tool_call_input.done":
                         return StreamingResponseCustomToolCallInputDoneUpdate.DeserializeStreamingResponseCustomToolCallInputDoneUpdate(element, data, options);
+                    case "response.steer.accepted":
+                        return StreamingResponseSteerAcceptedUpdate.DeserializeStreamingResponseSteerAcceptedUpdate(element, data, options);
+                    case "response.steer.pending":
+                        return StreamingResponseSteerPendingUpdate.DeserializeStreamingResponseSteerPendingUpdate(element, data, options);
+                    case "response.steer.failed":
+                        return StreamingResponseSteerFailedUpdate.DeserializeStreamingResponseSteerFailedUpdate(element, data, options);
                 }
             }
             return InternalUnknownResponseStreamEvent.DeserializeInternalUnknownResponseStreamEvent(element, data, options);

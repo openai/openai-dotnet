@@ -100,6 +100,7 @@ public partial class OpenAIClient
     }
 
     private readonly OpenAIClientOptions _options;
+    private readonly ResponseWebSocketHandshake _responsesWebSocketHandshake;
     private readonly ApiKeyCredential _keyCredential;
 
     // CUSTOM: Added as a convenience.
@@ -152,6 +153,7 @@ public partial class OpenAIClient
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
+        _responsesWebSocketHandshake = new ResponseWebSocketHandshake(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
         _options = options;
@@ -356,12 +358,12 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="ResponsesClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual ResponsesClient GetResponsesClient() => new TopLevelResponsesClient(Pipeline, new ResponsesClientOptions
+    public virtual ResponsesClient GetResponsesClient()
     {
-        // The shared-pipeline constructor only consumes the endpoint. Other settings are already
-        // baked into the reused pipeline or only apply when building a new pipeline.
-        Endpoint = _options.Endpoint,
-    });
+        var client = new TopLevelResponsesClient(Pipeline, new ResponsesClientOptions { Endpoint = _options.Endpoint });
+        client.SetWebSocketHandshake(_responsesWebSocketHandshake);
+        return client;
+    }
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to

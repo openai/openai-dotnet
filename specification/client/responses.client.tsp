@@ -324,3 +324,34 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(CustomToolCallStatus);
 @@dynamicModel(CustomToolCallOutputItem);
 @@dynamicModel(CustomToolCallOutputStatus);
+@@alternateType(ResponseWebSocketCreateCommand.`model`, string);
+@@clientName(ResponseWebSocketCreateCommand.`model`, "Model");
+
+@@dynamicModel(ResponseWebSocketCommand);
+@@dynamicModel(ResponseWebSocketCreateCommand);
+@@dynamicModel(ResponseWebSocketSteerCommand);
+@@dynamicModel(ResponseWebSocketSteerMessage);
+@@dynamicModel(ResponseWebSocketServerEvent);
+@@dynamicModel(ResponseWebSocketErrorEvent);
+@@dynamicModel(ResponseWebSocketErrorDetails);
+
+@@dynamicModel(ResponseWebSocketMisalignment);
+@@dynamicModel(ResponseWebSocketContinuation);
+
+@@dynamicModel(ContextManagementParam);
+@@dynamicModel(ResponseSteerSubmission);
+@@dynamicModel(ResponseSteerError);
+@@dynamicModel(ResponseSteerFailedSubmission);
+@@dynamicModel(ResponseSteerRequiredInput);
+@@dynamicModel(ResponseSteerFunctionCallOutput);
+@@dynamicModel(ResponseSteerCustomToolCallOutput);
+@@dynamicModel(ResponseSteerComputerCallOutput);
+@@dynamicModel(ResponseSteerShellCallOutput);
+@@dynamicModel(ResponseSteerApplyPatchCallOutput);
+@@dynamicModel(ResponseSteerToolSearchOutput);
+@@dynamicModel(ResponseSteerMcpApprovalResponse);
+@@dynamicModel(ResponseSteerAcceptedEvent);
+@@dynamicModel(ResponseSteerPendingEvent);
+@@dynamicModel(ResponseSteerFailedEvent);
+// Return rejected input exactly, including string shorthand and future fields.
+@@alternateType(ResponseSteerFailedSubmission.input, unknown);

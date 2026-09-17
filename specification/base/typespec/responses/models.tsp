@@ -102,7 +102,20 @@ union DotNetResponseServiceTier {
   "scale",
 }
 
+/** Context management applied to a response's conversation. */
+model ContextManagementParam {
+  /** The entry type. Currently only `compaction` is supported. */
+  type: string;
+  /** Token threshold at which compaction is triggered. */
+  @minValue(1000)
+  compact_threshold?: int32 | null;
+}
+
 model CreateResponse {
+  /** Context management settings for this response. */
+  @minItems(1)
+  context_management?: ContextManagementParam[] | null;
+
   metadata?: Record<string>;
 
   @doc("""
