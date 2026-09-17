@@ -1137,6 +1137,7 @@ public class ResponsesWebSocketTests
     public async Task RecoveryCancellationAndOldConnectionCloseRespectReplacementOwnership(bool cancelRestoration)
     {
         var replacementClosed = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var responseSent = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         int accepted = 0;
         await using var server = await LocalServer.Start(async (_, socket) =>
         {
@@ -1145,10 +1146,11 @@ public class ResponsesWebSocketTests
             {
                 await Receive(socket);
                 await Send(socket, Terminal("completed", "resp_replacement", "answer"));
+                responseSent.TrySetResult();
                 await AwaitClose(socket);
                 replacementClosed.TrySetResult();
             }
-            catch (Exception error) { replacementClosed.TrySetException(error); throw; }
+            catch (Exception error) { responseSent.TrySetException(error); replacementClosed.TrySetException(error); throw; }
         });
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         using var cancellation = CancellationTokenSource.CreateLinkedTokenSource(timeout.Token);
@@ -1164,6 +1166,7 @@ public class ResponsesWebSocketTests
             await resume.Task.WaitAsync(token);
         }, cancellationToken: cancellation.Token);
         var opened = await restoring.Task.WaitAsync(timeout.Token);
+        await responseSent.Task.WaitAsync(timeout.Token);
         Assert.ThrowsAsync<ObjectDisposedException>(async () => await oldReceive);
         await original.CloseAsync(timeout.Token);
         original.Dispose();
