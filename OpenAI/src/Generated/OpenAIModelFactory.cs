@@ -2639,6 +2639,94 @@ namespace OpenAI
             return new McpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
         }
 
+        public static ResponseWebSocketCommand ResponseWebSocketCommand(string kind = default)
+        {
+            return new InternalUnknownResponseWebSocketCommand(new InternalResponseWebSocketCommandType(kind), default);
+        }
+
+        public static ResponseWebSocketCreateCommand ResponseWebSocketCreateCommand(string streamId = default, IDictionary<string, string> metadata = default, float? temperature = default, int? topLogprobs = default, float? topP = default, string user = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoning = default, int? maxOutputTokens = default, int? maxToolCalls = default, ResponseTextOptions text = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncation = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCalls = default, bool? store = default, string instructions = default, ResponseConversationOptions conversation = default, string promptCacheKey = default, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy = default, bool? generate = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            inputItems ??= new ChangeTrackingList<ResponseItem>();
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
+
+            return new ResponseWebSocketCreateCommand(
+                InternalResponseWebSocketCommandType.ResponseCreate,
+                default,
+                streamId,
+                metadata,
+                temperature,
+                topLogprobs,
+                topP,
+                user,
+                safetyIdentifier,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoning,
+                maxOutputTokens,
+                maxToolCalls,
+                text,
+                tools.ToList(),
+                toolChoice,
+                truncation,
+                inputItems.ToList(),
+                includedProperties.ToList(),
+                parallelToolCalls,
+                store,
+                instructions,
+                conversation,
+                promptCacheKey,
+                promptCacheRetentionPolicy,
+                generate);
+        }
+
+        public static ResponseWebSocketSteerCommand ResponseWebSocketSteerCommand(string previousResponseId = default, BinaryData input = default)
+        {
+            return new ResponseWebSocketSteerCommand(InternalResponseWebSocketCommandType.ResponseSteer, default, previousResponseId, input);
+        }
+
+        public static ResponseWebSocketServerEvent ResponseWebSocketServerEvent(string kind = default, string streamId = default)
+        {
+            return new InternalUnknownResponseWebSocketServerEvent(new InternalResponseWebSocketServerEventType(kind), streamId, default);
+        }
+
+        public static ResponseWebSocketErrorEvent ResponseWebSocketErrorEvent(string streamId = default, ResponseWebSocketErrorDetails error = default, int? status = default, int? sequenceNumber = default)
+        {
+            return new ResponseWebSocketErrorEvent(
+                InternalResponseWebSocketServerEventType.Error,
+                streamId,
+                default,
+                error,
+                status,
+                sequenceNumber);
+        }
+
+        public static ResponseWebSocketErrorDetails ResponseWebSocketErrorDetails(string kind = default, string message = default, string code = default, string @param = default, IDictionary<string, string> headers = default, ResponseWebSocketMisalignment misalignment = default)
+        {
+            headers ??= new ChangeTrackingDictionary<string, string>();
+
+            return new ResponseWebSocketErrorDetails(
+                kind,
+                message,
+                code,
+                @param,
+                headers,
+                misalignment,
+                default);
+        }
+
+        public static ResponseWebSocketMisalignment ResponseWebSocketMisalignment(string detailedExplanation = default, string errorType = default, ResponseWebSocketContinuation steer = default)
+        {
+            return new ResponseWebSocketMisalignment(detailedExplanation, errorType, steer, default);
+        }
+
+        public static ResponseWebSocketContinuation ResponseWebSocketContinuation(string message = default)
+        {
+            return new ResponseWebSocketContinuation(message, default);
+        }
+
         public static RealtimeTokenLogProbabilityDetails RealtimeTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new RealtimeTokenLogProbabilityDetails(token, logProbability, utf8Bytes, default);

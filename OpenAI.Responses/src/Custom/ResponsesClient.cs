@@ -71,6 +71,7 @@ public partial class ResponsesClient
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new ResponsesClientOptions();
 
+        _webSocketHandshake = new ResponseWebSocketHandshake(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
     }

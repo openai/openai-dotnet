@@ -862,6 +862,8 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponsesMessageItemResourceItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseTextFormatConfiguration))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownResponseWebSocketCommand))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownResponseWebSocketServerEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTool))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolCallCaller))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolChoiceBaseGA))]
@@ -1420,6 +1422,33 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResponseTool))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseTool is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketCommand is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketCommand))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketCommand is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketContinuation is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketContinuation))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketContinuation is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketCreateCommand is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketCreateCommand))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketCreateCommand is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketErrorDetails is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketErrorDetails))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketErrorDetails is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketErrorEvent is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketErrorEvent))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketErrorEvent is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketMisalignment is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketMisalignment))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketMisalignment is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketServerEvent is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketServerEvent))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketServerEvent is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketSteerCommand is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketSteerCommand))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketSteerCommand is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Responses.ResponseWebSocketSteerMessage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(ResponseWebSocketSteerMessage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Responses.ResponseWebSocketSteerMessage is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunCollectionOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.

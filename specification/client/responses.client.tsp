@@ -324,3 +324,16 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(CustomToolCallStatus);
 @@dynamicModel(CustomToolCallOutputItem);
 @@dynamicModel(CustomToolCallOutputStatus);
+@@alternateType(ResponseWebSocketCreateCommand.`model`, string);
+@@clientName(ResponseWebSocketCreateCommand.`model`, "Model");
+
+@@dynamicModel(ResponseWebSocketCommand);
+@@dynamicModel(ResponseWebSocketCreateCommand);
+@@dynamicModel(ResponseWebSocketSteerCommand);
+@@dynamicModel(ResponseWebSocketSteerMessage);
+@@dynamicModel(ResponseWebSocketServerEvent);
+@@dynamicModel(ResponseWebSocketErrorEvent);
+@@dynamicModel(ResponseWebSocketErrorDetails);
+
+@@dynamicModel(ResponseWebSocketMisalignment);
+@@dynamicModel(ResponseWebSocketContinuation);

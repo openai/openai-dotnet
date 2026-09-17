@@ -1363,6 +1363,8 @@ namespace OpenAI.Responses {
         public virtual Task<ClientResult<ResponseResult>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
         public virtual ClientResult CompactResponse(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> CompactResponseAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ResponseWebSocketConnection> ConnectWebSocketAsync(ResponseWebSocketOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> CreateResponse(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
@@ -1588,6 +1590,147 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketCommand : IJsonModel<ResponseWebSocketCommand>, IPersistableModel<ResponseWebSocketCommand> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable {
+        public bool HasConnectionStateLoss { get; }
+        public void Abort();
+        public Task CloseAsync(CancellationToken cancellationToken = default);
+        public void Dispose();
+        public ValueTask DisposeAsync();
+        public IAsyncEnumerable<ResponseWebSocketServerEvent> GetEventsAsync(CancellationToken cancellationToken = default);
+        public ResponseWebSocketLane OpenLane(string streamId);
+        public Task<ResponseWebSocketServerEvent> ReceiveAsync(CancellationToken cancellationToken = default);
+        public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default);
+        public Task<ResponseWebSocketConnection> ReconnectAsync(Func<ResponseWebSocketConnection, CancellationToken, Task> restore, int maxAttempts = 1, CancellationToken cancellationToken = default);
+        public Task SendAsync(ResponseWebSocketCommand command, CancellationToken cancellationToken = default);
+        public Task SendAsync(BinaryData command, CancellationToken cancellationToken = default);
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketContinuation : IJsonModel<ResponseWebSocketContinuation>, IPersistableModel<ResponseWebSocketContinuation> {
+        public string Message { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketCreateCommand : ResponseWebSocketCommand, IJsonModel<ResponseWebSocketCreateCommand>, IPersistableModel<ResponseWebSocketCreateCommand> {
+        public ResponseWebSocketCreateCommand();
+        public ResponseConversationOptions Conversation { get; set; }
+        public bool? Generate { get; set; }
+        public IList<IncludedResponseProperty> IncludedProperties { get; }
+        public IList<ResponseItem> InputItems { get; }
+        public string Instructions { get; set; }
+        public int? MaxOutputTokens { get; set; }
+        public int? MaxToolCalls { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; set; }
+        public bool? ParallelToolCalls { get; set; }
+        public string PreviousResponseId { get; set; }
+        public string PromptCacheKey { get; set; }
+        public ResponsePromptCacheRetentionPolicy? PromptCacheRetentionPolicy { get; set; }
+        public ResponseReasoningOptions Reasoning { get; set; }
+        public string SafetyIdentifier { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
+        public bool? Store { get; set; }
+        public string StreamId { get; set; }
+        public float? Temperature { get; set; }
+        public ResponseTextOptions Text { get; set; }
+        public ResponseToolChoice ToolChoice { get; set; }
+        public IList<ResponseTool> Tools { get; }
+        public int? TopLogprobs { get; set; }
+        public float? TopP { get; set; }
+        public ResponseTruncationMode? Truncation { get; set; }
+        public string User { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketErrorDetails : IJsonModel<ResponseWebSocketErrorDetails>, IPersistableModel<ResponseWebSocketErrorDetails> {
+        public string Code { get; set; }
+        public IDictionary<string, string> Headers { get; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        public ResponseWebSocketMisalignment Misalignment { get; set; }
+        public string Param { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketErrorEvent : ResponseWebSocketServerEvent, IJsonModel<ResponseWebSocketErrorEvent>, IPersistableModel<ResponseWebSocketErrorEvent> {
+        public ResponseWebSocketErrorEvent();
+        public ResponseWebSocketErrorDetails Error { get; set; }
+        public int? SequenceNumber { get; set; }
+        public int? Status { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public sealed class ResponseWebSocketException : Exception {
+        public ResponseWebSocketErrorEvent Error { get; }
+    }
+    [Experimental("OPENAI001")]
+    public sealed class ResponseWebSocketLane : IDisposable {
+        public string StreamId { get; }
+        public void Dispose();
+        public Task<ResponseWebSocketServerEvent> ReceiveAsync(CancellationToken cancellationToken = default);
+        public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default);
+        public Task SendAsync(ResponseWebSocketCommand command, CancellationToken cancellationToken = default);
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketMisalignment : IJsonModel<ResponseWebSocketMisalignment>, IPersistableModel<ResponseWebSocketMisalignment> {
+        public string DetailedExplanation { get; set; }
+        public string ErrorType { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public ResponseWebSocketContinuation Steer { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketOptions {
+        public TimeSpan CloseTimeout { get; set; }
+        public Action<Net.Http.HttpClientHandler> ConfigureTransport { get; set; }
+        public Func<Uri, IReadOnlyDictionary<string, string>, CancellationToken, Task<Net.WebSockets.WebSocket>> Connector { get; set; }
+        public IDictionary<string, string> Headers { get; }
+        public int MaxBufferedBytes { get; set; }
+        public int MaxBufferedEvents { get; set; }
+        public int MaxLanes { get; set; }
+        public int MaxMessageBytes { get; set; }
+        public int MaxPendingSends { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketServerEvent : IJsonModel<ResponseWebSocketServerEvent>, IPersistableModel<ResponseWebSocketServerEvent> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public BinaryData RawData { get; }
+        public string StreamId { get; set; }
+        public StreamingResponseUpdate Update { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketSteerCommand : ResponseWebSocketCommand, IJsonModel<ResponseWebSocketSteerCommand>, IPersistableModel<ResponseWebSocketSteerCommand> {
+        public ResponseWebSocketSteerCommand();
+        public ResponseWebSocketSteerCommand(string previousResponseId, BinaryData input);
+        public BinaryData Input { get; set; }
+        public string PreviousResponseId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseWebSocketSteerMessage : IJsonModel<ResponseWebSocketSteerMessage>, IPersistableModel<ResponseWebSocketSteerMessage> {
+        public ResponseWebSocketSteerMessage();
+        public ResponseWebSocketSteerMessage(BinaryData content);
+        public BinaryData Content { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
