@@ -374,14 +374,16 @@ namespace OpenAI
                 default);
         }
 
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default, string promptCacheKey = default, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy = default)
+        public static CreateResponseOptions CreateResponseOptions(IEnumerable<ResponseContextManagement> contextManagement = default, IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default, string promptCacheKey = default, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy = default)
         {
+            contextManagement ??= new ChangeTrackingList<ResponseContextManagement>();
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
             inputItems ??= new ChangeTrackingList<ResponseItem>();
             includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
 
             return new CreateResponseOptions(
+                contextManagement.ToList(),
                 metadata,
                 temperature,
                 topLogProbabilityCount,
@@ -409,6 +411,11 @@ namespace OpenAI
                 promptCacheKey,
                 promptCacheRetentionPolicy,
                 default);
+        }
+
+        public static ResponseContextManagement ResponseContextManagement(string kind = default, int? compactThreshold = default)
+        {
+            return new ResponseContextManagement(kind, compactThreshold, default);
         }
 
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
@@ -1411,6 +1418,91 @@ namespace OpenAI
         public static StreamingResponseQueuedUpdate StreamingResponseQueuedUpdate(int sequenceNumber = default, ResponseResult response = default)
         {
             return new StreamingResponseQueuedUpdate(default, sequenceNumber, default, response);
+        }
+
+        public static StreamingResponseSteerAcceptedUpdate StreamingResponseSteerAcceptedUpdate(int sequenceNumber = default, ResponseSteerSubmission steer = default, string streamId = default)
+        {
+            return new StreamingResponseSteerAcceptedUpdate(default, sequenceNumber, default, steer, streamId);
+        }
+
+        public static ResponseSteerSubmission ResponseSteerSubmission(string id = default, string previousResponseId = default)
+        {
+            return new ResponseSteerSubmission(id, previousResponseId, default);
+        }
+
+        public static StreamingResponseSteerPendingUpdate StreamingResponseSteerPendingUpdate(int sequenceNumber = default, ResponseSteerSubmission steer = default, ResponseSteerPendingReason reason = default, IEnumerable<ResponseSteerRequiredInput> requiredInput = default, string streamId = default)
+        {
+            requiredInput ??= new ChangeTrackingList<ResponseSteerRequiredInput>();
+
+            return new StreamingResponseSteerPendingUpdate(
+                default,
+                sequenceNumber,
+                default,
+                steer,
+                reason,
+                requiredInput.ToList(),
+                streamId);
+        }
+
+        public static ResponseSteerRequiredInput ResponseSteerRequiredInput(string kind = default)
+        {
+            return new InternalUnknownResponseSteerRequiredInput(new ResponseSteerRequiredInputKind(kind), default);
+        }
+
+        public static ResponseSteerFunctionCallOutput ResponseSteerFunctionCallOutput(string callId = default, string name = default)
+        {
+            return new ResponseSteerFunctionCallOutput(default, default, callId, name);
+        }
+
+        public static ResponseSteerCustomToolCallOutput ResponseSteerCustomToolCallOutput(string callId = default)
+        {
+            return new ResponseSteerCustomToolCallOutput(default, default, callId);
+        }
+
+        public static ResponseSteerComputerCallOutput ResponseSteerComputerCallOutput(string callId = default)
+        {
+            return new ResponseSteerComputerCallOutput(default, default, callId);
+        }
+
+        public static ResponseSteerShellCallOutput ResponseSteerShellCallOutput(string callId = default)
+        {
+            return new ResponseSteerShellCallOutput(default, default, callId);
+        }
+
+        public static ResponseSteerApplyPatchCallOutput ResponseSteerApplyPatchCallOutput(string callId = default)
+        {
+            return new ResponseSteerApplyPatchCallOutput(default, default, callId);
+        }
+
+        public static ResponseSteerToolSearchOutput ResponseSteerToolSearchOutput(string callId = default)
+        {
+            return new ResponseSteerToolSearchOutput(default, default, callId, "client");
+        }
+
+        public static ResponseSteerMcpApprovalResponse ResponseSteerMcpApprovalResponse(string approvalRequestId = default)
+        {
+            return new ResponseSteerMcpApprovalResponse(default, default, approvalRequestId);
+        }
+
+        public static StreamingResponseSteerFailedUpdate StreamingResponseSteerFailedUpdate(int sequenceNumber = default, ResponseSteerFailedSubmission steer = default, ResponseSteerError error = default, string streamId = default)
+        {
+            return new StreamingResponseSteerFailedUpdate(
+                default,
+                sequenceNumber,
+                default,
+                steer,
+                error,
+                streamId);
+        }
+
+        public static ResponseSteerFailedSubmission ResponseSteerFailedSubmission(string id = default, string previousResponseId = default, BinaryData input = default)
+        {
+            return new ResponseSteerFailedSubmission(id, previousResponseId, input, default);
+        }
+
+        public static ResponseSteerError ResponseSteerError(ResponseSteerErrorCode code = default, string message = default)
+        {
+            return new ResponseSteerError("invalid_request_error", code, message, default);
         }
 
         public static ResponseDeletionResult ResponseDeletionResult(string responseId = default, bool deleted = default)
@@ -2644,8 +2736,9 @@ namespace OpenAI
             return new InternalUnknownResponseWebSocketCommand(new InternalResponseWebSocketCommandType(kind), default);
         }
 
-        public static ResponseWebSocketCreateCommand ResponseWebSocketCreateCommand(string streamId = default, IDictionary<string, string> metadata = default, float? temperature = default, int? topLogprobs = default, float? topP = default, string user = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoning = default, int? maxOutputTokens = default, int? maxToolCalls = default, ResponseTextOptions text = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncation = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCalls = default, bool? store = default, string instructions = default, ResponseConversationOptions conversation = default, string promptCacheKey = default, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy = default, bool? generate = default)
+        public static ResponseWebSocketCreateCommand ResponseWebSocketCreateCommand(string streamId = default, IEnumerable<ResponseContextManagement> contextManagement = default, IDictionary<string, string> metadata = default, float? temperature = default, int? topLogprobs = default, float? topP = default, string user = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoning = default, int? maxOutputTokens = default, int? maxToolCalls = default, ResponseTextOptions text = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncation = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCalls = default, bool? store = default, string instructions = default, ResponseConversationOptions conversation = default, string promptCacheKey = default, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy = default, bool? generate = default)
         {
+            contextManagement ??= new ChangeTrackingList<ResponseContextManagement>();
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
             inputItems ??= new ChangeTrackingList<ResponseItem>();
@@ -2655,6 +2748,7 @@ namespace OpenAI
                 InternalResponseWebSocketCommandType.ResponseCreate,
                 default,
                 streamId,
+                contextManagement.ToList(),
                 metadata,
                 temperature,
                 topLogprobs,

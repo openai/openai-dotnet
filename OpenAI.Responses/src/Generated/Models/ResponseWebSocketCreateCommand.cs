@@ -13,16 +13,17 @@ namespace OpenAI.Responses
     public partial class ResponseWebSocketCreateCommand : ResponseWebSocketCommand
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public ResponseWebSocketCreateCommand() : this(InternalResponseWebSocketCommandType.ResponseCreate, default, null, null, default, default, default, null, null, default, null, null, null, default, default, null, null, null, default, null, null, default, default, null, null, null, default, default)
+        public ResponseWebSocketCreateCommand() : this(InternalResponseWebSocketCommandType.ResponseCreate, default, null, null, null, default, default, default, null, null, default, null, null, null, default, default, null, null, null, default, null, null, default, default, null, null, null, default, default)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseWebSocketCreateCommand(InternalResponseWebSocketCommandType kind, in JsonPatch patch, string streamId, IDictionary<string, string> metadata, float? temperature, int? topLogprobs, float? topP, string user, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoning, int? maxOutputTokens, int? maxToolCalls, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCalls, bool? store, string instructions, ResponseConversationOptions conversation, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, bool? generate) : base(kind, patch)
+        internal ResponseWebSocketCreateCommand(InternalResponseWebSocketCommandType kind, in JsonPatch patch, string streamId, IList<ResponseContextManagement> contextManagement, IDictionary<string, string> metadata, float? temperature, int? topLogprobs, float? topP, string user, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoning, int? maxOutputTokens, int? maxToolCalls, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCalls, bool? store, string instructions, ResponseConversationOptions conversation, string promptCacheKey, ResponsePromptCacheRetentionPolicy? promptCacheRetentionPolicy, bool? generate) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             StreamId = streamId;
+            ContextManagement = contextManagement ?? new ChangeTrackingList<ResponseContextManagement>();
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopLogprobs = topLogprobs;
@@ -53,6 +54,8 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string StreamId { get; set; }
+
+        public IList<ResponseContextManagement> ContextManagement { get; set; }
 
         public IDictionary<string, string> Metadata { get; }
 

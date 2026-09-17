@@ -63,6 +63,9 @@ union ResponseStreamEventType {
   response_queued: "response.queued",
   response_custom_tool_call_input_delta: "response.custom_tool_call_input.delta",
   response_custom_tool_call_input_done: "response.custom_tool_call_input.done",
+  response_steer_accepted: "response.steer.accepted",
+  response_steer_pending: "response.steer.pending",
+  response_steer_failed: "response.steer.failed",
 }
 
 @discriminator("type")

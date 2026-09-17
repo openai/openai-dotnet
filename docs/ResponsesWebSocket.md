@@ -57,6 +57,8 @@ await lane.SendAsync(new ResponseWebSocketCreateCommand
 
 `new ResponseWebSocketSteerCommand(responseId, text)` constructs a steering command with one user message containing an input text part. Its `Input` collection also accepts `ResponseWebSocketSteerMessage` instances with typed text, image, and file parts in `Content`. Text constructors serialize to the message and content array forms. Use `SendAsync(BinaryData)` to send exact JSON, including string shorthand or custom fields.
 
+Steering outcomes expose `StreamingResponseSteerAcceptedUpdate`, `StreamingResponseSteerPendingUpdate`, and `StreamingResponseSteerFailedUpdate` through `Update`. Acceptance means the server owns the input; the successor's `response.created` confirms it was applied. Do not resend accepted or pending input. A pending update identifies required tool results or approvals in `RequiredInput`; fill them from saved results and send one continuation per parent. A failed update returns the uncommitted input in `Steer.Input`. Unknown reasons, codes, and input-stub types remain readable. Steering notifications are not terminal response results.
+
 ## Transport and limits
 
 The default upgrade uses HTTP/1.1 and rejects redirects. Configure proxy, client certificates, or TLS settings through `ResponseWebSocketOptions.ConfigureTransport`. The default adapter is available on .NET 8, .NET 9, and .NET 10. When using the `netstandard2.0` assembly, it requires a runtime that provides `ClientWebSocket.ConnectAsync(Uri, HttpMessageInvoker, CancellationToken)`; older runtimes must supply an explicit `Connector`.
@@ -95,3 +97,5 @@ Follow the [WebSocket protocol guide](https://developers.openai.com/api/docs/gui
 - The service permits 16 active responses, 32 distinct named streams, and 60-minute connections. Stream names use 1–256 letters, digits, underscores, hyphens, or periods. These are separate from local send/queue limits.
 
 When using lanes, also consume the connection's default event stream: errors without `stream_id` arrive there once. Handle `invalid_stream_id`, `websocket_stream_limit_reached`, and `websocket_connection_limit_reached` explicitly; API errors alone do not close the SDK connection.
+
+Configure server compaction on a create command with `command.ContextManagement.Add(new ResponseContextManagement("compaction") { CompactThreshold = 10000 })`. This controls service conversation context, independently of local event buffering. Continue using the latest response ID and only new input after server compaction.

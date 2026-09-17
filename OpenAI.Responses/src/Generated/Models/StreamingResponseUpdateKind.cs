@@ -66,6 +66,9 @@ namespace OpenAI.Responses
         private const string ResponseQueuedValue = "response.queued";
         private const string ResponseCustomToolCallInputDeltaValue = "response.custom_tool_call_input.delta";
         private const string ResponseCustomToolCallInputDoneValue = "response.custom_tool_call_input.done";
+        private const string ResponseSteerAcceptedValue = "response.steer.accepted";
+        private const string ResponseSteerPendingValue = "response.steer.pending";
+        private const string ResponseSteerFailedValue = "response.steer.failed";
 
         public StreamingResponseUpdateKind(string value)
         {
@@ -179,6 +182,12 @@ namespace OpenAI.Responses
         public static StreamingResponseUpdateKind ResponseCustomToolCallInputDelta { get; } = new StreamingResponseUpdateKind(ResponseCustomToolCallInputDeltaValue);
 
         public static StreamingResponseUpdateKind ResponseCustomToolCallInputDone { get; } = new StreamingResponseUpdateKind(ResponseCustomToolCallInputDoneValue);
+
+        public static StreamingResponseUpdateKind ResponseSteerAccepted { get; } = new StreamingResponseUpdateKind(ResponseSteerAcceptedValue);
+
+        public static StreamingResponseUpdateKind ResponseSteerPending { get; } = new StreamingResponseUpdateKind(ResponseSteerPendingValue);
+
+        public static StreamingResponseUpdateKind ResponseSteerFailed { get; } = new StreamingResponseUpdateKind(ResponseSteerFailedValue);
 
         public static bool operator ==(StreamingResponseUpdateKind left, StreamingResponseUpdateKind right) => left.Equals(right);
 

@@ -292,6 +292,7 @@ namespace OpenAI.Responses {
         public CreateResponseOptions();
         public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems);
         public bool? BackgroundModeEnabled { get; set; }
+        public IList<ResponseContextManagement> ContextManagement { get; set; }
         public ResponseConversationOptions ConversationOptions { get; set; }
         public string EndUserId { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
@@ -973,6 +974,17 @@ namespace OpenAI.Responses {
         Refusal = 5
     }
     [Experimental("OPENAI001")]
+    public class ResponseContextManagement : IJsonModel<ResponseContextManagement>, IPersistableModel<ResponseContextManagement> {
+        public ResponseContextManagement();
+        public ResponseContextManagement(string kind);
+        public int? CompactThreshold { get; set; }
+        public string Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
     public class ResponseConversationOptions : IJsonModel<ResponseConversationOptions>, IPersistableModel<ResponseConversationOptions> {
         public ResponseConversationOptions();
         public ResponseConversationOptions(string conversationId);
@@ -1444,6 +1456,137 @@ namespace OpenAI.Responses {
         Failed = 5
     }
     [Experimental("OPENAI001")]
+    public class ResponseSteerApplyPatchCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerApplyPatchCallOutput>, IPersistableModel<ResponseSteerApplyPatchCallOutput> {
+        public ResponseSteerApplyPatchCallOutput();
+        public string CallId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerComputerCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerComputerCallOutput>, IPersistableModel<ResponseSteerComputerCallOutput> {
+        public ResponseSteerComputerCallOutput();
+        public string CallId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerCustomToolCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerCustomToolCallOutput>, IPersistableModel<ResponseSteerCustomToolCallOutput> {
+        public ResponseSteerCustomToolCallOutput();
+        public string CallId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerError : IJsonModel<ResponseSteerError>, IPersistableModel<ResponseSteerError> {
+        public ResponseSteerErrorCode Code { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseSteerErrorCode : IEquatable<ResponseSteerErrorCode> {
+        public ResponseSteerErrorCode(string value);
+        public static ResponseSteerErrorCode InvalidInput { get; }
+        public static ResponseSteerErrorCode ResponseAlreadyCompleted { get; }
+        public static ResponseSteerErrorCode ResponseNotActive { get; }
+        public static ResponseSteerErrorCode ResponseNotFound { get; }
+        public static ResponseSteerErrorCode SteeringNotSupported { get; }
+        public static ResponseSteerErrorCode SuccessorCreationFailed { get; }
+        public static ResponseSteerErrorCode TooManyPendingSteers { get; }
+        public readonly bool Equals(ResponseSteerErrorCode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseSteerErrorCode left, ResponseSteerErrorCode right);
+        public static implicit operator ResponseSteerErrorCode(string value);
+        public static implicit operator ResponseSteerErrorCode?(string value);
+        public static bool operator !=(ResponseSteerErrorCode left, ResponseSteerErrorCode right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerFailedSubmission : IJsonModel<ResponseSteerFailedSubmission>, IPersistableModel<ResponseSteerFailedSubmission> {
+        public string Id { get; set; }
+        public BinaryData Input { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string PreviousResponseId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerFunctionCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerFunctionCallOutput>, IPersistableModel<ResponseSteerFunctionCallOutput> {
+        public ResponseSteerFunctionCallOutput();
+        public string CallId { get; set; }
+        public string Name { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerMcpApprovalResponse : ResponseSteerRequiredInput, IJsonModel<ResponseSteerMcpApprovalResponse>, IPersistableModel<ResponseSteerMcpApprovalResponse> {
+        public ResponseSteerMcpApprovalResponse();
+        public string ApprovalRequestId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseSteerPendingReason : IEquatable<ResponseSteerPendingReason> {
+        public ResponseSteerPendingReason(string value);
+        public static ResponseSteerPendingReason WaitingForRequiredInput { get; }
+        public readonly bool Equals(ResponseSteerPendingReason other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseSteerPendingReason left, ResponseSteerPendingReason right);
+        public static implicit operator ResponseSteerPendingReason(string value);
+        public static implicit operator ResponseSteerPendingReason?(string value);
+        public static bool operator !=(ResponseSteerPendingReason left, ResponseSteerPendingReason right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerRequiredInput : IJsonModel<ResponseSteerRequiredInput>, IPersistableModel<ResponseSteerRequiredInput> {
+        public ResponseSteerRequiredInputKind Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseSteerRequiredInputKind : IEquatable<ResponseSteerRequiredInputKind> {
+        public ResponseSteerRequiredInputKind(string value);
+        public static ResponseSteerRequiredInputKind ApplyPatchCallOutput { get; }
+        public static ResponseSteerRequiredInputKind ComputerCallOutput { get; }
+        public static ResponseSteerRequiredInputKind CustomToolCallOutput { get; }
+        public static ResponseSteerRequiredInputKind FunctionCallOutput { get; }
+        public static ResponseSteerRequiredInputKind McpApprovalResponse { get; }
+        public static ResponseSteerRequiredInputKind ShellCallOutput { get; }
+        public static ResponseSteerRequiredInputKind ToolSearchOutput { get; }
+        public readonly bool Equals(ResponseSteerRequiredInputKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseSteerRequiredInputKind left, ResponseSteerRequiredInputKind right);
+        public static implicit operator ResponseSteerRequiredInputKind(string value);
+        public static implicit operator ResponseSteerRequiredInputKind?(string value);
+        public static bool operator !=(ResponseSteerRequiredInputKind left, ResponseSteerRequiredInputKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerShellCallOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerShellCallOutput>, IPersistableModel<ResponseSteerShellCallOutput> {
+        public ResponseSteerShellCallOutput();
+        public string CallId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerSubmission : IJsonModel<ResponseSteerSubmission>, IPersistableModel<ResponseSteerSubmission> {
+        public string Id { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string PreviousResponseId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseSteerToolSearchOutput : ResponseSteerRequiredInput, IJsonModel<ResponseSteerToolSearchOutput>, IPersistableModel<ResponseSteerToolSearchOutput> {
+        public ResponseSteerToolSearchOutput();
+        public string CallId { get; set; }
+        public string Execution { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
         public ResponseTextFormatKind Kind { get; set; }
         [Serialization.JsonIgnore]
@@ -1624,6 +1767,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseWebSocketCreateCommand : ResponseWebSocketCommand, IJsonModel<ResponseWebSocketCreateCommand>, IPersistableModel<ResponseWebSocketCreateCommand> {
         public ResponseWebSocketCreateCommand();
+        public IList<ResponseContextManagement> ContextManagement { get; set; }
         public ResponseConversationOptions Conversation { get; set; }
         public bool? Generate { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
@@ -2046,6 +2190,27 @@ namespace OpenAI.Responses {
         public string Refusal { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class StreamingResponseSteerAcceptedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseSteerAcceptedUpdate>, IPersistableModel<StreamingResponseSteerAcceptedUpdate> {
+        public StreamingResponseSteerAcceptedUpdate() : base(default, default);
+        public ResponseSteerSubmission Steer { get; set; }
+        public string StreamId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseSteerFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseSteerFailedUpdate>, IPersistableModel<StreamingResponseSteerFailedUpdate> {
+        public StreamingResponseSteerFailedUpdate() : base(default, default);
+        public ResponseSteerError Error { get; set; }
+        public ResponseSteerFailedSubmission Steer { get; set; }
+        public string StreamId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseSteerPendingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseSteerPendingUpdate>, IPersistableModel<StreamingResponseSteerPendingUpdate> {
+        public StreamingResponseSteerPendingUpdate() : base(default, default);
+        public ResponseSteerPendingReason Reason { get; set; }
+        public IList<ResponseSteerRequiredInput> RequiredInput { get; }
+        public ResponseSteerSubmission Steer { get; set; }
+        public string StreamId { get; set; }
+    }
+    [Experimental("OPENAI001")]
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
         protected internal StreamingResponseUpdate(StreamingResponseUpdateKind kind, int sequenceNumber);
         public StreamingResponseUpdateKind Kind { get; }
@@ -2108,6 +2273,9 @@ namespace OpenAI.Responses {
         public static StreamingResponseUpdateKind ResponseReasoningTextDone { get; }
         public static StreamingResponseUpdateKind ResponseRefusalDelta { get; }
         public static StreamingResponseUpdateKind ResponseRefusalDone { get; }
+        public static StreamingResponseUpdateKind ResponseSteerAccepted { get; }
+        public static StreamingResponseUpdateKind ResponseSteerFailed { get; }
+        public static StreamingResponseUpdateKind ResponseSteerPending { get; }
         public static StreamingResponseUpdateKind ResponseWebSearchCallCompleted { get; }
         public static StreamingResponseUpdateKind ResponseWebSearchCallInProgress { get; }
         public static StreamingResponseUpdateKind ResponseWebSearchCallSearching { get; }
