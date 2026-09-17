@@ -70,7 +70,12 @@ public class ResponsesWebSocketTests
         }
         credential.Update("refreshed");
         var connectionOptions = new ResponseWebSocketOptions();
-        connectionOptions.Headers["X-Custom"] = "custom";
+        connectionOptions.Headers["authorization"] = "Bearer overridden";
+        connectionOptions.Headers["openai-organization"] = "overridden-organization";
+        connectionOptions.Headers["openai-project"] = "overridden-project";
+        connectionOptions.Headers["x-policy"] = "overridden-policy";
+        connectionOptions.Headers["X-Custom"] = "original-custom";
+        connectionOptions.Headers["x-custom"] = "custom";
         await using (var connection = await client.ConnectWebSocketAsync(connectionOptions))
         {
             await connection.SendAsync(BinaryData.FromString(Create));
@@ -102,6 +107,44 @@ public class ResponsesWebSocketTests
             Assert.That(terminal.RawData.ToString(), Does.Contain("resp_terminal"));
             await connection.SendAsync(BinaryData.FromString(Create));
             Assert.That((await connection.ReceiveAsync()).Update, Is.TypeOf<StreamingResponseCompletedUpdate>());
+        }
+        await server.Completed;
+    }
+
+    [Test]
+    public async Task MissingTerminalResponseFailsHelperAndPreservesRawEventsAndConnection(
+        [Values("completed", "failed", "incomplete")] string status,
+        [Values(false, true)] bool nullResponse,
+        [Values(false, true)] bool useLane)
+    {
+        string streamId = useLane ? "answer" : null;
+        string message = "{\"type\":\"response." + status + "\",\"sequence_number\":1" +
+            (useLane ? ",\"stream_id\":\"answer\"" : "") +
+            (nullResponse ? ",\"response\":null}" : "}");
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            await Receive(socket);
+            await Send(socket, message);
+            await Receive(socket);
+            await Send(socket, message);
+            await Receive(socket);
+            await Send(socket, Terminal("completed", "resp_after_missing_response", streamId));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            using var lane = useLane ? connection.OpenLane(streamId) : null;
+            var command = new ResponseWebSocketCreateCommand { Model = "test-model" };
+            Task SendCommand() => useLane ? lane.SendAsync(command) : connection.SendAsync(command);
+            Task<ResponseResult> ReceiveResponse() => useLane ? lane.ReceiveResponseAsync() : connection.ReceiveResponseAsync();
+
+            await SendCommand();
+            Assert.ThrowsAsync<InvalidDataException>(async () => await ReceiveResponse());
+            await SendCommand();
+            var rawEvent = await (useLane ? lane.ReceiveAsync() : connection.ReceiveAsync());
+            Assert.That(rawEvent.RawData.ToString(), Is.EqualTo(message));
+            await SendCommand();
+            Assert.That((await ReceiveResponse()).Id, Is.EqualTo("resp_after_missing_response"));
         }
         await server.Completed;
     }
@@ -544,6 +587,35 @@ public class ResponsesWebSocketTests
             await connection.ReceiveAsync();
         }
         await server.Completed;
+    }
+
+    [Test]
+    public async Task DefaultEventLimitAllowsBufferedBurstAndConnectionReuse()
+    {
+        const int eventCount = 200;
+        string Event(int index) => "{\"type\":\"future.event\",\"stream_id\":\"burst\",\"index\":" + index + "}";
+        await using var server = await LocalServer.Start(async (_, socket) =>
+        {
+            await Receive(socket);
+            for (int i = 0; i < eventCount; i++) await Send(socket, Event(i));
+            await Send(socket, Terminal("completed", "resp_burst_buffered"));
+            await Receive(socket);
+            await Send(socket, Terminal("completed", "resp_after_burst"));
+            await AwaitClose(socket);
+        });
+        await using (var connection = await Client(server).ConnectWebSocketAsync())
+        {
+            using var lane = connection.OpenLane("burst");
+            await connection.SendAsync(BinaryData.FromString(Create));
+            // The shared reader must queue the whole lane burst before it reaches this default-stream event.
+            Assert.That((await connection.ReceiveResponseAsync()).Id, Is.EqualTo("resp_burst_buffered"));
+            for (int i = 0; i < eventCount; i++)
+                Assert.That((await lane.ReceiveAsync()).RawData.ToString(), Is.EqualTo(Event(i)));
+            await connection.SendAsync(BinaryData.FromString(Create));
+            Assert.That((await connection.ReceiveResponseAsync()).Id, Is.EqualTo("resp_after_burst"));
+        }
+        await server.Completed;
+        Assert.That(server.ConnectionCount, Is.EqualTo(1));
     }
 
     [Test]

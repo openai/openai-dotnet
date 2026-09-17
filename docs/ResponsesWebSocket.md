@@ -36,7 +36,7 @@ is rejected before authentication because its hooks cannot be preserved while
 disabling retries. Add custom header logic through `AddPolicy` instead; these
 request policies run for direct and factory clients.
 
-These APIs are experimental (`OPENAI001`). A terminal completed, failed, or incomplete response ends one response, not its connection. `ReceiveResponseAsync` returns the complete terminal response snapshot with its status and all output items intact; it does not execute tools. A premature socket close throws rather than fabricating a completed response.
+These APIs are experimental (`OPENAI001`). A terminal completed, failed, or incomplete response ends one response, not its connection. `ReceiveResponseAsync` returns the complete terminal response snapshot with its status and all output items intact; it does not execute tools. A terminal event with a missing or null response snapshot throws `InvalidDataException` from this helper and leaves the connection open. Use the individual event APIs to inspect such events directly. A premature socket close throws rather than fabricating a completed response.
 
 For individual events, use `ReceiveAsync` or `GetEventsAsync`. Each event exposes its complete original `RawData`, including unknown event types and fields. Normal response events also expose a typed `Update`. A nested protocol error is a `ResponseWebSocketErrorEvent`; receiving one does not close the socket. The final-response helper throws `ResponseWebSocketException` for that error and preserves the typed error in its `Error` property. Only one receive operation may be active on each event stream. A response helper owns its stream until it completes or is canceled; an event enumerator owns the default stream until enumeration ends or the enumerator is disposed. Competing receive calls are rejected, while separate lanes can receive independently.
 
@@ -68,14 +68,16 @@ Default limits are configurable per connection:
 | Limit | Default |
 | --- | --- |
 | Incoming or outgoing UTF-8 message | No byte limit (`0`) |
-| Buffered events across all lanes | 128 |
+| Buffered events across all lanes | `int.MaxValue` |
 | Buffered UTF-8 event bytes across all lanes | No byte limit (`0`) |
 | Concurrently admitted sends, including the active send | 16 |
 | Registered lanes | 64 |
 | Close handshake timeout | 2 seconds |
 
-Message and buffered-byte limits are opt-in: set `MaxMessageBytes` or `MaxBufferedBytes` to a positive value to enable a byte limit. An enabled message limit is checked while assembling fragments. Event count and enabled byte limits bound stored wire payloads; decoded model objects have additional overhead. Overflow fails the connection explicitly. A send rejected by the admission limit was not sent. Cancellation while waiting for send admission leaves the socket open. A failed or canceled physical write aborts the connection because delivery may be uncertain. Successful send completion means the command was written locally, not acknowledged by the service.
+Message and buffered-byte limits are opt-in: set `MaxMessageBytes` or `MaxBufferedBytes` to a positive value to enable a byte limit. Set `MaxBufferedEvents` to a smaller positive value to bound the number of queued events. An enabled message limit is checked while assembling fragments. Event count and enabled byte limits bound stored wire payloads; decoded model objects have additional overhead. Overflow fails the connection explicitly. A send rejected by the admission limit was not sent. Cancellation while waiting for send admission leaves the socket open. A failed or canceled physical write aborts the connection because delivery may be uncertain. Successful send completion means the command was written locally, not acknowledged by the service.
 
 ## Explicit recovery
 
 Recovery is opt-in. `ReconnectAsync` disposes the old connection, opens a fresh one, and calls the supplied restoration callback before returning it. `HasConnectionStateLoss` is true on the replacement. Connection-local service cache is lost, lane registrations are not copied, and no command is replayed automatically. Reconstruct any required application state in the callback. `maxAttempts` retries only opening the replacement; restoration is never retried automatically. Cancellation stops opening or cooperative restoration. If restoration fails, its replacement connection is disposed and the original restoration error is preserved.
+
+The replacement is a separate object owned by the caller. Closing or disposing the old connection affects only that object, even while recovery is in progress. Pass a cancellation token to `ReconnectAsync` to stop opening the replacement or cooperative restoration, and dispose the returned connection separately. An explicit reconnect can be requested after the old connection has already been closed or disposed.

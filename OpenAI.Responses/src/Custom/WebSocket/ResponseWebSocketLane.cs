@@ -55,6 +55,7 @@ public sealed class ResponseWebSocketLane : IDisposable
 
     /// <summary>Reads to a terminal event and returns its complete response, including all output and tools.</summary>
     /// <remarks>Failed and incomplete responses are returned with their status intact. Protocol errors throw.</remarks>
+    /// <exception cref="InvalidDataException">The terminal event has no response snapshot.</exception>
     public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
@@ -74,9 +75,12 @@ public sealed class ResponseWebSocketLane : IDisposable
                 if (item is ResponseWebSocketErrorEvent error) throw new ResponseWebSocketException(error);
                 switch (item.Update)
                 {
-                    case StreamingResponseCompletedUpdate completed: return completed.Response;
-                    case StreamingResponseFailedUpdate failed: return failed.Response;
-                    case StreamingResponseIncompleteUpdate incomplete: return incomplete.Response;
+                    case StreamingResponseCompletedUpdate completed:
+                        return completed.Response ?? throw new InvalidDataException("The terminal event has no response snapshot.");
+                    case StreamingResponseFailedUpdate failed:
+                        return failed.Response ?? throw new InvalidDataException("The terminal event has no response snapshot.");
+                    case StreamingResponseIncompleteUpdate incomplete:
+                        return incomplete.Response ?? throw new InvalidDataException("The terminal event has no response snapshot.");
                 }
             }
         }

@@ -48,6 +48,7 @@ public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable
 
     /// <summary>Reads the default event stream through a terminal response and returns its complete output.</summary>
     /// <remarks>Events with a named stream identifier are skipped. Use ReceiveAsync to observe unclaimed named-stream events.</remarks>
+    /// <exception cref="InvalidDataException">The terminal event has no response snapshot.</exception>
     public Task<ResponseResult> ReceiveResponseAsync(CancellationToken cancellationToken = default)
         => ResponseWebSocketLane.ReadResponseAsync(_events, cancellationToken, defaultLane: true);
 
@@ -254,6 +255,11 @@ public sealed class ResponseWebSocketConnection : IDisposable, IAsyncDisposable
     /// Explicitly replaces this connection and invokes application restoration. No command is replayed,
     /// and connection-local server state is lost. Restore must complete before the replacement is returned.
     /// </summary>
+    /// <remarks>
+    /// The replacement is a separate object owned by the caller. Closing or disposing this object affects
+    /// only the old connection, even during recovery. Use <paramref name="cancellationToken"/> to cancel
+    /// opening the replacement or cooperative restoration, and dispose the returned connection separately.
+    /// </remarks>
     public async Task<ResponseWebSocketConnection> ReconnectAsync(
         Func<ResponseWebSocketConnection, CancellationToken, Task> restore,
         int maxAttempts = 1, CancellationToken cancellationToken = default)
