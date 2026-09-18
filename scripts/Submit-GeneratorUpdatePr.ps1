@@ -192,6 +192,7 @@ try {
 
     # Install dependencies from root directory (using workspaces)
     Write-Log "Installing dependencies from root directory"
+    # npm 10 crashes while rebuilding this workspace graph with "Cannot read properties of null (reading 'edgesOut')"
     npx --yes npm@12.0.2 install
     if ($LASTEXITCODE -ne 0) {
         throw "npm install failed"
