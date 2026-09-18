@@ -192,7 +192,7 @@ try {
 
     # Install dependencies from root directory (using workspaces)
     Write-Log "Installing dependencies from root directory"
-    npm install
+    npx --yes npm@12.0.2 install
     if ($LASTEXITCODE -ne 0) {
         throw "npm install failed"
     }
