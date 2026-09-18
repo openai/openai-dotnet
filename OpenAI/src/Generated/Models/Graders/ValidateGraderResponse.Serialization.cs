@@ -130,11 +130,11 @@ namespace OpenAI.Graders
                     {
                         continue;
                     }
-                    grader = BinaryData.FromString(prop.Value.GetRawText());
+                    grader = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ValidateGraderResponse(grader, additionalBinaryDataProperties);
         }

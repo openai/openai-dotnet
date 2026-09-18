@@ -96,9 +96,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("pending_safety_checks"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "pending_safety_checks"u8);
                 for (int i = 0; i < PendingSafetyChecks.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.pending_safety_checks[{i}]")) || PendingSafetyChecks[i] != null && PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.pending_safety_checks[{i}]")) || PendingSafetyChecks[i] != null && PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -265,9 +266,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "pending_safety_checks"u8);
             for (int i = 0; i < PendingSafetyChecks.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.pending_safety_checks[{i}]")) && (PendingSafetyChecks[i] == null || !PendingSafetyChecks[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.pending_safety_checks[{i}]"))) && (PendingSafetyChecks[i] == null || !PendingSafetyChecks[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return PendingSafetyChecks[i];
                 }

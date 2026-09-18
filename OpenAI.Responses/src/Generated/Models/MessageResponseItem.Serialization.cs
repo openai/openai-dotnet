@@ -108,14 +108,14 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "user":
-                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, data, options);
-                    case "system":
-                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, data, options);
-                    case "developer":
-                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, data, options);
                     case "assistant":
                         return InternalResponsesAssistantMessage.DeserializeInternalResponsesAssistantMessage(element, data, options);
+                    case "developer":
+                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, data, options);
+                    case "system":
+                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, data, options);
+                    case "user":
+                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, data, options);
                 }
             }
             return InternalUnknownResponsesMessageItemResource.DeserializeInternalUnknownResponsesMessageItemResource(element, data, options);

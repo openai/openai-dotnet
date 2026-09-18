@@ -96,9 +96,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tools"u8);
                 for (int i = 0; i < ToolDefinitions.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || ToolDefinitions[i] != null && ToolDefinitions[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || ToolDefinitions[i] != null && ToolDefinitions[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -248,9 +249,10 @@ namespace OpenAI.Realtime
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tools"u8);
             for (int i = 0; i < ToolDefinitions.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) && (ToolDefinitions[i] == null || !ToolDefinitions[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]"))) && (ToolDefinitions[i] == null || !ToolDefinitions[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolDefinitions[i];
                 }

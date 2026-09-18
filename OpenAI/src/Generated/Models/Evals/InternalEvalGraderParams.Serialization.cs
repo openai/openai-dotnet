@@ -115,14 +115,14 @@ namespace OpenAI.Evals
                 {
                     case "label_model":
                         return InternalEvalGraderLabelModelParams.DeserializeInternalEvalGraderLabelModelParams(element, options);
-                    case "string_check":
-                        return InternalEvalGraderStringCheckParams.DeserializeInternalEvalGraderStringCheckParams(element, options);
-                    case "text_similarity":
-                        return InternalEvalGraderTextSimilarityParams.DeserializeInternalEvalGraderTextSimilarityParams(element, options);
                     case "python":
                         return InternalEvalGraderPythonParams.DeserializeInternalEvalGraderPythonParams(element, options);
                     case "score_model":
                         return InternalEvalGraderScoreModelParams.DeserializeInternalEvalGraderScoreModelParams(element, options);
+                    case "string_check":
+                        return InternalEvalGraderStringCheckParams.DeserializeInternalEvalGraderStringCheckParams(element, options);
+                    case "text_similarity":
+                        return InternalEvalGraderTextSimilarityParams.DeserializeInternalEvalGraderTextSimilarityParams(element, options);
                 }
             }
             return InternalUnknownEvalGraderParams.DeserializeInternalUnknownEvalGraderParams(element, options);
