@@ -1,0 +1,24 @@
+{
+  "$comment": [
+    "The processor's feature area map and the folders under 'specification/base/typespec' describe",
+    "the same taxonomy from two directions, and a test asserts they agree. Neither is subordinate to",
+    "the other: the folders are what the SDK is organized around, and the area map is what the",
+    "snapshot and the change report speak in. They are expected to move together.",
+    "",
+    "A folder listed here is one the snapshot deliberately does not mirror. Adding an entry is how an",
+    "intentional divergence is declared, so that the check keeps catching the accidental kind. Each",
+    "entry needs a reason, because the point of the list is to record why, not merely to silence a",
+    "failing assertion."
+  ],
+  "typeSpecFoldersWithoutFeatureArea": [
+    {
+      "folder": "completions",
+      "reason": "The legacy completions API is excluded from the snapshot by decision. It is superseded by chat completions and responses, and mirroring it would imply an intent to track it."
+    },
+    {
+      "folder": "streaming",
+      "reason": "Shared streaming constructs rather than a REST surface of its own. It owns no paths, so there is nothing for the split to assign to it."
+    }
+  ],
+  "featureAreasWithoutTypeSpecFolder": []
+}
