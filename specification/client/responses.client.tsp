@@ -19,6 +19,10 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
 @@clientName(Responses.compactConversation, "CompactResponse");
 
+@@clientName(DotNetResponseItemCollectionOptions.after, "AfterId");
+@@clientName(DotNetResponseItemCollectionOptions.before, "BeforeId");
+@@clientName(DotNetResponseItemCollectionOptions.limit, "PageSizeLimit");
+
 @@clientName(Includable.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
 @@clientName(Includable.`message.input_image.image_url`, "MessageInputImageUri");
 @@clientName(Includable.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");
