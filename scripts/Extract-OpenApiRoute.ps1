@@ -7,7 +7,9 @@
     guides the user through selecting a feature area, route, and extraction
     mode. Exact mode keeps references and copies their component definitions.
     Inlined mode expands references except where a reference is needed to
-    represent a recursive schema, and flattens all allOf compositions.
+    represent a recursive schema, and flattens all allOf compositions. Both
+    modes omit configured properties and every name that starts with `x-`, and
+    order schema keys using the configured schema-property priorities.
 
 .PARAMETER SpecificationPath
     The OpenAPI JSON document to read. Relative paths are resolved from the
@@ -55,6 +57,24 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
+# Add exact, case-sensitive JSON property names here to omit them from both
+# extraction modes. All lowercase x-prefixed extension properties are omitted
+# separately by Test-IsOmittedOpenApiProperty.
+$script:OmittedPropertyNames = @(
+    "example"
+    "examples"
+)
+
+# Schema keys listed here are emitted first and in this exact order. Any schema
+# keys not listed here follow alphabetically, so this array is the only place to
+# change when a different leading order is needed.
+$script:PrioritizedSchemaPropertyNames = @(
+    "type"
+    "description"
+    "required"
+    "properties"
+)
+
 # Returns an object's JSON properties without treating arrays or scalar values
 # as objects. ConvertFrom-Json represents JSON objects as PSCustomObject values.
 function Get-JsonProperties {
@@ -78,6 +98,28 @@ function Get-JsonProperties {
     }
 
     return @()
+}
+
+# Returns whether a JSON property should be excluded from dependency discovery
+# and extracted output. Exact configured names and the x- prefix are ordinal and
+# case-sensitive, so adding a name above requires no traversal code changes.
+function Test-IsOmittedOpenApiProperty {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Name
+    )
+
+    if ($Name.StartsWith("x-", [System.StringComparison]::Ordinal)) {
+        return $true
+    }
+
+    foreach ($omittedPropertyName in $script:OmittedPropertyNames) {
+        if ([string]::Equals($Name, $omittedPropertyName, [System.StringComparison]::Ordinal)) {
+            return $true
+        }
+    }
+
+    return $false
 }
 
 # Gets a named property without PowerShell's case-insensitive member lookup.
@@ -402,6 +444,108 @@ function Sort-OrdinalStrings {
     return ,$sortedValues
 }
 
+# Selects how a child value should be normalized. Explicit context prevents
+# ordinary OpenAPI objects that happen to use schema-like names from being
+# reordered as schemas.
+function Get-OpenApiNormalizationChildContext {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$ParentContext,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$PropertyValue
+    )
+
+    if ([string]::Equals($ParentContext, "Literal", [System.StringComparison]::Ordinal)) {
+        return "Literal"
+    }
+
+    if ([string]::Equals($ParentContext, "SchemaMap", [System.StringComparison]::Ordinal)) {
+        return "Schema"
+    }
+
+    if ([string]::Equals($ParentContext, "Components", [System.StringComparison]::Ordinal)) {
+        if ([string]::Equals($PropertyName, "schemas", [System.StringComparison]::Ordinal)) {
+            return "SchemaMap"
+        }
+        return "OpenApi"
+    }
+
+    if ([string]::Equals($ParentContext, "Schema", [System.StringComparison]::Ordinal)) {
+        if (@("properties", "patternProperties", "dependentSchemas", '$defs', "definitions") -ccontains $PropertyName) {
+            return "SchemaMap"
+        }
+        if (@("allOf", "anyOf", "oneOf", "prefixItems") -ccontains $PropertyName) {
+            return "SchemaArray"
+        }
+        if (@(
+            "items",
+            "additionalItems",
+            "additionalProperties",
+            "unevaluatedItems",
+            "unevaluatedProperties",
+            "contains",
+            "propertyNames",
+            "not",
+            "if",
+            "then",
+            "else",
+            "contentSchema"
+        ) -ccontains $PropertyName) {
+            if (Test-JsonArrayValue -Value $PropertyValue) {
+                return "SchemaArray"
+            }
+            return "Schema"
+        }
+
+        return "Literal"
+    }
+
+    if ([string]::Equals($PropertyName, "components", [System.StringComparison]::Ordinal)) {
+        return "Components"
+    }
+    if ([string]::Equals($PropertyName, "schema", [System.StringComparison]::Ordinal)) {
+        return "Schema"
+    }
+
+    return "OpenApi"
+}
+
+# Orders one normalized schema using the configurable leading keys followed by
+# every remaining key in ordinal alphabetical order.
+function ConvertTo-OrderedSchemaDefinition {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema
+    )
+
+    $orderedSchema = [ordered]@{}
+    $emittedNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+
+    foreach ($propertyName in $script:PrioritizedSchemaPropertyNames) {
+        if ($emittedNames.Add($propertyName) -and
+            (Test-JsonProperty -Object $Schema -Name $propertyName)) {
+            $orderedSchema[$propertyName] = Get-JsonPropertyValue -Object $Schema -Name $propertyName
+        }
+    }
+
+    [string[]]$remainingNames = @(Get-JsonProperties -Value $Schema | Where-Object {
+        -not $emittedNames.Contains($_.Name)
+    } | ForEach-Object Name)
+    foreach ($propertyName in (Sort-OrdinalStrings -Values $remainingNames)) {
+        $orderedSchema[$propertyName] = Get-JsonPropertyValue -Object $Schema -Name $propertyName
+    }
+
+    return $orderedSchema
+}
+
 # Compares JSON values structurally. Object member order is insignificant,
 # array order is significant, and scalar types and values must match exactly.
 function Test-JsonValuesEqual {
@@ -553,7 +697,7 @@ function Merge-AllOfSchemaDefinitions {
         throw "Internal error: allOf definitions and breadcrumbs have different lengths at '$Breadcrumb'."
     }
 
-    $annotationKeywords = @("title", "description", '$comment', "example", "examples")
+    $annotationKeywords = @("title", "description", '$comment')
     $keywordValues = [System.Collections.Generic.Dictionary[string, object]]::new(
         [System.StringComparer]::Ordinal
     )
@@ -581,7 +725,7 @@ function Merge-AllOfSchemaDefinitions {
         }
 
         foreach ($property in (Get-JsonProperties -Value $definition)) {
-            if ([string]::Equals($property.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)) {
+            if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
                 continue
             }
             if ([string]::Equals($property.Name, "allOf", [System.StringComparison]::Ordinal)) {
@@ -703,13 +847,18 @@ function Merge-AllOfSchemaDefinitions {
     return $mergedDefinition
 }
 
-# Removes x-oaiMeta recursively and applies the requested ordering only to JSON
-# Schema property maps. Other object key order and every array order are kept.
+# Removes every configured or x-prefixed property recursively. Schema objects
+# use configured top-level ordering, while ordinary OpenAPI object order stays
+# unchanged. Property maps retain required-first alphabetical ordering.
 function ConvertTo-NormalizedOpenApiValue {
     param(
         [Parameter(Mandatory = $true)]
         [AllowNull()]
         [object]$Value,
+
+        [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context = "OpenApi",
 
         [Parameter()]
         [int]$Depth = 0,
@@ -727,10 +876,15 @@ function ConvertTo-NormalizedOpenApiValue {
     }
 
     if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
         [object[]]$normalizedItems = @(
             foreach ($item in $Value) {
                 ConvertTo-NormalizedOpenApiValue `
                     -Value $item `
+                    -Context $itemContext `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
@@ -742,23 +896,30 @@ function ConvertTo-NormalizedOpenApiValue {
         return $Value
     }
 
+    if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+        $Context = "Schema"
+    }
+
     $requiredNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    $requiredValue = Get-JsonPropertyValue -Object $Value -Name "required"
-    if (Test-JsonArrayValue -Value $requiredValue) {
-        foreach ($requiredName in $requiredValue) {
-            if ($requiredName -is [string]) {
-                $null = $requiredNames.Add($requiredName)
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
+        $requiredValue = Get-JsonPropertyValue -Object $Value -Name "required"
+        if (Test-JsonArrayValue -Value $requiredValue) {
+            foreach ($requiredName in $requiredValue) {
+                if ($requiredName -is [string]) {
+                    $null = $requiredNames.Add($requiredName)
+                }
             }
         }
     }
 
     $normalizedObject = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if ([string]::Equals($property.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)) {
+        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
             continue
         }
 
-        if ([string]::Equals($property.Name, "properties", [System.StringComparison]::Ordinal) -and
+        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "properties", [System.StringComparison]::Ordinal) -and
             (Test-JsonObjectValue -Value $property.Value)) {
             $propertyEntries = @(Get-JsonProperties -Value $property.Value)
             [string[]]$requiredPropertyNames = @($propertyEntries | Where-Object {
@@ -776,6 +937,7 @@ function ConvertTo-NormalizedOpenApiValue {
                 $propertyValue = Get-JsonPropertyValue -Object $property.Value -Name $propertyName
                 $orderedProperties[$propertyName] = ConvertTo-NormalizedOpenApiValue `
                     -Value $propertyValue `
+                    -Context Schema `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
@@ -783,10 +945,19 @@ function ConvertTo-NormalizedOpenApiValue {
             continue
         }
 
+        $childContext = Get-OpenApiNormalizationChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
         $normalizedObject[$property.Name] = ConvertTo-NormalizedOpenApiValue `
             -Value $property.Value `
+            -Context $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
+    }
+
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
+        return ConvertTo-OrderedSchemaDefinition -Schema $normalizedObject
     }
 
     return $normalizedObject
@@ -1009,7 +1180,7 @@ function Get-OpenApiReferenceOccurrences {
     }
 
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if ([string]::Equals($property.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)) {
+        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
             continue
         }
 
@@ -1164,7 +1335,7 @@ function Expand-OpenApiDiscriminator {
     $expandedDiscriminator = [ordered]@{}
 
     foreach ($property in (Get-JsonProperties -Value $Discriminator)) {
-        if ([string]::Equals($property.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)) {
+        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
             continue
         }
 
@@ -1205,8 +1376,8 @@ function Expand-OpenApiDiscriminator {
     return $expandedDiscriminator
 }
 
-# Returns every meaningful sibling of a $ref property. x-oaiMeta is discarded at
-# this boundary so it cannot influence traversal or dependency collection.
+# Returns every meaningful sibling of a $ref property. Omitted properties are
+# discarded here so they cannot influence traversal or dependency collection.
 function Get-ReferenceSiblingProperties {
     param(
         [Parameter(Mandatory = $true)]
@@ -1215,7 +1386,7 @@ function Get-ReferenceSiblingProperties {
 
     [object[]]$siblings = @(Get-JsonProperties -Value $ReferenceObject | Where-Object {
         -not [string]::Equals($_.Name, '$ref', [System.StringComparison]::Ordinal) -and
-        -not [string]::Equals($_.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)
+        -not (Test-IsOmittedOpenApiProperty -Name $_.Name)
     })
     return ,$siblings
 }
@@ -1548,7 +1719,7 @@ function Expand-AllOfSchemaObject {
     $containingDefinition = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
         if ([string]::Equals($property.Name, "allOf", [System.StringComparison]::Ordinal) -or
-            [string]::Equals($property.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)) {
+            (Test-IsOmittedOpenApiProperty -Name $property.Name)) {
             continue
         }
         $containingDefinition[$property.Name] = $property.Value
@@ -1613,7 +1784,7 @@ function Expand-OpenApiObjectProperties {
 
     $expandedObject = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if ([string]::Equals($property.Name, "x-oaiMeta", [System.StringComparison]::Ordinal)) {
+        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
             continue
         }
 

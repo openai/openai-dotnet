@@ -152,6 +152,112 @@ function Find-JsonPropertyValues {
     }
 }
 
+# Recursively returns every JSON property name selected by the production
+# omission configuration, regardless of where it appears in the document.
+function Find-OmittedOpenApiPropertyNames {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value
+    )
+
+    if ($null -eq $Value) {
+        return
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        foreach ($item in $Value) {
+            Find-OmittedOpenApiPropertyNames -Value $item
+        }
+        return
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return
+    }
+
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+            $property.Name
+        }
+        Find-OmittedOpenApiPropertyNames -Value $property.Value
+    }
+}
+
+# Recursively validates top-level key order for schema objects while leaving
+# ordinary OpenAPI containers outside the assertion.
+function Assert-OpenApiSchemaKeyOrder {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context = "OpenApi",
+
+        [Parameter()]
+        [string]$Breadcrumb = "#"
+    )
+
+    if ($null -eq $Value) {
+        return
+    }
+
+    if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            Assert-OpenApiSchemaKeyOrder `
+                -Value $Value[$index] `
+                -Context $itemContext `
+                -Breadcrumb "$Breadcrumb/$index"
+        }
+        return
+    }
+
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return
+    }
+    if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+        $Context = "Schema"
+    }
+
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
+        [string[]]$actualNames = @(Get-JsonProperties -Value $Value | ForEach-Object Name)
+        $prioritizedNames = [System.Collections.Generic.List[string]]::new()
+        $seenNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+        foreach ($propertyName in $script:PrioritizedSchemaPropertyNames) {
+            if ($seenNames.Add($propertyName) -and
+                (Test-JsonProperty -Object $Value -Name $propertyName)) {
+                $prioritizedNames.Add($propertyName)
+            }
+        }
+        [string[]]$remainingNames = @($actualNames | Where-Object {
+            -not $seenNames.Contains($_)
+        })
+        [object[]]$expectedNames = @(
+            $prioritizedNames
+            (Sort-OrdinalStrings -Values $remainingNames)
+        )
+        Assert-Sequence `
+            -Expected $expectedNames `
+            -Actual $actualNames `
+            -Message "Schema keys at '$Breadcrumb' were ordered incorrectly."
+    }
+
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        $childContext = Get-OpenApiNormalizationChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
+        Assert-OpenApiSchemaKeyOrder `
+            -Value $property.Value `
+            -Context $childContext `
+            -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)"
+    }
+}
+
 # The fixture includes unrelated entries so minimization can be asserted, not
 # merely inferred from the absence of errors.
 function New-TestOpenApiDocument {
@@ -161,6 +267,7 @@ function New-TestOpenApiDocument {
             title = "Extractor fixture"
             version = "1.0.0"
             "x-oaiMeta" = [ordered]@{ ignored = $true }
+            "x-custom-info" = "ignored"
         }
         servers = @([ordered]@{ url = "https://example.test/v1" })
         security = @([ordered]@{ ApiKeyAuth = @() })
@@ -186,6 +293,10 @@ function New-TestOpenApiDocument {
                 post = [ordered]@{
                     tags = @("Things")
                     security = @([ordered]@{ AdminApiKeyAuth = @() })
+                    example = [ordered]@{ '$ref' = "#/components/schemas/ExampleOnly" }
+                    examples = [ordered]@{
+                        hidden = [ordered]@{ '$ref' = "#/components/schemas/ExamplesOnly" }
+                    }
                     requestBody = [ordered]@{
                         content = [ordered]@{
                             "application/json" = [ordered]@{
@@ -250,6 +361,7 @@ function New-TestOpenApiDocument {
                         "200" = [ordered]@{ '$ref' = "#/components/responses/Shared" }
                     }
                     "x-oaiMeta" = [ordered]@{ examples = "ignored" }
+                    "x-hidden-ref" = [ordered]@{ '$ref' = "#/components/schemas/Unused" }
                 }
             }
             "/fine_tuning/jobs" = [ordered]@{
@@ -288,7 +400,15 @@ function New-TestOpenApiDocument {
                 }
                 Cat = [ordered]@{
                     type = "object"
-                    properties = [ordered]@{ type = [ordered]@{ const = "cat" } }
+                    title = "Cat schema"
+                    example = [ordered]@{ type = "cat" }
+                    examples = @([ordered]@{ type = "cat" })
+                    properties = [ordered]@{
+                        type = [ordered]@{
+                            const = "cat"
+                            "x-stainless-const" = $true
+                        }
+                    }
                 }
                 Dog = [ordered]@{
                     type = "object"
@@ -321,6 +441,8 @@ function New-TestOpenApiDocument {
                         }
                     }
                 }
+                ExampleOnly = [ordered]@{ type = "string" }
+                ExamplesOnly = [ordered]@{ type = "string" }
                 Unused = [ordered]@{ type = "string" }
             }
             responses = [ordered]@{
@@ -341,6 +463,7 @@ function New-TestOpenApiDocument {
             }
         }
         "x-oaiMeta" = [ordered]@{ ignored = $true }
+        "x-custom-root" = [ordered]@{ ignored = $true }
     }
 }
 
@@ -364,6 +487,151 @@ try {
     Invoke-Test "query suffixes do not change the feature area" {
         $entry = $catalog | Where-Object Route -eq "/responses?beta=true"
         Assert-Equal "Responses" $entry.FeatureArea "Query-suffixed route was grouped incorrectly."
+    }
+
+    Invoke-Test "omission predicate is configured and case-sensitive" {
+        foreach ($name in @("example", "examples", "x-foo")) {
+            Assert-True (Test-IsOmittedOpenApiProperty -Name $name) "'$name' should be omitted."
+        }
+        foreach ($name in @("title", "Title", "Example", "Examples", "X-foo")) {
+            Assert-True (-not (Test-IsOmittedOpenApiProperty -Name $name)) "'$name' should be retained."
+        }
+    }
+
+    Invoke-Test "adding an exact name to the omission array needs no code changes" {
+        $originalOmittedPropertyNames = @($script:OmittedPropertyNames)
+        try {
+            $script:OmittedPropertyNames = @($script:OmittedPropertyNames) + "temporaryOmit"
+            $normalized = ConvertTo-NormalizedOpenApiValue -Value ([ordered]@{
+                keep = "value"
+                temporaryOmit = "removed"
+            })
+            Assert-True (-not (Test-JsonProperty -Object $normalized -Name "temporaryOmit")) "Configured property remained."
+            Assert-Equal "value" $normalized.keep "Unconfigured property was removed."
+        }
+        finally {
+            $script:OmittedPropertyNames = $originalOmittedPropertyNames
+        }
+    }
+
+    Invoke-Test "schema keys use configured priority then alphabetical order" {
+        $schema = [ordered]@{
+            zeta = $true
+            properties = [ordered]@{
+                value = [ordered]@{
+                    nullable = $true
+                    default = "text"
+                    description = "Nested value"
+                    type = "string"
+                }
+            }
+            items = [ordered]@{
+                nullable = $true
+                description = "Array item"
+                type = "integer"
+                default = 1
+            }
+            required = @("value")
+            default = $null
+            description = "Root schema"
+            type = "object"
+            enum = @("first", "second")
+        }
+
+        $normalized = ConvertTo-NormalizedOpenApiValue -Value $schema -Context Schema
+        Assert-Sequence `
+            @("type", "description", "required", "properties", "default", "enum", "items", "zeta") `
+            @((Get-JsonProperties -Value $normalized).Name) `
+            "Root schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("type", "description", "default", "nullable") `
+            @((Get-JsonProperties -Value $normalized.properties.value).Name) `
+            "Property schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("type", "description", "default", "nullable") `
+            @((Get-JsonProperties -Value $normalized.items).Name) `
+            "Items schema keys were ordered incorrectly."
+    }
+
+    Invoke-Test "schema priority array can be reordered without code changes" {
+        $originalPriority = @($script:PrioritizedSchemaPropertyNames)
+        try {
+            $script:PrioritizedSchemaPropertyNames = @("description", "properties", "type")
+            $normalized = ConvertTo-NormalizedOpenApiValue `
+                -Value ([ordered]@{
+                    required = @("value")
+                    type = "object"
+                    properties = [ordered]@{ value = [ordered]@{ type = "string" } }
+                    description = "Configured"
+                    default = $null
+                }) `
+                -Context Schema
+            Assert-Sequence `
+                @("description", "properties", "type", "default", "required") `
+                @((Get-JsonProperties -Value $normalized).Name) `
+                "Customized schema priority order was not applied."
+        }
+        finally {
+            $script:PrioritizedSchemaPropertyNames = $originalPriority
+        }
+    }
+
+    Invoke-Test "schema maps arrays and schema-valued keywords propagate ordering" {
+        $schema = [ordered]@{
+            oneOf = @(
+                [ordered]@{ description = "Branch"; type = "string"; default = "value" }
+            )
+            additionalProperties = [ordered]@{
+                nullable = $true
+                description = "Additional value"
+                type = "integer"
+            }
+            '$defs' = [ordered]@{
+                Nested = [ordered]@{
+                    properties = [ordered]@{ id = [ordered]@{ type = "string" } }
+                    required = @("id")
+                    description = "Definition"
+                    type = "object"
+                }
+            }
+        }
+
+        $normalized = ConvertTo-NormalizedOpenApiValue -Value $schema -Context Schema
+        Assert-Sequence `
+            @("`$defs", "additionalProperties", "oneOf") `
+            @((Get-JsonProperties -Value $normalized).Name) `
+            "Composition-only schema keys were not sorted alphabetically."
+        Assert-Sequence `
+            @("type", "description", "default") `
+            @((Get-JsonProperties -Value $normalized.oneOf[0]).Name) `
+            "Composition branch schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("type", "description", "nullable") `
+            @((Get-JsonProperties -Value $normalized.additionalProperties).Name) `
+            "Additional-properties schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("type", "description", "required", "properties") `
+            @((Get-JsonProperties -Value $normalized.'$defs'.Nested).Name) `
+            "Definition-map schema keys were ordered incorrectly."
+    }
+
+    Invoke-Test "ordinary OpenAPI objects preserve their key order" {
+        $ordinary = [ordered]@{
+            required = $true
+            properties = [ordered]@{ untouched = "value" }
+            type = "ordinary"
+            description = "Not a schema"
+            default = "value"
+        }
+        $normalized = ConvertTo-NormalizedOpenApiValue -Value $ordinary -Context OpenApi
+        Assert-Sequence `
+            @("required", "properties", "type", "description", "default") `
+            @((Get-JsonProperties -Value $normalized).Name) `
+            "Ordinary OpenAPI object order changed."
+        Assert-Sequence `
+            @("untouched") `
+            @((Get-JsonProperties -Value $normalized.properties).Name) `
+            "Ordinary properties map was treated as a schema map."
     }
 
     Invoke-Test "numbered menu retries invalid input and remains one-based" {
@@ -391,6 +659,10 @@ try {
 
     Invoke-Test "Exact mode preserves one complete path item" {
         Assert-Sequence @("/things") @((Get-JsonProperties -Value $exact.Document.paths).Name) "Wrong paths were emitted."
+        Assert-Sequence `
+            @("parameters", "get", "post") `
+            @((Get-JsonProperties -Value $exact.Document.paths["/things"]).Name) `
+            "Path-item order changed."
         Assert-True (Test-JsonProperty -Object $exact.Document.paths["/things"] -Name "parameters") "Path-level parameters were dropped."
         Assert-True (Test-JsonProperty -Object $exact.Document.paths["/things"] -Name "get") "GET operation was dropped."
         Assert-True (Test-JsonProperty -Object $exact.Document.paths["/things"] -Name "post") "POST operation was dropped."
@@ -445,6 +717,10 @@ try {
         Assert-Equal "object" $alias.type "Referenced schema type was lost."
         Assert-Equal "A reference with a sibling" $alias.description "Reference sibling description was lost."
         Assert-Equal "cat" $alias.properties.type.const "Referenced schema properties were lost."
+        Assert-Sequence `
+            @("type", "description", "properties", "title") `
+            @((Get-JsonProperties -Value $alias).Name) `
+            "Inlined reference schema keys were ordered incorrectly."
     }
 
     Invoke-Test "Inlined mode recursively flattens allOf and combines properties" {
@@ -462,6 +738,10 @@ try {
             @((Get-JsonProperties -Value $flattened.properties).Name) `
             "Flattened properties were not ordered required-first and alphabetically."
         Assert-Equal 1 @((Get-JsonProperties -Value $flattened.properties) | Where-Object Name -eq "shared").Count "Identical properties were not deduplicated."
+        Assert-Sequence `
+            @("type", "description", "required", "properties", "nullable") `
+            @((Get-JsonProperties -Value $flattened).Name) `
+            "Flattened schema keys were ordered incorrectly."
     }
 
     Invoke-Test "Inlined cycle fallback components are flattened" {
@@ -471,6 +751,10 @@ try {
             @("cycleRequired", "cycleOptional", "parent") `
             @((Get-JsonProperties -Value $fallbackChild.properties).Name) `
             "Cycle fallback properties were not merged and ordered."
+        Assert-Sequence `
+            @("type", "required", "properties") `
+            @((Get-JsonProperties -Value $fallbackChild).Name) `
+            "Cycle fallback schema keys were ordered incorrectly."
     }
 
     Invoke-Test "Exact mode preserves source allOf" {
@@ -556,11 +840,21 @@ try {
         Assert-Sequence @("#") $recursiveReferences "Recursive references were changed or removed."
     }
 
-    Invoke-Test "x-oaiMeta is removed recursively without mutating the source" {
-        Assert-Equal 0 @(Find-JsonPropertyValues -Value $exact.Document -Name "x-oaiMeta").Count "Exact metadata remained."
-        Assert-Equal 0 @(Find-JsonPropertyValues -Value $inlined.Document -Name "x-oaiMeta").Count "Inlined metadata remained."
-        Assert-True (Test-JsonProperty -Object $fixture -Name "x-oaiMeta") "Source document was mutated."
-        Assert-True (Test-JsonProperty -Object $fixture.components.schemas.B -Name "x-oaiMeta") "Nested source metadata was mutated."
+    Invoke-Test "configured and x-prefixed properties are removed without mutating the source" {
+        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $exact.Document).Count "Exact omitted properties remained."
+        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $inlined.Document).Count "Inlined omitted properties remained."
+        Assert-Equal "Extractor fixture" $exact.Document.info.title "Exact info title was removed."
+        Assert-Equal "Extractor fixture" $inlined.Document.info.title "Inlined info title was removed."
+        Assert-True (Test-JsonProperty -Object $fixture -Name "x-custom-root") "Source root extension was mutated."
+        Assert-True (Test-JsonProperty -Object $fixture.info -Name "x-custom-info") "Source info extension was mutated."
+        Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "x-hidden-ref") "Source operation extension was mutated."
+        Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "example") "Source example was mutated."
+        Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "examples") "Source examples were mutated."
+        Assert-True (Test-JsonProperty -Object $fixture.components.schemas.Cat.properties.type -Name "x-stainless-const") "Nested source extension was mutated."
+        Assert-Equal "Cat schema" $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.oneOf[0].title "Schema title was removed."
+        Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "Unused")) "Exact mode followed a reference inside an extension."
+        Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "ExampleOnly")) "Exact mode followed a reference inside example."
+        Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "ExamplesOnly")) "Exact mode followed a reference inside examples."
     }
 
     Invoke-Test "schema properties are required-first and alphabetical" {
@@ -577,6 +871,14 @@ try {
             @("optionalZ", "requiredB", "recursive", "requiredA", "flattened") `
             @((Get-JsonProperties -Value $fixture.paths["/things"].post.requestBody.content["application/json"].schema.properties).Name) `
             "Source property order was mutated."
+        Assert-Sequence `
+            @("type", "required", "properties") `
+            @((Get-JsonProperties -Value $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema).Name) `
+            "Inlined request schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("type", "properties", "title") `
+            @((Get-JsonProperties -Value $exact.Document.components.schemas.Cat).Name) `
+            "Exact component schema keys were ordered incorrectly."
     }
 
     Invoke-Test "external and unresolved references fail with context" {
@@ -632,6 +934,12 @@ try {
         Assert-OpenApiReferencesResolve -Document $audioInlined.Document
         Assert-Equal 1 @(Get-JsonProperties -Value $audioExact.Document.paths).Count "Exact audio output had the wrong path count."
         Assert-Equal 0 @(Get-OpenApiReferenceOccurrences -Value $audioInlined.Document | Where-Object Kind -eq "Reference").Count "A non-cyclic audio reference survived inlining."
+        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $audioExact.Document).Count "Exact audio output retained omitted properties."
+        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $audioInlined.Document).Count "Inlined audio output retained omitted properties."
+        Assert-Equal "OpenAI API" $audioExact.Document.info.title "Exact live title was removed."
+        Assert-Equal "OpenAI API" $audioInlined.Document.info.title "Inlined live title was removed."
+        Assert-OpenApiSchemaKeyOrder -Value $audioExact.Document
+        Assert-OpenApiSchemaKeyOrder -Value $audioInlined.Document
     }
 
     Invoke-Test "live top-level and nested allOf schemas are flattened" {
