@@ -1,16 +1,19 @@
 import "../base/typespec/responses/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
 import "@typespec/http-client-csharp";
+import "@typespec/http";
+import "@typespec/openapi";
 
 using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
+using TypeSpec.Http;
 
 @@alternateType(CreateResponse.conversation, `ConversationParam-2`);
 @@alternateType(CreateResponse.`model`, string);
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
-@@alternateType(Response.`model`, string);
-@@alternateType(Response.service_tier, DotNetResponseServiceTier);
+@@alternateType(OpenAI.Response.`model`, string);
+@@alternateType(OpenAI.Response.service_tier, DotNetResponseServiceTier);
 
 // Do not generate convenience methods for these operations
 @@convenientAPI(Responses.getInputTokenCounts, false);
@@ -22,6 +25,16 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(Includable.`computer_call_output.output.image_url`, "ComputerCallOutputImageUri");
 @@clientName(Includable.`message.input_image.image_url`, "MessageInputImageUri");
 @@clientName(Includable.`message.output_text.logprobs`, "MessageOutputTextLogProbabilities");
+
+op customListInputItems(@path response_id: string, options?: DotNetResponseItemCollectionOptions): ResponseItemList | ResponseErrorResponse;
+@@override(OpenAI.Responses.listInputItems, customListInputItems);
+@@clientName(OpenAI.Responses.listInputItems, "GetResponseInputItems");
+
+@@clientName(DotNetResponseItemCollectionOptions.after, "AfterId");
+@@clientName(DotNetResponseItemCollectionOptions.before, "BeforeId");
+@@clientName(DotNetResponseItemCollectionOptions.limit, "PageSizeLimit");
+@@clientName(DotNetResponseItemCollectionOrder.asc, "Ascending");
+@@clientName(DotNetResponseItemCollectionOrder.desc, "Descending");
 
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
@@ -115,7 +128,7 @@ using TypeSpec.HttpClient.CSharp;
 // ------------ Others ------------
 
 @@clientName(CreateResponse.prompt_cache_retention, "PromptCacheRetentionPolicy");
-@@clientName(Response.prompt_cache_retention, "PromptCacheRetentionPolicy");
+@@clientName(OpenAI.Response.prompt_cache_retention, "PromptCacheRetentionPolicy");
 @@clientName(PromptCacheRetention.`24h`, "Max24Hours");
 @@clientName(ResponsesReasoningEffort.xhigh, "ExtraHigh");
 @@clientName(ResponseUsage.input_tokens_details::type.cache_write_tokens, "CacheWriteTokenCount");
@@ -124,7 +137,7 @@ using TypeSpec.HttpClient.CSharp;
 
 // models.tsp
 @@dynamicModel(CreateResponse);
-@@dynamicModel(Response);
+@@dynamicModel(OpenAI.Response);
 @@dynamicModel(ResponseProperties);
 @@dynamicModel(ItemParam);
 @@dynamicModel(Tool);

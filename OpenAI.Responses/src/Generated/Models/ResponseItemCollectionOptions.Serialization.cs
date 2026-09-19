@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>
     {
-        public ResponseItemCollectionOptions()
-        {
-        }
-
         protected virtual ResponseItemCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ResponseItemCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
@@ -104,24 +100,17 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            string responseId = default;
-            string afterId = default;
-            string beforeId = default;
             int? pageSizeLimit = default;
             ResponseItemCollectionOrder? order = default;
+            string afterId = default;
+            string beforeId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponseItemCollectionOptions(
-                responseId,
-                afterId,
-                beforeId,
-                pageSizeLimit,
-                order,
-                additionalBinaryDataProperties);
+            return new ResponseItemCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties);
         }
     }
 }

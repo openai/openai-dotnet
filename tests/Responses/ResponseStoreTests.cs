@@ -36,12 +36,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, inputItems);
 
         // Paginate through input items with a small page size
-        var options = new ResponseItemCollectionOptions(response.Id)
+        var options = new ResponseItemCollectionOptions()
         {
             PageSizeLimit = 2
         };
 
-        ResponseItemCollectionPage page1 = await client.GetResponseInputItemCollectionPageAsync(options);
+        ResponseItemCollectionPage page1 = await client.GetResponseInputItemCollectionPageAsync(response.Id, options);
 
         Assert.That(page1.Data, Is.Not.Null);
         Assert.That(page1.Data, Has.Count.EqualTo(2));
@@ -51,7 +51,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
 
         options.AfterId = page1.LastId;
 
-        ResponseItemCollectionPage page2 = await client.GetResponseInputItemCollectionPageAsync(options);
+        ResponseItemCollectionPage page2 = await client.GetResponseInputItemCollectionPageAsync(response.Id, options);
 
         Assert.That(page2.Data, Is.Not.Null);
         Assert.That(page2.Data, Has.Count.EqualTo(2));
@@ -77,7 +77,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, inputItems);
 
         // Paginate through input items with a small page size
-        var options = new ResponseItemCollectionOptions(response.Id)
+        var options = new ResponseItemCollectionOptions()
         {
             PageSizeLimit = 2
         };
@@ -85,7 +85,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         int totalCount = 0;
         string lastId = null;
 
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             totalCount++;
             lastId = item.Id;
@@ -151,7 +151,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, inputItems);
 
         // Paginate through input items with a small page size
-        var options = new ResponseItemCollectionOptions(response.Id)
+        var options = new ResponseItemCollectionOptions()
         {
             PageSizeLimit = 2,
             Order = ResponseItemCollectionOrder.Ascending
@@ -161,7 +161,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         string lastId = null;
         bool hasMultipleContentParts = false;
 
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             totalCount++;
             lastId = item.Id;
@@ -196,7 +196,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, inputItems);
 
         string afterId = null;
-        await foreach (ResponseItem first in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id)))
+        await foreach (ResponseItem first in client.GetResponseInputItemsAsync(response.Id))
         {
             afterId = first.Id;
             break;
@@ -205,13 +205,13 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(afterId, Is.Not.Null);
 
         int count = 0;
-        var options = new ResponseItemCollectionOptions(response.Id)
+        var options = new ResponseItemCollectionOptions()
         {
             AfterId = afterId,
             PageSizeLimit = 2
         };
 
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.EqualTo(afterId));
@@ -236,28 +236,28 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, inputItems);
 
         // Ascending
-        var ascOptions = new ResponseItemCollectionOptions(response.Id)
+        var ascOptions = new ResponseItemCollectionOptions()
         {
             Order = ResponseItemCollectionOrder.Ascending,
             PageSizeLimit = 5
         };
 
         var asc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(ascOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, ascOptions))
         {
             asc.Add(item);
             if (asc.Count >= 2) break;
         }
 
         // Descending
-        var descOptions = new ResponseItemCollectionOptions(response.Id)
+        var descOptions = new ResponseItemCollectionOptions()
         {
             Order = ResponseItemCollectionOrder.Descending,
             PageSizeLimit = 5
         };
 
         var desc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(descOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, descOptions))
         {
             desc.Add(item);
             if (desc.Count >= 2) break;
@@ -283,10 +283,13 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
                 ResponseItem.CreateUserMessageItem("gamma"),
             ]);
 
-        var options = new ResponseItemCollectionOptions(response.Id) { PageSizeLimit = 100 };
+        var options = new ResponseItemCollectionOptions()
+        {
+            PageSizeLimit = 100
+        };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -309,10 +312,13 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
                 ResponseItem.CreateUserMessageItem("z"),
             ]);
 
-        var options = new ResponseItemCollectionOptions(response.Id) { PageSizeLimit = 1 };
+        var options = new ResponseItemCollectionOptions()
+        {
+            PageSizeLimit = 1
+        };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -340,7 +346,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         try
         {
             int count = 0;
-            await foreach (ResponseItem item in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id), cancellationToken: cts.Token))
+            await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, cancellationToken: cts.Token))
             {
                 count++;
                 Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -374,14 +380,14 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
 
         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-        var options = new ResponseItemCollectionOptions(response.Id)
+        var options = new ResponseItemCollectionOptions()
         {
             PageSizeLimit = 2,
             Order = ResponseItemCollectionOrder.Descending
         };
 
         var items = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options, cts.Token))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options, cts.Token))
         {
             items.Add(item);
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);

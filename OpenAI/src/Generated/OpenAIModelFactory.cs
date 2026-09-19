@@ -1418,6 +1418,11 @@ namespace OpenAI
             return new ResponseDeletionResult(responseId, "response.deleted", deleted, default);
         }
 
+        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default, string afterId = default, string beforeId = default)
+        {
+            return new ResponseItemCollectionOptions(pageSizeLimit, order, afterId, beforeId, additionalBinaryDataProperties: null);
+        }
+
         public static ResponseItemCollectionPage ResponseItemCollectionPage(IEnumerable<ResponseItem> data = default, bool hasMore = default, string firstId = default, string lastId = default)
         {
             data ??= new ChangeTrackingList<ResponseItem>();
@@ -2603,17 +2608,6 @@ namespace OpenAI
         public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string containerId = default, int? pageSizeLimit = default, ContainerFileCollectionOrder? order = default, string afterId = default)
         {
             return new ContainerFileCollectionOptions(containerId, pageSizeLimit, order, afterId, additionalBinaryDataProperties: null);
-        }
-
-        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
-        {
-            return new ResponseItemCollectionOptions(
-                responseId,
-                afterId,
-                beforeId,
-                pageSizeLimit,
-                order,
-                additionalBinaryDataProperties: null);
         }
 
         public static GetResponseOptions GetResponseOptions(string responseId = default, int? startingAfter = default, bool? includeObfuscation = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? streamingEnabled = default)
