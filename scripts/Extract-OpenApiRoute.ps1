@@ -9,8 +9,8 @@
     Inlined mode expands references except where a reference is needed to
     represent a recursive schema, and flattens all allOf compositions. Both
     modes omit configured properties and every name that starts with `x-`, and
-    order schema keys and required property names using their configured
-    priorities.
+    order schema keys, required arrays, and property maps using their configured
+    priorities. Enum values are emitted in alphabetical order.
 
 .PARAMETER SpecificationPath
     The OpenAPI JSON document to read. Relative paths are resolved from the
@@ -76,9 +76,9 @@ $script:PrioritizedSchemaPropertyNames = @(
     "properties"
 )
 
-# Required property names listed here are emitted first inside schema
-# `properties` maps and in this exact order. Optional properties are never
-# promoted by this list.
+# Required property names listed here are emitted first in schema `required`
+# arrays and inside schema `properties` maps, in this exact order. Optional
+# properties are never promoted by this list.
 $script:PrioritizedRequiredPropertyNames = @(
     "type"
 )
@@ -452,6 +452,84 @@ function Sort-OrdinalStrings {
     return ,$sortedValues
 }
 
+# Sorts enum values by their compact JSON representation using ordinal
+# comparison. This preserves each value's JSON type and keeps equal values in
+# their original relative order.
+function Sort-JsonEnumValues {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [AllowEmptyCollection()]
+        [object[]]$Values
+    )
+
+    if ($null -eq $Values) {
+        return ,([object[]]@($null))
+    }
+
+    $sortedEntries = [System.Collections.Generic.List[object]]::new()
+    foreach ($value in $Values) {
+        $entry = [PSCustomObject]@{
+            Key = ConvertTo-Json -InputObject $value -Compress -Depth 100
+            Value = $value
+        }
+        $insertionIndex = $sortedEntries.Count
+        for ($index = 0; $index -lt $sortedEntries.Count; $index++) {
+            if ([System.StringComparer]::Ordinal.Compare($entry.Key, $sortedEntries[$index].Key) -lt 0) {
+                $insertionIndex = $index
+                break
+            }
+        }
+        $sortedEntries.Insert($insertionIndex, $entry)
+    }
+
+    [object[]]$sortedValues = [object[]]::new($sortedEntries.Count)
+    for ($index = 0; $index -lt $sortedEntries.Count; $index++) {
+        $sortedValues[$index] = $sortedEntries[$index].Value
+    }
+    return ,$sortedValues
+}
+
+# Orders required property names using configured priorities first, then every
+# remaining name alphabetically. Duplicate configuration and input names are
+# emitted once, consistent with JSON Schema's unique required-name constraint.
+function Get-OrderedRequiredPropertyNames {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [string[]]$RequiredNames
+    )
+
+    $availableNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($requiredName in $RequiredNames) {
+        $null = $availableNames.Add($requiredName)
+    }
+
+    $emittedNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    $orderedNames = [System.Collections.Generic.List[string]]::new()
+
+    foreach ($requiredName in $script:PrioritizedRequiredPropertyNames) {
+        if ($availableNames.Contains($requiredName) -and $emittedNames.Add($requiredName)) {
+            $orderedNames.Add($requiredName)
+        }
+    }
+
+    [string[]]$remainingNames = @($availableNames | Where-Object {
+        -not $emittedNames.Contains($_)
+    })
+    foreach ($requiredName in (Sort-OrdinalStrings -Values $remainingNames)) {
+        if ($emittedNames.Add($requiredName)) {
+            $orderedNames.Add($requiredName)
+        }
+    }
+
+    return [string[]]$orderedNames
+}
+
 # Orders names inside a schema's `properties` map. Configured names are promoted
 # only when required, followed by other required names and then optional names.
 function Get-OrderedSchemaPropertyNames {
@@ -477,19 +555,9 @@ function Get-OrderedSchemaPropertyNames {
     )
     $orderedNames = [System.Collections.Generic.List[string]]::new()
 
-    foreach ($propertyName in $script:PrioritizedRequiredPropertyNames) {
-        if ($availableNames.Contains($propertyName) -and
-            $RequiredNames.Contains($propertyName) -and
-            $emittedNames.Add($propertyName)) {
-            $orderedNames.Add($propertyName)
-        }
-    }
-
-    [string[]]$remainingRequiredNames = @($PropertyNames | Where-Object {
-        $RequiredNames.Contains($_) -and -not $emittedNames.Contains($_)
-    })
-    foreach ($propertyName in (Sort-OrdinalStrings -Values $remainingRequiredNames)) {
-        if ($emittedNames.Add($propertyName)) {
+    [string[]]$requiredNameValues = @($RequiredNames | ForEach-Object { $_ })
+    foreach ($propertyName in (Get-OrderedRequiredPropertyNames -RequiredNames $requiredNameValues)) {
+        if ($availableNames.Contains($propertyName) -and $emittedNames.Add($propertyName)) {
             $orderedNames.Add($propertyName)
         }
     }
@@ -895,8 +963,10 @@ function Merge-AllOfSchemaDefinitions {
     }
 
     if ($sawRequired) {
-        [string[]]$sortedRequiredNames = Sort-OrdinalStrings -Values @($requiredNames)
-        $mergedDefinition["required"] = @($sortedRequiredNames)
+        [string[]]$requiredNameValues = @($requiredNames | ForEach-Object { $_ })
+        $mergedDefinition["required"] = @(
+            Get-OrderedRequiredPropertyNames -RequiredNames $requiredNameValues
+        )
     }
 
     return $mergedDefinition
@@ -904,7 +974,8 @@ function Merge-AllOfSchemaDefinitions {
 
 # Removes every configured or x-prefixed property recursively. Schema objects
 # use configured top-level ordering, while ordinary OpenAPI object order stays
-# unchanged. Property maps retain required-first alphabetical ordering.
+# unchanged. Property maps and required arrays use configured required-name
+# priorities followed by alphabetical ordering.
 function ConvertTo-NormalizedOpenApiValue {
     param(
         [Parameter(Mandatory = $true)]
@@ -970,6 +1041,38 @@ function ConvertTo-NormalizedOpenApiValue {
     $normalizedObject = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
         if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+            continue
+        }
+
+        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "enum", [System.StringComparison]::Ordinal) -and
+            (Test-JsonArrayValue -Value $property.Value)) {
+            [object[]]$normalizedEnum = [object[]]::new($property.Value.Count)
+            for ($index = 0; $index -lt $property.Value.Count; $index++) {
+                $normalizedEnum[$index] = ConvertTo-NormalizedOpenApiValue `
+                    -Value $property.Value[$index] `
+                    -Context Literal `
+                    -Depth ($Depth + 1) `
+                    -MaximumDepth $MaximumDepth
+            }
+            $normalizedObject[$property.Name] = Sort-JsonEnumValues -Values $normalizedEnum
+            continue
+        }
+
+        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "required", [System.StringComparison]::Ordinal) -and
+            (Test-JsonArrayValue -Value $property.Value)) {
+            [string[]]$requiredNameValues = @(
+                foreach ($requiredName in $property.Value) {
+                    if ($requiredName -isnot [string]) {
+                        throw "Every required name must be a string."
+                    }
+                    $requiredName
+                }
+            )
+            $normalizedObject[$property.Name] = @(
+                Get-OrderedRequiredPropertyNames -RequiredNames $requiredNameValues
+            )
             continue
         }
 

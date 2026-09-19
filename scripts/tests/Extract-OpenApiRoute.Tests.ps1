@@ -246,11 +246,21 @@ function Assert-OpenApiSchemaKeyOrder {
             -Message "Schema keys at '$Breadcrumb' were ordered incorrectly."
 
         $properties = Get-JsonPropertyValue -Object $Value -Name "properties"
+        $required = Get-JsonPropertyValue -Object $Value -Name "required"
+        if (Test-JsonArrayValue -Value $required) {
+            [string[]]$actualRequiredNames = @($required)
+            [string[]]$expectedRequiredNames = @(
+                Get-OrderedRequiredPropertyNames -RequiredNames $actualRequiredNames
+            )
+            Assert-Sequence `
+                -Expected $expectedRequiredNames `
+                -Actual $actualRequiredNames `
+                -Message "Required names at '$Breadcrumb/required' were ordered incorrectly."
+        }
         if (Test-JsonObjectValue -Value $properties) {
             $requiredNames = [System.Collections.Generic.HashSet[string]]::new(
                 [System.StringComparer]::Ordinal
             )
-            $required = Get-JsonPropertyValue -Object $Value -Name "required"
             if (Test-JsonArrayValue -Value $required) {
                 foreach ($requiredName in $required) {
                     if ($requiredName -is [string]) {
@@ -268,6 +278,16 @@ function Assert-OpenApiSchemaKeyOrder {
                 -Expected $expectedPropertyNames `
                 -Actual $actualPropertyNames `
                 -Message "Properties at '$Breadcrumb/properties' were ordered incorrectly."
+        }
+
+        $enum = Get-JsonPropertyValue -Object $Value -Name "enum"
+        if (Test-JsonArrayValue -Value $enum) {
+            $expectedEnum = Sort-JsonEnumValues -Values @($enum)
+            if (-not (Test-JsonValuesEqual -Left @($enum) -Right @($expectedEnum))) {
+                $actualJson = ConvertTo-Json -InputObject @($enum) -Compress -Depth 100
+                $expectedJson = ConvertTo-Json -InputObject @($expectedEnum) -Compress -Depth 100
+                throw "Enum at '$Breadcrumb/enum' was ordered incorrectly. Expected '$expectedJson', got '$actualJson'."
+            }
         }
     }
 
@@ -436,6 +456,7 @@ function New-TestOpenApiDocument {
                     properties = [ordered]@{
                         type = [ordered]@{
                             const = "cat"
+                            enum = @("zeta", "alpha", "middle")
                             "x-stainless-const" = $true
                         }
                     }
@@ -565,7 +586,7 @@ try {
             default = $null
             description = "Root schema"
             type = "object"
-            enum = @("first", "second")
+            enum = @("second", "first")
         }
 
         $normalized = ConvertTo-NormalizedOpenApiValue -Value $schema -Context Schema
@@ -581,6 +602,66 @@ try {
             @("type", "description", "default", "nullable") `
             @((Get-JsonProperties -Value $normalized.items).Name) `
             "Items schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("first", "second") `
+            @($normalized.enum) `
+            "Root schema enum values were not sorted alphabetically."
+        Assert-Sequence `
+            @("second", "first") `
+            @($schema.enum) `
+            "Source enum order was mutated."
+    }
+
+    Invoke-Test "enum values use deterministic alphabetical JSON ordering" {
+        $schema = [ordered]@{
+            type = "object"
+            properties = [ordered]@{
+                status = [ordered]@{
+                    type = "string"
+                    enum = @("zeta", "Alpha", "alpha", "middle")
+                }
+                weight = [ordered]@{
+                    type = "integer"
+                    enum = @(2, 10, 1)
+                }
+                completion = [ordered]@{
+                    enum = @($null, "incomplete")
+                }
+            }
+        }
+
+        $normalized = ConvertTo-NormalizedOpenApiValue -Value $schema -Context Schema
+        Assert-Sequence `
+            @("Alpha", "alpha", "middle", "zeta") `
+            @($normalized.properties.status.enum) `
+            "String enum values were not sorted ordinally."
+        Assert-Sequence `
+            @(1, 10, 2) `
+            @($normalized.properties.weight.enum) `
+            "Numeric enum values were not sorted by their JSON text."
+        Assert-Equal "incomplete" $normalized.properties.completion.enum[0] "Mixed enum string was ordered incorrectly."
+        Assert-True ($null -eq $normalized.properties.completion.enum[1]) "Mixed enum null was ordered incorrectly."
+        Assert-Sequence `
+            @("zeta", "Alpha", "alpha", "middle") `
+            @($schema.properties.status.enum) `
+            "Nested source enum order was mutated."
+    }
+
+    Invoke-Test "required arrays use priority then alphabetical order" {
+        $schema = [ordered]@{
+            type = "object"
+            required = @("zeta", "type", "alpha")
+            properties = [ordered]@{
+                zeta = [ordered]@{ type = "string" }
+                type = [ordered]@{ type = "string" }
+                alpha = [ordered]@{ type = "string" }
+            }
+            customArray = @("zeta", "alpha")
+        }
+        $normalized = ConvertTo-NormalizedOpenApiValue -Value $schema -Context Schema
+        Assert-Sequence @("type", "alpha", "zeta") @($normalized.required) "Required array order was incorrect."
+        Assert-Sequence @("zeta", "alpha") @($normalized.customArray) "Non-enum array order changed."
+        Assert-Sequence @("zeta", "type", "alpha") @($schema.required) "Source required array was mutated."
     }
 
     Invoke-Test "schema priority array can be reordered without code changes" {
@@ -660,6 +741,10 @@ try {
                 @("kind", "type", "text", "alpha") `
                 @((Get-JsonProperties -Value $normalized.properties).Name) `
                 "Customized required-property priority was not applied."
+            Assert-Sequence `
+                @("kind", "type", "text") `
+                @($normalized.required) `
+                "Customized required-array priority was not applied."
 
             $caseSensitiveRequired = [System.Collections.Generic.HashSet[string]]::new(
                 [System.StringComparer]::Ordinal
@@ -674,6 +759,10 @@ try {
                 @("type", "Type", "text", "alpha") `
                 @($caseSensitiveOrder) `
                 "Required-property priority matching was not case-sensitive."
+            Assert-Sequence `
+                @("type", "Type", "text") `
+                @(Get-OrderedRequiredPropertyNames -RequiredNames @("text", "Type", "type")) `
+                "Required-array priority matching was not case-sensitive."
         }
         finally {
             $script:PrioritizedRequiredPropertyNames = $originalPriority
@@ -703,6 +792,10 @@ try {
             @("type", "text", "optional") `
             @((Get-JsonProperties -Value $merged.properties).Name) `
             "allOf merge did not apply required-property priority."
+        Assert-Sequence `
+            @("type", "text") `
+            @($merged.required) `
+            "allOf merge did not apply required-array priority."
     }
 
     Invoke-Test "schema maps arrays and schema-valued keywords propagate ordering" {
@@ -884,6 +977,10 @@ try {
             @("type", "required", "properties") `
             @((Get-JsonProperties -Value $fallbackChild).Name) `
             "Cycle fallback schema keys were ordered incorrectly."
+        Assert-Sequence `
+            @("type", "cycleRequired") `
+            @($fallbackChild.required) `
+            "Cycle fallback required names were ordered incorrectly."
     }
 
     Invoke-Test "Exact mode preserves source allOf" {
@@ -993,9 +1090,17 @@ try {
             @((Get-JsonProperties -Value $properties).Name) `
             "Schema properties were ordered incorrectly."
         Assert-Sequence `
-            @("requiredB", "requiredA", "type") `
+            @("type", "requiredA", "requiredB") `
             @($inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.required) `
-            "Required array order changed."
+            "Inlined required array order was incorrect."
+        Assert-Sequence `
+            @("type", "requiredA", "requiredB") `
+            @($exact.Document.paths["/things"].post.requestBody.content["application/json"].schema.required) `
+            "Exact required array order was incorrect."
+        Assert-Sequence `
+            @("requiredB", "requiredA", "type") `
+            @($fixture.paths["/things"].post.requestBody.content["application/json"].schema.required) `
+            "Source required array was mutated."
         Assert-Sequence `
             @("optionalZ", "requiredB", "recursive", "requiredA", "flattened", "type") `
             @((Get-JsonProperties -Value $fixture.paths["/things"].post.requestBody.content["application/json"].schema.properties).Name) `
@@ -1012,6 +1117,13 @@ try {
             @("type", "properties", "title") `
             @((Get-JsonProperties -Value $exact.Document.components.schemas.Cat).Name) `
             "Exact component schema keys were ordered incorrectly."
+    }
+
+    Invoke-Test "Exact and Inlined enum values are alphabetically ordered" {
+        $exactEnum = $exact.Document.components.schemas.Cat.properties.type.enum
+        $inlinedEnum = $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.oneOf[0].properties.type.enum
+        Assert-Sequence @("alpha", "middle", "zeta") @($exactEnum) "Exact enum values were not sorted."
+        Assert-Sequence @("alpha", "middle", "zeta") @($inlinedEnum) "Inlined enum values were not sorted."
     }
 
     Invoke-Test "external and unresolved references fail with context" {
