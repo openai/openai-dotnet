@@ -9,7 +9,8 @@
     Inlined mode expands references except where a reference is needed to
     represent a recursive schema, and flattens all allOf compositions. Both
     modes omit configured properties and every name that starts with `x-`, and
-    order schema keys using the configured schema-property priorities.
+    order schema keys and required property names using their configured
+    priorities.
 
 .PARAMETER SpecificationPath
     The OpenAPI JSON document to read. Relative paths are resolved from the
@@ -73,6 +74,13 @@ $script:PrioritizedSchemaPropertyNames = @(
     "description"
     "required"
     "properties"
+)
+
+# Required property names listed here are emitted first inside schema
+# `properties` maps and in this exact order. Optional properties are never
+# promoted by this list.
+$script:PrioritizedRequiredPropertyNames = @(
+    "type"
 )
 
 # Returns an object's JSON properties without treating arrays or scalar values
@@ -442,6 +450,60 @@ function Sort-OrdinalStrings {
     [string[]]$sortedValues = @($Values)
     [System.Array]::Sort($sortedValues, [System.StringComparer]::Ordinal)
     return ,$sortedValues
+}
+
+# Orders names inside a schema's `properties` map. Configured names are promoted
+# only when required, followed by other required names and then optional names.
+function Get-OrderedSchemaPropertyNames {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [string[]]$PropertyNames,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.HashSet[string]]$RequiredNames
+    )
+
+    $availableNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($propertyName in $PropertyNames) {
+        $null = $availableNames.Add($propertyName)
+    }
+
+    $emittedNames = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    $orderedNames = [System.Collections.Generic.List[string]]::new()
+
+    foreach ($propertyName in $script:PrioritizedRequiredPropertyNames) {
+        if ($availableNames.Contains($propertyName) -and
+            $RequiredNames.Contains($propertyName) -and
+            $emittedNames.Add($propertyName)) {
+            $orderedNames.Add($propertyName)
+        }
+    }
+
+    [string[]]$remainingRequiredNames = @($PropertyNames | Where-Object {
+        $RequiredNames.Contains($_) -and -not $emittedNames.Contains($_)
+    })
+    foreach ($propertyName in (Sort-OrdinalStrings -Values $remainingRequiredNames)) {
+        if ($emittedNames.Add($propertyName)) {
+            $orderedNames.Add($propertyName)
+        }
+    }
+
+    [string[]]$optionalNames = @($PropertyNames | Where-Object {
+        -not $RequiredNames.Contains($_)
+    })
+    foreach ($propertyName in (Sort-OrdinalStrings -Values $optionalNames)) {
+        if ($emittedNames.Add($propertyName)) {
+            $orderedNames.Add($propertyName)
+        }
+    }
+
+    return ,([string[]]$orderedNames)
 }
 
 # Selects how a child value should be normalized. Explicit context prevents
@@ -823,17 +885,10 @@ function Merge-AllOfSchemaDefinitions {
     }
 
     if ($sawProperties) {
-        [string[]]$requiredPropertyNames = @($propertyValues.Keys | Where-Object {
-            $requiredNames.Contains($_)
-        })
-        [string[]]$optionalPropertyNames = @($propertyValues.Keys | Where-Object {
-            -not $requiredNames.Contains($_)
-        })
         $orderedProperties = [ordered]@{}
-        foreach ($propertyName in @(
-            (Sort-OrdinalStrings -Values $requiredPropertyNames)
-            (Sort-OrdinalStrings -Values $optionalPropertyNames)
-        )) {
+        foreach ($propertyName in (Get-OrderedSchemaPropertyNames `
+            -PropertyNames @($propertyValues.Keys) `
+            -RequiredNames $requiredNames)) {
             $orderedProperties[$propertyName] = $propertyValues[$propertyName]
         }
         $mergedDefinition["properties"] = $orderedProperties
@@ -922,18 +977,10 @@ function ConvertTo-NormalizedOpenApiValue {
             [string]::Equals($property.Name, "properties", [System.StringComparison]::Ordinal) -and
             (Test-JsonObjectValue -Value $property.Value)) {
             $propertyEntries = @(Get-JsonProperties -Value $property.Value)
-            [string[]]$requiredPropertyNames = @($propertyEntries | Where-Object {
-                $requiredNames.Contains($_.Name)
-            } | ForEach-Object Name)
-            [string[]]$optionalPropertyNames = @($propertyEntries | Where-Object {
-                -not $requiredNames.Contains($_.Name)
-            } | ForEach-Object Name)
-
             $orderedProperties = [ordered]@{}
-            foreach ($propertyName in @(
-                (Sort-OrdinalStrings -Values $requiredPropertyNames)
-                (Sort-OrdinalStrings -Values $optionalPropertyNames)
-            )) {
+            foreach ($propertyName in (Get-OrderedSchemaPropertyNames `
+                -PropertyNames @($propertyEntries | ForEach-Object Name) `
+                -RequiredNames $requiredNames)) {
                 $propertyValue = Get-JsonPropertyValue -Object $property.Value -Name $propertyName
                 $orderedProperties[$propertyName] = ConvertTo-NormalizedOpenApiValue `
                     -Value $propertyValue `

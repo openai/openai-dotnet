@@ -244,6 +244,31 @@ function Assert-OpenApiSchemaKeyOrder {
             -Expected $expectedNames `
             -Actual $actualNames `
             -Message "Schema keys at '$Breadcrumb' were ordered incorrectly."
+
+        $properties = Get-JsonPropertyValue -Object $Value -Name "properties"
+        if (Test-JsonObjectValue -Value $properties) {
+            $requiredNames = [System.Collections.Generic.HashSet[string]]::new(
+                [System.StringComparer]::Ordinal
+            )
+            $required = Get-JsonPropertyValue -Object $Value -Name "required"
+            if (Test-JsonArrayValue -Value $required) {
+                foreach ($requiredName in $required) {
+                    if ($requiredName -is [string]) {
+                        $null = $requiredNames.Add($requiredName)
+                    }
+                }
+            }
+            [string[]]$actualPropertyNames = @(
+                Get-JsonProperties -Value $properties | ForEach-Object Name
+            )
+            [string[]]$expectedPropertyNames = Get-OrderedSchemaPropertyNames `
+                -PropertyNames $actualPropertyNames `
+                -RequiredNames $requiredNames
+            Assert-Sequence `
+                -Expected $expectedPropertyNames `
+                -Actual $actualPropertyNames `
+                -Message "Properties at '$Breadcrumb/properties' were ordered incorrectly."
+        }
     }
 
     foreach ($property in (Get-JsonProperties -Value $Value)) {
@@ -351,8 +376,12 @@ function New-TestOpenApiDocument {
                                                 }
                                             )
                                         }
+                                        type = [ordered]@{
+                                            type = "string"
+                                            description = "The request item type."
+                                        }
                                     }
-                                    required = @("requiredB", "requiredA")
+                                    required = @("requiredB", "requiredA", "type")
                                 }
                             }
                         }
@@ -392,8 +421,9 @@ function New-TestOpenApiDocument {
                             properties = [ordered]@{
                                 cycleOptional = [ordered]@{ type = "string" }
                                 cycleRequired = [ordered]@{ type = "boolean" }
+                                type = [ordered]@{ type = "string" }
                             }
-                            required = @("cycleRequired")
+                            required = @("cycleRequired", "type")
                         }
                     )
                     "x-oaiMeta" = [ordered]@{ ignored = $true }
@@ -576,6 +606,105 @@ try {
         }
     }
 
+    Invoke-Test "required property priorities apply only to required names" {
+        $requiredSchema = ConvertTo-NormalizedOpenApiValue `
+            -Value ([ordered]@{
+                type = "object"
+                properties = [ordered]@{
+                    text = [ordered]@{ type = "string" }
+                    type = [ordered]@{ type = "string" }
+                    alpha = [ordered]@{ type = "string" }
+                }
+                required = @("text", "type")
+            }) `
+            -Context Schema
+        Assert-Sequence `
+            @("type", "text", "alpha") `
+            @((Get-JsonProperties -Value $requiredSchema.properties).Name) `
+            "Required type was not promoted."
+
+        $optionalSchema = ConvertTo-NormalizedOpenApiValue `
+            -Value ([ordered]@{
+                type = "object"
+                properties = [ordered]@{
+                    type = [ordered]@{ type = "string" }
+                    text = [ordered]@{ type = "string" }
+                    alpha = [ordered]@{ type = "string" }
+                }
+                required = @("text")
+            }) `
+            -Context Schema
+        Assert-Sequence `
+            @("text", "alpha", "type") `
+            @((Get-JsonProperties -Value $optionalSchema.properties).Name) `
+            "Optional type was incorrectly promoted."
+    }
+
+    Invoke-Test "required property priority is configurable case-sensitive and duplicate-safe" {
+        $originalPriority = @($script:PrioritizedRequiredPropertyNames)
+        try {
+            $script:PrioritizedRequiredPropertyNames = @("kind", "type", "kind", "missing")
+            $normalized = ConvertTo-NormalizedOpenApiValue `
+                -Value ([ordered]@{
+                    type = "object"
+                    properties = [ordered]@{
+                        text = [ordered]@{ type = "string" }
+                        type = [ordered]@{ type = "string" }
+                        alpha = [ordered]@{ type = "string" }
+                        kind = [ordered]@{ type = "string" }
+                    }
+                    required = @("text", "type", "kind")
+                }) `
+                -Context Schema
+            Assert-Sequence `
+                @("kind", "type", "text", "alpha") `
+                @((Get-JsonProperties -Value $normalized.properties).Name) `
+                "Customized required-property priority was not applied."
+
+            $caseSensitiveRequired = [System.Collections.Generic.HashSet[string]]::new(
+                [System.StringComparer]::Ordinal
+            )
+            foreach ($name in @("text", "Type", "type")) {
+                $null = $caseSensitiveRequired.Add($name)
+            }
+            $caseSensitiveOrder = Get-OrderedSchemaPropertyNames `
+                -PropertyNames @("text", "Type", "type", "alpha") `
+                -RequiredNames $caseSensitiveRequired
+            Assert-Sequence `
+                @("type", "Type", "text", "alpha") `
+                @($caseSensitiveOrder) `
+                "Required-property priority matching was not case-sensitive."
+        }
+        finally {
+            $script:PrioritizedRequiredPropertyNames = $originalPriority
+        }
+    }
+
+    Invoke-Test "allOf merging applies required property priorities" {
+        $merged = Merge-AllOfSchemaDefinitions `
+            -Definitions @(
+                [ordered]@{
+                    properties = [ordered]@{
+                        text = [ordered]@{ type = "string" }
+                        optional = [ordered]@{ type = "string" }
+                    }
+                    required = @("text")
+                },
+                [ordered]@{
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string" }
+                    }
+                    required = @("type")
+                }
+            ) `
+            -DefinitionBreadcrumbs @("#/allOf/0", "#/allOf/1") `
+            -Breadcrumb "#"
+        Assert-Sequence `
+            @("type", "text", "optional") `
+            @((Get-JsonProperties -Value $merged.properties).Name) `
+            "allOf merge did not apply required-property priority."
+    }
+
     Invoke-Test "schema maps arrays and schema-valued keywords propagate ordering" {
         $schema = [ordered]@{
             oneOf = @(
@@ -748,7 +877,7 @@ try {
         $fallbackChild = $inlined.Document.components.schemas.A.properties.child
         Assert-True (-not (Test-JsonProperty -Object $fallbackChild -Name "allOf")) "Cycle fallback retained allOf."
         Assert-Sequence `
-            @("cycleRequired", "cycleOptional", "parent") `
+            @("type", "cycleRequired", "cycleOptional", "parent") `
             @((Get-JsonProperties -Value $fallbackChild.properties).Name) `
             "Cycle fallback properties were not merged and ordered."
         Assert-Sequence `
@@ -857,20 +986,24 @@ try {
         Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "ExamplesOnly")) "Exact mode followed a reference inside examples."
     }
 
-    Invoke-Test "schema properties are required-first and alphabetical" {
+    Invoke-Test "schema properties are prioritized-required then alphabetical" {
         $properties = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties
         Assert-Sequence `
-            @("requiredA", "requiredB", "flattened", "optionalZ", "recursive") `
+            @("type", "requiredA", "requiredB", "flattened", "optionalZ", "recursive") `
             @((Get-JsonProperties -Value $properties).Name) `
             "Schema properties were ordered incorrectly."
         Assert-Sequence `
-            @("requiredB", "requiredA") `
+            @("requiredB", "requiredA", "type") `
             @($inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.required) `
             "Required array order changed."
         Assert-Sequence `
-            @("optionalZ", "requiredB", "recursive", "requiredA", "flattened") `
+            @("optionalZ", "requiredB", "recursive", "requiredA", "flattened", "type") `
             @((Get-JsonProperties -Value $fixture.paths["/things"].post.requestBody.content["application/json"].schema.properties).Name) `
             "Source property order was mutated."
+        Assert-Sequence `
+            @("type", "requiredA", "requiredB", "flattened", "optionalZ", "recursive") `
+            @((Get-JsonProperties -Value $exact.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties).Name) `
+            "Exact schema properties were ordered incorrectly."
         Assert-Sequence `
             @("type", "required", "properties") `
             @((Get-JsonProperties -Value $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema).Name) `
