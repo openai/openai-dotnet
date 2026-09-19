@@ -102,16 +102,16 @@ namespace OpenAI.Realtime
             {
                 switch (discriminator.GetString())
                 {
-                    case "input_text":
-                        return RealtimeInputTextMessageContentPart.DeserializeRealtimeInputTextMessageContentPart(element, data, options);
                     case "input_audio":
                         return RealtimeInputAudioMessageContentPart.DeserializeRealtimeInputAudioMessageContentPart(element, data, options);
                     case "input_image":
                         return RealtimeInputImageMessageContentPart.DeserializeRealtimeInputImageMessageContentPart(element, data, options);
-                    case "output_text":
-                        return RealtimeOutputTextMessageContentPart.DeserializeRealtimeOutputTextMessageContentPart(element, data, options);
+                    case "input_text":
+                        return RealtimeInputTextMessageContentPart.DeserializeRealtimeInputTextMessageContentPart(element, data, options);
                     case "output_audio":
                         return RealtimeOutputAudioMessageContentPart.DeserializeRealtimeOutputAudioMessageContentPart(element, data, options);
+                    case "output_text":
+                        return RealtimeOutputTextMessageContentPart.DeserializeRealtimeOutputTextMessageContentPart(element, data, options);
                 }
             }
             return InternalUnknownRealtimeConversationItemMessageContentPartGA.DeserializeInternalUnknownRealtimeConversationItemMessageContentPartGA(element, data, options);

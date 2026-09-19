@@ -140,7 +140,7 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalMessageDeltaContentTextObjectText(value, annotations ?? new ChangeTrackingList<InternalMessageDeltaTextContentAnnotation>(), additionalBinaryDataProperties);
         }

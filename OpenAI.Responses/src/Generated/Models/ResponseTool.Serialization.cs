@@ -102,28 +102,28 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "function":
-                        return FunctionTool.DeserializeFunctionTool(element, data, options);
-                    case "file_search":
-                        return FileSearchTool.DeserializeFileSearchTool(element, data, options);
-                    case "computer_use_preview":
-                        return ComputerTool.DeserializeComputerTool(element, data, options);
-                    case "web_search_preview":
-                        return WebSearchPreviewTool.DeserializeWebSearchPreviewTool(element, data, options);
-                    case "web_search":
-                        return WebSearchTool.DeserializeWebSearchTool(element, data, options);
+                    case "apply_patch":
+                        return ApplyPatchTool.DeserializeApplyPatchTool(element, data, options);
                     case "code_interpreter":
                         return CodeInterpreterTool.DeserializeCodeInterpreterTool(element, data, options);
+                    case "computer_use_preview":
+                        return ComputerTool.DeserializeComputerTool(element, data, options);
+                    case "custom":
+                        return CustomTool.DeserializeCustomTool(element, data, options);
+                    case "file_search":
+                        return FileSearchTool.DeserializeFileSearchTool(element, data, options);
+                    case "function":
+                        return FunctionTool.DeserializeFunctionTool(element, data, options);
                     case "image_generation":
                         return ImageGenerationTool.DeserializeImageGenerationTool(element, data, options);
                     case "local_shell":
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, data, options);
                     case "mcp":
                         return McpTool.DeserializeMcpTool(element, data, options);
-                    case "apply_patch":
-                        return ApplyPatchTool.DeserializeApplyPatchTool(element, data, options);
-                    case "custom":
-                        return CustomTool.DeserializeCustomTool(element, data, options);
+                    case "web_search_preview":
+                        return WebSearchPreviewTool.DeserializeWebSearchPreviewTool(element, data, options);
+                    case "web_search":
+                        return WebSearchTool.DeserializeWebSearchTool(element, data, options);
                 }
             }
             return InternalUnknownTool.DeserializeInternalUnknownTool(element, data, options);

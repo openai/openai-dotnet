@@ -81,9 +81,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "content"u8);
                 for (int i = 0; i < Content.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || Content[i] != null && Content[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || Content[i] != null && Content[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -104,9 +105,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "refusal"u8);
                 for (int i = 0; i < Refusal.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.refusal[{i}]")) || Refusal[i] != null && Refusal[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.refusal[{i}]")) || Refusal[i] != null && Refusal[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -300,9 +302,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "content"u8);
             for (int i = 0; i < Content.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) && (Content[i] == null || !Content[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]"))) && (Content[i] == null || !Content[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Content[i];
                 }
@@ -328,9 +331,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "refusal"u8);
             for (int i = 0; i < Refusal.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.refusal[{i}]")) && (Refusal[i] == null || !Refusal[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.refusal[{i}]"))) && (Refusal[i] == null || !Refusal[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Refusal[i];
                 }

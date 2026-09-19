@@ -106,9 +106,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
                 for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TranscriptionTokenLogProbabilities[i] != null && TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TranscriptionTokenLogProbabilities[i] != null && TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -285,9 +286,10 @@ namespace OpenAI.Realtime
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
             for (int i = 0; i < TranscriptionTokenLogProbabilities.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) && (TranscriptionTokenLogProbabilities[i] == null || !TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]"))) && (TranscriptionTokenLogProbabilities[i] == null || !TranscriptionTokenLogProbabilities[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return TranscriptionTokenLogProbabilities[i];
                 }

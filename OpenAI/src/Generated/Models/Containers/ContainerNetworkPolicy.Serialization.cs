@@ -102,10 +102,10 @@ namespace OpenAI.Containers
             {
                 switch (discriminator.GetString())
                 {
-                    case "disabled":
-                        return ContainerDisabledNetworkPolicy.DeserializeContainerDisabledNetworkPolicy(element, data, options);
                     case "allowlist":
                         return ContainerAllowlistNetworkPolicy.DeserializeContainerAllowlistNetworkPolicy(element, data, options);
+                    case "disabled":
+                        return ContainerDisabledNetworkPolicy.DeserializeContainerDisabledNetworkPolicy(element, data, options);
                 }
             }
             return InternalUnknownContainerNetworkPolicy.DeserializeInternalUnknownContainerNetworkPolicy(element, data, options);

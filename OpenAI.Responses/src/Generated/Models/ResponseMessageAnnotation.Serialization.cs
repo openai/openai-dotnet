@@ -102,14 +102,14 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "file_citation":
-                        return FileCitationMessageAnnotation.DeserializeFileCitationMessageAnnotation(element, data, options);
-                    case "url_citation":
-                        return UriCitationMessageAnnotation.DeserializeUriCitationMessageAnnotation(element, data, options);
                     case "container_file_citation":
                         return ContainerFileCitationMessageAnnotation.DeserializeContainerFileCitationMessageAnnotation(element, data, options);
+                    case "file_citation":
+                        return FileCitationMessageAnnotation.DeserializeFileCitationMessageAnnotation(element, data, options);
                     case "file_path":
                         return FilePathMessageAnnotation.DeserializeFilePathMessageAnnotation(element, data, options);
+                    case "url_citation":
+                        return UriCitationMessageAnnotation.DeserializeUriCitationMessageAnnotation(element, data, options);
                 }
             }
             return InternalUnknownAnnotation.DeserializeInternalUnknownAnnotation(element, data, options);

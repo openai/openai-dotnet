@@ -165,16 +165,16 @@ namespace OpenAI.Graders
                 }
                 if (prop.NameEquals("sub_rewards"u8))
                 {
-                    subRewards = BinaryData.FromString(prop.Value.GetRawText());
+                    subRewards = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("model_grader_token_usage_per_model"u8))
                 {
-                    modelGraderTokenUsagePerModel = BinaryData.FromString(prop.Value.GetRawText());
+                    modelGraderTokenUsagePerModel = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new RunGraderResponse(reward, metadata, subRewards, modelGraderTokenUsagePerModel, additionalBinaryDataProperties);
         }
