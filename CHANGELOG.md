@@ -112,6 +112,9 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Realtime:
   - The service and session operations on `RealtimeClient` and `RealtimeSessionClient` are now async-only. The synchronous service and session operations they previously exposed (session and client-secret creation, sending commands and audio, receiving updates, session configuration, and conversation item helpers) have been removed, along with the underlying synchronous connection path. Use the corresponding `*Async` APIs instead.
 
+- OpenAI.Assistants:
+  - Fixed the synchronous `AssistantClient.ModifyAssistant` ignoring the `CancellationToken` it was given. The token was dropped before the request was sent, so the call could not be cancelled. It is now forwarded the same way the asynchronous `ModifyAssistantAsync` overload and the rest of the client already forward it.
+
 ## 2.13.0 (2026-08-10)
 
 ### Acknowledgments
