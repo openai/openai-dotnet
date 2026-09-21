@@ -769,8 +769,8 @@ try {
         }
     }
 
-    Invoke-Test "allOf merging applies required property priorities" {
-        $merged = Merge-AllOfSchemaDefinitions `
+    Invoke-Test "schema definition merging applies required property priorities" {
+        $merged = Merge-OpenApiSchemaDefinitions `
             -Definitions @(
                 [ordered]@{
                     properties = [ordered]@{
@@ -791,11 +791,11 @@ try {
         Assert-Sequence `
             @("type", "text", "optional") `
             @((Get-JsonProperties -Value $merged.properties).Name) `
-            "allOf merge did not apply required-property priority."
+            "Schema merge did not apply required-property priority."
         Assert-Sequence `
             @("type", "text") `
             @($merged.required) `
-            "allOf merge did not apply required-array priority."
+            "Schema merge did not apply required-array priority."
     }
 
     Invoke-Test "schema maps arrays and schema-valued keywords propagate ordering" {
@@ -945,120 +945,21 @@ try {
             "Inlined reference schema keys were ordered incorrectly."
     }
 
-    Invoke-Test "Inlined mode recursively flattens allOf and combines properties" {
-        $flattened = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties.flattened
-        Assert-Equal 0 @(Find-JsonPropertyValues -Value $inlined.Document -Name "allOf").Count "Inlined output retained allOf."
-        Assert-Equal "object" $flattened.type "Flattened type was lost."
-        Assert-Equal $true $flattened.nullable "Flattened nullable constraint was lost."
-        Assert-Equal "Outer description" $flattened.description "Containing description did not take precedence."
-        Assert-Sequence `
-            @("requiredA", "requiredB", "requiredC") `
-            @($flattened.required) `
-            "Combined required names were not deduplicated and sorted."
-        Assert-Sequence `
-            @("requiredA", "requiredB", "requiredC", "optionalA", "optionalM", "optionalZ", "shared") `
-            @((Get-JsonProperties -Value $flattened.properties).Name) `
-            "Flattened properties were not ordered required-first and alphabetically."
-        Assert-Equal 1 @((Get-JsonProperties -Value $flattened.properties) | Where-Object Name -eq "shared").Count "Identical properties were not deduplicated."
-        Assert-Sequence `
-            @("type", "description", "required", "properties", "nullable") `
-            @((Get-JsonProperties -Value $flattened).Name) `
-            "Flattened schema keys were ordered incorrectly."
+    Invoke-Test "Inlined mode preserves source allOf while expanding references" {
+        $preserved = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties.flattened
+        Assert-True (Test-JsonProperty -Object $preserved -Name "allOf") "Inlined output removed source allOf."
+        Assert-True (@(Find-JsonPropertyValues -Value $preserved -Name "allOf").Count -gt 1) "Nested source allOf was removed."
+        Assert-Equal 0 @(Get-OpenApiReferenceOccurrences -Value $preserved | Where-Object Kind -eq "Reference").Count "Inlined allOf retained a non-cycle component reference."
     }
 
-    Invoke-Test "Inlined cycle fallback components are flattened" {
+    Invoke-Test "Inlined cycle fallback components preserve source allOf" {
         $fallbackChild = $inlined.Document.components.schemas.A.properties.child
-        Assert-True (-not (Test-JsonProperty -Object $fallbackChild -Name "allOf")) "Cycle fallback retained allOf."
-        Assert-Sequence `
-            @("type", "cycleRequired", "cycleOptional", "parent") `
-            @((Get-JsonProperties -Value $fallbackChild.properties).Name) `
-            "Cycle fallback properties were not merged and ordered."
-        Assert-Sequence `
-            @("type", "required", "properties") `
-            @((Get-JsonProperties -Value $fallbackChild).Name) `
-            "Cycle fallback schema keys were ordered incorrectly."
-        Assert-Sequence `
-            @("type", "cycleRequired") `
-            @($fallbackChild.required) `
-            "Cycle fallback required names were ordered incorrectly."
+        Assert-True (Test-JsonProperty -Object $fallbackChild -Name "allOf") "Cycle fallback removed source allOf."
+        Assert-True (@(Get-OpenApiReferenceOccurrences -Value $fallbackChild | Where-Object Kind -eq "Reference").Count -gt 0) "Cycle fallback lost its cycle reference."
     }
 
     Invoke-Test "Exact mode preserves source allOf" {
         Assert-True (@(Find-JsonPropertyValues -Value $exact.Document -Name "allOf").Count -gt 0) "Exact mode unexpectedly flattened allOf."
-    }
-
-    Invoke-Test "allOf flattening rejects incompatible property definitions" {
-        $activeReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $cycleReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $conflictingSchema = [ordered]@{
-            allOf = @(
-                [ordered]@{ properties = [ordered]@{ duplicate = [ordered]@{ type = "string" } } },
-                [ordered]@{ properties = [ordered]@{ duplicate = [ordered]@{ type = "integer" } } }
-            )
-        }
-        Assert-Throws `
-            { Expand-OpenApiReferences -Value $conflictingSchema -Document $fixture -ActiveReferences $activeReferences -CycleReferences $cycleReferences -Breadcrumb "#/conflict" } `
-            "*duplicate*"
-    }
-
-    Invoke-Test "allOf flattening rejects incompatible validating keywords" {
-        $activeReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $cycleReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $conflictingSchema = [ordered]@{
-            allOf = @(
-                [ordered]@{ type = "object" },
-                [ordered]@{ type = "array" }
-            )
-        }
-        Assert-Throws `
-            { Expand-OpenApiReferences -Value $conflictingSchema -Document $fixture -ActiveReferences $activeReferences -CycleReferences $cycleReferences -Breadcrumb "#/conflict" } `
-            "*type*"
-    }
-
-    Invoke-Test "allOf flattening intersects compatible enum constraints" {
-        $activeReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $cycleReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $refinedSchema = [ordered]@{
-            allOf = @(
-                [ordered]@{ enum = @("in_progress", "completed", "incomplete") },
-                [ordered]@{ enum = @("completed", "incomplete", "failed") }
-            )
-        }
-        $expanded = Expand-OpenApiReferences `
-            -Value $refinedSchema `
-            -Document $fixture `
-            -ActiveReferences $activeReferences `
-            -CycleReferences $cycleReferences `
-            -Breadcrumb "#/enum-refinement"
-        Assert-Sequence `
-            @("completed", "incomplete") `
-            @($expanded.enum) `
-            "Compatible enum constraints were not intersected."
-    }
-
-    Invoke-Test "allOf flattening rejects disjoint enum constraints" {
-        $activeReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $cycleReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $conflictingSchema = [ordered]@{
-            allOf = @(
-                [ordered]@{ enum = @("completed") },
-                [ordered]@{ enum = @("failed") }
-            )
-        }
-        Assert-Throws `
-            { Expand-OpenApiReferences -Value $conflictingSchema -Document $fixture -ActiveReferences $activeReferences -CycleReferences $cycleReferences -Breadcrumb "#/enum-conflict" } `
-            "*no common values*"
-    }
-
-    Invoke-Test "allOf flattening rejects empty and non-object branches" {
-        $activeReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        $cycleReferences = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        Assert-Throws `
-            { Expand-OpenApiReferences -Value ([ordered]@{ allOf = @() }) -Document $fixture -ActiveReferences $activeReferences -CycleReferences $cycleReferences -Breadcrumb "#/empty" } `
-            "*allOf*"
-        Assert-Throws `
-            { Expand-OpenApiReferences -Value ([ordered]@{ allOf = @("invalid") }) -Document $fixture -ActiveReferences $activeReferences -CycleReferences $cycleReferences -Breadcrumb "#/invalid" } `
-            "*allOf*"
     }
 
     Invoke-Test "explicit recursive references remain finite" {
@@ -1187,7 +1088,7 @@ try {
         Assert-OpenApiSchemaKeyOrder -Value $audioInlined.Document
     }
 
-    Invoke-Test "live top-level and nested allOf schemas are flattened" {
+    Invoke-Test "live top-level and nested allOf schemas are preserved" {
         foreach ($route in @(
             "/organization/admin_api_keys",
             "/chat/completions/{completion_id}/messages"
@@ -1197,10 +1098,9 @@ try {
                 -Document $liveDocument `
                 -RouteEntry $routeEntry `
                 -Mode Inlined
-            Assert-Equal `
-                0 `
-                @(Find-JsonPropertyValues -Value $routeInlined.Document -Name "allOf").Count `
-                "Route '$route' retained allOf."
+            Assert-True `
+                (@(Find-JsonPropertyValues -Value $routeInlined.Document -Name "allOf").Count -gt 0) `
+                "Route '$route' did not retain source allOf."
             Assert-OpenApiReferencesResolve -Document $routeInlined.Document
         }
     }

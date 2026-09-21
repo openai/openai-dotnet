@@ -1,0 +1,248 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Extractor fixture",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://example.test/v1"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Things",
+      "description": "Selected tag"
+    }
+  ],
+  "paths": {
+    "/things": {
+      "parameters": [
+        {
+          "name": "trace",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Things"
+        ],
+        "responses": {
+          "204": {
+            "description": "none"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Things"
+        ],
+        "security": [
+          {
+            "AdminApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "requiredA",
+                  "requiredB"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "The request item type."
+                  },
+                  "requiredA": {
+                    "type": "object",
+                    "description": "A reference with a sibling",
+                    "properties": {
+                      "type": {
+                        "const": "cat",
+                        "enum": [
+                          "alpha",
+                          "middle",
+                          "zeta"
+                        ]
+                      }
+                    },
+                    "title": "Cat schema"
+                  },
+                  "requiredB": {
+                    "type": "object",
+                    "properties": {
+                      "child": {
+                        "type": "object",
+                        "required": [
+                          "type",
+                          "cycleRequired"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string"
+                          },
+                          "cycleRequired": {
+                            "type": "boolean"
+                          },
+                          "cycleOptional": {
+                            "type": "string"
+                          },
+                          "parent": {
+                            "$ref": "#/components/schemas/A"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "flattened": {
+                    "type": "object",
+                    "description": "Outer description",
+                    "required": [
+                      "requiredA",
+                      "requiredB",
+                      "requiredC"
+                    ],
+                    "properties": {
+                      "requiredA": {
+                        "type": "string"
+                      },
+                      "requiredB": {
+                        "type": "integer"
+                      },
+                      "requiredC": {
+                        "type": "boolean"
+                      },
+                      "optionalA": {
+                        "type": "string"
+                      },
+                      "optionalM": {
+                        "type": "number"
+                      },
+                      "optionalZ": {
+                        "type": "string"
+                      },
+                      "shared": {
+                        "type": "boolean",
+                        "description": "Shared property"
+                      }
+                    },
+                    "nullable": true
+                  },
+                  "optionalZ": {
+                    "type": "string"
+                  },
+                  "recursive": {
+                    "type": "object",
+                    "properties": {
+                      "children": {
+                        "type": "array",
+                        "items": {
+                          "$recursiveRef": "#"
+                        }
+                      }
+                    },
+                    "$recursiveAnchor": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "propertyName": "type",
+                    "mapping": {
+                      "cat": "#/paths/~1things/post/responses/200/content/application~1json/schema/oneOf/0",
+                      "dog": "#/paths/~1things/post/responses/200/content/application~1json/schema/oneOf/1"
+                    }
+                  },
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "cat",
+                          "enum": [
+                            "alpha",
+                            "middle",
+                            "zeta"
+                          ]
+                        }
+                      },
+                      "title": "Cat schema"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "const": "dog"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "A": {
+        "type": "object",
+        "properties": {
+          "child": {
+            "type": "object",
+            "required": [
+              "type",
+              "cycleRequired"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "cycleRequired": {
+                "type": "boolean"
+              },
+              "cycleOptional": {
+                "type": "string"
+              },
+              "parent": {
+                "$ref": "#/components/schemas/A"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "AdminApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

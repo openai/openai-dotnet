@@ -1,0 +1,365 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Extractor fixture",
+    "version": "1.0.0",
+    "x-oaiMeta": {
+      "ignored": true
+    },
+    "x-custom-info": "ignored"
+  },
+  "servers": [
+    {
+      "url": "https://example.test/v1"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Things",
+      "description": "Selected tag"
+    },
+    {
+      "name": "Unused",
+      "description": "Unselected tag"
+    }
+  ],
+  "paths": {
+    "/zebra/items": {
+      "get": {
+        "responses": {
+          "204": {
+            "description": "none"
+          }
+        }
+      }
+    },
+    "/responses?beta=true": {
+      "post": {
+        "responses": {
+          "204": {
+            "description": "none"
+          }
+        }
+      }
+    },
+    "/things": {
+      "parameters": [
+        {
+          "name": "trace",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "get": {
+        "tags": [
+          "Things"
+        ],
+        "responses": {
+          "204": {
+            "description": "none"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Things"
+        ],
+        "security": [
+          {
+            "AdminApiKeyAuth": []
+          }
+        ],
+        "example": {
+          "$ref": "#/components/schemas/ExampleOnly"
+        },
+        "examples": {
+          "hidden": {
+            "$ref": "#/components/schemas/ExamplesOnly"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "optionalZ": {
+                    "type": "string"
+                  },
+                  "requiredB": {
+                    "$ref": "#/components/schemas/A"
+                  },
+                  "recursive": {
+                    "$ref": "#/components/schemas/Recursive"
+                  },
+                  "requiredA": {
+                    "$ref": "#/components/schemas/Alias"
+                  },
+                  "flattened": {
+                    "description": "Outer description",
+                    "allOf": [
+                      {
+                        "type": "object",
+                        "description": "Base description",
+                        "nullable": true,
+                        "properties": {
+                          "optionalZ": {
+                            "type": "string"
+                          },
+                          "shared": {
+                            "description": "Shared property",
+                            "type": "boolean"
+                          },
+                          "requiredB": {
+                            "type": "integer"
+                          }
+                        },
+                        "required": [
+                          "requiredB"
+                        ]
+                      },
+                      {
+                        "allOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "optionalA": {
+                                "type": "string"
+                              },
+                              "requiredA": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "requiredA"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "description": "Nested description",
+                            "properties": {
+                              "requiredC": {
+                                "type": "boolean"
+                              },
+                              "shared": {
+                                "type": "boolean",
+                                "description": "Shared property"
+                              },
+                              "optionalM": {
+                                "type": "number"
+                              }
+                            },
+                            "required": [
+                              "requiredC",
+                              "requiredA"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "The request item type."
+                  }
+                },
+                "required": [
+                  "requiredB",
+                  "requiredA",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Shared"
+          }
+        },
+        "x-oaiMeta": {
+          "examples": "ignored"
+        },
+        "x-hidden-ref": {
+          "$ref": "#/components/schemas/Unused"
+        }
+      }
+    },
+    "/fine_tuning/jobs": {
+      "get": {
+        "responses": {
+          "204": {
+            "description": "none"
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "ignored": {
+      "post": {
+        "responses": {}
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "A": {
+        "type": "object",
+        "properties": {
+          "child": {
+            "$ref": "#/components/schemas/B"
+          }
+        }
+      },
+      "B": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "parent": {
+                "$ref": "#/components/schemas/A"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "properties": {
+              "cycleOptional": {
+                "type": "string"
+              },
+              "cycleRequired": {
+                "type": "boolean"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "cycleRequired",
+              "type"
+            ]
+          }
+        ],
+        "x-oaiMeta": {
+          "ignored": true
+        }
+      },
+      "Cat": {
+        "type": "object",
+        "title": "Cat schema",
+        "example": {
+          "type": "cat"
+        },
+        "examples": [
+          {
+            "type": "cat"
+          }
+        ],
+        "properties": {
+          "type": {
+            "const": "cat",
+            "enum": [
+              "zeta",
+              "alpha",
+              "middle"
+            ],
+            "x-stainless-const": true
+          }
+        }
+      },
+      "Dog": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "const": "dog"
+          }
+        }
+      },
+      "Pet": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Cat"
+          },
+          {
+            "$ref": "#/components/schemas/Dog"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "cat": "#/components/schemas/Cat",
+            "dog": "#/components/schemas/Dog"
+          }
+        }
+      },
+      "Alias": {
+        "$ref": "#/components/schemas/Cat",
+        "description": "A reference with a sibling"
+      },
+      "Recursive": {
+        "$recursiveAnchor": true,
+        "type": "object",
+        "properties": {
+          "children": {
+            "type": "array",
+            "items": {
+              "$recursiveRef": "#"
+            }
+          }
+        }
+      },
+      "ExampleOnly": {
+        "type": "string"
+      },
+      "ExamplesOnly": {
+        "type": "string"
+      },
+      "Unused": {
+        "type": "string"
+      }
+    },
+    "responses": {
+      "Shared": {
+        "description": "ok",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Pet"
+            }
+          }
+        }
+      },
+      "Unused": {
+        "description": "unused"
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "AdminApiKeyAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "UnusedAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "x-oaiMeta": {
+    "ignored": true
+  },
+  "x-custom-root": {
+    "ignored": true
+  }
+}
