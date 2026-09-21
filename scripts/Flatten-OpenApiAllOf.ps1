@@ -5,9 +5,10 @@
 .DESCRIPTION
     Reads JSON produced by Extract-OpenApiRoute.ps1 in Inlined mode, recursively
     merges every allOf composition into a single schema, relocates affected local
-    JSON pointers, reapplies the shared deterministic normalization rules, and
-    writes a separate flattened OpenAPI document. Flattening is byte-idempotent;
-    running the script against already-flat output preserves its JSON bytes.
+    JSON pointers, and writes a separate flattened OpenAPI document while
+    preserving encounter order. Run Sort-OpenApiDocument.ps1 afterward to
+    produce canonical ordering. Flattening is byte-idempotent; running the
+    script against already-flat output preserves its JSON bytes.
 
     Exact-mode extraction output is outside this script's supported contract
     because Exact documents intentionally retain component references.
@@ -220,7 +221,7 @@ function ConvertTo-FlattenedOpenApiAllOfValue {
             if ([string]::Equals($property.Name, "allOf", [System.StringComparison]::Ordinal)) {
                 continue
             }
-            $childContext = Get-OpenApiNormalizationChildContext `
+            $childContext = Get-OpenApiSchemaChildContext `
                 -ParentContext Schema `
                 -PropertyName $property.Name `
                 -PropertyValue $property.Value
@@ -247,7 +248,7 @@ function ConvertTo-FlattenedOpenApiAllOfValue {
 
     $result = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        $childContext = Get-OpenApiNormalizationChildContext `
+        $childContext = Get-OpenApiSchemaChildContext `
             -ParentContext $Context `
             -PropertyName $property.Name `
             -PropertyValue $property.Value
@@ -438,14 +439,12 @@ function ConvertTo-FlattenedOpenApiDocument {
     $relocated = ConvertTo-RelocatedOpenApiPointers `
         -Value $flattened `
         -Relocations $relocations
-    $normalized = ConvertTo-NormalizedOpenApiValue -Value $relocated
-
-    Assert-OpenApiReferencesResolve -Document $normalized
-    Assert-AdditionalOpenApiReferencesResolve -Document $normalized
-    Assert-NoOpenApiAllOf -Value $normalized
+    Assert-OpenApiReferencesResolve -Document $relocated
+    Assert-AdditionalOpenApiReferencesResolve -Document $relocated
+    Assert-NoOpenApiAllOf -Value $relocated
 
     return [PSCustomObject]@{
-        Document = $normalized
+        Document = $relocated
         FlattenedCount = $flattenedCount
         RelocationCount = $relocations.Count
     }

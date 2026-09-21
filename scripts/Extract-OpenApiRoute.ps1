@@ -8,12 +8,12 @@
     mode. Exact mode keeps references and copies their component definitions.
     Inlined mode expands references except where a reference is needed to
     represent recursion, but preserves source allOf compositions. Run
-    Flatten-OpenApiAllOf.ps1 against Inlined output to produce a document with
-    all allOf compositions merged into flat schemas.
+    Flatten-OpenApiAllOf.ps1 against Inlined output to merge all allOf
+    compositions, then run Sort-OpenApiDocument.ps1 to produce canonical output.
 
     Both modes omit configured properties and every name that starts with x-,
-    order schema keys, required arrays, and property maps using their configured
-    priorities, and emit enum values in alphabetical order.
+    but preserve encounter order. Run Sort-OpenApiDocument.ps1 directly against
+    Exact output when canonical Exact JSON is required.
 
 .PARAMETER SpecificationPath
     The OpenAPI JSON document to read. Relative paths are resolved from the
@@ -43,7 +43,9 @@
     ./scripts/Extract-OpenApiRoute.ps1 -Route "/responses" -Mode Inlined
     ./scripts/Flatten-OpenApiAllOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
-    Extracts an Inlined intermediate and then flattens its allOf compositions.
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
+    Extracts, flattens, and canonically sorts a route in three explicit stages.
 #>
 
 #Requires -Version 7.0

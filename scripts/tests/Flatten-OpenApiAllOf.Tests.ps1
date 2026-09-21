@@ -17,6 +17,7 @@ Set-StrictMode -Version Latest
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
 $extractScriptPath = Join-Path $scriptDirectory "Extract-OpenApiRoute.ps1"
+$sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 . $flattenScriptPath
 
 $script:PassedTests = 0
@@ -247,8 +248,8 @@ try {
         Assert-Equal "object" $flattened.type "Flattened type was lost."
         Assert-Equal "Outer description" $flattened.description "Containing description did not win."
         Assert-Equal $true $flattened.nullable "Nested constraint was lost."
-        Assert-Sequence @("type", "text") @($flattened.required) "Required names were merged incorrectly."
-        Assert-Sequence @("type", "text", "optional") @((Get-JsonProperties -Value $flattened.properties).Name) "Properties were merged incorrectly."
+        Assert-Sequence @("text", "type") @($flattened.required) "Required names did not preserve first-seen order."
+        Assert-Sequence @("text", "type", "optional") @((Get-JsonProperties -Value $flattened.properties).Name) "Properties did not preserve first-seen order."
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Depth 100 -Compress) "Source document was mutated."
     }
 
@@ -412,11 +413,12 @@ try {
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*has no 'missing' property*"
     }
 
-    Invoke-Test "compact pipeline output matches the pre-split golden bytes" {
+    Invoke-Test "compact three-stage pipeline matches the pre-split golden bytes" {
         $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
         $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
         $intermediatePath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
         $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
+        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.sorted.openapi.json"
         & $extractScriptPath `
             -SpecificationPath $sourcePath `
             -Route "/things" `
@@ -425,7 +427,8 @@ try {
         $intermediate = Get-Content -LiteralPath $intermediatePath -Raw | ConvertFrom-Json -Depth 100
         Assert-True (@(Find-OpenApiAllOf -Value $intermediate).Count -gt 0) "Extractor intermediate did not retain allOf."
         $null = Invoke-OpenApiAllOfFlattener -InputPath $intermediatePath -OutputPath $flattenedPath
-        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $flattenedPath -Message "Pipeline output changed."
+        & $sortScriptPath -InputPath $flattenedPath -OutputPath $sortedPath
+        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Pipeline output changed."
     }
 
     Invoke-Test "flattening is byte-idempotent" {

@@ -14,23 +14,6 @@ $script:OmittedPropertyNames = @(
     "examples"
 )
 
-# Schema keys listed here are emitted first and in this exact order. Any schema
-# keys not listed here follow alphabetically, so this array is the only place to
-# change when a different leading order is needed.
-$script:PrioritizedSchemaPropertyNames = @(
-    "type"
-    "description"
-    "required"
-    "properties"
-)
-
-# Required property names listed here are emitted first in schema `required`
-# arrays and inside schema `properties` maps, in this exact order. Optional
-# properties are never promoted by this list.
-$script:PrioritizedRequiredPropertyNames = @(
-    "type"
-)
-
 # Returns an object's JSON properties without treating arrays or scalar values
 # as objects. ConvertFrom-Json represents JSON objects as PSCustomObject values.
 function Get-JsonProperties {
@@ -387,145 +370,11 @@ function Copy-JsonValue {
     return $Value
 }
 
-# Uses ordinal comparison so output ordering is stable across machine cultures.
-function Sort-OrdinalStrings {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowEmptyCollection()]
-        [string[]]$Values
-    )
-
-    [string[]]$sortedValues = @($Values)
-    [System.Array]::Sort($sortedValues, [System.StringComparer]::Ordinal)
-    return ,$sortedValues
-}
-
-# Sorts enum values by their compact JSON representation using ordinal
-# comparison. This preserves each value's JSON type and keeps equal values in
-# their original relative order.
-function Sort-JsonEnumValues {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [AllowEmptyCollection()]
-        [object[]]$Values
-    )
-
-    if ($null -eq $Values) {
-        return ,([object[]]@($null))
-    }
-
-    $sortedEntries = [System.Collections.Generic.List[object]]::new()
-    foreach ($value in $Values) {
-        $entry = [PSCustomObject]@{
-            Key = ConvertTo-Json -InputObject $value -Compress -Depth 100
-            Value = $value
-        }
-        $insertionIndex = $sortedEntries.Count
-        for ($index = 0; $index -lt $sortedEntries.Count; $index++) {
-            if ([System.StringComparer]::Ordinal.Compare($entry.Key, $sortedEntries[$index].Key) -lt 0) {
-                $insertionIndex = $index
-                break
-            }
-        }
-        $sortedEntries.Insert($insertionIndex, $entry)
-    }
-
-    [object[]]$sortedValues = [object[]]::new($sortedEntries.Count)
-    for ($index = 0; $index -lt $sortedEntries.Count; $index++) {
-        $sortedValues[$index] = $sortedEntries[$index].Value
-    }
-    return ,$sortedValues
-}
-
-# Orders required property names using configured priorities first, then every
-# remaining name alphabetically. Duplicate configuration and input names are
-# emitted once, consistent with JSON Schema's unique required-name constraint.
-function Get-OrderedRequiredPropertyNames {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowEmptyCollection()]
-        [string[]]$RequiredNames
-    )
-
-    $availableNames = [System.Collections.Generic.HashSet[string]]::new(
-        [System.StringComparer]::Ordinal
-    )
-    foreach ($requiredName in $RequiredNames) {
-        $null = $availableNames.Add($requiredName)
-    }
-
-    $emittedNames = [System.Collections.Generic.HashSet[string]]::new(
-        [System.StringComparer]::Ordinal
-    )
-    $orderedNames = [System.Collections.Generic.List[string]]::new()
-
-    foreach ($requiredName in $script:PrioritizedRequiredPropertyNames) {
-        if ($availableNames.Contains($requiredName) -and $emittedNames.Add($requiredName)) {
-            $orderedNames.Add($requiredName)
-        }
-    }
-
-    [string[]]$remainingNames = @($availableNames | Where-Object {
-        -not $emittedNames.Contains($_)
-    })
-    foreach ($requiredName in (Sort-OrdinalStrings -Values $remainingNames)) {
-        if ($emittedNames.Add($requiredName)) {
-            $orderedNames.Add($requiredName)
-        }
-    }
-
-    return [string[]]$orderedNames
-}
-
-# Orders names inside a schema's `properties` map. Configured names are promoted
-# only when required, followed by other required names and then optional names.
-function Get-OrderedSchemaPropertyNames {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowEmptyCollection()]
-        [string[]]$PropertyNames,
-
-        [Parameter(Mandatory = $true)]
-        [AllowEmptyCollection()]
-        [System.Collections.Generic.HashSet[string]]$RequiredNames
-    )
-
-    $availableNames = [System.Collections.Generic.HashSet[string]]::new(
-        [System.StringComparer]::Ordinal
-    )
-    foreach ($propertyName in $PropertyNames) {
-        $null = $availableNames.Add($propertyName)
-    }
-
-    $emittedNames = [System.Collections.Generic.HashSet[string]]::new(
-        [System.StringComparer]::Ordinal
-    )
-    $orderedNames = [System.Collections.Generic.List[string]]::new()
-
-    [string[]]$requiredNameValues = @($RequiredNames | ForEach-Object { $_ })
-    foreach ($propertyName in (Get-OrderedRequiredPropertyNames -RequiredNames $requiredNameValues)) {
-        if ($availableNames.Contains($propertyName) -and $emittedNames.Add($propertyName)) {
-            $orderedNames.Add($propertyName)
-        }
-    }
-
-    [string[]]$optionalNames = @($PropertyNames | Where-Object {
-        -not $RequiredNames.Contains($_)
-    })
-    foreach ($propertyName in (Sort-OrdinalStrings -Values $optionalNames)) {
-        if ($emittedNames.Add($propertyName)) {
-            $orderedNames.Add($propertyName)
-        }
-    }
-
-    return ,([string[]]$orderedNames)
-}
 
 # Selects how a child value should be normalized. Explicit context prevents
 # ordinary OpenAPI objects that happen to use schema-like names from being
 # reordered as schemas.
-function Get-OpenApiNormalizationChildContext {
+function Get-OpenApiSchemaChildContext {
     param(
         [Parameter(Mandatory = $true)]
         [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
@@ -594,35 +443,6 @@ function Get-OpenApiNormalizationChildContext {
     return "OpenApi"
 }
 
-# Orders one normalized schema using the configurable leading keys followed by
-# every remaining key in ordinal alphabetical order.
-function ConvertTo-OrderedSchemaDefinition {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Schema
-    )
-
-    $orderedSchema = [ordered]@{}
-    $emittedNames = [System.Collections.Generic.HashSet[string]]::new(
-        [System.StringComparer]::Ordinal
-    )
-
-    foreach ($propertyName in $script:PrioritizedSchemaPropertyNames) {
-        if ($emittedNames.Add($propertyName) -and
-            (Test-JsonProperty -Object $Schema -Name $propertyName)) {
-            $orderedSchema[$propertyName] = Get-JsonPropertyValue -Object $Schema -Name $propertyName
-        }
-    }
-
-    [string[]]$remainingNames = @(Get-JsonProperties -Value $Schema | Where-Object {
-        -not $emittedNames.Contains($_.Name)
-    } | ForEach-Object Name)
-    foreach ($propertyName in (Sort-OrdinalStrings -Values $remainingNames)) {
-        $orderedSchema[$propertyName] = Get-JsonPropertyValue -Object $Schema -Name $propertyName
-    }
-
-    return $orderedSchema
-}
 
 # Compares JSON values structurally. Object member order is insignificant,
 # array order is significant, and scalar types and values must match exactly.
@@ -786,12 +606,14 @@ function Merge-OpenApiSchemaDefinitions {
     $propertyValues = [System.Collections.Generic.Dictionary[string, object]]::new(
         [System.StringComparer]::Ordinal
     )
+    $propertyOrder = [System.Collections.Generic.List[string]]::new()
     $propertySources = [System.Collections.Generic.Dictionary[string, string]]::new(
         [System.StringComparer]::Ordinal
     )
     $requiredNames = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )
+    $requiredOrder = [System.Collections.Generic.List[string]]::new()
     $sawProperties = $false
     $sawRequired = $false
 
@@ -803,9 +625,6 @@ function Merge-OpenApiSchemaDefinitions {
         }
 
         foreach ($property in (Get-JsonProperties -Value $definition)) {
-            if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
-                continue
-            }
             if ([string]::Equals($property.Name, "properties", [System.StringComparison]::Ordinal)) {
                 if (-not (Test-JsonObjectValue -Value $property.Value)) {
                     throw "The properties keyword at '$definitionBreadcrumb/properties' must be an object."
@@ -834,6 +653,7 @@ function Merge-OpenApiSchemaDefinitions {
                     }
 
                     $propertyValues[$schemaProperty.Name] = $schemaProperty.Value
+                    $propertyOrder.Add($schemaProperty.Name)
                     $propertySources[$schemaProperty.Name] = $schemaPropertyBreadcrumb
                 }
                 continue
@@ -848,7 +668,9 @@ function Merge-OpenApiSchemaDefinitions {
                     if ($requiredName -isnot [string]) {
                         throw "Every required name at '$definitionBreadcrumb/required' must be a string."
                     }
-                    $null = $requiredNames.Add($requiredName)
+                    if ($requiredNames.Add($requiredName)) {
+                        $requiredOrder.Add($requiredName)
+                    }
                 }
                 continue
             }
@@ -898,37 +720,26 @@ function Merge-OpenApiSchemaDefinitions {
 
     if ($sawProperties) {
         $orderedProperties = [ordered]@{}
-        foreach ($propertyName in (Get-OrderedSchemaPropertyNames `
-            -PropertyNames @($propertyValues.Keys) `
-            -RequiredNames $requiredNames)) {
+        foreach ($propertyName in $propertyOrder) {
             $orderedProperties[$propertyName] = $propertyValues[$propertyName]
         }
         $mergedDefinition["properties"] = $orderedProperties
     }
 
     if ($sawRequired) {
-        [string[]]$requiredNameValues = @($requiredNames | ForEach-Object { $_ })
-        $mergedDefinition["required"] = @(
-            Get-OrderedRequiredPropertyNames -RequiredNames $requiredNameValues
-        )
+        $mergedDefinition["required"] = @($requiredOrder)
     }
 
     return $mergedDefinition
 }
 
-# Removes every configured or x-prefixed property recursively. Schema objects
-# use configured top-level ordering, while ordinary OpenAPI object order stays
-# unchanged. Property maps and required arrays use configured required-name
-# priorities followed by alphabetical ordering.
-function ConvertTo-NormalizedOpenApiValue {
+# Removes every configured or x-prefixed property recursively while preserving
+# all surviving object-key and array order.
+function ConvertTo-PrunedOpenApiValue {
     param(
         [Parameter(Mandatory = $true)]
         [AllowNull()]
         [object]$Value,
-
-        [Parameter()]
-        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
-        [string]$Context = "OpenApi",
 
         [Parameter()]
         [int]$Depth = 0,
@@ -938,7 +749,7 @@ function ConvertTo-NormalizedOpenApiValue {
     )
 
     if ($Depth -gt $MaximumDepth) {
-        throw "JSON normalization exceeds the supported depth of $MaximumDepth."
+        throw "JSON pruning exceeds the supported depth of $MaximumDepth."
     }
 
     if ($null -eq $Value) {
@@ -946,115 +757,31 @@ function ConvertTo-NormalizedOpenApiValue {
     }
 
     if (Test-JsonArrayValue -Value $Value) {
-        $itemContext = $Context
-        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
-            $itemContext = "Schema"
+        [object[]]$prunedItems = [object[]]::new($Value.Count)
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            $prunedItems[$index] = ConvertTo-PrunedOpenApiValue `
+                -Value $Value[$index] `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
         }
-        [object[]]$normalizedItems = @(
-            foreach ($item in $Value) {
-                ConvertTo-NormalizedOpenApiValue `
-                    -Value $item `
-                    -Context $itemContext `
-                    -Depth ($Depth + 1) `
-                    -MaximumDepth $MaximumDepth
-            }
-        )
-        return ,$normalizedItems
+        return ,$prunedItems
     }
 
     if (-not (Test-JsonObjectValue -Value $Value)) {
         return $Value
     }
 
-    if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
-        $Context = "Schema"
-    }
-
-    $requiredNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
-        $requiredValue = Get-JsonPropertyValue -Object $Value -Name "required"
-        if (Test-JsonArrayValue -Value $requiredValue) {
-            foreach ($requiredName in $requiredValue) {
-                if ($requiredName -is [string]) {
-                    $null = $requiredNames.Add($requiredName)
-                }
-            }
-        }
-    }
-
-    $normalizedObject = [ordered]@{}
+    $prunedObject = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
         if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
             continue
         }
-
-        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
-            [string]::Equals($property.Name, "enum", [System.StringComparison]::Ordinal) -and
-            (Test-JsonArrayValue -Value $property.Value)) {
-            [object[]]$normalizedEnum = [object[]]::new($property.Value.Count)
-            for ($index = 0; $index -lt $property.Value.Count; $index++) {
-                $normalizedEnum[$index] = ConvertTo-NormalizedOpenApiValue `
-                    -Value $property.Value[$index] `
-                    -Context Literal `
-                    -Depth ($Depth + 1) `
-                    -MaximumDepth $MaximumDepth
-            }
-            $normalizedObject[$property.Name] = Sort-JsonEnumValues -Values $normalizedEnum
-            continue
-        }
-
-        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
-            [string]::Equals($property.Name, "required", [System.StringComparison]::Ordinal) -and
-            (Test-JsonArrayValue -Value $property.Value)) {
-            [string[]]$requiredNameValues = @(
-                foreach ($requiredName in $property.Value) {
-                    if ($requiredName -isnot [string]) {
-                        throw "Every required name must be a string."
-                    }
-                    $requiredName
-                }
-            )
-            $normalizedObject[$property.Name] = @(
-                Get-OrderedRequiredPropertyNames -RequiredNames $requiredNameValues
-            )
-            continue
-        }
-
-        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
-            [string]::Equals($property.Name, "properties", [System.StringComparison]::Ordinal) -and
-            (Test-JsonObjectValue -Value $property.Value)) {
-            $propertyEntries = @(Get-JsonProperties -Value $property.Value)
-            $orderedProperties = [ordered]@{}
-            foreach ($propertyName in (Get-OrderedSchemaPropertyNames `
-                -PropertyNames @($propertyEntries | ForEach-Object Name) `
-                -RequiredNames $requiredNames)) {
-                $propertyValue = Get-JsonPropertyValue -Object $property.Value -Name $propertyName
-                $orderedProperties[$propertyName] = ConvertTo-NormalizedOpenApiValue `
-                    -Value $propertyValue `
-                    -Context Schema `
-                    -Depth ($Depth + 1) `
-                    -MaximumDepth $MaximumDepth
-            }
-            $normalizedObject[$property.Name] = $orderedProperties
-            continue
-        }
-
-        $childContext = Get-OpenApiNormalizationChildContext `
-            -ParentContext $Context `
-            -PropertyName $property.Name `
-            -PropertyValue $property.Value
-        $normalizedObject[$property.Name] = ConvertTo-NormalizedOpenApiValue `
+        $prunedObject[$property.Name] = ConvertTo-PrunedOpenApiValue `
             -Value $property.Value `
-            -Context $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
-
-    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
-        return ConvertTo-OrderedSchemaDefinition -Schema $normalizedObject
-    }
-
-    return $normalizedObject
+    return $prunedObject
 }
 
 # Encodes one RFC 6901 token for use in a JSON Pointer.
@@ -2201,7 +1928,7 @@ function New-ExtractedOpenApiDocument {
     )
 
     $routePointer = "#/paths/$(ConvertTo-JsonPointerToken -Token $RouteEntry.Route)"
-    $sourcePathItem = ConvertTo-NormalizedOpenApiValue -Value $RouteEntry.PathItem
+    $sourcePathItem = ConvertTo-PrunedOpenApiValue -Value $RouteEntry.PathItem
     $cycleReferences = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )
@@ -2274,16 +2001,16 @@ function New-ExtractedOpenApiDocument {
         $extractedDocument["components"] = $selectedComponents
     }
 
-    $normalizedDocument = ConvertTo-NormalizedOpenApiValue -Value $extractedDocument
-    Assert-OpenApiReferencesResolve -Document $normalizedDocument
+    $prunedDocument = ConvertTo-PrunedOpenApiValue -Value $extractedDocument
+    Assert-OpenApiReferencesResolve -Document $prunedDocument
     if ([string]::Equals($Mode, "Inlined", [System.StringComparison]::Ordinal)) {
         Assert-InlinedReferencePolicy `
-            -Document $normalizedDocument `
+            -Document $prunedDocument `
             -CycleReferences $cycleReferences
     }
 
     return [PSCustomObject]@{
-        Document = $normalizedDocument
+        Document = $prunedDocument
         DependencyCount = $componentPointers.Count
         CycleCount = $cycleReferences.Count
     }
