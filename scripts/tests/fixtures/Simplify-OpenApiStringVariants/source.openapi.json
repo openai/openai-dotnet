@@ -1,0 +1,78 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "String variants fixture",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/variants": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "description": "Keep this wrapper description.",
+                      "anyOf": [
+                        {
+                          "description": "Drop this nested wrapper description.",
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "description": "Drop this plain branch description."
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "zeta",
+                                "alpha",
+                                "shared"
+                              ],
+                              "default": "alpha"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "shared",
+                            "middle"
+                          ],
+                          "title": "Drop this branch title"
+                        }
+                      ]
+                    },
+                    "mixed": {
+                      "anyOf": [
+                        {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "string",
+                              "enum": [
+                                "unchanged"
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

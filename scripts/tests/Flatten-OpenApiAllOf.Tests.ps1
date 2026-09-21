@@ -17,6 +17,7 @@ Set-StrictMode -Version Latest
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
 $extractScriptPath = Join-Path $scriptDirectory "Extract-OpenApiRoute.ps1"
+$simplifyScriptPath = Join-Path $scriptDirectory "Simplify-OpenApiStringVariants.ps1"
 $sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 . $flattenScriptPath
 
@@ -413,12 +414,13 @@ try {
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*has no 'missing' property*"
     }
 
-    Invoke-Test "compact three-stage pipeline matches the pre-split golden bytes" {
+    Invoke-Test "compact four-stage pipeline matches the pre-split golden bytes" {
         $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
         $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
         $intermediatePath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
         $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
-        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.sorted.openapi.json"
+        $simplifiedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.openapi.json"
+        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.sorted.openapi.json"
         & $extractScriptPath `
             -SpecificationPath $sourcePath `
             -Route "/things" `
@@ -427,7 +429,8 @@ try {
         $intermediate = Get-Content -LiteralPath $intermediatePath -Raw | ConvertFrom-Json -Depth 100
         Assert-True (@(Find-OpenApiAllOf -Value $intermediate).Count -gt 0) "Extractor intermediate did not retain allOf."
         $null = Invoke-OpenApiAllOfFlattener -InputPath $intermediatePath -OutputPath $flattenedPath
-        & $sortScriptPath -InputPath $flattenedPath -OutputPath $sortedPath
+        & $simplifyScriptPath -InputPath $flattenedPath -OutputPath $simplifiedPath
+        & $sortScriptPath -InputPath $simplifiedPath -OutputPath $sortedPath
         Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Pipeline output changed."
     }
 

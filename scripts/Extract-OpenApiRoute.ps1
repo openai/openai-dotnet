@@ -9,7 +9,9 @@
     Inlined mode expands references except where a reference is needed to
     represent recursion, but preserves source allOf compositions. Run
     Flatten-OpenApiAllOf.ps1 against Inlined output to merge all allOf
-    compositions, then run Sort-OpenApiDocument.ps1 to produce canonical output.
+    compositions, Simplify-OpenApiStringVariants.ps1 to consolidate eligible
+    nested string unions, then Sort-OpenApiDocument.ps1 to produce canonical
+    output.
 
     Both modes omit configured properties and every name that starts with x-,
     but preserve encounter order. Run Sort-OpenApiDocument.ps1 directly against
@@ -43,9 +45,11 @@
     ./scripts/Extract-OpenApiRoute.ps1 -Route "/responses" -Mode Inlined
     ./scripts/Flatten-OpenApiAllOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Simplify-OpenApiStringVariants.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    Extracts, flattens, and canonically sorts a route in three explicit stages.
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
+    Extracts, flattens, simplifies, and sorts a route in four explicit stages.
 #>
 
 #Requires -Version 7.0

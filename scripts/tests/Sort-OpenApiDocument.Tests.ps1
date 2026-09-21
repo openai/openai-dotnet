@@ -13,6 +13,7 @@ $scriptDirectory = Join-Path $PSScriptRoot ".."
 $sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 $extractScriptPath = Join-Path $scriptDirectory "Extract-OpenApiRoute.ps1"
 $flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
+$simplifyScriptPath = Join-Path $scriptDirectory "Simplify-OpenApiStringVariants.ps1"
 . $sortScriptPath
 
 $script:PassedTests = 0
@@ -221,16 +222,18 @@ try {
         Assert-Throws { ConvertTo-SortedOpenApiDocument -Document $source } "*Every required name must be a string*"
     }
 
-    Invoke-Test "compact three-stage pipeline matches the current golden bytes" {
+    Invoke-Test "compact four-stage pipeline matches the current golden bytes" {
         $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
         $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
         $inlinedPath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
         $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
-        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.sorted.openapi.json"
+        $simplifiedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.openapi.json"
+        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.sorted.openapi.json"
         & $extractScriptPath -SpecificationPath $sourcePath -Route "/things" -Mode Inlined -OutputPath $inlinedPath
         & $flattenScriptPath -InputPath $inlinedPath -OutputPath $flattenedPath
-        & $sortScriptPath -InputPath $flattenedPath -OutputPath $sortedPath
-        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Three-stage output changed."
+        & $simplifyScriptPath -InputPath $flattenedPath -OutputPath $simplifiedPath
+        & $sortScriptPath -InputPath $simplifiedPath -OutputPath $sortedPath
+        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Four-stage output changed."
     }
 
     Invoke-Test "Sort supports Exact and unflattened Inlined outputs" {
