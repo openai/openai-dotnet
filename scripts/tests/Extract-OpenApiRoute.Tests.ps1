@@ -201,20 +201,22 @@ function New-TestOpenApiDocument {
         )
         paths = [ordered]@{
             "/zebra/items" = [ordered]@{
-                get = [ordered]@{ responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
+                get = [ordered]@{ operationId = "listZebraItems"; responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
             }
             "/responses?beta=true" = [ordered]@{
-                post = [ordered]@{ responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
+                post = [ordered]@{ operationId = "createBetaResponse"; responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
             }
             "/things" = [ordered]@{
                 parameters = @(
                     [ordered]@{ name = "trace"; in = "header"; schema = [ordered]@{ type = "string" } }
                 )
                 get = [ordered]@{
+                    operationId = "listThings"
                     tags = @("Things")
                     responses = [ordered]@{ "204" = [ordered]@{ description = "none" } }
                 }
                 post = [ordered]@{
+                    operationId = "createThing"
                     tags = @("Things")
                     security = @([ordered]@{ AdminApiKeyAuth = @() })
                     example = [ordered]@{ '$ref' = "#/components/schemas/ExampleOnly" }
@@ -293,7 +295,7 @@ function New-TestOpenApiDocument {
                 }
             }
             "/fine_tuning/jobs" = [ordered]@{
-                get = [ordered]@{ responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
+                get = [ordered]@{ operationId = "listFineTuningJobs"; responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
             }
         }
         webhooks = [ordered]@{
@@ -403,20 +405,39 @@ $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
 try {
     $fixture = New-TestOpenApiDocument
-    $catalog = Get-OpenApiRouteCatalog -Document $fixture
-    $routeEntry = Select-OpenApiRoute -Catalog $catalog -RequestedRoute "/things"
+    $catalog = Get-OpenApiOperationCatalog -Document $fixture
+    $operationEntry = Select-OpenApiOperation `
+        -Catalog $catalog `
+        -RequestedOperationId "createThing"
 
-    Invoke-Test "catalog includes only paths and sorts normalized feature areas" {
-        Assert-Equal 4 $catalog.Count "Catalog count was incorrect."
-        Assert-Sequence `
-            @("Fine Tuning", "Responses", "Things", "Zebra") `
-            @($catalog.FeatureArea) `
-            "Feature areas were not normalized and sorted."
+    Invoke-Test "public script exposes operationId without route or mode parameters" {
+        $command = Get-Command $scriptPath
+        Assert-True ($command.Parameters.ContainsKey("OperationId")) "OperationId parameter was missing."
+        Assert-True (-not $command.Parameters.ContainsKey("Route")) "Legacy Route parameter remained."
+        Assert-True (-not $command.Parameters.ContainsKey("Mode")) "Legacy Mode parameter remained."
     }
 
-    Invoke-Test "query suffixes do not change the feature area" {
-        $entry = $catalog | Where-Object Route -eq "/responses?beta=true"
-        Assert-Equal "Responses" $entry.FeatureArea "Query-suffixed route was grouped incorrectly."
+    Invoke-Test "catalog includes path operations and sorts operationIds" {
+        Assert-Equal 5 $catalog.Count "Catalog count was incorrect."
+        Assert-Sequence `
+            @("createBetaResponse", "createThing", "listFineTuningJobs", "listThings", "listZebraItems") `
+            @($catalog.OperationId) `
+            "OperationIds were not sorted."
+    }
+
+    Invoke-Test "multiple operations on one route are independently selectable" {
+        $sameRouteOperations = @($catalog | Where-Object Route -eq "/things")
+        Assert-Sequence @("createThing", "listThings") @($sameRouteOperations.OperationId) "Same-route operations were not cataloged independently."
+        Assert-Equal "post" $operationEntry.Method "OperationId selected the wrong HTTP method."
+        Assert-Equal "/things" $operationEntry.Route "OperationId selected the wrong route."
+    }
+
+    Invoke-Test "duplicate operationIds fail clearly" {
+        $duplicateFixture = Copy-JsonValue -Value $fixture
+        $duplicateFixture.paths["/things"].get.operationId = "createThing"
+        Assert-Throws `
+            { Get-OpenApiOperationCatalog -Document $duplicateFixture } `
+            "*operationId 'createThing' is not unique*"
     }
 
     Invoke-Test "omission predicate is configured and case-sensitive" {
@@ -514,40 +535,36 @@ try {
         Assert-Equal "found" $value "Escaped pointer resolved incorrectly."
     }
 
-    $exact = New-ExtractedOpenApiDocument -Document $fixture -RouteEntry $routeEntry -Mode Exact
+    $inlined = New-ExtractedOpenApiDocument `
+        -Document $fixture `
+        -OperationEntry $operationEntry
 
-    Invoke-Test "Exact mode preserves one complete path item" {
-        Assert-Sequence @("/things") @((Get-JsonProperties -Value $exact.Document.paths).Name) "Wrong paths were emitted."
+    Invoke-Test "extraction retains path metadata and only the selected operation" {
+        Assert-Sequence @("/things") @((Get-JsonProperties -Value $inlined.Document.paths).Name) "Wrong paths were emitted."
         Assert-Sequence `
-            @("parameters", "get", "post") `
-            @((Get-JsonProperties -Value $exact.Document.paths["/things"]).Name) `
+            @("parameters", "post") `
+            @((Get-JsonProperties -Value $inlined.Document.paths["/things"]).Name) `
             "Path-item order changed."
-        Assert-True (Test-JsonProperty -Object $exact.Document.paths["/things"] -Name "parameters") "Path-level parameters were dropped."
-        Assert-True (Test-JsonProperty -Object $exact.Document.paths["/things"] -Name "get") "GET operation was dropped."
-        Assert-True (Test-JsonProperty -Object $exact.Document.paths["/things"] -Name "post") "POST operation was dropped."
+        Assert-True (Test-JsonProperty -Object $inlined.Document.paths["/things"] -Name "parameters") "Path-level parameters were dropped."
+        Assert-True (-not (Test-JsonProperty -Object $inlined.Document.paths["/things"] -Name "get")) "Unselected GET operation remained."
+        Assert-Equal "createThing" $inlined.Document.paths["/things"].post.operationId "Selected operationId changed."
     }
 
-    Invoke-Test "Exact mode copies only transitive and security components" {
-        Assert-Sequence `
-            @("A", "B", "Cat", "Dog", "Pet", "Alias", "Recursive") `
-            @((Get-JsonProperties -Value $exact.Document.components.schemas).Name) `
-            "Exact schema closure was incorrect."
-        Assert-Sequence @("Shared") @((Get-JsonProperties -Value $exact.Document.components.responses).Name) "Exact response closure was incorrect."
+    Invoke-Test "extraction keeps only cycle fallback and security components" {
+        Assert-Sequence @("A") @((Get-JsonProperties -Value $inlined.Document.components.schemas).Name) "Fallback component selection was incorrect."
         Assert-Sequence `
             @("ApiKeyAuth", "AdminApiKeyAuth") `
-            @((Get-JsonProperties -Value $exact.Document.components.securitySchemes).Name) `
+            @((Get-JsonProperties -Value $inlined.Document.components.securitySchemes).Name) `
             "Security scheme selection was incorrect."
-        Assert-Equal 10 $exact.DependencyCount "Exact dependency count was incorrect."
-        Assert-OpenApiReferencesResolve -Document $exact.Document
+        Assert-Equal 3 $inlined.DependencyCount "Retained component count was incorrect."
+        Assert-OpenApiReferencesResolve -Document $inlined.Document
     }
 
-    Invoke-Test "Exact output keeps only used tag definitions" {
-        Assert-Sequence @("Things") @($exact.Document.tags.name) "Tag minimization was incorrect."
+    Invoke-Test "extraction keeps only selected operation tag definitions" {
+        Assert-Sequence @("Things") @($inlined.Document.tags.name) "Tag minimization was incorrect."
     }
 
-    $inlined = New-ExtractedOpenApiDocument -Document $fixture -RouteEntry $routeEntry -Mode Inlined
-
-    Invoke-Test "Inlined mode retains only the true cycle back-edge" {
+    Invoke-Test "extraction retains only the true cycle back-edge" {
         Assert-Equal 1 $inlined.CycleCount "Cycle count was incorrect."
         $ordinaryReferences = @(Get-OpenApiReferenceOccurrences -Value $inlined.Document | Where-Object Kind -eq "Reference")
         Assert-True ($ordinaryReferences.Count -gt 0) "Expected cycle reference was not retained."
@@ -558,7 +575,7 @@ try {
         Assert-OpenApiReferencesResolve -Document $inlined.Document
     }
 
-    Invoke-Test "Inlined mode rewrites discriminator mappings to local branches" {
+    Invoke-Test "extraction rewrites discriminator mappings to local branches" {
         $mapping = $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.discriminator.mapping
         Assert-Equal `
             "#/paths/~1things/post/responses/200/content/application~1json/schema/oneOf/0" `
@@ -578,7 +595,7 @@ try {
         Assert-Equal "cat" $alias.properties.type.const "Referenced schema properties were lost."
     }
 
-    Invoke-Test "Inlined mode preserves source allOf while expanding references" {
+    Invoke-Test "extraction preserves source allOf while expanding references" {
         $preserved = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties.flattened
         Assert-True (Test-JsonProperty -Object $preserved -Name "allOf") "Inlined output removed source allOf."
         Assert-True (@(Find-JsonPropertyValues -Value $preserved -Name "allOf").Count -gt 1) "Nested source allOf was removed."
@@ -591,19 +608,13 @@ try {
         Assert-True (@(Get-OpenApiReferenceOccurrences -Value $fallbackChild | Where-Object Kind -eq "Reference").Count -gt 0) "Cycle fallback lost its cycle reference."
     }
 
-    Invoke-Test "Exact mode preserves source allOf" {
-        Assert-True (@(Find-JsonPropertyValues -Value $exact.Document -Name "allOf").Count -gt 0) "Exact mode unexpectedly flattened allOf."
-    }
-
     Invoke-Test "explicit recursive references remain finite" {
         $recursiveReferences = @(Find-JsonPropertyValues -Value $inlined.Document -Name '$recursiveRef')
         Assert-Sequence @("#") $recursiveReferences "Recursive references were changed or removed."
     }
 
     Invoke-Test "configured and x-prefixed properties are removed without mutating the source" {
-        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $exact.Document).Count "Exact omitted properties remained."
         Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $inlined.Document).Count "Inlined omitted properties remained."
-        Assert-Equal "Extractor fixture" $exact.Document.info.title "Exact info title was removed."
         Assert-Equal "Extractor fixture" $inlined.Document.info.title "Inlined info title was removed."
         Assert-True (Test-JsonProperty -Object $fixture -Name "x-custom-root") "Source root extension was mutated."
         Assert-True (Test-JsonProperty -Object $fixture.info -Name "x-custom-info") "Source info extension was mutated."
@@ -612,9 +623,9 @@ try {
         Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "examples") "Source examples were mutated."
         Assert-True (Test-JsonProperty -Object $fixture.components.schemas.Cat.properties.type -Name "x-stainless-const") "Nested source extension was mutated."
         Assert-Equal "Cat schema" $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.oneOf[0].title "Schema title was removed."
-        Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "Unused")) "Exact mode followed a reference inside an extension."
-        Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "ExampleOnly")) "Exact mode followed a reference inside example."
-        Assert-True (-not (Test-JsonProperty -Object $exact.Document.components.schemas -Name "ExamplesOnly")) "Exact mode followed a reference inside examples."
+        Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "Unused")) "Extraction followed a reference inside an extension."
+        Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "ExampleOnly")) "Extraction followed a reference inside example."
+        Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "ExamplesOnly")) "Extraction followed a reference inside examples."
     }
 
     Invoke-Test "Extract preserves schema encounter order after pruning" {
@@ -629,10 +640,6 @@ try {
             "Inlined required encounter order changed."
         Assert-Sequence `
             @("requiredB", "requiredA", "type") `
-            @($exact.Document.paths["/things"].post.requestBody.content["application/json"].schema.required) `
-            "Exact required encounter order changed."
-        Assert-Sequence `
-            @("requiredB", "requiredA", "type") `
             @($fixture.paths["/things"].post.requestBody.content["application/json"].schema.required) `
             "Source required array was mutated."
         Assert-Sequence `
@@ -643,33 +650,39 @@ try {
             @("type", "properties", "required") `
             @((Get-JsonProperties -Value $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema).Name) `
             "Inlined schema-key encounter order changed."
-        Assert-Sequence `
-            @("type", "title", "properties") `
-            @((Get-JsonProperties -Value $exact.Document.components.schemas.Cat).Name) `
-            "Exact component schema-key encounter order changed."
     }
 
     Invoke-Test "external and unresolved references fail with context" {
-        Assert-Throws `
-            { Get-TransitiveComponentReferences -Document $fixture -Value ([ordered]@{ '$ref' = "https://example.test/schema.json" }) } `
-            "*external*"
-        Assert-Throws `
-            { Get-TransitiveComponentReferences -Document $fixture -Value ([ordered]@{ '$ref' = "#/components/schemas/Missing" }) } `
-            "*has no 'Missing' property*"
+        foreach ($reference in @("https://example.test/schema.json", "#/components/schemas/Missing")) {
+            $invalidFixture = Copy-JsonValue -Value $fixture
+            $invalidFixture.paths["/things"].post.requestBody.content["application/json"].schema = [ordered]@{ '$ref' = $reference }
+            $invalidCatalog = Get-OpenApiOperationCatalog -Document $invalidFixture
+            $invalidOperation = Select-OpenApiOperation `
+                -Catalog $invalidCatalog `
+                -RequestedOperationId "createThing"
+            Assert-Throws `
+                { New-ExtractedOpenApiDocument -Document $invalidFixture -OperationEntry $invalidOperation } `
+                $(if ($reference.StartsWith("https", [System.StringComparison]::Ordinal)) { "*external*" } else { "*has no 'Missing' property*" })
+        }
     }
 
     Invoke-Test "default filenames are portable and collision-aware" {
+        $ordinaryPath = Get-DefaultOutputPath `
+            -OperationId "createThing" `
+            -Catalog $catalog `
+            -RepositoryRoot $temporaryDirectory
+        Assert-Equal "createThing.inlined.openapi.json" (Split-Path $ordinaryPath -Leaf) "Ordinary operationId filename was incorrect."
+
         $collisionCatalog = @(
-            [PSCustomObject]@{ Route = "/foo?bar" },
-            [PSCustomObject]@{ Route = "/foo/bar" }
+            [PSCustomObject]@{ OperationId = "foo?bar" },
+            [PSCustomObject]@{ OperationId = "foo/bar" }
         )
         $path = Get-DefaultOutputPath `
-            -Route "/foo?bar" `
-            -Mode Exact `
+            -OperationId "foo?bar" `
             -Catalog $collisionCatalog `
             -RepositoryRoot $temporaryDirectory
         $name = Split-Path $path -Leaf
-        Assert-True ($name -match '^foo-bar-[0-9a-f]{8}\.exact\.openapi\.json$') "Collision-safe filename was unexpected: $name"
+        Assert-True ($name -match '^foo-bar-[0-9a-f]{8}\.inlined\.openapi\.json$') "Collision-safe filename was unexpected: $name"
     }
 
     Invoke-Test "JSON output is deterministic UTF-8 without a BOM" {
@@ -687,52 +700,59 @@ try {
 
     $livePath = Join-Path $repositoryRoot "specification" "openapi" "openapi.json"
     $liveDocument = Read-OpenApiDocument -Path $livePath
-    $liveCatalog = Get-OpenApiRouteCatalog -Document $liveDocument
+    $liveCatalog = Get-OpenApiOperationCatalog -Document $liveDocument
 
-    Invoke-Test "live catalog has one entry per paths property" {
-        $livePathCount = @(Get-JsonProperties -Value $liveDocument.paths).Count
-        Assert-Equal $livePathCount $liveCatalog.Count "Live catalog omitted or added routes."
+    Invoke-Test "live catalog has one entry per operationId" {
+        $liveOperationCount = 0
+        foreach ($pathProperty in (Get-JsonProperties -Value $liveDocument.paths)) {
+            foreach ($operation in @(Get-OpenApiOperations -PathItem $pathProperty.Value)) {
+                if (Test-JsonProperty -Object $operation.Operation -Name "operationId") {
+                    $liveOperationCount++
+                }
+            }
+        }
+        Assert-Equal $liveOperationCount $liveCatalog.Count "Live catalog omitted or added operations."
     }
 
-    Invoke-Test "live audio route extracts in Exact and Inlined modes" {
-        $audioRoute = Select-OpenApiRoute -Catalog $liveCatalog -RequestedRoute "/audio/speech"
-        $audioExact = New-ExtractedOpenApiDocument -Document $liveDocument -RouteEntry $audioRoute -Mode Exact
-        $audioInlined = New-ExtractedOpenApiDocument -Document $liveDocument -RouteEntry $audioRoute -Mode Inlined
-        Assert-OpenApiReferencesResolve -Document $audioExact.Document
+    Invoke-Test "live audio operation extracts and inlines" {
+        $audioOperation = Select-OpenApiOperation `
+            -Catalog $liveCatalog `
+            -RequestedOperationId "createSpeech"
+        $audioInlined = New-ExtractedOpenApiDocument `
+            -Document $liveDocument `
+            -OperationEntry $audioOperation
         Assert-OpenApiReferencesResolve -Document $audioInlined.Document
-        Assert-Equal 1 @(Get-JsonProperties -Value $audioExact.Document.paths).Count "Exact audio output had the wrong path count."
+        Assert-Equal 1 @(Get-JsonProperties -Value $audioInlined.Document.paths).Count "Audio output had the wrong path count."
         Assert-Equal 0 @(Get-OpenApiReferenceOccurrences -Value $audioInlined.Document | Where-Object Kind -eq "Reference").Count "A non-cyclic audio reference survived inlining."
-        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $audioExact.Document).Count "Exact audio output retained omitted properties."
-        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $audioInlined.Document).Count "Inlined audio output retained omitted properties."
-        Assert-Equal "OpenAI API" $audioExact.Document.info.title "Exact live title was removed."
-        Assert-Equal "OpenAI API" $audioInlined.Document.info.title "Inlined live title was removed."
+        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $audioInlined.Document).Count "Audio output retained omitted properties."
+        Assert-Equal "OpenAI API" $audioInlined.Document.info.title "Live title was removed."
     }
 
     Invoke-Test "live top-level and nested allOf schemas are preserved" {
-        foreach ($route in @(
-            "/organization/admin_api_keys",
-            "/chat/completions/{completion_id}/messages"
+        foreach ($operationId in @(
+            "admin-api-keys-create",
+            "getChatCompletionMessages"
         )) {
-            $routeEntry = Select-OpenApiRoute -Catalog $liveCatalog -RequestedRoute $route
-            $routeInlined = New-ExtractedOpenApiDocument `
+            $selectedOperation = Select-OpenApiOperation `
+                -Catalog $liveCatalog `
+                -RequestedOperationId $operationId
+            $operationInlined = New-ExtractedOpenApiDocument `
                 -Document $liveDocument `
-                -RouteEntry $routeEntry `
-                -Mode Inlined
+                -OperationEntry $selectedOperation
             Assert-True `
-                (@(Find-JsonPropertyValues -Value $routeInlined.Document -Name "allOf").Count -gt 0) `
-                "Route '$route' did not retain source allOf."
-            Assert-OpenApiReferencesResolve -Document $routeInlined.Document
+                (@(Find-JsonPropertyValues -Value $operationInlined.Document -Name "allOf").Count -gt 0) `
+                "Operation '$operationId' did not retain source allOf."
+            Assert-OpenApiReferencesResolve -Document $operationInlined.Document
         }
     }
 
     Invoke-Test "live recursive filter remains finite when inlined" {
-        $searchRoute = Select-OpenApiRoute `
+        $searchOperation = Select-OpenApiOperation `
             -Catalog $liveCatalog `
-            -RequestedRoute "/vector_stores/{vector_store_id}/search"
+            -RequestedOperationId "searchVectorStore"
         $searchInlined = New-ExtractedOpenApiDocument `
             -Document $liveDocument `
-            -RouteEntry $searchRoute `
-            -Mode Inlined
+            -OperationEntry $searchOperation
         $recursiveReferences = @(Find-JsonPropertyValues -Value $searchInlined.Document -Name '$recursiveRef')
         Assert-True ($recursiveReferences.Count -gt 0) "Live recursive filter lost its recursive reference."
         foreach ($reference in $recursiveReferences) {

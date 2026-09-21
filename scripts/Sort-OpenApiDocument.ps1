@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Applies deterministic ordering to schema definitions without changing their
-    semantics. The sorter supports Exact, Inlined, allOf-flattened, and
+    semantics. The sorter supports Inlined, allOf-flattened, and
     string-variant-simplified output from the OpenAPI scripts. It orders schema
     keys, property maps, required arrays, and enum arrays while preserving
     ordinary OpenAPI object order and every non-enum array order.
@@ -21,10 +21,6 @@
     ./scripts/Sort-OpenApiDocument.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
 
-.EXAMPLE
-    ./scripts/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.exact.openapi.json `
-        -OutputPath ./artifacts/openapi-extracts/responses.exact.final.json
 #>
 
 #Requires -Version 7.0

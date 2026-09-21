@@ -3,10 +3,10 @@
     Generates the canonical inline OpenAPI document for the /responses route.
 
 .DESCRIPTION
-    Runs the OpenAPI transformation stages in order for /responses in Inlined
-    mode: Extract, Flatten allOf, Simplify string variants, and Sort. Each stage
-    is retained under specification/openapi, and the sorted result is also
-    copied byte-for-byte to responses.openapi.json.
+    Runs the OpenAPI transformation stages in order for the createResponse
+    operation: Extract with references inlined, Flatten allOf, Simplify string
+    variants, and Sort. Each stage is retained under specification/openapi, and
+    the sorted result is also copied byte-for-byte to responses.openapi.json.
 
     The generated files are:
     - responses.inlined.openapi.json
@@ -113,8 +113,7 @@ function Invoke-ResponsesOpenApiGeneration {
 
     $null = & $stageScriptPaths["Extract-OpenApiRoute.ps1"] `
         -SpecificationPath $resolvedSpecificationPath `
-        -Route "/responses" `
-        -Mode Inlined `
+        -OperationId "createResponse" `
         -OutputPath $paths.Inlined
     $null = & $stageScriptPaths["Flatten-OpenApiAllOf.ps1"] `
         -InputPath $paths.Inlined `

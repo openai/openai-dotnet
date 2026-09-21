@@ -6,12 +6,23 @@
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-# Add exact, case-sensitive JSON property names here to omit them from both
-# extraction modes. All lowercase x-prefixed extension properties are omitted
-# separately by Test-IsOmittedOpenApiProperty.
+# Add exact, case-sensitive JSON property names here to omit from extracted
+# output. All lowercase x-prefixed extension properties are omitted separately
+# by Test-IsOmittedOpenApiProperty.
 $script:OmittedPropertyNames = @(
     "example"
     "examples"
+)
+
+$script:OpenApiHttpMethodNames = @(
+    "get"
+    "put"
+    "post"
+    "delete"
+    "options"
+    "head"
+    "patch"
+    "trace"
 )
 
 # Returns an object's JSON properties without treating arrays or scalar values
@@ -131,51 +142,51 @@ function Read-OpenApiDocument {
     return $document
 }
 
-# Converts a route's first path segment into a stable key and readable label.
-# Query suffixes affect the literal route but do not create a new feature area.
-function Get-RouteFeatureArea {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Route
-    )
-
-    $firstSegment = (($Route.TrimStart("/") -split "/", 2)[0] -split "\?", 2)[0]
-    if ([string]::IsNullOrWhiteSpace($firstSegment)) {
-        throw "Route '$Route' does not have a feature-area path segment."
-    }
-
-    $words = ($firstSegment -replace "[_-]+", " ").ToLowerInvariant()
-    $label = [System.Globalization.CultureInfo]::InvariantCulture.TextInfo.ToTitleCase($words)
-
-    return [PSCustomObject]@{
-        Key = $firstSegment.ToLowerInvariant()
-        Label = $label
-    }
-}
-
-# Builds one catalog entry per literal path key. Only the paths object is read,
-# so top-level webhook definitions cannot accidentally enter the route menu.
-function Get-OpenApiRouteCatalog {
+# Builds one catalog entry per HTTP operation that defines an operationId. Only
+# paths are read, so top-level webhook operations cannot enter the menu.
+function Get-OpenApiOperationCatalog {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Document
     )
 
     $paths = Get-JsonPropertyValue -Object $Document -Name "paths"
-    $catalog = foreach ($pathProperty in (Get-JsonProperties -Value $paths)) {
-        $featureArea = Get-RouteFeatureArea -Route $pathProperty.Name
-        [PSCustomObject]@{
-            FeatureKey = $featureArea.Key
-            FeatureArea = $featureArea.Label
-            Route = $pathProperty.Name
-            PathItem = $pathProperty.Value
+    $catalog = [System.Collections.Generic.List[object]]::new()
+    $operationIds = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($pathProperty in (Get-JsonProperties -Value $paths)) {
+        foreach ($operationEntry in @(Get-OpenApiOperations -PathItem $pathProperty.Value)) {
+            if (-not (Test-JsonObjectValue -Value $operationEntry.Operation)) {
+                throw "HTTP operation '$($operationEntry.Method.ToUpperInvariant()) $($pathProperty.Name)' must be an object."
+            }
+
+            if (-not (Test-JsonProperty -Object $operationEntry.Operation -Name "operationId")) {
+                continue
+            }
+            $operationId = Get-JsonPropertyValue -Object $operationEntry.Operation -Name "operationId"
+            if ($operationId -isnot [string] -or [string]::IsNullOrWhiteSpace($operationId)) {
+                throw "HTTP operation '$($operationEntry.Method.ToUpperInvariant()) $($pathProperty.Name)' has an invalid operationId."
+            }
+            if (-not $operationIds.Add($operationId)) {
+                throw "OpenAPI operationId '$operationId' is not unique."
+            }
+
+            $catalog.Add([PSCustomObject]@{
+                OperationId = $operationId
+                Method = $operationEntry.Method
+                Route = $pathProperty.Name
+                PathItem = $pathProperty.Value
+                Operation = $operationEntry.Operation
+            })
         }
     }
 
-    return @($catalog | Sort-Object -Property @(
-        @{ Expression = "FeatureArea"; Ascending = $true },
-        @{ Expression = "Route"; Ascending = $true }
-    ))
+    if ($catalog.Count -eq 0) {
+        throw "The OpenAPI paths object does not contain any operations with an operationId."
+    }
+
+    return @($catalog | Sort-Object -Property OperationId, Route, Method)
 }
 
 # Displays a one-based menu and keeps prompting until the user enters a valid
@@ -216,68 +227,38 @@ function Read-NumberedSelection {
     }
 }
 
-# Selects an exact path key from parameters or the two interactive route menus.
-function Select-OpenApiRoute {
+# Selects an operation by exact operationId or from one interactive menu.
+function Select-OpenApiOperation {
     param(
         [Parameter(Mandatory = $true)]
         [object[]]$Catalog,
 
         [Parameter()]
-        [string]$RequestedRoute
+        [string]$RequestedOperationId
     )
 
-    if (-not [string]::IsNullOrWhiteSpace($RequestedRoute)) {
+    if (-not [string]::IsNullOrWhiteSpace($RequestedOperationId)) {
         $match = @($Catalog | Where-Object {
-            [string]::Equals($_.Route, $RequestedRoute, [System.StringComparison]::Ordinal)
+            [string]::Equals(
+                $_.OperationId,
+                $RequestedOperationId,
+                [System.StringComparison]::Ordinal
+            )
         })
         if ($match.Count -ne 1) {
-            throw "Route '$RequestedRoute' was not found in the OpenAPI paths object."
+            throw "OperationId '$RequestedOperationId' was not found in the OpenAPI paths object."
         }
 
         return $match[0]
     }
 
-    $featureAreas = @($Catalog | Group-Object -Property FeatureKey | ForEach-Object {
-        [PSCustomObject]@{
-            Key = $_.Name
-            Label = $_.Group[0].FeatureArea
-            Routes = @($_.Group | Sort-Object -Property Route)
-        }
-    } | Sort-Object -Property Label)
-
-    $selectedFeature = Read-NumberedSelection `
-        -Title "Select a feature area" `
-        -Options $featureAreas `
-        -GetLabel { param($Option) $Option.Label }
-
     return Read-NumberedSelection `
-        -Title "Select a route" `
-        -Options $selectedFeature.Routes `
-        -GetLabel { param($Option) $Option.Route }
-}
-
-# Selects Exact or Inlined while preserving the menu wording from the command's
-# public contract.
-function Select-ExtractionMode {
-    param(
-        [Parameter()]
-        [string]$RequestedMode
-    )
-
-    if (-not [string]::IsNullOrWhiteSpace($RequestedMode)) {
-        if ([string]::Equals($RequestedMode, "Exact", [System.StringComparison]::OrdinalIgnoreCase)) {
-            return "Exact"
+        -Title "Select an operationId" `
+        -Options $Catalog `
+        -GetLabel {
+            param($Option)
+            "$($Option.OperationId) [$($Option.Method.ToUpperInvariant()) $($Option.Route)]"
         }
-        if ([string]::Equals($RequestedMode, "Inlined", [System.StringComparison]::OrdinalIgnoreCase)) {
-            return "Inlined"
-        }
-        throw "Extraction mode '$RequestedMode' is invalid. Choose Exact or Inlined."
-    }
-
-    return Read-NumberedSelection `
-        -Title "Select an extraction mode" `
-        -Options @("Exact", "Inlined") `
-        -GetLabel { param($Option) $Option }
 }
 
 # Resolves paths supplied on the command line relative to the repository root.
@@ -903,8 +884,8 @@ function Resolve-LocalJsonPointer {
     return $current
 }
 
-# Returns the component entry containing a component pointer. Nested pointers
-# still cause the complete owning component entry to be copied in Exact mode.
+# Returns the component entry containing a component pointer. Nested cycle
+# pointers still retain the complete owning fallback component.
 function Get-ComponentReferenceRoot {
     param(
         [Parameter(Mandatory = $true)]
@@ -1027,49 +1008,6 @@ function Assert-OpenApiReferencesResolve {
             -Pointer $occurrence.Pointer `
             -Context "$($occurrence.Kind) at $($occurrence.Breadcrumb)"
     }
-}
-
-# Computes the complete set of component entries needed by a selected path item.
-# A queue avoids recursive graph walking, and a visited set makes component cycles
-# finite while still validating every reference at the point it is discovered.
-function Get-TransitiveComponentReferences {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Document,
-
-        [Parameter(Mandatory = $true)]
-        [object]$Value
-    )
-
-    $pending = [System.Collections.Generic.Queue[object]]::new()
-    foreach ($occurrence in @(Get-OpenApiReferenceOccurrences -Value $Value)) {
-        $pending.Enqueue($occurrence)
-    }
-
-    $componentRoots = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    while ($pending.Count -gt 0) {
-        $occurrence = $pending.Dequeue()
-        $canonicalPointer = Get-CanonicalJsonPointer -Pointer $occurrence.Pointer
-        $null = Resolve-LocalJsonPointer `
-            -Document $Document `
-            -Pointer $canonicalPointer `
-            -Context "$($occurrence.Kind) at $($occurrence.Breadcrumb)"
-
-        $componentRoot = Get-ComponentReferenceRoot -Pointer $canonicalPointer
-        if (-not $componentRoots.Add($componentRoot.Pointer)) {
-            continue
-        }
-
-        $componentValue = Resolve-LocalJsonPointer `
-            -Document $Document `
-            -Pointer $componentRoot.Pointer `
-            -Context "component dependency"
-        foreach ($nestedOccurrence in @(Get-OpenApiReferenceOccurrences -Value $componentValue)) {
-            $pending.Enqueue($nestedOccurrence)
-        }
-    }
-
-    return ,$componentRoots
 }
 
 # Finds direct component-reference branches used by a discriminator. Mapping
@@ -1709,11 +1647,8 @@ function Get-OpenApiOperations {
         [object]$PathItem
     )
 
-    [string[]]$httpMethods = @(
-        "get", "put", "post", "delete", "options", "head", "patch", "trace"
-    )
     foreach ($property in (Get-JsonProperties -Value $PathItem)) {
-        if ($httpMethods -ccontains $property.Name) {
+        if ($script:OpenApiHttpMethodNames -ccontains $property.Name) {
             [PSCustomObject]@{
                 Method = $property.Name
                 Operation = $property.Value
@@ -1913,54 +1848,61 @@ function Add-SecuritySchemeComponents {
     }
 }
 
-# Creates a minimal valid OpenAPI document for one complete path item.
+# Retains path-level metadata and only the selected HTTP operation.
+function New-SelectedOpenApiPathItem {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$OperationEntry
+    )
+
+    $selectedPathItem = [ordered]@{}
+    foreach ($property in (Get-JsonProperties -Value $OperationEntry.PathItem)) {
+        if ($script:OpenApiHttpMethodNames -ccontains $property.Name -and
+            -not [string]::Equals(
+                $property.Name,
+                $OperationEntry.Method,
+                [System.StringComparison]::Ordinal
+            )) {
+            continue
+        }
+        $selectedPathItem[$property.Name] = $property.Value
+    }
+    return $selectedPathItem
+}
+
+# Creates a minimal valid OpenAPI document for one selected operation.
 function New-ExtractedOpenApiDocument {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Document,
 
         [Parameter(Mandatory = $true)]
-        [object]$RouteEntry,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateSet("Exact", "Inlined")]
-        [string]$Mode
+        [object]$OperationEntry
     )
 
-    $routePointer = "#/paths/$(ConvertTo-JsonPointerToken -Token $RouteEntry.Route)"
-    $sourcePathItem = ConvertTo-PrunedOpenApiValue -Value $RouteEntry.PathItem
+    $routePointer = "#/paths/$(ConvertTo-JsonPointerToken -Token $OperationEntry.Route)"
+    $selectedSourcePathItem = New-SelectedOpenApiPathItem -OperationEntry $OperationEntry
+    $sourcePathItem = ConvertTo-PrunedOpenApiValue -Value $selectedSourcePathItem
     $cycleReferences = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )
-    $fallbacks = [System.Collections.Generic.Dictionary[string, object]]::new(
+    $activeReferences = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )
-
-    if ([string]::Equals($Mode, "Exact", [System.StringComparison]::Ordinal)) {
-        $selectedPathItem = $sourcePathItem
-        $componentPointers = Get-TransitiveComponentReferences `
-            -Document $Document `
-            -Value $selectedPathItem
-    }
-    else {
-        $activeReferences = [System.Collections.Generic.HashSet[string]]::new(
-            [System.StringComparer]::Ordinal
-        )
-        $selectedPathItem = Expand-OpenApiReferences `
-            -Value $sourcePathItem `
-            -Document $Document `
-            -ActiveReferences $activeReferences `
-            -CycleReferences $cycleReferences `
-            -Breadcrumb $routePointer
-        $fallbacks = New-InlinedFallbackComponents `
-            -Document $Document `
-            -CycleReferences $cycleReferences
-        $componentPointers = [System.Collections.Generic.HashSet[string]]::new(
-            [System.StringComparer]::Ordinal
-        )
-        foreach ($pointer in $fallbacks.Keys) {
-            $null = $componentPointers.Add($pointer)
-        }
+    $selectedPathItem = Expand-OpenApiReferences `
+        -Value $sourcePathItem `
+        -Document $Document `
+        -ActiveReferences $activeReferences `
+        -CycleReferences $cycleReferences `
+        -Breadcrumb $routePointer
+    $fallbacks = New-InlinedFallbackComponents `
+        -Document $Document `
+        -CycleReferences $cycleReferences
+    $componentPointers = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($pointer in $fallbacks.Keys) {
+        $null = $componentPointers.Add($pointer)
     }
 
     $usedSecuritySchemes = Get-UsedSecuritySchemeNames `
@@ -1995,7 +1937,7 @@ function New-ExtractedOpenApiDocument {
     }
 
     $selectedPaths = [ordered]@{}
-    $selectedPaths[$RouteEntry.Route] = $selectedPathItem
+    $selectedPaths[$OperationEntry.Route] = $selectedPathItem
     $extractedDocument["paths"] = $selectedPaths
     if ($selectedComponents.Count -gt 0) {
         $extractedDocument["components"] = $selectedComponents
@@ -2003,11 +1945,9 @@ function New-ExtractedOpenApiDocument {
 
     $prunedDocument = ConvertTo-PrunedOpenApiValue -Value $extractedDocument
     Assert-OpenApiReferencesResolve -Document $prunedDocument
-    if ([string]::Equals($Mode, "Inlined", [System.StringComparison]::Ordinal)) {
-        Assert-InlinedReferencePolicy `
-            -Document $prunedDocument `
-            -CycleReferences $cycleReferences
-    }
+    Assert-InlinedReferencePolicy `
+        -Document $prunedDocument `
+        -CycleReferences $cycleReferences
 
     return [PSCustomObject]@{
         Document = $prunedDocument
@@ -2016,31 +1956,27 @@ function New-ExtractedOpenApiDocument {
     }
 }
 
-# Converts a literal route key to a portable, readable filename stem.
-function ConvertTo-RouteFileStem {
+# Converts an operationId to a portable, readable filename stem.
+function ConvertTo-OperationFileStem {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$Route
+        [string]$OperationId
     )
 
-    $stem = $Route.Trim("/") -replace "[^A-Za-z0-9._-]+", "-"
+    $stem = $OperationId -replace "[^A-Za-z0-9._-]+", "-"
     $stem = ($stem -replace "-+", "-").Trim("-", ".")
     if ([string]::IsNullOrWhiteSpace($stem)) {
-        return "root"
+        throw "OperationId '$OperationId' does not produce a valid filename."
     }
-    return $stem.ToLowerInvariant()
+    return $stem
 }
 
-# Computes a short stable suffix only when two source routes sanitize to the
+# Computes a short stable suffix only when two operationIds sanitize to the
 # same stem, keeping ordinary output names uncluttered.
 function Get-DefaultOutputPath {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$Route,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateSet("Exact", "Inlined")]
-        [string]$Mode,
+        [string]$OperationId,
 
         [Parameter(Mandatory = $true)]
         [object[]]$Catalog,
@@ -2049,23 +1985,23 @@ function Get-DefaultOutputPath {
         [string]$RepositoryRoot
     )
 
-    $stem = ConvertTo-RouteFileStem -Route $Route
+    $stem = ConvertTo-OperationFileStem -OperationId $OperationId
     $collisions = @($Catalog | Where-Object {
         [string]::Equals(
-            (ConvertTo-RouteFileStem -Route $_.Route),
+            (ConvertTo-OperationFileStem -OperationId $_.OperationId),
             $stem,
             [System.StringComparison]::OrdinalIgnoreCase
         )
     })
     if ($collisions.Count -gt 1) {
-        $routeBytes = [System.Text.Encoding]::UTF8.GetBytes($Route)
-        $hashBytes = [System.Security.Cryptography.SHA256]::HashData($routeBytes)
+        $operationIdBytes = [System.Text.Encoding]::UTF8.GetBytes($OperationId)
+        $hashBytes = [System.Security.Cryptography.SHA256]::HashData($operationIdBytes)
         $hash = [System.Convert]::ToHexString($hashBytes).Substring(0, 8).ToLowerInvariant()
         $stem = "$stem-$hash"
     }
 
     $outputDirectory = Join-Path $RepositoryRoot "artifacts" "openapi-extracts"
-    return Join-Path $outputDirectory "$stem.$($Mode.ToLowerInvariant()).openapi.json"
+    return Join-Path $outputDirectory "$stem.inlined.openapi.json"
 }
 
 # Serializes with enough depth for the source schemas and atomically replaces
@@ -2099,16 +2035,13 @@ function Write-OpenApiJsonFile {
     return $fullPath
 }
 
-function Invoke-OpenApiRouteExtractor {
+function Invoke-OpenApiOperationExtractor {
     param(
         [Parameter()]
         [string]$SpecificationPath,
 
         [Parameter()]
-        [string]$Route,
-
-        [Parameter()]
-        [string]$Mode,
+        [string]$OperationId,
 
         [Parameter()]
         [string]$OutputPath
@@ -2123,18 +2056,17 @@ function Invoke-OpenApiRouteExtractor {
     }
 
     $document = Read-OpenApiDocument -Path $SpecificationPath
-    $catalog = Get-OpenApiRouteCatalog -Document $document
-    $selectedRoute = Select-OpenApiRoute -Catalog $catalog -RequestedRoute $Route
-    $selectedMode = Select-ExtractionMode -RequestedMode $Mode
+    $catalog = Get-OpenApiOperationCatalog -Document $document
+    $selectedOperation = Select-OpenApiOperation `
+        -Catalog $catalog `
+        -RequestedOperationId $OperationId
     $extraction = New-ExtractedOpenApiDocument `
         -Document $document `
-        -RouteEntry $selectedRoute `
-        -Mode $selectedMode
+        -OperationEntry $selectedOperation
 
     if ([string]::IsNullOrWhiteSpace($OutputPath)) {
         $OutputPath = Get-DefaultOutputPath `
-            -Route $selectedRoute.Route `
-            -Mode $selectedMode `
+            -OperationId $selectedOperation.OperationId `
             -Catalog $catalog `
             -RepositoryRoot $repositoryRoot
     }
@@ -2147,8 +2079,8 @@ function Invoke-OpenApiRouteExtractor {
         -Path $OutputPath
 
     Write-Host ""
-    Write-Host "Route: $($selectedRoute.Route)"
-    Write-Host "Mode: $selectedMode"
+    Write-Host "OperationId: $($selectedOperation.OperationId)"
+    Write-Host "Operation: $($selectedOperation.Method.ToUpperInvariant()) $($selectedOperation.Route)"
     Write-Host "Output: $writtenPath"
     Write-Host "Component dependencies: $($extraction.DependencyCount)"
     Write-Host "Cycle references retained: $($extraction.CycleCount)"

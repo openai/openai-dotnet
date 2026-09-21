@@ -58,6 +58,7 @@
         }
       ],
       "get": {
+        "operationId": "listThings",
         "tags": [
           "Things"
         ],
@@ -68,6 +69,7 @@
         }
       },
       "post": {
+        "operationId": "createThing",
         "tags": [
           "Things"
         ],

@@ -229,28 +229,24 @@ try {
         $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
         $simplifiedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.openapi.json"
         $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.sorted.openapi.json"
-        & $extractScriptPath -SpecificationPath $sourcePath -Route "/things" -Mode Inlined -OutputPath $inlinedPath
+        & $extractScriptPath -SpecificationPath $sourcePath -OperationId "createThing" -OutputPath $inlinedPath
         & $flattenScriptPath -InputPath $inlinedPath -OutputPath $flattenedPath
         & $simplifyScriptPath -InputPath $flattenedPath -OutputPath $simplifiedPath
         & $sortScriptPath -InputPath $simplifiedPath -OutputPath $sortedPath
         Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Four-stage output changed."
     }
 
-    Invoke-Test "Sort supports Exact and unflattened Inlined outputs" {
+    Invoke-Test "Sort supports unflattened extracted output" {
         $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
-        foreach ($mode in @("Exact", "Inlined")) {
-            $inputPath = Join-Path $temporaryDirectory "things.$($mode.ToLowerInvariant()).openapi.json"
-            $outputPath = Join-Path $temporaryDirectory "things.$($mode.ToLowerInvariant()).sorted.openapi.json"
-            & $extractScriptPath -SpecificationPath $sourcePath -Route "/things" -Mode $mode -OutputPath $inputPath
-            & $sortScriptPath -InputPath $inputPath -OutputPath $outputPath
-            $sorted = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -Depth 100
-            Assert-OpenApiReferencesResolve -Document $sorted
-            Assert-True ([System.IO.File]::Exists($outputPath)) "Sort did not support $mode output."
-            if ([string]::Equals($mode, "Inlined", [System.StringComparison]::Ordinal)) {
-                $preservedAllOf = $sorted.paths.'/things'.post.requestBody.content.'application/json'.schema.properties.flattened.allOf
-                Assert-True ($null -ne $preservedAllOf) "Sort flattened an Inlined allOf composition."
-            }
-        }
+        $inputPath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
+        $outputPath = Join-Path $temporaryDirectory "things.inlined.sorted.openapi.json"
+        & $extractScriptPath -SpecificationPath $sourcePath -OperationId "createThing" -OutputPath $inputPath
+        & $sortScriptPath -InputPath $inputPath -OutputPath $outputPath
+        $sorted = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -Depth 100
+        Assert-OpenApiReferencesResolve -Document $sorted
+        Assert-True ([System.IO.File]::Exists($outputPath)) "Sort did not support extracted output."
+        $preservedAllOf = $sorted.paths.'/things'.post.requestBody.content.'application/json'.schema.properties.flattened.allOf
+        Assert-True ($null -ne $preservedAllOf) "Sort flattened an allOf composition."
     }
 
     Invoke-Test "default naming standalone output encoding and input preservation are correct" {

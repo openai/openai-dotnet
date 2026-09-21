@@ -3,16 +3,13 @@
     Flattens all allOf schema compositions in an Inlined OpenAPI document.
 
 .DESCRIPTION
-    Reads JSON produced by Extract-OpenApiRoute.ps1 in Inlined mode, recursively
+    Reads inlined JSON produced by Extract-OpenApiRoute.ps1, recursively
     merges every allOf composition into a single schema, relocates affected local
     JSON pointers, and writes a separate flattened OpenAPI document while
     preserving encounter order. Run Simplify-OpenApiStringVariants.ps1 and then
     Sort-OpenApiDocument.ps1 afterward to consolidate eligible nested string
     unions and produce canonical ordering. Flattening is byte-idempotent;
     running the script against already-flat output preserves its JSON bytes.
-
-    Exact-mode extraction output is outside this script's supported contract
-    because Exact documents intentionally retain component references.
 
 .PARAMETER InputPath
     The Inlined OpenAPI JSON document to flatten.

@@ -31,17 +31,8 @@
           }
         }
       ],
-      "get": {
-        "tags": [
-          "Things"
-        ],
-        "responses": {
-          "204": {
-            "description": "none"
-          }
-        }
-      },
       "post": {
+        "operationId": "createThing",
         "tags": [
           "Things"
         ],

@@ -14,9 +14,6 @@
     branches, are left unchanged. An eligible tree is rejected when a local
     reference targets a branch that would disappear during simplification.
 
-    Exact-mode extraction output is outside this script's supported contract.
-    Sort-OpenApiDocument.ps1 can be run directly against Exact output.
-
 .PARAMETER InputPath
     The allOf-flattened Inlined OpenAPI JSON document to simplify.
 

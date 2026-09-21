@@ -423,8 +423,7 @@ try {
         $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.sorted.openapi.json"
         & $extractScriptPath `
             -SpecificationPath $sourcePath `
-            -Route "/things" `
-            -Mode Inlined `
+            -OperationId "createThing" `
             -OutputPath $intermediatePath
         $intermediate = Get-Content -LiteralPath $intermediatePath -Raw | ConvertFrom-Json -Depth 100
         Assert-True (@(Find-OpenApiAllOf -Value $intermediate).Count -gt 0) "Extractor intermediate did not retain allOf."

@@ -75,6 +75,7 @@ function Write-TestSpecification {
         paths = [ordered]@{
             "/responses" = [ordered]@{
                 post = [ordered]@{
+                    operationId = "createResponse"
                     requestBody = [ordered]@{
                         content = [ordered]@{
                             "application/json" = [ordered]@{
