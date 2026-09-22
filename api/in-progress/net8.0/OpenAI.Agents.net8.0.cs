@@ -34,6 +34,14 @@ namespace OpenAI.Agents {
         public virtual ClientResult CreateAgent(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> CreateAgentAsync(AgentCreationOptions agent, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateAgentAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<EnvironmentFile> CreateAgentEnvironmentFile(string environmentId, HostedEnvironmentFileParam file, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateAgentEnvironmentFile(string environmentId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<EnvironmentFile>> CreateAgentEnvironmentFileAsync(string environmentId, HostedEnvironmentFileParam file, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateAgentEnvironmentFileAsync(string environmentId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<EnvironmentTemplate> CreateAgentEnvironmentTemplate(EnvironmentTemplateCreationOptions template, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateAgentEnvironmentTemplate(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<EnvironmentTemplate>> CreateAgentEnvironmentTemplateAsync(EnvironmentTemplateCreationOptions template, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateAgentEnvironmentTemplateAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<AgentSession> CreateAgentSession(AgentSessionCreationOptions session, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateAgentSession(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<AgentSession>> CreateAgentSessionAsync(AgentSessionCreationOptions session, CancellationToken cancellationToken = default);
@@ -54,6 +62,10 @@ namespace OpenAI.Agents {
         public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options);
         public virtual Task<ClientResult<AgentDeletionResult>> DeleteAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DeleteAgentEnvironmentTemplate(string environmentTemplateId, RequestOptions options);
+        public virtual ClientResult<EnvironmentTemplateDeletionResult> DeleteAgentEnvironmentTemplate(string environmentTemplateId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteAgentEnvironmentTemplateAsync(string environmentTemplateId, RequestOptions options);
+        public virtual Task<ClientResult<EnvironmentTemplateDeletionResult>> DeleteAgentEnvironmentTemplateAsync(string environmentTemplateId, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteAgentSession(string sessionId, RequestOptions options);
         public virtual ClientResult<AgentSessionDeletionResult> DeleteAgentSession(string sessionId, CancellationToken cancellationToken = default);
         public virtual ClientResult DeleteAgentSessionArtifact(string sessionId, string artifactId, RequestOptions options);
@@ -70,6 +82,14 @@ namespace OpenAI.Agents {
         public virtual ClientResult<VaultCredentialDeletionResult> DeleteVaultCredential(string vaultId, string credentialId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteVaultCredentialAsync(string vaultId, string credentialId, RequestOptions options);
         public virtual Task<ClientResult<VaultCredentialDeletionResult>> DeleteVaultCredentialAsync(string vaultId, string credentialId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<EnvironmentFile> GetAgentEnvironmentFiles(string environmentId, string path = null, int? limit = null, EnvironmentCollectionOrder? order = null, string page = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentEnvironmentFiles(string environmentId, string path, int? limit, string order, string page, RequestOptions options);
+        public virtual AsyncCollectionResult<EnvironmentFile> GetAgentEnvironmentFilesAsync(string environmentId, string path = null, int? limit = null, EnvironmentCollectionOrder? order = null, string page = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentEnvironmentFilesAsync(string environmentId, string path, int? limit, string order, string page, RequestOptions options);
+        public virtual CollectionResult<EnvironmentTemplate> GetAgentEnvironmentTemplates(int? limit = null, EnvironmentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetAgentEnvironmentTemplates(int? limit, string order, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<EnvironmentTemplate> GetAgentEnvironmentTemplatesAsync(int? limit = null, EnvironmentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetAgentEnvironmentTemplatesAsync(int? limit, string order, string after, RequestOptions options);
         public virtual CollectionResult<Agent> GetAgents(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgents(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<Agent> GetAgentsAsync(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
@@ -120,6 +140,14 @@ namespace OpenAI.Agents {
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
         public virtual Task<ClientResult<Agent>> RetrieveAgentAsync(string agentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentEnvironment(string environmentId, RequestOptions options);
+        public virtual ClientResult<Environment> RetrieveAgentEnvironment(string environmentId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentEnvironmentAsync(string environmentId, RequestOptions options);
+        public virtual Task<ClientResult<Environment>> RetrieveAgentEnvironmentAsync(string environmentId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveAgentEnvironmentTemplate(string environmentTemplateId, RequestOptions options);
+        public virtual ClientResult<EnvironmentTemplate> RetrieveAgentEnvironmentTemplate(string environmentTemplateId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveAgentEnvironmentTemplateAsync(string environmentTemplateId, RequestOptions options);
+        public virtual Task<ClientResult<EnvironmentTemplate>> RetrieveAgentEnvironmentTemplateAsync(string environmentTemplateId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveAgentSession(string sessionId, RequestOptions options);
         public virtual ClientResult<AgentSession> RetrieveAgentSession(string sessionId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveAgentSessionArtifact(string sessionId, string artifactId, RequestOptions options);
@@ -160,6 +188,10 @@ namespace OpenAI.Agents {
         public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateAgentAsync(string agentId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<EnvironmentTemplate> UpdateAgentEnvironmentTemplate(string environmentTemplateId, EnvironmentTemplateModificationOptions template, CancellationToken cancellationToken = default);
+        public virtual ClientResult UpdateAgentEnvironmentTemplate(string environmentTemplateId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<EnvironmentTemplate>> UpdateAgentEnvironmentTemplateAsync(string environmentTemplateId, EnvironmentTemplateModificationOptions template, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> UpdateAgentEnvironmentTemplateAsync(string environmentTemplateId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<AgentSession> UpdateAgentSession(string sessionId, AgentSessionModificationOptions session, CancellationToken cancellationToken = default);
         public virtual ClientResult UpdateAgentSession(string sessionId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<AgentSession>> UpdateAgentSessionAsync(string sessionId, AgentSessionModificationOptions session, CancellationToken cancellationToken = default);
@@ -282,7 +314,7 @@ namespace OpenAI.Agents {
     public class AgentSession : IJsonModel<AgentSession>, IPersistableModel<AgentSession> {
         public SessionAgentResource Agent { get; set; }
         public int CreatedAt { get; set; }
-        public BinaryData Environment { get; set; }
+        public EnvironmentResource Environment { get; set; }
         public string Error { get; set; }
         public string Id { get; set; }
         public int LastActiveAt { get; set; }
@@ -400,10 +432,10 @@ namespace OpenAI.Agents {
     [Experimental("OPENAI001")]
     public class AgentSessionCreationOptions : IJsonModel<AgentSessionCreationOptions>, IPersistableModel<AgentSessionCreationOptions> {
         public AgentSessionCreationOptions();
-        public AgentSessionCreationOptions(BinaryData environment);
+        public AgentSessionCreationOptions(EnvironmentParam environment);
         public SessionAgentConfigParam Agent { get; set; }
         public string AgentId { get; set; }
-        public BinaryData Environment { get; set; }
+        public EnvironmentParam Environment { get; set; }
         public BinaryData Input { get; set; }
         public IDictionary<string, string> Metadata { get; set; }
         [Serialization.JsonIgnore]
@@ -883,6 +915,287 @@ namespace OpenAI.Agents {
         public string EncryptedContent { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class Environment : IJsonModel<Environment>, IPersistableModel<Environment> {
+        public IList<HostedEnvironmentFileResource> Files { get; }
+        public string Id { get; set; }
+        public EnvironmentTypeResource Kind { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public IList<HostedPluginResource> Plugins { get; }
+        public IList<HostedSkillResource> Skills { get; }
+        public EnvironmentStatusResource Status { get; set; }
+        public static explicit operator Environment(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct EnvironmentCollectionOrder : IEquatable<EnvironmentCollectionOrder> {
+        public EnvironmentCollectionOrder(string value);
+        public static EnvironmentCollectionOrder Ascending { get; }
+        public static EnvironmentCollectionOrder Descending { get; }
+        public readonly bool Equals(EnvironmentCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(EnvironmentCollectionOrder left, EnvironmentCollectionOrder right);
+        public static implicit operator EnvironmentCollectionOrder(string value);
+        public static implicit operator EnvironmentCollectionOrder?(string value);
+        public static bool operator !=(EnvironmentCollectionOrder left, EnvironmentCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentFile : IJsonModel<EnvironmentFile>, IPersistableModel<EnvironmentFile> {
+        public string EnvironmentId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Path { get; set; }
+        public int SizeBytes { get; set; }
+        public static explicit operator EnvironmentFile(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentFileCollectionOptions : IJsonModel<EnvironmentFileCollectionOptions>, IPersistableModel<EnvironmentFileCollectionOptions> {
+        public EnvironmentFileCollectionOptions();
+        public EnvironmentFileCollectionOptions(string environmentId);
+        public string EnvironmentId { get; set; }
+        public int? Limit { get; set; }
+        public EnvironmentCollectionOrder? Order { get; set; }
+        public string Page { get; set; }
+        public string Path { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentFileCollectionPage : IJsonModel<EnvironmentFileCollectionPage>, IPersistableModel<EnvironmentFileCollectionPage> {
+        public IList<EnvironmentFile> Data { get; }
+        public bool HasMore { get; set; }
+        public string Next { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator EnvironmentFileCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentPackagesParam : IJsonModel<EnvironmentPackagesParam>, IPersistableModel<EnvironmentPackagesParam> {
+        public IList<string> Npm { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public IList<string> Python { get; set; }
+        public IList<string> System { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentPackagesResource : IJsonModel<EnvironmentPackagesResource>, IPersistableModel<EnvironmentPackagesResource> {
+        public IList<string> Npm { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public IList<string> Python { get; }
+        public IList<string> System { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentParam : IJsonModel<EnvironmentParam>, IPersistableModel<EnvironmentParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentParamNone : EnvironmentParam, IJsonModel<EnvironmentParamNone>, IPersistableModel<EnvironmentParamNone> {
+        public EnvironmentParamNone();
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentParamOpenaiHosted : EnvironmentParam, IJsonModel<EnvironmentParamOpenaiHosted>, IPersistableModel<EnvironmentParamOpenaiHosted> {
+        public EnvironmentParamOpenaiHosted();
+        public IList<string> CapabilityDirectories { get; set; }
+        public IDictionary<string, string> Env { get; set; }
+        public string EnvironmentTemplateId { get; set; }
+        public IList<HostedEnvironmentFileParam> Files { get; set; }
+        public NetworkPolicyParam Network { get; set; }
+        public EnvironmentPackagesParam Packages { get; set; }
+        public IList<HostedPluginParam> Plugins { get; set; }
+        public IList<SetupCommandParam> SetupCommands { get; set; }
+        public IList<HostedSkillParam> Skills { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentParamSelfHosted : EnvironmentParam, IJsonModel<EnvironmentParamSelfHosted>, IPersistableModel<EnvironmentParamSelfHosted> {
+        public EnvironmentParamSelfHosted();
+        public EnvironmentParamSelfHosted(string workspaceDirectory);
+        public IList<string> CapabilityDirectories { get; set; }
+        public string WorkspaceDirectory { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentResource : IJsonModel<EnvironmentResource>, IPersistableModel<EnvironmentResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentResourceNone : EnvironmentResource, IJsonModel<EnvironmentResourceNone>, IPersistableModel<EnvironmentResourceNone> {
+        public EnvironmentResourceNone();
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentResourceOpenaiHosted : EnvironmentResource, IJsonModel<EnvironmentResourceOpenaiHosted>, IPersistableModel<EnvironmentResourceOpenaiHosted> {
+        public EnvironmentResourceOpenaiHosted();
+        public IList<string> CapabilityDirectories { get; }
+        public IList<HostedEnvironmentFileResource> Files { get; }
+        public string Id { get; set; }
+        public NetworkPolicyResource Network { get; set; }
+        public EnvironmentPackagesResource Packages { get; set; }
+        public IList<HostedPluginResource> Plugins { get; }
+        public IList<HostedSkillResource> Skills { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentResourceSelfHosted : EnvironmentResource, IJsonModel<EnvironmentResourceSelfHosted>, IPersistableModel<EnvironmentResourceSelfHosted> {
+        public EnvironmentResourceSelfHosted();
+        public IList<string> CapabilityDirectories { get; }
+        public string Id { get; set; }
+        public string RemoteUrl { get; set; }
+        public string WorkspaceDirectory { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct EnvironmentStatusResource : IEquatable<EnvironmentStatusResource> {
+        public EnvironmentStatusResource(string value);
+        public static EnvironmentStatusResource Connected { get; }
+        public static EnvironmentStatusResource Disconnected { get; }
+        public static EnvironmentStatusResource Expired { get; }
+        public static EnvironmentStatusResource Failed { get; }
+        public static EnvironmentStatusResource Pending { get; }
+        public readonly bool Equals(EnvironmentStatusResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(EnvironmentStatusResource left, EnvironmentStatusResource right);
+        public static implicit operator EnvironmentStatusResource(string value);
+        public static implicit operator EnvironmentStatusResource?(string value);
+        public static bool operator !=(EnvironmentStatusResource left, EnvironmentStatusResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentTemplate : IJsonModel<EnvironmentTemplate>, IPersistableModel<EnvironmentTemplate> {
+        public IList<string> CapabilityDirectories { get; }
+        public int CreatedAt { get; set; }
+        public IList<HostedTemplateFileResource> Files { get; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public NetworkPolicyResource Network { get; set; }
+        public string Object { get; set; }
+        public EnvironmentPackagesResource Packages { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public IList<HostedPluginResource> Plugins { get; }
+        public IList<HostedTemplateSkillResource> Skills { get; }
+        public int UpdatedAt { get; set; }
+        public static explicit operator EnvironmentTemplate(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentTemplateCollectionOptions : IJsonModel<EnvironmentTemplateCollectionOptions>, IPersistableModel<EnvironmentTemplateCollectionOptions> {
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public EnvironmentCollectionOrder? Order { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentTemplateCollectionPage : IJsonModel<EnvironmentTemplateCollectionPage>, IPersistableModel<EnvironmentTemplateCollectionPage> {
+        public IList<EnvironmentTemplate> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator EnvironmentTemplateCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentTemplateCreationOptions : IJsonModel<EnvironmentTemplateCreationOptions>, IPersistableModel<EnvironmentTemplateCreationOptions> {
+        public IList<string> CapabilityDirectories { get; set; }
+        public IDictionary<string, string> Env { get; set; }
+        public IList<HostedEnvironmentFileParam> Files { get; set; }
+        public string Name { get; set; }
+        public NetworkPolicyParam Network { get; set; }
+        public EnvironmentPackagesParam Packages { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public IList<HostedPluginParam> Plugins { get; set; }
+        public IList<SetupCommandParam> SetupCommands { get; set; }
+        public IList<HostedSkillParam> Skills { get; set; }
+        public static implicit operator BinaryContent(EnvironmentTemplateCreationOptions environmentTemplateCreationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentTemplateDeletionResult : IJsonModel<EnvironmentTemplateDeletionResult>, IPersistableModel<EnvironmentTemplateDeletionResult> {
+        public bool Deleted { get; set; }
+        public string EnvironmentTemplateId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator EnvironmentTemplateDeletionResult(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class EnvironmentTemplateModificationOptions : IJsonModel<EnvironmentTemplateModificationOptions>, IPersistableModel<EnvironmentTemplateModificationOptions> {
+        public IList<string> CapabilityDirectories { get; set; }
+        public IDictionary<string, string> Env { get; set; }
+        public IList<HostedEnvironmentFileParam> Files { get; set; }
+        public string Name { get; set; }
+        public NetworkPolicyParam Network { get; set; }
+        public EnvironmentPackagesParam Packages { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public IList<HostedPluginParam> Plugins { get; set; }
+        public IList<SetupCommandParam> SetupCommands { get; set; }
+        public IList<HostedSkillParam> Skills { get; set; }
+        public static implicit operator BinaryContent(EnvironmentTemplateModificationOptions environmentTemplateModificationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct EnvironmentType : IEquatable<EnvironmentType> {
+        public EnvironmentType(string value);
+        public static EnvironmentType None { get; }
+        public static EnvironmentType OpenaiHosted { get; }
+        public static EnvironmentType SelfHosted { get; }
+        public readonly bool Equals(EnvironmentType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(EnvironmentType left, EnvironmentType right);
+        public static implicit operator EnvironmentType(string value);
+        public static implicit operator EnvironmentType?(string value);
+        public static bool operator !=(EnvironmentType left, EnvironmentType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct EnvironmentTypeResource : IEquatable<EnvironmentTypeResource> {
+        public EnvironmentTypeResource(string value);
+        public static EnvironmentTypeResource OpenaiHosted { get; }
+        public static EnvironmentTypeResource SelfHosted { get; }
+        public readonly bool Equals(EnvironmentTypeResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(EnvironmentTypeResource left, EnvironmentTypeResource right);
+        public static implicit operator EnvironmentTypeResource(string value);
+        public static implicit operator EnvironmentTypeResource?(string value);
+        public static bool operator !=(EnvironmentTypeResource left, EnvironmentTypeResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class FunctionCallItemResource : AgentSessionItem, IJsonModel<FunctionCallItemResource>, IPersistableModel<FunctionCallItemResource> {
         public FunctionCallItemResource();
         public BinaryData Arguments { get; set; }
@@ -918,6 +1231,266 @@ namespace OpenAI.Agents {
         public static implicit operator FunctionCallStatusResource(string value);
         public static implicit operator FunctionCallStatusResource?(string value);
         public static bool operator !=(FunctionCallStatusResource left, FunctionCallStatusResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class HostedEnvironmentFileParam : IJsonModel<HostedEnvironmentFileParam>, IPersistableModel<HostedEnvironmentFileParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(HostedEnvironmentFileParam hostedEnvironmentFileParam);
+    }
+    [Experimental("OPENAI001")]
+    public class HostedEnvironmentFileParamFileId : HostedEnvironmentFileParam, IJsonModel<HostedEnvironmentFileParamFileId>, IPersistableModel<HostedEnvironmentFileParamFileId> {
+        public HostedEnvironmentFileParamFileId();
+        public HostedEnvironmentFileParamFileId(string fileId, string path);
+        public string FileId { get; set; }
+        public string Path { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedEnvironmentFileParamInline : HostedEnvironmentFileParam, IJsonModel<HostedEnvironmentFileParamInline>, IPersistableModel<HostedEnvironmentFileParamInline> {
+        public HostedEnvironmentFileParamInline();
+        public HostedEnvironmentFileParamInline(string data, string path);
+        public string Data { get; set; }
+        public string Path { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedEnvironmentFileResource : IJsonModel<HostedEnvironmentFileResource>, IPersistableModel<HostedEnvironmentFileResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedEnvironmentFileResourceFileId : HostedEnvironmentFileResource, IJsonModel<HostedEnvironmentFileResourceFileId>, IPersistableModel<HostedEnvironmentFileResourceFileId> {
+        public HostedEnvironmentFileResourceFileId();
+        public string FileId { get; set; }
+        public string Id { get; set; }
+        public string Path { get; set; }
+        public int SizeBytes { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedEnvironmentFileResourceInline : HostedEnvironmentFileResource, IJsonModel<HostedEnvironmentFileResourceInline>, IPersistableModel<HostedEnvironmentFileResourceInline> {
+        public HostedEnvironmentFileResourceInline();
+        public string Id { get; set; }
+        public string Path { get; set; }
+        public int SizeBytes { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct HostedEnvironmentFileType : IEquatable<HostedEnvironmentFileType> {
+        public HostedEnvironmentFileType(string value);
+        public static HostedEnvironmentFileType FileId { get; }
+        public static HostedEnvironmentFileType Inline { get; }
+        public readonly bool Equals(HostedEnvironmentFileType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(HostedEnvironmentFileType left, HostedEnvironmentFileType right);
+        public static implicit operator HostedEnvironmentFileType(string value);
+        public static implicit operator HostedEnvironmentFileType?(string value);
+        public static bool operator !=(HostedEnvironmentFileType left, HostedEnvironmentFileType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class HostedPluginParam : IJsonModel<HostedPluginParam>, IPersistableModel<HostedPluginParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedPluginParamInline : HostedPluginParam, IJsonModel<HostedPluginParamInline>, IPersistableModel<HostedPluginParamInline> {
+        public HostedPluginParamInline();
+        public HostedPluginParamInline(string name, string description, InlineCapabilitySourceParam source);
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public InlineCapabilitySourceParam Source { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedPluginResource : IJsonModel<HostedPluginResource>, IPersistableModel<HostedPluginResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedPluginResourceInline : HostedPluginResource, IJsonModel<HostedPluginResourceInline>, IPersistableModel<HostedPluginResourceInline> {
+        public HostedPluginResourceInline();
+        public string Description { get; set; }
+        public string Name { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct HostedPluginType : IEquatable<HostedPluginType> {
+        public HostedPluginType(string value);
+        public static HostedPluginType Inline { get; }
+        public readonly bool Equals(HostedPluginType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(HostedPluginType left, HostedPluginType right);
+        public static implicit operator HostedPluginType(string value);
+        public static implicit operator HostedPluginType?(string value);
+        public static bool operator !=(HostedPluginType left, HostedPluginType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class HostedSkillParam : IJsonModel<HostedSkillParam>, IPersistableModel<HostedSkillParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedSkillParamInline : HostedSkillParam, IJsonModel<HostedSkillParamInline>, IPersistableModel<HostedSkillParamInline> {
+        public HostedSkillParamInline();
+        public HostedSkillParamInline(string name, string description, InlineCapabilitySourceParam source);
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public InlineCapabilitySourceParam Source { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedSkillParamSkillReference : HostedSkillParam, IJsonModel<HostedSkillParamSkillReference>, IPersistableModel<HostedSkillParamSkillReference> {
+        public HostedSkillParamSkillReference();
+        public HostedSkillParamSkillReference(string skillId);
+        public string SkillId { get; set; }
+        public string Version { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedSkillResource : IJsonModel<HostedSkillResource>, IPersistableModel<HostedSkillResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedSkillResourceInline : HostedSkillResource, IJsonModel<HostedSkillResourceInline>, IPersistableModel<HostedSkillResourceInline> {
+        public HostedSkillResourceInline();
+        public string Description { get; set; }
+        public string Name { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedSkillResourceSkillReference : HostedSkillResource, IJsonModel<HostedSkillResourceSkillReference>, IPersistableModel<HostedSkillResourceSkillReference> {
+        public HostedSkillResourceSkillReference();
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public string SkillId { get; set; }
+        public string Version { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct HostedSkillType : IEquatable<HostedSkillType> {
+        public HostedSkillType(string value);
+        public static HostedSkillType Inline { get; }
+        public static HostedSkillType SkillReference { get; }
+        public readonly bool Equals(HostedSkillType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(HostedSkillType left, HostedSkillType right);
+        public static implicit operator HostedSkillType(string value);
+        public static implicit operator HostedSkillType?(string value);
+        public static bool operator !=(HostedSkillType left, HostedSkillType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class HostedTemplateFileResource : IJsonModel<HostedTemplateFileResource>, IPersistableModel<HostedTemplateFileResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedTemplateFileResourceFileId : HostedTemplateFileResource, IJsonModel<HostedTemplateFileResourceFileId>, IPersistableModel<HostedTemplateFileResourceFileId> {
+        public HostedTemplateFileResourceFileId();
+        public string FileId { get; set; }
+        public string Path { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedTemplateFileResourceInline : HostedTemplateFileResource, IJsonModel<HostedTemplateFileResourceInline>, IPersistableModel<HostedTemplateFileResourceInline> {
+        public HostedTemplateFileResourceInline();
+        public string Path { get; set; }
+        public int SizeBytes { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct HostedTemplateFileType : IEquatable<HostedTemplateFileType> {
+        public HostedTemplateFileType(string value);
+        public static HostedTemplateFileType FileId { get; }
+        public static HostedTemplateFileType Inline { get; }
+        public readonly bool Equals(HostedTemplateFileType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(HostedTemplateFileType left, HostedTemplateFileType right);
+        public static implicit operator HostedTemplateFileType(string value);
+        public static implicit operator HostedTemplateFileType?(string value);
+        public static bool operator !=(HostedTemplateFileType left, HostedTemplateFileType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class HostedTemplateSkillResource : IJsonModel<HostedTemplateSkillResource>, IPersistableModel<HostedTemplateSkillResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedTemplateSkillResourceInline : HostedTemplateSkillResource, IJsonModel<HostedTemplateSkillResourceInline>, IPersistableModel<HostedTemplateSkillResourceInline> {
+        public HostedTemplateSkillResourceInline();
+        public string Description { get; set; }
+        public string Name { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class HostedTemplateSkillResourceSkillReference : HostedTemplateSkillResource, IJsonModel<HostedTemplateSkillResourceSkillReference>, IPersistableModel<HostedTemplateSkillResourceSkillReference> {
+        public HostedTemplateSkillResourceSkillReference();
+        public string SkillId { get; set; }
+        public string Version { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct HostedTemplateSkillType : IEquatable<HostedTemplateSkillType> {
+        public HostedTemplateSkillType(string value);
+        public static HostedTemplateSkillType Inline { get; }
+        public static HostedTemplateSkillType SkillReference { get; }
+        public readonly bool Equals(HostedTemplateSkillType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(HostedTemplateSkillType left, HostedTemplateSkillType right);
+        public static implicit operator HostedTemplateSkillType(string value);
+        public static implicit operator HostedTemplateSkillType?(string value);
+        public static bool operator !=(HostedTemplateSkillType left, HostedTemplateSkillType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class InlineCapabilitySourceParam : IJsonModel<InlineCapabilitySourceParam>, IPersistableModel<InlineCapabilitySourceParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class InlineCapabilitySourceParamBase64 : InlineCapabilitySourceParam, IJsonModel<InlineCapabilitySourceParamBase64>, IPersistableModel<InlineCapabilitySourceParamBase64> {
+        public InlineCapabilitySourceParamBase64();
+        public InlineCapabilitySourceParamBase64(string data);
+        public string Data { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct InlineCapabilitySourceType : IEquatable<InlineCapabilitySourceType> {
+        public InlineCapabilitySourceType(string value);
+        public static InlineCapabilitySourceType Base64 { get; }
+        public readonly bool Equals(InlineCapabilitySourceType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(InlineCapabilitySourceType left, InlineCapabilitySourceType right);
+        public static implicit operator InlineCapabilitySourceType(string value);
+        public static implicit operator InlineCapabilitySourceType?(string value);
+        public static bool operator !=(InlineCapabilitySourceType left, InlineCapabilitySourceType right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
@@ -1215,6 +1788,60 @@ namespace OpenAI.Agents {
     public class MultiAgentConfigResource : IJsonModel<MultiAgentConfigResource>, IPersistableModel<MultiAgentConfigResource> {
         public bool Enabled { get; set; }
         public int? MaxConcurrentSubagents { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct NetworkAccessParam : IEquatable<NetworkAccessParam> {
+        public NetworkAccessParam(string value);
+        public static NetworkAccessParam Disabled { get; }
+        public static NetworkAccessParam Enabled { get; }
+        public static NetworkAccessParam Restricted { get; }
+        public readonly bool Equals(NetworkAccessParam other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(NetworkAccessParam left, NetworkAccessParam right);
+        public static implicit operator NetworkAccessParam(string value);
+        public static implicit operator NetworkAccessParam?(string value);
+        public static bool operator !=(NetworkAccessParam left, NetworkAccessParam right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct NetworkAccessResource : IEquatable<NetworkAccessResource> {
+        public NetworkAccessResource(string value);
+        public static NetworkAccessResource Disabled { get; }
+        public static NetworkAccessResource Enabled { get; }
+        public static NetworkAccessResource Restricted { get; }
+        public readonly bool Equals(NetworkAccessResource other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(NetworkAccessResource left, NetworkAccessResource right);
+        public static implicit operator NetworkAccessResource(string value);
+        public static implicit operator NetworkAccessResource?(string value);
+        public static bool operator !=(NetworkAccessResource left, NetworkAccessResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class NetworkPolicyParam : IJsonModel<NetworkPolicyParam>, IPersistableModel<NetworkPolicyParam> {
+        public NetworkPolicyParam();
+        public NetworkPolicyParam(NetworkAccessParam access);
+        public NetworkAccessParam Access { get; set; }
+        public IList<string> AllowedDomains { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class NetworkPolicyResource : IJsonModel<NetworkPolicyResource>, IPersistableModel<NetworkPolicyResource> {
+        public NetworkAccessResource Access { get; set; }
+        public IList<string> AllowedDomains { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -2257,6 +2884,17 @@ namespace OpenAI.Agents {
         public static implicit operator SessionTurnItemType?(string value);
         public static bool operator !=(SessionTurnItemType left, SessionTurnItemType right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class SetupCommandParam : IJsonModel<SetupCommandParam>, IPersistableModel<SetupCommandParam> {
+        public SetupCommandParam();
+        public SetupCommandParam(string command);
+        public string Command { get; set; }
+        public string Cwd { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
     public readonly partial struct SubagentStatusResource : IEquatable<SubagentStatusResource> {

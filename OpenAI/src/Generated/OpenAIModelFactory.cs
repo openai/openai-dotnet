@@ -2340,7 +2340,7 @@ namespace OpenAI
                 default);
         }
 
-        public static AgentSessionCreationOptions AgentSessionCreationOptions(IDictionary<string, string> metadata = default, SessionAgentConfigParam agent = default, string agentId = default, BinaryData environment = default, IEnumerable<string> vaultIds = default, BinaryData input = default, bool? stream = default)
+        public static AgentSessionCreationOptions AgentSessionCreationOptions(IDictionary<string, string> metadata = default, SessionAgentConfigParam agent = default, string agentId = default, EnvironmentParam environment = default, IEnumerable<string> vaultIds = default, BinaryData input = default, bool? stream = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             vaultIds ??= new ChangeTrackingList<string>();
@@ -2452,6 +2452,117 @@ namespace OpenAI
                 contextSize,
                 allowedDomains.ToList(),
                 location);
+        }
+
+        public static EnvironmentParam EnvironmentParam(string kind = default)
+        {
+            return new InternalUnknownEnvironmentParam(new EnvironmentType(kind), default);
+        }
+
+        public static EnvironmentParamNone EnvironmentParamNone()
+        {
+            return new EnvironmentParamNone(EnvironmentType.None, default);
+        }
+
+        public static EnvironmentParamOpenaiHosted EnvironmentParamOpenaiHosted(EnvironmentPackagesParam packages = default, IEnumerable<SetupCommandParam> setupCommands = default, NetworkPolicyParam network = default, IDictionary<string, string> env = default, IEnumerable<string> capabilityDirectories = default, IEnumerable<HostedSkillParam> skills = default, IEnumerable<HostedPluginParam> plugins = default, IEnumerable<HostedEnvironmentFileParam> files = default, string environmentTemplateId = default)
+        {
+            setupCommands ??= new ChangeTrackingList<SetupCommandParam>();
+            env ??= new ChangeTrackingDictionary<string, string>();
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+            skills ??= new ChangeTrackingList<HostedSkillParam>();
+            plugins ??= new ChangeTrackingList<HostedPluginParam>();
+            files ??= new ChangeTrackingList<HostedEnvironmentFileParam>();
+
+            return new EnvironmentParamOpenaiHosted(
+                EnvironmentType.OpenaiHosted,
+                default,
+                packages,
+                setupCommands.ToList(),
+                network,
+                env,
+                capabilityDirectories.ToList(),
+                skills.ToList(),
+                plugins.ToList(),
+                files.ToList(),
+                environmentTemplateId);
+        }
+
+        public static EnvironmentPackagesParam EnvironmentPackagesParam(IEnumerable<string> python = default, IEnumerable<string> system = default, IEnumerable<string> npm = default)
+        {
+            python ??= new ChangeTrackingList<string>();
+            system ??= new ChangeTrackingList<string>();
+            npm ??= new ChangeTrackingList<string>();
+
+            return new EnvironmentPackagesParam(python.ToList(), system.ToList(), npm.ToList(), default);
+        }
+
+        public static SetupCommandParam SetupCommandParam(string command = default, string cwd = default)
+        {
+            return new SetupCommandParam(command, cwd, default);
+        }
+
+        public static NetworkPolicyParam NetworkPolicyParam(NetworkAccessParam access = default, IEnumerable<string> allowedDomains = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new NetworkPolicyParam(access, allowedDomains.ToList(), default);
+        }
+
+        public static HostedSkillParam HostedSkillParam(string kind = default)
+        {
+            return new InternalUnknownHostedSkillParam(new HostedSkillType(kind), default);
+        }
+
+        public static HostedSkillParamSkillReference HostedSkillParamSkillReference(string skillId = default, string version = default)
+        {
+            return new HostedSkillParamSkillReference(HostedSkillType.SkillReference, default, skillId, version);
+        }
+
+        public static HostedSkillParamInline HostedSkillParamInline(string name = default, string description = default, InlineCapabilitySourceParam source = default)
+        {
+            return new HostedSkillParamInline(HostedSkillType.Inline, default, name, description, source);
+        }
+
+        public static InlineCapabilitySourceParam InlineCapabilitySourceParam(string kind = default)
+        {
+            return new InternalUnknownInlineCapabilitySourceParam(new InlineCapabilitySourceType(kind), default);
+        }
+
+        public static InlineCapabilitySourceParamBase64 InlineCapabilitySourceParamBase64(string data = default)
+        {
+            return new InlineCapabilitySourceParamBase64(InlineCapabilitySourceType.Base64, default, "application/zip", data);
+        }
+
+        public static HostedPluginParam HostedPluginParam(string kind = default)
+        {
+            return new InternalUnknownHostedPluginParam(new HostedPluginType(kind), default);
+        }
+
+        public static HostedPluginParamInline HostedPluginParamInline(string name = default, string description = default, InlineCapabilitySourceParam source = default)
+        {
+            return new HostedPluginParamInline(HostedPluginType.Inline, default, name, description, source);
+        }
+
+        public static HostedEnvironmentFileParam HostedEnvironmentFileParam(string kind = default)
+        {
+            return new InternalUnknownHostedEnvironmentFileParam(new HostedEnvironmentFileType(kind), default);
+        }
+
+        public static HostedEnvironmentFileParamFileId HostedEnvironmentFileParamFileId(string fileId = default, string path = default)
+        {
+            return new HostedEnvironmentFileParamFileId(HostedEnvironmentFileType.FileId, default, fileId, path);
+        }
+
+        public static HostedEnvironmentFileParamInline HostedEnvironmentFileParamInline(string data = default, string path = default)
+        {
+            return new HostedEnvironmentFileParamInline(HostedEnvironmentFileType.Inline, default, data, path);
+        }
+
+        public static EnvironmentParamSelfHosted EnvironmentParamSelfHosted(string workspaceDirectory = default, IEnumerable<string> capabilityDirectories = default)
+        {
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+
+            return new EnvironmentParamSelfHosted(EnvironmentType.SelfHosted, default, workspaceDirectory, capabilityDirectories.ToList());
         }
 
         public static InputContentParam InputContentParam(string kind = default)
@@ -2579,6 +2690,116 @@ namespace OpenAI
                 contextSize,
                 allowedDomains.ToList(),
                 location);
+        }
+
+        public static EnvironmentResource EnvironmentResource(string kind = default)
+        {
+            return new InternalUnknownEnvironmentResource(new EnvironmentType(kind), default);
+        }
+
+        public static EnvironmentResourceNone EnvironmentResourceNone()
+        {
+            return new EnvironmentResourceNone(EnvironmentType.None, default);
+        }
+
+        public static EnvironmentResourceOpenaiHosted EnvironmentResourceOpenaiHosted(string id = default, EnvironmentPackagesResource packages = default, NetworkPolicyResource network = default, IEnumerable<string> capabilityDirectories = default, IEnumerable<HostedSkillResource> skills = default, IEnumerable<HostedPluginResource> plugins = default, IEnumerable<HostedEnvironmentFileResource> files = default)
+        {
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+            skills ??= new ChangeTrackingList<HostedSkillResource>();
+            plugins ??= new ChangeTrackingList<HostedPluginResource>();
+            files ??= new ChangeTrackingList<HostedEnvironmentFileResource>();
+
+            return new EnvironmentResourceOpenaiHosted(
+                EnvironmentType.OpenaiHosted,
+                default,
+                id,
+                packages,
+                network,
+                capabilityDirectories.ToList(),
+                skills.ToList(),
+                plugins.ToList(),
+                files.ToList());
+        }
+
+        public static EnvironmentPackagesResource EnvironmentPackagesResource(IEnumerable<string> python = default, IEnumerable<string> system = default, IEnumerable<string> npm = default)
+        {
+            python ??= new ChangeTrackingList<string>();
+            system ??= new ChangeTrackingList<string>();
+            npm ??= new ChangeTrackingList<string>();
+
+            return new EnvironmentPackagesResource(python.ToList(), system.ToList(), npm.ToList(), default);
+        }
+
+        public static NetworkPolicyResource NetworkPolicyResource(NetworkAccessResource access = default, IEnumerable<string> allowedDomains = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new NetworkPolicyResource(access, allowedDomains.ToList(), default);
+        }
+
+        public static HostedSkillResource HostedSkillResource(string kind = default)
+        {
+            return new InternalUnknownHostedSkillResource(new HostedSkillType(kind), default);
+        }
+
+        public static HostedSkillResourceSkillReference HostedSkillResourceSkillReference(string skillId = default, string version = default, string name = default, string description = default)
+        {
+            return new HostedSkillResourceSkillReference(
+                HostedSkillType.SkillReference,
+                default,
+                skillId,
+                version,
+                name,
+                description);
+        }
+
+        public static HostedSkillResourceInline HostedSkillResourceInline(string name = default, string description = default)
+        {
+            return new HostedSkillResourceInline(HostedSkillType.Inline, default, name, description);
+        }
+
+        public static HostedPluginResource HostedPluginResource(string kind = default)
+        {
+            return new InternalUnknownHostedPluginResource(new HostedPluginType(kind), default);
+        }
+
+        public static HostedPluginResourceInline HostedPluginResourceInline(string name = default, string description = default)
+        {
+            return new HostedPluginResourceInline(HostedPluginType.Inline, default, name, description);
+        }
+
+        public static HostedEnvironmentFileResource HostedEnvironmentFileResource(string kind = default)
+        {
+            return new InternalUnknownHostedEnvironmentFileResource(new HostedEnvironmentFileType(kind), default);
+        }
+
+        public static HostedEnvironmentFileResourceFileId HostedEnvironmentFileResourceFileId(string id = default, string fileId = default, string path = default, int sizeBytes = default)
+        {
+            return new HostedEnvironmentFileResourceFileId(
+                HostedEnvironmentFileType.FileId,
+                default,
+                id,
+                fileId,
+                path,
+                sizeBytes);
+        }
+
+        public static HostedEnvironmentFileResourceInline HostedEnvironmentFileResourceInline(string id = default, string path = default, int sizeBytes = default)
+        {
+            return new HostedEnvironmentFileResourceInline(HostedEnvironmentFileType.Inline, default, id, path, sizeBytes);
+        }
+
+        public static EnvironmentResourceSelfHosted EnvironmentResourceSelfHosted(string remoteUrl = default, string id = default, string workspaceDirectory = default, IEnumerable<string> capabilityDirectories = default)
+        {
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+
+            return new EnvironmentResourceSelfHosted(
+                EnvironmentType.SelfHosted,
+                default,
+                remoteUrl,
+                id,
+                workspaceDirectory,
+                capabilityDirectories.ToList());
         }
 
         public static TokenUsageResource TokenUsageResource(int inputTokens = default, InputTokensDetailsResource inputTokensDetails = default, int outputTokens = default, OutputTokensDetailsResource outputTokensDetails = default, int totalTokens = default)
@@ -3521,6 +3742,149 @@ namespace OpenAI
             return new RotateVaultCredentialAuthParamEnvironmentVariable(VaultCredentialAuthType.EnvironmentVariable, default, secretValue);
         }
 
+        public static Agents.Environment Environment(string id = default, EnvironmentTypeResource kind = default, EnvironmentStatusResource status = default, IEnumerable<HostedEnvironmentFileResource> files = default, IEnumerable<HostedSkillResource> skills = default, IEnumerable<HostedPluginResource> plugins = default)
+        {
+            files ??= new ChangeTrackingList<HostedEnvironmentFileResource>();
+            skills ??= new ChangeTrackingList<HostedSkillResource>();
+            plugins ??= new ChangeTrackingList<HostedPluginResource>();
+
+            return new Agents.Environment(
+                id,
+                "agent.environment",
+                kind,
+                status,
+                files.ToList(),
+                skills.ToList(),
+                plugins.ToList(),
+                default);
+        }
+
+        public static EnvironmentFileCollectionPage EnvironmentFileCollectionPage(IEnumerable<EnvironmentFile> data = default, string next = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<EnvironmentFile>();
+
+            return new EnvironmentFileCollectionPage("page", data.ToList(), next, hasMore, default);
+        }
+
+        public static EnvironmentFile EnvironmentFile(string environmentId = default, string path = default, int sizeBytes = default)
+        {
+            return new EnvironmentFile("agent.environment.file", environmentId, path, sizeBytes, default);
+        }
+
+        public static EnvironmentTemplateCollectionPage EnvironmentTemplateCollectionPage(IEnumerable<EnvironmentTemplate> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<EnvironmentTemplate>();
+
+            return new EnvironmentTemplateCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
+        public static EnvironmentTemplate EnvironmentTemplate(string id = default, string name = default, int createdAt = default, int updatedAt = default, EnvironmentPackagesResource packages = default, NetworkPolicyResource network = default, IEnumerable<string> capabilityDirectories = default, IEnumerable<HostedTemplateSkillResource> skills = default, IEnumerable<HostedPluginResource> plugins = default, IEnumerable<HostedTemplateFileResource> files = default)
+        {
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+            skills ??= new ChangeTrackingList<HostedTemplateSkillResource>();
+            plugins ??= new ChangeTrackingList<HostedPluginResource>();
+            files ??= new ChangeTrackingList<HostedTemplateFileResource>();
+
+            return new EnvironmentTemplate(
+                id,
+                name,
+                "agent.environment.template",
+                createdAt,
+                updatedAt,
+                packages,
+                network,
+                capabilityDirectories.ToList(),
+                skills.ToList(),
+                plugins.ToList(),
+                files.ToList(),
+                default);
+        }
+
+        public static HostedTemplateSkillResource HostedTemplateSkillResource(string kind = default)
+        {
+            return new InternalUnknownHostedTemplateSkillResource(new HostedTemplateSkillType(kind), default);
+        }
+
+        public static HostedTemplateSkillResourceSkillReference HostedTemplateSkillResourceSkillReference(string skillId = default, string version = default)
+        {
+            return new HostedTemplateSkillResourceSkillReference(HostedTemplateSkillType.SkillReference, default, skillId, version);
+        }
+
+        public static HostedTemplateSkillResourceInline HostedTemplateSkillResourceInline(string name = default, string description = default)
+        {
+            return new HostedTemplateSkillResourceInline(HostedTemplateSkillType.Inline, default, name, description);
+        }
+
+        public static HostedTemplateFileResource HostedTemplateFileResource(string kind = default)
+        {
+            return new InternalUnknownHostedTemplateFileResource(new HostedTemplateFileType(kind), default);
+        }
+
+        public static HostedTemplateFileResourceFileId HostedTemplateFileResourceFileId(string fileId = default, string path = default)
+        {
+            return new HostedTemplateFileResourceFileId(HostedTemplateFileType.FileId, default, fileId, path);
+        }
+
+        public static HostedTemplateFileResourceInline HostedTemplateFileResourceInline(string path = default, int sizeBytes = default)
+        {
+            return new HostedTemplateFileResourceInline(HostedTemplateFileType.Inline, default, path, sizeBytes);
+        }
+
+        public static EnvironmentTemplateCreationOptions EnvironmentTemplateCreationOptions(EnvironmentPackagesParam packages = default, IEnumerable<SetupCommandParam> setupCommands = default, NetworkPolicyParam network = default, IDictionary<string, string> env = default, IEnumerable<string> capabilityDirectories = default, IEnumerable<HostedSkillParam> skills = default, IEnumerable<HostedPluginParam> plugins = default, IEnumerable<HostedEnvironmentFileParam> files = default, string name = default)
+        {
+            setupCommands ??= new ChangeTrackingList<SetupCommandParam>();
+            env ??= new ChangeTrackingDictionary<string, string>();
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+            skills ??= new ChangeTrackingList<HostedSkillParam>();
+            plugins ??= new ChangeTrackingList<HostedPluginParam>();
+            files ??= new ChangeTrackingList<HostedEnvironmentFileParam>();
+
+            return new EnvironmentTemplateCreationOptions(
+                packages,
+                setupCommands.ToList(),
+                network,
+                env,
+                capabilityDirectories.ToList(),
+                skills.ToList(),
+                plugins.ToList(),
+                files.ToList(),
+                name,
+                default);
+        }
+
+        public static EnvironmentTemplateModificationOptions EnvironmentTemplateModificationOptions(string name = default, EnvironmentPackagesParam packages = default, IEnumerable<SetupCommandParam> setupCommands = default, NetworkPolicyParam network = default, IDictionary<string, string> env = default, IEnumerable<string> capabilityDirectories = default, IEnumerable<HostedSkillParam> skills = default, IEnumerable<HostedPluginParam> plugins = default, IEnumerable<HostedEnvironmentFileParam> files = default)
+        {
+            setupCommands ??= new ChangeTrackingList<SetupCommandParam>();
+            env ??= new ChangeTrackingDictionary<string, string>();
+            capabilityDirectories ??= new ChangeTrackingList<string>();
+            skills ??= new ChangeTrackingList<HostedSkillParam>();
+            plugins ??= new ChangeTrackingList<HostedPluginParam>();
+            files ??= new ChangeTrackingList<HostedEnvironmentFileParam>();
+
+            return new EnvironmentTemplateModificationOptions(
+                name,
+                packages,
+                setupCommands.ToList(),
+                network,
+                env,
+                capabilityDirectories.ToList(),
+                skills.ToList(),
+                plugins.ToList(),
+                files.ToList(),
+                default);
+        }
+
+        public static EnvironmentTemplateDeletionResult EnvironmentTemplateDeletionResult(string environmentTemplateId = default, bool deleted = default)
+        {
+            return new EnvironmentTemplateDeletionResult(environmentTemplateId, "agent.environment.template.deleted", deleted, default);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -3994,6 +4358,22 @@ namespace OpenAI
                 status.ToList(),
                 after,
                 additionalBinaryDataProperties: null);
+        }
+
+        public static EnvironmentFileCollectionOptions EnvironmentFileCollectionOptions(string environmentId = default, string path = default, int? limit = default, EnvironmentCollectionOrder? order = default, string page = default)
+        {
+            return new EnvironmentFileCollectionOptions(
+                environmentId,
+                path,
+                limit,
+                order,
+                page,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static EnvironmentTemplateCollectionOptions EnvironmentTemplateCollectionOptions(int? limit = default, EnvironmentCollectionOrder? order = default, string after = default)
+        {
+            return new EnvironmentTemplateCollectionOptions(limit, order, after, additionalBinaryDataProperties: null);
         }
 
         public static AssistantResponseFormat AssistantResponseFormat(string kind = default)

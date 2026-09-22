@@ -697,5 +697,151 @@ namespace OpenAI.Agents
             message.Apply(options);
             return message;
         }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRetrieveAgentEnvironmentRequest(string environmentId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/", false);
+            uri.AppendPath(environmentId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetAgentEnvironmentFilesRequest(string environmentId, string path, int? limit, string order, string page, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/", false);
+            uri.AppendPath(environmentId, true);
+            uri.AppendPath("/files", false);
+            if (path != null)
+            {
+                uri.AppendQuery("path", path, true);
+            }
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+            }
+            if (order != null)
+            {
+                uri.AppendQuery("order", order, true);
+            }
+            if (page != null)
+            {
+                uri.AppendQuery("page", page, true);
+            }
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateCreateAgentEnvironmentFileRequest(string environmentId, BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/", false);
+            uri.AppendPath(environmentId, true);
+            uri.AppendPath("/files", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier201);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetAgentEnvironmentTemplatesRequest(int? limit, string order, string after, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/templates", false);
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+            }
+            if (order != null)
+            {
+                uri.AppendQuery("order", order, true);
+            }
+            if (after != null)
+            {
+                uri.AppendQuery("after", after, true);
+            }
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateCreateAgentEnvironmentTemplateRequest(BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/templates", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier201);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRetrieveAgentEnvironmentTemplateRequest(string environmentTemplateId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/templates/", false);
+            uri.AppendPath(environmentTemplateId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateUpdateAgentEnvironmentTemplateRequest(string environmentTemplateId, BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/templates/", false);
+            uri.AppendPath(environmentTemplateId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateDeleteAgentEnvironmentTemplateRequest(string environmentTemplateId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/agents/environments/templates/", false);
+            uri.AppendPath(environmentTemplateId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
     }
 }

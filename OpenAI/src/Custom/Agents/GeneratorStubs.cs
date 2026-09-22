@@ -263,3 +263,64 @@ namespace OpenAI.Agents;
 [CodeGenType("VaultCredentialRotationOptions")] public partial class VaultCredentialRotationOptions {}
 [CodeGenType("VaultDeletionResult")] public partial class VaultDeletionResult {}
 [CodeGenType("VaultStatusParam")] public readonly partial struct VaultStatusParam {}
+
+// ------------ Environments ------------
+[CodeGenType("Environment")] public partial class Environment {}
+[CodeGenType("EnvironmentCollectionOrder")] public readonly partial struct EnvironmentCollectionOrder {}
+[CodeGenType("EnvironmentFile")] public partial class EnvironmentFile {}
+[CodeGenType("EnvironmentFileCollectionOptions")] public partial class EnvironmentFileCollectionOptions {}
+[CodeGenType("EnvironmentFileCollectionPage")] public partial class EnvironmentFileCollectionPage {}
+[CodeGenType("EnvironmentPackagesParam")] public partial class EnvironmentPackagesParam {}
+[CodeGenType("EnvironmentPackagesResource")] public partial class EnvironmentPackagesResource {}
+[CodeGenType("EnvironmentParam")] public partial class EnvironmentParam {}
+[CodeGenType("EnvironmentParamNone")] public partial class EnvironmentParamNone {}
+[CodeGenType("EnvironmentParamOpenaiHosted")] public partial class EnvironmentParamOpenaiHosted {}
+[CodeGenType("EnvironmentParamSelfHosted")] public partial class EnvironmentParamSelfHosted {}
+[CodeGenType("EnvironmentResource")] public partial class EnvironmentResource {}
+[CodeGenType("EnvironmentResourceNone")] public partial class EnvironmentResourceNone {}
+[CodeGenType("EnvironmentResourceOpenaiHosted")] public partial class EnvironmentResourceOpenaiHosted {}
+[CodeGenType("EnvironmentResourceSelfHosted")] public partial class EnvironmentResourceSelfHosted {}
+[CodeGenType("EnvironmentStatusResource")] public readonly partial struct EnvironmentStatusResource {}
+[CodeGenType("EnvironmentTemplate")] public partial class EnvironmentTemplate {}
+[CodeGenType("EnvironmentTemplateCollectionOptions")] public partial class EnvironmentTemplateCollectionOptions {}
+[CodeGenType("EnvironmentTemplateCollectionPage")] public partial class EnvironmentTemplateCollectionPage {}
+[CodeGenType("EnvironmentTemplateCreationOptions")] public partial class EnvironmentTemplateCreationOptions {}
+[CodeGenType("EnvironmentTemplateDeletionResult")] public partial class EnvironmentTemplateDeletionResult {}
+[CodeGenType("EnvironmentTemplateModificationOptions")] public partial class EnvironmentTemplateModificationOptions {}
+[CodeGenType("EnvironmentType")] public readonly partial struct EnvironmentType {}
+[CodeGenType("EnvironmentTypeResource")] public readonly partial struct EnvironmentTypeResource {}
+[CodeGenType("HostedEnvironmentFileParam")] public partial class HostedEnvironmentFileParam {}
+[CodeGenType("HostedEnvironmentFileParamFileId")] public partial class HostedEnvironmentFileParamFileId {}
+[CodeGenType("HostedEnvironmentFileParamInline")] public partial class HostedEnvironmentFileParamInline {}
+[CodeGenType("HostedEnvironmentFileResource")] public partial class HostedEnvironmentFileResource {}
+[CodeGenType("HostedEnvironmentFileResourceFileId")] public partial class HostedEnvironmentFileResourceFileId {}
+[CodeGenType("HostedEnvironmentFileResourceInline")] public partial class HostedEnvironmentFileResourceInline {}
+[CodeGenType("HostedEnvironmentFileType")] public readonly partial struct HostedEnvironmentFileType {}
+[CodeGenType("HostedPluginParam")] public partial class HostedPluginParam {}
+[CodeGenType("HostedPluginParamInline")] public partial class HostedPluginParamInline {}
+[CodeGenType("HostedPluginResource")] public partial class HostedPluginResource {}
+[CodeGenType("HostedPluginResourceInline")] public partial class HostedPluginResourceInline {}
+[CodeGenType("HostedPluginType")] public readonly partial struct HostedPluginType {}
+[CodeGenType("HostedSkillParam")] public partial class HostedSkillParam {}
+[CodeGenType("HostedSkillParamInline")] public partial class HostedSkillParamInline {}
+[CodeGenType("HostedSkillParamSkillReference")] public partial class HostedSkillParamSkillReference {}
+[CodeGenType("HostedSkillResource")] public partial class HostedSkillResource {}
+[CodeGenType("HostedSkillResourceInline")] public partial class HostedSkillResourceInline {}
+[CodeGenType("HostedSkillResourceSkillReference")] public partial class HostedSkillResourceSkillReference {}
+[CodeGenType("HostedSkillType")] public readonly partial struct HostedSkillType {}
+[CodeGenType("HostedTemplateFileResource")] public partial class HostedTemplateFileResource {}
+[CodeGenType("HostedTemplateFileResourceFileId")] public partial class HostedTemplateFileResourceFileId {}
+[CodeGenType("HostedTemplateFileResourceInline")] public partial class HostedTemplateFileResourceInline {}
+[CodeGenType("HostedTemplateFileType")] public readonly partial struct HostedTemplateFileType {}
+[CodeGenType("HostedTemplateSkillResource")] public partial class HostedTemplateSkillResource {}
+[CodeGenType("HostedTemplateSkillResourceInline")] public partial class HostedTemplateSkillResourceInline {}
+[CodeGenType("HostedTemplateSkillResourceSkillReference")] public partial class HostedTemplateSkillResourceSkillReference {}
+[CodeGenType("HostedTemplateSkillType")] public readonly partial struct HostedTemplateSkillType {}
+[CodeGenType("InlineCapabilitySourceParam")] public partial class InlineCapabilitySourceParam {}
+[CodeGenType("InlineCapabilitySourceParamBase64")] public partial class InlineCapabilitySourceParamBase64 {}
+[CodeGenType("InlineCapabilitySourceType")] public readonly partial struct InlineCapabilitySourceType {}
+[CodeGenType("NetworkAccessParam")] public readonly partial struct NetworkAccessParam {}
+[CodeGenType("NetworkAccessResource")] public readonly partial struct NetworkAccessResource {}
+[CodeGenType("NetworkPolicyParam")] public partial class NetworkPolicyParam {}
+[CodeGenType("NetworkPolicyResource")] public partial class NetworkPolicyResource {}
+[CodeGenType("SetupCommandParam")] public partial class SetupCommandParam {}

@@ -3,6 +3,7 @@ import "@typespec/openapi";
 import "@typespec/sse";
 
 import "./models.tsp";
+import "./models_environments.tsp";
 import "./models_items.tsp";
 import "./models_streaming.tsp";
 import "./models_tools.tsp";
@@ -569,3 +570,131 @@ op deleteVaultCredential(
   @path
   credential_id: string,
 ): DeletedVaultCredentialResource;
+
+/**
+ * Retrieves safe metadata for a first-class execution environment. See
+ * [environment lifecycle](https://developers.openai.com/api/docs/guides/agents-api/environments/lifecycle).
+ */
+@summary("Retrieve an agent environment")
+@get
+@route("agents/environments/{environment_id}")
+@tag("Environments")
+op retrieveAgentEnvironment(
+  /** The ID of the environment. */
+  @path
+  environment_id: string,
+): PublicEnvironmentResource;
+
+/**
+ * Lists live files on a connected execution environment using opaque cursor pagination. See
+ * [environment files](https://developers.openai.com/api/docs/guides/agents-api/environments/files).
+ */
+@summary("List agent environment files")
+@get
+@route("agents/environments/{environment_id}/files")
+@tag("Environments")
+@list
+op listAgentEnvironmentFiles(
+  ...EnvironmentFileCollectionOptions,
+): EnvironmentFileListResource;
+
+/**
+ * Copies inline bytes or a Files API file into a connected execution environment. See
+ * [environment files](https://developers.openai.com/api/docs/guides/agents-api/environments/files).
+ */
+@summary("Create an agent environment file")
+@post
+@route("agents/environments/{environment_id}/files")
+@tag("Environments")
+op createAgentEnvironmentFile(
+  /** The ID of the environment. */
+  @path
+  environment_id: string,
+
+  /** The file to copy into the environment. */
+  @body
+  file: HostedEnvironmentFileParam,
+): {
+  @statusCode statusCode: 201;
+
+  /** The created live environment file. */
+  @body file: EnvironmentFileResource;
+};
+
+/**
+ * Lists reusable environment templates without returning confidential values. See
+ * [reusing a hosted setup](https://developers.openai.com/api/docs/guides/agents-api/tools#reuse-a-hosted-plugin-setup).
+ */
+@summary("List agent environment templates")
+@get
+@route("agents/environments/templates")
+@tag("Environments")
+@list
+op listAgentEnvironmentTemplates(
+  ...EnvironmentTemplateCollectionOptions,
+): EnvironmentTemplateListResource;
+
+/**
+ * Creates reusable environment configuration without returning confidential values. See
+ * [reusing a hosted setup](https://developers.openai.com/api/docs/guides/agents-api/tools#reuse-a-hosted-plugin-setup).
+ */
+@summary("Create an agent environment template")
+@post
+@route("agents/environments/templates")
+@tag("Environments")
+op createAgentEnvironmentTemplate(
+  /** Parameters for creating the environment template. */
+  @body
+  template: CreateEnvironmentTemplateParams,
+): {
+  @statusCode statusCode: 201;
+
+  /** The created environment template. */
+  @body template: EnvironmentTemplateResource;
+};
+
+/**
+ * Retrieves reusable environment configuration without returning confidential values. See
+ * [reusing a hosted setup](https://developers.openai.com/api/docs/guides/agents-api/tools#reuse-a-hosted-plugin-setup).
+ */
+@summary("Retrieve an agent environment template")
+@get
+@route("agents/environments/templates/{environment_template_id}")
+@tag("Environments")
+op retrieveAgentEnvironmentTemplate(
+  /** The ID of the reusable environment template. */
+  @path
+  environment_template_id: string,
+): EnvironmentTemplateResource;
+
+/**
+ * Updates reusable environment configuration without returning confidential values. See
+ * [reusing a hosted setup](https://developers.openai.com/api/docs/guides/agents-api/tools#reuse-a-hosted-plugin-setup).
+ */
+@summary("Update an agent environment template")
+@post
+@route("agents/environments/templates/{environment_template_id}")
+@tag("Environments")
+op updateAgentEnvironmentTemplate(
+  /** The ID of the reusable environment template. */
+  @path
+  environment_template_id: string,
+
+  /** Fields to replace on the existing environment template. */
+  @body
+  template: UpdateEnvironmentTemplateParams,
+): EnvironmentTemplateResource;
+
+/**
+ * Deletes reusable environment configuration and all confidential template inputs. See
+ * [reusing a hosted setup](https://developers.openai.com/api/docs/guides/agents-api/tools#reuse-a-hosted-plugin-setup).
+ */
+@summary("Delete an agent environment template")
+@delete
+@route("agents/environments/templates/{environment_template_id}")
+@tag("Environments")
+op deleteAgentEnvironmentTemplate(
+  /** The ID of the reusable environment template. */
+  @path
+  environment_template_id: string,
+): DeletedEnvironmentTemplateResource;

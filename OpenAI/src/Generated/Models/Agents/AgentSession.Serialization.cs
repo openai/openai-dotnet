@@ -177,14 +177,7 @@ namespace OpenAI.Agents
             if (!Patch.Contains("$.environment"u8))
             {
                 writer.WritePropertyName("environment"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(Environment);
-#else
-                using (JsonDocument document = JsonDocument.Parse(Environment))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(Environment, options);
             }
             if (Patch.Contains("$.vault_ids"u8))
             {
@@ -256,7 +249,7 @@ namespace OpenAI.Agents
             IList<SessionRequiredActionResource> requiredActions = default;
             string error = default;
             SessionAgentResource agent = default;
-            BinaryData environment = default;
+            EnvironmentResource environment = default;
             IList<string> vaultIds = default;
             TokenUsageResource usage = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -333,7 +326,7 @@ namespace OpenAI.Agents
                 }
                 if (prop.NameEquals("environment"u8))
                 {
-                    environment = BinaryData.FromString(prop.Value.GetRawText());
+                    environment = EnvironmentResource.DeserializeEnvironmentResource(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("vault_ids"u8))
@@ -395,6 +388,14 @@ namespace OpenAI.Agents
                 }
                 return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
             }
+            if (local.StartsWith("environment"u8))
+            {
+                if (Environment == null)
+                {
+                    return false;
+                }
+                return Environment.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("environment"u8.Length)], out value);
+            }
             if (local.StartsWith("usage"u8))
             {
                 if (Usage == null)
@@ -441,6 +442,15 @@ namespace OpenAI.Agents
                     return false;
                 }
                 Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("environment"u8))
+            {
+                if (Environment == null)
+                {
+                    return false;
+                }
+                Environment.Patch.Set([.. "$"u8, .. local.Slice("environment"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("usage"u8))

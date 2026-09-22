@@ -57,3 +57,16 @@ namespace OpenAI.Agents;
 [CodeGenType("UnknownVaultCredentialNetworkingResource")] internal partial class InternalUnknownVaultCredentialNetworkingResource {}
 [CodeGenType("VaultCredentialObject")] internal readonly partial struct InternalVaultCredentialObject {}
 [CodeGenType("VaultObject")] internal readonly partial struct InternalVaultObject {}
+
+// ------------ Environments ------------
+[CodeGenType("UnknownEnvironmentParam")] internal partial class InternalUnknownEnvironmentParam {}
+[CodeGenType("UnknownEnvironmentResource")] internal partial class InternalUnknownEnvironmentResource {}
+[CodeGenType("UnknownHostedEnvironmentFileParam")] internal partial class InternalUnknownHostedEnvironmentFileParam {}
+[CodeGenType("UnknownHostedEnvironmentFileResource")] internal partial class InternalUnknownHostedEnvironmentFileResource {}
+[CodeGenType("UnknownHostedPluginParam")] internal partial class InternalUnknownHostedPluginParam {}
+[CodeGenType("UnknownHostedPluginResource")] internal partial class InternalUnknownHostedPluginResource {}
+[CodeGenType("UnknownHostedSkillParam")] internal partial class InternalUnknownHostedSkillParam {}
+[CodeGenType("UnknownHostedSkillResource")] internal partial class InternalUnknownHostedSkillResource {}
+[CodeGenType("UnknownHostedTemplateFileResource")] internal partial class InternalUnknownHostedTemplateFileResource {}
+[CodeGenType("UnknownHostedTemplateSkillResource")] internal partial class InternalUnknownHostedTemplateSkillResource {}
+[CodeGenType("UnknownInlineCapabilitySourceParam")] internal partial class InternalUnknownInlineCapabilitySourceParam {}

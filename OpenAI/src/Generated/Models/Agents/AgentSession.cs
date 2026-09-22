@@ -2,7 +2,6 @@
 
 #nullable disable
 
-using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,7 +19,7 @@ namespace OpenAI.Agents
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal AgentSession(IDictionary<string, string> metadata, string id, InternalSessionObject @object, int createdAt, int lastActiveAt, SessionStatusResource status, IEnumerable<SessionRequiredActionResource> requiredActions, string error, SessionAgentResource agent, BinaryData environment, IEnumerable<string> vaultIds, TokenUsageResource usage)
+        internal AgentSession(IDictionary<string, string> metadata, string id, InternalSessionObject @object, int createdAt, int lastActiveAt, SessionStatusResource status, IEnumerable<SessionRequiredActionResource> requiredActions, string error, SessionAgentResource agent, EnvironmentResource environment, IEnumerable<string> vaultIds, TokenUsageResource usage)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -40,7 +39,7 @@ namespace OpenAI.Agents
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal AgentSession(IDictionary<string, string> metadata, string id, InternalSessionObject @object, int createdAt, int lastActiveAt, SessionStatusResource status, IList<SessionRequiredActionResource> requiredActions, string error, SessionAgentResource agent, BinaryData environment, IList<string> vaultIds, TokenUsageResource usage, in JsonPatch patch)
+        internal AgentSession(IDictionary<string, string> metadata, string id, InternalSessionObject @object, int createdAt, int lastActiveAt, SessionStatusResource status, IList<SessionRequiredActionResource> requiredActions, string error, SessionAgentResource agent, EnvironmentResource environment, IList<string> vaultIds, TokenUsageResource usage, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -83,7 +82,7 @@ namespace OpenAI.Agents
 
         public SessionAgentResource Agent { get; set; }
 
-        public BinaryData Environment { get; set; }
+        public EnvironmentResource Environment { get; set; }
 
         public IList<string> VaultIds { get; }
 

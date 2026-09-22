@@ -42,6 +42,14 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(retrieveVaultCredential, "Agents");
 @@clientLocation(rotateVaultCredential, "Agents");
 @@clientLocation(deleteVaultCredential, "Agents");
+@@clientLocation(retrieveAgentEnvironment, "Agents");
+@@clientLocation(listAgentEnvironmentFiles, "Agents");
+@@clientLocation(createAgentEnvironmentFile, "Agents");
+@@clientLocation(listAgentEnvironmentTemplates, "Agents");
+@@clientLocation(createAgentEnvironmentTemplate, "Agents");
+@@clientLocation(retrieveAgentEnvironmentTemplate, "Agents");
+@@clientLocation(updateAgentEnvironmentTemplate, "Agents");
+@@clientLocation(deleteAgentEnvironmentTemplate, "Agents");
 
 // ------------ Model names ------------
 
@@ -98,6 +106,18 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(DeletedVaultCredentialResource, "VaultCredentialDeletionResult");
 @@clientName(DeletedVaultCredentialResource.id, "VaultCredentialId");
 @@clientName(VaultCredentialListResource, "VaultCredentialCollectionPage");
+
+@@clientName(PublicEnvironmentResource, "Environment");
+@@clientName(EnvironmentTemplateResource, "EnvironmentTemplate");
+@@clientName(CreateEnvironmentTemplateParams, "EnvironmentTemplateCreationOptions");
+@@clientName(UpdateEnvironmentTemplateParams, "EnvironmentTemplateModificationOptions");
+@@clientName(DeletedEnvironmentTemplateResource, "EnvironmentTemplateDeletionResult");
+@@clientName(DeletedEnvironmentTemplateResource.id, "EnvironmentTemplateId");
+@@clientName(EnvironmentTemplateListResource, "EnvironmentTemplateCollectionPage");
+@@clientName(EnvironmentFileResource, "EnvironmentFile");
+@@clientName(EnvironmentFileListResource, "EnvironmentFileCollectionPage");
+@@clientName(EnvironmentCollectionOrder.asc, "Ascending");
+@@clientName(EnvironmentCollectionOrder.desc, "Descending");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -317,6 +337,53 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(RotateVaultCredentialAuthParamStaticBearer);
 @@dynamicModel(RotateVaultCredentialAuthParamEnvironmentVariable);
 @@dynamicModel(RotateVaultCredentialParams);
+
+// Environments, templates, and files.
+@@dynamicModel(EnvironmentPackagesParam);
+@@dynamicModel(EnvironmentPackagesResource);
+@@dynamicModel(SetupCommandParam);
+@@dynamicModel(NetworkPolicyParam);
+@@dynamicModel(NetworkPolicyResource);
+@@dynamicModel(InlineCapabilitySourceParam);
+@@dynamicModel(InlineCapabilitySourceParamBase64);
+@@dynamicModel(HostedSkillParam);
+@@dynamicModel(HostedSkillParamSkillReference);
+@@dynamicModel(HostedSkillParamInline);
+@@dynamicModel(HostedSkillResource);
+@@dynamicModel(HostedSkillResourceSkillReference);
+@@dynamicModel(HostedSkillResourceInline);
+@@dynamicModel(HostedPluginParam);
+@@dynamicModel(HostedPluginParamInline);
+@@dynamicModel(HostedPluginResource);
+@@dynamicModel(HostedPluginResourceInline);
+@@dynamicModel(HostedEnvironmentFileParam);
+@@dynamicModel(HostedEnvironmentFileParamFileId);
+@@dynamicModel(HostedEnvironmentFileParamInline);
+@@dynamicModel(HostedEnvironmentFileResource);
+@@dynamicModel(HostedEnvironmentFileResourceFileId);
+@@dynamicModel(HostedEnvironmentFileResourceInline);
+@@dynamicModel(HostedTemplateSkillResource);
+@@dynamicModel(HostedTemplateSkillResourceSkillReference);
+@@dynamicModel(HostedTemplateSkillResourceInline);
+@@dynamicModel(HostedTemplateFileResource);
+@@dynamicModel(HostedTemplateFileResourceFileId);
+@@dynamicModel(HostedTemplateFileResourceInline);
+@@dynamicModel(EnvironmentParam);
+@@dynamicModel(EnvironmentParamNone);
+@@dynamicModel(EnvironmentParamOpenaiHosted);
+@@dynamicModel(EnvironmentParamSelfHosted);
+@@dynamicModel(EnvironmentResource);
+@@dynamicModel(EnvironmentResourceNone);
+@@dynamicModel(EnvironmentResourceOpenaiHosted);
+@@dynamicModel(EnvironmentResourceSelfHosted);
+@@dynamicModel(PublicEnvironmentResource);
+@@dynamicModel(EnvironmentFileResource);
+@@dynamicModel(EnvironmentFileListResource);
+@@dynamicModel(EnvironmentTemplateResource);
+@@dynamicModel(EnvironmentTemplateListResource);
+@@dynamicModel(CreateEnvironmentTemplateParams);
+@@dynamicModel(UpdateEnvironmentTemplateParams);
+@@dynamicModel(DeletedEnvironmentTemplateResource);
 
 // ------------ Others ------------
 

@@ -1378,5 +1378,281 @@ namespace OpenAI.Agents
             ClientResult result = await DeleteVaultCredentialAsync(vaultId, credentialId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((VaultCredentialDeletionResult)result, result.GetRawResponse());
         }
+
+        public virtual ClientResult RetrieveAgentEnvironment(string environmentId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            using PipelineMessage message = CreateRetrieveAgentEnvironmentRequest(environmentId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentEnvironmentAsync(string environmentId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            using PipelineMessage message = CreateRetrieveAgentEnvironmentRequest(environmentId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<Environment> RetrieveAgentEnvironment(string environmentId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            ClientResult result = RetrieveAgentEnvironment(environmentId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((Environment)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<Environment>> RetrieveAgentEnvironmentAsync(string environmentId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            ClientResult result = await RetrieveAgentEnvironmentAsync(environmentId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((Environment)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetAgentEnvironmentFiles(string environmentId, string path, int? limit, string order, string page, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            return new AgentClientGetAgentEnvironmentFilesCollectionResult(
+                this,
+                environmentId,
+                path,
+                limit,
+                order,
+                page,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentEnvironmentFilesAsync(string environmentId, string path, int? limit, string order, string page, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            return new AgentClientGetAgentEnvironmentFilesAsyncCollectionResult(
+                this,
+                environmentId,
+                path,
+                limit,
+                order,
+                page,
+                options);
+        }
+
+        public virtual CollectionResult<EnvironmentFile> GetAgentEnvironmentFiles(string environmentId, string path = default, int? limit = default, EnvironmentCollectionOrder? order = default, string page = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            return new AgentClientGetAgentEnvironmentFilesCollectionResultOfT(
+                this,
+                environmentId,
+                path,
+                limit,
+                order?.ToString(),
+                page,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<EnvironmentFile> GetAgentEnvironmentFilesAsync(string environmentId, string path = default, int? limit = default, EnvironmentCollectionOrder? order = default, string page = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+
+            return new AgentClientGetAgentEnvironmentFilesAsyncCollectionResultOfT(
+                this,
+                environmentId,
+                path,
+                limit,
+                order?.ToString(),
+                page,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult CreateAgentEnvironmentFile(string environmentId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentEnvironmentFileRequest(environmentId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateAgentEnvironmentFileAsync(string environmentId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentEnvironmentFileRequest(environmentId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<EnvironmentFile> CreateAgentEnvironmentFile(string environmentId, HostedEnvironmentFileParam @file, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+            Argument.AssertNotNull(@file, nameof(@file));
+
+            ClientResult result = CreateAgentEnvironmentFile(environmentId, @file, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((EnvironmentFile)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<EnvironmentFile>> CreateAgentEnvironmentFileAsync(string environmentId, HostedEnvironmentFileParam @file, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentId, nameof(environmentId));
+            Argument.AssertNotNull(@file, nameof(@file));
+
+            ClientResult result = await CreateAgentEnvironmentFileAsync(environmentId, @file, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((EnvironmentFile)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetAgentEnvironmentTemplates(int? limit, string order, string after, RequestOptions options)
+        {
+            return new AgentClientGetAgentEnvironmentTemplatesCollectionResult(this, limit, order, after, options);
+        }
+
+        public virtual AsyncCollectionResult GetAgentEnvironmentTemplatesAsync(int? limit, string order, string after, RequestOptions options)
+        {
+            return new AgentClientGetAgentEnvironmentTemplatesAsyncCollectionResult(this, limit, order, after, options);
+        }
+
+        public virtual CollectionResult<EnvironmentTemplate> GetAgentEnvironmentTemplates(int? limit = default, EnvironmentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetAgentEnvironmentTemplatesCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<EnvironmentTemplate> GetAgentEnvironmentTemplatesAsync(int? limit = default, EnvironmentCollectionOrder? order = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetAgentEnvironmentTemplatesAsyncCollectionResultOfT(this, limit, order?.ToString(), after, cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult CreateAgentEnvironmentTemplate(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentEnvironmentTemplateRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateAgentEnvironmentTemplateAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateAgentEnvironmentTemplateRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<EnvironmentTemplate> CreateAgentEnvironmentTemplate(EnvironmentTemplateCreationOptions template, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(template, nameof(template));
+
+            ClientResult result = CreateAgentEnvironmentTemplate(template, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((EnvironmentTemplate)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<EnvironmentTemplate>> CreateAgentEnvironmentTemplateAsync(EnvironmentTemplateCreationOptions template, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(template, nameof(template));
+
+            ClientResult result = await CreateAgentEnvironmentTemplateAsync(template, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((EnvironmentTemplate)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult RetrieveAgentEnvironmentTemplate(string environmentTemplateId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            using PipelineMessage message = CreateRetrieveAgentEnvironmentTemplateRequest(environmentTemplateId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveAgentEnvironmentTemplateAsync(string environmentTemplateId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            using PipelineMessage message = CreateRetrieveAgentEnvironmentTemplateRequest(environmentTemplateId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<EnvironmentTemplate> RetrieveAgentEnvironmentTemplate(string environmentTemplateId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            ClientResult result = RetrieveAgentEnvironmentTemplate(environmentTemplateId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((EnvironmentTemplate)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<EnvironmentTemplate>> RetrieveAgentEnvironmentTemplateAsync(string environmentTemplateId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            ClientResult result = await RetrieveAgentEnvironmentTemplateAsync(environmentTemplateId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((EnvironmentTemplate)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult UpdateAgentEnvironmentTemplate(string environmentTemplateId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateAgentEnvironmentTemplateRequest(environmentTemplateId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> UpdateAgentEnvironmentTemplateAsync(string environmentTemplateId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateUpdateAgentEnvironmentTemplateRequest(environmentTemplateId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<EnvironmentTemplate> UpdateAgentEnvironmentTemplate(string environmentTemplateId, EnvironmentTemplateModificationOptions template, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+            Argument.AssertNotNull(template, nameof(template));
+
+            ClientResult result = UpdateAgentEnvironmentTemplate(environmentTemplateId, template, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((EnvironmentTemplate)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<EnvironmentTemplate>> UpdateAgentEnvironmentTemplateAsync(string environmentTemplateId, EnvironmentTemplateModificationOptions template, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+            Argument.AssertNotNull(template, nameof(template));
+
+            ClientResult result = await UpdateAgentEnvironmentTemplateAsync(environmentTemplateId, template, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((EnvironmentTemplate)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteAgentEnvironmentTemplate(string environmentTemplateId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            using PipelineMessage message = CreateDeleteAgentEnvironmentTemplateRequest(environmentTemplateId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteAgentEnvironmentTemplateAsync(string environmentTemplateId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            using PipelineMessage message = CreateDeleteAgentEnvironmentTemplateRequest(environmentTemplateId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<EnvironmentTemplateDeletionResult> DeleteAgentEnvironmentTemplate(string environmentTemplateId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            ClientResult result = DeleteAgentEnvironmentTemplate(environmentTemplateId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((EnvironmentTemplateDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<EnvironmentTemplateDeletionResult>> DeleteAgentEnvironmentTemplateAsync(string environmentTemplateId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(environmentTemplateId, nameof(environmentTemplateId));
+
+            ClientResult result = await DeleteAgentEnvironmentTemplateAsync(environmentTemplateId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((EnvironmentTemplateDeletionResult)result, result.GetRawResponse());
+        }
     }
 }

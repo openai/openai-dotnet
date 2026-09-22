@@ -570,9 +570,8 @@ model SessionResource {
   /** The agent running in the session. */
   agent: SessionAgentResource;
 
-  // feat: environment subsystem deferred; surfaced as BinaryData for now.
   /** The execution environment for the session. */
-  environment: unknown;
+  environment: EnvironmentResource;
 
   /** The IDs of vaults made available to the session. */
   @maxItems(2000)
@@ -619,9 +618,8 @@ model CreateAgentSessionParams {
   @maxLength(64)
   agent_id?: string;
 
-  // feat: environment subsystem deferred; accepted as BinaryData for now.
   /** An inline execution environment or a reference to an environment template. */
-  environment: unknown;
+  environment: EnvironmentParam;
 
   /** The IDs of vaults made available to the session. */
   @maxItems(16384)

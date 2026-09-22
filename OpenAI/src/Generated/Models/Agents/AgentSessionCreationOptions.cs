@@ -19,7 +19,7 @@ namespace OpenAI.Agents
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public AgentSessionCreationOptions(BinaryData environment)
+        public AgentSessionCreationOptions(EnvironmentParam environment)
         {
             Argument.AssertNotNull(environment, nameof(environment));
 
@@ -31,7 +31,7 @@ namespace OpenAI.Agents
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal AgentSessionCreationOptions(IDictionary<string, string> metadata, SessionAgentConfigParam agent, string agentId, BinaryData environment, IList<string> vaultIds, BinaryData input, bool? stream, in JsonPatch patch)
+        internal AgentSessionCreationOptions(IDictionary<string, string> metadata, SessionAgentConfigParam agent, string agentId, EnvironmentParam environment, IList<string> vaultIds, BinaryData input, bool? stream, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -57,7 +57,7 @@ namespace OpenAI.Agents
 
         public string AgentId { get; set; }
 
-        public BinaryData Environment { get; set; }
+        public EnvironmentParam Environment { get; set; }
 
         public IList<string> VaultIds { get; set; }
 
