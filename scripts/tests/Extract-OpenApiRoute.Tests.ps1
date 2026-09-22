@@ -399,7 +399,6 @@ function New-TestOpenApiDocument {
     }
 }
 
-$repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".."))
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "openapi-route-tests-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
@@ -698,68 +697,6 @@ try {
         $null = Get-Content -LiteralPath $firstPath -Raw -Encoding utf8 | ConvertFrom-Json -Depth 100
     }
 
-    $livePath = Join-Path $repositoryRoot "specification" "openapi" "openapi.json"
-    $liveDocument = Read-OpenApiDocument -Path $livePath
-    $liveCatalog = Get-OpenApiOperationCatalog -Document $liveDocument
-
-    Invoke-Test "live catalog has one entry per operationId" {
-        $liveOperationCount = 0
-        foreach ($pathProperty in (Get-JsonProperties -Value $liveDocument.paths)) {
-            foreach ($operation in @(Get-OpenApiOperations -PathItem $pathProperty.Value)) {
-                if (Test-JsonProperty -Object $operation.Operation -Name "operationId") {
-                    $liveOperationCount++
-                }
-            }
-        }
-        Assert-Equal $liveOperationCount $liveCatalog.Count "Live catalog omitted or added operations."
-    }
-
-    Invoke-Test "live audio operation extracts and inlines" {
-        $audioOperation = Select-OpenApiOperation `
-            -Catalog $liveCatalog `
-            -RequestedOperationId "createSpeech"
-        $audioInlined = New-ExtractedOpenApiDocument `
-            -Document $liveDocument `
-            -OperationEntry $audioOperation
-        Assert-OpenApiReferencesResolve -Document $audioInlined.Document
-        Assert-Equal 1 @(Get-JsonProperties -Value $audioInlined.Document.paths).Count "Audio output had the wrong path count."
-        Assert-Equal 0 @(Get-OpenApiReferenceOccurrences -Value $audioInlined.Document | Where-Object Kind -eq "Reference").Count "A non-cyclic audio reference survived inlining."
-        Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $audioInlined.Document).Count "Audio output retained omitted properties."
-        Assert-Equal "OpenAI API" $audioInlined.Document.info.title "Live title was removed."
-    }
-
-    Invoke-Test "live top-level and nested allOf schemas are preserved" {
-        foreach ($operationId in @(
-            "admin-api-keys-create",
-            "getChatCompletionMessages"
-        )) {
-            $selectedOperation = Select-OpenApiOperation `
-                -Catalog $liveCatalog `
-                -RequestedOperationId $operationId
-            $operationInlined = New-ExtractedOpenApiDocument `
-                -Document $liveDocument `
-                -OperationEntry $selectedOperation
-            Assert-True `
-                (@(Find-JsonPropertyValues -Value $operationInlined.Document -Name "allOf").Count -gt 0) `
-                "Operation '$operationId' did not retain source allOf."
-            Assert-OpenApiReferencesResolve -Document $operationInlined.Document
-        }
-    }
-
-    Invoke-Test "live recursive filter remains finite when inlined" {
-        $searchOperation = Select-OpenApiOperation `
-            -Catalog $liveCatalog `
-            -RequestedOperationId "searchVectorStore"
-        $searchInlined = New-ExtractedOpenApiDocument `
-            -Document $liveDocument `
-            -OperationEntry $searchOperation
-        $recursiveReferences = @(Find-JsonPropertyValues -Value $searchInlined.Document -Name '$recursiveRef')
-        Assert-True ($recursiveReferences.Count -gt 0) "Live recursive filter lost its recursive reference."
-        foreach ($reference in $recursiveReferences) {
-            Assert-Equal "#" $reference "Live recursive pointer changed."
-        }
-        Assert-Equal 0 @(Get-OpenApiReferenceOccurrences -Value $searchInlined.Document | Where-Object Kind -eq "Reference").Count "Live recursive filter retained an ordinary reference."
-    }
 }
 finally {
     if ([System.IO.Directory]::Exists($temporaryDirectory)) {

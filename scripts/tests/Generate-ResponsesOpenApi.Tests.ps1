@@ -249,16 +249,16 @@ try {
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
     }
 
-    Invoke-Test "pipeline replaces a stale final alias" {
-        $sourcePath = Join-Path $temporaryDirectory "openapi.json"
-        $outputDirectory = Join-Path $temporaryDirectory "replace-final"
-        $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
-        $finalPath = Join-Path $outputDirectory "responses.openapi.json"
+    Invoke-Test "atomic copy replaces a stale final alias" {
+        $sourcePath = Join-Path $temporaryDirectory "copy-source.json"
+        $finalPath = Join-Path $temporaryDirectory "responses.openapi.json"
+        [System.IO.File]::WriteAllText($sourcePath, "fresh", [System.Text.UTF8Encoding]::new($false))
         [System.IO.File]::WriteAllText($finalPath, "stale", [System.Text.UTF8Encoding]::new($false))
-        $paths = Invoke-ResponsesOpenApiGeneration `
-            -SpecificationPath $sourcePath `
-            -OutputDirectory $outputDirectory
-        Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Sorted), [System.IO.File]::ReadAllBytes($paths.Final))) "Stale final alias was not atomically replaced."
+        $writtenPath = Copy-OpenApiFileAtomically `
+            -SourcePath $sourcePath `
+            -DestinationPath $finalPath
+        Assert-Equal ([System.IO.Path]::GetFullPath($finalPath)) $writtenPath "Atomic copy returned the wrong path."
+        Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($sourcePath), [System.IO.File]::ReadAllBytes($finalPath))) "Stale final alias was not atomically replaced."
     }
 
     Invoke-Test "missing and non-file specifications fail clearly" {

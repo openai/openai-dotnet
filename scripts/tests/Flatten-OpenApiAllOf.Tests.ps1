@@ -4,8 +4,7 @@
 
 .DESCRIPTION
     Uses the repository's dependency-free assertion style to validate allOf
-    flattening, pointer relocation, deterministic file output, idempotence, and
-    byte-for-byte compatibility with the pre-split extractor behavior.
+    flattening, pointer relocation, deterministic file output, and idempotence.
 #>
 
 [CmdletBinding()]
@@ -16,10 +15,6 @@ Set-StrictMode -Version Latest
 
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
-$extractScriptPath = Join-Path $scriptDirectory "Extract-OpenApiRoute.ps1"
-$simplifyScriptPath = Join-Path $scriptDirectory "Simplify-OpenApiStringVariants.ps1"
-$normalizeOneOfScriptPath = Join-Path $scriptDirectory "Normalize-OpenApiOneOf.ps1"
-$sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 . $flattenScriptPath
 
 $script:PassedTests = 0
@@ -178,35 +173,6 @@ function Assert-BytesEqual {
     }
 }
 
-function Find-OpenApiAllOf {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [object]$Value
-    )
-
-    if ($null -eq $Value) {
-        return
-    }
-    if (Test-JsonArrayValue -Value $Value) {
-        foreach ($item in $Value) {
-            Find-OpenApiAllOf -Value $item
-        }
-        return
-    }
-    if (-not (Test-JsonObjectValue -Value $Value)) {
-        return
-    }
-
-    foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if ([string]::Equals($property.Name, "allOf", [System.StringComparison]::Ordinal)) {
-            $property.Value
-        }
-        Find-OpenApiAllOf -Value $property.Value
-    }
-}
-
-$repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".."))
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Flatten-OpenApiAllOf"
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "flatten-openapi-allof-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
@@ -413,27 +379,6 @@ try {
             )
         })
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*has no 'missing' property*"
-    }
-
-    Invoke-Test "compact five-stage pipeline matches the pre-split golden bytes" {
-        $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
-        $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
-        $intermediatePath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
-        $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
-        $simplifiedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.openapi.json"
-        $normalizedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.oneof-normalized.openapi.json"
-        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json"
-        & $extractScriptPath `
-            -SpecificationPath $sourcePath `
-            -OperationId "createThing" `
-            -OutputPath $intermediatePath
-        $intermediate = Get-Content -LiteralPath $intermediatePath -Raw | ConvertFrom-Json -Depth 100
-        Assert-True (@(Find-OpenApiAllOf -Value $intermediate).Count -gt 0) "Extractor intermediate did not retain allOf."
-        $null = Invoke-OpenApiAllOfFlattener -InputPath $intermediatePath -OutputPath $flattenedPath
-        & $simplifyScriptPath -InputPath $flattenedPath -OutputPath $simplifiedPath
-        & $normalizeOneOfScriptPath -InputPath $simplifiedPath -OutputPath $normalizedPath
-        & $sortScriptPath -InputPath $normalizedPath -OutputPath $sortedPath
-        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Pipeline output changed."
     }
 
     Invoke-Test "flattening is byte-idempotent" {

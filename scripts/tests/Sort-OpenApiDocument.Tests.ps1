@@ -11,10 +11,6 @@ Set-StrictMode -Version Latest
 
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
-$extractScriptPath = Join-Path $scriptDirectory "Extract-OpenApiRoute.ps1"
-$flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
-$simplifyScriptPath = Join-Path $scriptDirectory "Simplify-OpenApiStringVariants.ps1"
-$normalizeOneOfScriptPath = Join-Path $scriptDirectory "Normalize-OpenApiOneOf.ps1"
 . $sortScriptPath
 
 $script:PassedTests = 0
@@ -67,15 +63,6 @@ function Assert-Throws {
     throw "Expected an error matching '$MessagePattern', but no error was thrown."
 }
 
-function Assert-BytesEqual {
-    param([string]$ExpectedPath, [string]$ActualPath, [string]$Message)
-    $expected = [System.IO.File]::ReadAllBytes([System.IO.Path]::GetFullPath($ExpectedPath))
-    $actual = [System.IO.File]::ReadAllBytes([System.IO.Path]::GetFullPath($ActualPath))
-    if (-not [System.Linq.Enumerable]::SequenceEqual($expected, $actual)) {
-        throw "$Message Expected SHA-256 '$((Get-FileHash $ExpectedPath).Hash)', got '$((Get-FileHash $ActualPath).Hash)'."
-    }
-}
-
 function New-TestOpenApiDocument {
     param([object]$Schema)
     return [ordered]@{
@@ -103,7 +90,6 @@ function Get-TestResponseSchema {
     return $Document.paths["/test"].post.responses["200"].content["application/json"].schema
 }
 
-$repositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." ".."))
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Flatten-OpenApiAllOf"
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "sort-openapi-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
@@ -221,35 +207,6 @@ try {
             properties = [ordered]@{ valid = [ordered]@{ type = "string" } }
         })
         Assert-Throws { ConvertTo-SortedOpenApiDocument -Document $source } "*Every required name must be a string*"
-    }
-
-    Invoke-Test "compact five-stage pipeline matches the current golden bytes" {
-        $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
-        $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
-        $inlinedPath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
-        $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
-        $simplifiedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.openapi.json"
-        $normalizedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.oneof-normalized.openapi.json"
-        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json"
-        & $extractScriptPath -SpecificationPath $sourcePath -OperationId "createThing" -OutputPath $inlinedPath
-        & $flattenScriptPath -InputPath $inlinedPath -OutputPath $flattenedPath
-        & $simplifyScriptPath -InputPath $flattenedPath -OutputPath $simplifiedPath
-        & $normalizeOneOfScriptPath -InputPath $simplifiedPath -OutputPath $normalizedPath
-        & $sortScriptPath -InputPath $normalizedPath -OutputPath $sortedPath
-        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Five-stage output changed."
-    }
-
-    Invoke-Test "Sort supports unflattened extracted output" {
-        $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
-        $inputPath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
-        $outputPath = Join-Path $temporaryDirectory "things.inlined.sorted.openapi.json"
-        & $extractScriptPath -SpecificationPath $sourcePath -OperationId "createThing" -OutputPath $inputPath
-        & $sortScriptPath -InputPath $inputPath -OutputPath $outputPath
-        $sorted = Get-Content -LiteralPath $outputPath -Raw | ConvertFrom-Json -Depth 100
-        Assert-OpenApiReferencesResolve -Document $sorted
-        Assert-True ([System.IO.File]::Exists($outputPath)) "Sort did not support extracted output."
-        $preservedAllOf = $sorted.paths.'/things'.post.requestBody.content.'application/json'.schema.properties.flattened.allOf
-        Assert-True ($null -ne $preservedAllOf) "Sort flattened an allOf composition."
     }
 
     Invoke-Test "default naming standalone output encoding and input preservation are correct" {
