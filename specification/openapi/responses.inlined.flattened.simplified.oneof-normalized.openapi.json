@@ -32302,7 +32302,7 @@
               "text/event-stream": {
                 "schema": {
                   "description": "Event emitted while a response is streamed.",
-                  "anyOf": [
+                  "oneOf": [
                     {
                       "type": "object",
                       "description": "Emitted when there is a partial audio response.",
@@ -172806,7 +172806,10 @@
                         "sequence_number"
                       ]
                     }
-                  ]
+                  ],
+                  "discriminator": {
+                    "propertyName": "type"
+                  }
                 }
               }
             }

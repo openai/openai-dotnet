@@ -111,6 +111,17 @@ function Get-TestResponseSchema {
     return $Document.paths["/test"].post.responses["200"].content["application/json"].schema
 }
 
+function New-PromotableAnyOfSchema {
+    return [ordered]@{
+        description = "candidate"
+        anyOf = @(
+            [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{ type = "string" } } },
+            [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{} } }
+        )
+        discriminator = [ordered]@{ propertyName = "kind" }
+    }
+}
+
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Normalize-OpenApiOneOf"
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "normalize-openapi-oneof-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
@@ -127,12 +138,63 @@ try {
         $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         Assert-Equal 1 $result.RemovedDiscriminatorCount "Unexpected removal count."
+        Assert-Equal 1 $result.PromotedAnyOfCount "Unexpected promotion count."
+        Assert-Equal 1 $result.RelocationCount "Unexpected relocation count."
         Assert-JsonEqual $expected $result.Document "Normalized fixture did not match its golden."
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
 
         $outputs = (Get-TestResponseSchema -Document $result.Document).properties.outputs
         Assert-True (-not (Test-JsonProperty -Object $outputs -Name "discriminator")) "Outer orphan remained."
         Assert-True (Test-JsonProperty -Object $outputs.items -Name "discriminator") "Nested paired discriminator was removed."
+        $promotable = (Get-TestResponseSchema -Document $result.Document).properties.promotable
+        Assert-Sequence @("description", "oneOf", "discriminator") @((Get-JsonProperties $promotable).Name) "Promotion changed member order."
+    }
+
+    Invoke-Test "promotion uses property presence without requiredness or exclusive values" {
+        $source = New-TestOpenApiDocument -Schema (New-PromotableAnyOfSchema)
+        $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
+        $schema = Get-TestResponseSchema $result.Document
+        Assert-Equal 1 $result.PromotedAnyOfCount "Presence-only candidate was not promoted."
+        Assert-True (-not (Test-JsonProperty $schema "anyOf")) "Promoted schema retained anyOf."
+        Assert-True (Test-JsonProperty $schema "oneOf") "Promoted schema did not gain oneOf."
+        Assert-True (Test-JsonProperty $schema "discriminator") "Promoted schema lost its discriminator."
+    }
+
+    Invoke-Test "near misses remain anyOf and follow orphan cleanup" {
+        $cases = @(
+            [PSCustomObject]@{ Name = "missing discriminator"; Mutate = { param($schema) $schema.Remove("discriminator") } },
+            [PSCustomObject]@{ Name = "scalar discriminator"; Mutate = { param($schema) $schema.discriminator = "kind" } },
+            [PSCustomObject]@{ Name = "missing propertyName"; Mutate = { param($schema) $schema.discriminator = [ordered]@{} } },
+            [PSCustomObject]@{ Name = "non-string propertyName"; Mutate = { param($schema) $schema.discriminator.propertyName = 42 } },
+            [PSCustomObject]@{ Name = "empty propertyName"; Mutate = { param($schema) $schema.discriminator.propertyName = "" } },
+            [PSCustomObject]@{ Name = "empty anyOf"; Mutate = { param($schema) $schema.anyOf = @() } },
+            [PSCustomObject]@{ Name = "non-array anyOf"; Mutate = { param($schema) $schema.anyOf = "not an array" } },
+            [PSCustomObject]@{ Name = "scalar branch"; Mutate = { param($schema) $schema.anyOf = @($schema.anyOf[0], "not an object") } },
+            [PSCustomObject]@{ Name = "non-object branch"; Mutate = { param($schema) $schema.anyOf[1].type = "string" } },
+            [PSCustomObject]@{ Name = "missing properties"; Mutate = { param($schema) $schema.anyOf[1].Remove("properties") } },
+            [PSCustomObject]@{ Name = "non-object properties"; Mutate = { param($schema) $schema.anyOf[1].properties = "not an object" } },
+            [PSCustomObject]@{ Name = "missing matching property"; Mutate = { param($schema) $schema.anyOf[1].properties = [ordered]@{ other = [ordered]@{} } } },
+            [PSCustomObject]@{ Name = "case mismatch"; Mutate = { param($schema) $schema.anyOf[1].properties = [ordered]@{ Kind = [ordered]@{} } } }
+        )
+        foreach ($case in $cases) {
+            $schema = New-PromotableAnyOfSchema
+            & $case.Mutate $schema
+            $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document (New-TestOpenApiDocument $schema)
+            $normalized = Get-TestResponseSchema $result.Document
+            Assert-Equal 0 $result.PromotedAnyOfCount "Near miss '$($case.Name)' was promoted."
+            Assert-True (Test-JsonProperty $normalized "anyOf") "Near miss '$($case.Name)' lost anyOf."
+        }
+    }
+
+    Invoke-Test "eligible anyOf with an existing oneOf fails clearly" {
+        $schema = New-PromotableAnyOfSchema
+        $schema["oneOf"] = @([ordered]@{ type = "object" })
+        $source = New-TestOpenApiDocument $schema
+        $before = ConvertTo-Json $source -Compress -Depth 100
+        Assert-Throws {
+            ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
+        } "*#/paths/~1test/post/responses/200/content/application~1json/schema*already contains oneOf*"
+        Assert-Equal $before (ConvertTo-Json $source -Compress -Depth 100) "Collision handling mutated input."
     }
 
     Invoke-Test "any exact direct oneOf sibling preserves discriminator" {
@@ -232,6 +294,13 @@ try {
         } "*retained an orphaned discriminator*"
     }
 
+    Invoke-Test "promotion postcondition rejects an eligible anyOf" {
+        $source = New-TestOpenApiDocument -Schema (New-PromotableAnyOfSchema)
+        Assert-Throws {
+            Assert-NoPromotableOpenApiAnyOf -Value $source
+        } "*retained a promotable discriminated anyOf*"
+    }
+
     Invoke-Test "references to paired discriminators remain valid" {
         $targetPointer = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/discriminator"
         $source = New-TestOpenApiDocument -Schema ([ordered]@{
@@ -247,6 +316,67 @@ try {
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         Assert-Equal 0 $result.RemovedDiscriminatorCount "Paired target was removed."
         Assert-Equal $targetPointer (Get-TestResponseSchema $result.Document).properties.alias.'$ref' "Retained reference changed."
+    }
+
+    Invoke-Test "promotion relocates references and discriminator mappings" {
+        $targetBase = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target"
+        $candidate = New-PromotableAnyOfSchema
+        $candidate.discriminator["mapping"] = [ordered]@{ first = "$targetBase/anyOf/0" }
+        $source = New-TestOpenApiDocument -Schema ([ordered]@{
+            type = "object"
+            properties = [ordered]@{
+                target = $candidate
+                refAlias = [ordered]@{ '$ref' = "$targetBase/anyOf/0" }
+                dynamicAlias = [ordered]@{ '$dynamicRef' = "$targetBase/anyOf/0" }
+                recursiveAlias = [ordered]@{ '$recursiveRef' = "$targetBase/anyOf/0" }
+            }
+        })
+        $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
+        $properties = (Get-TestResponseSchema $result.Document).properties
+        $expected = "$targetBase/oneOf/0"
+        Assert-Equal 1 $result.PromotedAnyOfCount "Pointer target was not promoted."
+        Assert-Equal 1 $result.RelocationCount "Unexpected relocation count."
+        Assert-Equal $expected $properties.target.discriminator.mapping.first "Mapping pointer was not relocated."
+        Assert-Equal $expected $properties.refAlias.'$ref' "`$ref was not relocated."
+        Assert-Equal $expected $properties.dynamicAlias.'$dynamicRef' "`$dynamicRef was not relocated."
+        Assert-Equal $expected $properties.recursiveAlias.'$recursiveRef' "`$recursiveRef was not relocated."
+    }
+
+    Invoke-Test "nested promotions relocate pointers through longest prefixes" {
+        $targetBase = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/outer"
+        $outer = New-PromotableAnyOfSchema
+        $outer.anyOf[0].properties["inner"] = New-PromotableAnyOfSchema
+        $source = New-TestOpenApiDocument -Schema ([ordered]@{
+            type = "object"
+            properties = [ordered]@{
+                outer = $outer
+                alias = [ordered]@{ '$ref' = "$targetBase/anyOf/0/properties/inner/anyOf/0" }
+            }
+        })
+        $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
+        $properties = (Get-TestResponseSchema $result.Document).properties
+        $expected = "$targetBase/oneOf/0/properties/inner/oneOf/0"
+        Assert-Equal 2 $result.PromotedAnyOfCount "Nested candidates were not both promoted."
+        Assert-Equal 2 $result.RelocationCount "Nested relocation count was incorrect."
+        Assert-Equal $expected $properties.alias.'$ref' "Nested pointer was not fully relocated."
+        Assert-True (Test-JsonProperty $properties.outer.oneOf[0].properties.inner "oneOf") "Nested candidate retained anyOf."
+    }
+
+    Invoke-Test "promotion relocation preserves escaped JSON Pointer tokens" {
+        $propertyName = "a/b~c"
+        $encodedPropertyName = "a~1b~0c"
+        $targetBase = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/$encodedPropertyName"
+        $source = New-TestOpenApiDocument -Schema ([ordered]@{
+            type = "object"
+            properties = [ordered]@{
+                $propertyName = New-PromotableAnyOfSchema
+                alias = [ordered]@{ '$ref' = "$targetBase/anyOf/0" }
+            }
+        })
+        $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
+        $properties = (Get-TestResponseSchema $result.Document).properties
+        Assert-Equal "$targetBase/oneOf/0" $properties.alias.'$ref' "Escaped pointer was not relocated."
+        Assert-True (Test-JsonProperty $properties[$propertyName] "oneOf") "Escaped-name candidate was not promoted."
     }
 
     Invoke-Test "references into removed discriminator subtrees fail clearly" {
@@ -272,14 +402,14 @@ try {
         $normalized = (ConvertTo-NormalizedOpenApiOneOfDocument -Document $source).Document
         $normalizedProperties = (Get-TestResponseSchema $normalized).properties
         Assert-Sequence `
-            @("outputs", "discriminator", "emptyPair", "malformedPair", "caseVariant") `
+            @("outputs", "promotable", "discriminator", "emptyPair", "malformedPair", "caseVariant") `
             @((Get-JsonProperties $normalizedProperties).Name) `
             "Normalizer reordered properties."
 
         . $sortScriptPath
         $sorted = ConvertTo-SortedOpenApiDocument -Document $normalized
         Assert-Sequence `
-            @("caseVariant", "discriminator", "emptyPair", "malformedPair", "outputs") `
+            @("caseVariant", "discriminator", "emptyPair", "malformedPair", "outputs", "promotable") `
             @((Get-JsonProperties (Get-TestResponseSchema $sorted).properties).Name) `
             "Sort did not canonicalize normalized properties."
     }

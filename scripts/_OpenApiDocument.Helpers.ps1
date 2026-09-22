@@ -1010,6 +1010,201 @@ function Assert-OpenApiReferencesResolve {
     }
 }
 
+# Records a source-to-destination JSON Pointer prefix relocation. A source
+# prefix may be registered repeatedly only when its destination is identical.
+function Add-OpenApiPointerRelocation {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, string]]$Relocations,
+
+        [Parameter(Mandatory = $true)]
+        [string]$SourcePrefix,
+
+        [Parameter(Mandatory = $true)]
+        [string]$DestinationPrefix
+    )
+
+    if ($Relocations.ContainsKey($SourcePrefix)) {
+        if (-not [string]::Equals(
+            $Relocations[$SourcePrefix],
+            $DestinationPrefix,
+            [System.StringComparison]::Ordinal
+        )) {
+            throw "JSON Pointer prefix '$SourcePrefix' has conflicting relocation destinations."
+        }
+        return
+    }
+
+    $Relocations[$SourcePrefix] = $DestinationPrefix
+}
+
+# Applies the longest matching relocation prefix repeatedly so nested schema
+# transformations resolve to their final destination paths.
+function Get-RelocatedOpenApiPointer {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Pointer,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, string]]$Relocations
+    )
+
+    if ([string]::Equals($Pointer, "#", [System.StringComparison]::Ordinal) -or
+        -not $Pointer.StartsWith("#/", [System.StringComparison]::Ordinal)) {
+        return $Pointer
+    }
+
+    $relocatedPointer = $Pointer
+    $seenPointers = [System.Collections.Generic.HashSet[string]]::new(
+        [System.StringComparer]::Ordinal
+    )
+
+    while ($seenPointers.Add($relocatedPointer)) {
+        $matchingPrefix = $null
+        foreach ($sourcePrefix in $Relocations.Keys) {
+            if (($relocatedPointer.Length -eq $sourcePrefix.Length -or
+                ($relocatedPointer.Length -gt $sourcePrefix.Length -and
+                    $relocatedPointer[$sourcePrefix.Length] -eq '/')) -and
+                $relocatedPointer.StartsWith($sourcePrefix, [System.StringComparison]::Ordinal) -and
+                ($null -eq $matchingPrefix -or $sourcePrefix.Length -gt $matchingPrefix.Length)) {
+                $matchingPrefix = $sourcePrefix
+            }
+        }
+
+        if ($null -eq $matchingPrefix) {
+            return $relocatedPointer
+        }
+
+        $relocatedPointer = $Relocations[$matchingPrefix] +
+            $relocatedPointer.Substring($matchingPrefix.Length)
+    }
+
+    throw "JSON Pointer relocation contains a cycle for '$Pointer'."
+}
+
+# Rewrites reference-valued keywords and discriminator mappings after schema
+# paths move.
+function ConvertTo-RelocatedOpenApiPointers {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, string]]$Relocations,
+
+        [Parameter()]
+        [ValidateSet("Default", "Discriminator", "Mapping")]
+        [string]$Context = "Default",
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "JSON Pointer relocation exceeds the supported depth of $MaximumDepth."
+    }
+    if ($null -eq $Value) {
+        return $null
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        [object[]]$items = [object[]]::new($Value.Count)
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            $items[$index] = ConvertTo-RelocatedOpenApiPointers `
+                -Value $Value[$index] `
+                -Relocations $Relocations `
+                -Context Default `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+        }
+        return ,$items
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return $Value
+    }
+
+    $result = [ordered]@{}
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if ([string]::Equals($Context, "Mapping", [System.StringComparison]::Ordinal) -and
+            $property.Value -is [string]) {
+            $result[$property.Name] = Get-RelocatedOpenApiPointer `
+                -Pointer $property.Value `
+                -Relocations $Relocations
+            continue
+        }
+
+        if (@('$ref', '$dynamicRef', '$recursiveRef') -ccontains $property.Name -and
+            $property.Value -is [string]) {
+            $result[$property.Name] = Get-RelocatedOpenApiPointer `
+                -Pointer $property.Value `
+                -Relocations $Relocations
+            continue
+        }
+
+        $childContext = "Default"
+        if ([string]::Equals($Context, "Default", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal)) {
+            $childContext = "Discriminator"
+        }
+        elseif ([string]::Equals($Context, "Discriminator", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "mapping", [System.StringComparison]::Ordinal)) {
+            $childContext = "Mapping"
+        }
+
+        $result[$property.Name] = ConvertTo-RelocatedOpenApiPointers `
+            -Value $property.Value `
+            -Relocations $Relocations `
+            -Context $childContext `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth
+    }
+    return $result
+}
+
+# Validates dynamic and recursive references not covered by the shared
+# OpenAPI $ref/discriminator validator.
+function Assert-AdditionalOpenApiReferencesResolve {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document
+    )
+
+    function Visit-ReferenceValue {
+        param([AllowNull()][object]$Value, [string]$Breadcrumb)
+
+        if ($null -eq $Value) {
+            return
+        }
+        if (Test-JsonArrayValue -Value $Value) {
+            for ($index = 0; $index -lt $Value.Count; $index++) {
+                Visit-ReferenceValue -Value $Value[$index] -Breadcrumb "$Breadcrumb/$index"
+            }
+            return
+        }
+        if (-not (Test-JsonObjectValue -Value $Value)) {
+            return
+        }
+
+        foreach ($property in (Get-JsonProperties -Value $Value)) {
+            $propertyBreadcrumb = "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)"
+            if (@('$dynamicRef', '$recursiveRef') -ccontains $property.Name -and
+                $property.Value -is [string] -and
+                -not [string]::Equals($property.Value, "#", [System.StringComparison]::Ordinal)) {
+                $null = Resolve-LocalJsonPointer `
+                    -Document $Document `
+                    -Pointer $property.Value `
+                    -Context "$($property.Name) at $propertyBreadcrumb"
+            }
+            Visit-ReferenceValue -Value $property.Value -Breadcrumb $propertyBreadcrumb
+        }
+    }
+
+    Visit-ReferenceValue -Value $Document -Breadcrumb "#"
+}
+
 # Finds direct component-reference branches used by a discriminator. Mapping
 # values can then point at the branch's new local location after inlining.
 function Get-DiscriminatorBranchTargets {

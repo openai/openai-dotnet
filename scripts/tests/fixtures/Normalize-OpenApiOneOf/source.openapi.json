@@ -34,6 +34,28 @@
                         ]
                       }
                     },
+                    "promotable": {
+                      "description": "Promote this union.",
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {}
+                          }
+                        }
+                      ],
+                      "discriminator": {
+                        "propertyName": "kind"
+                      }
+                    },
                     "discriminator": {
                       "type": "string",
                       "enum": [

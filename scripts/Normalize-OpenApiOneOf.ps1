@@ -3,9 +3,15 @@
     Normalizes oneOf-related schema metadata in an OpenAPI document.
 
 .DESCRIPTION
-    Removes an exact discriminator schema keyword when its containing schema
-    has no exact direct oneOf sibling. A discriminator paired with any direct
-    oneOf property is preserved; this stage does not validate the oneOf value.
+    Promotes an anyOf schema composition to oneOf when it has a sibling
+    discriminator, every branch has type object, and every branch defines the
+    discriminator property. It then removes an exact discriminator schema
+    keyword when its containing schema has no exact direct oneOf sibling.
+
+    Promotion requires property presence only. It does not require the
+    discriminator property to be required or constrained to exclusive values.
+    A discriminator paired with any direct oneOf property is preserved; this
+    stage does not otherwise validate the oneOf value.
 
     Property-map entries named discriminator, string literals, examples, and
     ordinary OpenAPI objects are preserved. Encounter order is retained. Run
@@ -55,8 +61,61 @@ function Test-IsOrphanedOpenApiDiscriminator {
         -not (Test-JsonProperty -Object $Schema -Name "oneOf")
 }
 
-# Recursively copies an OpenAPI document while removing orphaned discriminator
-# keywords only from schema objects. All surviving values retain source order.
+function Get-DiscriminatedOpenApiAnyOfCandidate {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema,
+
+        [Parameter()]
+        [string]$Breadcrumb = "#"
+    )
+
+    if (-not (Test-JsonProperty -Object $Schema -Name "anyOf") -or
+        -not (Test-JsonProperty -Object $Schema -Name "discriminator")) {
+        return $null
+    }
+
+    $discriminator = Get-JsonPropertyValue -Object $Schema -Name "discriminator"
+    if (-not (Test-JsonObjectValue -Value $discriminator)) {
+        return $null
+    }
+    $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+    if ($propertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($propertyName)) {
+        return $null
+    }
+
+    $anyOf = Get-JsonPropertyValue -Object $Schema -Name "anyOf"
+    if (-not (Test-JsonArrayValue -Value $anyOf) -or $anyOf.Count -eq 0) {
+        return $null
+    }
+    foreach ($branch in $anyOf) {
+        if (-not (Test-JsonObjectValue -Value $branch)) {
+            return $null
+        }
+        $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
+        if ($branchType -isnot [string] -or
+            -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal)) {
+            return $null
+        }
+        $properties = Get-JsonPropertyValue -Object $branch -Name "properties"
+        if (-not (Test-JsonObjectValue -Value $properties) -or
+            -not (Test-JsonProperty -Object $properties -Name $propertyName)) {
+            return $null
+        }
+    }
+
+    if (Test-JsonProperty -Object $Schema -Name "oneOf") {
+        throw "Cannot promote discriminated anyOf at '$Breadcrumb' because the schema already contains oneOf."
+    }
+
+    return [PSCustomObject]@{
+        PropertyName = $propertyName
+        Branches = $anyOf
+    }
+}
+
+# Recursively copies an OpenAPI document while promoting eligible unions and
+# removing orphaned discriminator keywords. Surviving values retain source order.
 function ConvertTo-NormalizedOpenApiOneOfValue {
     param(
         [Parameter(Mandatory = $true)]
@@ -72,6 +131,12 @@ function ConvertTo-NormalizedOpenApiOneOfValue {
 
         [Parameter(Mandatory = $true)]
         [ref]$RemovedDiscriminatorCount,
+
+        [Parameter(Mandatory = $true)]
+        [ref]$PromotedAnyOfCount,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, string]]$Relocations,
 
         [Parameter()]
         [int]$Depth = 0,
@@ -98,6 +163,8 @@ function ConvertTo-NormalizedOpenApiOneOfValue {
                 -Context $itemContext `
                 -Breadcrumb "$Breadcrumb/$index" `
                 -RemovedDiscriminatorCount $RemovedDiscriminatorCount `
+                -PromotedAnyOfCount $PromotedAnyOfCount `
+                -Relocations $Relocations `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -107,14 +174,46 @@ function ConvertTo-NormalizedOpenApiOneOfValue {
         return $Value
     }
 
-    $removeDiscriminator = [string]::Equals(
+    $isSchema = [string]::Equals(
         $Context,
         "Schema",
         [System.StringComparison]::Ordinal
-    ) -and (Test-IsOrphanedOpenApiDiscriminator -Schema $Value)
+    )
+    $candidate = if ($isSchema) {
+        Get-DiscriminatedOpenApiAnyOfCandidate -Schema $Value -Breadcrumb $Breadcrumb
+    }
+    else {
+        $null
+    }
+    $removeDiscriminator = $isSchema -and
+        $null -eq $candidate -and
+        (Test-IsOrphanedOpenApiDiscriminator -Schema $Value)
 
     $result = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if ($null -ne $candidate -and
+            [string]::Equals($property.Name, "anyOf", [System.StringComparison]::Ordinal)) {
+            Add-OpenApiPointerRelocation `
+                -Relocations $Relocations `
+                -SourcePrefix "$Breadcrumb/anyOf" `
+                -DestinationPrefix "$Breadcrumb/oneOf"
+            $childContext = Get-OpenApiSchemaChildContext `
+                -ParentContext $Context `
+                -PropertyName "oneOf" `
+                -PropertyValue $property.Value
+            $result["oneOf"] = ConvertTo-NormalizedOpenApiOneOfValue `
+                -Value $property.Value `
+                -Context $childContext `
+                -Breadcrumb "$Breadcrumb/oneOf" `
+                -RemovedDiscriminatorCount $RemovedDiscriminatorCount `
+                -PromotedAnyOfCount $PromotedAnyOfCount `
+                -Relocations $Relocations `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+            $PromotedAnyOfCount.Value++
+            continue
+        }
+
         if ($removeDiscriminator -and
             [string]::Equals(
                 $property.Name,
@@ -134,6 +233,8 @@ function ConvertTo-NormalizedOpenApiOneOfValue {
             -Context $childContext `
             -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
             -RemovedDiscriminatorCount $RemovedDiscriminatorCount `
+            -PromotedAnyOfCount $PromotedAnyOfCount `
+            -Relocations $Relocations `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -204,13 +305,15 @@ function Assert-NoOrphanedOpenApiDiscriminators {
     }
 }
 
-# Finds dynamic and recursive references not returned by the shared reference
-# discovery helper.
-function Get-OpenApiOneOfAdditionalReferenceOccurrences {
+function Assert-NoPromotableOpenApiAnyOf {
     param(
         [Parameter(Mandatory = $true)]
         [AllowNull()]
         [object]$Value,
+
+        [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context = "OpenApi",
 
         [Parameter()]
         [string]$Breadcrumb = "#",
@@ -223,15 +326,20 @@ function Get-OpenApiOneOfAdditionalReferenceOccurrences {
     )
 
     if ($Depth -gt $MaximumDepth) {
-        throw "Additional reference discovery exceeds the supported depth of $MaximumDepth at '$Breadcrumb'."
+        throw "oneOf promotion postcondition exceeds the supported depth of $MaximumDepth at '$Breadcrumb'."
     }
     if ($null -eq $Value) {
         return
     }
     if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
         for ($index = 0; $index -lt $Value.Count; $index++) {
-            Get-OpenApiOneOfAdditionalReferenceOccurrences `
+            Assert-NoPromotableOpenApiAnyOf `
                 -Value $Value[$index] `
+                -Context $itemContext `
                 -Breadcrumb "$Breadcrumb/$index" `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
@@ -242,40 +350,22 @@ function Get-OpenApiOneOfAdditionalReferenceOccurrences {
         return
     }
 
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+        $null -ne (Get-DiscriminatedOpenApiAnyOfCandidate -Schema $Value -Breadcrumb $Breadcrumb)) {
+        throw "Normalized output retained a promotable discriminated anyOf at '$Breadcrumb/anyOf'."
+    }
+
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        $propertyBreadcrumb = "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)"
-        if (@('$dynamicRef', '$recursiveRef') -ccontains $property.Name) {
-            if ($property.Value -isnot [string]) {
-                throw "The $($property.Name) value at '$propertyBreadcrumb' must be a string."
-            }
-            [PSCustomObject]@{
-                Kind = $property.Name
-                Pointer = $property.Value
-                Breadcrumb = $propertyBreadcrumb
-            }
-        }
-        Get-OpenApiOneOfAdditionalReferenceOccurrences `
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
+        Assert-NoPromotableOpenApiAnyOf `
             -Value $property.Value `
-            -Breadcrumb $propertyBreadcrumb `
+            -Context $childContext `
+            -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
-    }
-}
-
-function Assert-AdditionalOpenApiReferencesResolveAfterOneOfNormalization {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Document
-    )
-
-    foreach ($occurrence in @(Get-OpenApiOneOfAdditionalReferenceOccurrences -Value $Document)) {
-        if ([string]::Equals($occurrence.Pointer, "#", [System.StringComparison]::Ordinal)) {
-            continue
-        }
-        $null = Resolve-LocalJsonPointer `
-            -Document $Document `
-            -Pointer $occurrence.Pointer `
-            -Context "$($occurrence.Kind) at $($occurrence.Breadcrumb)"
     }
 }
 
@@ -285,20 +375,31 @@ function ConvertTo-NormalizedOpenApiOneOfDocument {
         [object]$Document
     )
 
+    $relocations = [System.Collections.Generic.Dictionary[string, string]]::new(
+        [System.StringComparer]::Ordinal
+    )
     $removedDiscriminatorCount = 0
+    $promotedAnyOfCount = 0
     $normalized = ConvertTo-NormalizedOpenApiOneOfValue `
         -Value $Document `
         -Context OpenApi `
         -Breadcrumb "#" `
-        -RemovedDiscriminatorCount ([ref]$removedDiscriminatorCount)
-    Assert-OpenApiReferencesResolve -Document $normalized
-    Assert-AdditionalOpenApiReferencesResolveAfterOneOfNormalization `
-        -Document $normalized
-    Assert-NoOrphanedOpenApiDiscriminators -Value $normalized
+        -RemovedDiscriminatorCount ([ref]$removedDiscriminatorCount) `
+        -PromotedAnyOfCount ([ref]$promotedAnyOfCount) `
+        -Relocations $relocations
+    $relocated = ConvertTo-RelocatedOpenApiPointers `
+        -Value $normalized `
+        -Relocations $relocations
+    Assert-OpenApiReferencesResolve -Document $relocated
+    Assert-AdditionalOpenApiReferencesResolve -Document $relocated
+    Assert-NoPromotableOpenApiAnyOf -Value $relocated
+    Assert-NoOrphanedOpenApiDiscriminators -Value $relocated
 
     return [PSCustomObject]@{
-        Document = $normalized
+        Document = $relocated
+        PromotedAnyOfCount = $promotedAnyOfCount
         RemovedDiscriminatorCount = $removedDiscriminatorCount
+        RelocationCount = $relocations.Count
     }
 }
 
@@ -353,7 +454,9 @@ function Invoke-OpenApiOneOfNormalizer {
     Write-Host ""
     Write-Host "Input: $resolvedInputPath"
     Write-Host "Output: $writtenPath"
+    Write-Host "Discriminated anyOf promoted: $($result.PromotedAnyOfCount)"
     Write-Host "Orphaned discriminators removed: $($result.RemovedDiscriminatorCount)"
+    Write-Host "JSON Pointer prefixes relocated: $($result.RelocationCount)"
 
     return $result
 }

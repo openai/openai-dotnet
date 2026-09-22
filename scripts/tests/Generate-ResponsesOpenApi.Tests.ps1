@@ -104,6 +104,14 @@ function Write-TestSpecification {
                                                         oneOf = @([ordered]@{ type = "object" })
                                                     }
                                                 }
+                                                events = [ordered]@{
+                                                    description = "Promote this union."
+                                                    anyOf = @(
+                                                        [ordered]@{ type = "object"; properties = [ordered]@{ type = [ordered]@{ type = "string" } } },
+                                                        [ordered]@{ type = "object"; properties = [ordered]@{ type = [ordered]@{} } }
+                                                    )
+                                                    discriminator = [ordered]@{ propertyName = "type" }
+                                                }
                                             }
                                         },
                                         [ordered]@{
@@ -223,13 +231,21 @@ try {
 
         $simplifiedModel = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $simplifiedOutputs = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
+        $simplifiedEvents = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $normalizedOutputs = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
+        $normalizedEvents = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
+        $sortedEvents = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         Assert-Equal 2 $simplifiedModel.anyOf.Count "Simplify stage emitted the wrong branch count."
         Assert-Sequence @("zeta", "alpha", "middle") @($simplifiedModel.anyOf[1].enum) "Simplify stage did not preserve encounter order."
         Assert-True ($simplifiedOutputs.PSObject.Properties.Name -ccontains "discriminator") "Simplify stage removed the orphan before Normalize."
+        Assert-True ($simplifiedEvents.PSObject.Properties.Name -ccontains "anyOf") "Simplify stage promoted the union before Normalize."
         Assert-True (-not ($normalizedOutputs.PSObject.Properties.Name -ccontains "discriminator")) "Normalize stage retained the outer orphan."
         Assert-True ($normalizedOutputs.items.PSObject.Properties.Name -ccontains "discriminator") "Normalize stage removed the nested paired discriminator."
+        Assert-True (-not ($normalizedEvents.PSObject.Properties.Name -ccontains "anyOf")) "Normalize stage retained the qualifying anyOf."
+        Assert-True ($normalizedEvents.PSObject.Properties.Name -ccontains "oneOf") "Normalize stage did not emit oneOf."
+        Assert-True ($normalizedEvents.PSObject.Properties.Name -ccontains "discriminator") "Normalize stage removed the promoted discriminator."
+        Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "oneOf") "Sort stage lost the promoted oneOf."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
     }
 
