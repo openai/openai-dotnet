@@ -18,7 +18,7 @@ namespace OpenAI.Agents
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
-        private const string XhighValue = "xhigh";
+        private const string ExtraHighValue = "xhigh";
         private const string MaxValue = "max";
 
         public ReasoningEffortParam(string value)
@@ -38,7 +38,7 @@ namespace OpenAI.Agents
 
         public static ReasoningEffortParam High { get; } = new ReasoningEffortParam(HighValue);
 
-        public static ReasoningEffortParam Xhigh { get; } = new ReasoningEffortParam(XhighValue);
+        public static ReasoningEffortParam ExtraHigh { get; } = new ReasoningEffortParam(ExtraHighValue);
 
         public static ReasoningEffortParam Max { get; } = new ReasoningEffortParam(MaxValue);
 

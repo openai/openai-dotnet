@@ -43,3 +43,17 @@ namespace OpenAI.Agents;
 // ------------ Session events ------------
 [CodeGenType("ListAgentSessionEventsStatus1")] internal readonly partial struct InternalListAgentSessionEventsStatus1 {}
 [CodeGenType("UnknownSessionInputParam")] internal partial class InternalUnknownSessionInputParam {}
+
+// ------------ Vaults ------------
+[CodeGenType("DeletedVaultCredentialObject")] internal readonly partial struct InternalDeletedVaultCredentialObject {}
+[CodeGenType("DeletedVaultObject")] internal readonly partial struct InternalDeletedVaultObject {}
+[CodeGenType("UnknownCreateMcpOauthTokenEndpointAuthParam")] internal partial class InternalUnknownCreateMcpOauthTokenEndpointAuthParam {}
+[CodeGenType("UnknownCreateVaultCredentialAuthParam")] internal partial class InternalUnknownCreateVaultCredentialAuthParam {}
+[CodeGenType("UnknownMcpOauthTokenEndpointAuthResource")] internal partial class InternalUnknownMcpOauthTokenEndpointAuthResource {}
+[CodeGenType("UnknownRotateMcpOauthTokenEndpointAuthParam")] internal partial class InternalUnknownRotateMcpOauthTokenEndpointAuthParam {}
+[CodeGenType("UnknownRotateVaultCredentialAuthParam")] internal partial class InternalUnknownRotateVaultCredentialAuthParam {}
+[CodeGenType("UnknownVaultCredentialAuthResource")] internal partial class InternalUnknownVaultCredentialAuthResource {}
+[CodeGenType("UnknownVaultCredentialNetworkingParam")] internal partial class InternalUnknownVaultCredentialNetworkingParam {}
+[CodeGenType("UnknownVaultCredentialNetworkingResource")] internal partial class InternalUnknownVaultCredentialNetworkingResource {}
+[CodeGenType("VaultCredentialObject")] internal readonly partial struct InternalVaultCredentialObject {}
+[CodeGenType("VaultObject")] internal readonly partial struct InternalVaultObject {}

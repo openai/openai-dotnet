@@ -401,6 +401,21 @@ namespace OpenAI
 #pragma warning disable OPENAI002 // global::OpenAI.Realtime.CreateClientSecretResult is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateClientSecretResult))]
 #pragma warning restore OPENAI002 // global::OpenAI.Realtime.CreateClientSecretResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateMcpOauthRefreshParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateMcpOauthRefreshParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateMcpOauthRefreshParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateMcpOauthTokenEndpointAuthParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParamClientSecretBasic is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateMcpOauthTokenEndpointAuthParamClientSecretBasic))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParamClientSecretBasic is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParamClientSecretPost is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateMcpOauthTokenEndpointAuthParamClientSecretPost))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParamClientSecretPost is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParamNone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateMcpOauthTokenEndpointAuthParamNone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateMcpOauthTokenEndpointAuthParamNone is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.CreateResponseOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateResponseOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.CreateResponseOptions is experimental and may change in future versions.
@@ -410,6 +425,18 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateSubagentCallItemResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CreateSubagentCallItemResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateSubagentCallItemResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateVaultCredentialAuthParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParamEnvironmentVariable is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateVaultCredentialAuthParamEnvironmentVariable))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParamEnvironmentVariable is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParamMcpOauth is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateVaultCredentialAuthParamMcpOauth))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParamMcpOauth is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParamStaticBearer is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(CreateVaultCredentialAuthParamStaticBearer))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.CreateVaultCredentialAuthParamStaticBearer is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.CustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(CustomMcpToolCallApprovalPolicy))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.CustomMcpToolCallApprovalPolicy is experimental and may change in future versions.
@@ -1002,8 +1029,10 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownComputerAction))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownComputerToolCallOutputItemOutput))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownContainerNetworkPolicy))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownCreateMcpOauthTokenEndpointAuthParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCreateTranscriptionResponseJsonUsage))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCreateTranscriptionResponseStreamEvent))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownCreateVaultCredentialAuthParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownCustomToolFormat))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetAssistantResponseFormat))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetCombinedChunkingStrategyParam))]
@@ -1023,6 +1052,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownItemResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownLocation))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownMcpOauthTokenEndpointAuthResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownMcpTransportConfigParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownMcpTransportResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownMessageContent))]
@@ -1047,6 +1077,8 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponsesMessageItemResourceItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseStreamEvent))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownResponseTextFormatConfiguration))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownRotateMcpOauthTokenEndpointAuthParam))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownRotateVaultCredentialAuthParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownSessionInputParam))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownSessionRequiredActionResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTextFormatParam))]
@@ -1056,6 +1088,9 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolChoiceBaseGA))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownToolChoiceObject))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownTranscriptionTokenUsageBaseGA))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownVaultCredentialAuthResource))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownVaultCredentialNetworkingParam))]
+    [ModelReaderWriterBuildable(typeof(InternalUnknownVaultCredentialNetworkingResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownWebSearchActionBase))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownWebSearchActionResource))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownWebSearchActionSearchSourceBase))]
@@ -1093,6 +1128,21 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.McpCallItemResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpCallItemResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.McpCallItemResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpOauthRefreshResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpOauthRefreshResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpOauthRefreshResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpOauthTokenEndpointAuthResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResourceClientSecretBasic is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpOauthTokenEndpointAuthResourceClientSecretBasic))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResourceClientSecretBasic is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResourceClientSecretPost is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpOauthTokenEndpointAuthResourceClientSecretPost))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResourceClientSecretPost is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResourceNone is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(McpOauthTokenEndpointAuthResourceNone))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.McpOauthTokenEndpointAuthResourceNone is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Responses.McpTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(McpTool))]
 #pragma warning restore OPENAI001 // global::OpenAI.Responses.McpTool is experimental and may change in future versions.
@@ -1724,6 +1774,30 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Agents.ResumeSubagentCallItemResource is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ResumeSubagentCallItemResource))]
 #pragma warning restore OPENAI001 // global::OpenAI.Agents.ResumeSubagentCallItemResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateMcpOauthRefreshParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateMcpOauthRefreshParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateMcpOauthRefreshParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateMcpOauthTokenEndpointAuthParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateMcpOauthTokenEndpointAuthParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateMcpOauthTokenEndpointAuthParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateMcpOauthTokenEndpointAuthParamClientSecretBasic is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateMcpOauthTokenEndpointAuthParamClientSecretBasic))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateMcpOauthTokenEndpointAuthParamClientSecretBasic is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateMcpOauthTokenEndpointAuthParamClientSecretPost is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateMcpOauthTokenEndpointAuthParamClientSecretPost))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateMcpOauthTokenEndpointAuthParamClientSecretPost is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateVaultCredentialAuthParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParamEnvironmentVariable is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateVaultCredentialAuthParamEnvironmentVariable))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParamEnvironmentVariable is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParamMcpOauth is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateVaultCredentialAuthParamMcpOauth))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParamMcpOauth is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParamStaticBearer is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RotateVaultCredentialAuthParamStaticBearer))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.RotateVaultCredentialAuthParamStaticBearer is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RunCollectionOptions))]
 #pragma warning restore OPENAI001 // global::OpenAI.Assistants.RunCollectionOptions is experimental and may change in future versions.
@@ -2194,6 +2268,69 @@ namespace OpenAI
 #pragma warning disable OPENAI001 // global::OpenAI.Graders.ValidateGraderResponse is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(ValidateGraderResponse))]
 #pragma warning restore OPENAI001 // global::OpenAI.Graders.ValidateGraderResponse is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.Vault is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(Vault))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.Vault is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCollectionPage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCreationOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredential is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredential))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredential is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialAuthResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResourceEnvironmentVariable is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialAuthResourceEnvironmentVariable))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResourceEnvironmentVariable is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResourceMcpOauth is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialAuthResourceMcpOauth))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResourceMcpOauth is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResourceStaticBearer is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialAuthResourceStaticBearer))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialAuthResourceStaticBearer is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialCollectionOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialCollectionOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialCollectionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialCollectionPage is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialCollectionPage))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialCollectionPage is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialCreationOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialCreationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialCreationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialDeletionResult is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialDeletionResult is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingParam is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialNetworkingParam))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingParam is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingParamLimited is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialNetworkingParamLimited))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingParamLimited is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingParamUnrestricted is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialNetworkingParamUnrestricted))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingParamUnrestricted is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingResource is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialNetworkingResource))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingResource is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingResourceLimited is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialNetworkingResourceLimited))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingResourceLimited is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingResourceUnrestricted is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialNetworkingResourceUnrestricted))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialNetworkingResourceUnrestricted is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultCredentialRotationOptions is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultCredentialRotationOptions))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultCredentialRotationOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI001 // global::OpenAI.Agents.VaultDeletionResult is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(VaultDeletionResult))]
+#pragma warning restore OPENAI001 // global::OpenAI.Agents.VaultDeletionResult is experimental and may change in future versions.
 #pragma warning disable OPENAI001 // global::OpenAI.VectorStores.VectorStore is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(VectorStore))]
 #pragma warning restore OPENAI001 // global::OpenAI.VectorStores.VectorStore is experimental and may change in future versions.

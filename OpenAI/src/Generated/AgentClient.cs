@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.ServerSentEvents;
 using System.Threading;
@@ -1032,6 +1033,350 @@ namespace OpenAI.Agents
             Argument.AssertNotNull(events, nameof(events));
 
             return await CreateAgentSessionEventsAsync(sessionId, events, idempotencyKey, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        }
+
+        public virtual CollectionResult GetVaults(string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options)
+        {
+            return new AgentClientGetVaultsCollectionResult(
+                this,
+                order,
+                limit,
+                status,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVaultsAsync(string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options)
+        {
+            return new AgentClientGetVaultsAsyncCollectionResult(
+                this,
+                order,
+                limit,
+                status,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<Vault> GetVaults(VaultCollectionOrder? order = default, int? limit = default, IEnumerable<VaultStatusParam> status = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetVaultsCollectionResultOfT(
+                this,
+                order?.ToString(),
+                limit,
+                status,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<Vault> GetVaultsAsync(VaultCollectionOrder? order = default, int? limit = default, IEnumerable<VaultStatusParam> status = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            return new AgentClientGetVaultsAsyncCollectionResultOfT(
+                this,
+                order?.ToString(),
+                limit,
+                status,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult CreateVault(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVaultRequest(content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateVaultAsync(BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVaultRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<Vault> CreateVault(VaultCreationOptions vault, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(vault, nameof(vault));
+
+            ClientResult result = CreateVault(vault, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((Vault)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<Vault>> CreateVaultAsync(VaultCreationOptions vault, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(vault, nameof(vault));
+
+            ClientResult result = await CreateVaultAsync(vault, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((Vault)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult RetrieveVault(string vaultId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            using PipelineMessage message = CreateRetrieveVaultRequest(vaultId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveVaultAsync(string vaultId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            using PipelineMessage message = CreateRetrieveVaultRequest(vaultId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<Vault> RetrieveVault(string vaultId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            ClientResult result = RetrieveVault(vaultId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((Vault)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<Vault>> RetrieveVaultAsync(string vaultId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            ClientResult result = await RetrieveVaultAsync(vaultId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((Vault)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteVault(string vaultId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            using PipelineMessage message = CreateDeleteVaultRequest(vaultId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteVaultAsync(string vaultId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            using PipelineMessage message = CreateDeleteVaultRequest(vaultId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<VaultDeletionResult> DeleteVault(string vaultId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            ClientResult result = DeleteVault(vaultId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((VaultDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<VaultDeletionResult>> DeleteVaultAsync(string vaultId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            ClientResult result = await DeleteVaultAsync(vaultId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((VaultDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetVaultCredentials(string vaultId, string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            return new AgentClientGetVaultCredentialsCollectionResult(
+                this,
+                vaultId,
+                order,
+                limit,
+                status,
+                after,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVaultCredentialsAsync(string vaultId, string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            return new AgentClientGetVaultCredentialsAsyncCollectionResult(
+                this,
+                vaultId,
+                order,
+                limit,
+                status,
+                after,
+                options);
+        }
+
+        public virtual CollectionResult<VaultCredential> GetVaultCredentials(string vaultId, VaultCollectionOrder? order = default, int? limit = default, IEnumerable<VaultStatusParam> status = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            return new AgentClientGetVaultCredentialsCollectionResultOfT(
+                this,
+                vaultId,
+                order?.ToString(),
+                limit,
+                status,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<VaultCredential> GetVaultCredentialsAsync(string vaultId, VaultCollectionOrder? order = default, int? limit = default, IEnumerable<VaultStatusParam> status = default, string after = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+
+            return new AgentClientGetVaultCredentialsAsyncCollectionResultOfT(
+                this,
+                vaultId,
+                order?.ToString(),
+                limit,
+                status,
+                after,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual ClientResult CreateVaultCredential(string vaultId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVaultCredentialRequest(vaultId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> CreateVaultCredentialAsync(string vaultId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateCreateVaultCredentialRequest(vaultId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<VaultCredential> CreateVaultCredential(string vaultId, VaultCredentialCreationOptions credential, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNull(credential, nameof(credential));
+
+            ClientResult result = CreateVaultCredential(vaultId, credential, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((VaultCredential)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<VaultCredential>> CreateVaultCredentialAsync(string vaultId, VaultCredentialCreationOptions credential, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNull(credential, nameof(credential));
+
+            ClientResult result = await CreateVaultCredentialAsync(vaultId, credential, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((VaultCredential)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult RetrieveVaultCredential(string vaultId, string credentialId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            using PipelineMessage message = CreateRetrieveVaultCredentialRequest(vaultId, credentialId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RetrieveVaultCredentialAsync(string vaultId, string credentialId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            using PipelineMessage message = CreateRetrieveVaultCredentialRequest(vaultId, credentialId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<VaultCredential> RetrieveVaultCredential(string vaultId, string credentialId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            ClientResult result = RetrieveVaultCredential(vaultId, credentialId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((VaultCredential)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<VaultCredential>> RetrieveVaultCredentialAsync(string vaultId, string credentialId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            ClientResult result = await RetrieveVaultCredentialAsync(vaultId, credentialId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((VaultCredential)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult RotateVaultCredential(string vaultId, string credentialId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateRotateVaultCredentialRequest(vaultId, credentialId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RotateVaultCredentialAsync(string vaultId, string credentialId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateRotateVaultCredentialRequest(vaultId, credentialId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<VaultCredential> RotateVaultCredential(string vaultId, string credentialId, VaultCredentialRotationOptions credential, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+            Argument.AssertNotNull(credential, nameof(credential));
+
+            ClientResult result = RotateVaultCredential(vaultId, credentialId, credential, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((VaultCredential)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<VaultCredential>> RotateVaultCredentialAsync(string vaultId, string credentialId, VaultCredentialRotationOptions credential, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+            Argument.AssertNotNull(credential, nameof(credential));
+
+            ClientResult result = await RotateVaultCredentialAsync(vaultId, credentialId, credential, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((VaultCredential)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteVaultCredential(string vaultId, string credentialId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            using PipelineMessage message = CreateDeleteVaultCredentialRequest(vaultId, credentialId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteVaultCredentialAsync(string vaultId, string credentialId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            using PipelineMessage message = CreateDeleteVaultCredentialRequest(vaultId, credentialId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<VaultCredentialDeletionResult> DeleteVaultCredential(string vaultId, string credentialId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            ClientResult result = DeleteVaultCredential(vaultId, credentialId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((VaultCredentialDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<VaultCredentialDeletionResult>> DeleteVaultCredentialAsync(string vaultId, string credentialId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vaultId, nameof(vaultId));
+            Argument.AssertNotNullOrEmpty(credentialId, nameof(credentialId));
+
+            ClientResult result = await DeleteVaultCredentialAsync(vaultId, credentialId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((VaultCredentialDeletionResult)result, result.GetRawResponse());
         }
     }
 }

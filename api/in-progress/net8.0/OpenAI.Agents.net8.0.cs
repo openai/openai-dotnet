@@ -42,6 +42,14 @@ namespace OpenAI.Agents {
         public virtual ClientResult CreateAgentSessionEvents(string sessionId, BinaryContent content, string idempotencyKey = null, RequestOptions options = null);
         public virtual Task<ClientResult> CreateAgentSessionEventsAsync(string sessionId, CreateSessionEventsParams events, string idempotencyKey = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateAgentSessionEventsAsync(string sessionId, BinaryContent content, string idempotencyKey = null, RequestOptions options = null);
+        public virtual ClientResult<Vault> CreateVault(VaultCreationOptions vault, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateVault(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<Vault>> CreateVaultAsync(VaultCreationOptions vault, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateVaultAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<VaultCredential> CreateVaultCredential(string vaultId, VaultCredentialCreationOptions credential, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateVaultCredential(string vaultId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<VaultCredential>> CreateVaultCredentialAsync(string vaultId, VaultCredentialCreationOptions credential, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateVaultCredentialAsync(string vaultId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteAgent(string agentId, RequestOptions options);
         public virtual ClientResult<AgentDeletionResult> DeleteAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentAsync(string agentId, RequestOptions options);
@@ -54,6 +62,14 @@ namespace OpenAI.Agents {
         public virtual Task<ClientResult<AgentSessionArtifactDeletionResult>> DeleteAgentSessionArtifactAsync(string sessionId, string artifactId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteAgentSessionAsync(string sessionId, RequestOptions options);
         public virtual Task<ClientResult<AgentSessionDeletionResult>> DeleteAgentSessionAsync(string sessionId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DeleteVault(string vaultId, RequestOptions options);
+        public virtual ClientResult<VaultDeletionResult> DeleteVault(string vaultId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteVaultAsync(string vaultId, RequestOptions options);
+        public virtual Task<ClientResult<VaultDeletionResult>> DeleteVaultAsync(string vaultId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DeleteVaultCredential(string vaultId, string credentialId, RequestOptions options);
+        public virtual ClientResult<VaultCredentialDeletionResult> DeleteVaultCredential(string vaultId, string credentialId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteVaultCredentialAsync(string vaultId, string credentialId, RequestOptions options);
+        public virtual Task<ClientResult<VaultCredentialDeletionResult>> DeleteVaultCredentialAsync(string vaultId, string credentialId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<Agent> GetAgents(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetAgents(int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<Agent> GetAgentsAsync(int? limit = null, AgentCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
@@ -92,6 +108,14 @@ namespace OpenAI.Agents {
         public virtual CollectionResult GetAgentSessionTurns(string sessionId, int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<AgentSessionTurn> GetAgentSessionTurnsAsync(string sessionId, int? limit = null, AgentSessionTurnCollectionOrder? order = null, string after = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetAgentSessionTurnsAsync(string sessionId, int? limit, string order, string after, RequestOptions options);
+        public virtual CollectionResult<VaultCredential> GetVaultCredentials(string vaultId, VaultCollectionOrder? order = null, int? limit = null, IEnumerable<VaultStatusParam> status = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetVaultCredentials(string vaultId, string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<VaultCredential> GetVaultCredentialsAsync(string vaultId, VaultCollectionOrder? order = null, int? limit = null, IEnumerable<VaultStatusParam> status = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetVaultCredentialsAsync(string vaultId, string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options);
+        public virtual CollectionResult<Vault> GetVaults(VaultCollectionOrder? order = null, int? limit = null, IEnumerable<VaultStatusParam> status = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetVaults(string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options);
+        public virtual AsyncCollectionResult<Vault> GetVaultsAsync(VaultCollectionOrder? order = null, int? limit = null, IEnumerable<VaultStatusParam> status = null, string after = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetVaultsAsync(string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options);
         public virtual ClientResult RetrieveAgent(string agentId, RequestOptions options);
         public virtual ClientResult<Agent> RetrieveAgent(string agentId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentAsync(string agentId, RequestOptions options);
@@ -120,6 +144,18 @@ namespace OpenAI.Agents {
         public virtual ClientResult<AgentSessionTurn> RetrieveAgentSessionTurn(string sessionId, string turnId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, RequestOptions options);
         public virtual Task<ClientResult<AgentSessionTurn>> RetrieveAgentSessionTurnAsync(string sessionId, string turnId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveVault(string vaultId, RequestOptions options);
+        public virtual ClientResult<Vault> RetrieveVault(string vaultId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveVaultAsync(string vaultId, RequestOptions options);
+        public virtual Task<ClientResult<Vault>> RetrieveVaultAsync(string vaultId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RetrieveVaultCredential(string vaultId, string credentialId, RequestOptions options);
+        public virtual ClientResult<VaultCredential> RetrieveVaultCredential(string vaultId, string credentialId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RetrieveVaultCredentialAsync(string vaultId, string credentialId, RequestOptions options);
+        public virtual Task<ClientResult<VaultCredential>> RetrieveVaultCredentialAsync(string vaultId, string credentialId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<VaultCredential> RotateVaultCredential(string vaultId, string credentialId, VaultCredentialRotationOptions credential, CancellationToken cancellationToken = default);
+        public virtual ClientResult RotateVaultCredential(string vaultId, string credentialId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<VaultCredential>> RotateVaultCredentialAsync(string vaultId, string credentialId, VaultCredentialRotationOptions credential, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RotateVaultCredentialAsync(string vaultId, string credentialId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<Agent> UpdateAgent(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
         public virtual ClientResult UpdateAgent(string agentId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<Agent>> UpdateAgentAsync(string agentId, AgentModificationOptions agent, CancellationToken cancellationToken = default);
@@ -751,6 +787,44 @@ namespace OpenAI.Agents {
         public string TurnId { get; set; }
     }
     [Experimental("OPENAI001")]
+    public class CreateMcpOauthRefreshParam : IJsonModel<CreateMcpOauthRefreshParam>, IPersistableModel<CreateMcpOauthRefreshParam> {
+        public CreateMcpOauthRefreshParam();
+        public CreateMcpOauthRefreshParam(string tokenEndpoint, string clientId, string refreshToken, CreateMcpOauthTokenEndpointAuthParam tokenEndpointAuth);
+        public string ClientId { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string RefreshToken { get; set; }
+        public string Resource { get; set; }
+        public string Scope { get; set; }
+        public string TokenEndpoint { get; set; }
+        public CreateMcpOauthTokenEndpointAuthParam TokenEndpointAuth { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateMcpOauthTokenEndpointAuthParam : IJsonModel<CreateMcpOauthTokenEndpointAuthParam>, IPersistableModel<CreateMcpOauthTokenEndpointAuthParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateMcpOauthTokenEndpointAuthParamClientSecretBasic : CreateMcpOauthTokenEndpointAuthParam, IJsonModel<CreateMcpOauthTokenEndpointAuthParamClientSecretBasic>, IPersistableModel<CreateMcpOauthTokenEndpointAuthParamClientSecretBasic> {
+        public CreateMcpOauthTokenEndpointAuthParamClientSecretBasic();
+        public CreateMcpOauthTokenEndpointAuthParamClientSecretBasic(string clientSecret);
+        public string ClientSecret { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateMcpOauthTokenEndpointAuthParamClientSecretPost : CreateMcpOauthTokenEndpointAuthParam, IJsonModel<CreateMcpOauthTokenEndpointAuthParamClientSecretPost>, IPersistableModel<CreateMcpOauthTokenEndpointAuthParamClientSecretPost> {
+        public CreateMcpOauthTokenEndpointAuthParamClientSecretPost();
+        public CreateMcpOauthTokenEndpointAuthParamClientSecretPost(string clientSecret);
+        public string ClientSecret { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateMcpOauthTokenEndpointAuthParamNone : CreateMcpOauthTokenEndpointAuthParam, IJsonModel<CreateMcpOauthTokenEndpointAuthParamNone>, IPersistableModel<CreateMcpOauthTokenEndpointAuthParamNone> {
+        public CreateMcpOauthTokenEndpointAuthParamNone();
+    }
+    [Experimental("OPENAI001")]
     public class CreateSessionEventsParams : IJsonModel<CreateSessionEventsParams>, IPersistableModel<CreateSessionEventsParams> {
         public CreateSessionEventsParams();
         public CreateSessionEventsParams(IEnumerable<SessionInputParam> events);
@@ -771,6 +845,37 @@ namespace OpenAI.Agents {
         public string ReasoningEffort { get; set; }
         public FunctionCallStatusResource Status { get; set; }
         public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateVaultCredentialAuthParam : IJsonModel<CreateVaultCredentialAuthParam>, IPersistableModel<CreateVaultCredentialAuthParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateVaultCredentialAuthParamEnvironmentVariable : CreateVaultCredentialAuthParam, IJsonModel<CreateVaultCredentialAuthParamEnvironmentVariable>, IPersistableModel<CreateVaultCredentialAuthParamEnvironmentVariable> {
+        public CreateVaultCredentialAuthParamEnvironmentVariable();
+        public CreateVaultCredentialAuthParamEnvironmentVariable(string secretName, string secretValue, VaultCredentialNetworkingParam networking);
+        public VaultCredentialNetworkingParam Networking { get; set; }
+        public string SecretName { get; set; }
+        public string SecretValue { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateVaultCredentialAuthParamMcpOauth : CreateVaultCredentialAuthParam, IJsonModel<CreateVaultCredentialAuthParamMcpOauth>, IPersistableModel<CreateVaultCredentialAuthParamMcpOauth> {
+        public CreateVaultCredentialAuthParamMcpOauth();
+        public CreateVaultCredentialAuthParamMcpOauth(string mcpServerUrl, string accessToken);
+        public string AccessToken { get; set; }
+        public string ExpiresAt { get; set; }
+        public string McpServerUrl { get; set; }
+        public CreateMcpOauthRefreshParam Refresh { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class CreateVaultCredentialAuthParamStaticBearer : CreateVaultCredentialAuthParam, IJsonModel<CreateVaultCredentialAuthParamStaticBearer>, IPersistableModel<CreateVaultCredentialAuthParamStaticBearer> {
+        public CreateVaultCredentialAuthParamStaticBearer();
+        public CreateVaultCredentialAuthParamStaticBearer(string mcpServerUrl, string token);
+        public string McpServerUrl { get; set; }
+        public string Token { get; set; }
     }
     [Experimental("OPENAI001")]
     public class EncryptedContentResource : AgentContentResource, IJsonModel<EncryptedContentResource>, IPersistableModel<EncryptedContentResource> {
@@ -936,6 +1041,54 @@ namespace OpenAI.Agents {
         public static implicit operator McpConnectionOriginResource(string value);
         public static implicit operator McpConnectionOriginResource?(string value);
         public static bool operator !=(McpConnectionOriginResource left, McpConnectionOriginResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class McpOauthRefreshResource : IJsonModel<McpOauthRefreshResource>, IPersistableModel<McpOauthRefreshResource> {
+        public string ClientId { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Resource { get; set; }
+        public string Scope { get; set; }
+        public string TokenEndpoint { get; set; }
+        public McpOauthTokenEndpointAuthResource TokenEndpointAuth { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class McpOauthTokenEndpointAuthResource : IJsonModel<McpOauthTokenEndpointAuthResource>, IPersistableModel<McpOauthTokenEndpointAuthResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class McpOauthTokenEndpointAuthResourceClientSecretBasic : McpOauthTokenEndpointAuthResource, IJsonModel<McpOauthTokenEndpointAuthResourceClientSecretBasic>, IPersistableModel<McpOauthTokenEndpointAuthResourceClientSecretBasic> {
+        public McpOauthTokenEndpointAuthResourceClientSecretBasic();
+    }
+    [Experimental("OPENAI001")]
+    public class McpOauthTokenEndpointAuthResourceClientSecretPost : McpOauthTokenEndpointAuthResource, IJsonModel<McpOauthTokenEndpointAuthResourceClientSecretPost>, IPersistableModel<McpOauthTokenEndpointAuthResourceClientSecretPost> {
+        public McpOauthTokenEndpointAuthResourceClientSecretPost();
+    }
+    [Experimental("OPENAI001")]
+    public class McpOauthTokenEndpointAuthResourceNone : McpOauthTokenEndpointAuthResource, IJsonModel<McpOauthTokenEndpointAuthResourceNone>, IPersistableModel<McpOauthTokenEndpointAuthResourceNone> {
+        public McpOauthTokenEndpointAuthResourceNone();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct McpOauthTokenEndpointAuthType : IEquatable<McpOauthTokenEndpointAuthType> {
+        public McpOauthTokenEndpointAuthType(string value);
+        public static McpOauthTokenEndpointAuthType ClientSecretBasic { get; }
+        public static McpOauthTokenEndpointAuthType ClientSecretPost { get; }
+        public static McpOauthTokenEndpointAuthType None { get; }
+        public readonly bool Equals(McpOauthTokenEndpointAuthType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(McpOauthTokenEndpointAuthType left, McpOauthTokenEndpointAuthType right);
+        public static implicit operator McpOauthTokenEndpointAuthType(string value);
+        public static implicit operator McpOauthTokenEndpointAuthType?(string value);
+        public static bool operator !=(McpOauthTokenEndpointAuthType left, McpOauthTokenEndpointAuthType right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
@@ -1267,13 +1420,13 @@ namespace OpenAI.Agents {
     [Experimental("OPENAI001")]
     public readonly partial struct ReasoningEffortParam : IEquatable<ReasoningEffortParam> {
         public ReasoningEffortParam(string value);
+        public static ReasoningEffortParam ExtraHigh { get; }
         public static ReasoningEffortParam High { get; }
         public static ReasoningEffortParam Low { get; }
         public static ReasoningEffortParam Max { get; }
         public static ReasoningEffortParam Medium { get; }
         public static ReasoningEffortParam Minimal { get; }
         public static ReasoningEffortParam None { get; }
-        public static ReasoningEffortParam Xhigh { get; }
         public readonly bool Equals(ReasoningEffortParam other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -1366,6 +1519,59 @@ namespace OpenAI.Agents {
         public string SenderAgentId { get; set; }
         public FunctionCallStatusResource Status { get; set; }
         public string TurnId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateMcpOauthRefreshParam : IJsonModel<RotateMcpOauthRefreshParam>, IPersistableModel<RotateMcpOauthRefreshParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string RefreshToken { get; set; }
+        public string Scope { get; set; }
+        public RotateMcpOauthTokenEndpointAuthParam TokenEndpointAuth { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateMcpOauthTokenEndpointAuthParam : IJsonModel<RotateMcpOauthTokenEndpointAuthParam>, IPersistableModel<RotateMcpOauthTokenEndpointAuthParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateMcpOauthTokenEndpointAuthParamClientSecretBasic : RotateMcpOauthTokenEndpointAuthParam, IJsonModel<RotateMcpOauthTokenEndpointAuthParamClientSecretBasic>, IPersistableModel<RotateMcpOauthTokenEndpointAuthParamClientSecretBasic> {
+        public RotateMcpOauthTokenEndpointAuthParamClientSecretBasic();
+        public string ClientSecret { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateMcpOauthTokenEndpointAuthParamClientSecretPost : RotateMcpOauthTokenEndpointAuthParam, IJsonModel<RotateMcpOauthTokenEndpointAuthParamClientSecretPost>, IPersistableModel<RotateMcpOauthTokenEndpointAuthParamClientSecretPost> {
+        public RotateMcpOauthTokenEndpointAuthParamClientSecretPost();
+        public string ClientSecret { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateVaultCredentialAuthParam : IJsonModel<RotateVaultCredentialAuthParam>, IPersistableModel<RotateVaultCredentialAuthParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateVaultCredentialAuthParamEnvironmentVariable : RotateVaultCredentialAuthParam, IJsonModel<RotateVaultCredentialAuthParamEnvironmentVariable>, IPersistableModel<RotateVaultCredentialAuthParamEnvironmentVariable> {
+        public RotateVaultCredentialAuthParamEnvironmentVariable();
+        public RotateVaultCredentialAuthParamEnvironmentVariable(string secretValue);
+        public string SecretValue { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateVaultCredentialAuthParamMcpOauth : RotateVaultCredentialAuthParam, IJsonModel<RotateVaultCredentialAuthParamMcpOauth>, IPersistableModel<RotateVaultCredentialAuthParamMcpOauth> {
+        public RotateVaultCredentialAuthParamMcpOauth();
+        public string AccessToken { get; set; }
+        public string ExpiresAt { get; set; }
+        public RotateMcpOauthRefreshParam Refresh { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class RotateVaultCredentialAuthParamStaticBearer : RotateVaultCredentialAuthParam, IJsonModel<RotateVaultCredentialAuthParamStaticBearer>, IPersistableModel<RotateVaultCredentialAuthParamStaticBearer> {
+        public RotateVaultCredentialAuthParamStaticBearer();
+        public RotateVaultCredentialAuthParamStaticBearer(string token);
+        public string Token { get; set; }
     }
     [Experimental("OPENAI001")]
     public class SendSubagentInputCallItemResource : AgentSessionItem, IJsonModel<SendSubagentInputCallItemResource>, IPersistableModel<SendSubagentInputCallItemResource> {
@@ -2173,6 +2379,253 @@ namespace OpenAI.Agents {
         public static implicit operator TurnStatusResource(string value);
         public static implicit operator TurnStatusResource?(string value);
         public static bool operator !=(TurnStatusResource left, TurnStatusResource right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class Vault : IJsonModel<Vault>, IPersistableModel<Vault> {
+        public int CreatedAt { get; set; }
+        public string Id { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator Vault(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCollectionOptions : IJsonModel<VaultCollectionOptions>, IPersistableModel<VaultCollectionOptions> {
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public VaultCollectionOrder? Order { get; set; }
+        public IList<VaultStatusParam> Status { get; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VaultCollectionOrder : IEquatable<VaultCollectionOrder> {
+        public VaultCollectionOrder(string value);
+        public static VaultCollectionOrder Ascending { get; }
+        public static VaultCollectionOrder Descending { get; }
+        public readonly bool Equals(VaultCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VaultCollectionOrder left, VaultCollectionOrder right);
+        public static implicit operator VaultCollectionOrder(string value);
+        public static implicit operator VaultCollectionOrder?(string value);
+        public static bool operator !=(VaultCollectionOrder left, VaultCollectionOrder right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCollectionPage : IJsonModel<VaultCollectionPage>, IPersistableModel<VaultCollectionPage> {
+        public IList<Vault> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator VaultCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCreationOptions : IJsonModel<VaultCreationOptions>, IPersistableModel<VaultCreationOptions> {
+        public VaultCreationOptions();
+        public VaultCreationOptions(string name);
+        public IDictionary<string, string> Metadata { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(VaultCreationOptions vaultCreationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredential : IJsonModel<VaultCredential>, IPersistableModel<VaultCredential> {
+        public VaultCredentialAuthResource Auth { get; set; }
+        public int CreatedAt { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int UpdatedAt { get; set; }
+        public string VaultId { get; set; }
+        public static explicit operator VaultCredential(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialAuthResource : IJsonModel<VaultCredentialAuthResource>, IPersistableModel<VaultCredentialAuthResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialAuthResourceEnvironmentVariable : VaultCredentialAuthResource, IJsonModel<VaultCredentialAuthResourceEnvironmentVariable>, IPersistableModel<VaultCredentialAuthResourceEnvironmentVariable> {
+        public VaultCredentialAuthResourceEnvironmentVariable();
+        public VaultCredentialNetworkingResource Networking { get; set; }
+        public string SecretName { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialAuthResourceMcpOauth : VaultCredentialAuthResource, IJsonModel<VaultCredentialAuthResourceMcpOauth>, IPersistableModel<VaultCredentialAuthResourceMcpOauth> {
+        public VaultCredentialAuthResourceMcpOauth();
+        public string ExpiresAt { get; set; }
+        public string McpServerUrl { get; set; }
+        public McpOauthRefreshResource Refresh { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialAuthResourceStaticBearer : VaultCredentialAuthResource, IJsonModel<VaultCredentialAuthResourceStaticBearer>, IPersistableModel<VaultCredentialAuthResourceStaticBearer> {
+        public VaultCredentialAuthResourceStaticBearer();
+        public string McpServerUrl { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VaultCredentialAuthType : IEquatable<VaultCredentialAuthType> {
+        public VaultCredentialAuthType(string value);
+        public static VaultCredentialAuthType EnvironmentVariable { get; }
+        public static VaultCredentialAuthType McpOauth { get; }
+        public static VaultCredentialAuthType StaticBearer { get; }
+        public readonly bool Equals(VaultCredentialAuthType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VaultCredentialAuthType left, VaultCredentialAuthType right);
+        public static implicit operator VaultCredentialAuthType(string value);
+        public static implicit operator VaultCredentialAuthType?(string value);
+        public static bool operator !=(VaultCredentialAuthType left, VaultCredentialAuthType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialCollectionOptions : IJsonModel<VaultCredentialCollectionOptions>, IPersistableModel<VaultCredentialCollectionOptions> {
+        public VaultCredentialCollectionOptions();
+        public VaultCredentialCollectionOptions(string vaultId);
+        public string After { get; set; }
+        public int? Limit { get; set; }
+        public VaultCollectionOrder? Order { get; set; }
+        public IList<VaultStatusParam> Status { get; }
+        public string VaultId { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialCollectionPage : IJsonModel<VaultCredentialCollectionPage>, IPersistableModel<VaultCredentialCollectionPage> {
+        public IList<VaultCredential> Data { get; }
+        public string FirstId { get; set; }
+        public bool HasMore { get; set; }
+        public string LastId { get; set; }
+        public string Object { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static explicit operator VaultCredentialCollectionPage(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialCreationOptions : IJsonModel<VaultCredentialCreationOptions>, IPersistableModel<VaultCredentialCreationOptions> {
+        public VaultCredentialCreationOptions();
+        public VaultCredentialCreationOptions(string name, CreateVaultCredentialAuthParam auth);
+        public CreateVaultCredentialAuthParam Auth { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(VaultCredentialCreationOptions vaultCredentialCreationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialDeletionResult : IJsonModel<VaultCredentialDeletionResult>, IPersistableModel<VaultCredentialDeletionResult> {
+        public bool Deleted { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string VaultCredentialId { get; set; }
+        public static explicit operator VaultCredentialDeletionResult(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialNetworkingParam : IJsonModel<VaultCredentialNetworkingParam>, IPersistableModel<VaultCredentialNetworkingParam> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialNetworkingParamLimited : VaultCredentialNetworkingParam, IJsonModel<VaultCredentialNetworkingParamLimited>, IPersistableModel<VaultCredentialNetworkingParamLimited> {
+        public VaultCredentialNetworkingParamLimited();
+        public VaultCredentialNetworkingParamLimited(IEnumerable<string> allowedHosts);
+        public IList<string> AllowedHosts { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialNetworkingParamUnrestricted : VaultCredentialNetworkingParam, IJsonModel<VaultCredentialNetworkingParamUnrestricted>, IPersistableModel<VaultCredentialNetworkingParamUnrestricted> {
+        public VaultCredentialNetworkingParamUnrestricted();
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialNetworkingResource : IJsonModel<VaultCredentialNetworkingResource>, IPersistableModel<VaultCredentialNetworkingResource> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialNetworkingResourceLimited : VaultCredentialNetworkingResource, IJsonModel<VaultCredentialNetworkingResourceLimited>, IPersistableModel<VaultCredentialNetworkingResourceLimited> {
+        public VaultCredentialNetworkingResourceLimited();
+        public IList<string> AllowedHosts { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialNetworkingResourceUnrestricted : VaultCredentialNetworkingResource, IJsonModel<VaultCredentialNetworkingResourceUnrestricted>, IPersistableModel<VaultCredentialNetworkingResourceUnrestricted> {
+        public VaultCredentialNetworkingResourceUnrestricted();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VaultCredentialNetworkingType : IEquatable<VaultCredentialNetworkingType> {
+        public VaultCredentialNetworkingType(string value);
+        public static VaultCredentialNetworkingType Limited { get; }
+        public static VaultCredentialNetworkingType Unrestricted { get; }
+        public readonly bool Equals(VaultCredentialNetworkingType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VaultCredentialNetworkingType left, VaultCredentialNetworkingType right);
+        public static implicit operator VaultCredentialNetworkingType(string value);
+        public static implicit operator VaultCredentialNetworkingType?(string value);
+        public static bool operator !=(VaultCredentialNetworkingType left, VaultCredentialNetworkingType right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class VaultCredentialRotationOptions : IJsonModel<VaultCredentialRotationOptions>, IPersistableModel<VaultCredentialRotationOptions> {
+        public VaultCredentialRotationOptions();
+        public VaultCredentialRotationOptions(RotateVaultCredentialAuthParam auth);
+        public RotateVaultCredentialAuthParam Auth { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public static implicit operator BinaryContent(VaultCredentialRotationOptions vaultCredentialRotationOptions);
+    }
+    [Experimental("OPENAI001")]
+    public class VaultDeletionResult : IJsonModel<VaultDeletionResult>, IPersistableModel<VaultDeletionResult> {
+        public bool Deleted { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string VaultId { get; set; }
+        public static explicit operator VaultDeletionResult(ClientResult result);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VaultStatusParam : IEquatable<VaultStatusParam> {
+        public VaultStatusParam(string value);
+        public static VaultStatusParam Active { get; }
+        public static VaultStatusParam Archived { get; }
+        public readonly bool Equals(VaultStatusParam other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VaultStatusParam left, VaultStatusParam right);
+        public static implicit operator VaultStatusParam(string value);
+        public static implicit operator VaultStatusParam?(string value);
+        public static bool operator !=(VaultStatusParam left, VaultStatusParam right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]

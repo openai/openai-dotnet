@@ -3295,6 +3295,232 @@ namespace OpenAI
                 error);
         }
 
+        public static VaultCollectionPage VaultCollectionPage(IEnumerable<Vault> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<Vault>();
+
+            return new VaultCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
+        public static VaultCreationOptions VaultCreationOptions(string name = default, IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VaultCreationOptions(name, metadata, default);
+        }
+
+        public static VaultCredentialCollectionPage VaultCredentialCollectionPage(IEnumerable<VaultCredential> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<VaultCredential>();
+
+            return new VaultCredentialCollectionPage(
+                "list",
+                data.ToList(),
+                firstId,
+                lastId,
+                hasMore,
+                default);
+        }
+
+        public static VaultCredentialAuthResource VaultCredentialAuthResource(string kind = default)
+        {
+            return new InternalUnknownVaultCredentialAuthResource(new VaultCredentialAuthType(kind), default);
+        }
+
+        public static VaultCredentialAuthResourceMcpOauth VaultCredentialAuthResourceMcpOauth(string mcpServerUrl = default, string expiresAt = default, McpOauthRefreshResource refresh = default)
+        {
+            return new VaultCredentialAuthResourceMcpOauth(VaultCredentialAuthType.McpOauth, default, mcpServerUrl, expiresAt, refresh);
+        }
+
+        public static McpOauthRefreshResource McpOauthRefreshResource(string tokenEndpoint = default, string clientId = default, string resource = default, string scope = default, McpOauthTokenEndpointAuthResource tokenEndpointAuth = default)
+        {
+            return new McpOauthRefreshResource(
+                tokenEndpoint,
+                clientId,
+                resource,
+                scope,
+                tokenEndpointAuth,
+                default);
+        }
+
+        public static McpOauthTokenEndpointAuthResource McpOauthTokenEndpointAuthResource(string kind = default)
+        {
+            return new InternalUnknownMcpOauthTokenEndpointAuthResource(new McpOauthTokenEndpointAuthType(kind), default);
+        }
+
+        public static McpOauthTokenEndpointAuthResourceNone McpOauthTokenEndpointAuthResourceNone()
+        {
+            return new McpOauthTokenEndpointAuthResourceNone(McpOauthTokenEndpointAuthType.None, default);
+        }
+
+        public static McpOauthTokenEndpointAuthResourceClientSecretBasic McpOauthTokenEndpointAuthResourceClientSecretBasic()
+        {
+            return new McpOauthTokenEndpointAuthResourceClientSecretBasic(McpOauthTokenEndpointAuthType.ClientSecretBasic, default);
+        }
+
+        public static McpOauthTokenEndpointAuthResourceClientSecretPost McpOauthTokenEndpointAuthResourceClientSecretPost()
+        {
+            return new McpOauthTokenEndpointAuthResourceClientSecretPost(McpOauthTokenEndpointAuthType.ClientSecretPost, default);
+        }
+
+        public static VaultCredentialAuthResourceStaticBearer VaultCredentialAuthResourceStaticBearer(string mcpServerUrl = default)
+        {
+            return new VaultCredentialAuthResourceStaticBearer(VaultCredentialAuthType.StaticBearer, default, mcpServerUrl);
+        }
+
+        public static VaultCredentialAuthResourceEnvironmentVariable VaultCredentialAuthResourceEnvironmentVariable(string secretName = default, VaultCredentialNetworkingResource networking = default)
+        {
+            return new VaultCredentialAuthResourceEnvironmentVariable(VaultCredentialAuthType.EnvironmentVariable, default, secretName, networking);
+        }
+
+        public static VaultCredentialNetworkingResource VaultCredentialNetworkingResource(string kind = default)
+        {
+            return new InternalUnknownVaultCredentialNetworkingResource(new VaultCredentialNetworkingType(kind), default);
+        }
+
+        public static VaultCredentialNetworkingResourceUnrestricted VaultCredentialNetworkingResourceUnrestricted()
+        {
+            return new VaultCredentialNetworkingResourceUnrestricted(VaultCredentialNetworkingType.Unrestricted, default);
+        }
+
+        public static VaultCredentialNetworkingResourceLimited VaultCredentialNetworkingResourceLimited(IEnumerable<string> allowedHosts = default)
+        {
+            allowedHosts ??= new ChangeTrackingList<string>();
+
+            return new VaultCredentialNetworkingResourceLimited(VaultCredentialNetworkingType.Limited, default, allowedHosts.ToList());
+        }
+
+        public static VaultCredentialCreationOptions VaultCredentialCreationOptions(string name = default, CreateVaultCredentialAuthParam auth = default)
+        {
+            return new VaultCredentialCreationOptions(name, auth, default);
+        }
+
+        public static CreateVaultCredentialAuthParam CreateVaultCredentialAuthParam(string kind = default)
+        {
+            return new InternalUnknownCreateVaultCredentialAuthParam(new VaultCredentialAuthType(kind), default);
+        }
+
+        public static CreateVaultCredentialAuthParamMcpOauth CreateVaultCredentialAuthParamMcpOauth(string mcpServerUrl = default, string accessToken = default, string expiresAt = default, CreateMcpOauthRefreshParam refresh = default)
+        {
+            return new CreateVaultCredentialAuthParamMcpOauth(
+                VaultCredentialAuthType.McpOauth,
+                default,
+                mcpServerUrl,
+                accessToken,
+                expiresAt,
+                refresh);
+        }
+
+        public static CreateMcpOauthRefreshParam CreateMcpOauthRefreshParam(string tokenEndpoint = default, string clientId = default, string resource = default, string scope = default, string refreshToken = default, CreateMcpOauthTokenEndpointAuthParam tokenEndpointAuth = default)
+        {
+            return new CreateMcpOauthRefreshParam(
+                tokenEndpoint,
+                clientId,
+                resource,
+                scope,
+                refreshToken,
+                tokenEndpointAuth,
+                default);
+        }
+
+        public static CreateMcpOauthTokenEndpointAuthParam CreateMcpOauthTokenEndpointAuthParam(string kind = default)
+        {
+            return new InternalUnknownCreateMcpOauthTokenEndpointAuthParam(new McpOauthTokenEndpointAuthType(kind), default);
+        }
+
+        public static CreateMcpOauthTokenEndpointAuthParamNone CreateMcpOauthTokenEndpointAuthParamNone()
+        {
+            return new CreateMcpOauthTokenEndpointAuthParamNone(McpOauthTokenEndpointAuthType.None, default);
+        }
+
+        public static CreateMcpOauthTokenEndpointAuthParamClientSecretBasic CreateMcpOauthTokenEndpointAuthParamClientSecretBasic(string clientSecret = default)
+        {
+            return new CreateMcpOauthTokenEndpointAuthParamClientSecretBasic(McpOauthTokenEndpointAuthType.ClientSecretBasic, default, clientSecret);
+        }
+
+        public static CreateMcpOauthTokenEndpointAuthParamClientSecretPost CreateMcpOauthTokenEndpointAuthParamClientSecretPost(string clientSecret = default)
+        {
+            return new CreateMcpOauthTokenEndpointAuthParamClientSecretPost(McpOauthTokenEndpointAuthType.ClientSecretPost, default, clientSecret);
+        }
+
+        public static CreateVaultCredentialAuthParamStaticBearer CreateVaultCredentialAuthParamStaticBearer(string mcpServerUrl = default, string token = default)
+        {
+            return new CreateVaultCredentialAuthParamStaticBearer(VaultCredentialAuthType.StaticBearer, default, mcpServerUrl, token);
+        }
+
+        public static CreateVaultCredentialAuthParamEnvironmentVariable CreateVaultCredentialAuthParamEnvironmentVariable(string secretName = default, string secretValue = default, VaultCredentialNetworkingParam networking = default)
+        {
+            return new CreateVaultCredentialAuthParamEnvironmentVariable(VaultCredentialAuthType.EnvironmentVariable, default, secretName, secretValue, networking);
+        }
+
+        public static VaultCredentialNetworkingParam VaultCredentialNetworkingParam(string kind = default)
+        {
+            return new InternalUnknownVaultCredentialNetworkingParam(new VaultCredentialNetworkingType(kind), default);
+        }
+
+        public static VaultCredentialNetworkingParamUnrestricted VaultCredentialNetworkingParamUnrestricted()
+        {
+            return new VaultCredentialNetworkingParamUnrestricted(VaultCredentialNetworkingType.Unrestricted, default);
+        }
+
+        public static VaultCredentialNetworkingParamLimited VaultCredentialNetworkingParamLimited(IEnumerable<string> allowedHosts = default)
+        {
+            allowedHosts ??= new ChangeTrackingList<string>();
+
+            return new VaultCredentialNetworkingParamLimited(VaultCredentialNetworkingType.Limited, default, allowedHosts.ToList());
+        }
+
+        public static VaultCredentialRotationOptions VaultCredentialRotationOptions(RotateVaultCredentialAuthParam auth = default)
+        {
+            return new VaultCredentialRotationOptions(auth, default);
+        }
+
+        public static RotateVaultCredentialAuthParam RotateVaultCredentialAuthParam(string kind = default)
+        {
+            return new InternalUnknownRotateVaultCredentialAuthParam(new VaultCredentialAuthType(kind), default);
+        }
+
+        public static RotateVaultCredentialAuthParamMcpOauth RotateVaultCredentialAuthParamMcpOauth(string accessToken = default, string expiresAt = default, RotateMcpOauthRefreshParam refresh = default)
+        {
+            return new RotateVaultCredentialAuthParamMcpOauth(VaultCredentialAuthType.McpOauth, default, accessToken, expiresAt, refresh);
+        }
+
+        public static RotateMcpOauthRefreshParam RotateMcpOauthRefreshParam(string refreshToken = default, string scope = default, RotateMcpOauthTokenEndpointAuthParam tokenEndpointAuth = default)
+        {
+            return new RotateMcpOauthRefreshParam(refreshToken, scope, tokenEndpointAuth, default);
+        }
+
+        public static RotateMcpOauthTokenEndpointAuthParam RotateMcpOauthTokenEndpointAuthParam(string kind = default)
+        {
+            return new InternalUnknownRotateMcpOauthTokenEndpointAuthParam(new McpOauthTokenEndpointAuthType(kind), default);
+        }
+
+        public static RotateMcpOauthTokenEndpointAuthParamClientSecretBasic RotateMcpOauthTokenEndpointAuthParamClientSecretBasic(string clientSecret = default)
+        {
+            return new RotateMcpOauthTokenEndpointAuthParamClientSecretBasic(McpOauthTokenEndpointAuthType.ClientSecretBasic, default, clientSecret);
+        }
+
+        public static RotateMcpOauthTokenEndpointAuthParamClientSecretPost RotateMcpOauthTokenEndpointAuthParamClientSecretPost(string clientSecret = default)
+        {
+            return new RotateMcpOauthTokenEndpointAuthParamClientSecretPost(McpOauthTokenEndpointAuthType.ClientSecretPost, default, clientSecret);
+        }
+
+        public static RotateVaultCredentialAuthParamStaticBearer RotateVaultCredentialAuthParamStaticBearer(string token = default)
+        {
+            return new RotateVaultCredentialAuthParamStaticBearer(VaultCredentialAuthType.StaticBearer, default, token);
+        }
+
+        public static RotateVaultCredentialAuthParamEnvironmentVariable RotateVaultCredentialAuthParamEnvironmentVariable(string secretValue = default)
+        {
+            return new RotateVaultCredentialAuthParamEnvironmentVariable(VaultCredentialAuthType.EnvironmentVariable, default, secretValue);
+        }
+
         public static SpeechTokenUsage SpeechTokenUsage(int inputTokenCount = default, int outputTokenCount = default, int totalTokenCount = default)
         {
             return new SpeechTokenUsage(inputTokenCount, outputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
@@ -3746,6 +3972,26 @@ namespace OpenAI
                 turnId,
                 limit,
                 order,
+                after,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VaultCollectionOptions VaultCollectionOptions(VaultCollectionOrder? order = default, int? limit = default, IEnumerable<VaultStatusParam> status = default, string after = default)
+        {
+            status ??= new ChangeTrackingList<VaultStatusParam>();
+
+            return new VaultCollectionOptions(order, limit, status.ToList(), after, additionalBinaryDataProperties: null);
+        }
+
+        public static VaultCredentialCollectionOptions VaultCredentialCollectionOptions(string vaultId = default, VaultCollectionOrder? order = default, int? limit = default, IEnumerable<VaultStatusParam> status = default, string after = default)
+        {
+            status ??= new ChangeTrackingList<VaultStatusParam>();
+
+            return new VaultCredentialCollectionOptions(
+                vaultId,
+                order,
+                limit,
+                status.ToList(),
                 after,
                 additionalBinaryDataProperties: null);
         }

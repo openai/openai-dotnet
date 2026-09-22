@@ -4,6 +4,7 @@
 
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using OpenAI;
 
 namespace OpenAI.Agents
@@ -523,6 +524,176 @@ namespace OpenAI.Agents
             }
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetVaultsRequest(string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults", false);
+            if (order != null)
+            {
+                uri.AppendQuery("order", order, true);
+            }
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+            }
+            if (status != null && !(status is ChangeTrackingList<VaultStatusParam> changeTrackingList && changeTrackingList.IsUndefined))
+            {
+                uri.AppendQueryDelimited("status", status, ",", escape: true);
+            }
+            if (after != null)
+            {
+                uri.AppendQuery("after", after, true);
+            }
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateCreateVaultRequest(BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier201);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRetrieveVaultRequest(string vaultId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateDeleteVaultRequest(string vaultId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetVaultCredentialsRequest(string vaultId, string order, int? limit, IEnumerable<VaultStatusParam> status, string after, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            uri.AppendPath("/credentials", false);
+            if (order != null)
+            {
+                uri.AppendQuery("order", order, true);
+            }
+            if (limit != null)
+            {
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+            }
+            if (status != null && !(status is ChangeTrackingList<VaultStatusParam> changeTrackingList && changeTrackingList.IsUndefined))
+            {
+                uri.AppendQueryDelimited("status", status, ",", escape: true);
+            }
+            if (after != null)
+            {
+                uri.AppendQuery("after", after, true);
+            }
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateCreateVaultCredentialRequest(string vaultId, BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            uri.AppendPath("/credentials", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier201);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRetrieveVaultCredentialRequest(string vaultId, string credentialId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            uri.AppendPath("/credentials/", false);
+            uri.AppendPath(credentialId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateRotateVaultCredentialRequest(string vaultId, string credentialId, BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            uri.AppendPath("/credentials/", false);
+            uri.AppendPath(credentialId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateDeleteVaultCredentialRequest(string vaultId, string credentialId, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/vaults/", false);
+            uri.AppendPath(vaultId, true);
+            uri.AppendPath("/credentials/", false);
+            uri.AppendPath(credentialId, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }

@@ -33,6 +33,15 @@ using TypeSpec.HttpClient.CSharp;
 @@clientLocation(listAgentSessionSubagentTurnItems, "Agents");
 @@clientLocation(listAgentSessionEvents, "Agents");
 @@clientLocation(createAgentSessionEvents, "Agents");
+@@clientLocation(listVaults, "Agents");
+@@clientLocation(createVault, "Agents");
+@@clientLocation(retrieveVault, "Agents");
+@@clientLocation(deleteVault, "Agents");
+@@clientLocation(listVaultCredentials, "Agents");
+@@clientLocation(createVaultCredential, "Agents");
+@@clientLocation(retrieveVaultCredential, "Agents");
+@@clientLocation(rotateVaultCredential, "Agents");
+@@clientLocation(deleteVaultCredential, "Agents");
 
 // ------------ Model names ------------
 
@@ -74,6 +83,21 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(SubagentListResource, "AgentSessionSubagentCollectionPage");
 @@clientName(AgentSessionSubagentCollectionOrder.asc, "Ascending");
 @@clientName(AgentSessionSubagentCollectionOrder.desc, "Descending");
+
+@@clientName(VaultResource, "Vault");
+@@clientName(CreateVaultParams, "VaultCreationOptions");
+@@clientName(DeletedVaultResource, "VaultDeletionResult");
+@@clientName(DeletedVaultResource.id, "VaultId");
+@@clientName(VaultListResource, "VaultCollectionPage");
+@@clientName(VaultCollectionOrder.asc, "Ascending");
+@@clientName(VaultCollectionOrder.desc, "Descending");
+
+@@clientName(VaultCredentialResource, "VaultCredential");
+@@clientName(CreateVaultCredentialParams, "VaultCredentialCreationOptions");
+@@clientName(RotateVaultCredentialParams, "VaultCredentialRotationOptions");
+@@clientName(DeletedVaultCredentialResource, "VaultCredentialDeletionResult");
+@@clientName(DeletedVaultCredentialResource.id, "VaultCredentialId");
+@@clientName(VaultCredentialListResource, "VaultCredentialCollectionPage");
 
 // ------------ Free-form JSON payloads ------------
 
@@ -250,3 +274,50 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(SessionInputParamAgentSessionInputCancel);
 @@dynamicModel(SessionInputParamAgentSessionInputToolResult);
 @@dynamicModel(CreateSessionEventsParams);
+
+// Vaults and credentials.
+@@dynamicModel(VaultResource);
+@@dynamicModel(VaultListResource);
+@@dynamicModel(CreateVaultParams);
+@@dynamicModel(DeletedVaultResource);
+@@dynamicModel(VaultCredentialResource);
+@@dynamicModel(VaultCredentialListResource);
+@@dynamicModel(DeletedVaultCredentialResource);
+@@dynamicModel(McpOauthTokenEndpointAuthResource);
+@@dynamicModel(McpOauthTokenEndpointAuthResourceNone);
+@@dynamicModel(McpOauthTokenEndpointAuthResourceClientSecretBasic);
+@@dynamicModel(McpOauthTokenEndpointAuthResourceClientSecretPost);
+@@dynamicModel(McpOauthRefreshResource);
+@@dynamicModel(VaultCredentialNetworkingResource);
+@@dynamicModel(VaultCredentialNetworkingResourceUnrestricted);
+@@dynamicModel(VaultCredentialNetworkingResourceLimited);
+@@dynamicModel(VaultCredentialAuthResource);
+@@dynamicModel(VaultCredentialAuthResourceMcpOauth);
+@@dynamicModel(VaultCredentialAuthResourceStaticBearer);
+@@dynamicModel(VaultCredentialAuthResourceEnvironmentVariable);
+@@dynamicModel(CreateMcpOauthTokenEndpointAuthParam);
+@@dynamicModel(CreateMcpOauthTokenEndpointAuthParamNone);
+@@dynamicModel(CreateMcpOauthTokenEndpointAuthParamClientSecretBasic);
+@@dynamicModel(CreateMcpOauthTokenEndpointAuthParamClientSecretPost);
+@@dynamicModel(CreateMcpOauthRefreshParam);
+@@dynamicModel(VaultCredentialNetworkingParam);
+@@dynamicModel(VaultCredentialNetworkingParamUnrestricted);
+@@dynamicModel(VaultCredentialNetworkingParamLimited);
+@@dynamicModel(CreateVaultCredentialAuthParam);
+@@dynamicModel(CreateVaultCredentialAuthParamMcpOauth);
+@@dynamicModel(CreateVaultCredentialAuthParamStaticBearer);
+@@dynamicModel(CreateVaultCredentialAuthParamEnvironmentVariable);
+@@dynamicModel(CreateVaultCredentialParams);
+@@dynamicModel(RotateMcpOauthTokenEndpointAuthParam);
+@@dynamicModel(RotateMcpOauthTokenEndpointAuthParamClientSecretBasic);
+@@dynamicModel(RotateMcpOauthTokenEndpointAuthParamClientSecretPost);
+@@dynamicModel(RotateMcpOauthRefreshParam);
+@@dynamicModel(RotateVaultCredentialAuthParam);
+@@dynamicModel(RotateVaultCredentialAuthParamMcpOauth);
+@@dynamicModel(RotateVaultCredentialAuthParamStaticBearer);
+@@dynamicModel(RotateVaultCredentialAuthParamEnvironmentVariable);
+@@dynamicModel(RotateVaultCredentialParams);
+
+// ------------ Others ------------
+
+@@clientName(ReasoningEffortParam.xhigh, "ExtraHigh");

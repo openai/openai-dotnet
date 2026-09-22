@@ -213,3 +213,53 @@ namespace OpenAI.Agents;
 [CodeGenType("SessionInputParamAgentSessionInputMessage")] public partial class SessionInputParamAgentSessionInputMessage {}
 [CodeGenType("SessionInputParamAgentSessionInputToolResult")] public partial class SessionInputParamAgentSessionInputToolResult {}
 [CodeGenType("SessionInputType")] public readonly partial struct SessionInputType {}
+
+// ------------ Vaults ------------
+[CodeGenType("CreateMcpOauthRefreshParam")] public partial class CreateMcpOauthRefreshParam {}
+[CodeGenType("CreateMcpOauthTokenEndpointAuthParam")] public partial class CreateMcpOauthTokenEndpointAuthParam {}
+[CodeGenType("CreateMcpOauthTokenEndpointAuthParamClientSecretBasic")] public partial class CreateMcpOauthTokenEndpointAuthParamClientSecretBasic {}
+[CodeGenType("CreateMcpOauthTokenEndpointAuthParamClientSecretPost")] public partial class CreateMcpOauthTokenEndpointAuthParamClientSecretPost {}
+[CodeGenType("CreateMcpOauthTokenEndpointAuthParamNone")] public partial class CreateMcpOauthTokenEndpointAuthParamNone {}
+[CodeGenType("CreateVaultCredentialAuthParam")] public partial class CreateVaultCredentialAuthParam {}
+[CodeGenType("CreateVaultCredentialAuthParamEnvironmentVariable")] public partial class CreateVaultCredentialAuthParamEnvironmentVariable {}
+[CodeGenType("CreateVaultCredentialAuthParamMcpOauth")] public partial class CreateVaultCredentialAuthParamMcpOauth {}
+[CodeGenType("CreateVaultCredentialAuthParamStaticBearer")] public partial class CreateVaultCredentialAuthParamStaticBearer {}
+[CodeGenType("McpOauthRefreshResource")] public partial class McpOauthRefreshResource {}
+[CodeGenType("McpOauthTokenEndpointAuthResource")] public partial class McpOauthTokenEndpointAuthResource {}
+[CodeGenType("McpOauthTokenEndpointAuthResourceClientSecretBasic")] public partial class McpOauthTokenEndpointAuthResourceClientSecretBasic {}
+[CodeGenType("McpOauthTokenEndpointAuthResourceClientSecretPost")] public partial class McpOauthTokenEndpointAuthResourceClientSecretPost {}
+[CodeGenType("McpOauthTokenEndpointAuthResourceNone")] public partial class McpOauthTokenEndpointAuthResourceNone {}
+[CodeGenType("McpOauthTokenEndpointAuthType")] public readonly partial struct McpOauthTokenEndpointAuthType {}
+[CodeGenType("RotateMcpOauthRefreshParam")] public partial class RotateMcpOauthRefreshParam {}
+[CodeGenType("RotateMcpOauthTokenEndpointAuthParam")] public partial class RotateMcpOauthTokenEndpointAuthParam {}
+[CodeGenType("RotateMcpOauthTokenEndpointAuthParamClientSecretBasic")] public partial class RotateMcpOauthTokenEndpointAuthParamClientSecretBasic {}
+[CodeGenType("RotateMcpOauthTokenEndpointAuthParamClientSecretPost")] public partial class RotateMcpOauthTokenEndpointAuthParamClientSecretPost {}
+[CodeGenType("RotateVaultCredentialAuthParam")] public partial class RotateVaultCredentialAuthParam {}
+[CodeGenType("RotateVaultCredentialAuthParamEnvironmentVariable")] public partial class RotateVaultCredentialAuthParamEnvironmentVariable {}
+[CodeGenType("RotateVaultCredentialAuthParamMcpOauth")] public partial class RotateVaultCredentialAuthParamMcpOauth {}
+[CodeGenType("RotateVaultCredentialAuthParamStaticBearer")] public partial class RotateVaultCredentialAuthParamStaticBearer {}
+[CodeGenType("Vault")] public partial class Vault {}
+[CodeGenType("VaultCollectionOptions")] public partial class VaultCollectionOptions {}
+[CodeGenType("VaultCollectionOrder")] public readonly partial struct VaultCollectionOrder {}
+[CodeGenType("VaultCollectionPage")] public partial class VaultCollectionPage {}
+[CodeGenType("VaultCreationOptions")] public partial class VaultCreationOptions {}
+[CodeGenType("VaultCredential")] public partial class VaultCredential {}
+[CodeGenType("VaultCredentialAuthResource")] public partial class VaultCredentialAuthResource {}
+[CodeGenType("VaultCredentialAuthResourceEnvironmentVariable")] public partial class VaultCredentialAuthResourceEnvironmentVariable {}
+[CodeGenType("VaultCredentialAuthResourceMcpOauth")] public partial class VaultCredentialAuthResourceMcpOauth {}
+[CodeGenType("VaultCredentialAuthResourceStaticBearer")] public partial class VaultCredentialAuthResourceStaticBearer {}
+[CodeGenType("VaultCredentialAuthType")] public readonly partial struct VaultCredentialAuthType {}
+[CodeGenType("VaultCredentialCollectionOptions")] public partial class VaultCredentialCollectionOptions {}
+[CodeGenType("VaultCredentialCollectionPage")] public partial class VaultCredentialCollectionPage {}
+[CodeGenType("VaultCredentialCreationOptions")] public partial class VaultCredentialCreationOptions {}
+[CodeGenType("VaultCredentialDeletionResult")] public partial class VaultCredentialDeletionResult {}
+[CodeGenType("VaultCredentialNetworkingParam")] public partial class VaultCredentialNetworkingParam {}
+[CodeGenType("VaultCredentialNetworkingParamLimited")] public partial class VaultCredentialNetworkingParamLimited {}
+[CodeGenType("VaultCredentialNetworkingParamUnrestricted")] public partial class VaultCredentialNetworkingParamUnrestricted {}
+[CodeGenType("VaultCredentialNetworkingResource")] public partial class VaultCredentialNetworkingResource {}
+[CodeGenType("VaultCredentialNetworkingResourceLimited")] public partial class VaultCredentialNetworkingResourceLimited {}
+[CodeGenType("VaultCredentialNetworkingResourceUnrestricted")] public partial class VaultCredentialNetworkingResourceUnrestricted {}
+[CodeGenType("VaultCredentialNetworkingType")] public readonly partial struct VaultCredentialNetworkingType {}
+[CodeGenType("VaultCredentialRotationOptions")] public partial class VaultCredentialRotationOptions {}
+[CodeGenType("VaultDeletionResult")] public partial class VaultDeletionResult {}
+[CodeGenType("VaultStatusParam")] public readonly partial struct VaultStatusParam {}

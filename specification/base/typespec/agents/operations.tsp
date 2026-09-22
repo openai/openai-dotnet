@@ -6,6 +6,7 @@ import "./models.tsp";
 import "./models_items.tsp";
 import "./models_streaming.tsp";
 import "./models_tools.tsp";
+import "./models_vaults.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -414,3 +415,157 @@ op createAgentSessionEvents(
 ): {
   @statusCode statusCode: 202;
 };
+
+/**
+ * Lists vaults using ID-based pagination. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("List vaults")
+@get
+@route("vaults")
+@tag("Vaults")
+@list
+op listVaults(
+  ...VaultCollectionOptions,
+): VaultListResource;
+
+/**
+ * Creates a vault to store credentials used by agent tools. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Create a vault")
+@post
+@route("vaults")
+@tag("Vaults")
+op createVault(
+  /** Parameters for creating the vault. */
+  @body
+  vault: CreateVaultParams,
+): {
+  @statusCode statusCode: 201;
+
+  /** The created vault. */
+  @body vault: VaultResource;
+};
+
+/**
+ * Retrieves a vault by its ID. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Retrieve a vault")
+@get
+@route("vaults/{vault_id}")
+@tag("Vaults")
+op retrieveVault(
+  /** The ID of the vault. */
+  @path
+  vault_id: string,
+): VaultResource;
+
+/**
+ * Deletes a vault and all its credentials. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Delete a vault")
+@delete
+@route("vaults/{vault_id}")
+@tag("Vaults")
+op deleteVault(
+  /** The ID of the vault. */
+  @path
+  vault_id: string,
+): DeletedVaultResource;
+
+/**
+ * Lists a vault's credentials using ID-based pagination without returning secret values. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("List vault credentials")
+@get
+@route("vaults/{vault_id}/credentials")
+@tag("Vaults")
+@list
+op listVaultCredentials(
+  ...VaultCredentialCollectionOptions,
+): VaultCredentialListResource;
+
+/**
+ * Creates a vault credential. Secret values are write-only and are never returned. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Create a vault credential")
+@post
+@route("vaults/{vault_id}/credentials")
+@tag("Vaults")
+op createVaultCredential(
+  /** The ID of the vault. */
+  @path
+  vault_id: string,
+
+  /** Parameters for creating the credential. */
+  @body
+  credential: CreateVaultCredentialParams,
+): {
+  @statusCode statusCode: 201;
+
+  /** The created vault credential without secret values. */
+  @body credential: VaultCredentialResource;
+};
+
+/**
+ * Retrieves vault credential metadata without returning secret values. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Retrieve a vault credential")
+@get
+@route("vaults/{vault_id}/credentials/{credential_id}")
+@tag("Vaults")
+op retrieveVaultCredential(
+  /** The ID of the vault. */
+  @path
+  vault_id: string,
+
+  /** The ID of the vault credential. */
+  @path
+  credential_id: string,
+): VaultCredentialResource;
+
+/**
+ * Rotates a vault credential's secret values without changing its authentication method. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Rotate a vault credential")
+@post
+@route("vaults/{vault_id}/credentials/{credential_id}")
+@tag("Vaults")
+op rotateVaultCredential(
+  /** The ID of the vault. */
+  @path
+  vault_id: string,
+
+  /** The ID of the vault credential. */
+  @path
+  credential_id: string,
+
+  /** Replacement secret values for the credential. */
+  @body
+  credential: RotateVaultCredentialParams,
+): VaultCredentialResource;
+
+/**
+ * Deletes a vault credential. See
+ * [vaults](https://developers.openai.com/api/docs/guides/agents-api/tools/vaults).
+ */
+@summary("Delete a vault credential")
+@delete
+@route("vaults/{vault_id}/credentials/{credential_id}")
+@tag("Vaults")
+op deleteVaultCredential(
+  /** The ID of the vault. */
+  @path
+  vault_id: string,
+
+  /** The ID of the vault credential. */
+  @path
+  credential_id: string,
+): DeletedVaultCredentialResource;
