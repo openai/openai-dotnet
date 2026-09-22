@@ -13,7 +13,7 @@
     The path to the OpenAPI JSON document to inspect.
 
 .EXAMPLE
-    ./scripts/Find-OpenApiAnyOf.ps1 ./specification/openapi/responses.inlined.openapi.json
+    ./scripts/Find-OpenApiAnyOf.ps1 ./specification/openapi/responses.openapi.json
 #>
 
 #Requires -Version 7.0
