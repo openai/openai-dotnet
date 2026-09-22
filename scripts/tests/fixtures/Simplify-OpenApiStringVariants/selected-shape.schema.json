@@ -1,0 +1,31 @@
+{
+  "description": "Keep wrapper",
+  "anyOf": [
+    {
+      "description": "Drop nested wrapper",
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "Drop plain annotation"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "zeta",
+            "alpha",
+            "shared"
+          ],
+          "default": "alpha"
+        }
+      ]
+    },
+    {
+      "type": "string",
+      "enum": [
+        "shared",
+        "middle"
+      ],
+      "title": "Drop title"
+    }
+  ]
+}

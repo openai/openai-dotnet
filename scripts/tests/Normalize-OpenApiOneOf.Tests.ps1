@@ -13,6 +13,7 @@ $scriptDirectory = Join-Path $PSScriptRoot ".."
 $normalizeScriptPath = Join-Path $scriptDirectory "Normalize-OpenApiOneOf.ps1"
 $sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 . $normalizeScriptPath
+. (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -84,54 +85,26 @@ function Assert-BytesEqual {
     }
 }
 
-function New-TestOpenApiDocument {
-    param([object]$Schema)
-    return [ordered]@{
-        openapi = "3.1.0"
-        info = [ordered]@{ title = "oneOf fixture"; version = "1.0.0" }
-        paths = [ordered]@{
-            "/test" = [ordered]@{
-                post = [ordered]@{
-                    responses = [ordered]@{
-                        "200" = [ordered]@{
-                            description = "ok"
-                            content = [ordered]@{
-                                "application/json" = [ordered]@{ schema = $Schema }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-function Get-TestResponseSchema {
-    param([object]$Document)
-    return $Document.paths["/test"].post.responses["200"].content["application/json"].schema
-}
-
 function New-PromotableAnyOfSchema {
-    return [ordered]@{
-        description = "candidate"
-        anyOf = @(
-            [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{ type = "string" } } },
-            [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{} } }
-        )
-        discriminator = [ordered]@{ propertyName = "kind" }
-    }
+    return Read-TestJsonFixture `
+        -RelativePath "Normalize-OpenApiOneOf/promotable-anyof.schema.json"
 }
 
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Normalize-OpenApiOneOf"
+$schemaCases = Read-TestJsonFixture -RelativePath "Normalize-OpenApiOneOf/cases.schema.json"
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "normalize-openapi-oneof-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
 try {
+    # The stage is consumed as both a command and a function library; loading
+    # it for focused tests must not generate files.
     Invoke-Test "dot-sourcing defines normalizer functions without running the CLI" {
         Assert-True ($null -ne (Get-Command ConvertTo-NormalizedOpenApiOneOfDocument -ErrorAction SilentlyContinue)) "Conversion function was not defined."
         Assert-True ($null -ne (Get-Command Invoke-OpenApiOneOfNormalizer -ErrorAction SilentlyContinue)) "CLI function was not defined."
     }
 
+    # This fixture mirrors the production defect: an array-level discriminator
+    # is orphaned while the nested items discriminator is paired with oneOf.
     Invoke-Test "line 7132 shape removes only the outer orphan" {
         $source = Read-OpenApiDocument -Path (Join-Path $fixtureDirectory "source.openapi.json")
         $expected = Read-OpenApiDocument -Path (Join-Path $fixtureDirectory "expected.oneof-normalized.openapi.json")
@@ -150,6 +123,8 @@ try {
         Assert-Sequence @("description", "oneOf", "discriminator") @((Get-JsonProperties $promotable).Name) "Promotion changed member order."
     }
 
+    # The accepted promotion policy intentionally checks only branch property
+    # presence, not requiredness or mutually exclusive discriminator values.
     Invoke-Test "promotion uses property presence without requiredness or exclusive values" {
         $source = New-TestOpenApiDocument -Schema (New-PromotableAnyOfSchema)
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
@@ -160,6 +135,8 @@ try {
         Assert-True (Test-JsonProperty $schema "discriminator") "Promoted schema lost its discriminator."
     }
 
+    # Every eligibility gate is conservative: malformed or mismatched unions
+    # stay anyOf, after which their unpaired discriminator follows cleanup rules.
     Invoke-Test "near misses remain anyOf and follow orphan cleanup" {
         $cases = @(
             [PSCustomObject]@{ Name = "missing discriminator"; Mutate = { param($schema) $schema.Remove("discriminator") } },
@@ -186,6 +163,8 @@ try {
         }
     }
 
+    # Overwriting or merging an existing oneOf would be ambiguous, so a schema
+    # satisfying both shapes must fail without mutating its source.
     Invoke-Test "eligible anyOf with an existing oneOf fails clearly" {
         $schema = New-PromotableAnyOfSchema
         $schema["oneOf"] = @([ordered]@{ type = "object" })
@@ -197,28 +176,12 @@ try {
         Assert-Equal $before (ConvertTo-Json $source -Compress -Depth 100) "Collision handling mutated input."
     }
 
+    # Orphan detection is based on direct sibling presence only; malformed,
+    # empty, or null oneOf values are preserved for separate validation.
     Invoke-Test "any exact direct oneOf sibling preserves discriminator" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                nonEmpty = [ordered]@{
-                    discriminator = [ordered]@{ propertyName = "kind" }
-                    oneOf = @([ordered]@{ type = "object" })
-                }
-                empty = [ordered]@{
-                    discriminator = [ordered]@{ propertyName = "kind" }
-                    oneOf = @()
-                }
-                nullValue = [ordered]@{
-                    discriminator = [ordered]@{ propertyName = "kind" }
-                    oneOf = $null
-                }
-                malformed = [ordered]@{
-                    discriminator = "malformed"
-                    oneOf = "not an array"
-                }
-            }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "directPairs"
+        )
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         Assert-Equal 0 $result.RemovedDiscriminatorCount "A direct pair was removed."
         foreach ($property in (Get-JsonProperties -Value (Get-TestResponseSchema $result.Document).properties)) {
@@ -226,17 +189,12 @@ try {
         }
     }
 
+    # `properties.discriminator` names user data and must survive, while an
+    # orphaned discriminator keyword inside that property's schema is removed.
     Invoke-Test "property-map key is preserved while its schema is traversed" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                discriminator = [ordered]@{
-                    type = "object"
-                    discriminator = [ordered]@{ propertyName = "kind" }
-                    properties = [ordered]@{ value = [ordered]@{ type = "string" } }
-                }
-            }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "propertyMap"
+        )
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         $properties = (Get-TestResponseSchema $result.Document).properties
         Assert-Equal 1 $result.RemovedDiscriminatorCount "Nested schema keyword was not removed."
@@ -244,14 +202,12 @@ try {
         Assert-True (-not (Test-JsonProperty -Object $properties.discriminator -Name "discriminator")) "Orphan inside the property schema remained."
     }
 
+    # Schema context and exact casing prevent global text/property replacement
+    # from corrupting examples, descriptions, enums, or ordinary objects.
     Invoke-Test "literal values ordinary objects and case variants remain unchanged" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "string"
-            description = "mentions discriminator"
-            enum = @("discriminator")
-            Discriminator = [ordered]@{ propertyName = "kind" }
-            example = [ordered]@{ discriminator = "literal member" }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "protectedLiterals"
+        )
         $source.info["discriminator"] = "ordinary OpenAPI member"
         $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
@@ -259,23 +215,12 @@ try {
         Assert-Equal $before (ConvertTo-Json -InputObject $result.Document -Compress -Depth 100) "A protected occurrence changed."
     }
 
+    # Orphans can occur under properties, composition branches, and items; each
+    # schema is evaluated independently without reordering surviving members.
     Invoke-Test "nested schema orphans are removed independently in encounter order" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                first = [ordered]@{ type = "string"; discriminator = $null; description = "first" }
-                second = [ordered]@{
-                    anyOf = @(
-                        [ordered]@{ type = "string"; discriminator = "remove" },
-                        [ordered]@{ type = "null" }
-                    )
-                }
-                third = [ordered]@{
-                    type = "array"
-                    items = [ordered]@{ type = "string"; discriminator = [ordered]@{} }
-                }
-            }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "nestedOrphans"
+        )
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         $properties = (Get-TestResponseSchema $result.Document).properties
         Assert-Equal 3 $result.RemovedDiscriminatorCount "Nested orphan count was incorrect."
@@ -284,16 +229,19 @@ try {
         Assert-True (-not (Test-JsonProperty $properties.third.items "discriminator")) "Items orphan remained."
     }
 
+    # The orphan postcondition catches traversal regressions that would let a
+    # removable discriminator escape normalization.
     Invoke-Test "postcondition rejects an orphaned schema discriminator" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "string"
-            discriminator = [ordered]@{ propertyName = "kind" }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "orphan"
+        )
         Assert-Throws {
             Assert-NoOrphanedOpenApiDiscriminators -Value $source
         } "*retained an orphaned discriminator*"
     }
 
+    # The promotion postcondition proves that no schema satisfying the declared
+    # eligibility rules remains as anyOf after normalization.
     Invoke-Test "promotion postcondition rejects an eligible anyOf" {
         $source = New-TestOpenApiDocument -Schema (New-PromotableAnyOfSchema)
         Assert-Throws {
@@ -301,36 +249,27 @@ try {
         } "*retained a promotable discriminated anyOf*"
     }
 
+    # A preserved discriminator subtree keeps its location, so pointers into a
+    # valid pair must continue to resolve unchanged.
     Invoke-Test "references to paired discriminators remain valid" {
         $targetPointer = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/discriminator"
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                target = [ordered]@{
-                    discriminator = [ordered]@{ propertyName = "kind" }
-                    oneOf = @([ordered]@{ type = "object" })
-                }
-                alias = [ordered]@{ '$ref' = $targetPointer }
-            }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "pairedReference"
+        )
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         Assert-Equal 0 $result.RemovedDiscriminatorCount "Paired target was removed."
         Assert-Equal $targetPointer (Get-TestResponseSchema $result.Document).properties.alias.'$ref' "Retained reference changed."
     }
 
+    # Renaming anyOf moves every descendant pointer; all reference-valued
+    # keywords and discriminator mappings must follow `/anyOf` to `/oneOf`.
     Invoke-Test "promotion relocates references and discriminator mappings" {
         $targetBase = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target"
         $candidate = New-PromotableAnyOfSchema
         $candidate.discriminator["mapping"] = [ordered]@{ first = "$targetBase/anyOf/0" }
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                target = $candidate
-                refAlias = [ordered]@{ '$ref' = "$targetBase/anyOf/0" }
-                dynamicAlias = [ordered]@{ '$dynamicRef' = "$targetBase/anyOf/0" }
-                recursiveAlias = [ordered]@{ '$recursiveRef' = "$targetBase/anyOf/0" }
-            }
-        })
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "relocation"
+        $schema.properties.target = $candidate
+        $source = New-TestOpenApiDocument -Schema $schema
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         $properties = (Get-TestResponseSchema $result.Document).properties
         $expected = "$targetBase/oneOf/0"
@@ -342,17 +281,15 @@ try {
         Assert-Equal $expected $properties.recursiveAlias.'$recursiveRef' "`$recursiveRef was not relocated."
     }
 
+    # Nested key moves require chained longest-prefix relocation so a pointer is
+    # rewritten through both outer and inner promotions.
     Invoke-Test "nested promotions relocate pointers through longest prefixes" {
         $targetBase = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/outer"
         $outer = New-PromotableAnyOfSchema
         $outer.anyOf[0].properties["inner"] = New-PromotableAnyOfSchema
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                outer = $outer
-                alias = [ordered]@{ '$ref' = "$targetBase/anyOf/0/properties/inner/anyOf/0" }
-            }
-        })
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "nestedRelocation"
+        $schema.properties.outer = $outer
+        $source = New-TestOpenApiDocument -Schema $schema
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         $properties = (Get-TestResponseSchema $result.Document).properties
         $expected = "$targetBase/oneOf/0/properties/inner/oneOf/0"
@@ -362,41 +299,39 @@ try {
         Assert-True (Test-JsonProperty $properties.outer.oneOf[0].properties.inner "oneOf") "Nested candidate retained anyOf."
     }
 
+    # Pointer rewriting must preserve RFC 6901 escaping when promoted schemas
+    # sit under property names containing slash or tilde.
     Invoke-Test "promotion relocation preserves escaped JSON Pointer tokens" {
         $propertyName = "a/b~c"
         $encodedPropertyName = "a~1b~0c"
         $targetBase = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/$encodedPropertyName"
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                $propertyName = New-PromotableAnyOfSchema
-                alias = [ordered]@{ '$ref' = "$targetBase/anyOf/0" }
-            }
-        })
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "escapedRelocation"
+        $schema.properties[$propertyName] = New-PromotableAnyOfSchema
+        $source = New-TestOpenApiDocument -Schema $schema
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         $properties = (Get-TestResponseSchema $result.Document).properties
         Assert-Equal "$targetBase/oneOf/0" $properties.alias.'$ref' "Escaped pointer was not relocated."
         Assert-True (Test-JsonProperty $properties[$propertyName] "oneOf") "Escaped-name candidate was not promoted."
     }
 
+    # Removing an orphan has no valid relocation target; retained references
+    # into that subtree must fail instead of becoming silently dangling.
     Invoke-Test "references into removed discriminator subtrees fail clearly" {
         $targetPointer = "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/discriminator"
         foreach ($referenceName in @('$ref', '$dynamicRef', '$recursiveRef')) {
             $alias = [ordered]@{}
             $alias[$referenceName] = $targetPointer
-            $source = New-TestOpenApiDocument -Schema ([ordered]@{
-                type = "object"
-                properties = [ordered]@{
-                    target = [ordered]@{ type = "string"; discriminator = [ordered]@{ propertyName = "kind" } }
-                    alias = $alias
-                }
-            })
+            $schema = Get-TestFixtureCase -Cases $schemaCases -Name "removedTarget"
+            $schema.properties.alias = $alias
+            $source = New-TestOpenApiDocument -Schema $schema
             Assert-Throws {
                 ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
             } "*has no 'discriminator' property*"
         }
     }
 
+    # Normalize is semantic and order-preserving; only the downstream Sort stage
+    # may canonicalize property order.
     Invoke-Test "normalization preserves order and Sort canonicalizes afterward" {
         $source = Read-OpenApiDocument -Path (Join-Path $fixtureDirectory "source.openapi.json")
         $normalized = (ConvertTo-NormalizedOpenApiOneOfDocument -Document $source).Document
@@ -414,6 +349,8 @@ try {
             "Sort did not canonicalize normalized properties."
     }
 
+    # Default and explicit destinations must emit identical deterministic bytes
+    # without modifying the Simplify-stage input.
     Invoke-Test "default and explicit output paths encoding and input preservation are correct" {
         $inputPath = Join-Path $temporaryDirectory "sample.simplified.openapi.json"
         Copy-Item -LiteralPath (Join-Path $fixtureDirectory "source.openapi.json") -Destination $inputPath
@@ -433,6 +370,8 @@ try {
         Assert-BytesEqual $outputBytes ([System.IO.File]::ReadAllBytes($explicitPath)) "Explicit output differed from default output."
     }
 
+    # An already-normalized artifact should be safe to rerun in place with zero
+    # transformations, stable bytes, and no repeated filename marker.
     Invoke-Test "normalization is byte-idempotent and avoids repeated suffixes" {
         $inputPath = Join-Path $temporaryDirectory "already.oneof-normalized.openapi.json"
         Copy-Item -LiteralPath (Join-Path $fixtureDirectory "expected.oneof-normalized.openapi.json") -Destination $inputPath
@@ -443,6 +382,8 @@ try {
         Assert-BytesEqual $firstRun ([System.IO.File]::ReadAllBytes($inputPath)) "Normalization was not byte-idempotent."
     }
 
+    # File validation belongs at the public CLI boundary and must reject invalid
+    # inputs before normalization or output creation.
     Invoke-Test "missing directory and invalid JSON inputs fail clearly" {
         Assert-Throws {
             Invoke-OpenApiOneOfNormalizer -InputPath (Join-Path $temporaryDirectory "missing.json")

@@ -1,0 +1,67 @@
+{
+  "canonicalization": {
+    "zeta": true,
+    "properties": {
+      "optionalZ": {
+        "nullable": true,
+        "description": "Optional",
+        "type": "string"
+      },
+      "text": {
+        "enum": ["zeta", "alpha", "middle"],
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      }
+    },
+    "required": ["text", "type"],
+    "default": null,
+    "description": "Root",
+    "type": "object"
+  },
+  "enumTypes": {
+    "type": "object",
+    "properties": {
+      "numbers": { "enum": [2, 10, 1] },
+      "mixed": { "enum": [null, "incomplete"] },
+      "flag": { "enum": [true] }
+    }
+  },
+  "preserveCompositionOrder": {
+    "allOf": [
+      { "type": "string", "description": "first" },
+      { "type": "string", "description": "second" }
+    ],
+    "customArray": ["zeta", "alpha"]
+  },
+  "ordinaryPostProperty": {
+    "required": true,
+    "type": "ordinary",
+    "description": "ordinary"
+  },
+  "preserveFields": {
+    "type": "string",
+    "example": "kept",
+    "examples": ["also kept"],
+    "x-custom": "kept"
+  },
+  "configuredPriority": {
+    "required": ["text", "type", "kind"],
+    "type": "object",
+    "properties": {
+      "text": { "type": "string" },
+      "type": { "type": "string" },
+      "optional": { "type": "string" },
+      "kind": { "type": "string" }
+    },
+    "description": "configured"
+  },
+  "invalidRequired": {
+    "type": "object",
+    "required": ["valid", 42],
+    "properties": {
+      "valid": { "type": "string" }
+    }
+  }
+}

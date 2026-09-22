@@ -1,0 +1,72 @@
+{
+  "discriminatedBefore": {
+    "discriminator": { "propertyName": "kind" },
+    "oneOf": [
+      { "type": "object" },
+      { "type": "object" }
+    ]
+  },
+  "potential": {
+    "oneOf": [
+      { "type": "object" }
+    ]
+  },
+  "mixed": {
+    "oneOf": [
+      { "type": "string", "enum": ["choice"] },
+      { "type": "boolean" },
+      { "type": "string" },
+      { "type": "object" }, { "type": "object" }
+    ]
+  },
+  "discriminatedAfter": {
+    "oneOf": [
+      { "type": "object" }
+    ],
+    "discriminator": { "propertyName": "variant" }
+  },
+  "invalidDiscriminator": {
+    "oneOf": [
+      { "type": "object" }
+    ],
+    "discriminator": { "propertyName": 42 }
+  },
+  "mixedWithDiscriminator": {
+    "discriminator": { "propertyName": "kind" },
+    "oneOf": [
+      { "type": "object" },
+      { "type": "array" }
+    ]
+  },
+  "missingType": {
+    "oneOf": [
+      { "properties": {} }
+    ]
+  },
+  "arrayType": {
+    "oneOf": [
+      { "type": ["object", "null"] }
+    ]
+  },
+  "empty": {
+    "oneOf": []
+  },
+  "notArray": {
+    "oneOf": { "type": "object" }
+  },
+  "nested": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "child": {
+            "oneOf": [
+              { "type": "integer" },
+              { "type": "boolean" }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

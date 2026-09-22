@@ -1,0 +1,124 @@
+{
+  "directPairs": {
+    "type": "object",
+    "properties": {
+      "nonEmpty": {
+        "discriminator": { "propertyName": "kind" },
+        "oneOf": [{ "type": "object" }]
+      },
+      "empty": {
+        "discriminator": { "propertyName": "kind" },
+        "oneOf": []
+      },
+      "nullValue": {
+        "discriminator": { "propertyName": "kind" },
+        "oneOf": null
+      },
+      "malformed": {
+        "discriminator": "malformed",
+        "oneOf": "not an array"
+      }
+    }
+  },
+  "propertyMap": {
+    "type": "object",
+    "properties": {
+      "discriminator": {
+        "type": "object",
+        "discriminator": { "propertyName": "kind" },
+        "properties": {
+          "value": { "type": "string" }
+        }
+      }
+    }
+  },
+  "protectedLiterals": {
+    "type": "string",
+    "description": "mentions discriminator",
+    "enum": ["discriminator"],
+    "Discriminator": { "propertyName": "kind" },
+    "example": { "discriminator": "literal member" }
+  },
+  "nestedOrphans": {
+    "type": "object",
+    "properties": {
+      "first": {
+        "type": "string",
+        "discriminator": null,
+        "description": "first"
+      },
+      "second": {
+        "anyOf": [
+          { "type": "string", "discriminator": "remove" },
+          { "type": "null" }
+        ]
+      },
+      "third": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "discriminator": {}
+        }
+      }
+    }
+  },
+  "orphan": {
+    "type": "string",
+    "discriminator": { "propertyName": "kind" }
+  },
+  "pairedReference": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "discriminator": { "propertyName": "kind" },
+        "oneOf": [{ "type": "object" }]
+      },
+      "alias": {
+        "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/discriminator"
+      }
+    }
+  },
+  "relocation": {
+    "type": "object",
+    "properties": {
+      "target": {},
+      "refAlias": {
+        "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/anyOf/0"
+      },
+      "dynamicAlias": {
+        "$dynamicRef": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/anyOf/0"
+      },
+      "recursiveAlias": {
+        "$recursiveRef": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target/anyOf/0"
+      }
+    }
+  },
+  "nestedRelocation": {
+    "type": "object",
+    "properties": {
+      "outer": {},
+      "alias": {
+        "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/outer/anyOf/0/properties/inner/anyOf/0"
+      }
+    }
+  },
+  "escapedRelocation": {
+    "type": "object",
+    "properties": {
+      "a/b~c": {},
+      "alias": {
+        "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/a~1b~0c/anyOf/0"
+      }
+    }
+  },
+  "removedTarget": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "type": "string",
+        "discriminator": { "propertyName": "kind" }
+      },
+      "alias": {}
+    }
+  }
+}

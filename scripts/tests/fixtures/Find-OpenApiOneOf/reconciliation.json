@@ -1,0 +1,29 @@
+{
+  "unpaired": {
+    "discriminator": {
+      "propertyName": "discriminator"
+    },
+    "items": {
+      "oneOf": [
+        { "type": "object" }
+      ]
+    }
+  },
+  "recursive": {
+    "discriminator": { "propertyName": "kind" },
+    "oneOf": [
+      { "type": "object" },
+      { "$recursiveRef": "#" }
+    ]
+  },
+  "strings": {
+    "enum": [
+      "discriminator"
+    ],
+    "required": [
+      "discriminator"
+    ],
+    "label": "discriminator",
+    "description": "mentions discriminator without being an exact value"
+  }
+}

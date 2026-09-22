@@ -1,0 +1,22 @@
+{
+  "description": "candidate",
+  "anyOf": [
+    {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        }
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "kind": {}
+      }
+    }
+  ],
+  "discriminator": {
+    "propertyName": "kind"
+  }
+}

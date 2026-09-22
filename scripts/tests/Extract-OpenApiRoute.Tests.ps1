@@ -4,9 +4,8 @@
 
 .DESCRIPTION
     Uses a small built-in assertion runner so the repository does not need an
-    additional PowerShell test dependency. Most behavior is exercised against a
-    compact fixture, followed by representative integration checks against the
-    repository's current OpenAPI document.
+    additional PowerShell test dependency. Behavior is exercised against a
+    compact fixture so this focused suite remains fast and deterministic.
 #>
 
 [CmdletBinding()]
@@ -17,6 +16,7 @@ Set-StrictMode -Version Latest
 
 $scriptPath = Join-Path $PSScriptRoot ".." "Extract-OpenApiRoute.ps1"
 . $scriptPath
+. (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -182,233 +182,19 @@ function Find-OmittedOpenApiPropertyNames {
     }
 }
 
-# The fixture includes unrelated entries so minimization can be asserted, not
-# merely inferred from the absence of errors.
-function New-TestOpenApiDocument {
-    return [ordered]@{
-        openapi = "3.1.0"
-        info = [ordered]@{
-            title = "Extractor fixture"
-            version = "1.0.0"
-            "x-oaiMeta" = [ordered]@{ ignored = $true }
-            "x-custom-info" = "ignored"
-        }
-        servers = @([ordered]@{ url = "https://example.test/v1" })
-        security = @([ordered]@{ ApiKeyAuth = @() })
-        tags = @(
-            [ordered]@{ name = "Things"; description = "Selected tag" },
-            [ordered]@{ name = "Unused"; description = "Unselected tag" }
-        )
-        paths = [ordered]@{
-            "/zebra/items" = [ordered]@{
-                get = [ordered]@{ operationId = "listZebraItems"; responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
-            }
-            "/responses?beta=true" = [ordered]@{
-                post = [ordered]@{ operationId = "createBetaResponse"; responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
-            }
-            "/things" = [ordered]@{
-                parameters = @(
-                    [ordered]@{ name = "trace"; in = "header"; schema = [ordered]@{ type = "string" } }
-                )
-                get = [ordered]@{
-                    operationId = "listThings"
-                    tags = @("Things")
-                    responses = [ordered]@{ "204" = [ordered]@{ description = "none" } }
-                }
-                post = [ordered]@{
-                    operationId = "createThing"
-                    tags = @("Things")
-                    security = @([ordered]@{ AdminApiKeyAuth = @() })
-                    example = [ordered]@{ '$ref' = "#/components/schemas/ExampleOnly" }
-                    examples = [ordered]@{
-                        hidden = [ordered]@{ '$ref' = "#/components/schemas/ExamplesOnly" }
-                    }
-                    requestBody = [ordered]@{
-                        content = [ordered]@{
-                            "application/json" = [ordered]@{
-                                schema = [ordered]@{
-                                    type = "object"
-                                    properties = [ordered]@{
-                                        optionalZ = [ordered]@{ type = "string" }
-                                        requiredB = [ordered]@{ '$ref' = "#/components/schemas/A" }
-                                        recursive = [ordered]@{ '$ref' = "#/components/schemas/Recursive" }
-                                        requiredA = [ordered]@{ '$ref' = "#/components/schemas/Alias" }
-                                        flattened = [ordered]@{
-                                            description = "Outer description"
-                                            allOf = @(
-                                                [ordered]@{
-                                                    type = "object"
-                                                    description = "Base description"
-                                                    nullable = $true
-                                                    properties = [ordered]@{
-                                                        optionalZ = [ordered]@{ type = "string" }
-                                                        shared = [ordered]@{
-                                                            description = "Shared property"
-                                                            type = "boolean"
-                                                        }
-                                                        requiredB = [ordered]@{ type = "integer" }
-                                                    }
-                                                    required = @("requiredB")
-                                                },
-                                                [ordered]@{
-                                                    allOf = @(
-                                                        [ordered]@{
-                                                            type = "object"
-                                                            properties = [ordered]@{
-                                                                optionalA = [ordered]@{ type = "string" }
-                                                                requiredA = [ordered]@{ type = "string" }
-                                                            }
-                                                            required = @("requiredA")
-                                                        },
-                                                        [ordered]@{
-                                                            type = "object"
-                                                            description = "Nested description"
-                                                            properties = [ordered]@{
-                                                                requiredC = [ordered]@{ type = "boolean" }
-                                                                shared = [ordered]@{
-                                                                    type = "boolean"
-                                                                    description = "Shared property"
-                                                                }
-                                                                optionalM = [ordered]@{ type = "number" }
-                                                            }
-                                                            required = @("requiredC", "requiredA")
-                                                        }
-                                                    )
-                                                }
-                                            )
-                                        }
-                                        type = [ordered]@{
-                                            type = "string"
-                                            description = "The request item type."
-                                        }
-                                    }
-                                    required = @("requiredB", "requiredA", "type")
-                                }
-                            }
-                        }
-                    }
-                    responses = [ordered]@{
-                        "200" = [ordered]@{ '$ref' = "#/components/responses/Shared" }
-                    }
-                    "x-oaiMeta" = [ordered]@{ examples = "ignored" }
-                    "x-hidden-ref" = [ordered]@{ '$ref' = "#/components/schemas/Unused" }
-                }
-            }
-            "/fine_tuning/jobs" = [ordered]@{
-                get = [ordered]@{ operationId = "listFineTuningJobs"; responses = [ordered]@{ "204" = [ordered]@{ description = "none" } } }
-            }
-        }
-        webhooks = [ordered]@{
-            ignored = [ordered]@{ post = [ordered]@{ responses = [ordered]@{} } }
-        }
-        components = [ordered]@{
-            schemas = [ordered]@{
-                A = [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        child = [ordered]@{ '$ref' = "#/components/schemas/B" }
-                    }
-                }
-                B = [ordered]@{
-                    allOf = @(
-                        [ordered]@{
-                            type = "object"
-                            properties = [ordered]@{
-                                parent = [ordered]@{ '$ref' = "#/components/schemas/A" }
-                            }
-                        },
-                        [ordered]@{
-                            type = "object"
-                            properties = [ordered]@{
-                                cycleOptional = [ordered]@{ type = "string" }
-                                cycleRequired = [ordered]@{ type = "boolean" }
-                                type = [ordered]@{ type = "string" }
-                            }
-                            required = @("cycleRequired", "type")
-                        }
-                    )
-                    "x-oaiMeta" = [ordered]@{ ignored = $true }
-                }
-                Cat = [ordered]@{
-                    type = "object"
-                    title = "Cat schema"
-                    example = [ordered]@{ type = "cat" }
-                    examples = @([ordered]@{ type = "cat" })
-                    properties = [ordered]@{
-                        type = [ordered]@{
-                            const = "cat"
-                            enum = @("zeta", "alpha", "middle")
-                            "x-stainless-const" = $true
-                        }
-                    }
-                }
-                Dog = [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{ type = [ordered]@{ const = "dog" } }
-                }
-                Pet = [ordered]@{
-                    oneOf = @(
-                        [ordered]@{ '$ref' = "#/components/schemas/Cat" },
-                        [ordered]@{ '$ref' = "#/components/schemas/Dog" }
-                    )
-                    discriminator = [ordered]@{
-                        propertyName = "type"
-                        mapping = [ordered]@{
-                            cat = "#/components/schemas/Cat"
-                            dog = "#/components/schemas/Dog"
-                        }
-                    }
-                }
-                Alias = [ordered]@{
-                    '$ref' = "#/components/schemas/Cat"
-                    description = "A reference with a sibling"
-                }
-                Recursive = [ordered]@{
-                    '$recursiveAnchor' = $true
-                    type = "object"
-                    properties = [ordered]@{
-                        children = [ordered]@{
-                            type = "array"
-                            items = [ordered]@{ '$recursiveRef' = "#" }
-                        }
-                    }
-                }
-                ExampleOnly = [ordered]@{ type = "string" }
-                ExamplesOnly = [ordered]@{ type = "string" }
-                Unused = [ordered]@{ type = "string" }
-            }
-            responses = [ordered]@{
-                Shared = [ordered]@{
-                    description = "ok"
-                    content = [ordered]@{
-                        "application/json" = [ordered]@{
-                            schema = [ordered]@{ '$ref' = "#/components/schemas/Pet" }
-                        }
-                    }
-                }
-                Unused = [ordered]@{ description = "unused" }
-            }
-            securitySchemes = [ordered]@{
-                ApiKeyAuth = [ordered]@{ type = "http"; scheme = "bearer" }
-                AdminApiKeyAuth = [ordered]@{ type = "http"; scheme = "bearer" }
-                UnusedAuth = [ordered]@{ type = "http"; scheme = "bearer" }
-            }
-        }
-        "x-oaiMeta" = [ordered]@{ ignored = $true }
-        "x-custom-root" = [ordered]@{ ignored = $true }
-    }
-}
-
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "openapi-route-tests-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
+$fixtureCases = Read-TestJsonFixture -RelativePath "Extract-OpenApiRoute/cases.json"
 
 try {
-    $fixture = New-TestOpenApiDocument
+    $fixture = Read-TestJsonFixture -RelativePath "Flatten-OpenApiAllOf/source.openapi.json"
     $catalog = Get-OpenApiOperationCatalog -Document $fixture
     $operationEntry = Select-OpenApiOperation `
         -Catalog $catalog `
         -RequestedOperationId "createThing"
 
+    # Locks the simplified public CLI contract so legacy route/mode selection
+    # cannot return unnoticed.
     Invoke-Test "public script exposes operationId without route or mode parameters" {
         $command = Get-Command $scriptPath
         Assert-True ($command.Parameters.ContainsKey("OperationId")) "OperationId parameter was missing."
@@ -416,6 +202,8 @@ try {
         Assert-True (-not $command.Parameters.ContainsKey("Mode")) "Legacy Mode parameter remained."
     }
 
+    # The interactive menu and direct lookup share this catalog, so it must be
+    # complete and deterministic.
     Invoke-Test "catalog includes path operations and sorts operationIds" {
         Assert-Equal 5 $catalog.Count "Catalog count was incorrect."
         Assert-Sequence `
@@ -424,6 +212,8 @@ try {
             "OperationIds were not sorted."
     }
 
+    # OperationId, rather than route, is the selection key because one path can
+    # expose several HTTP operations.
     Invoke-Test "multiple operations on one route are independently selectable" {
         $sameRouteOperations = @($catalog | Where-Object Route -eq "/things")
         Assert-Sequence @("createThing", "listThings") @($sameRouteOperations.OperationId) "Same-route operations were not cataloged independently."
@@ -431,6 +221,8 @@ try {
         Assert-Equal "/things" $operationEntry.Route "OperationId selected the wrong route."
     }
 
+    # Duplicate operationIds would make direct and interactive selection
+    # ambiguous, so extraction must reject the source document.
     Invoke-Test "duplicate operationIds fail clearly" {
         $duplicateFixture = Copy-JsonValue -Value $fixture
         $duplicateFixture.paths["/things"].get.operationId = "createThing"
@@ -439,6 +231,8 @@ try {
             "*operationId 'createThing' is not unique*"
     }
 
+    # Omission affects both emitted JSON and dependency discovery; exact JSON
+    # property-name casing must therefore remain explicit.
     Invoke-Test "omission predicate is configured and case-sensitive" {
         foreach ($name in @("example", "examples", "x-foo")) {
             Assert-True (Test-IsOmittedOpenApiProperty -Name $name) "'$name' should be omitted."
@@ -448,14 +242,15 @@ try {
         }
     }
 
+    # The omission list is intended as configuration, not a hard-coded set of
+    # branches in the traversal implementation.
     Invoke-Test "adding an exact name to the omission array needs no code changes" {
         $originalOmittedPropertyNames = @($script:OmittedPropertyNames)
         try {
             $script:OmittedPropertyNames = @($script:OmittedPropertyNames) + "temporaryOmit"
-            $pruned = ConvertTo-PrunedOpenApiValue -Value ([ordered]@{
-                keep = "value"
-                temporaryOmit = "removed"
-            })
+            $pruned = ConvertTo-PrunedOpenApiValue -Value (
+                Get-TestFixtureCase -Cases $fixtureCases -Name "configuredOmission"
+            )
             Assert-True (-not (Test-JsonProperty -Object $pruned -Name "temporaryOmit")) "Configured property remained."
             Assert-Equal "value" $pruned.keep "Unconfigured property was removed."
         }
@@ -464,44 +259,10 @@ try {
         }
     }
 
-    Invoke-Test "schema definition merging preserves first-seen order" {
-        $merged = Merge-OpenApiSchemaDefinitions `
-            -Definitions @(
-                [ordered]@{
-                    properties = [ordered]@{
-                        text = [ordered]@{ type = "string" }
-                        optional = [ordered]@{ type = "string" }
-                    }
-                    required = @("text")
-                },
-                [ordered]@{
-                    properties = [ordered]@{
-                        type = [ordered]@{ type = "string" }
-                    }
-                    required = @("type")
-                }
-            ) `
-            -DefinitionBreadcrumbs @("#/allOf/0", "#/allOf/1") `
-            -Breadcrumb "#"
-        Assert-Sequence `
-            @("text", "optional", "type") `
-            @((Get-JsonProperties -Value $merged.properties).Name) `
-            "Schema merge changed property encounter order."
-        Assert-Sequence `
-            @("text", "type") `
-            @($merged.required) `
-            "Schema merge changed required-name encounter order."
-    }
-
+    # Extract owns omission but not canonical sorting, so surviving encounter
+    # order must remain available to later stages.
     Invoke-Test "pruning preserves surviving object and array order" {
-        $ordinary = [ordered]@{
-            required = $true
-            properties = [ordered]@{ untouched = "value" }
-            type = "ordinary"
-            example = "removed"
-            description = "Not a schema"
-            default = "value"
-        }
+        $ordinary = Get-TestFixtureCase -Cases $fixtureCases -Name "pruningOrder"
         $pruned = ConvertTo-PrunedOpenApiValue -Value $ordinary
         Assert-Sequence `
             @("required", "properties", "type", "description", "default") `
@@ -513,6 +274,8 @@ try {
             "Pruning changed a nested object."
     }
 
+    # Interactive extraction must recover from malformed/out-of-range input
+    # without changing the displayed one-based numbering contract.
     Invoke-Test "numbered menu retries invalid input and remains one-based" {
         $script:menuAnswers = [System.Collections.Generic.Queue[string]]::new()
         $script:menuAnswers.Enqueue("invalid")
@@ -526,8 +289,10 @@ try {
         Assert-Equal "second" $selection "Menu selected the wrong item."
     }
 
+    # Component names may contain RFC 6901 reserved characters; incorrect
+    # decoding would resolve or inline the wrong schema.
     Invoke-Test "JSON Pointer handles escaped slash and tilde tokens" {
-        $pointerFixture = [ordered]@{ components = [ordered]@{ schemas = [ordered]@{ "A/B~C" = "found" } } }
+        $pointerFixture = Get-TestFixtureCase -Cases $fixtureCases -Name "escapedPointer"
         $value = Resolve-LocalJsonPointer `
             -Document $pointerFixture `
             -Pointer "#/components/schemas/A~1B~0C"
@@ -538,6 +303,8 @@ try {
         -Document $fixture `
         -OperationEntry $operationEntry
 
+    # Path-level parameters apply to every operation, but sibling HTTP methods
+    # must not leak into an operation-scoped document.
     Invoke-Test "extraction retains path metadata and only the selected operation" {
         Assert-Sequence @("/things") @((Get-JsonProperties -Value $inlined.Document.paths).Name) "Wrong paths were emitted."
         Assert-Sequence `
@@ -549,6 +316,8 @@ try {
         Assert-Equal "createThing" $inlined.Document.paths["/things"].post.operationId "Selected operationId changed."
     }
 
+    # Inlined output should retain components only when recursion or copied
+    # security requirements still need them.
     Invoke-Test "extraction keeps only cycle fallback and security components" {
         Assert-Sequence @("A") @((Get-JsonProperties -Value $inlined.Document.components.schemas).Name) "Fallback component selection was incorrect."
         Assert-Sequence `
@@ -559,10 +328,14 @@ try {
         Assert-OpenApiReferencesResolve -Document $inlined.Document
     }
 
+    # Top-level tag metadata is minimized to definitions referenced by the
+    # selected operation.
     Invoke-Test "extraction keeps only selected operation tag definitions" {
         Assert-Sequence @("Things") @($inlined.Document.tags.name) "Tag minimization was incorrect."
     }
 
+    # Ordinary references must inline completely; only a reference already on
+    # the active expansion path may survive as the finite recursion back-edge.
     Invoke-Test "extraction retains only the true cycle back-edge" {
         Assert-Equal 1 $inlined.CycleCount "Cycle count was incorrect."
         $ordinaryReferences = @(Get-OpenApiReferenceOccurrences -Value $inlined.Document | Where-Object Kind -eq "Reference")
@@ -574,6 +347,8 @@ try {
         Assert-OpenApiReferencesResolve -Document $inlined.Document
     }
 
+    # Component mapping targets become invalid after inlining, so mappings must
+    # identify the corresponding local composition branches.
     Invoke-Test "extraction rewrites discriminator mappings to local branches" {
         $mapping = $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.discriminator.mapping
         Assert-Equal `
@@ -586,7 +361,10 @@ try {
             "Dog mapping was not rewritten."
     }
 
-    Invoke-Test "Inlined schema reference siblings are flattened" {
+    # OpenAPI 3.1 permits siblings next to $ref. Extraction must merge those
+    # siblings into the inlined target rather than introducing a synthetic
+    # allOf wrapper that would defer this extractor-owned operation to Flatten.
+    Invoke-Test "schema reference siblings are merged into the inlined target" {
         $alias = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties.requiredA
         Assert-True (-not (Test-JsonProperty -Object $alias -Name "allOf")) "Reference sibling introduced allOf."
         Assert-Equal "object" $alias.type "Referenced schema type was lost."
@@ -594,24 +372,34 @@ try {
         Assert-Equal "cat" $alias.properties.type.const "Referenced schema properties were lost."
     }
 
-    Invoke-Test "extraction preserves source allOf while expanding references" {
+    # Extract is orthogonal to source allOf composition: it expands references
+    # inside those branches but leaves the composition itself for the dedicated
+    # Flatten stage.
+    Invoke-Test "extraction leaves source allOf intact while expanding references" {
         $preserved = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties.flattened
         Assert-True (Test-JsonProperty -Object $preserved -Name "allOf") "Inlined output removed source allOf."
         Assert-True (@(Find-JsonPropertyValues -Value $preserved -Name "allOf").Count -gt 1) "Nested source allOf was removed."
         Assert-Equal 0 @(Get-OpenApiReferenceOccurrences -Value $preserved | Where-Object Kind -eq "Reference").Count "Inlined allOf retained a non-cycle component reference."
     }
 
-    Invoke-Test "Inlined cycle fallback components preserve source allOf" {
+    # A component cycle cannot be expanded forever. Extract retains the true
+    # back-edge as $ref and emits a minimal fallback component; source allOf
+    # encountered along that fallback path must still reach Flatten unchanged.
+    Invoke-Test "cycle fallback retains source allOf and its cycle reference" {
         $fallbackChild = $inlined.Document.components.schemas.A.properties.child
         Assert-True (Test-JsonProperty -Object $fallbackChild -Name "allOf") "Cycle fallback removed source allOf."
         Assert-True (@(Get-OpenApiReferenceOccurrences -Value $fallbackChild | Where-Object Kind -eq "Reference").Count -gt 0) "Cycle fallback lost its cycle reference."
     }
 
+    # JSON Schema recursion expressed with $recursiveRef is intentional and
+    # must remain finite rather than being expanded as an ordinary $ref.
     Invoke-Test "explicit recursive references remain finite" {
         $recursiveReferences = @(Find-JsonPropertyValues -Value $inlined.Document -Name '$recursiveRef')
         Assert-Sequence @("#") $recursiveReferences "Recursive references were changed or removed."
     }
 
+    # Omission must affect only the copied output; mutating the parsed source
+    # would make later extractions depend on test/execution order.
     Invoke-Test "configured and x-prefixed properties are removed without mutating the source" {
         Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $inlined.Document).Count "Inlined omitted properties remained."
         Assert-Equal "Extractor fixture" $inlined.Document.info.title "Inlined info title was removed."
@@ -627,6 +415,8 @@ try {
         Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "ExamplesOnly")) "Extraction followed a reference inside examples."
     }
 
+    # Canonical ordering belongs to Sort, so Extract must preserve schema,
+    # property, and required-name encounter order after omission/inlining.
     Invoke-Test "Extract preserves schema encounter order after pruning" {
         $properties = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties
         Assert-Sequence `
@@ -651,6 +441,8 @@ try {
             "Inlined schema-key encounter order changed."
     }
 
+    # Extraction supports only resolvable local component references and should
+    # report the failing reference rather than emit a dangling document.
     Invoke-Test "external and unresolved references fail with context" {
         foreach ($reference in @("https://example.test/schema.json", "#/components/schemas/Missing")) {
             $invalidFixture = Copy-JsonValue -Value $fixture
@@ -665,6 +457,8 @@ try {
         }
     }
 
+    # OperationIds become filenames across platforms; sanitization collisions
+    # need a stable suffix rather than accidental overwrites.
     Invoke-Test "default filenames are portable and collision-aware" {
         $ordinaryPath = Get-DefaultOutputPath `
             -OperationId "createThing" `
@@ -673,8 +467,9 @@ try {
         Assert-Equal "createThing.inlined.openapi.json" (Split-Path $ordinaryPath -Leaf) "Ordinary operationId filename was incorrect."
 
         $collisionCatalog = @(
-            [PSCustomObject]@{ OperationId = "foo?bar" },
-            [PSCustomObject]@{ OperationId = "foo/bar" }
+            foreach ($operationId in $fixtureCases.collisionOperationIds) {
+                [PSCustomObject]@{ OperationId = $operationId }
+            }
         )
         $path = Get-DefaultOutputPath `
             -OperationId "foo?bar" `
@@ -684,6 +479,8 @@ try {
         Assert-True ($name -match '^foo-bar-[0-9a-f]{8}\.inlined\.openapi\.json$') "Collision-safe filename was unexpected: $name"
     }
 
+    # Deterministic encoding and serialization keep generated artifacts
+    # reviewable and prevent platform-specific byte churn.
     Invoke-Test "JSON output is deterministic UTF-8 without a BOM" {
         $firstPath = Join-Path $temporaryDirectory "first.json"
         $secondPath = Join-Path $temporaryDirectory "second.json"

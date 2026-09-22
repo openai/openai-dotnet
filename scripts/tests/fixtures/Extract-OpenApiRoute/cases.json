@@ -1,0 +1,27 @@
+{
+  "configuredOmission": {
+    "keep": "value",
+    "temporaryOmit": "removed"
+  },
+  "pruningOrder": {
+    "required": true,
+    "properties": {
+      "untouched": "value"
+    },
+    "type": "ordinary",
+    "example": "removed",
+    "description": "Not a schema",
+    "default": "value"
+  },
+  "escapedPointer": {
+    "components": {
+      "schemas": {
+        "A/B~C": "found"
+      }
+    }
+  },
+  "collisionOperationIds": [
+    "foo?bar",
+    "foo/bar"
+  ]
+}

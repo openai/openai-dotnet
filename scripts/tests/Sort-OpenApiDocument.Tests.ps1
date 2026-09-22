@@ -12,6 +12,7 @@ Set-StrictMode -Version Latest
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 . $sortScriptPath
+. (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -63,56 +64,25 @@ function Assert-Throws {
     throw "Expected an error matching '$MessagePattern', but no error was thrown."
 }
 
-function New-TestOpenApiDocument {
-    param([object]$Schema)
-    return [ordered]@{
-        openapi = "3.1.0"
-        info = [ordered]@{ title = "Sort fixture"; version = "1.0.0" }
-        paths = [ordered]@{
-            "/test" = [ordered]@{
-                post = [ordered]@{
-                    responses = [ordered]@{
-                        "200" = [ordered]@{
-                            description = "ok"
-                            content = [ordered]@{
-                                "application/json" = [ordered]@{ schema = $Schema }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-function Get-TestResponseSchema {
-    param([object]$Document)
-    return $Document.paths["/test"].post.responses["200"].content["application/json"].schema
-}
-
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Flatten-OpenApiAllOf"
+$schemaCases = Read-TestJsonFixture -RelativePath "Sort-OpenApiDocument/cases.schema.json"
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "sort-openapi-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
 try {
+    # Sort functions are reused by focused tests; dot-sourcing must expose them
+    # without invoking file-oriented command behavior.
     Invoke-Test "dot-sourcing defines sorter functions without running the CLI" {
         Assert-True ($null -ne (Get-Command ConvertTo-SortedOpenApiDocument -ErrorAction SilentlyContinue)) "Sort conversion function was not defined."
         Assert-True ($null -ne (Get-Command Invoke-OpenApiDocumentSorter -ErrorAction SilentlyContinue)) "Sort CLI function was not defined."
     }
 
+    # This is the core canonicalization contract across schema keywords,
+    # required-first properties, required arrays, and enum values.
     Invoke-Test "schema keys properties required names and enums are canonicalized" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            zeta = $true
-            properties = [ordered]@{
-                optionalZ = [ordered]@{ nullable = $true; description = "Optional"; type = "string" }
-                text = [ordered]@{ enum = @("zeta", "alpha", "middle"); type = "string" }
-                type = [ordered]@{ type = "string" }
-            }
-            required = @("text", "type")
-            default = $null
-            description = "Root"
-            type = "object"
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "canonicalization"
+        )
         $sorted = ConvertTo-SortedOpenApiDocument -Document $source
         $schema = Get-TestResponseSchema -Document $sorted
         Assert-Sequence @("type", "description", "required", "properties", "default", "zeta") @((Get-JsonProperties $schema).Name) "Schema keys were not canonicalized."
@@ -122,15 +92,12 @@ try {
         Assert-Sequence @("type", "description", "nullable") @((Get-JsonProperties $schema.properties.optionalZ).Name) "Nested schema keys were not canonicalized."
     }
 
+    # Enum ordering is textual/deterministic but must never coerce numbers,
+    # booleans, strings, or null into another JSON type.
     Invoke-Test "enum sorting preserves JSON value types including null" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            properties = [ordered]@{
-                numbers = [ordered]@{ enum = @(2, 10, 1) }
-                mixed = [ordered]@{ enum = @($null, "incomplete") }
-                flag = [ordered]@{ enum = @($true) }
-            }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "enumTypes"
+        )
         $schema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $source)
         Assert-Sequence @(1, 10, 2) @($schema.properties.numbers.enum) "Numeric enum order was incorrect."
         Assert-Equal "incomplete" $schema.properties.mixed.enum[0] "Mixed enum string order was incorrect."
@@ -138,19 +105,15 @@ try {
         Assert-Equal $true $schema.properties.flag.enum[0] "Boolean enum value changed."
     }
 
+    # Sort must remain schema-context aware and avoid reordering operational
+    # objects, arbitrary arrays, or semantically ordered composition branches.
     Invoke-Test "non-schema objects non-enum arrays and allOf branch order are preserved" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{ type = "string"; description = "first" },
-                [ordered]@{ type = "string"; description = "second" }
-            )
-            customArray = @("zeta", "alpha")
-        })
-        $source.paths["/test"].post["custom"] = [ordered]@{
-            required = $true
-            type = "ordinary"
-            description = "ordinary"
-        }
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "preserveCompositionOrder"
+        )
+        $source.paths["/test"].post["custom"] = Get-TestFixtureCase `
+            -Cases $schemaCases `
+            -Name "ordinaryPostProperty"
         $sorted = ConvertTo-SortedOpenApiDocument $source
         $schema = Get-TestResponseSchema $sorted
         Assert-Equal "first" $schema.allOf[0].description "allOf branch order changed."
@@ -159,36 +122,29 @@ try {
         Assert-Sequence @("responses", "custom") @((Get-JsonProperties $sorted.paths["/test"].post).Name) "Ordinary OpenAPI object order changed."
     }
 
+    # Omission belongs to Extract; Sort must retain examples and extension keys
+    # that reach its input.
     Invoke-Test "sort preserves configured and extension properties" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "string"
-            example = "kept"
-            examples = @("also kept")
-            "x-custom" = "kept"
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "preserveFields"
+        )
         $schema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $source)
         Assert-Equal "kept" $schema.example "Sort omitted example."
         Assert-Equal "also kept" $schema.examples[0] "Sort omitted examples."
         Assert-Equal "kept" $schema."x-custom" "Sort omitted extension."
     }
 
+    # Ordering policy is intentionally data-driven so future priority changes
+    # do not require rewriting traversal logic.
     Invoke-Test "schema and required priority arrays are configurable" {
         $originalSchemaPriority = @($script:PrioritizedSchemaPropertyNames)
         $originalRequiredPriority = @($script:PrioritizedRequiredPropertyNames)
         try {
             $script:PrioritizedSchemaPropertyNames = @("description", "properties", "type")
             $script:PrioritizedRequiredPropertyNames = @("kind", "type", "kind")
-            $source = New-TestOpenApiDocument -Schema ([ordered]@{
-                required = @("text", "type", "kind")
-                type = "object"
-                properties = [ordered]@{
-                    text = [ordered]@{ type = "string" }
-                    type = [ordered]@{ type = "string" }
-                    optional = [ordered]@{ type = "string" }
-                    kind = [ordered]@{ type = "string" }
-                }
-                description = "configured"
-            })
+            $source = New-TestOpenApiDocument -Schema (
+                Get-TestFixtureCase -Cases $schemaCases -Name "configuredPriority"
+            )
             $schema = Get-TestResponseSchema -Document (ConvertTo-SortedOpenApiDocument $source)
             Assert-Sequence @("description", "properties", "type", "required") @((Get-JsonProperties $schema).Name) "Schema priority configuration was ignored."
             Assert-Sequence @("kind", "type", "text") @($schema.required) "Required priority configuration was ignored."
@@ -200,15 +156,17 @@ try {
         }
     }
 
+    # Invalid required arrays cannot be canonicalized safely and should fail
+    # rather than stringify or silently discard malformed entries.
     Invoke-Test "non-string required names are rejected" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            type = "object"
-            required = @("valid", 42)
-            properties = [ordered]@{ valid = [ordered]@{ type = "string" } }
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "invalidRequired"
+        )
         Assert-Throws { ConvertTo-SortedOpenApiDocument -Document $source } "*Every required name must be a string*"
     }
 
+    # The public sorter must derive a sibling artifact, honor deterministic
+    # encoding, and leave its input untouched.
     Invoke-Test "default naming standalone output encoding and input preservation are correct" {
         $inputPath = Join-Path $temporaryDirectory "sample.inlined.flattened.openapi.json"
         Copy-Item -LiteralPath (Join-Path $fixtureDirectory "expected.flattened.openapi.json") -Destination $inputPath
@@ -223,6 +181,8 @@ try {
         Assert-Equal 10 $outputBytes[$outputBytes.Length - 1] "Sorted output lacks a trailing LF."
     }
 
+    # Canonical output is a fixed point: rerunning Sort should preserve bytes and
+    # reuse an existing `.sorted` path.
     Invoke-Test "sorting is byte-idempotent and avoids repeated suffixes" {
         $inputPath = Join-Path $temporaryDirectory "already.sorted.openapi.json"
         Copy-Item -LiteralPath (Join-Path $fixtureDirectory "expected.flattened.openapi.json") -Destination $inputPath
@@ -232,6 +192,8 @@ try {
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($before, [System.IO.File]::ReadAllBytes($inputPath))) "Sorting was not byte-idempotent."
     }
 
+    # Public file errors should be reported before sorting and must not create
+    # misleading output artifacts.
     Invoke-Test "missing and invalid inputs fail clearly" {
         Assert-Throws { Invoke-OpenApiDocumentSorter -InputPath (Join-Path $temporaryDirectory "missing.json") } "*cannot find path*"
         $invalidPath = Join-Path $temporaryDirectory "invalid.json"

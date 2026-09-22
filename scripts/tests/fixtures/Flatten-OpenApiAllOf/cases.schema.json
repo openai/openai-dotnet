@@ -1,0 +1,139 @@
+{
+  "simpleNested": {
+    "description": "Outer description",
+    "allOf": [
+      {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string" },
+          "type": { "type": "string" }
+        },
+        "required": ["text", "type"]
+      },
+      {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "optional": { "type": "boolean" }
+            }
+          },
+          {
+            "type": "object",
+            "nullable": true
+          }
+        ]
+      }
+    ]
+  },
+  "compatibleDuplicates": {
+    "allOf": [
+      {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["in_progress", "completed", "incomplete"]
+          }
+        }
+      },
+      {
+        "type": "object",
+        "properties": {
+          "status": {
+            "enum": ["completed", "incomplete", "failed"]
+          }
+        }
+      }
+    ]
+  },
+  "incompatibleProperties": {
+    "allOf": [
+      { "properties": { "duplicate": { "type": "string" } } },
+      { "properties": { "duplicate": { "type": "integer" } } }
+    ]
+  },
+  "incompatibleKeywords": {
+    "allOf": [
+      { "type": "object" },
+      { "type": "array" }
+    ]
+  },
+  "disjointEnums": {
+    "allOf": [
+      { "enum": ["completed"] },
+      { "enum": ["failed"] }
+    ]
+  },
+  "emptyAllOf": {
+    "allOf": []
+  },
+  "nonObjectBranch": {
+    "allOf": ["invalid"]
+  },
+  "localPointers": {
+    "allOf": [
+      {
+        "type": "object",
+        "properties": {
+          "kind": { "type": "string", "enum": ["a"] },
+          "child": {
+            "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/properties/kind"
+          }
+        }
+      },
+      { "type": "object" }
+    ]
+  },
+  "escapedPointers": {
+    "allOf": [
+      {
+        "type": "object",
+        "properties": {
+          "a/b~c": { "type": "string" },
+          "child": {
+            "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/properties/a~1b~0c"
+          }
+        }
+      },
+      { "type": "object" }
+    ]
+  },
+  "discriminatorMappings": {
+    "allOf": [
+      {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": { "kind": { "const": "a" } }
+          },
+          {
+            "type": "object",
+            "properties": { "kind": { "const": "b" } }
+          }
+        ],
+        "discriminator": {
+          "propertyName": "kind",
+          "mapping": {
+            "a": "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/oneOf/0",
+            "b": "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/oneOf/1"
+          }
+        }
+      },
+      { "type": "object" }
+    ]
+  },
+  "unresolvedRelocation": {
+    "allOf": [
+      {
+        "type": "object",
+        "properties": {
+          "child": {
+            "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/properties/missing"
+          }
+        }
+      },
+      { "type": "object" }
+    ]
+  }
+}

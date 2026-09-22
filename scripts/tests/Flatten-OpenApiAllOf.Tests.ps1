@@ -16,6 +16,7 @@ Set-StrictMode -Version Latest
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
 . $flattenScriptPath
+. (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -119,41 +120,6 @@ function Assert-Throws {
     throw "Expected an error matching '$MessagePattern', but no error was thrown."
 }
 
-function New-TestOpenApiDocument {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Schema
-    )
-
-    return [ordered]@{
-        openapi = "3.1.0"
-        info = [ordered]@{ title = "Flatten fixture"; version = "1.0.0" }
-        paths = [ordered]@{
-            "/test" = [ordered]@{
-                post = [ordered]@{
-                    responses = [ordered]@{
-                        "200" = [ordered]@{
-                            description = "ok"
-                            content = [ordered]@{
-                                "application/json" = [ordered]@{ schema = $Schema }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-function Get-TestResponseSchema {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Document
-    )
-
-    return $Document.paths["/test"].post.responses["200"].content["application/json"].schema
-}
-
 function Assert-BytesEqual {
     param(
         [Parameter(Mandatory = $true)]
@@ -174,38 +140,22 @@ function Assert-BytesEqual {
 }
 
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Flatten-OpenApiAllOf"
+$schemaCases = Read-TestJsonFixture -RelativePath "Flatten-OpenApiAllOf/cases.schema.json"
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "flatten-openapi-allof-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
 try {
+    # Stage functions are dot-sourced by focused tests and other tooling; doing
+    # so must not perform file I/O or invoke the command entry point.
     Invoke-Test "dot-sourcing defines functions without executing the CLI" {
         Assert-True ($null -ne (Get-Command ConvertTo-FlattenedOpenApiDocument -ErrorAction SilentlyContinue)) "Conversion function was not defined."
         Assert-True ($null -ne (Get-Command Invoke-OpenApiAllOfFlattener -ErrorAction SilentlyContinue)) "CLI function was not defined."
     }
 
+    # Flatten must recursively collapse every composition while preserving the
+    # merged schema's first-seen property and required-name order.
     Invoke-Test "simple and nested allOf schemas are flattened" {
-        $schema = [ordered]@{
-            description = "Outer description"
-            allOf = @(
-                [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        text = [ordered]@{ type = "string" }
-                        type = [ordered]@{ type = "string" }
-                    }
-                    required = @("text", "type")
-                },
-                [ordered]@{
-                    allOf = @(
-                        [ordered]@{
-                            type = "object"
-                            properties = [ordered]@{ optional = [ordered]@{ type = "boolean" } }
-                        },
-                        [ordered]@{ type = "object"; nullable = $true }
-                    )
-                }
-            )
-        }
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "simpleNested"
         $source = New-TestOpenApiDocument -Schema $schema
         $sourceBefore = ConvertTo-Json -InputObject $source -Depth 100 -Compress
         $result = ConvertTo-FlattenedOpenApiDocument -Document $source
@@ -221,84 +171,69 @@ try {
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Depth 100 -Compress) "Source document was mutated."
     }
 
+    # Repeated compatible constraints should combine without weakening schema
+    # validation or duplicating required names and enum values.
     Invoke-Test "compatible duplicate properties and enums are merged" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        status = [ordered]@{ type = "string"; enum = @("in_progress", "completed", "incomplete") }
-                    }
-                },
-                [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        status = [ordered]@{ enum = @("completed", "incomplete", "failed") }
-                    }
-                }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "compatibleDuplicates"
+        )
         $result = ConvertTo-FlattenedOpenApiDocument -Document $source
         $status = (Get-TestResponseSchema -Document $result.Document).properties.status
         Assert-Sequence @("completed", "incomplete") @($status.enum) "Enum intersection was incorrect."
     }
 
+    # Conflicting definitions cannot be flattened safely; the error must name
+    # the exact property path that made the merge ambiguous.
     Invoke-Test "incompatible property definitions fail with a breadcrumb" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{ properties = [ordered]@{ duplicate = [ordered]@{ type = "string" } } },
-                [ordered]@{ properties = [ordered]@{ duplicate = [ordered]@{ type = "integer" } } }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "incompatibleProperties"
+        )
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*duplicate*"
     }
 
+    # Different validating keywords at the same merged schema location must be
+    # rejected rather than resolved by arbitrary precedence.
     Invoke-Test "incompatible validating keywords fail" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{ type = "object" },
-                [ordered]@{ type = "array" }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "incompatibleKeywords"
+        )
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*keyword 'type'*"
     }
 
+    # allOf means intersection, so enum constraints with no common value make
+    # the schema unsatisfiable and should fail explicitly.
     Invoke-Test "disjoint enum constraints fail" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{ enum = @("completed") },
-                [ordered]@{ enum = @("failed") }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "disjointEnums"
+        )
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*no common values*"
     }
 
+    # This flattener supports object schema definitions only and must reject
+    # malformed/empty compositions before emitting partial output.
     Invoke-Test "empty and non-object allOf branches fail" {
         Assert-Throws {
             ConvertTo-FlattenedOpenApiDocument -Document (
-                New-TestOpenApiDocument -Schema ([ordered]@{ allOf = @() })
+                New-TestOpenApiDocument -Schema (
+                    Get-TestFixtureCase -Cases $schemaCases -Name "emptyAllOf"
+                )
             )
         } "*must contain at least one*"
         Assert-Throws {
             ConvertTo-FlattenedOpenApiDocument -Document (
-                New-TestOpenApiDocument -Schema ([ordered]@{ allOf = @("invalid") })
+                New-TestOpenApiDocument -Schema (
+                    Get-TestFixtureCase -Cases $schemaCases -Name "nonObjectBranch"
+                )
             )
         } "*must be an object definition*"
     }
 
+    # Moving branch contents to the containing schema changes JSON Pointer
+    # paths, so retained local references must follow the move.
     Invoke-Test "local pointers under allOf branches are relocated" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        kind = [ordered]@{ type = "string"; enum = @("a") }
-                        child = [ordered]@{ '$ref' = "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/properties/kind" }
-                    }
-                },
-                [ordered]@{ type = "object" }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "localPointers"
+        )
         $result = ConvertTo-FlattenedOpenApiDocument -Document $source
         $flattened = Get-TestResponseSchema -Document $result.Document
         Assert-Equal `
@@ -308,19 +243,12 @@ try {
         Assert-OpenApiReferencesResolve -Document $result.Document
     }
 
+    # Relocation must preserve RFC 6901 escaping for property names containing
+    # slash or tilde characters.
     Invoke-Test "escaped JSON Pointer segments are relocated safely" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        "a/b~c" = [ordered]@{ type = "string" }
-                        child = [ordered]@{ '$ref' = "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/properties/a~1b~0c" }
-                    }
-                },
-                [ordered]@{ type = "object" }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "escapedPointers"
+        )
         $result = ConvertTo-FlattenedOpenApiDocument -Document $source
         $flattened = Get-TestResponseSchema -Document $result.Document
         Assert-Equal `
@@ -330,25 +258,12 @@ try {
         Assert-OpenApiReferencesResolve -Document $result.Document
     }
 
+    # Discriminator mappings are pointer-valued even though they are not $ref;
+    # they must remain aligned with relocated schema branches.
     Invoke-Test "discriminator mapping pointers under allOf branches are relocated" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{
-                    oneOf = @(
-                        [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{ const = "a" } } },
-                        [ordered]@{ type = "object"; properties = [ordered]@{ kind = [ordered]@{ const = "b" } } }
-                    )
-                    discriminator = [ordered]@{
-                        propertyName = "kind"
-                        mapping = [ordered]@{
-                            a = "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/oneOf/0"
-                            b = "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/oneOf/1"
-                        }
-                    }
-                },
-                [ordered]@{ type = "object" }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "discriminatorMappings"
+        )
         $result = ConvertTo-FlattenedOpenApiDocument -Document $source
         $mapping = (Get-TestResponseSchema -Document $result.Document).discriminator.mapping
         Assert-Equal "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/0" $mapping.a "First mapping was not relocated."
@@ -356,6 +271,8 @@ try {
         Assert-OpenApiReferencesResolve -Document $result.Document
     }
 
+    # A source prefix cannot map to two destinations without making reference
+    # rewriting nondeterministic.
     Invoke-Test "conflicting pointer relocations fail clearly" {
         $relocations = [System.Collections.Generic.Dictionary[string, string]]::new(
             [System.StringComparer]::Ordinal
@@ -366,21 +283,16 @@ try {
         } "*conflicting relocation destinations*"
     }
 
+    # Successful textual relocation is insufficient; every rewritten pointer
+    # must resolve against the final flattened structure.
     Invoke-Test "relocated pointers must resolve in the flattened document" {
-        $source = New-TestOpenApiDocument -Schema ([ordered]@{
-            allOf = @(
-                [ordered]@{
-                    type = "object"
-                    properties = [ordered]@{
-                        child = [ordered]@{ '$ref' = "#/paths/~1test/post/responses/200/content/application~1json/schema/allOf/0/properties/missing" }
-                    }
-                },
-                [ordered]@{ type = "object" }
-            )
-        })
+        $source = New-TestOpenApiDocument -Schema (
+            Get-TestFixtureCase -Cases $schemaCases -Name "unresolvedRelocation"
+        )
         Assert-Throws { ConvertTo-FlattenedOpenApiDocument -Document $source } "*has no 'missing' property*"
     }
 
+    # An already-flat artifact should be safe to reprocess without byte churn.
     Invoke-Test "flattening is byte-idempotent" {
         $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
         $outputPath = Join-Path $temporaryDirectory "idempotent.openapi.json"
@@ -388,6 +300,8 @@ try {
         Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $outputPath -Message "Flattening was not idempotent."
     }
 
+    # Default invocation must retain its input and derive a predictable sibling
+    # artifact rather than overwriting the previous pipeline stage.
     Invoke-Test "default output path creates a sibling flattened file" {
         $inputPath = Join-Path $temporaryDirectory "sample.inlined.openapi.json"
         Copy-Item -LiteralPath (Join-Path $fixtureDirectory "expected.flattened.openapi.json") -Destination $inputPath
@@ -397,6 +311,8 @@ try {
         Assert-BytesEqual -ExpectedPath $inputPath -ActualPath $expectedPath -Message "Default output changed already-flat input."
     }
 
+    # Reprocessing a flattened artifact should target the same path, not append
+    # an unbounded sequence of `.flattened` markers.
     Invoke-Test "already-flattened default output does not repeat the suffix" {
         $inputPath = Join-Path $temporaryDirectory "already.flattened.openapi.json"
         Copy-Item -LiteralPath (Join-Path $fixtureDirectory "expected.flattened.openapi.json") -Destination $inputPath
@@ -410,6 +326,8 @@ try {
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($before, $after)) "Default idempotent rewrite changed bytes."
     }
 
+    # The public script entry point must honor explicit destinations in addition
+    # to exposing conversion functions for unit tests.
     Invoke-Test "standalone invocation writes the requested output" {
         $inputPath = Join-Path $temporaryDirectory "standalone.inlined.openapi.json"
         $outputPath = Join-Path $temporaryDirectory "standalone.flattened.openapi.json"
@@ -419,6 +337,8 @@ try {
         Assert-BytesEqual -ExpectedPath $inputPath -ActualPath $outputPath -Message "Standalone invocation changed already-flat input."
     }
 
+    # Stage output must follow the repository's deterministic encoding contract
+    # while treating the prior artifact as immutable.
     Invoke-Test "file output is UTF-8 without BOM and leaves input unchanged" {
         $inputPath = Join-Path $temporaryDirectory "preserved.openapi.json"
         $outputPath = Join-Path $temporaryDirectory "preserved.flattened.openapi.json"
@@ -433,6 +353,8 @@ try {
         Assert-Equal 10 $outputBytes[$outputBytes.Length - 1] "Flattened output lacks a trailing LF."
     }
 
+    # Path and JSON errors should stop before transformation and identify the
+    # invalid input rather than producing an output artifact.
     Invoke-Test "missing and invalid inputs fail clearly" {
         Assert-Throws { Invoke-OpenApiAllOfFlattener -InputPath (Join-Path $temporaryDirectory "missing.json") } "*cannot find path*"
         $invalidPath = Join-Path $temporaryDirectory "invalid.json"

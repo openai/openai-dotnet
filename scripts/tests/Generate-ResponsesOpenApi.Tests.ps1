@@ -11,6 +11,7 @@ Set-StrictMode -Version Latest
 
 $scriptPath = Join-Path $PSScriptRoot ".." "Generate-ResponsesOpenApi.ps1"
 . $scriptPath
+. (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -68,78 +69,9 @@ function Assert-Throws {
 
 function Write-TestSpecification {
     param([string]$Path)
-
-    $document = [ordered]@{
-        openapi = "3.1.0"
-        info = [ordered]@{ title = "Responses pipeline fixture"; version = "1.0.0" }
-        paths = [ordered]@{
-            "/responses" = [ordered]@{
-                post = [ordered]@{
-                    operationId = "createResponse"
-                    requestBody = [ordered]@{
-                        content = [ordered]@{
-                            "application/json" = [ordered]@{
-                                schema = [ordered]@{
-                                    allOf = @(
-                                        [ordered]@{
-                                            type = "object"
-                                            properties = [ordered]@{
-                                                model = [ordered]@{
-                                                    description = "Keep wrapper"
-                                                    anyOf = @(
-                                                        [ordered]@{
-                                                            anyOf = @(
-                                                                [ordered]@{ type = "string" },
-                                                                [ordered]@{ type = "string"; enum = @("zeta", "alpha") }
-                                                            )
-                                                        },
-                                                        [ordered]@{ type = "string"; enum = @("middle") }
-                                                    )
-                                                }
-                                                outputs = [ordered]@{
-                                                    type = "array"
-                                                    discriminator = [ordered]@{ propertyName = "type" }
-                                                    items = [ordered]@{
-                                                        discriminator = [ordered]@{ propertyName = "type" }
-                                                        oneOf = @([ordered]@{ type = "object" })
-                                                    }
-                                                }
-                                                events = [ordered]@{
-                                                    description = "Promote this union."
-                                                    anyOf = @(
-                                                        [ordered]@{ type = "object"; properties = [ordered]@{ type = [ordered]@{ type = "string" } } },
-                                                        [ordered]@{ type = "object"; properties = [ordered]@{ type = [ordered]@{} } }
-                                                    )
-                                                    discriminator = [ordered]@{ propertyName = "type" }
-                                                }
-                                            }
-                                        },
-                                        [ordered]@{
-                                            type = "object"
-                                            required = @("model")
-                                        }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    responses = [ordered]@{
-                        "200" = [ordered]@{ description = "ok" }
-                    }
-                }
-            }
-            "/unrelated" = [ordered]@{
-                get = [ordered]@{
-                    responses = [ordered]@{
-                        "200" = [ordered]@{ description = "not extracted" }
-                    }
-                }
-            }
-        }
-    }
-
-    $json = ConvertTo-Json -InputObject $document -Depth 100
-    [System.IO.File]::WriteAllText($Path, "$json`n", [System.Text.UTF8Encoding]::new($false))
+    Copy-Item `
+        -LiteralPath (Join-Path $script:OpenApiTestFixtureRoot "Generate-ResponsesOpenApi/source.openapi.json") `
+        -Destination $Path
 }
 
 function Read-TestJson {
@@ -151,18 +83,24 @@ $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "generate-resp
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
 try {
+    # Tests and tooling need orchestration helpers without paying for generation
+    # as a side effect of loading the script.
     Invoke-Test "dot-sourcing defines orchestration functions without running the pipeline" {
         Assert-True ($null -ne (Get-Command Invoke-ResponsesOpenApiGeneration -ErrorAction SilentlyContinue)) "Generation function was not defined."
         Assert-True ($null -ne (Get-Command Get-ResponsesOpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
         Assert-True (-not [System.IO.Directory]::Exists((Join-Path $temporaryDirectory "unexpected"))) "Dot-sourcing unexpectedly generated output."
     }
 
+    # The parameterless production command must read and write the repository's
+    # canonical specification/openapi location.
     Invoke-Test "production defaults target specification openapi" {
         $expectedDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
         Assert-Equal ([System.IO.Path]::GetFullPath($expectedDirectory)) ([System.IO.Path]::GetFullPath($script:DefaultOutputDirectory)) "Default output directory was incorrect."
         Assert-Equal ([System.IO.Path]::GetFullPath((Join-Path $expectedDirectory "openapi.json"))) ([System.IO.Path]::GetFullPath($script:DefaultSpecificationPath)) "Default source path was incorrect."
     }
 
+    # Orchestration invokes stages by filename, so a rename/removal should fail
+    # this focused contract test rather than surface during generation.
     Invoke-Test "required stage scripts exist at the expected paths" {
         foreach ($stageScriptName in @(
             "Extract-OpenApiRoute.ps1",
@@ -176,6 +114,8 @@ try {
         }
     }
 
+    # Intermediate filenames are an audit trail of the pipeline, while the final
+    # consumer-facing artifact intentionally has the short stable name.
     Invoke-Test "artifact paths retain every stage and use the short final name" {
         $outputDirectory = Join-Path $temporaryDirectory "artifact-paths"
         $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
@@ -196,6 +136,8 @@ try {
         ) "Artifact names were incorrect."
     }
 
+    # One compact end-to-end test owns stage ordering, intermediate persistence,
+    # semantic handoffs, source immutability, and final alias identity.
     Invoke-Test "pipeline persists every stage and creates a byte-identical final alias" {
         $sourcePath = Join-Path $temporaryDirectory "openapi.json"
         $outputDirectory = Join-Path $temporaryDirectory "generated"
@@ -249,6 +191,8 @@ try {
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
     }
 
+    # Final publication must replace stale bytes atomically without requiring a
+    # second expensive pipeline run in this test.
     Invoke-Test "atomic copy replaces a stale final alias" {
         $sourcePath = Join-Path $temporaryDirectory "copy-source.json"
         $finalPath = Join-Path $temporaryDirectory "responses.openapi.json"
@@ -261,6 +205,8 @@ try {
         Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($sourcePath), [System.IO.File]::ReadAllBytes($finalPath))) "Stale final alias was not atomically replaced."
     }
 
+    # Orchestration should validate its source before launching any stage or
+    # creating a partial artifact chain.
     Invoke-Test "missing and non-file specifications fail clearly" {
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `

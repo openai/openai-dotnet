@@ -10,6 +10,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $scriptPath = Join-Path $PSScriptRoot ".." "Find-OpenApiOneOf.ps1"
+$fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Find-OpenApiOneOf"
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -77,6 +78,8 @@ $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "find-openapi-
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
 try {
+    # Copilot/test sessions can invoke the analyzer repeatedly in one process;
+    # its embedded C# type must be reusable rather than redefined.
     Invoke-Test "runs when the previous analyzer type is already loaded" {
         if ($null -eq ("OpenAI.Scripts.OpenApiOneOf.V3.OpenApiOneOfCategorizer" -as [type])) {
             Add-Type -TypeDefinition @'
@@ -89,88 +92,15 @@ namespace OpenAI.Scripts.OpenApiOneOf.V3
 '@
         }
 
-        $fixturePath = Join-Path $temporaryDirectory "previous-type.json"
-        Write-TestJson -Path $fixturePath -Lines @('{ "openapi": "3.1.0" }')
+        $fixturePath = Join-Path $fixtureDirectory "none.json"
         $actual = @(& $scriptPath $fixturePath)
         Assert-True ($actual -ccontains "Discriminator Reconciliation:") "The current analyzer did not run."
     }
 
+    # The analyzer is used for schema reconciliation, so each oneOf category and
+    # malformed discriminator detail must remain stable and auditable.
     Invoke-Test "classifies occurrences and prints counts with required details" {
-        $fixturePath = Join-Path $temporaryDirectory "categories.json"
-        Write-TestJson -Path $fixturePath -Lines @(
-            "{",
-            '  "discriminatedBefore": {',
-            '    "discriminator": { "propertyName": "kind" },',
-            '    "oneOf": [',
-            '      { "type": "object" },',
-            '      { "type": "object" }',
-            "    ]",
-            "  },",
-            '  "potential": {',
-            '    "oneOf": [',
-            '      { "type": "object" }',
-            "    ]",
-            "  },",
-            '  "mixed": {',
-            '    "oneOf": [',
-            '      { "type": "string", "enum": ["choice"] },',
-            '      { "type": "boolean" },',
-            '      { "type": "string" },',
-            '      { "type": "object" }, { "type": "object" }',
-            "    ]",
-            "  },",
-            '  "discriminatedAfter": {',
-            '    "oneOf": [',
-            '      { "type": "object" }',
-            "    ],",
-            '    "discriminator": { "propertyName": "variant" }',
-            "  },",
-            '  "invalidDiscriminator": {',
-            '    "oneOf": [',
-            '      { "type": "object" }',
-            "    ],",
-            '    "discriminator": { "propertyName": 42 }',
-            "  },",
-            '  "mixedWithDiscriminator": {',
-            '    "discriminator": { "propertyName": "kind" },',
-            '    "oneOf": [',
-            '      { "type": "object" },',
-            '      { "type": "array" }',
-            "    ]",
-            "  },",
-            '  "missingType": {',
-            '    "oneOf": [',
-            '      { "properties": {} }',
-            "    ]",
-            "  },",
-            '  "arrayType": {',
-            '    "oneOf": [',
-            '      { "type": ["object", "null"] }',
-            "    ]",
-            "  },",
-            '  "empty": {',
-            '    "oneOf": []',
-            "  },",
-            '  "notArray": {',
-            '    "oneOf": { "type": "object" }',
-            "  },",
-            '  "nested": {',
-            '    "oneOf": [',
-            "      {",
-            '        "type": "object",',
-            '        "properties": {',
-            '          "child": {',
-            '            "oneOf": [',
-            '              { "type": "integer" },',
-            '              { "type": "boolean" }',
-            "            ]",
-            "          }",
-            "        }",
-            "      }",
-            "    ]",
-            "  }",
-            "}"
-        )
+        $fixturePath = Join-Path $fixtureDirectory "categories.json"
 
         $actual = @(& $scriptPath $fixturePath)
         Assert-Sequence @(
@@ -213,39 +143,10 @@ namespace OpenAI.Scripts.OpenApiOneOf.V3
         ) $actual "Categorized output was incorrect."
     }
 
+    # Structural discriminator keywords must be distinguished from identical
+    # strings in enums, required arrays, and ordinary literal fields.
     Invoke-Test "reconciles unpaired discriminators and exact string values" {
-        $fixturePath = Join-Path $temporaryDirectory "reconciliation.json"
-        Write-TestJson -Path $fixturePath -Lines @(
-            "{",
-            '  "unpaired": {',
-            '    "discriminator": {',
-            '      "propertyName": "discriminator"',
-            "    },",
-            '    "items": {',
-            '      "oneOf": [',
-            '        { "type": "object" }',
-            "      ]",
-            "    }",
-            "  },",
-            '  "recursive": {',
-            '    "discriminator": { "propertyName": "kind" },',
-            '    "oneOf": [',
-            '      { "type": "object" },',
-            '      { "$recursiveRef": "#" }',
-            "    ]",
-            "  },",
-            '  "strings": {',
-            '    "enum": [',
-            '      "discriminator"',
-            "    ],",
-            '    "required": [',
-            '      "discriminator"',
-            "    ],",
-            '    "label": "discriminator",',
-            '    "description": "mentions discriminator without being an exact value"',
-            "  }",
-            "}"
-        )
+        $fixturePath = Join-Path $fixtureDirectory "reconciliation.json"
 
         $actual = @(& $scriptPath $fixturePath)
         $reconciliationIndex = [Array]::IndexOf($actual, "Discriminator Reconciliation:")
@@ -277,18 +178,10 @@ namespace OpenAI.Scripts.OpenApiOneOf.V3
         ) $reconciliation "Discriminator reconciliation output was incorrect."
     }
 
+    # Reported locations are consumed by humans, so line numbering must remain
+    # one-based across LF, CRLF, and BOM-encoded files.
     Invoke-Test "preserves one-based lines for oneOf and discriminator tokens" {
-        $lines = @(
-            "{",
-            '  "candidate": {',
-            '    "discriminator": { "propertyName": "kind" },',
-            '    "oneOf": [{ "type": "object" }]',
-            "  },",
-            '  "unpaired": {',
-            '    "discriminator": { "propertyName": "other" }',
-            "  }",
-            "}"
-        )
+        $lines = Get-Content -LiteralPath (Join-Path $fixtureDirectory "line-locations.json")
         $cases = @(
             @{ Name = "lf.json"; NewLine = "`n"; Bom = $false },
             @{ Name = "crlf.json"; NewLine = "`r`n"; Bom = $false },
@@ -308,9 +201,10 @@ namespace OpenAI.Scripts.OpenApiOneOf.V3
         }
     }
 
+    # Empty categories should still produce the complete report shape, making
+    # automation independent of whether matches exist.
     Invoke-Test "prints zero counts when the document has no oneOf properties" {
-        $fixturePath = Join-Path $temporaryDirectory "none.json"
-        Write-TestJson -Path $fixturePath -Lines @('{ "openapi": "3.1.0" }')
+        $fixturePath = Join-Path $fixtureDirectory "none.json"
 
         $actual = @(& $scriptPath $fixturePath)
         Assert-Sequence @(
@@ -339,6 +233,8 @@ namespace OpenAI.Scripts.OpenApiOneOf.V3
         ) $actual "Zero-count output was incorrect."
     }
 
+    # File and parse failures should be diagnosed before the embedded analyzer
+    # attempts classification.
     Invoke-Test "missing non-file and invalid JSON inputs fail clearly" {
         Assert-Throws { & $scriptPath (Join-Path $temporaryDirectory "missing.json") } "*cannot find path*"
         Assert-Throws { & $scriptPath $temporaryDirectory } "*is not a file*"

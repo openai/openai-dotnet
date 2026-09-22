@@ -31,6 +31,7 @@
   "paths": {
     "/zebra/items": {
       "get": {
+        "operationId": "listZebraItems",
         "responses": {
           "204": {
             "description": "none"
@@ -40,6 +41,7 @@
     },
     "/responses?beta=true": {
       "post": {
+        "operationId": "createBetaResponse",
         "responses": {
           "204": {
             "description": "none"
@@ -196,6 +198,7 @@
     },
     "/fine_tuning/jobs": {
       "get": {
+        "operationId": "listFineTuningJobs",
         "responses": {
           "204": {
             "description": "none"

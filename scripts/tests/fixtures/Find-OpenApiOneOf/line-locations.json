@@ -1,0 +1,9 @@
+{
+  "candidate": {
+    "discriminator": { "propertyName": "kind" },
+    "oneOf": [{ "type": "object" }]
+  },
+  "unpaired": {
+    "discriminator": { "propertyName": "other" }
+  }
+}

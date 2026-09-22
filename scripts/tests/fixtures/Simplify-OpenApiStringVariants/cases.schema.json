@@ -1,0 +1,131 @@
+{
+  "branchCategoryOrder": {
+    "anyOf": [
+      { "type": "string", "enum": ["first"] },
+      {
+        "anyOf": [
+          { "type": "string" },
+          { "type": "string", "enum": ["second"] }
+        ]
+      }
+    ]
+  },
+  "arbitraryNesting": {
+    "type": "object",
+    "properties": {
+      "enumOnly": {
+        "anyOf": [
+          {
+            "anyOf": [
+              {
+                "anyOf": [
+                  { "type": "string", "enum": ["a"] },
+                  { "type": "string", "enum": ["b"] }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "plainOnly": {
+        "anyOf": [
+          { "type": "string" },
+          {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "string" }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "mixedUnion": {
+    "anyOf": [
+      {
+        "anyOf": [
+          { "type": "string" },
+          { "type": "string", "enum": ["known"] }
+        ]
+      },
+      { "type": "null" }
+    ]
+  },
+  "independentChild": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "model": {}
+        }
+      },
+      { "type": "null" }
+    ]
+  },
+  "unsupportedLeaves": [
+    { "type": "string", "format": "uri" },
+    { "type": "string", "pattern": "x" },
+    { "type": "string", "minLength": 1 },
+    { "type": "string", "maxLength": 2 },
+    { "type": "string", "const": "x" },
+    { "type": "string", "enum": [] },
+    { "type": "string", "enum": ["x", 1] },
+    { "$ref": "#/paths" }
+  ],
+  "unsupportedTree": {
+    "anyOf": [
+      {
+        "anyOf": [
+          { "type": "string" },
+          {}
+        ]
+      },
+      { "type": "string", "enum": ["known"] }
+    ]
+  },
+  "alreadyFlatLiteral": {
+    "anyOf": [
+      { "type": "string" },
+      { "type": "string", "enum": ["known"] }
+    ],
+    "example": {
+      "anyOf": [
+        {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "string", "enum": ["literal"] }
+          ]
+        }
+      ]
+    }
+  },
+  "rootReference": {
+    "type": "object",
+    "properties": {
+      "model": {},
+      "alias": {
+        "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/model"
+      }
+    }
+  },
+  "mappingReference": {
+    "type": "object",
+    "properties": {
+      "model": {}
+    },
+    "discriminator": {
+      "propertyName": "type",
+      "mapping": {
+        "model": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/model/anyOf/1"
+      }
+    }
+  },
+  "unresolvedReference": {
+    "$ref": "#/components/schemas/Missing"
+  },
+  "unflattened": {
+    "allOf": [
+      { "type": "string" }
+    ]
+  }
+}
