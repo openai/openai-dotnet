@@ -6,7 +6,8 @@
     Reads allOf-flattened JSON produced by Flatten-OpenApiAllOf.ps1, replaces
     eligible nested string-only anyOf trees with at most one plain-string
     branch and one merged string-enum branch, and preserves encounter order.
-    Run Sort-OpenApiDocument.ps1 afterward to produce canonical ordering.
+    Run Normalize-OpenApiOneOf.ps1 and then Sort-OpenApiDocument.ps1 afterward
+    to remove orphaned discriminator metadata and produce canonical ordering.
 
     A recursive anyOf tree is eligible only when every leaf is an
     unconstrained string or an enum containing only strings. Mixed or
@@ -30,8 +31,10 @@
 .EXAMPLE
     ./scripts/Simplify-OpenApiStringVariants.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.oneof-normalized.openapi.json
 #>
 
 #Requires -Version 7.0

@@ -6,9 +6,10 @@
     Reads inlined JSON produced by Extract-OpenApiRoute.ps1, recursively
     merges every allOf composition into a single schema, relocates affected local
     JSON pointers, and writes a separate flattened OpenAPI document while
-    preserving encounter order. Run Simplify-OpenApiStringVariants.ps1 and then
-    Sort-OpenApiDocument.ps1 afterward to consolidate eligible nested string
-    unions and produce canonical ordering. Flattening is byte-idempotent;
+    preserving encounter order. Run Simplify-OpenApiStringVariants.ps1,
+    Normalize-OpenApiOneOf.ps1, and then Sort-OpenApiDocument.ps1 afterward to
+    consolidate eligible nested string unions, remove orphaned discriminator
+    metadata, and produce canonical ordering. Flattening is byte-idempotent;
     running the script against already-flat output preserves its JSON bytes.
 
 .PARAMETER InputPath
@@ -33,8 +34,10 @@
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
     ./scripts/Simplify-OpenApiStringVariants.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.oneof-normalized.openapi.json
 #>
 
 #Requires -Version 7.0

@@ -1,0 +1,73 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "oneOf normalization fixture",
+    "version": "1.0.0",
+    "discriminator": "ordinary literal"
+  },
+  "paths": {
+    "/test": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "mentions discriminator",
+                  "properties": {
+                    "outputs": {
+                      "type": "array",
+                      "description": "outer orphan",
+                      "discriminator": {
+                        "propertyName": "type"
+                      },
+                      "items": {
+                        "discriminator": {
+                          "propertyName": "type"
+                        },
+                        "oneOf": [
+                          {
+                            "type": "object"
+                          }
+                        ]
+                      }
+                    },
+                    "discriminator": {
+                      "type": "string",
+                      "enum": [
+                        "discriminator"
+                      ]
+                    },
+                    "emptyPair": {
+                      "discriminator": {
+                        "propertyName": "kind"
+                      },
+                      "oneOf": []
+                    },
+                    "malformedPair": {
+                      "discriminator": {
+                        "propertyName": "kind"
+                      },
+                      "oneOf": null
+                    },
+                    "caseVariant": {
+                      "type": "object",
+                      "Discriminator": {
+                        "propertyName": "kind"
+                      }
+                    }
+                  },
+                  "example": {
+                    "discriminator": "literal object member"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

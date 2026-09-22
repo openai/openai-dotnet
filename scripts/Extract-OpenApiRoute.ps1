@@ -8,7 +8,8 @@
     recursion, while source allOf compositions are preserved. Run
     Flatten-OpenApiAllOf.ps1 against Inlined output to merge all allOf
     compositions, Simplify-OpenApiStringVariants.ps1 to consolidate eligible
-    nested string unions, then Sort-OpenApiDocument.ps1 to produce canonical
+    nested string unions, Normalize-OpenApiOneOf.ps1 to remove orphaned
+    discriminator metadata, then Sort-OpenApiDocument.ps1 to produce canonical
     output.
 
     Extraction retains path-level metadata and only the selected HTTP operation.
@@ -41,9 +42,11 @@
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
     ./scripts/Simplify-OpenApiStringVariants.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
-    Extracts, flattens, simplifies, and sorts a route in four explicit stages.
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.oneof-normalized.openapi.json
+    Extracts, flattens, normalizes, and sorts an operation in five explicit stages.
 #>
 
 #Requires -Version 7.0

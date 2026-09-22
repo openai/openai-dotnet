@@ -14,6 +14,7 @@ $sortScriptPath = Join-Path $scriptDirectory "Sort-OpenApiDocument.ps1"
 $extractScriptPath = Join-Path $scriptDirectory "Extract-OpenApiRoute.ps1"
 $flattenScriptPath = Join-Path $scriptDirectory "Flatten-OpenApiAllOf.ps1"
 $simplifyScriptPath = Join-Path $scriptDirectory "Simplify-OpenApiStringVariants.ps1"
+$normalizeOneOfScriptPath = Join-Path $scriptDirectory "Normalize-OpenApiOneOf.ps1"
 . $sortScriptPath
 
 $script:PassedTests = 0
@@ -222,18 +223,20 @@ try {
         Assert-Throws { ConvertTo-SortedOpenApiDocument -Document $source } "*Every required name must be a string*"
     }
 
-    Invoke-Test "compact four-stage pipeline matches the current golden bytes" {
+    Invoke-Test "compact five-stage pipeline matches the current golden bytes" {
         $sourcePath = Join-Path $fixtureDirectory "source.openapi.json"
         $goldenPath = Join-Path $fixtureDirectory "expected.flattened.openapi.json"
         $inlinedPath = Join-Path $temporaryDirectory "things.inlined.openapi.json"
         $flattenedPath = Join-Path $temporaryDirectory "things.inlined.flattened.openapi.json"
         $simplifiedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.openapi.json"
-        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.sorted.openapi.json"
+        $normalizedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.oneof-normalized.openapi.json"
+        $sortedPath = Join-Path $temporaryDirectory "things.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json"
         & $extractScriptPath -SpecificationPath $sourcePath -OperationId "createThing" -OutputPath $inlinedPath
         & $flattenScriptPath -InputPath $inlinedPath -OutputPath $flattenedPath
         & $simplifyScriptPath -InputPath $flattenedPath -OutputPath $simplifiedPath
-        & $sortScriptPath -InputPath $simplifiedPath -OutputPath $sortedPath
-        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Four-stage output changed."
+        & $normalizeOneOfScriptPath -InputPath $simplifiedPath -OutputPath $normalizedPath
+        & $sortScriptPath -InputPath $normalizedPath -OutputPath $sortedPath
+        Assert-BytesEqual -ExpectedPath $goldenPath -ActualPath $sortedPath -Message "Five-stage output changed."
     }
 
     Invoke-Test "Sort supports unflattened extracted output" {

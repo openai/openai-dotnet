@@ -96,6 +96,14 @@ function Write-TestSpecification {
                                                         [ordered]@{ type = "string"; enum = @("middle") }
                                                     )
                                                 }
+                                                outputs = [ordered]@{
+                                                    type = "array"
+                                                    discriminator = [ordered]@{ propertyName = "type" }
+                                                    items = [ordered]@{
+                                                        discriminator = [ordered]@{ propertyName = "type" }
+                                                        oneOf = @([ordered]@{ type = "object" })
+                                                    }
+                                                }
                                             }
                                         },
                                         [ordered]@{
@@ -152,6 +160,7 @@ try {
             "Extract-OpenApiRoute.ps1",
             "Flatten-OpenApiAllOf.ps1",
             "Simplify-OpenApiStringVariants.ps1",
+            "Normalize-OpenApiOneOf.ps1",
             "Sort-OpenApiDocument.ps1"
         )) {
             $stageScriptPath = Join-Path (Split-Path $scriptPath -Parent) $stageScriptName
@@ -166,12 +175,14 @@ try {
             "responses.inlined.openapi.json",
             "responses.inlined.flattened.openapi.json",
             "responses.inlined.flattened.simplified.openapi.json",
-            "responses.inlined.flattened.simplified.sorted.openapi.json",
+            "responses.inlined.flattened.simplified.oneof-normalized.openapi.json",
+            "responses.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Inlined),
             [System.IO.Path]::GetFileName($paths.Flattened),
             [System.IO.Path]::GetFileName($paths.Simplified),
+            [System.IO.Path]::GetFileName($paths.OneOfNormalized),
             [System.IO.Path]::GetFileName($paths.Sorted),
             [System.IO.Path]::GetFileName($paths.Final)
         ) "Artifact names were incorrect."
@@ -190,6 +201,7 @@ try {
             $paths.Inlined,
             $paths.Flattened,
             $paths.Simplified,
+            $paths.OneOfNormalized,
             $paths.Sorted,
             $paths.Final
         )) {
@@ -201,6 +213,7 @@ try {
         $inlined = Read-TestJson -Path $paths.Inlined
         $flattened = Read-TestJson -Path $paths.Flattened
         $simplified = Read-TestJson -Path $paths.Simplified
+        $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $sorted = Read-TestJson -Path $paths.Sorted
         Assert-Sequence @("/responses") @($inlined.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
         $inlinedSchema = $inlined.paths.'/responses'.post.requestBody.content.'application/json'.schema
@@ -209,9 +222,14 @@ try {
         Assert-True (-not ($flattenedSchema.PSObject.Properties.Name -ccontains "allOf")) "Flatten stage retained allOf."
 
         $simplifiedModel = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
+        $simplifiedOutputs = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
+        $normalizedOutputs = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         Assert-Equal 2 $simplifiedModel.anyOf.Count "Simplify stage emitted the wrong branch count."
         Assert-Sequence @("zeta", "alpha", "middle") @($simplifiedModel.anyOf[1].enum) "Simplify stage did not preserve encounter order."
+        Assert-True ($simplifiedOutputs.PSObject.Properties.Name -ccontains "discriminator") "Simplify stage removed the orphan before Normalize."
+        Assert-True (-not ($normalizedOutputs.PSObject.Properties.Name -ccontains "discriminator")) "Normalize stage retained the outer orphan."
+        Assert-True ($normalizedOutputs.items.PSObject.Properties.Name -ccontains "discriminator") "Normalize stage removed the nested paired discriminator."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
     }
 
