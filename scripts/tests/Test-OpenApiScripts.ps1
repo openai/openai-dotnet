@@ -30,6 +30,7 @@ $testNames = @(
     "Normalize-OpenApiOneOf.Tests.ps1"
     "Sort-OpenApiDocument.Tests.ps1"
     "Generate-ResponsesOpenApi.Tests.ps1"
+    "Componentize-OpenApiObjectSchemas.Tests.ps1"
 )
 
 $pwshPath = (Get-Process -Id $PID).Path

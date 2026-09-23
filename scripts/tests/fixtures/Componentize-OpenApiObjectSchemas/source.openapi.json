@@ -1,0 +1,137 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Componentizer fixture",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/widgets": {
+      "post": {
+        "operationId": "createWidget",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "child",
+                  "list"
+                ],
+                "properties": {
+                  "child": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "child_kind"
+                        ]
+                      }
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "additionalProperties": true
+                    }
+                  },
+                  "childAlias": {
+                    "$ref": "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/child"
+                  },
+                  "list": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "variants": {
+                    "discriminator": {
+                      "propertyName": "type",
+                      "mapping": {
+                        "first": "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/variants/oneOf/0",
+                        "second": "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/variants/oneOf/1"
+                      }
+                    },
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "alpha"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "alpha"
+                            ]
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "nearMiss": {
+                    "type": [
+                      "object",
+                      "null"
+                    ]
+                  },
+                  "literal": {
+                    "type": "string",
+                    "example": {
+                      "type": "object",
+                      "properties": {
+                        "ignored": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ExistingRoot": {
+        "type": "object",
+        "properties": {
+          "nested": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}
