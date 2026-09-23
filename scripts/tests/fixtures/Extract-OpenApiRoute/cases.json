@@ -20,6 +20,33 @@
       }
     }
   },
+  "metadataAndPayloadNames": {
+    "title": "Discard schema title",
+    "description": "Discard schema description",
+    "default": {
+      "$ref": "#/components/schemas/MissingAnnotationDependency"
+    },
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "description": "Discard title field description"
+      },
+      "description": {
+        "type": "string",
+        "title": "Discard description field title"
+      },
+      "default": {
+        "$ref": "#/components/schemas/A",
+        "description": "Discard default field reference description"
+      }
+    },
+    "required": [
+      "title",
+      "description",
+      "default"
+    ]
+  },
   "collisionOperationIds": [
     "foo?bar",
     "foo/bar"

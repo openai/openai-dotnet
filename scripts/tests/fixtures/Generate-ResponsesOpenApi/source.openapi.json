@@ -2,6 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Responses pipeline fixture",
+    "description": "Discard API description",
     "version": "1.0.0"
   },
   "paths": {
@@ -17,7 +18,9 @@
                     "type": "object",
                     "properties": {
                       "model": {
+                        "title": "Discard model title",
                         "description": "Keep wrapper",
+                        "default": "discard-model-default",
                         "anyOf": [
                           {
                             "anyOf": [

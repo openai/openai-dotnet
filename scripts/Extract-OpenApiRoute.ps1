@@ -15,8 +15,9 @@
     output.
 
     Extraction retains path-level metadata and only the selected HTTP operation.
-    It omits configured properties and every name that starts with x-, while
-    preserving encounter order.
+    It omits configured metadata and every name that starts with x-, while
+    preserving required OpenAPI members, schema-map data names, and encounter
+    order.
 
 .PARAMETER SpecificationPath
     The OpenAPI JSON document to read. Relative paths are resolved from the

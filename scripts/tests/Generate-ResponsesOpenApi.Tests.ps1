@@ -171,9 +171,17 @@ try {
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $sorted = Read-TestJson -Path $paths.Sorted
         Assert-Sequence @("/responses") @($inlined.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
+        Assert-Equal "Responses pipeline fixture" $inlined.info.title "Extract stage removed required info.title."
+        Assert-True (-not ($inlined.info.PSObject.Properties.Name -ccontains "description")) "Extract stage retained info.description."
+        Assert-Sequence @("default") @($inlined.paths.'/responses'.post.responses.PSObject.Properties.Name) "Extract stage lost the RequestBody response placeholder."
+        Assert-Equal "Responses omitted by RequestBody extraction mode." $inlined.paths.'/responses'.post.responses.default.description "Extract stage changed the required placeholder description."
         $inlinedSchema = $inlined.paths.'/responses'.post.requestBody.content.'application/json'.schema
         $flattenedSchema = $flattened.paths.'/responses'.post.requestBody.content.'application/json'.schema
         Assert-True ($inlinedSchema.PSObject.Properties.Name -ccontains "allOf") "Extract stage did not retain allOf."
+        $inlinedModel = $inlinedSchema.allOf[0].properties.model
+        Assert-True (-not ($inlinedModel.PSObject.Properties.Name -ccontains "title")) "Extract stage retained schema title metadata."
+        Assert-True (-not ($inlinedModel.PSObject.Properties.Name -ccontains "description")) "Extract stage retained schema description metadata."
+        Assert-True (-not ($inlinedModel.PSObject.Properties.Name -ccontains "default")) "Extract stage retained schema default metadata."
         Assert-True (-not ($flattenedSchema.PSObject.Properties.Name -ccontains "allOf")) "Flatten stage retained allOf."
 
         $simplifiedModel = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model

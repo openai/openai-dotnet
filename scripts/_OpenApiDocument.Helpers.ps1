@@ -12,6 +12,9 @@ Set-StrictMode -Version Latest
 $script:OmittedPropertyNames = @(
     "example"
     "examples"
+    "title"
+    "description"
+    "default"
 )
 
 $script:OpenApiHttpMethodNames = @(
@@ -50,17 +53,89 @@ function Get-JsonProperties {
     return @()
 }
 
+# Identifies an OpenAPI Responses Object, whose direct keys are status codes or
+# `default` rather than metadata keywords.
+function Test-IsOpenApiResponsesObjectBreadcrumb {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    $tokens = Get-JsonPointerTokens -Pointer $Breadcrumb
+    if ($tokens.Count -eq 2 -and
+        [string]::Equals($tokens[0], "components", [System.StringComparison]::Ordinal) -and
+        [string]::Equals($tokens[1], "responses", [System.StringComparison]::Ordinal)) {
+        return $true
+    }
+
+    return $tokens.Count -ge 2 -and
+        [string]::Equals($tokens[$tokens.Count - 1], "responses", [System.StringComparison]::Ordinal) -and
+        $script:OpenApiHttpMethodNames -ccontains $tokens[$tokens.Count - 2]
+}
+
+# Identifies a concrete Response Object reached through an operation, callback,
+# webhook, or components.responses entry.
+function Test-IsOpenApiResponseObjectBreadcrumb {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    $tokens = Get-JsonPointerTokens -Pointer $Breadcrumb
+    if ($tokens.Count -eq 3 -and
+        [string]::Equals($tokens[0], "components", [System.StringComparison]::Ordinal) -and
+        [string]::Equals($tokens[1], "responses", [System.StringComparison]::Ordinal)) {
+        return $true
+    }
+
+    return $tokens.Count -ge 3 -and
+        [string]::Equals($tokens[$tokens.Count - 2], "responses", [System.StringComparison]::Ordinal) -and
+        $script:OpenApiHttpMethodNames -ccontains $tokens[$tokens.Count - 3]
+}
+
 # Returns whether a JSON property should be excluded from dependency discovery
-# and extracted output. Exact configured names and the x- prefix are ordinal and
-# case-sensitive, so adding a name above requires no traversal code changes.
+# and extracted output. Metadata names are omitted contextually so required
+# OpenAPI members and schema-map data names remain intact.
 function Test-IsOmittedOpenApiProperty {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$Name
+        [string]$Name,
+
+        [Parameter()]
+        [AllowNull()]
+        [object]$ParentObject,
+
+        [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$ParentContext = "OpenApi",
+
+        [Parameter()]
+        [string]$ParentBreadcrumb = "#"
     )
 
     if ($Name.StartsWith("x-", [System.StringComparison]::Ordinal)) {
         return $true
+    }
+
+    if ([string]::Equals($ParentContext, "SchemaMap", [System.StringComparison]::Ordinal) -and
+        @("title", "description", "default") -ccontains $Name) {
+        return $false
+    }
+
+    if ([string]::Equals($Name, "title", [System.StringComparison]::Ordinal) -and
+        [string]::Equals($ParentBreadcrumb, "#/info", [System.StringComparison]::Ordinal)) {
+        return $false
+    }
+
+    if ([string]::Equals($Name, "default", [System.StringComparison]::Ordinal) -and
+        (Test-IsOpenApiResponsesObjectBreadcrumb -Breadcrumb $ParentBreadcrumb)) {
+        return $false
+    }
+
+    if ([string]::Equals($Name, "description", [System.StringComparison]::Ordinal) -and
+        (Test-IsOpenApiResponseObjectBreadcrumb -Breadcrumb $ParentBreadcrumb) -and
+        ($null -eq $ParentObject -or -not (Test-JsonProperty -Object $ParentObject -Name '$ref'))) {
+        return $false
     }
 
     foreach ($omittedPropertyName in $script:OmittedPropertyNames) {
@@ -768,6 +843,13 @@ function ConvertTo-PrunedOpenApiValue {
         [object]$Value,
 
         [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context = "OpenApi",
+
+        [Parameter()]
+        [string]$Breadcrumb = "#",
+
+        [Parameter()]
         [int]$Depth = 0,
 
         [Parameter()]
@@ -783,10 +865,16 @@ function ConvertTo-PrunedOpenApiValue {
     }
 
     if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
         [object[]]$prunedItems = [object[]]::new($Value.Count)
         for ($index = 0; $index -lt $Value.Count; $index++) {
             $prunedItems[$index] = ConvertTo-PrunedOpenApiValue `
                 -Value $Value[$index] `
+                -Context $itemContext `
+                -Breadcrumb "$Breadcrumb/$index" `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -799,11 +887,22 @@ function ConvertTo-PrunedOpenApiValue {
 
     $prunedObject = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+        if (Test-IsOmittedOpenApiProperty `
+            -Name $property.Name `
+            -ParentObject $Value `
+            -ParentContext $Context `
+            -ParentBreadcrumb $Breadcrumb) {
             continue
         }
+        $childBreadcrumb = "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)"
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
         $prunedObject[$property.Name] = ConvertTo-PrunedOpenApiValue `
             -Value $property.Value `
+            -Context $childContext `
+            -Breadcrumb $childBreadcrumb `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -968,6 +1067,10 @@ function Get-OpenApiReferenceOccurrences {
         [string]$Breadcrumb = "#",
 
         [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext = "OpenApi",
+
+        [Parameter()]
         [int]$Depth = 0,
 
         [Parameter()]
@@ -983,10 +1086,15 @@ function Get-OpenApiReferenceOccurrences {
     }
 
     if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $SchemaContext
+        if ([string]::Equals($SchemaContext, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
         for ($index = 0; $index -lt $Value.Count; $index++) {
             Get-OpenApiReferenceOccurrences `
                 -Value $Value[$index] `
                 -Breadcrumb "$Breadcrumb/$index" `
+                -SchemaContext $itemContext `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -1027,13 +1135,22 @@ function Get-OpenApiReferenceOccurrences {
     }
 
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+        if (Test-IsOmittedOpenApiProperty `
+            -Name $property.Name `
+            -ParentObject $Value `
+            -ParentContext $SchemaContext `
+            -ParentBreadcrumb $Breadcrumb) {
             continue
         }
 
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $SchemaContext `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
         Get-OpenApiReferenceOccurrences `
             -Value $property.Value `
             -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
+            -SchemaContext $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -1334,7 +1451,11 @@ function Expand-OpenApiDiscriminator {
     $expandedDiscriminator = [ordered]@{}
 
     foreach ($property in (Get-JsonProperties -Value $Discriminator)) {
-        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+        if (Test-IsOmittedOpenApiProperty `
+            -Name $property.Name `
+            -ParentObject $Discriminator `
+            -ParentContext Literal `
+            -ParentBreadcrumb "$Breadcrumb/discriminator") {
             continue
         }
 
@@ -1368,6 +1489,7 @@ function Expand-OpenApiDiscriminator {
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb "$Breadcrumb/discriminator/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
+            -SchemaContext Literal `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -1380,12 +1502,23 @@ function Expand-OpenApiDiscriminator {
 function Get-ReferenceSiblingProperties {
     param(
         [Parameter(Mandatory = $true)]
-        [object]$ReferenceObject
+        [object]$ReferenceObject,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext
     )
 
     [object[]]$siblings = @(Get-JsonProperties -Value $ReferenceObject | Where-Object {
         -not [string]::Equals($_.Name, '$ref', [System.StringComparison]::Ordinal) -and
-        -not (Test-IsOmittedOpenApiProperty -Name $_.Name)
+        -not (Test-IsOmittedOpenApiProperty `
+            -Name $_.Name `
+            -ParentObject $ReferenceObject `
+            -ParentContext $SchemaContext `
+            -ParentBreadcrumb $Breadcrumb)
     })
     return ,$siblings
 }
@@ -1416,6 +1549,10 @@ function Expand-CycleReferenceObject {
         [string]$Breadcrumb,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext,
+
+        [Parameter(Mandatory = $true)]
         [int]$Depth,
 
         [Parameter(Mandatory = $true)]
@@ -1426,12 +1563,17 @@ function Expand-CycleReferenceObject {
 
     $cycleObject = [ordered]@{ '$ref' = $CanonicalPointer }
     foreach ($siblingProperty in $SiblingProperties) {
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $SchemaContext `
+            -PropertyName $siblingProperty.Name `
+            -PropertyValue $siblingProperty.Value
         $cycleObject[$siblingProperty.Name] = Expand-OpenApiReferences `
             -Value $siblingProperty.Value `
             -Document $Document `
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $siblingProperty.Name)" `
+            -SchemaContext $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -1465,6 +1607,10 @@ function Expand-SchemaReferenceWithSiblings {
         [string]$Breadcrumb,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext,
+
+        [Parameter(Mandatory = $true)]
         [int]$Depth,
 
         [Parameter(Mandatory = $true)]
@@ -1477,6 +1623,7 @@ function Expand-SchemaReferenceWithSiblings {
         -ActiveReferences $ActiveReferences `
         -CycleReferences $CycleReferences `
         -Breadcrumb $Breadcrumb `
+        -SchemaContext $SchemaContext `
         -Depth ($Depth + 1) `
         -MaximumDepth $MaximumDepth
 
@@ -1491,6 +1638,7 @@ function Expand-SchemaReferenceWithSiblings {
         -ActiveReferences $ActiveReferences `
         -CycleReferences $CycleReferences `
         -Breadcrumb $Breadcrumb `
+        -SchemaContext $SchemaContext `
         -Depth ($Depth + 1) `
         -MaximumDepth $MaximumDepth
 
@@ -1532,6 +1680,10 @@ function Merge-ExpandedReferenceObject {
         [string]$Breadcrumb,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext,
+
+        [Parameter(Mandatory = $true)]
         [int]$Depth,
 
         [Parameter(Mandatory = $true)]
@@ -1548,12 +1700,17 @@ function Merge-ExpandedReferenceObject {
     }
 
     foreach ($siblingProperty in $SiblingProperties) {
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $SchemaContext `
+            -PropertyName $siblingProperty.Name `
+            -PropertyValue $siblingProperty.Value
         $mergedTarget[$siblingProperty.Name] = Expand-OpenApiReferences `
             -Value $siblingProperty.Value `
             -Document $Document `
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $siblingProperty.Name)" `
+            -SchemaContext $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -1583,6 +1740,10 @@ function Expand-ComponentReferenceObject {
         [string]$Breadcrumb,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext,
+
+        [Parameter(Mandatory = $true)]
         [int]$Depth,
 
         [Parameter(Mandatory = $true)]
@@ -1600,7 +1761,10 @@ function Expand-ComponentReferenceObject {
         -Document $Document `
         -Pointer $canonicalPointer `
         -Context "reference at $Breadcrumb"
-    $siblingProperties = Get-ReferenceSiblingProperties -ReferenceObject $ReferenceObject
+    $siblingProperties = Get-ReferenceSiblingProperties `
+        -ReferenceObject $ReferenceObject `
+        -Breadcrumb $Breadcrumb `
+        -SchemaContext $SchemaContext
 
     if ($ActiveReferences.Contains($canonicalPointer)) {
         return Expand-CycleReferenceObject `
@@ -1610,6 +1774,7 @@ function Expand-ComponentReferenceObject {
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb $Breadcrumb `
+            -SchemaContext $SchemaContext `
             -Depth $Depth `
             -MaximumDepth $MaximumDepth
     }
@@ -1625,6 +1790,7 @@ function Expand-ComponentReferenceObject {
                 -ActiveReferences $ActiveReferences `
                 -CycleReferences $CycleReferences `
                 -Breadcrumb $Breadcrumb `
+                -SchemaContext $SchemaContext `
                 -Depth $Depth `
                 -MaximumDepth $MaximumDepth
         }
@@ -1635,6 +1801,7 @@ function Expand-ComponentReferenceObject {
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb $Breadcrumb `
+            -SchemaContext $SchemaContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -1654,6 +1821,7 @@ function Expand-ComponentReferenceObject {
         -ActiveReferences $ActiveReferences `
         -CycleReferences $CycleReferences `
         -Breadcrumb $Breadcrumb `
+        -SchemaContext $SchemaContext `
         -Depth $Depth `
         -MaximumDepth $MaximumDepth
 }
@@ -1680,6 +1848,10 @@ function Expand-OpenApiObjectProperties {
         [string]$Breadcrumb,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext,
+
+        [Parameter(Mandatory = $true)]
         [int]$Depth,
 
         [Parameter(Mandatory = $true)]
@@ -1688,7 +1860,11 @@ function Expand-OpenApiObjectProperties {
 
     $expandedObject = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+        if (Test-IsOmittedOpenApiProperty `
+            -Name $property.Name `
+            -ParentObject $Value `
+            -ParentContext $SchemaContext `
+            -ParentBreadcrumb $Breadcrumb) {
             continue
         }
 
@@ -1706,12 +1882,17 @@ function Expand-OpenApiObjectProperties {
             continue
         }
 
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $SchemaContext `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
         $expandedObject[$property.Name] = Expand-OpenApiReferences `
             -Value $property.Value `
             -Document $Document `
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
+            -SchemaContext $childContext `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -1742,6 +1923,10 @@ function Expand-OpenApiReferences {
         [string]$Breadcrumb,
 
         [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$SchemaContext = "OpenApi",
+
+        [Parameter()]
         [int]$Depth = 0,
 
         [Parameter()]
@@ -1755,6 +1940,10 @@ function Expand-OpenApiReferences {
         return $null
     }
     if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $SchemaContext
+        if ([string]::Equals($SchemaContext, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
         [object[]]$expandedItems = @(
             for ($index = 0; $index -lt $Value.Count; $index++) {
                 Expand-OpenApiReferences `
@@ -1763,6 +1952,7 @@ function Expand-OpenApiReferences {
                     -ActiveReferences $ActiveReferences `
                     -CycleReferences $CycleReferences `
                     -Breadcrumb "$Breadcrumb/$index" `
+                    -SchemaContext $itemContext `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
@@ -1779,6 +1969,7 @@ function Expand-OpenApiReferences {
             -ActiveReferences $ActiveReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb $Breadcrumb `
+            -SchemaContext $SchemaContext `
             -Depth $Depth `
             -MaximumDepth $MaximumDepth
     }
@@ -1789,6 +1980,7 @@ function Expand-OpenApiReferences {
         -ActiveReferences $ActiveReferences `
         -CycleReferences $CycleReferences `
         -Breadcrumb $Breadcrumb `
+        -SchemaContext $SchemaContext `
         -Depth $Depth `
         -MaximumDepth $MaximumDepth
 }
@@ -1843,6 +2035,7 @@ function New-InlinedFallbackComponents {
             -ActiveReferences $activeReferences `
             -CycleReferences $CycleReferences `
             -Breadcrumb $componentRoot.Pointer `
+            -SchemaContext $(if ([string]::Equals($componentRoot.Section, "schemas", [System.StringComparison]::Ordinal)) { "Schema" } else { "OpenApi" }) `
             -MaximumDepth $MaximumDepth
 
         foreach ($discoveredPointer in $CycleReferences) {
@@ -2193,7 +2386,9 @@ function New-ExtractedOpenApiDocument {
     $selectedSourcePathItem = New-SelectedOpenApiPathItem `
         -OperationEntry $OperationEntry `
         -Mode $Mode
-    $sourcePathItem = ConvertTo-PrunedOpenApiValue -Value $selectedSourcePathItem
+    $sourcePathItem = ConvertTo-PrunedOpenApiValue `
+        -Value $selectedSourcePathItem `
+        -Breadcrumb $routePointer
     $cycleReferences = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )

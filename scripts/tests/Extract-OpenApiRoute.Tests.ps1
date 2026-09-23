@@ -152,21 +152,36 @@ function Find-JsonPropertyValues {
     }
 }
 
-# Recursively returns every JSON property name selected by the production
-# omission configuration, regardless of where it appears in the document.
+# Recursively returns properties that violate the contextual production
+# omission policy. Required OpenAPI members and schema-map field names are not
+# reported merely because their names overlap omitted metadata keywords.
 function Find-OmittedOpenApiPropertyNames {
     param(
         [Parameter(Mandatory = $true)]
         [AllowNull()]
-        [object]$Value
+        [object]$Value,
+
+        [Parameter()]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context = "OpenApi",
+
+        [Parameter()]
+        [string]$Breadcrumb = "#"
     )
 
     if ($null -eq $Value) {
         return
     }
     if (Test-JsonArrayValue -Value $Value) {
-        foreach ($item in $Value) {
-            Find-OmittedOpenApiPropertyNames -Value $item
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            Find-OmittedOpenApiPropertyNames `
+                -Value $Value[$index] `
+                -Context $itemContext `
+                -Breadcrumb "$Breadcrumb/$index"
         }
         return
     }
@@ -175,10 +190,21 @@ function Find-OmittedOpenApiPropertyNames {
     }
 
     foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if (Test-IsOmittedOpenApiProperty -Name $property.Name) {
+        if (Test-IsOmittedOpenApiProperty `
+            -Name $property.Name `
+            -ParentObject $Value `
+            -ParentContext $Context `
+            -ParentBreadcrumb $Breadcrumb) {
             $property.Name
         }
-        Find-OmittedOpenApiPropertyNames -Value $property.Value
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
+        Find-OmittedOpenApiPropertyNames `
+            -Value $property.Value `
+            -Context $childContext `
+            -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)"
     }
 }
 
@@ -237,13 +263,19 @@ try {
     }
 
     # Omission affects both emitted JSON and dependency discovery; exact JSON
-    # property-name casing must therefore remain explicit.
+    # property-name casing and structural exceptions must therefore be explicit.
     Invoke-Test "omission predicate is configured and case-sensitive" {
-        foreach ($name in @("example", "examples", "x-foo")) {
+        foreach ($name in @("example", "examples", "title", "description", "default", "x-foo")) {
             Assert-True (Test-IsOmittedOpenApiProperty -Name $name) "'$name' should be omitted."
         }
-        foreach ($name in @("title", "Title", "Example", "Examples", "X-foo")) {
+        foreach ($name in @("Title", "Description", "Default", "Example", "Examples", "X-foo")) {
             Assert-True (-not (Test-IsOmittedOpenApiProperty -Name $name)) "'$name' should be retained."
+        }
+        Assert-True (-not (Test-IsOmittedOpenApiProperty -Name "title" -ParentBreadcrumb "#/info")) "info.title should be retained."
+        Assert-True (-not (Test-IsOmittedOpenApiProperty -Name "default" -ParentBreadcrumb "#/paths/~1test/post/responses")) "Response default key should be retained."
+        Assert-True (-not (Test-IsOmittedOpenApiProperty -Name "description" -ParentObject ([ordered]@{}) -ParentBreadcrumb "#/paths/~1test/post/responses/default")) "Response description should be retained."
+        foreach ($name in @("title", "description", "default")) {
+            Assert-True (-not (Test-IsOmittedOpenApiProperty -Name $name -ParentContext SchemaMap)) "Schema-map name '$name' should be retained."
         }
     }
 
@@ -270,7 +302,7 @@ try {
         $ordinary = Get-TestFixtureCase -Cases $fixtureCases -Name "pruningOrder"
         $pruned = ConvertTo-PrunedOpenApiValue -Value $ordinary
         Assert-Sequence `
-            @("required", "properties", "type", "description", "default") `
+            @("required", "properties", "type") `
             @((Get-JsonProperties -Value $pruned).Name) `
             "Pruning changed surviving object order."
         Assert-Sequence `
@@ -536,15 +568,52 @@ try {
             "Dog mapping was not rewritten."
     }
 
-    # OpenAPI 3.1 permits siblings next to $ref. Extraction must merge those
-    # siblings into the inlined target rather than introducing a synthetic
-    # allOf wrapper that would defer this extractor-owned operation to Flatten.
-    Invoke-Test "schema reference siblings are merged into the inlined target" {
+    # OpenAPI 3.1 permits siblings next to $ref. Validating siblings are merged,
+    # while configured metadata siblings are removed before the merge.
+    Invoke-Test "schema reference metadata siblings are omitted from the inlined target" {
         $alias = $inlined.Document.paths["/things"].post.requestBody.content["application/json"].schema.properties.requiredA
         Assert-True (-not (Test-JsonProperty -Object $alias -Name "allOf")) "Reference sibling introduced allOf."
         Assert-Equal "object" $alias.type "Referenced schema type was lost."
-        Assert-Equal "A reference with a sibling" $alias.description "Reference sibling description was lost."
+        Assert-True (-not (Test-JsonProperty -Object $alias -Name "description")) "Reference sibling description remained."
         Assert-Equal "cat" $alias.properties.type.const "Referenced schema properties were lost."
+    }
+
+    # A Response Reference Object's description sibling is optional metadata,
+    # but the concrete target response's description remains required.
+    Invoke-Test "response reference description siblings do not replace required target descriptions" {
+        $responseFixture = Copy-JsonValue -Value $fixture
+        $responseFixture.paths["/things"].post.responses["200"].description = "Discard response reference override"
+        $responseOperation = Select-OpenApiOperation `
+            -Catalog (Get-OpenApiOperationCatalog -Document $responseFixture) `
+            -RequestedOperationId "createThing"
+        $responseResult = New-ExtractedOpenApiDocument `
+            -Document $responseFixture `
+            -OperationEntry $responseOperation `
+            -Mode Responses
+        Assert-Equal "ok" $responseResult.Document.paths["/things"].post.responses["200"].description "Required target response description changed."
+    }
+
+    # Annotation keywords are removed without deleting payload fields that use
+    # the same names or references reachable through those field schemas.
+    Invoke-Test "metadata names remain valid payload fields in schema maps" {
+        $metadataFixture = Copy-JsonValue -Value $fixture
+        $metadataFixture.paths["/things"].post.requestBody.content["application/json"].schema = `
+            Get-TestFixtureCase -Cases $fixtureCases -Name "metadataAndPayloadNames"
+        $metadataOperation = Select-OpenApiOperation `
+            -Catalog (Get-OpenApiOperationCatalog -Document $metadataFixture) `
+            -RequestedOperationId "createThing"
+        $metadataResult = New-ExtractedOpenApiDocument `
+            -Document $metadataFixture `
+            -OperationEntry $metadataOperation `
+            -Mode RequestBody
+        $schema = $metadataResult.Document.paths["/things"].post.requestBody.content["application/json"].schema
+        Assert-Sequence @("type", "properties", "required") @((Get-JsonProperties -Value $schema).Name) "Schema metadata remained."
+        Assert-Sequence @("title", "description", "default") @((Get-JsonProperties -Value $schema.properties).Name) "Payload field names changed."
+        Assert-Sequence @("title", "description", "default") @($schema.required) "Required payload names changed."
+        Assert-True (-not (Test-JsonProperty -Object $schema.properties.title -Name "description")) "Field description annotation remained."
+        Assert-True (-not (Test-JsonProperty -Object $schema.properties.description -Name "title")) "Field title annotation remained."
+        Assert-True (-not (Test-JsonProperty -Object $schema.properties.default -Name "description")) "Reference description annotation remained."
+        Assert-Equal "object" $schema.properties.default.type "Payload field reference was not expanded."
     }
 
     # Extract is orthogonal to source allOf composition: it expands references
@@ -578,13 +647,15 @@ try {
     Invoke-Test "configured and x-prefixed properties are removed without mutating the source" {
         Assert-Equal 0 @(Find-OmittedOpenApiPropertyNames -Value $inlined.Document).Count "Inlined omitted properties remained."
         Assert-Equal "Extractor fixture" $inlined.Document.info.title "Inlined info title was removed."
+        Assert-True (-not (Test-JsonProperty -Object $inlined.Document.info -Name "description")) "Inlined info description remained."
         Assert-True (Test-JsonProperty -Object $fixture -Name "x-custom-root") "Source root extension was mutated."
         Assert-True (Test-JsonProperty -Object $fixture.info -Name "x-custom-info") "Source info extension was mutated."
         Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "x-hidden-ref") "Source operation extension was mutated."
         Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "example") "Source example was mutated."
         Assert-True (Test-JsonProperty -Object $fixture.paths["/things"].post -Name "examples") "Source examples were mutated."
         Assert-True (Test-JsonProperty -Object $fixture.components.schemas.Cat.properties.type -Name "x-stainless-const") "Nested source extension was mutated."
-        Assert-Equal "Cat schema" $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.oneOf[0].title "Schema title was removed."
+        Assert-True (-not (Test-JsonProperty -Object $inlined.Document.paths["/things"].post.responses["200"].content["application/json"].schema.oneOf[0] -Name "title")) "Schema title remained."
+        Assert-Equal "ok" $inlined.Document.paths["/things"].post.responses["200"].description "Required response description was removed."
         Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "Unused")) "Extraction followed a reference inside an extension."
         Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "ExampleOnly")) "Extraction followed a reference inside example."
         Assert-True (-not (Test-JsonProperty -Object $inlined.Document.components.schemas -Name "ExamplesOnly")) "Extraction followed a reference inside examples."
