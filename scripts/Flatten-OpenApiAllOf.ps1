@@ -7,10 +7,11 @@
     merges every allOf composition into a single schema, relocates affected local
     JSON pointers, and writes a separate flattened OpenAPI document while
     preserving encounter order. Run Simplify-OpenApiStringVariants.ps1,
-    Normalize-OpenApiOneOf.ps1, and then Sort-OpenApiDocument.ps1 afterward to
-    consolidate eligible nested string unions, remove orphaned discriminator
-    metadata, and produce canonical ordering. Flattening is byte-idempotent;
-    running the script against already-flat output preserves its JSON bytes.
+    Simplify-OpenApiRecursiveSchemas.ps1, Normalize-OpenApiOneOf.ps1, and then
+    Sort-OpenApiDocument.ps1 afterward to consolidate eligible nested string
+    unions, replace recursive objects, remove orphaned discriminator metadata,
+    and produce canonical ordering. Flattening is byte-idempotent; running the
+    script against already-flat output preserves its JSON bytes.
 
 .PARAMETER InputPath
     The Inlined OpenAPI JSON document to flatten.
@@ -34,10 +35,12 @@
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
     ./scripts/Simplify-OpenApiStringVariants.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
-    ./scripts/Normalize-OpenApiOneOf.ps1 `
+    ./scripts/Simplify-OpenApiRecursiveSchemas.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
+    ./scripts/Normalize-OpenApiOneOf.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
     ./scripts/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.oneof-normalized.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json
 #>
 
 #Requires -Version 7.0

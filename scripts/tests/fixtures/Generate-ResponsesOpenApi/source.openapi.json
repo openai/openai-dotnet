@@ -78,6 +78,34 @@
                         "discriminator": {
                           "propertyName": "type"
                         }
+                      },
+                      "filters": {
+                        "description": "Keep nullable wrapper",
+                        "anyOf": [
+                          {
+                            "description": "Discard inner wrapper",
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "title": "Comparison Filter"
+                              },
+                              {
+                                "$recursiveAnchor": true,
+                                "type": "object",
+                                "additionalProperties": false,
+                                "title": "Compound Filter",
+                                "properties": {
+                                  "next": {
+                                    "$recursiveRef": "#"
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
                       }
                     }
                   },

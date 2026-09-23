@@ -5,16 +5,17 @@
 .DESCRIPTION
     Runs the OpenAPI transformation stages in order for the createResponse
     operation: Extract with references inlined, Flatten allOf, Simplify string
-    variants, Normalize oneOf metadata, and Sort. Each stage is retained under
-    specification/openapi, and the sorted result is also copied byte-for-byte
-    to responses.openapi.json.
+    variants, Simplify recursive schemas, Normalize oneOf metadata, and Sort.
+    Each stage is retained under specification/openapi, and the sorted result
+    is also copied byte-for-byte to responses.openapi.json.
 
     The generated files are:
     - responses.inlined.openapi.json
     - responses.inlined.flattened.openapi.json
     - responses.inlined.flattened.simplified.openapi.json
-    - responses.inlined.flattened.simplified.oneof-normalized.openapi.json
-    - responses.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.sorted.openapi.json
     - responses.openapi.json
 
 .EXAMPLE
@@ -44,8 +45,9 @@ function Get-ResponsesOpenApiArtifactPaths {
         Inlined = Join-Path $fullOutputDirectory "responses.inlined.openapi.json"
         Flattened = Join-Path $fullOutputDirectory "responses.inlined.flattened.openapi.json"
         Simplified = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.openapi.json"
-        OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.oneof-normalized.openapi.json"
-        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json"
+        RecursiveSimplified = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.openapi.json"
+        OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json"
+        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.sorted.openapi.json"
         Final = Join-Path $fullOutputDirectory "responses.openapi.json"
     }
 }
@@ -100,6 +102,7 @@ function Invoke-ResponsesOpenApiGeneration {
         "Extract-OpenApiRoute.ps1"
         "Flatten-OpenApiAllOf.ps1"
         "Simplify-OpenApiStringVariants.ps1"
+        "Simplify-OpenApiRecursiveSchemas.ps1"
         "Normalize-OpenApiOneOf.ps1"
         "Sort-OpenApiDocument.ps1"
     )
@@ -125,8 +128,11 @@ function Invoke-ResponsesOpenApiGeneration {
     $null = & $stageScriptPaths["Simplify-OpenApiStringVariants.ps1"] `
         -InputPath $paths.Flattened `
         -OutputPath $paths.Simplified
-    $null = & $stageScriptPaths["Normalize-OpenApiOneOf.ps1"] `
+    $null = & $stageScriptPaths["Simplify-OpenApiRecursiveSchemas.ps1"] `
         -InputPath $paths.Simplified `
+        -OutputPath $paths.RecursiveSimplified
+    $null = & $stageScriptPaths["Normalize-OpenApiOneOf.ps1"] `
+        -InputPath $paths.RecursiveSimplified `
         -OutputPath $paths.OneOfNormalized
     $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
         -InputPath $paths.OneOfNormalized `
@@ -139,6 +145,7 @@ function Invoke-ResponsesOpenApiGeneration {
         $paths.Inlined,
         $paths.Flattened,
         $paths.Simplified,
+        $paths.RecursiveSimplified,
         $paths.OneOfNormalized,
         $paths.Sorted,
         $paths.Final

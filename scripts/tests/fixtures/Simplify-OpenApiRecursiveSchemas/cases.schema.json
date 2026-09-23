@@ -1,0 +1,206 @@
+{
+  "standalone": {
+    "description": "discarded",
+    "$recursiveAnchor": true,
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "child": {
+        "$recursiveRef": "#"
+      }
+    },
+    "required": [
+      "child"
+    ]
+  },
+  "allObjectAnyOf": {
+    "description": "discard wrapper",
+    "anyOf": [
+      {
+        "title": "Comparison Filter",
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string"
+          }
+        }
+      },
+      {
+        "$recursiveAnchor": true,
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Compound Filter",
+        "properties": {
+          "filters": {
+            "type": "array",
+            "items": {
+              "$recursiveRef": "#"
+            }
+          }
+        }
+      }
+    ],
+    "x-wrapper": "discarded"
+  },
+  "multipleAnchors": {
+    "anyOf": [
+      {
+        "$recursiveAnchor": true,
+        "type": "object",
+        "title": "first"
+      },
+      {
+        "$recursiveAnchor": true,
+        "type": "object",
+        "title": "second"
+      }
+    ]
+  },
+  "nullableWrapper": {
+    "description": "keep nullable wrapper",
+    "anyOf": [
+      {
+        "description": "discard inner wrapper",
+        "anyOf": [
+          {
+            "type": "object",
+            "title": "Comparison Filter"
+          },
+          {
+            "$recursiveAnchor": true,
+            "type": "object",
+            "title": "Compound Filter",
+            "properties": {
+              "next": {
+                "$recursiveRef": "#"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "null"
+      }
+    ]
+  },
+  "mixedAnyOf": {
+    "description": "keep mixed wrapper",
+    "anyOf": [
+      {
+        "$recursiveAnchor": true,
+        "type": "object",
+        "title": "discarded"
+      },
+      {
+        "type": "string"
+      }
+    ]
+  },
+  "oneOf": {
+    "description": "keep oneOf wrapper",
+    "oneOf": [
+      {
+        "$recursiveAnchor": true,
+        "type": "object",
+        "title": "discarded"
+      },
+      {
+        "type": "object",
+        "title": "preserved"
+      }
+    ]
+  },
+  "nestedAnchor": {
+    "description": "do not collapse parent",
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "nested": {
+            "$recursiveAnchor": true,
+            "type": "object",
+            "title": "discarded"
+          }
+        }
+      },
+      {
+        "type": "object",
+        "title": "second"
+      }
+    ]
+  },
+  "nearMissesAndLiterals": {
+    "type": "object",
+    "properties": {
+      "falseAnchor": {
+        "$recursiveAnchor": false,
+        "type": "object"
+      },
+      "stringAnchor": {
+        "$recursiveAnchor": "true",
+        "type": "object"
+      },
+      "wrongType": {
+        "$recursiveAnchor": true,
+        "type": "array"
+      },
+      "missingType": {
+        "$recursiveAnchor": true
+      },
+      "arrayType": {
+        "$recursiveAnchor": true,
+        "type": [
+          "object"
+        ]
+      },
+      "emptyAnyOf": {
+        "anyOf": []
+      },
+      "malformedAnyOf": {
+        "anyOf": "not an array"
+      }
+    },
+    "example": {
+      "$recursiveAnchor": true,
+      "type": "object",
+      "anyOf": [
+        {
+          "$recursiveAnchor": true,
+          "type": "object"
+        },
+        {
+          "type": "object"
+        }
+      ]
+    }
+  },
+  "rootReference": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "$recursiveAnchor": true,
+            "type": "object",
+            "properties": {
+              "nested": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "alias": {
+        "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/properties/target"
+      }
+    }
+  }
+}

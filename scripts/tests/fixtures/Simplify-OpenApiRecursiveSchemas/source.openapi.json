@@ -1,0 +1,85 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Recursive schema simplifier fixture",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/test": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nullable": {
+                      "description": "keep nullable wrapper",
+                      "anyOf": [
+                        {
+                          "description": "discard inner wrapper",
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "title": "Comparison Filter"
+                            },
+                            {
+                              "$recursiveAnchor": true,
+                              "type": "object",
+                              "additionalProperties": false,
+                              "title": "Compound Filter",
+                              "properties": {
+                                "next": {
+                                  "$recursiveRef": "#"
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "standalone": {
+                      "description": "discarded",
+                      "$recursiveAnchor": true,
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "$recursiveRef": "#"
+                        }
+                      }
+                    },
+                    "mixed": {
+                      "description": "keep mixed wrapper",
+                      "anyOf": [
+                        {
+                          "$recursiveAnchor": true,
+                          "type": "object",
+                          "title": "discarded"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "literal": {
+                      "type": "object",
+                      "example": {
+                        "$recursiveAnchor": true,
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

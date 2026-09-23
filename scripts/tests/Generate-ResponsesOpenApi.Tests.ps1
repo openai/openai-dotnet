@@ -106,6 +106,7 @@ try {
             "Extract-OpenApiRoute.ps1",
             "Flatten-OpenApiAllOf.ps1",
             "Simplify-OpenApiStringVariants.ps1",
+            "Simplify-OpenApiRecursiveSchemas.ps1",
             "Normalize-OpenApiOneOf.ps1",
             "Sort-OpenApiDocument.ps1"
         )) {
@@ -123,13 +124,15 @@ try {
             "responses.inlined.openapi.json",
             "responses.inlined.flattened.openapi.json",
             "responses.inlined.flattened.simplified.openapi.json",
-            "responses.inlined.flattened.simplified.oneof-normalized.openapi.json",
-            "responses.inlined.flattened.simplified.oneof-normalized.sorted.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.sorted.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Inlined),
             [System.IO.Path]::GetFileName($paths.Flattened),
             [System.IO.Path]::GetFileName($paths.Simplified),
+            [System.IO.Path]::GetFileName($paths.RecursiveSimplified),
             [System.IO.Path]::GetFileName($paths.OneOfNormalized),
             [System.IO.Path]::GetFileName($paths.Sorted),
             [System.IO.Path]::GetFileName($paths.Final)
@@ -151,6 +154,7 @@ try {
             $paths.Inlined,
             $paths.Flattened,
             $paths.Simplified,
+            $paths.RecursiveSimplified,
             $paths.OneOfNormalized,
             $paths.Sorted,
             $paths.Final
@@ -163,6 +167,7 @@ try {
         $inlined = Read-TestJson -Path $paths.Inlined
         $flattened = Read-TestJson -Path $paths.Flattened
         $simplified = Read-TestJson -Path $paths.Simplified
+        $recursiveSimplified = Read-TestJson -Path $paths.RecursiveSimplified
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $sorted = Read-TestJson -Path $paths.Sorted
         Assert-Sequence @("/responses") @($inlined.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
@@ -174,21 +179,32 @@ try {
         $simplifiedModel = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $simplifiedOutputs = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
         $simplifiedEvents = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
+        $simplifiedFilters = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
+        $recursiveSimplifiedFilters = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $normalizedOutputs = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
         $normalizedEvents = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
+        $normalizedFilters = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $sortedEvents = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
+        $sortedFilters = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         Assert-Equal 2 $simplifiedModel.anyOf.Count "Simplify stage emitted the wrong branch count."
         Assert-Sequence @("zeta", "alpha", "middle") @($simplifiedModel.anyOf[1].enum) "Simplify stage did not preserve encounter order."
         Assert-True ($simplifiedOutputs.PSObject.Properties.Name -ccontains "discriminator") "Simplify stage removed the orphan before Normalize."
         Assert-True ($simplifiedEvents.PSObject.Properties.Name -ccontains "anyOf") "Simplify stage promoted the union before Normalize."
+        Assert-True ($simplifiedFilters.anyOf[0].anyOf[1].PSObject.Properties.Name -ccontains '$recursiveAnchor') "String Simplify stage removed the recursive anchor."
+        Assert-Equal 2 $recursiveSimplifiedFilters.anyOf.Count "Recursive Simplify stage changed the nullable wrapper."
+        Assert-Sequence @("type", "additionalProperties") @($recursiveSimplifiedFilters.anyOf[0].PSObject.Properties.Name) "Recursive Simplify stage emitted the wrong free-form shape."
+        Assert-Equal $true $recursiveSimplifiedFilters.anyOf[0].additionalProperties "Recursive Simplify stage did not allow free-form properties."
+        Assert-Equal "null" $recursiveSimplifiedFilters.anyOf[1].type "Recursive Simplify stage lost the nullable branch."
         Assert-True (-not ($normalizedOutputs.PSObject.Properties.Name -ccontains "discriminator")) "Normalize stage retained the outer orphan."
         Assert-True ($normalizedOutputs.items.PSObject.Properties.Name -ccontains "discriminator") "Normalize stage removed the nested paired discriminator."
         Assert-True (-not ($normalizedEvents.PSObject.Properties.Name -ccontains "anyOf")) "Normalize stage retained the qualifying anyOf."
         Assert-True ($normalizedEvents.PSObject.Properties.Name -ccontains "oneOf") "Normalize stage did not emit oneOf."
         Assert-True ($normalizedEvents.PSObject.Properties.Name -ccontains "discriminator") "Normalize stage removed the promoted discriminator."
+        Assert-True ($normalizedFilters.PSObject.Properties.Name -ccontains "anyOf") "Normalize stage changed the nullable recursive wrapper."
         Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "oneOf") "Sort stage lost the promoted oneOf."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
+        Assert-Equal $true $sortedFilters.anyOf[0].additionalProperties "Sort stage lost the free-form recursive replacement."
     }
 
     # Final publication must replace stale bytes atomically without requiring a
