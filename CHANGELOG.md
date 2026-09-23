@@ -8,7 +8,7 @@
 
 - OpenAI.Responses:
   - Added experimental OpenTelemetry traces and metrics for non-streaming `CreateResponse` operations. The instrumentation follows the configured GenAI semantic convention version and does not capture prompts, generated content, instructions, tools, or end-user identifiers.
-  - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto
+  - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, and `AllTurns`.
 
 ### Bugs Fixed
 
