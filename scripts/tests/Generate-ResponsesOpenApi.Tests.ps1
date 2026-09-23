@@ -104,6 +104,8 @@ try {
     Invoke-Test "required stage scripts exist at the expected paths" {
         foreach ($stageScriptName in @(
             "Extract-OpenApiRoute.ps1",
+            "Remove-OpenApiOmittedProperties.ps1",
+            "Inline-OpenApiReferences.ps1",
             "Flatten-OpenApiAllOf.ps1",
             "Simplify-OpenApiStringVariants.ps1",
             "Simplify-OpenApiRecursiveSchemas.ps1",
@@ -123,6 +125,8 @@ try {
         $outputDirectory = Join-Path $temporaryDirectory "artifact-paths"
         $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
         Assert-Sequence @(
+            "responses.extracted.openapi.json",
+            "responses.extracted.omitted.openapi.json",
             "responses.inlined.openapi.json",
             "responses.inlined.flattened.openapi.json",
             "responses.inlined.flattened.simplified.openapi.json",
@@ -133,6 +137,8 @@ try {
             "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
             "responses.openapi.json"
         ) @(
+            [System.IO.Path]::GetFileName($paths.Extracted),
+            [System.IO.Path]::GetFileName($paths.Omitted),
             [System.IO.Path]::GetFileName($paths.Inlined),
             [System.IO.Path]::GetFileName($paths.Flattened),
             [System.IO.Path]::GetFileName($paths.Simplified),
@@ -160,6 +166,8 @@ try {
             -OutputDirectory $outputDirectory
 
         foreach ($artifactPath in @(
+            $paths.Extracted,
+            $paths.Omitted,
             $paths.Inlined,
             $paths.Flattened,
             $paths.Simplified,
@@ -176,6 +184,8 @@ try {
         Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Sorted), [System.IO.File]::ReadAllBytes($paths.Final))) "Final output differs from the retained Sort-stage artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
 
+        $extracted = Read-TestJson -Path $paths.Extracted
+        $omitted = Read-TestJson -Path $paths.Omitted
         $inlined = Read-TestJson -Path $paths.Inlined
         $flattened = Read-TestJson -Path $paths.Flattened
         $simplified = Read-TestJson -Path $paths.Simplified
@@ -184,7 +194,21 @@ try {
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $oneOfFlattened = Read-TestJson -Path $paths.OneOfFlattened
         $sorted = Read-TestJson -Path $paths.Sorted
-        Assert-Sequence @("/responses") @($inlined.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
+        Assert-Sequence @("/responses") @($extracted.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
+        Assert-Equal "Discard API description" $extracted.info.description "Extract stage removed metadata."
+        $extractedModel = $extracted.paths.'/responses'.post.requestBody.content.'application/json'.schema.allOf[0].properties.model
+        Assert-Equal "Discard model title" $extractedModel.title "Extract stage removed schema title metadata."
+        Assert-Equal "discard-model-default" $extractedModel.default "Extract stage removed schema default metadata."
+        Assert-True (-not ($omitted.info.PSObject.Properties.Name -ccontains "description")) "Omission stage retained info.description."
+        $omittedModel = $omitted.paths.'/responses'.post.requestBody.content.'application/json'.schema.allOf[0].properties.model
+        Assert-True (-not ($omittedModel.PSObject.Properties.Name -ccontains "title")) "Omission stage retained schema title metadata."
+        Assert-True (-not ($omittedModel.PSObject.Properties.Name -ccontains "description")) "Omission stage retained schema description metadata."
+        Assert-True (-not ($omittedModel.PSObject.Properties.Name -ccontains "default")) "Omission stage retained schema default metadata."
+        Assert-Equal `
+            (ConvertTo-Json -InputObject $omitted -Compress -Depth 100) `
+            (ConvertTo-Json -InputObject $inlined -Compress -Depth 100) `
+            "Reference-free compact fixture changed during inlining."
+        Assert-Sequence @("/responses") @($inlined.paths.PSObject.Properties.Name) "Inline stage retained unrelated routes."
         Assert-Equal "Responses pipeline fixture" $inlined.info.title "Extract stage removed required info.title."
         Assert-True (-not ($inlined.info.PSObject.Properties.Name -ccontains "description")) "Extract stage retained info.description."
         Assert-Sequence @("default") @($inlined.paths.'/responses'.post.responses.PSObject.Properties.Name) "Extract stage lost the RequestBody response placeholder."

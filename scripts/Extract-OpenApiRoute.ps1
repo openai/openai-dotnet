@@ -5,20 +5,11 @@
 .DESCRIPTION
     Reads an OpenAPI document and selects one HTTP operation by operationId.
     The selected operation can include its request body, responses, or both.
-    References are expanded except where a reference is needed to represent
-    recursion, while source allOf compositions are preserved. Run
-    Flatten-OpenApiAllOf.ps1 against Inlined output to merge all allOf
-    compositions, Simplify-OpenApiStringVariants.ps1 to consolidate eligible
-    nested string unions, Simplify-OpenApiRecursiveSchemas.ps1 to replace
-    recursive objects, Add-OpenApiOneOfDiscriminators.ps1 to infer missing type
-    discriminators, Normalize-OpenApiOneOf.ps1 to remove orphaned discriminator
-    metadata, Flatten-OpenApiOneOf.ps1 to promote matching nested wrappers, then
-    Sort-OpenApiDocument.ps1 to produce canonical output.
-
-    Extraction retains path-level metadata and only the selected HTTP operation.
-    It omits configured metadata and every name that starts with x-, while
-    preserving required OpenAPI members, schema-map data names, and encounter
-    order.
+    Extraction retains path-level metadata, only the selected HTTP operation,
+    selected tag definitions, and the complete component registry. Metadata,
+    extensions, references, and schema compositions remain unchanged. Run
+    Remove-OpenApiOmittedProperties.ps1 and Inline-OpenApiReferences.ps1 before
+    the semantic transformation stages.
 
 .PARAMETER SpecificationPath
     The OpenAPI JSON document to read. Relative paths are resolved from the
@@ -38,7 +29,7 @@
     The destination JSON file. When omitted, the script writes beneath
     artifacts/openapi-extracts using a name derived from the operationId.
     RequestBody and Responses outputs include `.request-body` and `.responses`
-    markers respectively; Both retains the existing filename.
+    markers respectively; every output ends in `.extracted.openapi.json`.
 
 .EXAMPLE
     ./scripts/Extract-OpenApiRoute.ps1
@@ -48,12 +39,17 @@
     ./scripts/Extract-OpenApiRoute.ps1 `
         -OperationId createSpeech `
         -Mode Responses
-    Extracts and inlines only the response side of createSpeech without prompting.
+    Extracts only the response side of createSpeech without prompting.
 
 .EXAMPLE
     ./scripts/Extract-OpenApiRoute.ps1 `
         -OperationId createResponse `
-        -Mode Both
+        -Mode Both `
+        -OutputPath ./artifacts/openapi-extracts/responses.extracted.openapi.json
+    ./scripts/Remove-OpenApiOmittedProperties.ps1 `
+        ./artifacts/openapi-extracts/responses.extracted.openapi.json
+    ./scripts/Inline-OpenApiReferences.ps1 `
+        ./artifacts/openapi-extracts/responses.extracted.omitted.openapi.json
     ./scripts/Flatten-OpenApiAllOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
     ./scripts/Simplify-OpenApiStringVariants.ps1 `
@@ -68,8 +64,8 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
     ./scripts/Sort-OpenApiDocument.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
-    Noninteractively extracts both sides, then simplifies, normalizes, and sorts
-    the operation in eight explicit stages.
+    Noninteractively extracts both sides, removes omitted properties, inlines
+    references, then simplifies, normalizes, and sorts in ten explicit stages.
 #>
 
 #Requires -Version 7.0

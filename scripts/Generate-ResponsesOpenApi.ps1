@@ -4,13 +4,15 @@
 
 .DESCRIPTION
     Runs the OpenAPI transformation stages in order for the createResponse
-    operation: Extract with references inlined, Flatten allOf, Simplify string
-    variants, Simplify recursive schemas, Add oneOf discriminators, Normalize
-    oneOf metadata, Flatten nested oneOf wrappers, and Sort. Each stage is retained under
-    specification/openapi, and the sorted result is also copied byte-for-byte
-    to responses.openapi.json.
+    operation: Extract the route, Remove omitted properties, Inline references,
+    Flatten allOf, Simplify string variants, Simplify recursive schemas, Add
+    oneOf discriminators, Normalize oneOf metadata, Flatten nested oneOf
+    wrappers, and Sort. Each stage is retained under specification/openapi, and
+    the sorted result is also copied byte-for-byte to responses.openapi.json.
 
     The generated files are:
+    - responses.extracted.openapi.json
+    - responses.extracted.omitted.openapi.json
     - responses.inlined.openapi.json
     - responses.inlined.flattened.openapi.json
     - responses.inlined.flattened.simplified.openapi.json
@@ -45,6 +47,8 @@ function Get-ResponsesOpenApiArtifactPaths {
 
     $fullOutputDirectory = [System.IO.Path]::GetFullPath($OutputDirectory)
     return [PSCustomObject]@{
+        Extracted = Join-Path $fullOutputDirectory "responses.extracted.openapi.json"
+        Omitted = Join-Path $fullOutputDirectory "responses.extracted.omitted.openapi.json"
         Inlined = Join-Path $fullOutputDirectory "responses.inlined.openapi.json"
         Flattened = Join-Path $fullOutputDirectory "responses.inlined.flattened.openapi.json"
         Simplified = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.openapi.json"
@@ -105,6 +109,8 @@ function Invoke-ResponsesOpenApiGeneration {
 
     $stageScriptNames = @(
         "Extract-OpenApiRoute.ps1"
+        "Remove-OpenApiOmittedProperties.ps1"
+        "Inline-OpenApiReferences.ps1"
         "Flatten-OpenApiAllOf.ps1"
         "Simplify-OpenApiStringVariants.ps1"
         "Simplify-OpenApiRecursiveSchemas.ps1"
@@ -135,6 +141,12 @@ function Invoke-ResponsesOpenApiGeneration {
         -SpecificationPath $resolvedSpecificationPath `
         -OperationId "createResponse" `
         -Mode RequestBody `
+        -OutputPath $paths.Extracted
+    $null = & $stageScriptPaths["Remove-OpenApiOmittedProperties.ps1"] `
+        -InputPath $paths.Extracted `
+        -OutputPath $paths.Omitted
+    $null = & $stageScriptPaths["Inline-OpenApiReferences.ps1"] `
+        -InputPath $paths.Omitted `
         -OutputPath $paths.Inlined
     $null = & $stageScriptPaths["Flatten-OpenApiAllOf.ps1"] `
         -InputPath $paths.Inlined `
@@ -162,6 +174,8 @@ function Invoke-ResponsesOpenApiGeneration {
         -DestinationPath $paths.Final
 
     foreach ($artifactPath in @(
+        $paths.Extracted,
+        $paths.Omitted,
         $paths.Inlined,
         $paths.Flattened,
         $paths.Simplified,

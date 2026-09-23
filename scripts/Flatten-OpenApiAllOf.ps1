@@ -3,7 +3,7 @@
     Flattens all allOf schema compositions in an Inlined OpenAPI document.
 
 .DESCRIPTION
-    Reads inlined JSON produced by Extract-OpenApiRoute.ps1, recursively
+    Reads inlined JSON produced by Inline-OpenApiReferences.ps1, recursively
     merges every allOf composition into a single schema, relocates affected local
     JSON pointers, and writes a separate flattened OpenAPI document while
     preserving encounter order. Run Simplify-OpenApiStringVariants.ps1,

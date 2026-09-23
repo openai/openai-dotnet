@@ -23,6 +23,8 @@ $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 
 $testNames = @(
     "Extract-OpenApiRoute.Tests.ps1"
+    "Remove-OpenApiOmittedProperties.Tests.ps1"
+    "Inline-OpenApiReferences.Tests.ps1"
     "Find-OpenApiOneOf.Tests.ps1"
     "Flatten-OpenApiAllOf.Tests.ps1"
     "Simplify-OpenApiStringVariants.Tests.ps1"
