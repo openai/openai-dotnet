@@ -72004,20 +72004,13 @@
       "ItemReferenceParam": {
         "properties": {
           "type": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "item_reference"
-                ],
-                "description": "The type of item to reference. Always `item_reference`.",
-                "default": "item_reference",
-                "x-stainless-const": true
-              },
-              {
-                "type": "null"
-              }
-            ]
+            "type": "string",
+            "enum": [
+              "item_reference"
+            ],
+            "description": "The type of item to reference. Always `item_reference`.",
+            "default": "item_reference",
+            "x-stainless-const": true
           },
           "id": {
             "type": "string",

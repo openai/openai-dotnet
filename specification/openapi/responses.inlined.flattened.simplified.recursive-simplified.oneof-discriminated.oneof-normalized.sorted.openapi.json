@@ -7243,16 +7243,9 @@
                                   "type": "string"
                                 },
                                 "type": {
-                                  "anyOf": [
-                                    {
-                                      "type": "string",
-                                      "enum": [
-                                        "item_reference"
-                                      ]
-                                    },
-                                    {
-                                      "type": "null"
-                                    }
+                                  "type": "string",
+                                  "enum": [
+                                    "item_reference"
                                   ]
                                 }
                               }
@@ -8009,6 +8002,9 @@
                     "type": "object",
                     "properties": {
                       "format": {
+                        "discriminator": {
+                          "propertyName": "type"
+                        },
                         "oneOf": [
                           {
                             "type": "object",

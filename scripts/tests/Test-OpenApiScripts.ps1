@@ -27,6 +27,7 @@ $testNames = @(
     "Flatten-OpenApiAllOf.Tests.ps1"
     "Simplify-OpenApiStringVariants.Tests.ps1"
     "Simplify-OpenApiRecursiveSchemas.Tests.ps1"
+    "Add-OpenApiOneOfDiscriminators.Tests.ps1"
     "Normalize-OpenApiOneOf.Tests.ps1"
     "Sort-OpenApiDocument.Tests.ps1"
     "Generate-ResponsesOpenApi.Tests.ps1"

@@ -9959,16 +9959,9 @@
                             {
                               "properties": {
                                 "type": {
-                                  "anyOf": [
-                                    {
-                                      "type": "string",
-                                      "enum": [
-                                        "item_reference"
-                                      ]
-                                    },
-                                    {
-                                      "type": "null"
-                                    }
+                                  "type": "string",
+                                  "enum": [
+                                    "item_reference"
                                   ]
                                 },
                                 "id": {

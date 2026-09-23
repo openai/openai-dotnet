@@ -1,0 +1,232 @@
+{
+  "eligible": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "first"
+            ]
+          }
+        }
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "second"
+            ]
+          },
+          "extra": {
+            "type": "integer"
+          }
+        }
+      }
+    ]
+  },
+  "duplicateEnums": {
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "same"
+            ]
+          }
+        }
+      },
+      {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "same"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "nearMisses": {
+    "type": "object",
+    "properties": {
+      "empty": {
+        "oneOf": []
+      },
+      "nonArray": {
+        "oneOf": {}
+      },
+      "scalarBranch": {
+        "oneOf": [
+          "invalid"
+        ]
+      },
+      "wrongBranchType": {
+        "oneOf": [
+          {
+            "type": "string",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "wrong"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "missingProperties": {
+        "oneOf": [
+          {
+            "type": "object"
+          }
+        ]
+      },
+      "missingTypeProperty": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "kind"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "wrongTypeSchemaType": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "integer",
+                "enum": [
+                  "wrong"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "missingEnum": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "multiEnum": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "a",
+                  "b"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "nonStringEnum": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  1
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "alreadyObject": {
+        "discriminator": {
+          "propertyName": "kind"
+        },
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "protected"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "alreadyScalar": {
+        "discriminator": "protected",
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "protected"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "anyOfOnly": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "ignored"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "example": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "literal"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

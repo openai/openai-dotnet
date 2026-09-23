@@ -145,7 +145,7 @@
                       "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCompactionTrigger"
                     },
                     {
-                      "$ref": "#/components/schemas/CreateResponse_Request_Input_2"
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfItemReference"
                     },
                     {
                       "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfProgram"
@@ -8438,7 +8438,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_2": {
+      "CreateResponse_Request_Input_TypeOfItemReference": {
         "type": "object",
         "required": [
           "id"
@@ -8448,16 +8448,9 @@
             "type": "string"
           },
           "type": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "item_reference"
-                ]
-              },
-              {
-                "type": "null"
-              }
+            "type": "string",
+            "enum": [
+              "item_reference"
             ]
           }
         }
@@ -8950,6 +8943,9 @@
         "type": "object",
         "properties": {
           "format": {
+            "discriminator": {
+              "propertyName": "type"
+            },
             "oneOf": [
               {
                 "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText"

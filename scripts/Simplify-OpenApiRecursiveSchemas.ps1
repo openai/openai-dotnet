@@ -10,6 +10,7 @@
     whose branches all have type object, the containing anyOf schema is replaced
     instead. Parent anyOf collapse takes priority over branch replacement.
     Encounter order is preserved for every noncandidate value.
+    Run Add-OpenApiOneOfDiscriminators.ps1 afterward, before oneOf normalization.
 
 .PARAMETER InputPath
     The allOf-flattened and string-simplified OpenAPI JSON document to simplify.

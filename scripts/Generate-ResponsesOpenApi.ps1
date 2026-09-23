@@ -5,17 +5,19 @@
 .DESCRIPTION
     Runs the OpenAPI transformation stages in order for the createResponse
     operation: Extract with references inlined, Flatten allOf, Simplify string
-    variants, Simplify recursive schemas, Normalize oneOf metadata, and Sort.
-    Each stage is retained under specification/openapi, and the sorted result
-    is also copied byte-for-byte to responses.openapi.json.
+    variants, Simplify recursive schemas, Add oneOf discriminators, Normalize
+    oneOf metadata, and Sort. Each stage is retained under
+    specification/openapi, and the sorted result is also copied byte-for-byte
+    to responses.openapi.json.
 
     The generated files are:
     - responses.inlined.openapi.json
     - responses.inlined.flattened.openapi.json
     - responses.inlined.flattened.simplified.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.openapi.json
-    - responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json
-    - responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.sorted.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json
     - responses.openapi.json
 
 .EXAMPLE
@@ -46,8 +48,9 @@ function Get-ResponsesOpenApiArtifactPaths {
         Flattened = Join-Path $fullOutputDirectory "responses.inlined.flattened.openapi.json"
         Simplified = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.openapi.json"
         RecursiveSimplified = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.openapi.json"
-        OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json"
-        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.sorted.openapi.json"
+        OneOfDiscriminated = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json"
+        OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json"
+        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
         Final = Join-Path $fullOutputDirectory "responses.openapi.json"
     }
 }
@@ -103,6 +106,7 @@ function Invoke-ResponsesOpenApiGeneration {
         "Flatten-OpenApiAllOf.ps1"
         "Simplify-OpenApiStringVariants.ps1"
         "Simplify-OpenApiRecursiveSchemas.ps1"
+        "Add-OpenApiOneOfDiscriminators.ps1"
         "Normalize-OpenApiOneOf.ps1"
         "Sort-OpenApiDocument.ps1"
     )
@@ -132,8 +136,11 @@ function Invoke-ResponsesOpenApiGeneration {
     $null = & $stageScriptPaths["Simplify-OpenApiRecursiveSchemas.ps1"] `
         -InputPath $paths.Simplified `
         -OutputPath $paths.RecursiveSimplified
-    $null = & $stageScriptPaths["Normalize-OpenApiOneOf.ps1"] `
+    $null = & $stageScriptPaths["Add-OpenApiOneOfDiscriminators.ps1"] `
         -InputPath $paths.RecursiveSimplified `
+        -OutputPath $paths.OneOfDiscriminated
+    $null = & $stageScriptPaths["Normalize-OpenApiOneOf.ps1"] `
+        -InputPath $paths.OneOfDiscriminated `
         -OutputPath $paths.OneOfNormalized
     $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
         -InputPath $paths.OneOfNormalized `
@@ -147,6 +154,7 @@ function Invoke-ResponsesOpenApiGeneration {
         $paths.Flattened,
         $paths.Simplified,
         $paths.RecursiveSimplified,
+        $paths.OneOfDiscriminated,
         $paths.OneOfNormalized,
         $paths.Sorted,
         $paths.Final

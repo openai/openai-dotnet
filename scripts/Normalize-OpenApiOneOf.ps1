@@ -28,7 +28,7 @@
 
 .EXAMPLE
     ./scripts/Normalize-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
 #>
 
 #Requires -Version 7.0
