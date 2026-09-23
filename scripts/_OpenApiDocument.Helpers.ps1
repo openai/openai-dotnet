@@ -261,6 +261,51 @@ function Select-OpenApiOperation {
         }
 }
 
+# Converts the internal mode value to the label shown in menus and summaries.
+function Get-OpenApiExtractionModeLabel {
+    param(
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$Mode
+    )
+
+    switch ($Mode) {
+        "RequestBody" { return "Request Body" }
+        "Responses" { return "Responses" }
+        "Both" { return "Both" }
+    }
+}
+
+# Uses an explicit mode when supplied or displays a second one-based menu after
+# operation selection. Canonical return values keep downstream switches stable
+# even though ValidateSet accepts case-insensitive command-line input.
+function Select-OpenApiExtractionMode {
+    param(
+        [Parameter()]
+        [AllowNull()]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$RequestedMode,
+
+        [Parameter()]
+        [scriptblock]$InputProvider = { param($Prompt) Read-Host -Prompt $Prompt }
+    )
+
+    if (-not [string]::IsNullOrWhiteSpace($RequestedMode)) {
+        switch ($RequestedMode) {
+            "RequestBody" { return "RequestBody" }
+            "Responses" { return "Responses" }
+            "Both" { return "Both" }
+        }
+    }
+
+    $selection = Read-NumberedSelection `
+        -Title "Select extraction content" `
+        -Options @("RequestBody", "Responses", "Both") `
+        -GetLabel { param($Option) Get-OpenApiExtractionModeLabel -Mode $Option } `
+        -InputProvider $InputProvider
+    return $selection
+}
+
 # Resolves paths supplied on the command line relative to the repository root.
 function Resolve-RepositoryPath {
     param(
@@ -2043,21 +2088,86 @@ function Add-SecuritySchemeComponents {
     }
 }
 
-# Retains path-level metadata and only the selected HTTP operation.
+# Projects the selected operation before reference expansion so omitted-side
+# schemas never participate in dependency discovery or cycle handling.
+function New-SelectedOpenApiOperation {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$OperationEntry,
+
+        [Parameter()]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$Mode = "Both"
+    )
+
+    $operation = $OperationEntry.Operation
+    if ([string]::Equals($Mode, "RequestBody", [System.StringComparison]::OrdinalIgnoreCase) -and
+        -not (Test-JsonProperty -Object $operation -Name "requestBody")) {
+        throw "OperationId '$($OperationEntry.OperationId)' does not define a requestBody required by RequestBody extraction mode."
+    }
+    if ([string]::Equals($Mode, "Responses", [System.StringComparison]::OrdinalIgnoreCase) -and
+        -not (Test-JsonProperty -Object $operation -Name "responses")) {
+        throw "OperationId '$($OperationEntry.OperationId)' does not define responses required by Responses extraction mode."
+    }
+
+    $selectedOperation = [ordered]@{}
+    $replacedResponses = $false
+    foreach ($property in (Get-JsonProperties -Value $operation)) {
+        if ([string]::Equals($Mode, "Responses", [System.StringComparison]::OrdinalIgnoreCase) -and
+            [string]::Equals($property.Name, "requestBody", [System.StringComparison]::Ordinal)) {
+            continue
+        }
+        if ([string]::Equals($Mode, "RequestBody", [System.StringComparison]::OrdinalIgnoreCase) -and
+            [string]::Equals($property.Name, "responses", [System.StringComparison]::Ordinal)) {
+            $selectedOperation[$property.Name] = [ordered]@{
+                default = [ordered]@{
+                    description = "Responses omitted by RequestBody extraction mode."
+                }
+            }
+            $replacedResponses = $true
+            continue
+        }
+        $selectedOperation[$property.Name] = $property.Value
+    }
+
+    # Invalid source operations may omit responses. The placeholder still makes
+    # a request-focused extraction conformant without traversing response data.
+    if ([string]::Equals($Mode, "RequestBody", [System.StringComparison]::OrdinalIgnoreCase) -and
+        -not $replacedResponses) {
+        $selectedOperation["responses"] = [ordered]@{
+            default = [ordered]@{
+                description = "Responses omitted by RequestBody extraction mode."
+            }
+        }
+    }
+
+    return $selectedOperation
+}
+
+# Retains path-level metadata and only the selected, mode-projected HTTP operation.
 function New-SelectedOpenApiPathItem {
     param(
         [Parameter(Mandatory = $true)]
-        [object]$OperationEntry
+        [object]$OperationEntry,
+
+        [Parameter()]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$Mode = "Both"
     )
 
     $selectedPathItem = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $OperationEntry.PathItem)) {
-        if ($script:OpenApiHttpMethodNames -ccontains $property.Name -and
-            -not [string]::Equals(
-                $property.Name,
-                $OperationEntry.Method,
-                [System.StringComparison]::Ordinal
-            )) {
+        if ($script:OpenApiHttpMethodNames -ccontains $property.Name) {
+            if (-not [string]::Equals(
+                    $property.Name,
+                    $OperationEntry.Method,
+                    [System.StringComparison]::Ordinal
+                )) {
+                continue
+            }
+            $selectedPathItem[$property.Name] = New-SelectedOpenApiOperation `
+                -OperationEntry $OperationEntry `
+                -Mode $Mode
             continue
         }
         $selectedPathItem[$property.Name] = $property.Value
@@ -2065,18 +2175,24 @@ function New-SelectedOpenApiPathItem {
     return $selectedPathItem
 }
 
-# Creates a minimal valid OpenAPI document for one selected operation.
+# Creates a focused OpenAPI document for one selected operation.
 function New-ExtractedOpenApiDocument {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Document,
 
         [Parameter(Mandatory = $true)]
-        [object]$OperationEntry
+        [object]$OperationEntry,
+
+        [Parameter()]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$Mode = "Both"
     )
 
     $routePointer = "#/paths/$(ConvertTo-JsonPointerToken -Token $OperationEntry.Route)"
-    $selectedSourcePathItem = New-SelectedOpenApiPathItem -OperationEntry $OperationEntry
+    $selectedSourcePathItem = New-SelectedOpenApiPathItem `
+        -OperationEntry $OperationEntry `
+        -Mode $Mode
     $sourcePathItem = ConvertTo-PrunedOpenApiValue -Value $selectedSourcePathItem
     $cycleReferences = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
@@ -2177,7 +2293,11 @@ function Get-DefaultOutputPath {
         [object[]]$Catalog,
 
         [Parameter(Mandatory = $true)]
-        [string]$RepositoryRoot
+        [string]$RepositoryRoot,
+
+        [Parameter()]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$Mode = "Both"
     )
 
     $stem = ConvertTo-OperationFileStem -OperationId $OperationId
@@ -2195,8 +2315,13 @@ function Get-DefaultOutputPath {
         $stem = "$stem-$hash"
     }
 
+    $modeSuffix = switch ($Mode) {
+        "RequestBody" { ".request-body" }
+        "Responses" { ".responses" }
+        default { "" }
+    }
     $outputDirectory = Join-Path $RepositoryRoot "artifacts" "openapi-extracts"
-    return Join-Path $outputDirectory "$stem.inlined.openapi.json"
+    return Join-Path $outputDirectory "$stem$modeSuffix.inlined.openapi.json"
 }
 
 # Serializes with enough depth for the source schemas and atomically replaces
@@ -2239,6 +2364,11 @@ function Invoke-OpenApiOperationExtractor {
         [string]$OperationId,
 
         [Parameter()]
+        [AllowNull()]
+        [ValidateSet("RequestBody", "Responses", "Both")]
+        [string]$Mode,
+
+        [Parameter()]
         [string]$OutputPath
     )
 
@@ -2255,15 +2385,18 @@ function Invoke-OpenApiOperationExtractor {
     $selectedOperation = Select-OpenApiOperation `
         -Catalog $catalog `
         -RequestedOperationId $OperationId
+    $selectedMode = Select-OpenApiExtractionMode -RequestedMode $Mode
     $extraction = New-ExtractedOpenApiDocument `
         -Document $document `
-        -OperationEntry $selectedOperation
+        -OperationEntry $selectedOperation `
+        -Mode $selectedMode
 
     if ([string]::IsNullOrWhiteSpace($OutputPath)) {
         $OutputPath = Get-DefaultOutputPath `
             -OperationId $selectedOperation.OperationId `
             -Catalog $catalog `
-            -RepositoryRoot $repositoryRoot
+            -RepositoryRoot $repositoryRoot `
+            -Mode $selectedMode
     }
     else {
         $OutputPath = Resolve-RepositoryPath -Path $OutputPath -RepositoryRoot $repositoryRoot
@@ -2276,6 +2409,7 @@ function Invoke-OpenApiOperationExtractor {
     Write-Host ""
     Write-Host "OperationId: $($selectedOperation.OperationId)"
     Write-Host "Operation: $($selectedOperation.Method.ToUpperInvariant()) $($selectedOperation.Route)"
+    Write-Host "Content: $(Get-OpenApiExtractionModeLabel -Mode $selectedMode)"
     Write-Host "Output: $writtenPath"
     Write-Host "Component dependencies: $($extraction.DependencyCount)"
     Write-Host "Cycle references retained: $($extraction.CycleCount)"

@@ -193,13 +193,18 @@ try {
         -Catalog $catalog `
         -RequestedOperationId "createThing"
 
-    # Locks the simplified public CLI contract so legacy route/mode selection
-    # cannot return unnoticed.
-    Invoke-Test "public script exposes operationId without route or mode parameters" {
+    # The public command accepts exact operation selection plus the three
+    # supported content projections. Route selection remains intentionally absent.
+    Invoke-Test "public script exposes operationId and validated extraction modes" {
         $command = Get-Command $scriptPath
         Assert-True ($command.Parameters.ContainsKey("OperationId")) "OperationId parameter was missing."
+        Assert-True ($command.Parameters.ContainsKey("Mode")) "Mode parameter was missing."
         Assert-True (-not $command.Parameters.ContainsKey("Route")) "Legacy Route parameter remained."
-        Assert-True (-not $command.Parameters.ContainsKey("Mode")) "Legacy Mode parameter remained."
+        $validateSet = @($command.Parameters["Mode"].Attributes | Where-Object {
+            $_ -is [System.Management.Automation.ValidateSetAttribute]
+        })
+        Assert-Equal 1 $validateSet.Count "Mode did not have one ValidateSet contract."
+        Assert-Sequence @("RequestBody", "Responses", "Both") @($validateSet[0].ValidValues) "Mode values were incorrect."
     }
 
     # The interactive menu and direct lookup share this catalog, so it must be
@@ -289,6 +294,26 @@ try {
         Assert-Equal "second" $selection "Menu selected the wrong item."
     }
 
+    # Explicit modes keep automation noninteractive, while an omitted mode uses
+    # the same retrying one-based menu as operation selection.
+    Invoke-Test "mode selection supports explicit values and an interactive menu" {
+        $explicit = Select-OpenApiExtractionMode `
+            -RequestedMode "responses" `
+            -InputProvider { throw "Explicit mode unexpectedly prompted." }
+        Assert-Equal "Responses" $explicit "Explicit mode was not canonicalized."
+
+        $script:modeAnswers = [System.Collections.Generic.Queue[string]]::new()
+        $script:modeAnswers.Enqueue("invalid")
+        $script:modeAnswers.Enqueue("1")
+        $interactive = Select-OpenApiExtractionMode `
+            -InputProvider { param($Prompt) $script:modeAnswers.Dequeue() }
+        Assert-Equal "RequestBody" $interactive "Interactive mode selected the wrong value."
+        Assert-Equal "Request Body" (Get-OpenApiExtractionModeLabel -Mode $interactive) "Mode label was incorrect."
+        Assert-Throws {
+            Select-OpenApiExtractionMode -RequestedMode "Invalid"
+        } "*does not belong to the set*"
+    }
+
     # Component names may contain RFC 6901 reserved characters; incorrect
     # decoding would resolve or inline the wrong schema.
     Invoke-Test "JSON Pointer handles escaped slash and tilde tokens" {
@@ -299,9 +324,55 @@ try {
         Assert-Equal "found" $value "Escaped pointer resolved incorrectly."
     }
 
+    $sourceOperationBeforeModes = ConvertTo-Json `
+        -InputObject $fixture.paths["/things"].post `
+        -Compress `
+        -Depth 100
     $inlined = New-ExtractedOpenApiDocument `
         -Document $fixture `
         -OperationEntry $operationEntry
+    $explicitBoth = New-ExtractedOpenApiDocument `
+        -Document $fixture `
+        -OperationEntry $operationEntry `
+        -Mode Both
+    $requestBodyOnly = New-ExtractedOpenApiDocument `
+        -Document $fixture `
+        -OperationEntry $operationEntry `
+        -Mode RequestBody
+    $responsesOnly = New-ExtractedOpenApiDocument `
+        -Document $fixture `
+        -OperationEntry $operationEntry `
+        -Mode Responses
+    $lowercaseResponses = New-ExtractedOpenApiDocument `
+        -Document $fixture `
+        -OperationEntry $operationEntry `
+        -Mode responses
+
+    # The lower-level default remains Both so existing programmatic callers and
+    # the complete extraction behavior retain their current contract.
+    Invoke-Test "default extraction is structurally identical to explicit Both" {
+        $defaultJson = ConvertTo-Json -InputObject $inlined.Document -Compress -Depth 100
+        $explicitJson = ConvertTo-Json -InputObject $explicitBoth.Document -Compress -Depth 100
+        Assert-Equal $defaultJson $explicitJson "Explicit Both changed the extracted document."
+        Assert-Equal $inlined.DependencyCount $explicitBoth.DependencyCount "Explicit Both changed dependency count."
+        Assert-Equal $inlined.CycleCount $explicitBoth.CycleCount "Explicit Both changed cycle count."
+    }
+
+    Invoke-Test "lower-level mode values follow case-insensitive PowerShell binding" {
+        $canonicalJson = ConvertTo-Json -InputObject $responsesOnly.Document -Compress -Depth 100
+        $lowercaseJson = ConvertTo-Json -InputObject $lowercaseResponses.Document -Compress -Depth 100
+        Assert-Equal $canonicalJson $lowercaseJson "Lowercase Responses changed the projected document."
+    }
+
+    # Every mode builds an independent operation projection; none may replace
+    # or remove sections on the parsed source used by later extractions.
+    Invoke-Test "mode projections do not mutate the source operation" {
+        $sourceOperationAfterModes = ConvertTo-Json `
+            -InputObject $fixture.paths["/things"].post `
+            -Compress `
+            -Depth 100
+        Assert-Equal $sourceOperationBeforeModes $sourceOperationAfterModes "A mode projection mutated the source operation."
+    }
 
     # Path-level parameters apply to every operation, but sibling HTTP methods
     # must not leak into an operation-scoped document.
@@ -314,6 +385,110 @@ try {
         Assert-True (Test-JsonProperty -Object $inlined.Document.paths["/things"] -Name "parameters") "Path-level parameters were dropped."
         Assert-True (-not (Test-JsonProperty -Object $inlined.Document.paths["/things"] -Name "get")) "Unselected GET operation remained."
         Assert-Equal "createThing" $inlined.Document.paths["/things"].post.operationId "Selected operationId changed."
+    }
+
+    # RequestBody mode preserves the request and all unrelated metadata, but
+    # swaps responses in place for a conformant reference-free placeholder.
+    Invoke-Test "RequestBody mode keeps metadata and emits only a placeholder response" {
+        $pathItem = $requestBodyOnly.Document.paths["/things"]
+        $operation = $pathItem.post
+        Assert-True (Test-JsonProperty -Object $pathItem -Name "parameters") "Path-level parameters were removed."
+        Assert-True (Test-JsonProperty -Object $operation -Name "requestBody") "Request body was removed."
+        Assert-Sequence @("default") @((Get-JsonProperties -Value $operation.responses).Name) "Original responses remained."
+        Assert-Sequence @("description") @((Get-JsonProperties -Value $operation.responses.default).Name) "Placeholder response shape was incorrect."
+        Assert-Equal "Responses omitted by RequestBody extraction mode." $operation.responses.default.description "Placeholder description was incorrect."
+        Assert-Sequence @("Things") @($operation.tags) "Operation tags changed."
+        Assert-True (Test-JsonProperty -Object $operation -Name "security") "Operation security was removed."
+        Assert-Sequence `
+            @("operationId", "tags", "security", "requestBody", "responses") `
+            @((Get-JsonProperties -Value $operation).Name) `
+            "RequestBody mode changed surviving operation order."
+    }
+
+    # Responses mode removes only the direct operation requestBody. Path and
+    # operation metadata stay intact, and request-only recursion no longer
+    # contributes fallback schemas or cycle counts.
+    Invoke-Test "Responses mode keeps metadata and excludes request-only dependencies" {
+        $pathItem = $responsesOnly.Document.paths["/things"]
+        $operation = $pathItem.post
+        Assert-True (Test-JsonProperty -Object $pathItem -Name "parameters") "Path-level parameters were removed."
+        Assert-True (-not (Test-JsonProperty -Object $operation -Name "requestBody")) "Request body remained."
+        Assert-True (Test-JsonProperty -Object $operation -Name "responses") "Responses were removed."
+        Assert-Sequence @("Things") @($operation.tags) "Operation tags changed."
+        Assert-True (Test-JsonProperty -Object $operation -Name "security") "Operation security was removed."
+        Assert-Equal 0 $responsesOnly.CycleCount "Request-only cycle remained in Responses mode."
+        Assert-True (
+            -not (Test-JsonProperty -Object $responsesOnly.Document.components -Name "schemas")
+        ) "Request-only fallback schemas remained in Responses mode."
+        Assert-True ($responsesOnly.DependencyCount -lt $inlined.DependencyCount) "Responses mode did not reduce retained dependencies."
+    }
+
+    # Filtering before expansion means invalid references on the omitted side
+    # cannot fail extraction, while the same reference still fails when selected.
+    Invoke-Test "selective modes do not traverse omitted-side references" {
+        $invalidResponseFixture = Copy-JsonValue -Value $fixture
+        $invalidResponseFixture.paths["/things"].post.responses["200"] = [ordered]@{
+            '$ref' = "#/components/responses/MissingResponse"
+        }
+        $invalidResponseOperation = Select-OpenApiOperation `
+            -Catalog (Get-OpenApiOperationCatalog -Document $invalidResponseFixture) `
+            -RequestedOperationId "createThing"
+        $requestResult = New-ExtractedOpenApiDocument `
+            -Document $invalidResponseFixture `
+            -OperationEntry $invalidResponseOperation `
+            -Mode RequestBody
+        Assert-Sequence @("default") @((Get-JsonProperties -Value $requestResult.Document.paths["/things"].post.responses).Name) "RequestBody mode retained the bad response."
+        Assert-Throws {
+            New-ExtractedOpenApiDocument `
+                -Document $invalidResponseFixture `
+                -OperationEntry $invalidResponseOperation `
+                -Mode Responses
+        } "*has no 'MissingResponse' property*"
+
+        $invalidRequestFixture = Copy-JsonValue -Value $fixture
+        $invalidRequestFixture.paths["/things"].post.requestBody.content["application/json"].schema = [ordered]@{
+            '$ref' = "#/components/schemas/MissingRequest"
+        }
+        $invalidRequestOperation = Select-OpenApiOperation `
+            -Catalog (Get-OpenApiOperationCatalog -Document $invalidRequestFixture) `
+            -RequestedOperationId "createThing"
+        $responseResult = New-ExtractedOpenApiDocument `
+            -Document $invalidRequestFixture `
+            -OperationEntry $invalidRequestOperation `
+            -Mode Responses
+        Assert-True (-not (Test-JsonProperty -Object $responseResult.Document.paths["/things"].post -Name "requestBody")) "Responses mode retained the bad request."
+        Assert-Throws {
+            New-ExtractedOpenApiDocument `
+                -Document $invalidRequestFixture `
+                -OperationEntry $invalidRequestOperation `
+                -Mode RequestBody
+        } "*has no 'MissingRequest' property*"
+    }
+
+    # A selective mode must name the exact absent section rather than silently
+    # producing an artifact that does not contain the requested content.
+    Invoke-Test "selective modes fail when the requested section is absent" {
+        $listOperation = Select-OpenApiOperation `
+            -Catalog $catalog `
+            -RequestedOperationId "listThings"
+        Assert-Throws {
+            New-ExtractedOpenApiDocument `
+                -Document $fixture `
+                -OperationEntry $listOperation `
+                -Mode RequestBody
+        } "*does not define a requestBody*"
+
+        $missingResponsesFixture = Copy-JsonValue -Value $fixture
+        $missingResponsesFixture.paths["/things"].post.Remove("responses")
+        $missingResponsesOperation = Select-OpenApiOperation `
+            -Catalog (Get-OpenApiOperationCatalog -Document $missingResponsesFixture) `
+            -RequestedOperationId "createThing"
+        Assert-Throws {
+            New-ExtractedOpenApiDocument `
+                -Document $missingResponsesFixture `
+                -OperationEntry $missingResponsesOperation `
+                -Mode Responses
+        } "*does not define responses*"
     }
 
     # Inlined output should retain components only when recursion or copied
@@ -466,6 +641,20 @@ try {
             -RepositoryRoot $temporaryDirectory
         Assert-Equal "createThing.inlined.openapi.json" (Split-Path $ordinaryPath -Leaf) "Ordinary operationId filename was incorrect."
 
+        $requestPath = Get-DefaultOutputPath `
+            -OperationId "createThing" `
+            -Catalog $catalog `
+            -RepositoryRoot $temporaryDirectory `
+            -Mode RequestBody
+        Assert-Equal "createThing.request-body.inlined.openapi.json" (Split-Path $requestPath -Leaf) "RequestBody filename was incorrect."
+
+        $responsePath = Get-DefaultOutputPath `
+            -OperationId "createThing" `
+            -Catalog $catalog `
+            -RepositoryRoot $temporaryDirectory `
+            -Mode Responses
+        Assert-Equal "createThing.responses.inlined.openapi.json" (Split-Path $responsePath -Leaf) "Responses filename was incorrect."
+
         $collisionCatalog = @(
             foreach ($operationId in $fixtureCases.collisionOperationIds) {
                 [PSCustomObject]@{ OperationId = $operationId }
@@ -474,9 +663,27 @@ try {
         $path = Get-DefaultOutputPath `
             -OperationId "foo?bar" `
             -Catalog $collisionCatalog `
-            -RepositoryRoot $temporaryDirectory
+            -RepositoryRoot $temporaryDirectory `
+            -Mode Responses
         $name = Split-Path $path -Leaf
-        Assert-True ($name -match '^foo-bar-[0-9a-f]{8}\.inlined\.openapi\.json$') "Collision-safe filename was unexpected: $name"
+        Assert-True ($name -match '^foo-bar-[0-9a-f]{8}\.responses\.inlined\.openapi\.json$') "Collision-safe filename was unexpected: $name"
+    }
+
+    # Explicit modes and output paths make the public command suitable for
+    # orchestration without either interactive prompt or mode-based renaming.
+    Invoke-Test "public invocation supports explicit noninteractive modes and output paths" {
+        $fixturePath = Join-Path $script:OpenApiTestFixtureRoot "Flatten-OpenApiAllOf/source.openapi.json"
+        $outputPath = Join-Path $temporaryDirectory "explicit-response-output.json"
+        Invoke-OpenApiOperationExtractor `
+            -SpecificationPath $fixturePath `
+            -OperationId "createThing" `
+            -Mode Responses `
+            -OutputPath $outputPath
+        $written = Get-Content -LiteralPath $outputPath -Raw -Encoding utf8 |
+            ConvertFrom-Json -AsHashtable -Depth 100
+        Assert-True ([System.IO.File]::Exists($outputPath)) "Explicit output path was not created."
+        Assert-True (-not (Test-JsonProperty -Object $written.paths["/things"].post -Name "requestBody")) "Explicit Responses invocation retained requestBody."
+        Assert-True (Test-JsonProperty -Object $written.paths["/things"].post -Name "responses") "Explicit Responses invocation lost responses."
     }
 
     # Deterministic encoding and serialization keep generated artifacts

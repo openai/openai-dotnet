@@ -121,6 +121,7 @@ function Invoke-ResponsesOpenApiGeneration {
     $null = & $stageScriptPaths["Extract-OpenApiRoute.ps1"] `
         -SpecificationPath $resolvedSpecificationPath `
         -OperationId "createResponse" `
+        -Mode RequestBody `
         -OutputPath $paths.Inlined
     $null = & $stageScriptPaths["Flatten-OpenApiAllOf.ps1"] `
         -InputPath $paths.Inlined `

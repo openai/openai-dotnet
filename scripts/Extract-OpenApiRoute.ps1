@@ -4,6 +4,7 @@
 
 .DESCRIPTION
     Reads an OpenAPI document and selects one HTTP operation by operationId.
+    The selected operation can include its request body, responses, or both.
     References are expanded except where a reference is needed to represent
     recursion, while source allOf compositions are preserved. Run
     Flatten-OpenApiAllOf.ps1 against Inlined output to merge all allOf
@@ -25,20 +26,32 @@
     The exact operationId to extract. When omitted, the script displays an
     interactive operationId menu.
 
+.PARAMETER Mode
+    Selects RequestBody, Responses, or Both. When omitted, the script displays
+    an interactive content menu. Both preserves the complete selected operation.
+    RequestBody replaces responses with a reference-free default placeholder so
+    the focused output remains a conformant OpenAPI operation.
+
 .PARAMETER OutputPath
     The destination JSON file. When omitted, the script writes beneath
     artifacts/openapi-extracts using a name derived from the operationId.
+    RequestBody and Responses outputs include `.request-body` and `.responses`
+    markers respectively; Both retains the existing filename.
 
 .EXAMPLE
     ./scripts/Extract-OpenApiRoute.ps1
-    Interactively selects and extracts a route.
+    Interactively selects an operation and its extraction content.
 
 .EXAMPLE
-    ./scripts/Extract-OpenApiRoute.ps1 -OperationId createSpeech
-    Extracts and inlines the createSpeech operation without prompting.
+    ./scripts/Extract-OpenApiRoute.ps1 `
+        -OperationId createSpeech `
+        -Mode Responses
+    Extracts and inlines only the response side of createSpeech without prompting.
 
 .EXAMPLE
-    ./scripts/Extract-OpenApiRoute.ps1 -OperationId createResponse
+    ./scripts/Extract-OpenApiRoute.ps1 `
+        -OperationId createResponse `
+        -Mode Both
     ./scripts/Flatten-OpenApiAllOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.openapi.json
     ./scripts/Simplify-OpenApiStringVariants.ps1 `
@@ -49,7 +62,8 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
     ./scripts/Sort-OpenApiDocument.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-normalized.openapi.json
-    Extracts, simplifies, normalizes, and sorts an operation in six explicit stages.
+    Noninteractively extracts both sides, then simplifies, normalizes, and sorts
+    the operation in six explicit stages.
 #>
 
 #Requires -Version 7.0
@@ -61,6 +75,11 @@ param(
 
     [Parameter()]
     [string]$OperationId,
+
+    [Parameter()]
+    [AllowNull()]
+    [ValidateSet("RequestBody", "Responses", "Both")]
+    [string]$Mode,
 
     [Parameter()]
     [string]$OutputPath
@@ -81,5 +100,6 @@ if ($MyInvocation.InvocationName -ne ".") {
     Invoke-OpenApiOperationExtractor `
         -SpecificationPath $SpecificationPath `
         -OperationId $OperationId `
+        -Mode $Mode `
         -OutputPath $OutputPath
 }
