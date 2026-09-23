@@ -109,6 +109,7 @@ try {
             "Simplify-OpenApiRecursiveSchemas.ps1",
             "Add-OpenApiOneOfDiscriminators.ps1",
             "Normalize-OpenApiOneOf.ps1",
+            "Flatten-OpenApiOneOf.ps1",
             "Sort-OpenApiDocument.ps1"
         )) {
             $stageScriptPath = Join-Path (Split-Path $scriptPath -Parent) $stageScriptName
@@ -128,7 +129,8 @@ try {
             "responses.inlined.flattened.simplified.recursive-simplified.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Inlined),
@@ -137,6 +139,7 @@ try {
             [System.IO.Path]::GetFileName($paths.RecursiveSimplified),
             [System.IO.Path]::GetFileName($paths.OneOfDiscriminated),
             [System.IO.Path]::GetFileName($paths.OneOfNormalized),
+            [System.IO.Path]::GetFileName($paths.OneOfFlattened),
             [System.IO.Path]::GetFileName($paths.Sorted),
             [System.IO.Path]::GetFileName($paths.Final)
         ) "Artifact names were incorrect."
@@ -149,6 +152,9 @@ try {
         $outputDirectory = Join-Path $temporaryDirectory "generated"
         Write-TestSpecification -Path $sourcePath
         [byte[]]$sourceBefore = [System.IO.File]::ReadAllBytes($sourcePath)
+        $obsoleteSortedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
+        $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
+        [System.IO.File]::WriteAllText($obsoleteSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         $paths = Invoke-ResponsesOpenApiGeneration `
             -SpecificationPath $sourcePath `
             -OutputDirectory $outputDirectory
@@ -160,6 +166,7 @@ try {
             $paths.RecursiveSimplified,
             $paths.OneOfDiscriminated,
             $paths.OneOfNormalized,
+            $paths.OneOfFlattened,
             $paths.Sorted,
             $paths.Final
         )) {
@@ -167,6 +174,7 @@ try {
         }
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($sourceBefore, [System.IO.File]::ReadAllBytes($sourcePath))) "Pipeline modified its source specification."
         Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Sorted), [System.IO.File]::ReadAllBytes($paths.Final))) "Final output differs from the retained Sort-stage artifact."
+        Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
 
         $inlined = Read-TestJson -Path $paths.Inlined
         $flattened = Read-TestJson -Path $paths.Flattened
@@ -174,6 +182,7 @@ try {
         $recursiveSimplified = Read-TestJson -Path $paths.RecursiveSimplified
         $oneOfDiscriminated = Read-TestJson -Path $paths.OneOfDiscriminated
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
+        $oneOfFlattened = Read-TestJson -Path $paths.OneOfFlattened
         $sorted = Read-TestJson -Path $paths.Sorted
         Assert-Sequence @("/responses") @($inlined.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
         Assert-Equal "Responses pipeline fixture" $inlined.info.title "Extract stage removed required info.title."
@@ -200,9 +209,12 @@ try {
         $normalizedEvents = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $normalizedFilters = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $normalizedFormat = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
+        $normalizedNested = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
+        $flattenedNested = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $sortedEvents = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $sortedFilters = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
+        $sortedNested = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         Assert-Equal 2 $simplifiedModel.anyOf.Count "Simplify stage emitted the wrong branch count."
         Assert-Sequence @("zeta", "alpha", "middle") @($simplifiedModel.anyOf[1].enum) "Simplify stage did not preserve encounter order."
         Assert-True ($simplifiedOutputs.PSObject.Properties.Name -ccontains "discriminator") "Simplify stage removed the orphan before Normalize."
@@ -223,7 +235,14 @@ try {
         Assert-True ($normalizedEvents.PSObject.Properties.Name -ccontains "discriminator") "Normalize stage removed the promoted discriminator."
         Assert-True ($normalizedFilters.PSObject.Properties.Name -ccontains "anyOf") "Normalize stage changed the nullable recursive wrapper."
         Assert-Equal "type" $normalizedFormat.discriminator.propertyName "Normalize stage removed the inferred discriminator."
+        Assert-Equal 3 $normalizedNested.oneOf.Count "Normalize stage changed the nested outer union."
+        Assert-Equal 2 $normalizedNested.oneOf[1].oneOf.Count "Normalize stage removed the matching wrapper early."
+        Assert-Equal 4 $flattenedNested.oneOf.Count "oneOf Flatten stage emitted the wrong branch count."
+        Assert-Sequence @("alpha", "message", "message", "omega") @($flattenedNested.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "oneOf Flatten stage changed branch order or repeated discriminator values."
+        Assert-Sequence @("shared") @($flattenedNested.required) "oneOf Flatten stage changed shared constraints."
+        Assert-True (-not ($flattenedNested.oneOf | Where-Object { $_.PSObject.Properties.Name -ccontains "oneOf" })) "oneOf Flatten stage retained the matching wrapper."
         Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "oneOf") "Sort stage lost the promoted oneOf."
+        Assert-Equal 4 $sortedNested.oneOf.Count "Sort stage lost flattened oneOf branches."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
         Assert-Equal $true $sortedFilters.anyOf[0].additionalProperties "Sort stage lost the free-form recursive replacement."
     }

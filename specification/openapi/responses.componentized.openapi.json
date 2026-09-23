@@ -139,7 +139,88 @@
                       "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMessage"
                     },
                     {
-                      "$ref": "#/components/schemas/CreateResponse_Request_Input"
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMessage_2"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMessage_3"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfFileSearchCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfComputerCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfComputerCallOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfWebSearchCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfFunctionCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfFunctionCallOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfToolSearchCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfToolSearchOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfAdditionalTools"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfConfigurationUpdate"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfReasoning"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCompaction"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfImageGenerationCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCodeInterpreterCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfLocalShellCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfLocalShellCallOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfShellCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfShellCallOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfApplyPatchCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfApplyPatchCallOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpListTools"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpApprovalRequest"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpApprovalResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpCall"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCustomToolCallOutput"
+                    },
+                    {
+                      "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCustomToolCall"
                     },
                     {
                       "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCompactionTrigger"
@@ -862,98 +943,6 @@
             ]
           }
         }
-      },
-      "CreateResponse_Request_Input": {
-        "type": "object",
-        "discriminator": {
-          "propertyName": "type"
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMessage_2"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMessage_3"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfFileSearchCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfComputerCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfComputerCallOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfWebSearchCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfFunctionCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfFunctionCallOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfToolSearchCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfToolSearchOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfAdditionalTools"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfConfigurationUpdate"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfReasoning"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCompaction"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfImageGenerationCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCodeInterpreterCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfLocalShellCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfLocalShellCallOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfShellCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfShellCallOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfApplyPatchCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfApplyPatchCallOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpListTools"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpApprovalRequest"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpApprovalResponse"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfMcpCall"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCustomToolCallOutput"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_TypeOfCustomToolCall"
-          }
-        ]
       },
       "CreateResponse_Request_Input_TypeOfMessage_2": {
         "type": "object",

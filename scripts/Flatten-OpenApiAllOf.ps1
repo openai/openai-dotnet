@@ -8,11 +8,12 @@
     JSON pointers, and writes a separate flattened OpenAPI document while
     preserving encounter order. Run Simplify-OpenApiStringVariants.ps1,
     Simplify-OpenApiRecursiveSchemas.ps1, Add-OpenApiOneOfDiscriminators.ps1,
-    Normalize-OpenApiOneOf.ps1, and then Sort-OpenApiDocument.ps1 afterward to
-    consolidate eligible nested string unions, replace recursive objects, infer
-    missing type discriminators, remove orphaned discriminator metadata, and
-    produce canonical ordering. Flattening is byte-idempotent; running the
-    script against already-flat output preserves its JSON bytes.
+    Normalize-OpenApiOneOf.ps1, Flatten-OpenApiOneOf.ps1, and then
+    Sort-OpenApiDocument.ps1 afterward to consolidate eligible nested string
+    unions, replace recursive objects, infer missing type discriminators,
+    normalize and flatten oneOf metadata, and produce canonical ordering.
+    Flattening is byte-idempotent; running the script against already-flat
+    output preserves its JSON bytes.
 
 .PARAMETER InputPath
     The Inlined OpenAPI JSON document to flatten.
@@ -42,8 +43,10 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
     ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
 #>
 
 #Requires -Version 7.0

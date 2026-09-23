@@ -7,10 +7,10 @@
     eligible nested string-only anyOf trees with at most one plain-string
     branch and one merged string-enum branch, and preserves encounter order.
     Run Simplify-OpenApiRecursiveSchemas.ps1,
-    Add-OpenApiOneOfDiscriminators.ps1, Normalize-OpenApiOneOf.ps1, and then
-    Sort-OpenApiDocument.ps1 afterward to replace recursive objects, infer
-    missing type discriminators, remove orphaned discriminator metadata, and
-    produce canonical ordering.
+    Add-OpenApiOneOfDiscriminators.ps1, Normalize-OpenApiOneOf.ps1,
+    Flatten-OpenApiOneOf.ps1, and then Sort-OpenApiDocument.ps1 afterward to
+    replace recursive objects, infer missing type discriminators, normalize and
+    flatten oneOf metadata, and produce canonical ordering.
 
     A recursive anyOf tree is eligible only when every leaf is an
     unconstrained string or an enum containing only strings. Mixed or
@@ -40,8 +40,10 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
     ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
 #>
 
 #Requires -Version 7.0

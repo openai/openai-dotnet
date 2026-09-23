@@ -1,0 +1,147 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI test fixture",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/test": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "discriminator": {
+                    "propertyName": "kind",
+                    "mapping": {
+                      "inner-user": "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/1/oneOf/1",
+                      "shifted": "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/2"
+                    }
+                  },
+                  "properties": {
+                    "shared": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    },
+                    "sharedAlias": {
+                      "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/1/properties/shared"
+                    }
+                  },
+                  "required": [
+                    "shared",
+                    "label"
+                  ],
+                  "additionalProperties": true,
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "alpha"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "kind"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "discriminator": {
+                        "propertyName": "kind",
+                        "mapping": {
+                          "inner-user": "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/1/oneOf/1",
+                          "shifted": "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/2"
+                        }
+                      },
+                      "properties": {
+                        "shared": {
+                          "type": "string"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "sharedAlias": {
+                          "$ref": "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/1/properties/shared"
+                        }
+                      },
+                      "required": [
+                        "shared",
+                        "label"
+                      ],
+                      "additionalProperties": true,
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "message"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "system"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "role"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "message"
+                              ]
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "user"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "role"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "omega"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "kind"
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

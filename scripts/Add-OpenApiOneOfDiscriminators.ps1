@@ -10,7 +10,8 @@
 
     The discriminator is inserted immediately before oneOf. Existing
     discriminators, ambiguous enum values, near-miss schemas, and encounter
-    order outside the insertion are preserved unchanged.
+    order outside the insertion are preserved unchanged. Run
+    Normalize-OpenApiOneOf.ps1 and Flatten-OpenApiOneOf.ps1 before sorting.
 
 .PARAMETER InputPath
     The recursive-simplified OpenAPI JSON document to update.

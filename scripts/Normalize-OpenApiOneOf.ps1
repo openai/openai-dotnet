@@ -15,7 +15,7 @@
 
     Property-map entries named discriminator, string literals, examples, and
     ordinary OpenAPI objects are preserved. Encounter order is retained. Run
-    Sort-OpenApiDocument.ps1 afterward to produce canonical ordering.
+    Flatten-OpenApiOneOf.ps1 and then Sort-OpenApiDocument.ps1 afterward.
 
 .PARAMETER InputPath
     The OpenAPI JSON document to normalize.
@@ -29,6 +29,10 @@
 .EXAMPLE
     ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
+    ./scripts/Flatten-OpenApiOneOf.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
 #>
 
 #Requires -Version 7.0

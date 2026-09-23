@@ -6,7 +6,7 @@
     Runs the OpenAPI transformation stages in order for the createResponse
     operation: Extract with references inlined, Flatten allOf, Simplify string
     variants, Simplify recursive schemas, Add oneOf discriminators, Normalize
-    oneOf metadata, and Sort. Each stage is retained under
+    oneOf metadata, Flatten nested oneOf wrappers, and Sort. Each stage is retained under
     specification/openapi, and the sorted result is also copied byte-for-byte
     to responses.openapi.json.
 
@@ -17,7 +17,8 @@
     - responses.inlined.flattened.simplified.recursive-simplified.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
-    - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json
     - responses.openapi.json
 
 .EXAMPLE
@@ -50,7 +51,8 @@ function Get-ResponsesOpenApiArtifactPaths {
         RecursiveSimplified = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.openapi.json"
         OneOfDiscriminated = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json"
         OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json"
-        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
+        OneOfFlattened = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json"
+        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
         Final = Join-Path $fullOutputDirectory "responses.openapi.json"
     }
 }
@@ -108,6 +110,7 @@ function Invoke-ResponsesOpenApiGeneration {
         "Simplify-OpenApiRecursiveSchemas.ps1"
         "Add-OpenApiOneOfDiscriminators.ps1"
         "Normalize-OpenApiOneOf.ps1"
+        "Flatten-OpenApiOneOf.ps1"
         "Sort-OpenApiDocument.ps1"
     )
     $stageScriptPaths = [ordered]@{}
@@ -121,6 +124,12 @@ function Invoke-ResponsesOpenApiGeneration {
 
     $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
     $null = [System.IO.Directory]::CreateDirectory([System.IO.Path]::GetFullPath($OutputDirectory))
+    $obsoleteSortedPath = Join-Path `
+        ([System.IO.Path]::GetFullPath($OutputDirectory)) `
+        "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
+    if ([System.IO.File]::Exists($obsoleteSortedPath)) {
+        [System.IO.File]::Delete($obsoleteSortedPath)
+    }
 
     $null = & $stageScriptPaths["Extract-OpenApiRoute.ps1"] `
         -SpecificationPath $resolvedSpecificationPath `
@@ -142,8 +151,11 @@ function Invoke-ResponsesOpenApiGeneration {
     $null = & $stageScriptPaths["Normalize-OpenApiOneOf.ps1"] `
         -InputPath $paths.OneOfDiscriminated `
         -OutputPath $paths.OneOfNormalized
-    $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
+    $null = & $stageScriptPaths["Flatten-OpenApiOneOf.ps1"] `
         -InputPath $paths.OneOfNormalized `
+        -OutputPath $paths.OneOfFlattened
+    $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
+        -InputPath $paths.OneOfFlattened `
         -OutputPath $paths.Sorted
     $null = Copy-OpenApiFileAtomically `
         -SourcePath $paths.Sorted `
@@ -156,6 +168,7 @@ function Invoke-ResponsesOpenApiGeneration {
         $paths.RecursiveSimplified,
         $paths.OneOfDiscriminated,
         $paths.OneOfNormalized,
+        $paths.OneOfFlattened,
         $paths.Sorted,
         $paths.Final
     )) {

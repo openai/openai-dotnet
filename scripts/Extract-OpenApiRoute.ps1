@@ -12,7 +12,8 @@
     nested string unions, Simplify-OpenApiRecursiveSchemas.ps1 to replace
     recursive objects, Add-OpenApiOneOfDiscriminators.ps1 to infer missing type
     discriminators, Normalize-OpenApiOneOf.ps1 to remove orphaned discriminator
-    metadata, then Sort-OpenApiDocument.ps1 to produce canonical output.
+    metadata, Flatten-OpenApiOneOf.ps1 to promote matching nested wrappers, then
+    Sort-OpenApiDocument.ps1 to produce canonical output.
 
     Extraction retains path-level metadata and only the selected HTTP operation.
     It omits configured metadata and every name that starts with x-, while
@@ -63,10 +64,12 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
     ./scripts/Normalize-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
     Noninteractively extracts both sides, then simplifies, normalizes, and sorts
-    the operation in seven explicit stages.
+    the operation in eight explicit stages.
 #>
 
 #Requires -Version 7.0
