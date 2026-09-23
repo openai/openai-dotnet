@@ -10,7 +10,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputAudioDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseOutputAudioDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(InternalRealtimeServerEventTypeGA.ResponseOutputAudioDone)
+        internal RealtimeServerUpdateResponseOutputAudioDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(RealtimeServerUpdateKind.ResponseOutputAudioDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputAudioDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputAudioDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -30,14 +30,14 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
     }
 }

@@ -18,13 +18,16 @@ namespace OpenAI.Conversations
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalConversationItemCollection(IEnumerable<ResponseItem> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalConversationItemCollection(string @object, IList<ResponseItem> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)

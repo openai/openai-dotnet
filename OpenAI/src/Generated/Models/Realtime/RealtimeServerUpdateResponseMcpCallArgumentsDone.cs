@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseMcpCallArgumentsDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseMcpCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, BinaryData toolArguments) : base(InternalRealtimeServerEventTypeGA.ResponseMcpCallArgumentsDone)
+        internal RealtimeServerUpdateResponseMcpCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, BinaryData toolArguments) : base(RealtimeServerUpdateKind.ResponseMcpCallArgumentsDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -21,7 +21,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseMcpCallArgumentsDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, BinaryData toolArguments) : base(kind, patch)
+        internal RealtimeServerUpdateResponseMcpCallArgumentsDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, BinaryData toolArguments) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -31,12 +31,12 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
     }
 }

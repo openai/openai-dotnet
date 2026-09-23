@@ -30,16 +30,14 @@ public partial class RealtimeTracing
         {
             throw new FormatException($"The model {nameof(RealtimeTracing)} does not support writing '{format}' format.");
         }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        if (Optional.IsDefined(DefaultTracing) && !Patch.Contains("$.default_tracing"u8))
+        if (Optional.IsDefined(DefaultTracing))
         {
             writer.WriteStringValue(DefaultTracing.Value.ToString());
         }
-        if (Optional.IsDefined(CustomTracing) && !Patch.Contains("$.custom_tracing"u8))
+        else if (Optional.IsDefined(CustomTracing))
         {
             writer.WriteObjectValue(CustomTracing, options);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
@@ -60,11 +58,36 @@ public partial class RealtimeTracing
         {
             defaultTracing = new RealtimeDefaultTracing(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             customTracing = RealtimeCustomTracing.DeserializeRealtimeCustomTracing(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected realtime tracing to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new RealtimeTracing(defaultTracing, customTracing, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return CustomTracing is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && CustomTracing.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (CustomTracing is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        CustomTracing.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }

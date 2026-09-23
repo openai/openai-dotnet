@@ -7,6 +7,7 @@ namespace OpenAI.Responses;
 // - Renamed.
 [CodeGenType("Annotation")]
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
+[CodeGenVisibility(nameof(ResponseMessageAnnotation), CodeGenVisibility.ProtectedInternal, typeof(ResponseMessageAnnotationKind))]
 public partial class ResponseMessageAnnotation
 {
 }

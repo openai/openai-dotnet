@@ -14,7 +14,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected ChatResponseFormat(InternalDotNetChatResponseFormatType kind)
+        internal ChatResponseFormat(InternalDotNetChatResponseFormatType kind)
         {
             Kind = kind;
         }

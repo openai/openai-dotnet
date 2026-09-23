@@ -248,10 +248,18 @@ namespace OpenAI.Containers
 
             if (local.StartsWith("expires_after"u8))
             {
+                if (ExpirationPolicy == null)
+                {
+                    return false;
+                }
                 return ExpirationPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("expires_after"u8.Length)], out value);
             }
             if (local.StartsWith("network_policy"u8))
             {
+                if (NetworkPolicy == null)
+                {
+                    return false;
+                }
                 return NetworkPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("network_policy"u8.Length)], out value);
             }
             return false;
@@ -265,11 +273,19 @@ namespace OpenAI.Containers
 
             if (local.StartsWith("expires_after"u8))
             {
+                if (ExpirationPolicy == null)
+                {
+                    return false;
+                }
                 ExpirationPolicy.Patch.Set([.. "$"u8, .. local.Slice("expires_after"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("network_policy"u8))
             {
+                if (NetworkPolicy == null)
+                {
+                    return false;
+                }
                 NetworkPolicy.Patch.Set([.. "$"u8, .. local.Slice("network_policy"u8.Length)], value);
                 return true;
             }

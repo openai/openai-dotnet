@@ -11,17 +11,17 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalFineTuningCheckpointPermission(string id, DateTimeOffset createdAt, string projectId)
+        internal InternalFineTuningCheckpointPermission(string id, DateTimeOffset createdOn, string projectId)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             ProjectId = projectId;
         }
 
-        internal InternalFineTuningCheckpointPermission(string id, DateTimeOffset createdAt, string projectId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFineTuningCheckpointPermission(string id, DateTimeOffset createdOn, string projectId, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             ProjectId = projectId;
             Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
@@ -29,7 +29,7 @@ namespace OpenAI.FineTuning
 
         public string Id { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         public string ProjectId { get; }
 

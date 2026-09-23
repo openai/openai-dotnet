@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -48,6 +49,13 @@ namespace OpenAI.Audio
         DiarizedAudioTranscription IPersistableModel<DiarizedAudioTranscription>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
         string IPersistableModel<DiarizedAudioTranscription>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator DiarizedAudioTranscription(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeDiarizedAudioTranscription(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
 
         void IJsonModel<DiarizedAudioTranscription>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -178,7 +186,7 @@ namespace OpenAI.Audio
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new DiarizedAudioTranscription(
                 task,

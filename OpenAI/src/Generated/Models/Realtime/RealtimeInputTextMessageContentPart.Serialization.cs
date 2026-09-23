@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeInputTextMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputTextMessageContentPart>
     {
-        internal RealtimeInputTextMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputText, default, null)
+        public RealtimeInputTextMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputText, default, null)
         {
         }
 

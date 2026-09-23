@@ -154,7 +154,7 @@ namespace OpenAI.Internal
                     {
                         continue;
                     }
-                    schema = BinaryData.FromString(prop.Value.GetRawText());
+                    schema = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))
@@ -168,7 +168,7 @@ namespace OpenAI.Internal
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, additionalBinaryDataProperties);
         }

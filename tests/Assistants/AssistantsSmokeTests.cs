@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using OpenAI.Assistants;
+using OpenAI.VectorStores;
 using System;
 using System.ClientModel.Primitives;
 
@@ -11,6 +12,35 @@ namespace OpenAI.Tests.Assistants;
 [Category("Smoke")]
 public class AssistantsSmokeTests
 {
+    [Test]
+    public void VectorStoreDeserializationSupportsLargeUsageBytes()
+    {
+        long usageBytes = (long)int.MaxValue + 1;
+        BinaryData vectorStoreData = BinaryData.FromString($$"""
+            {
+              "id": "vs_abc123",
+              "object": "vector_store",
+              "created_at": 1767865408,
+              "name": "example",
+              "usage_bytes": {{usageBytes}},
+              "status": "completed",
+              "file_counts": {
+                "in_progress": 0,
+                "completed": 20214,
+                "failed": 26,
+                "cancelled": 0,
+                "total": 20240
+              },
+              "last_active_at": 1774444241,
+              "metadata": {}
+            }
+            """);
+
+        VectorStore vectorStore = ModelReaderWriter.Read<VectorStore>(vectorStoreData);
+
+        Assert.That(vectorStore.UsageBytes, Is.EqualTo(usageBytes));
+    }
+
     [Test]
     public void RunStepDeserialization()
     {

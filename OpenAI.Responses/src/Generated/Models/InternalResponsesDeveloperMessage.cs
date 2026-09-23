@@ -11,10 +11,13 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesDeveloperMessage : MessageResponseItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalResponsesDeveloperMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.Developer)
         {
             InternalContent = internalContent.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalResponsesDeveloperMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)

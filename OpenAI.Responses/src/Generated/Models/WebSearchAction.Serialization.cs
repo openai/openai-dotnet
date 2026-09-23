@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownWebSearchActionBase))]
     public partial class WebSearchAction : IJsonModel<WebSearchAction>
     {
         internal WebSearchAction()
@@ -103,12 +102,12 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "search":
-                        return WebSearchSearchAction.DeserializeWebSearchSearchAction(element, data, options);
-                    case "open_page":
-                        return WebSearchOpenPageAction.DeserializeWebSearchOpenPageAction(element, data, options);
                     case "find_in_page":
                         return WebSearchFindInPageAction.DeserializeWebSearchFindInPageAction(element, data, options);
+                    case "open_page":
+                        return WebSearchOpenPageAction.DeserializeWebSearchOpenPageAction(element, data, options);
+                    case "search":
+                        return WebSearchSearchAction.DeserializeWebSearchSearchAction(element, data, options);
                 }
             }
             return InternalUnknownWebSearchActionBase.DeserializeInternalUnknownWebSearchActionBase(element, data, options);

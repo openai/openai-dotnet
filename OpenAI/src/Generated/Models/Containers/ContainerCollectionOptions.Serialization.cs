@@ -108,7 +108,7 @@ namespace OpenAI.Containers
             foreach (var prop in element.EnumerateObject())
             {
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ContainerCollectionOptions(pageSizeLimit, order, afterId, name, additionalBinaryDataProperties);
         }

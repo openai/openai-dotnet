@@ -103,20 +103,20 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "file_search":
-                        return InternalToolChoiceObjectFileSearch.DeserializeInternalToolChoiceObjectFileSearch(element, data, options);
-                    case "computer_use_preview":
-                        return InternalToolChoiceObjectComputer.DeserializeInternalToolChoiceObjectComputer(element, data, options);
-                    case "web_search_preview":
-                        return InternalToolChoiceObjectWebSearch.DeserializeInternalToolChoiceObjectWebSearch(element, data, options);
-                    case "image_generation":
-                        return InternalToolChoiceObjectImageGen.DeserializeInternalToolChoiceObjectImageGen(element, data, options);
                     case "code_interpreter":
                         return InternalToolChoiceObjectCodeInterpreter.DeserializeInternalToolChoiceObjectCodeInterpreter(element, data, options);
-                    case "mcp":
-                        return InternalToolChoiceObjectMCP.DeserializeInternalToolChoiceObjectMCP(element, data, options);
+                    case "computer_use_preview":
+                        return InternalToolChoiceObjectComputer.DeserializeInternalToolChoiceObjectComputer(element, data, options);
+                    case "file_search":
+                        return InternalToolChoiceObjectFileSearch.DeserializeInternalToolChoiceObjectFileSearch(element, data, options);
                     case "function":
                         return InternalToolChoiceObjectFunction.DeserializeInternalToolChoiceObjectFunction(element, data, options);
+                    case "image_generation":
+                        return InternalToolChoiceObjectImageGen.DeserializeInternalToolChoiceObjectImageGen(element, data, options);
+                    case "mcp":
+                        return InternalToolChoiceObjectMCP.DeserializeInternalToolChoiceObjectMCP(element, data, options);
+                    case "web_search_preview":
+                        return InternalToolChoiceObjectWebSearch.DeserializeInternalToolChoiceObjectWebSearch(element, data, options);
                 }
             }
             return InternalUnknownToolChoiceObject.DeserializeInternalUnknownToolChoiceObject(element, data, options);

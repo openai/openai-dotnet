@@ -16,7 +16,6 @@ namespace OpenAI.Graders {
         public BinaryData NEpochs { get; set; }
     }
     [Experimental("OPENAI001")]
-    [PersistableModelProxy(typeof(UnknownGrader))]
     public class Grader : IJsonModel<Grader>, IPersistableModel<Grader> {
     }
     [Experimental("OPENAI001")]

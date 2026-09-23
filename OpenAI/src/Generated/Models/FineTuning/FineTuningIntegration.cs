@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected FineTuningIntegration(InternalCreateFineTuningJobRequestIntegrationType kind)
+        internal FineTuningIntegration(InternalCreateFineTuningJobRequestIntegrationType kind)
         {
             Kind = kind;
         }

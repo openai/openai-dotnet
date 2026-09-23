@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Responses;
@@ -26,22 +27,343 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task FunctionToolWorks(bool isStateless)
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")];
+
+        CreateResponseOptions options = new(TestModel.Responses, inputItems)
+        {
+            Tools = { s_GetWeatherAtLocationTool },
+            ToolChoice = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName),
+            StoredOutputEnabled = !isStateless
+        };
+
+        // First turn.
+        ResponseResult response1 = await client.CreateResponseAsync(options);
+        Assert.That(response1, Is.Not.Null);
+        Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response1.Tools.Count, Is.EqualTo(1));
+        Assert.That(response1.Tools[0], Is.InstanceOf<FunctionTool>());
+        Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response1.OutputItems[0], Is.InstanceOf<FunctionCallResponseItem>());
+
+        FunctionTool responseTool = response1.Tools[0] as FunctionTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.FunctionName, Is.EqualTo(s_GetWeatherAtLocationTool.FunctionName));
+        Assert.That(responseTool.FunctionDescription, Is.EqualTo(s_GetWeatherAtLocationTool.FunctionDescription));
+
+        FunctionCallResponseItem functionCall = response1.OutputItems[0] as FunctionCallResponseItem;
+        Assert.That(functionCall, Is.Not.Null);
+        Assert.That(functionCall.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(functionCall.Status, Is.EqualTo(FunctionCallStatus.Completed));
+        Assert.That(functionCall.CallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
+        Assert.That(functionCall.FunctionArguments, Is.Not.Null);
+        Assert.That(() =>
+        {
+            using JsonDocument document = JsonDocument.Parse(functionCall.FunctionArguments);
+            Assert.That(document.RootElement.GetProperty("location").GetString(), Is.Not.Null.And.Not.Empty);
+            Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
+        }, Throws.Nothing);
+
+        ResponseItem functionCallOutput = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 degrees Celsius and windy");
+
+        if (isStateless)
+        {
+            foreach (ResponseItem outputItem in response1.OutputItems)
+            {
+                options.InputItems.Add(outputItem);
+            }
+            Assert.That(options.InputItems.Count, Is.EqualTo(2));
+        }
+        else
+        {
+            options.PreviousResponseId = response1.Id;
+            options.InputItems.Clear();
+            Assert.That(options.InputItems.Count, Is.EqualTo(0));
+        }
+
+        options.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        options.InputItems.Add(functionCallOutput);
+
+        // Second turn.
+        ResponseResult response2 = await client.CreateResponseAsync(options);
+        Assert.That(response2, Is.Not.Null);
+        Assert.That(response2.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response2.OutputItems[0], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response2.GetOutputText(), Is.Not.Null.And.Not.Empty);
+        Assert.That(response2.GetOutputText(), Does.Contain("22"));
+    }
+
+    [RecordedTest]
+    public async Task FunctionToolStreamingWorks()
+    {
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")];
+
+        CreateResponseOptions options = new(TestModel.Responses, inputItems)
+        {
+            Tools = { s_GetWeatherAtLocationTool },
+            ToolChoice = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName),
+            StreamingEnabled = true,
+        };
+
+        StringBuilder argumentsBuilder = new();
+        int argumentsDeltaCount = 0;
+        int argumentsDoneCount = 0;
+        string toolCallItemId = null;
+        FunctionCallResponseItem completedFunctionToolCall = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate argumentsDeltaUpdate)
+            {
+                Assert.That(argumentsDeltaUpdate.Delta, Is.Not.Null);
+                Assert.That(argumentsDeltaUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                Assert.That(argumentsDeltaUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                toolCallItemId ??= argumentsDeltaUpdate.ItemId;
+                Assert.That(argumentsDeltaUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                argumentsBuilder.Append(argumentsDeltaUpdate.Delta);
+                argumentsDeltaCount++;
+            }
+            else if (update is StreamingResponseFunctionCallArgumentsDoneUpdate argumentsDoneUpdate)
+            {
+                Assert.That(argumentsDoneUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                Assert.That(argumentsDoneUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                Assert.That(argumentsDoneUpdate.FunctionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString()));
+                Assert.DoesNotThrow(() =>
+                {
+                    using JsonDocument document = JsonDocument.Parse(argumentsDoneUpdate.FunctionArguments);
+                    Assert.That(document.RootElement.GetProperty("location").GetString(), Is.Not.Null.And.Not.Empty);
+                    Assert.That(document.RootElement.GetProperty("unit").GetString(), Is.AnyOf("C", "F", "K"));
+                });
+                argumentsDoneCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate
+                && outputItemDoneUpdate.Item is FunctionCallResponseItem functionToolCall)
+            {
+                completedFunctionToolCall = functionToolCall;
+            }
+        }
+
+        Assert.That(argumentsDeltaCount, Is.GreaterThan(0));
+        Assert.That(argumentsDoneCount, Is.EqualTo(1));
+        Assert.That(completedFunctionToolCall, Is.Not.Null);
+        Assert.That(completedFunctionToolCall.Id, Is.EqualTo(toolCallItemId));
+        Assert.That(completedFunctionToolCall.Status, Is.EqualTo(FunctionCallStatus.Completed));
+        Assert.That(completedFunctionToolCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
+        Assert.That(completedFunctionToolCall.FunctionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString()));
+    }
+
+    [RecordedTest]
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task CustomToolWorks(bool isStateless)
+    {
+        const string toolName = "code_exec";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Use the code_exec tool to print hello world to the console.")];
+
+        CustomTool customTool = new(toolName)
+        {
+            ToolDescription = "Executes arbitrary Python code.",
+            ToolFormat = new CustomToolTextFormat(),
+        };
+
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            StoredOutputEnabled = !isStateless,
+        };
+
+        // First turn.
+        ResponseResult response1 = await client.CreateResponseAsync(options);
+        Assert.That(response1, Is.Not.Null);
+        Assert.That(response1.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response1.Tools.Count, Is.EqualTo(1));
+        Assert.That(response1.Tools[0], Is.InstanceOf<CustomTool>());
+        Assert.That(response1.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response1.OutputItems[0], Is.InstanceOf<CustomToolCallItem>());
+
+        CustomTool responseTool = response1.Tools[0] as CustomTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.ToolName, Is.EqualTo(customTool.ToolName));
+        Assert.That(responseTool.ToolDescription, Is.EqualTo(customTool.ToolDescription));
+        Assert.That(responseTool.ToolFormat, Is.TypeOf<CustomToolTextFormat>());
+
+        CustomToolCallItem customToolCall = response1.OutputItems[0] as CustomToolCallItem;
+        Assert.That(customToolCall, Is.Not.Null);
+        Assert.That(customToolCall.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+        Assert.That(customToolCall.CallId, Is.Not.Null.And.Not.Empty);
+        Assert.That(customToolCall.ToolName, Is.EqualTo(toolName));
+        Assert.That(customToolCall.Input, Does.Contain("hello").IgnoreCase);
+
+        ResponseItem customToolOutput = ResponseItem.CreateCustomToolCallOutputItem(customToolCall.CallId, [ResponseContentPart.CreateInputTextPart("hello world")]);
+
+        if (isStateless)
+        {
+            foreach (ResponseItem outputItem in response1.OutputItems)
+            {
+                options.InputItems.Add(outputItem);
+            }
+            Assert.That(options.InputItems.Count, Is.EqualTo(2));
+        }
+        else
+        {
+            options.PreviousResponseId = response1.Id;
+            options.InputItems.Clear();
+            Assert.That(options.InputItems.Count, Is.EqualTo(0));
+        }
+
+        options.ToolChoice = ResponseToolChoice.CreateAutoChoice();
+        options.InputItems.Add(customToolOutput);
+
+        // Second turn.
+        ResponseResult response2 = await client.CreateResponseAsync(options);
+        Assert.That(response2, Is.Not.Null);
+        Assert.That(response2.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response2.OutputItems[0], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response2.GetOutputText(), Is.Not.Null.And.Not.Empty);
+        Assert.That(response2.GetOutputText(), Does.Contain("hello world").IgnoreCase);
+    }
+
+    [RecordedTest]
+    public async Task CustomToolStreamingWorks()
+    {
+        const string toolName = "code_exec";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Use the code_exec tool to print hello world to the console.")];
+
+        CustomTool customTool = new(toolName)
+        {
+            ToolDescription = "Executes arbitrary Python code.",
+            ToolFormat = new CustomToolTextFormat(),
+        };
+
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+            StreamingEnabled = true,
+        };
+
+        StringBuilder inputBuilder = new();
+        int inputDeltaCount = 0;
+        int inputDoneCount = 0;
+        string toolCallItemId = null;
+        CustomToolCallItem completedCustomToolCall = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
+        {
+            if (update is StreamingResponseCustomToolCallInputDeltaUpdate inputDeltaUpdate)
+            {
+                Assert.That(inputDeltaUpdate.InputDelta, Is.Not.Null);
+                Assert.That(inputDeltaUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                Assert.That(inputDeltaUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                toolCallItemId ??= inputDeltaUpdate.ItemId;
+                Assert.That(inputDeltaUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                inputBuilder.Append(inputDeltaUpdate.InputDelta);
+                inputDeltaCount++;
+            }
+            else if (update is StreamingResponseCustomToolCallInputDoneUpdate inputDoneUpdate)
+            {
+                Assert.That(inputDoneUpdate.ItemId, Is.EqualTo(toolCallItemId));
+                Assert.That(inputDoneUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+                Assert.That(inputDoneUpdate.Input, Is.EqualTo(inputBuilder.ToString()));
+                inputDoneCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate
+                && outputItemDoneUpdate.Item is CustomToolCallItem customToolCall)
+            {
+                completedCustomToolCall = customToolCall;
+            }
+        }
+
+        Assert.That(inputDeltaCount, Is.GreaterThan(0));
+        Assert.That(inputDoneCount, Is.EqualTo(1));
+        Assert.That(completedCustomToolCall, Is.Not.Null);
+        Assert.That(completedCustomToolCall.Id, Is.EqualTo(toolCallItemId));
+        Assert.That(completedCustomToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+        Assert.That(completedCustomToolCall.ToolName, Is.EqualTo(toolName));
+        Assert.That(completedCustomToolCall.Input, Is.EqualTo(inputBuilder.ToString()));
+    }
+
+    [RecordedTest]
+    public async Task CustomToolWithGrammarWorks()
+    {
+        const string grammarDefinition = "^[0-9]+ \\+ [0-9]+$";
+
+        ResponsesClient client = GetProxiedResponsesClient();
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Use the math_exp tool to add four plus four.")];
+
+        CustomTool customTool = new("math_exp")
+        {
+            ToolDescription = "Creates a mathematical addition expression.",
+            ToolFormat = new CustomToolGrammarFormat(grammarDefinition, CustomToolGrammarFormatSyntax.Regex),
+        };
+
+        CreateResponseOptions options = new("gpt-5.6", inputItems)
+        {
+            Tools = { customTool },
+            ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.Tools.Count, Is.EqualTo(1));
+        Assert.That(response.Tools[0], Is.InstanceOf<CustomTool>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(1));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<CustomToolCallItem>());
+
+        CustomTool responseTool = response.Tools[0] as CustomTool;
+        Assert.That(responseTool, Is.Not.Null);
+        Assert.That(responseTool.ToolFormat, Is.InstanceOf<CustomToolGrammarFormat>());
+
+        CustomToolGrammarFormat responseToolFormat = responseTool.ToolFormat as CustomToolGrammarFormat;
+        Assert.That(responseToolFormat, Is.Not.Null);
+        Assert.That(responseToolFormat.Syntax, Is.EqualTo(CustomToolGrammarFormatSyntax.Regex));
+        Assert.That(responseToolFormat.Definition, Is.EqualTo(grammarDefinition));
+
+        CustomToolCallItem customToolCall = response.OutputItems[0] as CustomToolCallItem;
+        Assert.That(customToolCall, Is.Not.Null);
+        Assert.That(customToolCall.Status, Is.EqualTo(CustomToolCallStatus.Completed));
+        Assert.That(customToolCall.ToolName, Is.EqualTo(customTool.ToolName));
+        Assert.That(customToolCall.Input, Does.Match(grammarDefinition)); // e.g.: "4 + 4"
+    }
+
+
+    [RecordedTest]
     public async Task MCPToolWorks()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -56,21 +378,22 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         McpToolDefinitionListItem listItem = toolDefinitionListItems[0];
         Assert.That(listItem.ToolDefinitions, Has.Count.GreaterThan(0));
 
-        McpToolDefinition rollToolDefinition = listItem.ToolDefinitions.Where(toolDefinition => toolDefinition.Name == "roll").FirstOrDefault();
-        Assert.That(rollToolDefinition, Is.Not.Null);
-        Assert.That(rollToolDefinition.InputSchema, Is.Not.Null);
-        Assert.That(rollToolDefinition.Annotations, Is.Not.Null);
+        McpToolDefinition searchToolDefinition = listItem.ToolDefinitions.Where(toolDefinition => toolDefinition.Name == toolName).FirstOrDefault();
+        Assert.That(searchToolDefinition, Is.Not.Null);
+        Assert.That(searchToolDefinition!.InputSchema, Is.Not.Null);
+        Assert.That(searchToolDefinition!.Annotations, Is.Not.Null);
 
         // Check tool call.
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
-        McpToolCallItem toolCallItem = toolCallItems[0];
-        Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-        Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
-        Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-        Assert.That(toolCallItem.ToolOutput, Is.Not.Null.Or.Empty);
-        Assert.That(toolCallItem.Error, Is.Null);
+        McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+        Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+        Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+        Assert.That(toolCallItem!.ToolOutput, Is.Not.Null.Or.Empty);
+        Assert.That(toolCallItem!.Error, Is.Null);
 
         // Check assistant message.
         MessageResponseItem assistantMessageItem = response.OutputItems.Last() as MessageResponseItem;
@@ -80,20 +403,21 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MCPToolStreamingWorks()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             },
+            MaxToolCallCount = 1,
             StreamingEnabled = true,
         };
 
@@ -169,13 +493,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
 
-        Assert.That(mcpListToolsFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpListToolsFailedUpdateCount, Is.EqualTo(0));
         Assert.That(mcpListToolsInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount));
 
-        Assert.That(mcpCallFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpCallFailedUpdateCount, Is.EqualTo(0));
         Assert.That(mcpCallInProgressUpdateCount, Is.GreaterThan(0));
-        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpCallInProgressUpdateCount));
 
         Assert.That(mcpCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
         Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));
@@ -186,29 +510,31 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [TestCase(false)]
     public async Task MCPToolNeverRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
-            ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+            ? new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
             : new McpToolCallApprovalPolicy(
                 new CustomMcpToolCallApprovalPolicy()
                 {
                     ToolsNeverRequiringApproval = new McpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -220,6 +546,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         // Confirm there are no approval requests and that the tool was called.
         Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+
+        McpToolCallItem toolCallItem = response.OutputItems
+            .OfType<McpToolCallItem>()
+            .FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
     }
 
     [RecordedTest]
@@ -227,29 +559,31 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [TestCase(false)]
     public async Task MCPToolAlwaysRequiresApproval(bool useGlobalPolicy)
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
         McpToolCallApprovalPolicy approvalPolicy = useGlobalPolicy
-            ? new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval)
+            ? new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.AlwaysRequireApproval)
             : new McpToolCallApprovalPolicy(
                 new CustomMcpToolCallApprovalPolicy()
                 {
                     ToolsAlwaysRequiringApproval = new McpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 });
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -264,7 +598,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(approvalRequestItem, Is.Not.Null);
 
         // Prepare the response.
-        McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem.Id, true);
+        McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem!.Id, true);
         options.PreviousResponseId = response1.Id;
         options.InputItems.Clear();
         options.InputItems.Add(approvalResponseItem);
@@ -272,29 +606,37 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response2 = await client.CreateResponseAsync(options);
         Assert.That(response2.OutputItems, Has.Count.GreaterThan(0));
         Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+
+        McpToolCallItem toolCallItem = response2.OutputItems
+            .OfType<McpToolCallItem>()
+            .FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
     }
 
     [RecordedTest]
     public async Task MCPToolWithAllowedTools()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
+        string toolName = "microsoft_docs_search";
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy,
                     AllowedTools = new McpToolFilter()
                     {
-                        ToolNames = { "roll" }
+                        ToolNames = { toolName }
                     }
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -307,35 +649,37 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
-        McpToolCallItem toolCallItem = toolCallItems[0];
-        Assert.That(toolCallItem.ServerLabel, Is.EqualTo(serverLabel));
-        Assert.That(toolCallItem.ToolName, Is.EqualTo("roll"));
-        Assert.That(toolCallItem.ToolArguments, Is.Not.Null);
-        Assert.That(toolCallItem.ToolOutput, Is.Not.Null.Or.Empty);
-        Assert.That(toolCallItem.Error, Is.Null);
+        McpToolCallItem toolCallItem = toolCallItems.FirstOrDefault(item => item.ToolName == toolName);
+        Assert.That(toolCallItem, Is.Not.Null);
+        Assert.That(toolCallItem!.ServerLabel, Is.EqualTo(serverLabel));
+        Assert.That(toolCallItem!.ToolName, Is.EqualTo(toolName));
+        Assert.That(toolCallItem!.ToolArguments, Is.Not.Null);
+        Assert.That(toolCallItem!.ToolOutput, Is.Not.Null.Or.Empty);
+        Assert.That(toolCallItem!.Error, Is.Null);
     }
 
     [RecordedTest]
     public async Task MCPToolWithDisallowedTools()
     {
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+        string serverLabel = "microsoft-learn";
+        Uri serverUri = new Uri("https://learn.microsoft.com/api/mcp");
 
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
+        CreateResponseOptions options = new("gpt-5.6", [ResponseItem.CreateUserMessageItem("Search Microsoft Learn documentation for the OpenAI service.")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ServerDescription = "A Microsoft Learn MCP server for searching documentation.",
                     ToolCallApprovalPolicy = approvalPolicy,
                     AllowedTools = new McpToolFilter()
                     {
-                        ToolNames = { "not_roll" } // This is not a real tool. We use this to implicitly disallow everything else.
+                        ToolNames = { "not_microsoft_docs_search" } // This is not a real tool. We use this to implicitly disallow everything else.
                     }
                 }
-            }
+            },
+            MaxToolCallCount = 1,
         };
 
         ResponsesClient client = GetProxiedResponsesClient();
@@ -953,6 +1297,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     size: ImageGenerationToolSize.W1024xH1024,
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     moderationLevel: ImageGenerationToolModerationLevel.Auto,
+                    partialImageCount: 1,
                     background: ImageGenerationToolBackground.Transparent)
             },
             StreamingEnabled = true,
@@ -1191,7 +1536,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+            ResponseItem.CreateUserMessageItem("Searching the internet, tell me about something good that happened today.")
         ];
 
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
@@ -1292,7 +1637,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+            ResponseItem.CreateUserMessageItem("Searching the internet, tell me about something good that happened today.")
         ];
 
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
@@ -1334,7 +1679,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Searching the internet, what is the weather today in Redmond, WA?")
+            ResponseItem.CreateUserMessageItem("Searching the internet, tell me about something good that happened today.")
         ];
 
         CreateResponseOptions createResponseOptions = new(TestModel.Responses, inputItems)
@@ -1608,4 +1953,28 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
     }
+
+    private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
+    private static readonly FunctionTool s_GetWeatherAtLocationTool = new(
+        functionName: s_GetWeatherAtLocationToolName,
+        functionParameters: BinaryData.FromBytes("""
+            {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": ["C", "F", "K"]
+                    }
+                },
+                "required": ["location", "unit"],
+                "additionalProperties": false
+            }
+            """u8.ToArray()),
+        strictModeEnabled: true)
+    {
+        FunctionDescription = "Gets the weather at a specified location, optionally specifying units for temperature",
+    };
 }

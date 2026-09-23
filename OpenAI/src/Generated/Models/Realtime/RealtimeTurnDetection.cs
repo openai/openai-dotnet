@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind)
+        internal RealtimeTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind)
         {
             Kind = kind;
         }

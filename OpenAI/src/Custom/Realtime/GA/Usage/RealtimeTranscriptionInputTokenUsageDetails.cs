@@ -8,9 +8,9 @@ public partial class RealtimeTranscriptionInputTokenUsageDetails
 {
     // CUSTOM: Renamed.
     [CodeGenMember("TextTokens")]
-    public int? TextTokenCount { get; }
+    public int? TextTokenCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("AudioTokens")]
-    public int? AudioTokenCount { get; }
+    public int? AudioTokenCount { get; set; }
 }

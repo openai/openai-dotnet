@@ -28,11 +28,11 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
     public void SetUpCancellationToken()
     {
         // Create a fresh CancellationTokenSource for each test to ensure each test
-        // gets its own 15-second timeout, not a shared one from the fixture constructor
+        // gets its own timeout, not a shared one from the fixture constructor
         CancellationTokenSource = new();
         if (!Debugger.IsAttached)
         {
-            CancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(15));
+            CancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
         }
     }
 

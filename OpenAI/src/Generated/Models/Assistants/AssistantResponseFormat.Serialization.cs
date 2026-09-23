@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(InternalUnknownDotNetAssistantResponseFormat))]
     public partial class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>
     {
         internal AssistantResponseFormat()

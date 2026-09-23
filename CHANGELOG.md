@@ -4,6 +4,20 @@
 
 ### Acknowledgments
 
+### Features Added
+
+- OpenAI.Responses:
+  - Added experimental OpenTelemetry traces and metrics for non-streaming `CreateResponse` operations. The instrumentation follows the configured GenAI semantic convention version and does not capture prompts, generated content, instructions, tools, or end-user identifiers.
+  - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto
+
+### Bugs Fixed
+
+### Other Changes
+
+## 2.14.0 (2026-09-15)
+
+### Acknowledgments
+
 Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
 
 - Aditya Singh _([GitHub](https://github.com/adityasingh2400))_
@@ -11,26 +25,96 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - Rohan Santhosh Kumar _([GitHub](https://github.com/Rohan5commit))_
 - King Star _([GitHub](https://github.com/jstar0))_
 - Trask Stalnaker _([GitHub](https://github.com/trask))_
+- cjc0013 _([GitHub](https://github.com/cjc0013))_
+- S.H Jeong _([GitHub](https://github.com/z0rimo))_
 
 ### Features Added
 
+- OpenAI.Audio:
+  - Added new protocol methods with streaming support:
+    - `GenerateSpeechStreamingAsync`
+    - `TranscribeAudioStreamingAsync`
 - OpenAI.Chat:
-  - Added opt-in support for the latest experimental OpenTelemetry GenAI semantic conventions supported by this library. Set `OTEL_SEMCONV_STABILITY_OPT_IN` to include `gen_ai_latest_experimental` to emit `gen_ai.provider.name` instead of `gen_ai.system`. The default remains compatible with OpenTelemetry GenAI Semantic Conventions v1.27.0. GenAI histograms now also advertise the recommended explicit bucket boundaries. _(A community contribution, courtesy of [trask](https://github.com/trask))_
+  - Added opt-in support for the latest experimental OpenTelemetry GenAI semantic conventions supported by this library.
+    - Set `OTEL_SEMCONV_STABILITY_OPT_IN` to include `gen_ai_latest_experimental` to emit `gen_ai.provider.name` instead of `gen_ai.system`. The default remains compatible with OpenTelemetry GenAI Semantic Conventions v1.27.0. GenAI histograms now also advertise the recommended explicit bucket boundaries. _(A community contribution, courtesy of [trask](https://github.com/trask))_
+- OpenAI.Images:
+  - Added new protocol methods with streaming support:
+    - `GenerateImagesStreamingAsync`
+    - `GenerateImageEditsStreamingAsync`
+- OpenAI.Realtime:
+  - Added extensibility to the `RealtimeClientCommand` class hierarchy.
+    - Added the `RealtimeClientCommandKind` extensible enum.
+    - Added the `Kind` property to `RealtimeClientCommand`.
+    - Added a `protected internal` constructor to `RealtimeClientCommand` that takes a `RealtimeClientCommandKind` parameter.
+  - Added extensibility to the `RealtimeServerUpdate` class hierarchy.
+    - Added the `RealtimeServerUpdateKind` extensible enum.
+    - Added the `Kind` property to `RealtimeServerUpdate`.
+    - Added a `protected internal` constructor to `RealtimeServerUpdate` that takes a `RealtimeServerUpdateKind` parameter.
+  - Added extensibility to the `RealtimeItem` class hierarchy.
+    - Added the `RealtimeItemKind` extensible enum.
+    - Added the `Kind` property to `RealtimeItem`.
+    - Added a `protected internal` constructor to `RealtimeItem` that takes a `RealtimeItemKind` parameter.
+  - Added extensibility to the `RealtimeTool` class hierarchy.
+    - Added the `RealtimeToolKind` extensible enum.
+    - Added the `Kind` property to `RealtimeTool`.
+    - Added a `protected internal` constructor to `RealtimeTool` that takes a `RealtimeToolKind` parameter.
 - OpenAI.Responses:
-  - Added experimental OpenTelemetry traces and metrics for non-streaming `CreateResponse` operations. The instrumentation follows the configured GenAI semantic convention version and does not capture prompts, generated content, instructions, tools, or end-user identifiers.
-  - Added `ResponseReasoningContext` and exposed it through `ResponseReasoningOptions.Context`, allowing the amount of reasoning context preserved across turns to be controlled with `Auto`, `CurrentTurn`, or `AllTurns`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
+  - Added support for Custom tools, which work in much the same way as JSON schema-driven Function tools, but rather than providing the model explicit instructions on what input your tool requires, the model can pass an arbitrary string back to your tool instead. This is useful to avoid unnecessarily wrapping a response in JSON, or to apply a custom grammar to the response.
+    - Added the following derived types of `ResponseTool`:
+      - `CustomTool`
+    - Added the following derived types of `ResponseItem`:
+      - `CustomToolCallItem`
+      - `CustomToolCallOutputItem`
+    - Added the following derived types of `StreamingResponseUpdate`:
+      - `StreamingResponseCustomToolCallInputDeltaUpdate`
+      - `StreamingResponseCustomToolCallInputDoneUpdate`
+    - Added the `CustomToolFormat` type with the following derived types:
+      - `CustomToolTextFormat`
+      - `CustomToolGrammarFormat`
+  - Added support for viewing the number of input tokens newly written to the cache as part of the usage statistics of responses.
+    - Added the `CacheWriteTokenCount` property to `ResponseInputTokenUsageDetails`.
+  - Added support for new reasoning capabilities.
+    - Added the `ExtraHigh` and `Max` values to the `ResponseReasoningEffortLevel` extensible enum.
+  - Added support for specifying the amount of reasoning context preserved across turns.
+    - Added the `ResponseReasoningContext` extensible enum with the `Auto`, `CurrentTurn`, and `AllTurns` values. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
+    - Added the `Context` property to `ResponseReasoningOptions`. _(A community contribution, courtesy of [hogeheer499-commits](https://github.com/hogeheer499-commits))_
 
 ### Bugs Fixed
 
+- OpenAI.Assistants:
+  - Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
+- OpenAI.Chat:
+  - Reduced memory pressure when creating binary-backed image and file content. Base64 data URIs now use a single string allocation on modern target frameworks, and computer screenshot output uses the shared encoding path.
 - OpenAI.Realtime:
   - Fixed WebSocket endpoint construction for custom endpoints that already end in `/realtime/`, avoiding duplicate path segments. _(A community contribution, courtesy of [jstar0](https://github.com/jstar0))_
-- Fixed streaming responses ending early when the service emits an event that the library does not model. The server-sent event enumerator stopped at the first event that produced no updates, so an unrecognized event in the middle of a stream silently terminated the whole stream and looked like a clean, early completion. Unrecognized events are now skipped and every later update still surfaces. This affects all streaming APIs, including `OpenAI.Assistants`, `OpenAI.Chat`, `OpenAI.Responses`, and `OpenAI.Audio`, on both the synchronous and asynchronous paths. _(A community contribution, courtesy of [adityasingh2400](https://github.com/adityasingh2400))_
-- Reduced memory pressure when creating binary-backed image and file content. Base64 data URIs now use a single string allocation on modern target frameworks, and computer screenshot output uses the shared encoding path.
+  - Fixed an issue with `JsonPatch` not propagating correctly through certain types.
+- OpenAI.Responses:
+  - Fixed an issue where the `Status` property of the derived types of `ResponseItem` was not deserialized correctly when `null`.
+  - Reduced memory pressure when creating binary-backed image and file content. Base64 data URIs now use a single string allocation on modern target frameworks, and computer screenshot output uses the shared encoding path.
+- OpenAI.VectorStores:
+  - Fixed an issue where the `UsageBytes` property of `VectorStore` was incorrectly deserialized using `GetInt32()` instead of `GetInt64()`.
 
 ### Other Changes
 
+- Updated the Realtime example for function calling to parse and validate model-provided arguments before invoking the local function. _(A community contribution, courtesy of [Rohan5commit](https://github.com/Rohan5commit))_
+- Updated the `System.ClientModel` dependency to version 1.15.0. For more information, see the [System.ClientModel changelog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.15.0/sdk/core/System.ClientModel/CHANGELOG.md).
+
+### Breaking Changes in Experimental APIs
+
 - OpenAI.Realtime:
-  - Updated the function-calling example to parse and validate model-provided arguments before invoking the local function. _(A community contribution, courtesy of [Rohan5commit](https://github.com/Rohan5commit))_
+  - Renamed the `RealtimeLogProbabilityDetails` type to `RealtimeTokenLogProbabilityDetails` for consistency.
+  - Renamed the `Logprobs` property of `RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted` to `TranscriptionTokenLogProbabilities` for consistency.
+  - Renamed the `Logprobs` property of `RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta` to `TranscriptionTokenLogProbabilities` for consistency.
+- OpenAI.Responses:
+  - Renamed the `GlobalMcpToolCallApprovalPolicy` type to `DefaultMcpToolCallApprovalPolicy` for consistency.
+  - Renamed the `GlobalPolicy` property of `McpToolCallApprovalPolicy` to `DefaultPolicy` for consistency.
+- OpenAI.VectorStores:
+  - Changed the type of the `UsageBytes` property of `VectorStore` from `int` to `long`.
+
+### Breaking Changes in Experimental APIs
+
+- OpenAI.Realtime:
+  - The service and session operations on `RealtimeClient` and `RealtimeSessionClient` are now async-only. The synchronous service and session operations they previously exposed (session and client-secret creation, sending commands and audio, receiving updates, session configuration, and conversation item helpers) have been removed, along with the underlying synchronous connection path. Use the corresponding `*Async` APIs instead.
 
 ## 2.13.0 (2026-08-10)
 

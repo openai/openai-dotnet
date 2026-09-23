@@ -5,12 +5,16 @@ namespace OpenAI.Realtime;
 // CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeTracingGA")]
 [CodeGenVisibility(nameof(RealtimeTracing), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class RealtimeTracing
 {
     // CUSTOM: Added to support the corresponding component of the union.
     public RealtimeTracing(RealtimeDefaultTracing defaultTracing)
     {
         DefaultTracing = defaultTracing;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
@@ -19,6 +23,9 @@ public partial class RealtimeTracing
         Argument.AssertNotNull(customTracing, nameof(customTracing));
 
         CustomTracing = customTracing;
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        _patch.SetPropagators(PropagateSet, PropagateGet);
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Removed setter.

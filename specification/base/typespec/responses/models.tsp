@@ -1090,6 +1090,12 @@ model ResponseUsage {
      * [More on prompt caching](/docs/guides/prompt-caching).
      */
     cached_tokens: int32;
+
+    /**
+     * The number of input tokens newly written to the cache.
+     * [More on prompt caching](/docs/guides/prompt-caching).
+     */
+    cache_write_tokens: int32;
   };
 
   /** The number of output tokens. */
@@ -1671,7 +1677,6 @@ model DeleteResponseResponse {
   deleted: boolean;
 }
 
-
 @access(Access.public)
 @usage(Usage.input)
 model DotNetGetResponseOptions {
@@ -1684,7 +1689,7 @@ model DotNetGetResponseOptions {
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-union DotNetGlobalToolCallApprovalPolicy {
+union DotNetDefaultToolCallApprovalPolicy {
   string,
   AlwaysRequireApproval: "always",
   NeverRequireApproval: "never",
@@ -1703,7 +1708,7 @@ model DotNetCustomToolCallApprovalPolicy {
 @access(Access.public)
 @usage(Usage.input | Usage.output)
 model DotNetToolCallApprovalPolicy {
-  global_policy?: DotNetGlobalToolCallApprovalPolicy;
+  default_policy?: DotNetDefaultToolCallApprovalPolicy;
   custom_policy?: DotNetCustomToolCallApprovalPolicy;
 }
 

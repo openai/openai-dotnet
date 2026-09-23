@@ -71,12 +71,12 @@ namespace OpenAI.Images
             if (_additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteBase64StringValue(B64Json.ToArray(), "D");
+                writer.WriteBase64StringValue(B64Json, "D");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -146,11 +146,11 @@ namespace OpenAI.Images
             }
             string kind = default;
             BinaryData b64Json = default;
-            DateTimeOffset createdAt = default;
-            InternalCreateImageEditSize size = default;
-            InternalCreateImageEditQuality quality = default;
-            InternalCreateImageEditBackground background = default;
-            InternalCreateImageEditOutputFormat outputFormat = default;
+            DateTimeOffset createdOn = default;
+            InternalCreateImageEditStreamingSize size = default;
+            InternalCreateImageEditStreamingQuality quality = default;
+            InternalCreateImageEditStreamingBackground background = default;
+            InternalCreateImageEditStreamingOutputFormat outputFormat = default;
             int partialImageIndex = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -167,27 +167,27 @@ namespace OpenAI.Images
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
                 {
-                    size = new InternalCreateImageEditSize(prop.Value.GetString());
+                    size = new InternalCreateImageEditStreamingSize(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
                 {
-                    quality = new InternalCreateImageEditQuality(prop.Value.GetString());
+                    quality = new InternalCreateImageEditStreamingQuality(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
                 {
-                    background = new InternalCreateImageEditBackground(prop.Value.GetString());
+                    background = new InternalCreateImageEditStreamingBackground(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
                 {
-                    outputFormat = new InternalCreateImageEditOutputFormat(prop.Value.GetString());
+                    outputFormat = new InternalCreateImageEditStreamingOutputFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("partial_image_index"u8))
@@ -196,12 +196,12 @@ namespace OpenAI.Images
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalImageEditPartialImageEvent(
                 kind,
                 b64Json,
-                createdAt,
+                createdOn,
                 size,
                 quality,
                 background,

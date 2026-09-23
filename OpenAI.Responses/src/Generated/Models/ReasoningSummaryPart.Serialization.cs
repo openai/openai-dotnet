@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownReasoningItemSummaryPart))]
     public partial class ReasoningSummaryPart : IJsonModel<ReasoningSummaryPart>
     {
         internal ReasoningSummaryPart()

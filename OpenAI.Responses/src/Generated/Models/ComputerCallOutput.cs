@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected ComputerCallOutput(InternalComputerUsePreviewToolCallOutputOutputType kind)
+        internal ComputerCallOutput(InternalComputerUsePreviewToolCallOutputOutputType kind)
         {
             Kind = kind;
         }

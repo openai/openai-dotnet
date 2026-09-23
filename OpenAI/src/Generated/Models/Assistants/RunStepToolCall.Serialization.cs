@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(UnknownRunStepDetailsToolCallsObjectToolCallsObject))]
     public partial class RunStepToolCall : IJsonModel<RunStepToolCall>
     {
         protected virtual RunStepToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)

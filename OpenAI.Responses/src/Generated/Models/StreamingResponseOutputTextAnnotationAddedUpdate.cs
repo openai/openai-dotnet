@@ -10,6 +10,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseOutputTextAnnotationAddedUpdate : StreamingResponseUpdate
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseOutputTextAnnotationAddedUpdate(int sequenceNumber, string itemId, int outputIndex, int contentIndex, int annotationIndex, ResponseMessageAnnotation annotation) : base(StreamingResponseUpdateKind.ResponseOutputTextAnnotationAdded, sequenceNumber)
         {
             ItemId = itemId;
@@ -17,7 +18,9 @@ namespace OpenAI.Responses
             ContentIndex = contentIndex;
             AnnotationIndex = annotationIndex;
             Annotation = annotation;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal StreamingResponseOutputTextAnnotationAddedUpdate(StreamingResponseUpdateKind kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, int annotationIndex, ResponseMessageAnnotation annotation) : base(kind, sequenceNumber, patch)

@@ -290,6 +290,7 @@ namespace OpenAI;
   }
 )
 @tag("Audio")
+@sharedRoute
 op createSpeech(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @body
@@ -305,7 +306,20 @@ op createSpeech(
 
   @body
   body: bytes;
-} | SSEStream<CreateSpeechStreamingResponse>;
+};
+
+/** Generates audio from the input text as a stream of server-sent events. */
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+@post
+@sharedRoute
+@route("/audio/speech")
+@tag("Audio")
+op createSpeechStreaming(
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @body
+  body: CreateSpeechRequest,
+): SSEStream<CreateSpeechStreamingResponse>;
 
 /** Transcribes audio into the input language. */
 #suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
@@ -1361,6 +1375,7 @@ op createSpeech(
   }
 )
 @tag("Audio")
+@sharedRoute
 op createTranscription(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @header
@@ -1369,7 +1384,25 @@ op createTranscription(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @multipartBody
   body: CreateTranscriptionRequest,
-): Body<CreateTranscriptionResponseJson | CreateTranscriptionResponseDiarizedJson | CreateTranscriptionResponseVerboseJson> | SSEStream<CreateTranscriptionStreamingResponse>;
+): Body<CreateTranscriptionResponseJson | CreateTranscriptionResponseDiarizedJson | CreateTranscriptionResponseVerboseJson>;
+
+/** Transcribes audio into the input language, streamed as server-sent events. */
+#suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+@post
+@sharedRoute
+@route("/audio/transcriptions")
+@tag("Audio")
+op createTranscriptionStreaming(
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @header
+  contentType: "multipart/form-data",
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  @multipartBody
+  body: CreateTranscriptionRequest,
+): SSEStream<CreateTranscriptionStreamingResponse>;
 
 /** Translates audio into English. */
 #suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."

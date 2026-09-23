@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateConversationItemRetrieved : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemRetrieved>
     {
-        internal RealtimeServerUpdateConversationItemRetrieved() : this(InternalRealtimeServerEventTypeGA.ConversationItemRetrieved, default, null, null)
+        public RealtimeServerUpdateConversationItemRetrieved() : this(RealtimeServerUpdateKind.ConversationItemRetrieved, default, null, null)
         {
         }
 
@@ -107,7 +107,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -117,7 +117,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
@@ -143,6 +143,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("item"u8))
             {
+                if (Item == null)
+                {
+                    return false;
+                }
                 return Item.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("item"u8.Length)], out value);
             }
             return false;
@@ -156,6 +160,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("item"u8))
             {
+                if (Item == null)
+                {
+                    return false;
+                }
                 Item.Patch.Set([.. "$"u8, .. local.Slice("item"u8.Length)], value);
                 return true;
             }

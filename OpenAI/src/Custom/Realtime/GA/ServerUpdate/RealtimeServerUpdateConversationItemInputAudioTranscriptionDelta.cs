@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System.Collections.Generic;
 
 namespace OpenAI.Realtime;
 
@@ -10,4 +11,7 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionDeltaGA")]
 public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("Logprobs")]
+    public IList<RealtimeTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
 }

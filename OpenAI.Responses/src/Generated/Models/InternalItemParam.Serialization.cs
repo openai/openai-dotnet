@@ -103,38 +103,38 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "message":
-                        return InternalResponsesMessageItemParam.DeserializeInternalResponsesMessageItemParam(element, data, options);
-                    case "function_call_output":
-                        return InternalFunctionToolCallOutputItemParam.DeserializeInternalFunctionToolCallOutputItemParam(element, data, options);
-                    case "file_search_call":
-                        return InternalFileSearchToolCallItemParam.DeserializeInternalFileSearchToolCallItemParam(element, data, options);
+                    case "code_interpreter_call":
+                        return InternalCodeInterpreterToolCallItemParam.DeserializeInternalCodeInterpreterToolCallItemParam(element, data, options);
                     case "computer_call":
                         return InternalComputerUsePreviewToolCallItemParam.DeserializeInternalComputerUsePreviewToolCallItemParam(element, data, options);
                     case "computer_call_output":
                         return InternalComputerUsePreviewToolCallOutputItemParam.DeserializeInternalComputerUsePreviewToolCallOutputItemParam(element, data, options);
+                    case "file_search_call":
+                        return InternalFileSearchToolCallItemParam.DeserializeInternalFileSearchToolCallItemParam(element, data, options);
                     case "function_call":
                         return InternalFunctionToolCallItemParam.DeserializeInternalFunctionToolCallItemParam(element, data, options);
-                    case "reasoning":
-                        return InternalReasoningItemParam.DeserializeInternalReasoningItemParam(element, data, options);
-                    case "item_reference":
-                        return InternalItemReferenceItemParam.DeserializeInternalItemReferenceItemParam(element, data, options);
+                    case "function_call_output":
+                        return InternalFunctionToolCallOutputItemParam.DeserializeInternalFunctionToolCallOutputItemParam(element, data, options);
                     case "image_generation_call":
                         return InternalImageGenToolCallItemParam.DeserializeInternalImageGenToolCallItemParam(element, data, options);
-                    case "code_interpreter_call":
-                        return InternalCodeInterpreterToolCallItemParam.DeserializeInternalCodeInterpreterToolCallItemParam(element, data, options);
+                    case "item_reference":
+                        return InternalItemReferenceItemParam.DeserializeInternalItemReferenceItemParam(element, data, options);
                     case "local_shell_call":
                         return InternalLocalShellToolCallItemParam.DeserializeInternalLocalShellToolCallItemParam(element, data, options);
                     case "local_shell_call_output":
                         return InternalLocalShellToolCallOutputItemParam.DeserializeInternalLocalShellToolCallOutputItemParam(element, data, options);
-                    case "mcp_list_tools":
-                        return InternalMCPListToolsItemParam.DeserializeInternalMCPListToolsItemParam(element, data, options);
                     case "mcp_approval_request":
                         return InternalMCPApprovalRequestItemParam.DeserializeInternalMCPApprovalRequestItemParam(element, data, options);
                     case "mcp_approval_response":
                         return InternalMCPApprovalResponseItemParam.DeserializeInternalMCPApprovalResponseItemParam(element, data, options);
                     case "mcp_call":
                         return InternalMCPCallItemParam.DeserializeInternalMCPCallItemParam(element, data, options);
+                    case "mcp_list_tools":
+                        return InternalMCPListToolsItemParam.DeserializeInternalMCPListToolsItemParam(element, data, options);
+                    case "reasoning":
+                        return InternalReasoningItemParam.DeserializeInternalReasoningItemParam(element, data, options);
+                    case "message":
+                        return InternalResponsesMessageItemParam.DeserializeInternalResponsesMessageItemParam(element, data, options);
                 }
             }
             return InternalUnknownItemParam.DeserializeInternalUnknownItemParam(element, data, options);

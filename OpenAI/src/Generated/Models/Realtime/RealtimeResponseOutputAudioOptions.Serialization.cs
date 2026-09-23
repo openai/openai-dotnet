@@ -140,6 +140,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("format"u8))
             {
+                if (AudioFormat == null)
+                {
+                    return false;
+                }
                 return AudioFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
             }
             return false;
@@ -153,6 +157,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("format"u8))
             {
+                if (AudioFormat == null)
+                {
+                    return false;
+                }
                 AudioFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
                 return true;
             }

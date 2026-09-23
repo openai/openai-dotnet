@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(UnknownAssistantToolDefinition))]
     public partial class ToolDefinition : IJsonModel<ToolDefinition>
     {
         internal ToolDefinition()

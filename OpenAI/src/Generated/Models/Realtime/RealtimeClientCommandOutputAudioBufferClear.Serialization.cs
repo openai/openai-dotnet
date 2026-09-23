@@ -98,7 +98,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeClientEventTypeGA kind = default;
+            RealtimeClientCommandKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -107,7 +107,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeClientEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeClientCommandKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))

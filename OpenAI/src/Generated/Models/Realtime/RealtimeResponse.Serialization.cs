@@ -101,9 +101,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "output"u8);
                 for (int i = 0; i < OutputItems.Count; i++)
                 {
-                    if (OutputItems[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]")) || OutputItems[i] != null && OutputItems[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -116,18 +117,44 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
-#if NET8_0_OR_GREATER
-                global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                foreach (var item in Metadata)
+                bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
+                if (hasPatch)
                 {
 #if NET8_0_OR_GREATER
-                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                    bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+                    global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                    if (!patchContains)
+                    foreach (var item in Metadata)
+                    {
+#if NET8_0_OR_GREATER
+                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
+#else
+                        bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                        if (!patchContains)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            if (item.Value == null)
+                            {
+                                writer.WriteNullValue();
+                                continue;
+                            }
+#if NET6_0_OR_GREATER
+                            writer.WriteRawValue(item.Value);
+#else
+                            using (JsonDocument document = JsonDocument.Parse(item.Value))
+                            {
+                                JsonSerializer.Serialize(writer, document.RootElement);
+                            }
+#endif
+                        }
+                    }
+
+                    Patch.WriteTo(writer, "$.metadata"u8);
+                }
+                else
+                {
+                    foreach (var item in Metadata)
                     {
                         writer.WritePropertyName(item.Key);
                         if (item.Value == null)
@@ -145,8 +172,6 @@ namespace OpenAI.Realtime
 #endif
                     }
                 }
-
-                Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
             if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
@@ -176,9 +201,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("output_modalities"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "output_modalities"u8);
                 for (int i = 0; i < OutputModalities.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output_modalities[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output_modalities[{i}]")))
                     {
                         continue;
                     }
@@ -293,7 +319,7 @@ namespace OpenAI.Realtime
                         }
                         else
                         {
-                            dictionary.Add(prop0.Name, BinaryData.FromString(prop0.Value.GetRawText()));
+                            dictionary.Add(prop0.Name, prop0.Value.GetUtf8Bytes());
                         }
                     }
                     metadata = dictionary;
@@ -370,29 +396,53 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("status_details"u8))
             {
+                if (StatusDetails == null)
+                {
+                    return false;
+                }
                 return StatusDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("status_details"u8.Length)], out value);
             }
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
             }
             if (local.StartsWith("max_output_tokens"u8))
             {
+                if (MaxOutputTokenCount == null)
+                {
+                    return false;
+                }
                 return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
             }
             if (local.StartsWith("output"u8))
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (OutputItems == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveOutputItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
+                {
+                    return false;
+                }
+                if (OutputItems[index] == null)
                 {
                     return false;
                 }
@@ -409,21 +459,37 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("status_details"u8))
             {
+                if (StatusDetails == null)
+                {
+                    return false;
+                }
                 StatusDetails.Patch.Set([.. "$"u8, .. local.Slice("status_details"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("audio"u8))
             {
+                if (AudioOptions == null)
+                {
+                    return false;
+                }
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("usage"u8))
             {
+                if (Usage == null)
+                {
+                    return false;
+                }
                 Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("max_output_tokens"u8))
             {
+                if (MaxOutputTokenCount == null)
+                {
+                    return false;
+                }
                 MaxOutputTokenCount.Patch.Set([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], value);
                 return true;
             }
@@ -431,7 +497,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "output"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (OutputItems == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= OutputItems.Count)
+                {
+                    return false;
+                }
+                if (OutputItems[index] == null)
                 {
                     return false;
                 }
@@ -460,9 +534,10 @@ namespace OpenAI.Realtime
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "output"u8);
             for (int i = 0; i < OutputItems.Count; i++)
             {
-                if (!OutputItems[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.output[{i}]"))) && (OutputItems[i] == null || !OutputItems[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return OutputItems[i];
                 }

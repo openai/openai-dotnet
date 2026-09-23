@@ -4,6 +4,7 @@
     <AssemblyTitle>OpenAI client library for .NET</AssemblyTitle>
 
     <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
+    <ApiCompatVersion>2.13.0</ApiCompatVersion>
   </PropertyGroup>
 
   <ItemGroup>

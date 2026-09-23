@@ -91,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "tools"u8);
                 for (int i = 0; i < ToolDefinitions.Count; i++)
                 {
-                    if (ToolDefinitions[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]")) || ToolDefinitions[i] != null && ToolDefinitions[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -180,7 +181,7 @@ namespace OpenAI.Responses
                         error = null;
                         continue;
                     }
-                    error = BinaryData.FromString(prop.Value.GetRawText());
+                    error = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -204,11 +205,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (ToolDefinitions == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveToolDefinitionsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
+                {
+                    return false;
+                }
+                if (ToolDefinitions[index] == null)
                 {
                     return false;
                 }
@@ -227,7 +236,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "tools"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (ToolDefinitions == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= ToolDefinitions.Count)
+                {
+                    return false;
+                }
+                if (ToolDefinitions[index] == null)
                 {
                     return false;
                 }
@@ -256,9 +273,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "tools"u8);
             for (int i = 0; i < ToolDefinitions.Count; i++)
             {
-                if (!ToolDefinitions[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tools[{i}]"))) && (ToolDefinitions[i] == null || !ToolDefinitions[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return ToolDefinitions[i];
                 }

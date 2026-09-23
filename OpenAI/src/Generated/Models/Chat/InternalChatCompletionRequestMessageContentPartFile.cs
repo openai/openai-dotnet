@@ -8,13 +8,16 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartFile : ChatMessageContentPart
     {
-        internal InternalChatCompletionRequestMessageContentPartFile(InternalChatCompletionRequestMessageContentPartFileFile @file)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionRequestMessageContentPartFile(InternalChatCompletionRequestMessageContentPartFileFile @file) : base(ChatMessageContentPartKind.File)
         {
             File = @file;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalChatCompletionRequestMessageContentPartFile(in JsonPatch patch, InternalChatCompletionRequestMessageContentPartFileFile @file) : base(patch)
+        internal InternalChatCompletionRequestMessageContentPartFile(ChatMessageContentPartKind kind, in JsonPatch patch, InternalChatCompletionRequestMessageContentPartFileFile @file) : base(kind, patch)
         {
             File = @file;
             Patch.SetPropagators(PropagateSet, PropagateGet);

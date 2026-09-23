@@ -72,8 +72,6 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            // Plugin customization: remove options.Format != "W" check
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -110,14 +108,14 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "user":
-                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, data, options);
-                    case "system":
-                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, data, options);
-                    case "developer":
-                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, data, options);
                     case "assistant":
                         return InternalResponsesAssistantMessage.DeserializeInternalResponsesAssistantMessage(element, data, options);
+                    case "developer":
+                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, data, options);
+                    case "system":
+                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, data, options);
+                    case "user":
+                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, data, options);
                 }
             }
             return InternalUnknownResponsesMessageItemResource.DeserializeInternalUnknownResponsesMessageItemResource(element, data, options);

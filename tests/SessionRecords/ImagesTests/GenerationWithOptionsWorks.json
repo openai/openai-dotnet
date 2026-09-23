@@ -4,11 +4,11 @@
       "RequestUri": "https://api.openai.com/v1/images/generations",
       "RequestMethod": "POST",
       "RequestHeaders": {
-        "Accept": "application/json, text/event-stream",
+        "Accept": "application/json",
         "Authorization": "Sanitized",
         "Content-Length": "175",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "prompt": "An isolated stop sign.",
@@ -24,12 +24,11 @@
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": [
           "X-Request-ID",
-          "CF-Ray",
           "CF-Ray"
         ],
         "Alt-Svc": "h3=\":443\"",
-        "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093f2254add7538-SEA",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "a347f5c978a4b9df-SEA",
         "Connection": "keep-alive",
         "Content-Length": "526",
         "Content-Type": "application/json",
@@ -44,7 +43,7 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "created": 1781048094,
+        "created": 1788304386,
         "background": "transparent",
         "data": [
           {
@@ -80,7 +79,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "messages": [
@@ -112,9 +111,8 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093f320185e7538-SEA",
+        "CF-Ray": "a347f6b01f53b9df-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "941",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -123,6 +121,7 @@
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-input-images": "50000",
@@ -137,16 +136,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp0G7bw1jUbfjrv7HWpoIshSLIfMN",
+        "id": "chatcmpl-EJRx5zGaVV2pXZspM3BB7dee42xaI",
         "object": "chat.completion",
-        "created": 1781048095,
+        "created": 1788304387,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a red octagonal stop sign with the word \"STOP\" printed in bold white letters. It is mounted on a vertical gray pole. The background has a blurred effect, suggesting motion, with horizontal lines creating a sense of speed or urgency. The overall composition emphasizes the importance of the stop sign amidst the dynamic backdrop.",
+              "content": "The image features a classic red stop sign in the shape of an octagon, with bold white lettering that spells \"STOP.\" The sign is mounted on a metallic pole. The background is created with a gradient that appears blurred or streaked, suggesting motion or speed, with darker colors around the edges transitioning to lighter hues closer to the sign. This effect may imply a sense of urgency or the idea of approaching the sign rapidly.",
               "refusal": null,
               "annotations": []
             },
@@ -156,8 +155,8 @@
         ],
         "usage": {
           "prompt_tokens": 36849,
-          "completion_tokens": 66,
-          "total_tokens": 36915,
+          "completion_tokens": 85,
+          "total_tokens": 36934,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -181,7 +180,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "306",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.11.0 (.NET 10.0.8; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.13.0 (.NET 10.0.11; macOS 15.7.9)"
       },
       "RequestBody": {
         "messages": [
@@ -213,7 +212,7 @@
         ],
         "Alt-Svc": "h3=\":443\"",
         "CF-Cache-Status": "DYNAMIC",
-        "CF-Ray": "a093f32c6dc57538-SEA",
+        "CF-Ray": "a347f6bab8b8b9df-SEA",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -231,23 +230,23 @@
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-input-images": "49999",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999227",
+        "x-ratelimit-remaining-tokens": "149999225",
         "x-ratelimit-reset-input-images": "1ms",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-Dp0G9V9UKHwVDSWjtmubwOKHP94uq",
+        "id": "chatcmpl-EJRx7mfCsVlrtDIbMmJDTNwq31I16",
         "object": "chat.completion",
-        "created": 1781048097,
+        "created": 1788304389,
         "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "The image features a stop sign in the foreground, which is an octagonal red sign with the word \"STOP\" written in white letters. The stop sign is mounted on a black pole. The background exhibits a gradient of blurred lines that suggest motion, creating a dynamic effect that makes it seem as though the sign is either in motion or being approached at high speed. The overall color scheme emphasizes the stark contrast of the red sign against the muted tones in the background, highlighting its importance as a traffic signal.",
+              "content": "The image features a red octagonal stop sign prominently displayed in the center. The sign has bold white letters that read \"STOP.\" It is mounted on a gray pole against a blurred background that suggests movement, possibly indicating speed or urgency. The overall design focuses on the stop sign, highlighting its function as a traffic control device.",
               "refusal": null,
               "annotations": []
             },
@@ -257,8 +256,8 @@
         ],
         "usage": {
           "prompt_tokens": 36849,
-          "completion_tokens": 101,
-          "total_tokens": 36950,
+          "completion_tokens": 65,
+          "total_tokens": 36914,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0

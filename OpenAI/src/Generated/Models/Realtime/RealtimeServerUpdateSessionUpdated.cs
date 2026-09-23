@@ -10,14 +10,8 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateSessionUpdated : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateSessionUpdated(string eventId, RealtimeSession session) : base(InternalRealtimeServerEventTypeGA.SessionUpdated)
-        {
-            EventId = eventId;
-            Session = session;
-        }
-
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateSessionUpdated(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, RealtimeSession session) : base(kind, patch)
+        internal RealtimeServerUpdateSessionUpdated(string eventId, RealtimeSession session) : base(RealtimeServerUpdateKind.SessionUpdated)
         {
             EventId = eventId;
             Session = session;
@@ -25,8 +19,17 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeServerUpdateSessionUpdated(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, RealtimeSession session) : base(kind, patch)
+        {
+            EventId = eventId;
+            Session = session;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public RealtimeSession Session { get; }
+        public string EventId { get; set; }
+
+        public RealtimeSession Session { get; set; }
     }
 }

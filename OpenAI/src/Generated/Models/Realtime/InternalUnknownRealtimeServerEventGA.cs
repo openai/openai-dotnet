@@ -9,7 +9,7 @@ namespace OpenAI.Realtime
     internal partial class InternalUnknownRealtimeServerEventGA : RealtimeServerUpdate
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownRealtimeServerEventGA(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownRealtimeServerEventGA(RealtimeServerUpdateKind kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

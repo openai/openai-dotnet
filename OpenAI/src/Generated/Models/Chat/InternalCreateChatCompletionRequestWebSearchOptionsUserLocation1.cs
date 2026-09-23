@@ -15,10 +15,13 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(InternalWebSearchLocation approximate)
         {
             Approximate = approximate;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(string kind, InternalWebSearchLocation approximate, in JsonPatch patch)

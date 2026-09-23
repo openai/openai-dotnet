@@ -11,21 +11,21 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalVoiceConsentResource(string id, string name, string language, DateTimeOffset createdAt)
+        internal InternalVoiceConsentResource(string id, string name, string language, DateTimeOffset createdOn)
         {
             Id = id;
             Name = name;
             Language = language;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
         }
 
-        internal InternalVoiceConsentResource(string @object, string id, string name, string language, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalVoiceConsentResource(string @object, string id, string name, string language, DateTimeOffset createdOn, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Object = @object;
             Id = id;
             Name = name;
             Language = language;
-            CreatedAt = createdAt;
+            CreatedOn = createdOn;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -37,7 +37,7 @@ namespace OpenAI.Audio
 
         public string Language { get; }
 
-        public DateTimeOffset CreatedAt { get; }
+        public DateTimeOffset CreatedOn { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

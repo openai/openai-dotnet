@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeInputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputAudioMessageContentPart>
     {
-        internal RealtimeInputAudioMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputAudio, default, null, null)
+        public RealtimeInputAudioMessageContentPart() : this(InternalRealtimeConversationItemMessageContentPartTypeGA.InputAudio, default, null, null)
         {
         }
 
@@ -76,7 +76,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytes, "D");
             }
             if (Optional.IsDefined(Transcript) && !Patch.Contains("$.transcript"u8))
             {

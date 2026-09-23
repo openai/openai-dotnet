@@ -7,6 +7,7 @@ using NUnit.Framework;
 using OpenAILibraryPlugin.Tests.Common;
 using OpenAILibraryPlugin.Tests.TestHelpers;
 using OpenAILibraryPlugin.Visitors;
+using System.Linq;
 
 namespace OpenAILibraryPlugin.Tests.Visitors
 {
@@ -21,6 +22,7 @@ namespace OpenAILibraryPlugin.Tests.Visitors
 
         [TestCase("OpenAI.Containers")]
         [TestCase("OpenAI.Conversations")]
+        [TestCase("OpenAI.Realtime")]
         [TestCase("OpenAI.Responses")]
         public void PreVisitProperty_AddsSetterForProtocolNamespace(string modelNamespace)
         {
@@ -57,6 +59,21 @@ namespace OpenAILibraryPlugin.Tests.Visitors
             Assert.That(body!.InitializationExpression, Is.SameAs(initializationExpression));
         }
 
+        [Test]
+        public void VisitType_MakesRealtimeParameterlessConstructorPublic()
+        {
+            var inputType = InputFactory.Model("RealtimeModel", "OpenAI.Realtime");
+            var model = ScmCodeModelGenerator.Instance.TypeFactory.CreateModel(inputType);
+            Assert.That(model, Is.Not.Null);
+
+            var parameterlessConstructor = model!.Constructors.Single(
+                constructor => constructor.Signature.Parameters.Count == 0);
+
+            new TestProtocolModelVisitor().InvokeVisitType(model);
+
+            Assert.That(parameterlessConstructor.Signature.Modifiers, Is.EqualTo(MethodSignatureModifiers.Public));
+        }
+
         private static (InputModelProperty InputProperty, PropertyProvider Property) CreateProperty(string modelNamespace)
         {
             var inputProperty = InputFactory.Property("value", InputPrimitiveType.String, isReadOnly: true);
@@ -74,6 +91,8 @@ namespace OpenAILibraryPlugin.Tests.Visitors
         {
             public PropertyProvider? InvokePreVisitProperty(InputProperty inputProperty, PropertyProvider property) =>
                 base.PreVisitProperty(inputProperty, property);
+
+            public TypeProvider? InvokeVisitType(TypeProvider typeProvider) => base.VisitType(typeProvider);
         }
     }
 }

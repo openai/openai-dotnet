@@ -12,9 +12,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchSearchAction : WebSearchAction
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public WebSearchSearchAction() : this(InternalWebSearchActionType.Search, default, null, null, null)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal WebSearchSearchAction(InternalWebSearchActionType kind, in JsonPatch patch, string query, IList<string> queries, IList<WebSearchActionSource> sources) : base(kind, patch)

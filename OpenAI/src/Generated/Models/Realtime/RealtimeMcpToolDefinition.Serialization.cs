@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolDefinition : IJsonModel<RealtimeMcpToolDefinition>
     {
-        internal RealtimeMcpToolDefinition()
+        public RealtimeMcpToolDefinition()
         {
         }
 
@@ -156,7 +156,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("input_schema"u8))
                 {
-                    inputSchema = BinaryData.FromString(prop.Value.GetRawText());
+                    inputSchema = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("annotations"u8))
@@ -166,7 +166,7 @@ namespace OpenAI.Realtime
                         annotations = null;
                         continue;
                     }
-                    annotations = BinaryData.FromString(prop.Value.GetRawText());
+                    annotations = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

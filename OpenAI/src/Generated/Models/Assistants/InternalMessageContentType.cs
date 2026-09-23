@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
         private readonly string _value;
         private const string TextValue = "text";
         private const string ImageFileValue = "image_file";
-        private const string ImageUrlValue = "image_url";
+        private const string ImageUriValue = "image_url";
         private const string RefusalValue = "refusal";
 
         public InternalMessageContentType(string value)
@@ -24,7 +24,7 @@ namespace OpenAI.Assistants
 
         internal static InternalMessageContentType ImageFile { get; } = new InternalMessageContentType(ImageFileValue);
 
-        internal static InternalMessageContentType ImageUrl { get; } = new InternalMessageContentType(ImageUrlValue);
+        internal static InternalMessageContentType ImageUri { get; } = new InternalMessageContentType(ImageUriValue);
 
         internal static InternalMessageContentType Refusal { get; } = new InternalMessageContentType(RefusalValue);
 

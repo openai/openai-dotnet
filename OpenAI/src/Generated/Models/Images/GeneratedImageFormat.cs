@@ -11,7 +11,7 @@ namespace OpenAI.Images
     public readonly partial struct GeneratedImageFormat : IEquatable<GeneratedImageFormat>
     {
         private readonly string _value;
-        private const string UrlValue = "url";
+        private const string UriValue = "url";
         private const string B64JsonValue = "b64_json";
 
         public GeneratedImageFormat(string value)

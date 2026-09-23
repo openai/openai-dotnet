@@ -15,7 +15,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeCustomTruncation(InternalRealtimeTruncationBaseTypeGA kind)
+        internal RealtimeCustomTruncation(InternalRealtimeTruncationBaseTypeGA kind)
         {
             Kind = kind;
         }

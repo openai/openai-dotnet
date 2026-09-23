@@ -17,16 +17,6 @@ internal static class SemaphoreSlimExtensions
         return wrapper;
     }
 
-    public static IDisposable AutoReleaseWait(
-        this SemaphoreSlim semaphore,
-        CancellationToken cancellationToken = default)
-    {
-        Contract.Requires(semaphore != null);
-        var wrapper = new ReleaseableSemaphoreSlimWrapper(semaphore);
-        semaphore.Wait(cancellationToken);
-        return wrapper;
-    }
-
     private class ReleaseableSemaphoreSlimWrapper
         : IDisposable
     {

@@ -17,13 +17,16 @@ namespace OpenAI.Containers
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public ContainerCreationOptions(string name)
         {
             Argument.AssertNotNull(name, nameof(name));
 
             Name = name;
             FileIds = new ChangeTrackingList<string>();
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ContainerCreationOptions(string name, IList<string> fileIds, ContainerExpirationPolicy expirationPolicy, ContainerMemoryLimit? memoryLimit, ContainerNetworkPolicy networkPolicy, in JsonPatch patch)

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeTurnDetectionBaseGA : RealtimeTurnDetection, IJsonModel<RealtimeTurnDetection>
     {
-        internal InternalUnknownRealtimeTurnDetectionBaseGA() : this(default, default)
+        public InternalUnknownRealtimeTurnDetectionBaseGA() : this(default, default)
         {
         }
 

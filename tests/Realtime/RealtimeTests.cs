@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +18,7 @@ namespace OpenAI.Tests.Realtime;
 #pragma warning disable OPENAI002
 
 [LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
+[TestFixture(true)]
 public class RealtimeTests : RealtimeTestFixtureBase
 {
     public enum TestAudioSendType { WithAudioStreamHelper, WithManualAudioChunks }
@@ -474,6 +474,71 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         Assert.That(gotSessionCreated, Is.True);
         Assert.That(gotSessionUpdated, Is.True);
+    }
+
+    [Test]
+    public async Task TranscriptionTokenLogProbabilitiesWork()
+    {
+        RealtimeClient client = GetTestClient();
+
+        using RealtimeSessionClient sessionClient = await client.StartTranscriptionSessionAsync(
+            cancellationToken: CancellationToken);
+
+        RealtimeTranscriptionSessionOptions options = new()
+        {
+            AudioOptions = new()
+            {
+                InputAudioOptions = new()
+                {
+                    AudioTranscriptionOptions = new()
+                    {
+                        Model = "gpt-4o-transcribe",
+                    },
+                }
+            },
+
+            IncludedProperties = { RealtimeIncludedProperty.ItemInputAudioTranscriptionLogProbabilities },
+        };
+
+        await sessionClient.ConfigureTranscriptionSessionAsync(options, CancellationToken);
+
+        string inputPath = Path.Join("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
+        using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
+        await sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
+
+        RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta deltaUpdate = null;
+        RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted completedUpdate = null;
+
+        await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta transcriptionDeltaUpdate:
+                    deltaUpdate ??= transcriptionDeltaUpdate;
+                    break;
+                case RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted transcriptionCompletedUpdate:
+                    completedUpdate ??= transcriptionCompletedUpdate;
+                    break;
+                case RealtimeServerUpdateError errorUpdate:
+                    Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                    break;
+            }
+
+            if (deltaUpdate is not null && completedUpdate is not null)
+            {
+                break;
+            }
+        }
+
+        Assert.That(deltaUpdate, Is.Not.Null);
+        Assert.That(deltaUpdate!.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
+        Assert.That(deltaUpdate!.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(deltaUpdate!.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Empty);
+
+        Assert.That(completedUpdate, Is.Not.Null);
+        Assert.That(completedUpdate!.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
+        Assert.That(completedUpdate!.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+        Assert.That(completedUpdate!.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Empty);
     }
 
     [Test]
@@ -1262,7 +1327,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             SessionOptions = conversationSessionOptions,
         };
 
-        CreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+        CreateClientSecretResult result = await client.CreateRealtimeClientSecretAsync(createClientSecretOptions, CancellationToken);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
@@ -1384,7 +1449,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             SessionOptions = transcriptionSessionOptions,
         };
 
-        CreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+        CreateClientSecretResult result = await client.CreateRealtimeClientSecretAsync(createClientSecretOptions, CancellationToken);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result.Value, Is.Not.Null.And.Not.Empty);

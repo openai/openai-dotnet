@@ -6,6 +6,8 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemGA")]
+[CodeGenVisibility(nameof(RealtimeItem), CodeGenVisibility.ProtectedInternal, typeof(RealtimeItemKind))]
+[CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RealtimeItem
 {
     public static RealtimeMessageItem CreateAssistantMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts)
