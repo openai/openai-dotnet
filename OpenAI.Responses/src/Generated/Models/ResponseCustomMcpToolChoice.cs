@@ -4,20 +4,32 @@
 
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class ResponseCustomMcpToolChoice : ResponseCustomToolChoice
     {
-        public ResponseCustomMcpToolChoice() : this(InternalResponseCustomToolChoiceKind.Mcp, default)
+        public ResponseCustomMcpToolChoice(string name, string serverLabel) : base(InternalResponseCustomToolChoiceKind.Mcp)
         {
+            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+
+            Name = name;
+            ServerLabel = serverLabel;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch) : base(kind, patch)
+        internal ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, string name, string serverLabel) : base(kind, patch)
         {
+            Name = name;
+            ServerLabel = serverLabel;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public string Name { get; set; }
+
+        public string ServerLabel { get; set; }
     }
 }

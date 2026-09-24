@@ -190,6 +190,34 @@ public partial class ResponsesSmokeTests
             new ResponseCustomWebSearchToolChoice(),
             @"{""type"":""web_search_preview""}");
 
+        AssertChoiceEqual(
+            new ResponseCustomImageGenerationToolChoice(),
+            @"{""type"":""image_generation""}");
+
+        AssertChoiceEqual(
+            new ResponseCustomCodeInterpreterToolChoice(),
+            @"{""type"":""code_interpreter""}");
+        
+        AssertChoiceEqual(
+            new ResponseCustomMcpToolChoice("foo", "bar"),
+            @"{""type"":""mcp"",""name"":""foo"",""server_label"":""bar""}");
+
+        AssertChoiceEqual(
+            new ResponseCustomProgrammaticToolCallingToolChoice(),
+            @"{""type"":""programmatic_tool_calling""}");
+
+        AssertChoiceEqual(
+            new ResponseCustomApplyPatchToolChoice(),
+            @"{""type"":""apply_patch""}");
+
+        AssertChoiceEqual(
+            new ResponseCustomShellToolChoice(),
+            @"{""type"":""shell""}");
+
+        AssertChoiceEqual(
+            new ResponseCustomCustomToolChoice("foo"),
+            @"{""type"":""custom"",""name"":""foo""}");
+
         AssertSerializationRoundTrip<ResponseToolChoice>(
             @"{""type"":""something_else""}",
             toolChoice => Assert.That(toolChoice.CustomToolChoice, Is.Not.Null));

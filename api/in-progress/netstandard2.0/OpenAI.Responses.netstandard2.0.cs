@@ -874,11 +874,19 @@ namespace OpenAI.Responses {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
     }
+    public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
+        public ResponseCustomApplyPatchToolChoice();
+    }
     public class ResponseCustomCodeInterpreterToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCodeInterpreterToolChoice>, IPersistableModel<ResponseCustomCodeInterpreterToolChoice> {
         public ResponseCustomCodeInterpreterToolChoice();
     }
     public class ResponseCustomComputerToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerToolChoice>, IPersistableModel<ResponseCustomComputerToolChoice> {
         public ResponseCustomComputerToolChoice();
+    }
+    public class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>, IPersistableModel<ResponseCustomCustomToolChoice> {
+        public ResponseCustomCustomToolChoice();
+        public ResponseCustomCustomToolChoice(string name);
+        public string Name { get; set; }
     }
     public class ResponseCustomFileSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFileSearchToolChoice>, IPersistableModel<ResponseCustomFileSearchToolChoice> {
         public ResponseCustomFileSearchToolChoice();
@@ -893,6 +901,15 @@ namespace OpenAI.Responses {
     }
     public class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>, IPersistableModel<ResponseCustomMcpToolChoice> {
         public ResponseCustomMcpToolChoice();
+        public ResponseCustomMcpToolChoice(string name, string serverLabel);
+        public string Name { get; set; }
+        public string ServerLabel { get; set; }
+    }
+    public class ResponseCustomProgrammaticToolCallingToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseCustomProgrammaticToolCallingToolChoice> {
+        public ResponseCustomProgrammaticToolCallingToolChoice();
+    }
+    public class ResponseCustomShellToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomShellToolChoice>, IPersistableModel<ResponseCustomShellToolChoice> {
+        public ResponseCustomShellToolChoice();
     }
     public class ResponseCustomToolChoice : IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
         [Serialization.JsonIgnore]
@@ -1410,9 +1427,6 @@ namespace OpenAI.Responses {
         public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
         public ResponseCustomToolChoice CustomToolChoice { get; }
         public ResponseDefaultToolChoice? DefaultToolChoice { get; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
         public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
         public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
     }
