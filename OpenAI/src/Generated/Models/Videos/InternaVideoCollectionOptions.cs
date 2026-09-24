@@ -15,19 +15,19 @@ namespace OpenAI.Videos
         {
         }
 
-        internal InternaVideoCollectionOptions(string afterId, int? pageSizeLimit, InternalVideoCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternaVideoCollectionOptions(int? pageSizeLimit, InternalVideosOrderEnum? order, string afterId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            AfterId = afterId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
+            AfterId = afterId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string AfterId { get; set; }
-
         public int? PageSizeLimit { get; set; }
 
-        internal InternalVideoCollectionOrder? Order { get; set; }
+        internal InternalVideosOrderEnum? Order { get; set; }
+
+        public string AfterId { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

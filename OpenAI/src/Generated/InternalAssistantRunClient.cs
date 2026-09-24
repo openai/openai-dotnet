@@ -28,27 +28,27 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetRuns(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunsCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunsAsyncCollectionResult(
                 this,
                 threadId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 options);
         }
 
@@ -100,30 +100,30 @@ namespace OpenAI.Assistants
             return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
         }
 
-        public virtual CollectionResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        public virtual CollectionResult GetRunSteps(string threadId, string runId, int? pageSizeLimit, string order, string afterId, string beforeId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunStepsCollectionResult(
                 this,
                 threadId,
                 runId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 include,
                 options);
         }
 
-        public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? pageSizeLimit, string order, string afterId, string beforeId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             return new InternalAssistantRunClientGetRunStepsAsyncCollectionResult(
                 this,
                 threadId,
                 runId,
-                limit,
+                pageSizeLimit,
                 order,
-                after,
-                before,
+                afterId,
+                beforeId,
                 include,
                 options);
         }
