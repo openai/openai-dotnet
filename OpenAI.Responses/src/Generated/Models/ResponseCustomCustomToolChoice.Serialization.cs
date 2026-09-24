@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>
+    public partial class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>
     {
-        public ResponseCustomMcpToolChoice() : this(InternalResponseCustomToolChoiceKind.Mcp, default, null, null)
+        public ResponseCustomCustomToolChoice() : this(InternalResponseCustomToolChoiceKind.Custom, default, null)
         {
         }
 
         protected override ResponseCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseCustomMcpToolChoice(document.RootElement, data, options);
+                        return DeserializeResponseCustomCustomToolChoice(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ResponseCustomMcpToolChoice)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseCustomCustomToolChoice)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ResponseCustomMcpToolChoice)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseCustomCustomToolChoice)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<ResponseCustomMcpToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ResponseCustomCustomToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        ResponseCustomMcpToolChoice IPersistableModel<ResponseCustomMcpToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponseCustomMcpToolChoice)PersistableModelCreateCore(data, options);
+        ResponseCustomCustomToolChoice IPersistableModel<ResponseCustomCustomToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponseCustomCustomToolChoice)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<ResponseCustomMcpToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ResponseCustomCustomToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<ResponseCustomMcpToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ResponseCustomCustomToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +66,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseCustomMcpToolChoice)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseCustomCustomToolChoice)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -78,30 +78,25 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (!Patch.Contains("$.server_label"u8))
-            {
-                writer.WritePropertyName("server_label"u8);
-                writer.WriteStringValue(ServerLabel);
-            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ResponseCustomMcpToolChoice IJsonModel<ResponseCustomMcpToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseCustomMcpToolChoice)JsonModelCreateCore(ref reader, options);
+        ResponseCustomCustomToolChoice IJsonModel<ResponseCustomCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseCustomCustomToolChoice)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseCustomMcpToolChoice)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseCustomCustomToolChoice)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseCustomMcpToolChoice(document.RootElement, null, options);
+            return DeserializeResponseCustomCustomToolChoice(document.RootElement, null, options);
         }
 
-        internal static ResponseCustomMcpToolChoice DeserializeResponseCustomMcpToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseCustomCustomToolChoice DeserializeResponseCustomCustomToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -112,7 +107,6 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string name = default;
-            string serverLabel = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -125,14 +119,9 @@ namespace OpenAI.Responses
                     name = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("server_label"u8))
-                {
-                    serverLabel = prop.Value.GetString();
-                    continue;
-                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseCustomMcpToolChoice(kind, patch, name, serverLabel);
+            return new ResponseCustomCustomToolChoice(kind, patch, name);
         }
     }
 }
