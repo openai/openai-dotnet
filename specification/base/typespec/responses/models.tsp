@@ -536,8 +536,6 @@ union ToolChoiceOptions {
   "required",
 }
 
-@access(Access.public)
-@usage(Usage.input | Usage.output)
 union DotNetResponseDefaultToolChoice {
   string,
   none: "none",
@@ -559,6 +557,10 @@ union ToolChoiceObjectType {
   image_generation: "image_generation",
   code_interpreter: "code_interpreter",
   mcp: "mcp",
+  custom: "custom",
+  programmatic_tool_calling: "programmatic_tool_calling",
+  apply_patch: "apply_patch",
+  shell: "shell"
 }
 @discriminator("type")
 model ToolChoiceObject {
@@ -581,8 +583,22 @@ model ToolChoiceObjectCodeInterpreter extends ToolChoiceObject {
 }
 model ToolChoiceObjectMCP extends ToolChoiceObject {
   type: ToolChoiceObjectType.mcp;
+  name: string;
+  server_label: string;
 }
-
+model ToolChoiceObjectCustom extends ToolChoiceObject {
+  type: ToolChoiceObjectType.custom;
+  name: string;
+}
+model ToolChoiceObjectProgrammaticToolCalling extends ToolChoiceObject {
+  type: ToolChoiceObjectType.programmatic_tool_calling;
+}
+model ToolChoiceObjectApplyPatch extends ToolChoiceObject {
+  type: ToolChoiceObjectType.apply_patch;
+}
+model ToolChoiceObjectShell extends ToolChoiceObject {
+  type: ToolChoiceObjectType.shell;
+}
 // Tool customization (apply_discriminator): Apply discriminated type base
 /** Use this option to force the model to call a specific function. */
 model ToolChoiceObjectFunction extends ToolChoiceObject {
