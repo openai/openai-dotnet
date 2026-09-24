@@ -617,9 +617,29 @@ namespace OpenAI
             return new ResponseCustomCodeInterpreterToolChoice(InternalResponseCustomToolChoiceKind.CodeInterpreter, default);
         }
 
-        public static ResponseCustomMcpToolChoice ResponseCustomMcpToolChoice()
+        public static ResponseCustomMcpToolChoice ResponseCustomMcpToolChoice(string name = default, string serverLabel = default)
         {
-            return new ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind.Mcp, default);
+            return new ResponseCustomMcpToolChoice(InternalResponseCustomToolChoiceKind.Mcp, default, name, serverLabel);
+        }
+
+        public static ResponseCustomCustomToolChoice ResponseCustomCustomToolChoice(string name = default)
+        {
+            return new ResponseCustomCustomToolChoice(InternalResponseCustomToolChoiceKind.Custom, default, name);
+        }
+
+        public static ResponseCustomProgrammaticToolCallingToolChoice ResponseCustomProgrammaticToolCallingToolChoice()
+        {
+            return new ResponseCustomProgrammaticToolCallingToolChoice(InternalResponseCustomToolChoiceKind.ProgrammaticToolCalling, default);
+        }
+
+        public static ResponseCustomApplyPatchToolChoice ResponseCustomApplyPatchToolChoice()
+        {
+            return new ResponseCustomApplyPatchToolChoice(InternalResponseCustomToolChoiceKind.ApplyPatch, default);
+        }
+
+        public static ResponseCustomShellToolChoice ResponseCustomShellToolChoice()
+        {
+            return new ResponseCustomShellToolChoice(InternalResponseCustomToolChoiceKind.Shell, default);
         }
 
         public static ResponseCustomFunctionToolChoice ResponseCustomFunctionToolChoice(string functionName = default)

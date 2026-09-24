@@ -748,6 +748,10 @@ namespace OpenAI.Responses
             }
             if (local.StartsWith("tool_choice"u8))
             {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
                 return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
             }
             if (local.StartsWith("error"u8))
@@ -877,6 +881,10 @@ namespace OpenAI.Responses
             }
             if (local.StartsWith("tool_choice"u8))
             {
+                if (ToolChoice == null)
+                {
+                    return false;
+                }
                 ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
                 return true;
             }

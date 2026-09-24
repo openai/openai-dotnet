@@ -103,20 +103,28 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "file_search":
-                        return ResponseCustomFileSearchToolChoice.DeserializeResponseCustomFileSearchToolChoice(element, data, options);
-                    case "computer_use_preview":
-                        return ResponseCustomComputerToolChoice.DeserializeResponseCustomComputerToolChoice(element, data, options);
-                    case "web_search_preview":
-                        return ResponseCustomWebSearchToolChoice.DeserializeResponseCustomWebSearchToolChoice(element, data, options);
-                    case "image_generation":
-                        return ResponseCustomImageGenerationToolChoice.DeserializeResponseCustomImageGenerationToolChoice(element, data, options);
+                    case "apply_patch":
+                        return ResponseCustomApplyPatchToolChoice.DeserializeResponseCustomApplyPatchToolChoice(element, data, options);
                     case "code_interpreter":
                         return ResponseCustomCodeInterpreterToolChoice.DeserializeResponseCustomCodeInterpreterToolChoice(element, data, options);
-                    case "mcp":
-                        return ResponseCustomMcpToolChoice.DeserializeResponseCustomMcpToolChoice(element, data, options);
+                    case "computer_use_preview":
+                        return ResponseCustomComputerToolChoice.DeserializeResponseCustomComputerToolChoice(element, data, options);
+                    case "custom":
+                        return ResponseCustomCustomToolChoice.DeserializeResponseCustomCustomToolChoice(element, data, options);
+                    case "file_search":
+                        return ResponseCustomFileSearchToolChoice.DeserializeResponseCustomFileSearchToolChoice(element, data, options);
                     case "function":
                         return ResponseCustomFunctionToolChoice.DeserializeResponseCustomFunctionToolChoice(element, data, options);
+                    case "image_generation":
+                        return ResponseCustomImageGenerationToolChoice.DeserializeResponseCustomImageGenerationToolChoice(element, data, options);
+                    case "mcp":
+                        return ResponseCustomMcpToolChoice.DeserializeResponseCustomMcpToolChoice(element, data, options);
+                    case "programmatic_tool_calling":
+                        return ResponseCustomProgrammaticToolCallingToolChoice.DeserializeResponseCustomProgrammaticToolCallingToolChoice(element, data, options);
+                    case "shell":
+                        return ResponseCustomShellToolChoice.DeserializeResponseCustomShellToolChoice(element, data, options);
+                    case "web_search_preview":
+                        return ResponseCustomWebSearchToolChoice.DeserializeResponseCustomWebSearchToolChoice(element, data, options);
                 }
             }
             return InternalUnknownToolChoiceObject.DeserializeInternalUnknownToolChoiceObject(element, data, options);

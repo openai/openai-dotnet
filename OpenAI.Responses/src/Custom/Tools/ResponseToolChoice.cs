@@ -4,6 +4,7 @@ namespace OpenAI.Responses;
 
 [CodeGenType("DotNetResponseToolChoice")]
 [CodeGenVisibility(nameof(ResponseToolChoice), CodeGenVisibility.Internal)]
+[CodeGenVisibility("Patch", CodeGenVisibility.Internal)]
 public partial class ResponseToolChoice
 {
     public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice)
