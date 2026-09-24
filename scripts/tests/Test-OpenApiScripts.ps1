@@ -35,6 +35,8 @@ $testNames = @(
     "Sort-OpenApiDocument.Tests.ps1"
     "Generate-ResponsesOpenApi.Tests.ps1"
     "Componentize-OpenApiObjectSchemas.Tests.ps1"
+    "Update-OpenApiComponentDeduplicationMap.Tests.ps1"
+    "Deduplicate-OpenApiComponents.Tests.ps1"
 )
 
 $pwshPath = (Get-Process -Id $PID).Path

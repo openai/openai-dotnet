@@ -1,0 +1,208 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Component deduplication fixture",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/test": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "implicitChoice": {
+                      "discriminator": {
+                        "propertyName": "kind"
+                      },
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ParentA"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ParentB"
+                        }
+                      ]
+                    },
+                    "explicitChoice": {
+                      "discriminator": {
+                        "propertyName": "kind",
+                        "mapping": {
+                          "old-b": "#/components/schemas/ParentB"
+                        }
+                      },
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ParentA"
+                        },
+                        {
+                          "$ref": "#/components/schemas/ParentB"
+                        }
+                      ]
+                    },
+                    "descendantAlias": {
+                      "$ref": "#/components/schemas/LeafB/properties/value"
+                    },
+                    "dynamicAlias": {
+                      "$dynamicRef": "#/components/schemas/LeafB"
+                    },
+                    "recursiveAlias": {
+                      "$recursiveRef": "#/components/schemas/LeafB"
+                    },
+                    "exact": {
+                      "$ref": "#/components/schemas/ExactB"
+                    },
+                    "cycle": {
+                      "$ref": "#/components/schemas/CycleAncestor"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LeafA": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "LeafB": {
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ParentA": {
+        "type": "object",
+        "required": [
+          "kind",
+          "child"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "parent"
+            ]
+          },
+          "child": {
+            "$ref": "#/components/schemas/LeafA"
+          },
+          "choice": {
+            "discriminator": {
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ExactA"
+              },
+              {
+                "$ref": "#/components/schemas/ExactB"
+              }
+            ]
+          }
+        }
+      },
+      "ParentB": {
+        "properties": {
+          "child": {
+            "$ref": "#/components/schemas/LeafB"
+          },
+          "kind": {
+            "enum": [
+              "parent"
+            ],
+            "type": "string"
+          },
+          "choice": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ExactB"
+              },
+              {
+                "$ref": "#/components/schemas/ExactA"
+              }
+            ],
+            "discriminator": {
+              "propertyName": "kind"
+            }
+          }
+        },
+        "required": [
+          "kind",
+          "child"
+        ],
+        "type": "object"
+      },
+      "ExactA": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer"
+          }
+        }
+      },
+      "ExactB": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "NearMiss": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "number"
+          }
+        }
+      },
+      "CycleA": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/CycleB"
+          }
+        }
+      },
+      "CycleB": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "$ref": "#/components/schemas/CycleA"
+          }
+        }
+      },
+      "CycleAncestor": {
+        "type": "object",
+        "properties": {
+          "cycle": {
+            "$ref": "#/components/schemas/CycleA"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header"
+      }
+    }
+  }
+}

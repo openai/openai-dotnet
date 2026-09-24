@@ -10,9 +10,13 @@
 
     Component names combine underscore-separated source-path tokens and a
     TypeOf-prefixed singleton string enum from properties.type when available.
-    Structural composition/item tokens are omitted, and numeric suffixes are
-    used only to disambiguate collisions. Structurally identical occurrences
-    intentionally remain separate components.
+    Nested candidates inherit their containing component's semantic name before
+    appending their relative path and enum tokens. Structural composition/item
+    tokens are omitted, and numeric suffixes are used only to disambiguate
+    collisions. Structurally identical occurrences intentionally remain separate
+    components. Run
+    Update-OpenApiComponentDeduplicationMap.ps1 afterward, review its persisted
+    decisions, then run Deduplicate-OpenApiComponents.ps1.
 
 .PARAMETER InputPath
     The OpenAPI JSON document to componentize. When omitted, reads
@@ -25,6 +29,8 @@
 
 .EXAMPLE
     ./scripts/Componentize-OpenApiObjectSchemas.ps1
+    ./scripts/Update-OpenApiComponentDeduplicationMap.ps1
+    ./scripts/Deduplicate-OpenApiComponents.ps1
 
 .EXAMPLE
     ./scripts/Componentize-OpenApiObjectSchemas.ps1 `
@@ -56,6 +62,10 @@ $script:ComponentizerRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $
 $script:DefaultComponentizerInputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.openapi.json"
 $script:DefaultComponentizerOutputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.componentized.openapi.json"
 
+# Eligibility is deliberately narrower than "any JSON object with type=object".
+# The traversal context must say that the value is a Schema Object. This keeps
+# examples and ordinary OpenAPI objects such as request bodies from becoming
+# components merely because they contain schema-looking property names.
 function Test-IsInlineOpenApiObjectSchema {
     param(
         [Parameter(Mandatory = $true)]
@@ -76,6 +86,11 @@ function Test-IsInlineOpenApiObjectSchema {
         [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
 }
 
+# A singleton `properties.type.enum` is the strongest local semantic label we
+# have for discriminated variants. For example, an object whose type enum is
+# `function` contributes `TypeOfFunction` to its generated component name.
+# Multi-value or non-string enums are intentionally ignored because selecting
+# one value would make the generated name misleading.
 function Get-OpenApiObjectSchemaTypeEnumValue {
     param(
         [Parameter(Mandatory = $true)]
@@ -100,6 +115,14 @@ function Get-OpenApiObjectSchemaTypeEnumValue {
     return $enum[0]
 }
 
+# Performs one schema-aware discovery pass and records every exact object-schema
+# occurrence before any document is rewritten. Discovery and rewriting are kept
+# separate so all source pointers remain valid while names and relocations are
+# being planned.
+#
+# CandidateDepth is diagnostic information used by tests. ParentCandidatePointer
+# is behavioral: it lets nested components inherit semantic context that exists
+# only on their containing schema (for example `TypeOfToolSearchOutput`).
 function Add-InlineOpenApiObjectSchemaCandidates {
     param(
         [Parameter(Mandatory = $true)]
@@ -127,6 +150,10 @@ function Add-InlineOpenApiObjectSchemaCandidates {
         [int]$CandidateDepth = 0,
 
         [Parameter()]
+        [AllowNull()]
+        [string]$ParentCandidatePointer,
+
+        [Parameter()]
         [int]$Depth = 0,
 
         [Parameter()]
@@ -151,6 +178,7 @@ function Add-InlineOpenApiObjectSchemaCandidates {
                 -Pointer "$Pointer/$index" `
                 -Candidates $Candidates `
                 -CandidateDepth $CandidateDepth `
+                -ParentCandidatePointer $ParentCandidatePointer `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -160,19 +188,27 @@ function Add-InlineOpenApiObjectSchemaCandidates {
         return
     }
 
+    # Existing entries under components.schemas are already component roots.
+    # SuppressCurrentCandidate prevents promoting those roots again, while the
+    # traversal still discovers inline object schemas nested inside them.
     $isCandidate = -not $SuppressCurrentCandidate -and
         (Test-IsInlineOpenApiObjectSchema -Value $Value -Context $Context)
     $childCandidateDepth = $CandidateDepth
+    $childParentCandidatePointer = $ParentCandidatePointer
     if ($isCandidate) {
         $Candidates.Add([PSCustomObject]@{
             Pointer = $Pointer
             Schema = $Value
             CandidateDepth = $CandidateDepth
+            ParentCandidatePointer = $ParentCandidatePointer
             TypeEnumValue = Get-OpenApiObjectSchemaTypeEnumValue -Schema $Value
         })
         $childCandidateDepth++
+        $childParentCandidatePointer = $Pointer
     }
 
+    # Encounter order is retained throughout discovery. It later determines
+    # component order and which occurrence receives an unsuffixed colliding name.
     foreach ($property in (Get-JsonProperties -Value $Value)) {
         $childPointer = "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)"
         $childContext = Get-OpenApiSchemaChildContext `
@@ -191,6 +227,7 @@ function Add-InlineOpenApiObjectSchemaCandidates {
                 -Candidates $Candidates `
                 -SuppressCurrentCandidate `
                 -CandidateDepth $childCandidateDepth `
+                -ParentCandidatePointer $childParentCandidatePointer `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
             continue
@@ -203,11 +240,14 @@ function Add-InlineOpenApiObjectSchemaCandidates {
             -Candidates $Candidates `
             -ComponentsSchemaMap:$childIsComponentsSchemaMap `
             -CandidateDepth $childCandidateDepth `
+            -ParentCandidatePointer $childParentCandidatePointer `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
 }
 
+# Returns a snapshot array rather than the mutable List used during recursion.
+# Callers can safely annotate candidate objects with generated names afterward.
 function Get-InlineOpenApiObjectSchemaCandidates {
     param(
         [Parameter(Mandatory = $true)]
@@ -223,6 +263,10 @@ function Get-InlineOpenApiObjectSchemaCandidates {
     return [object[]]$candidates.ToArray()
 }
 
+# Converts arbitrary path/enum text into a portable PascalCase name token.
+# Separators are intentionally discarded: `tool_search_output` becomes
+# `ToolSearchOutput`, while digit-leading segments receive an `X` prefix so a
+# generated name never begins one of its parts with a bare number.
 function ConvertTo-OpenApiComponentNameToken {
     param(
         [Parameter(Mandatory = $true)]
@@ -248,6 +292,9 @@ function ConvertTo-OpenApiComponentNameToken {
     return $builder.ToString()
 }
 
+# Components generated from paths start with the selected operationId, which is
+# more stable and useful than an HTTP method plus escaped route. The fallback is
+# retained for valid operations that happen not to declare operationId.
 function Get-OpenApiOperationComponentNamePrefix {
     param(
         [Parameter(Mandatory = $true)]
@@ -280,6 +327,15 @@ function Get-OpenApiOperationComponentNamePrefix {
         (ConvertTo-OpenApiComponentNameToken -Value $Tokens[1])
 }
 
+# Builds the fallback name directly from a candidate's source pointer. Structural
+# routing tokens (`properties`, `oneOf`, array indexes, media types, and so on)
+# are omitted, while semantic property names and the candidate's own type enum
+# are retained.
+#
+# Nested candidates normally use their already-named parent in
+# Set-OpenApiObjectSchemaComponentNames. This fallback remains necessary for
+# top-level candidates and structural-only descendants that add no useful local
+# name part of their own.
 function Get-OpenApiObjectSchemaComponentBaseName {
     param(
         [Parameter(Mandatory = $true)]
@@ -371,6 +427,10 @@ function Get-OpenApiObjectSchemaComponentBaseName {
     return $baseName
 }
 
+# Assigns all names before any schemas are moved. Existing component names are
+# reserved first, so generated names can never overwrite source-authored roots.
+# Candidates arrive parent-before-child from discovery, which makes it possible
+# to inherit the final (including collision suffix) parent name deterministically.
 function Set-OpenApiObjectSchemaComponentNames {
     param(
         [Parameter(Mandatory = $true)]
@@ -392,11 +452,72 @@ function Set-OpenApiObjectSchemaComponentNames {
         }
     }
 
+    # Pointer lookup connects a nested candidate to the containing candidate's
+    # final generated name. Example:
+    #   parent: .../oneOf/10, type=tool_search_output
+    #   child:  .../oneOf/10/properties/tools/items/oneOf/0, type=function
+    # becomes:
+    #   CreateResponse_Request_Input_TypeOfToolSearchOutput_Tools_TypeOfFunction
+    $namedCandidateByPointer = [System.Collections.Generic.Dictionary[string, object]]::new(
+        [System.StringComparer]::Ordinal
+    )
     foreach ($candidate in $Candidates) {
-        $baseName = Get-OpenApiObjectSchemaComponentBaseName `
-            -Document $Document `
-            -Candidate $candidate
+        $baseName = $null
+        if ($candidate.ParentCandidatePointer -is [string] -and
+            $namedCandidateByPointer.ContainsKey($candidate.ParentCandidatePointer)) {
+            $parentCandidate = $namedCandidateByPointer[$candidate.ParentCandidatePointer]
+            [string[]]$parentTokens = Get-JsonPointerTokens -Pointer $parentCandidate.Pointer
+            [string[]]$candidateTokens = Get-JsonPointerTokens -Pointer $candidate.Pointer
+            $nestedParts = [System.Collections.Generic.List[string]]::new()
+            # Only inspect the pointer suffix below the parent. Composition and
+            # collection scaffolding describes storage, not domain meaning, so
+            # it is discarded while names such as `tools` are retained.
+            for ($index = $parentTokens.Count; $index -lt $candidateTokens.Count; $index++) {
+                $token = $candidateTokens[$index]
+                if (@(
+                    "properties",
+                    "items",
+                    "additionalProperties",
+                    "oneOf",
+                    "anyOf",
+                    "allOf",
+                    "prefixItems"
+                ) -ccontains $token -or $token -match "^[0-9]+$") {
+                    continue
+                }
+                $nameToken = ConvertTo-OpenApiComponentNameToken -Value $token
+                if (-not [string]::IsNullOrWhiteSpace($nameToken) -and
+                    ($nestedParts.Count -eq 0 -or
+                        -not [string]::Equals($nestedParts[$nestedParts.Count - 1], $nameToken, [System.StringComparison]::Ordinal))) {
+                    $nestedParts.Add($nameToken)
+                }
+            }
+            if ($candidate.TypeEnumValue -is [string]) {
+                $enumToken = ConvertTo-OpenApiComponentNameToken -Value $candidate.TypeEnumValue
+                if (-not [string]::IsNullOrWhiteSpace($enumToken)) {
+                    $typePart = "TypeOf$enumToken"
+                    if ($nestedParts.Count -eq 0 -or
+                        -not [string]::Equals($nestedParts[$nestedParts.Count - 1], $typePart, [System.StringComparison]::Ordinal)) {
+                        $nestedParts.Add($typePart)
+                    }
+                }
+            }
+            # A child that contributes no semantic path token and no enum label
+            # uses the source-pointer fallback. This avoids manufacturing a copy
+            # of the parent name and forcing an otherwise meaningless `_2`.
+            if ($nestedParts.Count -gt 0) {
+                $baseName = "$($parentCandidate.Name)_$($nestedParts -join '_')"
+            }
+        }
+        if ([string]::IsNullOrWhiteSpace($baseName)) {
+            $baseName = Get-OpenApiObjectSchemaComponentBaseName `
+                -Document $Document `
+                -Candidate $candidate
+        }
         $name = $baseName
+        # Numeric suffixes resolve name collisions only. Structurally identical
+        # schemas still receive separate components here; the downstream,
+        # persisted deduplication workflow owns any structural consolidation.
         if (-not $usedNames.Add($name)) {
             $suffix = 2
             do {
@@ -409,9 +530,13 @@ function Set-OpenApiObjectSchemaComponentNames {
         $candidate | Add-Member `
             -NotePropertyName DestinationPointer `
             -NotePropertyValue "#/components/schemas/$(ConvertTo-JsonPointerToken -Token $name)"
+        $namedCandidateByPointer[$candidate.Pointer] = $candidate
     }
 }
 
+# Copies a value while replacing candidate occurrences with refs. ComponentRootPointer
+# is the one exception: while materializing a component definition, its root must
+# remain a full schema and only nested candidates become refs.
 function ConvertTo-ComponentizedOpenApiValue {
     param(
         [Parameter(Mandatory = $true)]
@@ -493,6 +618,8 @@ function ConvertTo-ComponentizedOpenApiValue {
     return $result
 }
 
+# Every generated component must be reachable after replacement. This catches a
+# traversal/rewrite mismatch that would otherwise leave dead generated schemas.
 function Assert-GeneratedOpenApiComponentsAreReferenced {
     param(
         [Parameter(Mandatory = $true)]
@@ -517,6 +644,13 @@ function Assert-GeneratedOpenApiComponentsAreReferenced {
     }
 }
 
+# Orchestrates the immutable transformation:
+#   1. discover and name candidates;
+#   2. plan source-pointer relocations;
+#   3. relocate source-authored refs/mappings;
+#   4. replace inline occurrences;
+#   5. materialize each generated component definition;
+#   6. validate references and postconditions.
 function ConvertTo-ComponentizedOpenApiDocument {
     param(
         [Parameter(Mandatory = $true)]
@@ -552,8 +686,9 @@ function ConvertTo-ComponentizedOpenApiDocument {
             -DestinationPrefix $candidate.DestinationPointer
     }
 
-    # Relocate source-authored pointers before inserting generated refs so the
-    # latter cannot be rewritten through a source-prefix relocation.
+    # Relocate source-authored pointers before inserting generated refs. If this
+    # order were reversed, a newly generated destination ref could accidentally
+    # match a source-prefix relocation and be moved a second time.
     $relocatedSource = ConvertTo-RelocatedOpenApiPointers `
         -Value $Document `
         -Relocations $relocations
@@ -577,6 +712,9 @@ function ConvertTo-ComponentizedOpenApiDocument {
         }
     }
 
+    # Materialize candidates in discovery order. Resolve each definition from
+    # the relocated source so source-authored descendant refs already point at
+    # their future component locations.
     foreach ($candidate in $candidates) {
         $sourceSchema = Resolve-LocalJsonPointer `
             -Document $relocatedSource `
@@ -590,6 +728,8 @@ function ConvertTo-ComponentizedOpenApiDocument {
             -ComponentRootPointer $candidate.Pointer
     }
 
+    # Schema components are rebuilt as one ordered map. Other component sections
+    # (for example securitySchemes) are copied without reinterpretation.
     $newComponents = [ordered]@{ schemas = $schemas }
     if (Test-JsonObjectValue -Value $sourceComponents) {
         foreach ($property in (Get-JsonProperties -Value $sourceComponents)) {
@@ -615,6 +755,8 @@ function ConvertTo-ComponentizedOpenApiDocument {
         $result["components"] = $newComponents
     }
 
+    # These checks define the stage contract: all local references resolve, no
+    # exact inline object candidates remain, and every generated root is used.
     Assert-OpenApiReferencesResolve -Document $result
     Assert-AdditionalOpenApiReferencesResolve -Document $result
     [object[]]$remainingCandidates = @(Get-InlineOpenApiObjectSchemaCandidates -Document $result)
@@ -634,6 +776,8 @@ function ConvertTo-ComponentizedOpenApiDocument {
     }
 }
 
+# Default naming is additive and recognizes its own suffix, allowing a caller to
+# rerun the command in place without producing `.componentized.componentized`.
 function Get-DefaultComponentizedOpenApiPath {
     param(
         [Parameter(Mandatory = $true)]
@@ -658,6 +802,8 @@ function Get-DefaultComponentizedOpenApiPath {
     return Join-Path $directory "$fileName.componentized.json"
 }
 
+# Public paths are repository-relative for consistency with the other OpenAPI
+# transformation scripts, while absolute paths remain supported for tooling/tests.
 function Resolve-ComponentizerRepositoryPath {
     param(
         [Parameter(Mandatory = $true)]
@@ -670,6 +816,9 @@ function Resolve-ComponentizerRepositoryPath {
     return [System.IO.Path]::GetFullPath((Join-Path $script:ComponentizerRepositoryRoot $Path))
 }
 
+# File-oriented boundary: resolves defaults, reads once, performs the pure
+# conversion, writes atomically, and returns the full structured result for tests
+# and callers that need more than the host summary.
 function Invoke-OpenApiObjectSchemaComponentizer {
     param(
         [Parameter()]

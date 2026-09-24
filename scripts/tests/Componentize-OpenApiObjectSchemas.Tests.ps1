@@ -1,6 +1,13 @@
 <#
 .SYNOPSIS
     Runs focused tests for scripts/Componentize-OpenApiObjectSchemas.ps1.
+
+.DESCRIPTION
+    Exercises candidate discovery, semantic naming, pointer relocation,
+    component materialization, input validation, and structural/byte idempotence.
+    The suite is dependency-free so it can run directly under PowerShell 7:
+
+        pwsh ./scripts/tests/Componentize-OpenApiObjectSchemas.Tests.ps1
 #>
 
 [CmdletBinding()]
@@ -11,6 +18,10 @@ Set-StrictMode -Version Latest
 
 $scriptDirectory = Join-Path $PSScriptRoot ".."
 $componentizeScriptPath = Join-Path $scriptDirectory "Componentize-OpenApiObjectSchemas.ps1"
+
+# Dot-source the command under test so its pure conversion functions can be
+# exercised without file I/O. The script's invocation guard must prevent its CLI
+# entry point from running during this load; the first test locks that contract.
 . $componentizeScriptPath
 . (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
 
@@ -82,6 +93,10 @@ function Assert-BytesEqual {
     }
 }
 
+# The compact fixture intentionally combines one root request object, nested
+# properties, additionalProperties, repeated oneOf branches, an existing schema
+# root, source-authored refs/mappings, and literal lookalikes. This gives the
+# golden test broad coverage while the smaller mutation tests isolate decisions.
 $fixtureDirectory = Join-Path $PSScriptRoot "fixtures" "Componentize-OpenApiObjectSchemas"
 $sourceFixturePath = Join-Path $fixtureDirectory "source.openapi.json"
 $expectedFixturePath = Join-Path $fixtureDirectory "expected.componentized.openapi.json"
@@ -150,6 +165,43 @@ try {
         ) @((Get-JsonProperties -Value $schemas).Name) "Generated component names or order were incorrect."
     }
 
+    # A nested candidate inherits the containing candidate's semantic enum name,
+    # not only literal source-pointer tokens around the nested occurrence. This
+    # synthetic extension models a production shape like:
+    #   variant(type=alpha) -> tools[] -> branch(type=function)
+    # and proves `TypeOfAlpha`, which is absent from the raw child pointer, stays
+    # in the child's generated name.
+    Invoke-Test "nested names inherit enum-derived parent context" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $variant = $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.variants.oneOf[0]
+        $variant.properties["tools"] = [ordered]@{
+            type = "array"
+            items = [ordered]@{
+                oneOf = @(
+                    [ordered]@{
+                        type = "object"
+                        properties = [ordered]@{
+                            type = [ordered]@{
+                                type = "string"
+                                enum = @("function")
+                            }
+                        }
+                    }
+                )
+            }
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $nested = @($result.Candidates | Where-Object {
+            $_.Pointer.EndsWith("/properties/tools/items/oneOf/0", [System.StringComparison]::Ordinal)
+        })[0]
+        Assert-Equal `
+            "CreateWidget_Request_Variants_TypeOfAlpha_Tools_TypeOfFunction" `
+            $nested.Name `
+            "Nested component omitted its enum-derived parent name."
+    }
+
     # Identical oneOf branches intentionally remain separate definitions with
     # distinct names and refs; no structural deduplication is permitted.
     Invoke-Test "structurally identical occurrences remain separate components" {
@@ -178,7 +230,8 @@ try {
     }
 
     # Existing source pointers and discriminator mappings follow their moved
-    # definitions using longest-prefix relocation.
+    # definitions using longest-prefix relocation. The assertions cover both a
+    # ref into a promoted child and mappings to repeated composition branches.
     Invoke-Test "references and discriminator mappings relocate to generated components" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
@@ -260,7 +313,9 @@ try {
     }
 
     # Public file handling preserves the source and emits deterministic UTF-8
-    # bytes for default and explicit destinations.
+    # bytes for default and explicit destinations. Byte checks are intentional:
+    # these artifacts are committed, so BOM or newline drift creates noisy diffs
+    # even when the parsed JSON is equivalent.
     Invoke-Test "CLI default and explicit outputs are deterministic and preserve input" {
         $inputPath = Join-Path $temporaryDirectory "sample.openapi.json"
         Copy-Item -LiteralPath $sourceFixturePath -Destination $inputPath
@@ -311,6 +366,8 @@ try {
     }
 }
 finally {
+    # Each suite run owns a GUID-named directory, making cleanup safe even when
+    # multiple local or CI invocations execute concurrently.
     if ([System.IO.Directory]::Exists($temporaryDirectory)) {
         [System.IO.Directory]::Delete($temporaryDirectory, $true)
     }
