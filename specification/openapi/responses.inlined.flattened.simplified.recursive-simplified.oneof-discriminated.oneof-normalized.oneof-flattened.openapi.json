@@ -615,8 +615,7 @@
                             "type": {
                               "type": "string",
                               "enum": [
-                                "web_search",
-                                "web_search_2025_08_26"
+                                "web_search"
                               ]
                             },
                             "external_web_access": {
@@ -1839,8 +1838,7 @@
                             "type": {
                               "type": "string",
                               "enum": [
-                                "web_search_preview",
-                                "web_search_preview_2025_03_11"
+                                "web_search_preview"
                               ]
                             },
                             "user_location": {
@@ -2014,7 +2012,6 @@
                               "computer",
                               "computer_use_preview",
                               "computer_use",
-                              "web_search_preview_2025_03_11",
                               "image_generation",
                               "code_interpreter"
                             ]
@@ -4822,8 +4819,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search",
-                                              "web_search_2025_08_26"
+                                              "web_search"
                                             ]
                                           },
                                           "external_web_access": {
@@ -6046,8 +6042,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search_preview",
-                                              "web_search_preview_2025_03_11"
+                                              "web_search_preview"
                                             ]
                                           },
                                           "user_location": {
@@ -6427,8 +6422,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search",
-                                              "web_search_2025_08_26"
+                                              "web_search"
                                             ]
                                           },
                                           "external_web_access": {
@@ -7651,8 +7645,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search_preview",
-                                              "web_search_preview_2025_03_11"
+                                              "web_search_preview"
                                             ]
                                           },
                                           "user_location": {

@@ -284,7 +284,7 @@
       "id": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools",
       "canonicalName": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools",
       "representative": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools",
-      "fingerprint": "sha256:b56ba39510565214bf30b100109ede52958c3d43d99f3406f407466bae3d19eb",
+      "fingerprint": "sha256:4980c331293d0ade41553fdcb017cbe2c4b2ac5e541bf2e0f89625ac3a3c8d13",
       "members": [
         "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools",
         "CreateResponse_Request_Input_2_TypeOfAdditionalTools_Tools",
@@ -388,36 +388,36 @@
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Tools",
-      "canonicalName": "CreateResponse_Request_Input_Tools",
-      "representative": "CreateResponse_Request_Input_Tools",
-      "fingerprint": "sha256:fc4c5acb9c6d846324b5ded7e3b8db265241a79e2f2b54c614e1eb9e3327fdb6",
+      "id": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch",
+      "canonicalName": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch",
+      "representative": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch",
+      "fingerprint": "sha256:ca889a3da5e2c550d07413c70ffac0aaeb4be1be0c0f31f35d09d3208e948bd6",
       "members": [
-        "CreateResponse_Request_Input_Tools",
-        "CreateResponse_Request_Input_Tools_3",
-        "CreateResponse_Request_Tools_2"
+        "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch",
+        "CreateResponse_Request_Input_2_TypeOfAdditionalTools_Tools_TypeOfWebSearch",
+        "CreateResponse_Request_Tools_TypeOfWebSearch"
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Tools_Filters",
-      "canonicalName": "CreateResponse_Request_Input_Tools_Filters",
-      "representative": "CreateResponse_Request_Input_Tools_Filters",
+      "id": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters",
+      "canonicalName": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters",
+      "representative": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters",
       "fingerprint": "sha256:4edf3d8d1a17419076c92beb0a34979d1e234eb4b5c2ad170950dd98ce953c12",
       "members": [
-        "CreateResponse_Request_Input_Tools_Filters",
-        "CreateResponse_Request_Input_Tools_3_Filters",
-        "CreateResponse_Request_Tools_2_Filters"
+        "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters",
+        "CreateResponse_Request_Input_2_TypeOfAdditionalTools_Tools_TypeOfWebSearch_Filters",
+        "CreateResponse_Request_Tools_TypeOfWebSearch_Filters"
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Tools_UserLocation_TypeOfApproximate",
-      "canonicalName": "CreateResponse_Request_Input_Tools_UserLocation_TypeOfApproximate",
-      "representative": "CreateResponse_Request_Input_Tools_UserLocation_TypeOfApproximate",
+      "id": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
+      "canonicalName": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
+      "representative": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
       "fingerprint": "sha256:340c6cb71b4c73efc1e58e9ce702978263ffc52f45d9debba6eb22b4da9a8612",
       "members": [
-        "CreateResponse_Request_Input_Tools_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_Input_Tools_3_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_Tools_2_UserLocation_TypeOfApproximate"
+        "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
+        "CreateResponse_Request_Input_2_TypeOfAdditionalTools_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
+        "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate"
       ]
     },
     {
@@ -843,25 +843,25 @@
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Tools_2",
-      "canonicalName": "CreateResponse_Request_Input_Tools_2",
-      "representative": "CreateResponse_Request_Input_Tools_2",
-      "fingerprint": "sha256:4e3caa1b85c968e65f8ef895b370b752e1197f18b971610e313eb33c30b53708",
+      "id": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
+      "canonicalName": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
+      "representative": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
+      "fingerprint": "sha256:68493c7d2cd196cb717156ae7511e4c76054dae3f5422d50d14e7518eb41eae9",
       "members": [
-        "CreateResponse_Request_Input_Tools_2",
-        "CreateResponse_Request_Input_Tools_4",
-        "CreateResponse_Request_Tools_3"
+        "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
+        "CreateResponse_Request_Input_2_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview",
+        "CreateResponse_Request_Tools_TypeOfWebSearchPreview"
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Tools_2_UserLocation_TypeOfApproximate",
-      "canonicalName": "CreateResponse_Request_Input_Tools_2_UserLocation_TypeOfApproximate",
-      "representative": "CreateResponse_Request_Input_Tools_2_UserLocation_TypeOfApproximate",
+      "id": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
+      "canonicalName": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
+      "representative": "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
       "fingerprint": "sha256:208f02c336c2bee712d164ee8c76efdc496502d61fe527cb31886ae36fa1ad59",
       "members": [
-        "CreateResponse_Request_Input_Tools_2_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_Input_Tools_4_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_Tools_3_UserLocation_TypeOfApproximate"
+        "CreateResponse_Request_Input_2_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
+        "CreateResponse_Request_Input_2_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
+        "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
       ]
     },
     {

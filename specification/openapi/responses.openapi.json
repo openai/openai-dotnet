@@ -2490,8 +2490,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search",
-                                              "web_search_2025_08_26"
+                                              "web_search"
                                             ]
                                           },
                                           "external_web_access": {
@@ -3715,8 +3714,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search_preview",
-                                              "web_search_preview_2025_03_11"
+                                              "web_search_preview"
                                             ]
                                           },
                                           "search_content_types": {
@@ -4115,8 +4113,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search",
-                                              "web_search_2025_08_26"
+                                              "web_search"
                                             ]
                                           },
                                           "external_web_access": {
@@ -5340,8 +5337,7 @@
                                           "type": {
                                             "type": "string",
                                             "enum": [
-                                              "web_search_preview",
-                                              "web_search_preview_2025_03_11"
+                                              "web_search_preview"
                                             ]
                                           },
                                           "search_content_types": {
@@ -8136,8 +8132,7 @@
                               "computer_use_preview",
                               "file_search",
                               "image_generation",
-                              "web_search_preview",
-                              "web_search_preview_2025_03_11"
+                              "web_search_preview"
                             ]
                           }
                         }
@@ -8464,8 +8459,7 @@
                             "type": {
                               "type": "string",
                               "enum": [
-                                "web_search",
-                                "web_search_2025_08_26"
+                                "web_search"
                               ]
                             },
                             "external_web_access": {
@@ -9689,8 +9683,7 @@
                             "type": {
                               "type": "string",
                               "enum": [
-                                "web_search_preview",
-                                "web_search_preview_2025_03_11"
+                                "web_search_preview"
                               ]
                             },
                             "search_content_types": {

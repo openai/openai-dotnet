@@ -37464,7 +37464,6 @@
               "computer",
               "computer_use_preview",
               "computer_use",
-              "web_search_preview_2025_03_11",
               "image_generation",
               "code_interpreter"
             ]
@@ -40660,10 +40659,9 @@
           "type": {
             "type": "string",
             "enum": [
-              "web_search",
-              "web_search_2025_08_26"
+              "web_search"
             ],
-            "description": "The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.",
+            "description": "The type of the web search tool. One of `web_search`.",
             "default": "web_search"
           },
           "external_web_access": {
@@ -44795,8 +44793,7 @@
           "type": {
             "type": "string",
             "enum": [
-              "web_search_preview",
-              "web_search_preview_2025_03_11"
+              "web_search_preview"
             ],
             "description": "The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.",
             "default": "web_search_preview",
@@ -66872,7 +66869,6 @@
               "computer",
               "computer_use_preview",
               "computer_use",
-              "web_search_preview_2025_03_11",
               "image_generation",
               "code_interpreter"
             ]
@@ -67308,8 +67304,7 @@
           "type": {
             "type": "string",
             "enum": [
-              "web_search_preview",
-              "web_search_preview_2025_03_11"
+              "web_search_preview"
             ],
             "description": "The type of the web search tool. One of `web_search_preview` or `web_search_preview_2025_03_11`.",
             "default": "web_search_preview",
@@ -68587,10 +68582,9 @@
           "type": {
             "type": "string",
             "enum": [
-              "web_search",
-              "web_search_2025_08_26"
+              "web_search"
             ],
-            "description": "The type of the web search tool. One of `web_search` or `web_search_2025_08_26`.",
+            "description": "The type of the web search tool. One of `web_search`.",
             "default": "web_search"
           },
           "external_web_access": {
