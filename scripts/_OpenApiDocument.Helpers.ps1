@@ -526,6 +526,453 @@ function Test-JsonValuesEqual {
     return [object]::Equals($Left, $Right)
 }
 
+# Returns the finite string values accepted directly by a discriminator property
+# schema. Complex constraints are intentionally not inferred: a branch must expose
+# its routing values through const, enum, or their intersection.
+function Get-OpenApiFiniteStringSchemaValues {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Schema)) {
+        throw "Discriminator property schema at '$Breadcrumb' must be an object."
+    }
+
+    if (Test-JsonProperty -Object $Schema -Name "type") {
+        $type = Get-JsonPropertyValue -Object $Schema -Name "type"
+        $allowsString = $type -is [string] -and
+            [string]::Equals($type, "string", [System.StringComparison]::Ordinal)
+        if (Test-JsonArrayValue -Value $type) {
+            $allowsString = @($type | Where-Object {
+                $_ -is [string] -and
+                [string]::Equals($_, "string", [System.StringComparison]::Ordinal)
+            }).Count -gt 0
+        }
+        if (-not $allowsString) {
+            throw "Discriminator property schema at '$Breadcrumb' does not allow string values."
+        }
+    }
+
+    $hasConst = Test-JsonProperty -Object $Schema -Name "const"
+    $constValue = if ($hasConst) {
+        Get-JsonPropertyValue -Object $Schema -Name "const"
+    }
+    else {
+        $null
+    }
+    if ($hasConst -and $constValue -isnot [string]) {
+        throw "Discriminator const at '$Breadcrumb/const' must be a string."
+    }
+
+    $hasEnum = Test-JsonProperty -Object $Schema -Name "enum"
+    $enum = if ($hasEnum) {
+        Get-JsonPropertyValue -Object $Schema -Name "enum"
+    }
+    else {
+        $null
+    }
+    $enumValues = [System.Collections.Generic.List[string]]::new()
+    $seenValues = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    if ($hasEnum) {
+        if (-not (Test-JsonArrayValue -Value $enum) -or $enum.Count -eq 0) {
+            throw "Discriminator enum at '$Breadcrumb/enum' must be a nonempty array."
+        }
+        for ($index = 0; $index -lt $enum.Count; $index++) {
+            $value = $enum[$index]
+            if ($value -isnot [string]) {
+                throw "Discriminator enum value at '$Breadcrumb/enum/$index' must be a string."
+            }
+            if (-not $seenValues.Add($value)) {
+                throw "Discriminator enum at '$Breadcrumb/enum' contains duplicate value '$value'."
+            }
+            $enumValues.Add($value)
+        }
+    }
+
+    if (-not $hasConst -and -not $hasEnum) {
+        throw "Discriminator property schema at '$Breadcrumb' must define a string const or nonempty string enum."
+    }
+    if ($hasConst) {
+        if ($hasEnum -and -not $seenValues.Contains($constValue)) {
+            throw "Discriminator const '$constValue' at '$Breadcrumb/const' is excluded by its enum."
+        }
+        return [string[]]@($constValue)
+    }
+    return [string[]]$enumValues.ToArray()
+}
+
+# Resolves the direct discriminator property contract on one alternative schema.
+function Get-OpenApiDiscriminatorPropertyValues {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Schema)) {
+        throw "Discriminator alternative at '$Breadcrumb' must resolve to a Schema Object."
+    }
+    $required = Get-JsonPropertyValue -Object $Schema -Name "required"
+    if (-not (Test-JsonArrayValue -Value $required) -or
+        -not (@($required | Where-Object {
+            $_ -is [string] -and
+            [string]::Equals($_, $PropertyName, [System.StringComparison]::Ordinal)
+        }).Count -gt 0)) {
+        throw "Discriminator property '$PropertyName' must be required directly by alternative '$Breadcrumb'."
+    }
+
+    $properties = Get-JsonPropertyValue -Object $Schema -Name "properties"
+    if (-not (Test-JsonObjectValue -Value $properties) -or
+        -not (Test-JsonProperty -Object $properties -Name $PropertyName)) {
+        throw "Discriminator alternative '$Breadcrumb' has no direct property '$PropertyName'."
+    }
+    $propertyToken = ConvertTo-JsonPointerToken -Token $PropertyName
+    return [string[]]@(Get-OpenApiFiniteStringSchemaValues `
+        -Schema (Get-JsonPropertyValue -Object $properties -Name $PropertyName) `
+        -Breadcrumb "$Breadcrumb/properties/$propertyToken")
+}
+
+# Normalizes a discriminator mapping target to a local component-schema root.
+# OpenAPI permits either a schema name or a reference string in the mapping.
+function Resolve-OpenApiDiscriminatorMappingTarget {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Target,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    $pointer = if ($Target.StartsWith("#", [System.StringComparison]::Ordinal)) {
+        Get-CanonicalJsonPointer -Pointer $Target
+    }
+    else {
+        "#/components/schemas/$(ConvertTo-JsonPointerToken -Token $Target)"
+    }
+    [string[]]$tokens = Get-JsonPointerTokens -Pointer $pointer
+    if ($tokens.Count -ne 3 -or
+        -not [string]::Equals($tokens[0], "components", [System.StringComparison]::Ordinal) -or
+        -not [string]::Equals($tokens[1], "schemas", [System.StringComparison]::Ordinal)) {
+        throw "Discriminator mapping target '$Target' at '$Breadcrumb' must identify a local component schema root."
+    }
+
+    $schema = Resolve-LocalJsonPointer `
+        -Document $Document `
+        -Pointer $pointer `
+        -Context "discriminator mapping target at $Breadcrumb"
+    return [PSCustomObject]@{
+        Pointer = $pointer
+        ComponentName = $tokens[2]
+        Schema = $schema
+    }
+}
+
+# Builds and validates the canonical mapping for one discriminator-bearing schema.
+function Get-OpenApiDiscriminatorMappingPlan {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Schema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    $discriminator = Get-JsonPropertyValue -Object $Schema -Name "discriminator"
+    if (-not (Test-JsonObjectValue -Value $discriminator)) {
+        throw "Discriminator at '$Breadcrumb/discriminator' must be an object."
+    }
+    $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+    if ($propertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($propertyName)) {
+        throw "Discriminator propertyName at '$Breadcrumb/discriminator/propertyName' must be a nonempty string."
+    }
+
+    $compositionNames = @(
+        foreach ($name in @("oneOf", "anyOf", "allOf")) {
+            if (Test-JsonProperty -Object $Schema -Name $name) {
+                $name
+            }
+        }
+    )
+    if ($compositionNames.Count -ne 1) {
+        throw "Discriminator at '$Breadcrumb/discriminator' must have exactly one direct oneOf, anyOf, or allOf sibling."
+    }
+    $compositionName = $compositionNames[0]
+    $mapping = Get-JsonPropertyValue -Object $discriminator -Name "mapping"
+
+    if ([string]::Equals($compositionName, "allOf", [System.StringComparison]::Ordinal)) {
+        if (-not (Test-JsonObjectValue -Value $mapping) -or @(Get-JsonProperties -Value $mapping).Count -eq 0) {
+            throw "allOf discriminator at '$Breadcrumb/discriminator' requires a nonempty explicit mapping."
+        }
+        $canonicalMapping = [ordered]@{}
+        $valuesByTarget = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+        foreach ($mappingProperty in (Get-JsonProperties -Value $mapping)) {
+            if ($mappingProperty.Value -isnot [string]) {
+                throw "Discriminator mapping '$($mappingProperty.Name)' at '$Breadcrumb/discriminator/mapping' must be a string."
+            }
+            $mappingBreadcrumb = "$Breadcrumb/discriminator/mapping/$(ConvertTo-JsonPointerToken -Token $mappingProperty.Name)"
+            $target = Resolve-OpenApiDiscriminatorMappingTarget `
+                -Document $Document `
+                -Target $mappingProperty.Value `
+                -Breadcrumb $mappingBreadcrumb
+            if (-not $valuesByTarget.ContainsKey($target.Pointer)) {
+                $valuesByTarget[$target.Pointer] = [string[]]@(Get-OpenApiDiscriminatorPropertyValues `
+                    -Schema $target.Schema `
+                    -PropertyName $propertyName `
+                    -Breadcrumb $target.Pointer)
+            }
+            if ($valuesByTarget[$target.Pointer] -cnotcontains $mappingProperty.Name) {
+                throw "Discriminator mapping key '$($mappingProperty.Name)' at '$mappingBreadcrumb' is not accepted by '$($target.Pointer)'."
+            }
+            $canonicalMapping[$mappingProperty.Name] = $target.Pointer
+        }
+        foreach ($targetPointer in $valuesByTarget.Keys) {
+            foreach ($value in [string[]]$valuesByTarget[$targetPointer]) {
+                if (-not $canonicalMapping.Contains($value) -or
+                    -not [string]::Equals($canonicalMapping[$value], $targetPointer, [System.StringComparison]::Ordinal)) {
+                    throw "allOf discriminator mapping at '$Breadcrumb/discriminator/mapping' does not map accepted value '$value' to '$targetPointer'."
+                }
+            }
+        }
+        return [PSCustomObject]@{
+            CompositionName = $compositionName
+            Mapping = $canonicalMapping
+            ExistingMapping = $mapping
+        }
+    }
+
+    $composition = Get-JsonPropertyValue -Object $Schema -Name $compositionName
+    if (-not (Test-JsonArrayValue -Value $composition) -or $composition.Count -eq 0) {
+        throw "Discriminator composition '$Breadcrumb/$compositionName' must be a nonempty array."
+    }
+    $expectedMapping = [ordered]@{}
+    for ($index = 0; $index -lt $composition.Count; $index++) {
+        $branch = $composition[$index]
+        $branchBreadcrumb = "$Breadcrumb/$compositionName/$index"
+        if (-not (Test-JsonObjectValue -Value $branch)) {
+            throw "Discriminator alternative at '$branchBreadcrumb' must be a component reference object."
+        }
+        $branchProperties = @(Get-JsonProperties -Value $branch)
+        if ($branchProperties.Count -ne 1 -or
+            -not [string]::Equals($branchProperties[0].Name, '$ref', [System.StringComparison]::Ordinal) -or
+            $branchProperties[0].Value -isnot [string]) {
+            throw "Discriminator alternative at '$branchBreadcrumb' must contain only a string `$ref to a component schema root."
+        }
+        $target = Resolve-OpenApiDiscriminatorMappingTarget `
+            -Document $Document `
+            -Target $branchProperties[0].Value `
+            -Breadcrumb "$branchBreadcrumb/`$ref"
+        [string[]]$acceptedValues = @(Get-OpenApiDiscriminatorPropertyValues `
+            -Schema $target.Schema `
+            -PropertyName $propertyName `
+            -Breadcrumb $target.Pointer)
+        foreach ($value in $acceptedValues) {
+            if ($expectedMapping.Contains($value)) {
+                throw "Discriminator value '$value' at '$branchBreadcrumb' is also accepted by another $compositionName alternative."
+            }
+            $expectedMapping[$value] = $target.Pointer
+        }
+    }
+
+    if ($null -ne $mapping) {
+        if (-not (Test-JsonObjectValue -Value $mapping)) {
+            throw "Discriminator mapping at '$Breadcrumb/discriminator/mapping' must be an object."
+        }
+        foreach ($mappingProperty in (Get-JsonProperties -Value $mapping)) {
+            if (-not $expectedMapping.Contains($mappingProperty.Name)) {
+                throw "Discriminator mapping key '$($mappingProperty.Name)' at '$Breadcrumb/discriminator/mapping' is not accepted by any $compositionName alternative."
+            }
+            if ($mappingProperty.Value -isnot [string]) {
+                throw "Discriminator mapping '$($mappingProperty.Name)' at '$Breadcrumb/discriminator/mapping' must be a string."
+            }
+            $mappingBreadcrumb = "$Breadcrumb/discriminator/mapping/$(ConvertTo-JsonPointerToken -Token $mappingProperty.Name)"
+            $target = Resolve-OpenApiDiscriminatorMappingTarget `
+                -Document $Document `
+                -Target $mappingProperty.Value `
+                -Breadcrumb $mappingBreadcrumb
+            if (-not [string]::Equals($target.Pointer, $expectedMapping[$mappingProperty.Name], [System.StringComparison]::Ordinal)) {
+                throw "Discriminator mapping key '$($mappingProperty.Name)' at '$mappingBreadcrumb' targets '$($target.Pointer)' instead of '$($expectedMapping[$mappingProperty.Name])'."
+            }
+        }
+    }
+
+    return [PSCustomObject]@{
+        CompositionName = $compositionName
+        Mapping = $expectedMapping
+        ExistingMapping = $mapping
+    }
+}
+
+# Copies a document while materializing complete canonical discriminator mappings.
+function ConvertTo-OpenApiDiscriminatorMappedValue {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb,
+
+        [Parameter(Mandatory = $true)]
+        [ref]$DiscriminatorCount,
+
+        [Parameter(Mandatory = $true)]
+        [ref]$ChangedMappingCount,
+
+        [Parameter(Mandatory = $true)]
+        [ref]$MappingEntryCount,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Discriminator mapping materialization exceeds the supported depth of $MaximumDepth at '$Breadcrumb'."
+    }
+    if ($null -eq $Value) {
+        return $null
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
+        [object[]]$items = [object[]]::new($Value.Count)
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            $items[$index] = ConvertTo-OpenApiDiscriminatorMappedValue `
+                -Value $Value[$index] `
+                -Document $Document `
+                -Context $itemContext `
+                -Breadcrumb "$Breadcrumb/$index" `
+                -DiscriminatorCount $DiscriminatorCount `
+                -ChangedMappingCount $ChangedMappingCount `
+                -MappingEntryCount $MappingEntryCount `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+        }
+        return ,$items
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return $Value
+    }
+
+    $plan = $null
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+        (Test-JsonProperty -Object $Value -Name "discriminator")) {
+        $plan = Get-OpenApiDiscriminatorMappingPlan `
+            -Document $Document `
+            -Schema $Value `
+            -Breadcrumb $Breadcrumb
+        $DiscriminatorCount.Value++
+        $MappingEntryCount.Value += @(Get-JsonProperties -Value $plan.Mapping).Count
+        if (-not (Test-JsonValuesEqual -Left $plan.ExistingMapping -Right $plan.Mapping)) {
+            $ChangedMappingCount.Value++
+        }
+    }
+
+    $result = [ordered]@{}
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if ($null -ne $plan -and
+            [string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal)) {
+            $discriminator = [ordered]@{}
+            $insertedMapping = $false
+            foreach ($discriminatorProperty in (Get-JsonProperties -Value $property.Value)) {
+                if ([string]::Equals($discriminatorProperty.Name, "mapping", [System.StringComparison]::Ordinal)) {
+                    continue
+                }
+                $discriminator[$discriminatorProperty.Name] = Copy-JsonValue -Value $discriminatorProperty.Value
+                if ([string]::Equals($discriminatorProperty.Name, "propertyName", [System.StringComparison]::Ordinal)) {
+                    $discriminator["mapping"] = Copy-JsonValue -Value $plan.Mapping
+                    $insertedMapping = $true
+                }
+            }
+            if (-not $insertedMapping) {
+                $discriminator["mapping"] = Copy-JsonValue -Value $plan.Mapping
+            }
+            $result[$property.Name] = $discriminator
+            continue
+        }
+
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
+        $result[$property.Name] = ConvertTo-OpenApiDiscriminatorMappedValue `
+            -Value $property.Value `
+            -Document $Document `
+            -Context $childContext `
+            -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
+            -DiscriminatorCount $DiscriminatorCount `
+            -ChangedMappingCount $ChangedMappingCount `
+            -MappingEntryCount $MappingEntryCount `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth
+    }
+    return $result
+}
+
+function ConvertTo-OpenApiDiscriminatorMappedDocument {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document
+    )
+
+    $discriminatorCount = 0
+    $changedMappingCount = 0
+    $mappingEntryCount = 0
+    $converted = ConvertTo-OpenApiDiscriminatorMappedValue `
+        -Value $Document `
+        -Document $Document `
+        -Context OpenApi `
+        -Breadcrumb "#" `
+        -DiscriminatorCount ([ref]$discriminatorCount) `
+        -ChangedMappingCount ([ref]$changedMappingCount) `
+        -MappingEntryCount ([ref]$mappingEntryCount)
+    return [PSCustomObject]@{
+        Document = $converted
+        DiscriminatorCount = $discriminatorCount
+        ChangedMappingCount = $changedMappingCount
+        MappingEntryCount = $mappingEntryCount
+    }
+}
+
+function Assert-OpenApiDiscriminatorMappings {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document
+    )
+
+    $validation = ConvertTo-OpenApiDiscriminatorMappedDocument -Document $Document
+    if (-not (Test-JsonValuesEqual -Left $Document -Right $validation.Document)) {
+        throw "OpenAPI document contains incomplete or noncanonical discriminator mappings."
+    }
+    return $validation
+}
+
 # Intersects enum arrays using structural JSON equality while preserving the
 # first array's order and removing duplicate values.
 function Get-JsonEnumIntersection {

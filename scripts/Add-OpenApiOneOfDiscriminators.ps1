@@ -1,16 +1,18 @@
 <#
 .SYNOPSIS
-    Adds missing type discriminators to eligible oneOf schema compositions.
+    Reconciles type discriminators on oneOf schema compositions.
 
 .DESCRIPTION
     Adds `discriminator: { propertyName: "type" }` to a schema when its direct
-    nonempty oneOf contains only object branches, every branch defines a direct
-    string `properties.type` with one unique enum value, and the containing
-    schema has no direct discriminator property.
+    nonempty oneOf contains only object branches, every branch requires a direct
+    string `properties.type` constrained by const or a nonempty enum, all accepted
+    values are disjoint across branches, and the containing schema has no direct
+    discriminator property.
 
-    The discriminator is inserted immediately before oneOf. Existing
-    discriminators, ambiguous enum values, near-miss schemas, and encounter
-    order outside the insertion are preserved unchanged. Run
+    The discriminator is inserted immediately before oneOf. Existing valid
+    discriminators are preserved; existing invalid discriminators are removed
+    without changing the oneOf validation. Ambiguous values, near-miss schemas,
+    and encounter order outside the metadata change remain unchanged. Run
     Normalize-OpenApiOneOf.ps1 and Flatten-OpenApiOneOf.ps1 before sorting.
 
 .PARAMETER InputPath
@@ -49,10 +51,14 @@ if (-not (Test-Path -LiteralPath $helperPath -PathType Leaf)) {
 function Get-OpenApiOneOfDiscriminatorCandidate {
     param(
         [Parameter(Mandatory = $true)]
-        [object]$Schema
+        [object]$Schema,
+
+        [Parameter()]
+        [switch]$IgnoreExistingDiscriminator
     )
 
-    if ((Test-JsonProperty -Object $Schema -Name "discriminator") -or
+    if ((-not $IgnoreExistingDiscriminator -and
+            (Test-JsonProperty -Object $Schema -Name "discriminator")) -or
         -not (Test-JsonProperty -Object $Schema -Name "oneOf")) {
         return $null
     }
@@ -62,11 +68,12 @@ function Get-OpenApiOneOfDiscriminatorCandidate {
         return $null
     }
 
-    $enumValues = [System.Collections.Generic.List[string]]::new()
-    $seenEnumValues = [System.Collections.Generic.HashSet[string]]::new(
+    $discriminatorValues = [System.Collections.Generic.List[string]]::new()
+    $seenDiscriminatorValues = [System.Collections.Generic.HashSet[string]]::new(
         [System.StringComparer]::Ordinal
     )
-    foreach ($branch in $oneOf) {
+    for ($index = 0; $index -lt $oneOf.Count; $index++) {
+        $branch = $oneOf[$index]
         if (-not (Test-JsonObjectValue -Value $branch)) {
             return $null
         }
@@ -76,34 +83,66 @@ function Get-OpenApiOneOfDiscriminatorCandidate {
             return $null
         }
 
-        $properties = Get-JsonPropertyValue -Object $branch -Name "properties"
-        if (-not (Test-JsonObjectValue -Value $properties) -or
-            -not (Test-JsonProperty -Object $properties -Name "type")) {
+        try {
+            [string[]]$branchValues = @(Get-OpenApiDiscriminatorPropertyValues `
+                -Schema $branch `
+                -PropertyName "type" `
+                -Breadcrumb "#/oneOf/$index")
+        }
+        catch {
             return $null
         }
-        $typeSchema = Get-JsonPropertyValue -Object $properties -Name "type"
-        if (-not (Test-JsonObjectValue -Value $typeSchema)) {
-            return $null
+        foreach ($value in $branchValues) {
+            if (-not $seenDiscriminatorValues.Add($value)) {
+                return $null
+            }
+            $discriminatorValues.Add($value)
         }
-        $typeSchemaType = Get-JsonPropertyValue -Object $typeSchema -Name "type"
-        if ($typeSchemaType -isnot [string] -or
-            -not [string]::Equals($typeSchemaType, "string", [System.StringComparison]::Ordinal)) {
-            return $null
-        }
-        $enum = Get-JsonPropertyValue -Object $typeSchema -Name "enum"
-        if (-not (Test-JsonArrayValue -Value $enum) -or
-            $enum.Count -ne 1 -or
-            $enum[0] -isnot [string] -or
-            -not $seenEnumValues.Add($enum[0])) {
-            return $null
-        }
-        $enumValues.Add($enum[0])
     }
 
     return [PSCustomObject]@{
         Branches = $oneOf
-        EnumValues = [string[]]$enumValues.ToArray()
+        EnumValues = [string[]]$discriminatorValues.ToArray()
     }
+}
+
+function Test-IsValidInlineOpenApiOneOfDiscriminator {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema
+    )
+
+    $discriminator = Get-JsonPropertyValue -Object $Schema -Name "discriminator"
+    if (-not (Test-JsonObjectValue -Value $discriminator)) {
+        return $false
+    }
+    $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+    if ($propertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($propertyName)) {
+        return $false
+    }
+    $oneOf = Get-JsonPropertyValue -Object $Schema -Name "oneOf"
+    if (-not (Test-JsonArrayValue -Value $oneOf) -or $oneOf.Count -eq 0) {
+        return $false
+    }
+
+    $seenValues = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    for ($index = 0; $index -lt $oneOf.Count; $index++) {
+        try {
+            [string[]]$values = @(Get-OpenApiDiscriminatorPropertyValues `
+                -Schema $oneOf[$index] `
+                -PropertyName $propertyName `
+                -Breadcrumb "#/oneOf/$index")
+        }
+        catch {
+            return $false
+        }
+        foreach ($value in $values) {
+            if (-not $seenValues.Add($value)) {
+                return $false
+            }
+        }
+    }
+    return $true
 }
 
 function ConvertTo-OneOfDiscriminatedOpenApiValue {
@@ -121,6 +160,9 @@ function ConvertTo-OneOfDiscriminatedOpenApiValue {
 
         [Parameter(Mandatory = $true)]
         [ref]$AddedDiscriminatorCount,
+
+        [Parameter(Mandatory = $true)]
+        [ref]$RemovedInvalidDiscriminatorCount,
 
         [Parameter()]
         [int]$Depth = 0,
@@ -147,6 +189,7 @@ function ConvertTo-OneOfDiscriminatedOpenApiValue {
                 -Context $itemContext `
                 -Breadcrumb "$Breadcrumb/$index" `
                 -AddedDiscriminatorCount $AddedDiscriminatorCount `
+                -RemovedInvalidDiscriminatorCount $RemovedInvalidDiscriminatorCount `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -156,8 +199,14 @@ function ConvertTo-OneOfDiscriminatedOpenApiValue {
         return $Value
     }
 
+    $removeInvalidDiscriminator = [string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+        (Test-JsonProperty -Object $Value -Name "oneOf") -and
+        (Test-JsonProperty -Object $Value -Name "discriminator") -and
+        -not (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $Value)
     $candidate = if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
-        Get-OpenApiOneOfDiscriminatorCandidate -Schema $Value
+        Get-OpenApiOneOfDiscriminatorCandidate `
+            -Schema $Value `
+            -IgnoreExistingDiscriminator:$removeInvalidDiscriminator
     }
     else {
         $null
@@ -165,6 +214,11 @@ function ConvertTo-OneOfDiscriminatedOpenApiValue {
 
     $result = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if ($removeInvalidDiscriminator -and
+            [string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal)) {
+            $RemovedInvalidDiscriminatorCount.Value++
+            continue
+        }
         if ($null -ne $candidate -and
             [string]::Equals($property.Name, "oneOf", [System.StringComparison]::Ordinal)) {
             $result["discriminator"] = [ordered]@{
@@ -182,6 +236,7 @@ function ConvertTo-OneOfDiscriminatedOpenApiValue {
             -Context $childContext `
             -Breadcrumb "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
             -AddedDiscriminatorCount $AddedDiscriminatorCount `
+            -RemovedInvalidDiscriminatorCount $RemovedInvalidDiscriminatorCount `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -259,11 +314,13 @@ function ConvertTo-OneOfDiscriminatedOpenApiDocument {
     )
 
     $addedDiscriminatorCount = 0
+    $removedInvalidDiscriminatorCount = 0
     $converted = ConvertTo-OneOfDiscriminatedOpenApiValue `
         -Value $Document `
         -Context OpenApi `
         -Breadcrumb "#" `
-        -AddedDiscriminatorCount ([ref]$addedDiscriminatorCount)
+        -AddedDiscriminatorCount ([ref]$addedDiscriminatorCount) `
+        -RemovedInvalidDiscriminatorCount ([ref]$removedInvalidDiscriminatorCount)
 
     Assert-OpenApiReferencesResolve -Document $converted
     Assert-AdditionalOpenApiReferencesResolve -Document $converted
@@ -272,6 +329,7 @@ function ConvertTo-OneOfDiscriminatedOpenApiDocument {
     return [PSCustomObject]@{
         Document = $converted
         AddedDiscriminatorCount = $addedDiscriminatorCount
+        RemovedInvalidDiscriminatorCount = $removedInvalidDiscriminatorCount
     }
 }
 
@@ -327,6 +385,7 @@ function Invoke-OpenApiOneOfDiscriminatorAdder {
     Write-Host "Input: $resolvedInputPath"
     Write-Host "Output: $writtenPath"
     Write-Host "oneOf discriminators added: $($result.AddedDiscriminatorCount)"
+    Write-Host "Invalid oneOf discriminators removed: $($result.RemovedInvalidDiscriminatorCount)"
 
     return $result
 }

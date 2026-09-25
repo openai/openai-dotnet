@@ -48,13 +48,6 @@
                     }
                   },
                   "variants": {
-                    "discriminator": {
-                      "propertyName": "type",
-                      "mapping": {
-                        "first": "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/variants/oneOf/0",
-                        "second": "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/variants/oneOf/1"
-                      }
-                    },
                     "oneOf": [
                       {
                         "type": "object",

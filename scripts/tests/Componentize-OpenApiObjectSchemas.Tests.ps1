@@ -260,6 +260,217 @@ try {
         Assert-Equal 2 $component.oneOf.Count "oneOf branches changed during componentization."
     }
 
+    # Mapping keys are payload discriminator values, not generated component
+    # names. Materialization happens after branch components receive stable refs.
+    Invoke-Test "discriminator mappings use accepted branch values" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["mappedChoice"] = [ordered]@{
+            discriminator = [ordered]@{
+                propertyName = "kind"
+                mapping = [ordered]@{
+                    red = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/mappedChoice/oneOf/0"
+                }
+            }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; enum = @("red") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; enum = @("blue") }
+                    }
+                }
+            )
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $choice = $result.Document.components.schemas.CreateWidget_Request_MappedChoice
+        Assert-Sequence @("red", "blue") @((Get-JsonProperties -Value $choice.discriminator.mapping).Name) "Mapping keys were not accepted discriminator values."
+        Assert-Sequence `
+            @(
+                "#/components/schemas/CreateWidget_Request_MappedChoice_2",
+                "#/components/schemas/CreateWidget_Request_MappedChoice_3"
+            ) `
+            @((Get-JsonProperties -Value $choice.discriminator.mapping).Value) `
+            "Mapping targets did not follow branch encounter order."
+        Assert-Equal 1 $result.DiscriminatorCount "Discriminator count was incorrect."
+        Assert-Equal 1 $result.ChangedDiscriminatorMappingCount "Partial mapping was not completed."
+        Assert-Equal 2 $result.DiscriminatorMappingEntryCount "Mapping entry count was incorrect."
+    }
+
+    # Mapping cardinality follows accepted values, so a multi-value enum creates
+    # aliases to one branch while const contributes one key to another branch.
+    Invoke-Test "multi-value enum and const mappings are exhaustive" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["finiteChoice"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; enum = @("red", "crimson") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{
+                        kind = [ordered]@{ type = "string"; const = "blue" }
+                    }
+                }
+            )
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $mapping = $result.Document.components.schemas.CreateWidget_Request_FiniteChoice.discriminator.mapping
+        Assert-Sequence @("red", "crimson", "blue") @((Get-JsonProperties -Value $mapping).Name) "Finite mapping keys were incomplete or reordered."
+        Assert-Sequence `
+            @(
+                "#/components/schemas/CreateWidget_Request_FiniteChoice_2",
+                "#/components/schemas/CreateWidget_Request_FiniteChoice_2",
+                "#/components/schemas/CreateWidget_Request_FiniteChoice_3"
+            ) `
+            @((Get-JsonProperties -Value $mapping).Value) `
+            "Finite mapping targets were incorrect."
+    }
+
+    # Locks the production Input_3 shape that motivated this contract: generated
+    # TypeOf names are targets, while snake_case payload values remain the keys.
+    Invoke-Test "input content mappings use singleton type enum values" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $branches = [System.Collections.Generic.List[object]]::new()
+        foreach ($value in @("input_text", "input_image", "input_file")) {
+            $branches.Add([ordered]@{
+                type = "object"
+                required = @("type")
+                properties = [ordered]@{
+                    type = [ordered]@{ type = "string"; enum = @($value) }
+                }
+            })
+        }
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["inputContent"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = [object[]]$branches.ToArray()
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $mapping = $result.Document.components.schemas.CreateWidget_Request_InputContent.discriminator.mapping
+        Assert-Sequence @("input_text", "input_image", "input_file") @((Get-JsonProperties -Value $mapping).Name) "Input-content mapping keys were incorrect."
+        Assert-Sequence @(
+            "#/components/schemas/CreateWidget_Request_InputContent_TypeOfInputText",
+            "#/components/schemas/CreateWidget_Request_InputContent_TypeOfInputImage",
+            "#/components/schemas/CreateWidget_Request_InputContent_TypeOfInputFile"
+        ) @((Get-JsonProperties -Value $mapping).Value) "Input-content mapping targets were incorrect."
+    }
+
+    # anyOf uses the same alternative contract. allOf does not list alternatives,
+    # so it requires an explicit exhaustive map and is never inferred.
+    Invoke-Test "anyOf mappings infer while allOf mappings remain explicit" {
+        $schemas = [ordered]@{}
+        $schemas.Red = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("red") } }
+        }
+        $schemas.Blue = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{ kind = [ordered]@{ type = "string"; const = "blue" } }
+        }
+        $schemas.AnyChoice = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            anyOf = @(
+                [ordered]@{ '$ref' = "#/components/schemas/Red" },
+                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
+            )
+        }
+        $schemas.AllChoice = [ordered]@{
+            discriminator = [ordered]@{
+                propertyName = "kind"
+                mapping = [ordered]@{
+                    red = "Red"
+                    blue = "#/components/schemas/Blue"
+                }
+            }
+            allOf = @([ordered]@{ '$ref' = "#/components/schemas/Red" })
+        }
+        $document = [ordered]@{
+            openapi = "3.1.0"
+            info = [ordered]@{ title = "mapping"; version = "1" }
+            paths = [ordered]@{}
+            components = [ordered]@{ schemas = $schemas }
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $document
+        Assert-Sequence @("red", "blue") @((Get-JsonProperties -Value $result.Document.components.schemas.AnyChoice.discriminator.mapping).Name) "anyOf mapping was not inferred."
+        Assert-Sequence `
+            @("#/components/schemas/Red", "#/components/schemas/Blue") `
+            @((Get-JsonProperties -Value $result.Document.components.schemas.AllChoice.discriminator.mapping).Value) `
+            "allOf mapping targets were not canonicalized."
+
+        $missing = Copy-JsonValue -Value $document
+        $null = $missing.components.schemas.AllChoice.discriminator.Remove("mapping")
+        Assert-Throws {
+            ConvertTo-ComponentizedOpenApiDocument -Document $missing
+        } "*allOf discriminator*requires a nonempty explicit mapping*"
+    }
+
+    # Invalid metadata fails before output: keys must be accepted, targets must
+    # match the owning branch, values must be disjoint, and every branch must be
+    # an object component with a required finite discriminator property.
+    Invoke-Test "invalid discriminator mappings and alternatives fail clearly" {
+        function New-InvalidDiscriminatorSource {
+            $source = Read-TestJsonFixture `
+                -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+            $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["invalidChoice"] = [ordered]@{
+                discriminator = [ordered]@{ propertyName = "kind" }
+                oneOf = @(
+                    [ordered]@{
+                        type = "object"
+                        required = @("kind")
+                        properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("red") } }
+                    },
+                    [ordered]@{
+                        type = "object"
+                        required = @("kind")
+                        properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("blue") } }
+                    }
+                )
+            }
+            return $source
+        }
+
+        $optional = New-InvalidDiscriminatorSource
+        $null = $optional.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.invalidChoice.oneOf[1].Remove("required")
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $optional } "*property 'kind' must be required*"
+
+        $duplicate = New-InvalidDiscriminatorSource
+        $duplicate.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.invalidChoice.oneOf[1].properties.kind.enum = @("red")
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $duplicate } "*value 'red'*also accepted*"
+
+        $extraAlias = New-InvalidDiscriminatorSource
+        $extraAlias.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.invalidChoice.discriminator["mapping"] = [ordered]@{ legacy = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/invalidChoice/oneOf/0" }
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $extraAlias } "*mapping key 'legacy'*not accepted*"
+
+        $wrongTarget = New-InvalidDiscriminatorSource
+        $wrongTarget.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.invalidChoice.discriminator["mapping"] = [ordered]@{ red = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/invalidChoice/oneOf/1" }
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $wrongTarget } "*mapping key 'red'*instead of*"
+
+        $primitive = New-InvalidDiscriminatorSource
+        $primitive.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.invalidChoice.oneOf[1] = [ordered]@{ type = "string"; enum = @("blue") }
+        Assert-Throws { ConvertTo-ComponentizedOpenApiDocument -Document $primitive } "*alternative*must contain only a string `$ref*"
+    }
+
     # A nested candidate inherits the containing candidate's semantic enum name,
     # not only literal source-pointer tokens around the nested occurrence. This
     # synthetic extension models a production shape like:
@@ -324,17 +535,14 @@ try {
         Assert-Equal 0 @(Get-InlineOpenApiObjectSchemaCandidates -Document $result.Document).Count "Componentized output retained inline object candidates."
     }
 
-    # Existing source pointers and discriminator mappings follow their moved
-    # definitions using longest-prefix relocation. The assertions cover both a
-    # ref into a promoted child and mappings to repeated composition branches.
-    Invoke-Test "references and discriminator mappings relocate to generated components" {
+    # Existing source pointers follow moved definitions using longest-prefix
+    # relocation, including refs to complete oneOf owners.
+    Invoke-Test "references relocate to generated components" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $schemas = $result.Document.components.schemas
         Assert-Equal "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind" $schemas.CreateWidget_Request.properties.childAlias.'$ref' "Existing schema ref was not relocated."
         Assert-Equal "#/components/schemas/CreateWidget_Request_Variants" $schemas.CreateWidget_Request.properties.variants.'$ref' "oneOf owner was not relocated."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha" $schemas.CreateWidget_Request_Variants.discriminator.mapping.first "First mapping was not relocated."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha_2" $schemas.CreateWidget_Request_Variants.discriminator.mapping.second "Second mapping was not relocated."
         Assert-OpenApiReferencesResolve -Document $result.Document
     }
 

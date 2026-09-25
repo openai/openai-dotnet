@@ -16,8 +16,10 @@
     tokens are omitted, and numeric suffixes are used only to disambiguate
     collisions. The complete oneOf-containing Schema Object moves with all of its
     siblings. Schemas whose relocation could change $id or anchor scope fail
-    explicitly. Structurally identical occurrences intentionally remain separate
-    components. Run
+    explicitly. After component names stabilize, every discriminator receives a
+    canonical exhaustive mapping from accepted const/enum payload values to its
+    branch component pointers. Structurally identical occurrences intentionally
+    remain separate components. Run
     Update-OpenApiComponentDeduplicationMap.ps1 afterward, review its persisted
     decisions, then run Deduplicate-OpenApiComponents.ps1.
 
@@ -825,15 +827,19 @@ function ConvertTo-ComponentizedOpenApiDocument {
     [object[]]$candidates = @(Get-InlineOpenApiSchemaCandidates -Document $Document)
     if ($candidates.Count -eq 0) {
         $copy = Copy-JsonValue -Value $Document
-        Assert-OpenApiReferencesResolve -Document $copy
-        Assert-AdditionalOpenApiReferencesResolve -Document $copy
+        $mappingResult = ConvertTo-OpenApiDiscriminatorMappedDocument -Document $copy
+        Assert-OpenApiReferencesResolve -Document $mappingResult.Document
+        Assert-AdditionalOpenApiReferencesResolve -Document $mappingResult.Document
         return [PSCustomObject]@{
-            Document = $copy
+            Document = $mappingResult.Document
             DiscoveredSchemaCount = 0
             DiscoveredObjectSchemaCount = 0
             DiscoveredOneOfSchemaCount = 0
             GeneratedComponentCount = 0
             RelocationCount = 0
+            DiscriminatorCount = $mappingResult.DiscriminatorCount
+            ChangedDiscriminatorMappingCount = $mappingResult.ChangedMappingCount
+            DiscriminatorMappingEntryCount = $mappingResult.MappingEntryCount
             Candidates = [object[]]@()
         }
     }
@@ -922,6 +928,11 @@ function ConvertTo-ComponentizedOpenApiDocument {
         $result["components"] = $newComponents
     }
 
+    # Branch schemas now have stable component roots, so mappings can use actual
+    # accepted payload values as keys and final local component pointers as values.
+    $mappingResult = ConvertTo-OpenApiDiscriminatorMappedDocument -Document $result
+    $result = $mappingResult.Document
+
     # These checks define the stage contract: all local references resolve, no
     # inline object/direct-oneOf candidates remain, and every generated root is used.
     Assert-OpenApiReferencesResolve -Document $result
@@ -943,6 +954,9 @@ function ConvertTo-ComponentizedOpenApiDocument {
         DiscoveredOneOfSchemaCount = $oneOfCandidateCount
         GeneratedComponentCount = $candidates.Count
         RelocationCount = $relocations.Count
+        DiscriminatorCount = $mappingResult.DiscriminatorCount
+        ChangedDiscriminatorMappingCount = $mappingResult.ChangedMappingCount
+        DiscriminatorMappingEntryCount = $mappingResult.MappingEntryCount
         Candidates = $candidates
     }
 }
@@ -1035,6 +1049,9 @@ function Invoke-OpenApiObjectSchemaComponentizer {
     Write-Host "Inline oneOf schemas discovered: $($result.DiscoveredOneOfSchemaCount)"
     Write-Host "Schema components generated: $($result.GeneratedComponentCount)"
     Write-Host "JSON Pointer prefixes relocated: $($result.RelocationCount)"
+    Write-Host "Discriminators validated: $($result.DiscriminatorCount)"
+    Write-Host "Discriminator mappings materialized: $($result.ChangedDiscriminatorMappingCount)"
+    Write-Host "Discriminator mapping entries: $($result.DiscriminatorMappingEntryCount)"
 
     return $result
 }

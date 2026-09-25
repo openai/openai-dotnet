@@ -10,8 +10,9 @@
     whole-group evolution updates only the fingerprint.
 
     Missing, diverged, split, merged, colliding, or cycle-dependent historical
-    groups fail before the mapping file is changed. This command never rewrites
-    an OpenAPI document; review the mapping before running
+    groups fail before the mapping file is changed. Incomplete or noncanonical
+    discriminator mappings also fail before graph analysis. This command never
+    rewrites an OpenAPI document; review the mapping before running
     Deduplicate-OpenApiComponents.ps1.
 
 .PARAMETER InputPath
@@ -128,6 +129,7 @@ function Invoke-OpenApiComponentDeduplicationMapUpdate {
     # split, merged, or otherwise unsafe historical group throws before the file
     # system is touched.
     $document = Read-OpenApiDocument -Path $resolvedInputPath
+    $null = Assert-OpenApiDiscriminatorMappings -Document $document
     $analysis = Get-OpenApiComponentDeduplicationAnalysis -Document $document
     $result = Update-OpenApiComponentDeduplicationMapping `
         -Analysis $analysis `

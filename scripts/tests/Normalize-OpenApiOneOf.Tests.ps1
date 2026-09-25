@@ -123,13 +123,13 @@ try {
         Assert-Sequence @("description", "oneOf", "discriminator") @((Get-JsonProperties $promotable).Name) "Promotion changed member order."
     }
 
-    # The accepted promotion policy intentionally checks only branch property
-    # presence, not requiredness or mutually exclusive discriminator values.
-    Invoke-Test "promotion uses property presence without requiredness or exclusive values" {
+    # Promotion requires finite, required, mutually exclusive discriminator
+    # values so the eventual explicit mapping is deterministic.
+    Invoke-Test "promotion requires finite required exclusive values" {
         $source = New-TestOpenApiDocument -Schema (New-PromotableAnyOfSchema)
         $result = ConvertTo-NormalizedOpenApiOneOfDocument -Document $source
         $schema = Get-TestResponseSchema $result.Document
-        Assert-Equal 1 $result.PromotedAnyOfCount "Presence-only candidate was not promoted."
+        Assert-Equal 1 $result.PromotedAnyOfCount "Finite discriminator candidate was not promoted."
         Assert-True (-not (Test-JsonProperty $schema "anyOf")) "Promoted schema retained anyOf."
         Assert-True (Test-JsonProperty $schema "oneOf") "Promoted schema did not gain oneOf."
         Assert-True (Test-JsonProperty $schema "discriminator") "Promoted schema lost its discriminator."
@@ -151,7 +151,10 @@ try {
             [PSCustomObject]@{ Name = "missing properties"; Mutate = { param($schema) $schema.anyOf[1].Remove("properties") } },
             [PSCustomObject]@{ Name = "non-object properties"; Mutate = { param($schema) $schema.anyOf[1].properties = "not an object" } },
             [PSCustomObject]@{ Name = "missing matching property"; Mutate = { param($schema) $schema.anyOf[1].properties = [ordered]@{ other = [ordered]@{} } } },
-            [PSCustomObject]@{ Name = "case mismatch"; Mutate = { param($schema) $schema.anyOf[1].properties = [ordered]@{ Kind = [ordered]@{} } } }
+            [PSCustomObject]@{ Name = "case mismatch"; Mutate = { param($schema) $schema.anyOf[1].properties = [ordered]@{ Kind = [ordered]@{} } } },
+            [PSCustomObject]@{ Name = "optional property"; Mutate = { param($schema) $schema.anyOf[1].Remove("required") } },
+            [PSCustomObject]@{ Name = "unconstrained property"; Mutate = { param($schema) $schema.anyOf[1].properties.kind = [ordered]@{ type = "string" } } },
+            [PSCustomObject]@{ Name = "duplicate value"; Mutate = { param($schema) $schema.anyOf[1].properties.kind = [ordered]@{ type = "string"; const = "first" } } }
         )
         foreach ($case in $cases) {
             $schema = New-PromotableAnyOfSchema

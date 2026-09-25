@@ -23,6 +23,9 @@
                       "oneOf": [
                         {
                           "type": "object",
+                          "required": [
+                            "type"
+                          ],
                           "properties": {
                             "type": {
                               "type": "string",
@@ -52,6 +55,9 @@
                         },
                         {
                           "type": "object",
+                          "required": [
+                            "type"
+                          ],
                           "properties": {
                             "type": {
                               "type": "string",
@@ -74,6 +80,9 @@
                           "oneOf": [
                             {
                               "type": "object",
+                              "required": [
+                                "type"
+                              ],
                               "properties": {
                                 "type": {
                                   "type": "string",
@@ -85,6 +94,9 @@
                             },
                             {
                               "type": "object",
+                              "required": [
+                                "type"
+                              ],
                               "properties": {
                                 "type": {
                                   "type": "string",
@@ -99,9 +111,6 @@
                       }
                     },
                     "already": {
-                      "discriminator": {
-                        "propertyName": "kind"
-                      },
                       "oneOf": [
                         {
                           "type": "object",

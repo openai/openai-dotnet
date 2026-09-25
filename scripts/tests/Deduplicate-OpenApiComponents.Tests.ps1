@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Exercises persisted whole-tree deduplication, all supported local pointer
-    kinds, discriminator compatibility aliases, stale-state rejection, and
+    kinds, discriminator mapping relocation, stale-state rejection, and
     structural/byte idempotence. Run directly under PowerShell 7:
 
         pwsh ./scripts/tests/Deduplicate-OpenApiComponents.Tests.ps1
@@ -90,29 +90,57 @@ try {
     }
 
     # Generated oneOf wrappers participate in ordinary whole-tree deduplication.
-    # Their branch order remains significant, and aliases from both removed and
-    # retained wrapper copies merge at the canonical discriminator.
+    # Mapping keys remain payload values while only their component targets move.
     Invoke-Test "equivalent oneOf wrapper components collapse as complete trees" {
         $source = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
         $properties = $source.paths["/test"].post.responses["200"].content["application/json"].schema.properties
         $properties["unionA"] = [ordered]@{ '$ref' = "#/components/schemas/UnionA" }
         $properties["unionB"] = [ordered]@{ '$ref' = "#/components/schemas/UnionB" }
+        $source.components.schemas["RedA"] = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{
+                kind = [ordered]@{ type = "string"; enum = @("red") }
+            }
+        }
+        $source.components.schemas["RedB"] = Copy-JsonValue -Value $source.components.schemas.RedA
+        $source.components.schemas["Blue"] = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{
+                kind = [ordered]@{ type = "string"; const = "blue" }
+            }
+        }
         $source.components.schemas["UnionA"] = [ordered]@{
-            discriminator = [ordered]@{ propertyName = "kind" }
+            discriminator = [ordered]@{
+                propertyName = "kind"
+                mapping = [ordered]@{
+                    red = "#/components/schemas/RedA"
+                    blue = "#/components/schemas/Blue"
+                }
+            }
             oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/ExactA" },
-                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+                [ordered]@{ '$ref' = "#/components/schemas/RedA" },
+                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
             )
         }
         $source.components.schemas["UnionB"] = [ordered]@{
-            discriminator = [ordered]@{ propertyName = "kind" }
+            discriminator = [ordered]@{
+                propertyName = "kind"
+                mapping = [ordered]@{
+                    red = "#/components/schemas/RedB"
+                    blue = "#/components/schemas/Blue"
+                }
+            }
             oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/ExactB" },
-                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+                [ordered]@{ '$ref' = "#/components/schemas/RedB" },
+                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
             )
         }
 
         $mapping = New-RenamedTestMapping -Document $source
+        $redGroup = @($mapping.groups | Where-Object { $_.members -ccontains "RedA" })[0]
+        $redGroup.canonicalName = "SharedRed"
         $unionGroup = @($mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
         $unionGroup.canonicalName = "SharedUnion"
         $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
@@ -122,46 +150,18 @@ try {
         Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionB.'$ref' "Second wrapper ref was not relocated."
         $union = $result.Document.components.schemas.SharedUnion
         Assert-Sequence `
-            @("#/components/schemas/SharedExact", "#/components/schemas/NearMiss") `
+            @("#/components/schemas/SharedRed", "#/components/schemas/Blue") `
             @($union.oneOf.'$ref') `
             "Canonical wrapper branches changed order or destinations."
         Assert-Sequence `
-            @("ExactA", "SharedExact", "NearMiss", "ExactB") `
+            @("red", "blue") `
             @((Get-JsonProperties -Value $union.discriminator.mapping).Name) `
-            "Wrapper discriminator aliases were not merged deterministically."
+            "Wrapper mapping keys changed during deduplication."
+        Assert-Sequence `
+            @("#/components/schemas/SharedRed", "#/components/schemas/Blue") `
+            @((Get-JsonProperties -Value $union.discriminator.mapping).Value) `
+            "Wrapper mapping targets were not relocated."
         Assert-Equal 0 (New-TestDeduplicationAnalysis -Document $result.Document).DuplicateGroupCount "Wrapper deduplication left eligible groups."
-    }
-
-    # A discriminator without mapping implicitly uses direct branch component
-    # names. Once ParentA and ParentB collapse, both old identities plus the new
-    # canonical identity must map explicitly to SharedParent. The nested case
-    # proves plans from removed parent copies merge at one destination, while the
-    # conflict case ensures source-authored semantics are never overwritten.
-    Invoke-Test "implicit discriminator identities become explicit aliases" {
-        $source = Read-OpenApiDocument -Path $fixturePath
-        $mapping = New-RenamedTestMapping -Document $source
-        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
-        $properties = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
-        Assert-Sequence @("ParentA", "SharedParent", "ParentB") @((Get-JsonProperties -Value $properties.implicitChoice.discriminator.mapping).Name) "Implicit alias order was incorrect."
-        foreach ($name in @("ParentA", "ParentB", "SharedParent")) {
-            Assert-Equal "#/components/schemas/SharedParent" $properties.implicitChoice.discriminator.mapping[$name] "Implicit alias '$name' was incorrect."
-        }
-        Assert-Sequence @("old-b", "ParentA", "SharedParent", "ParentB") @((Get-JsonProperties -Value $properties.explicitChoice.discriminator.mapping).Name) "Explicit mapping order was incorrect."
-        Assert-Equal "#/components/schemas/SharedParent" $properties.explicitChoice.discriminator.mapping["old-b"] "Existing mapping was not relocated."
-        $nestedMapping = $result.Document.components.schemas.SharedParent.properties.choice.discriminator.mapping
-        Assert-Sequence @("ExactA", "SharedExact", "ExactB") @((Get-JsonProperties -Value $nestedMapping).Name) "Removed-parent aliases were not merged."
-        foreach ($name in @("ExactA", "ExactB", "SharedExact")) {
-            Assert-Equal "#/components/schemas/SharedExact" $nestedMapping[$name] "Nested alias '$name' was incorrect."
-        }
-        Assert-Equal 9 $result.DiscriminatorAliasCount "Alias statistic was incorrect."
-
-        $conflict = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
-        $conflict.paths["/test"].post.responses["200"].content["application/json"].schema.properties.explicitChoice.discriminator.mapping["ParentA"] = "#/components/schemas/CycleA"
-        Assert-Throws {
-            ConvertTo-DeduplicatedOpenApiComponentsDocument `
-                -Document $conflict `
-                -Mapping (New-RenamedTestMapping -Document $conflict)
-        } "*mapping 'ParentA'*conflicts*"
     }
 
     # Persisted state is authoritative. Adding a new duplicate makes the mapping

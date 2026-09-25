@@ -9512,10 +9512,7 @@
                                     "input"
                                   ]
                                 }
-                              ],
-                              "discriminator": {
-                                "propertyName": "type"
-                              }
+                              ]
                             },
                             {
                               "properties": {
@@ -9629,10 +9626,7 @@
                                 "status"
                               ]
                             }
-                          ],
-                          "discriminator": {
-                            "propertyName": "type"
-                          }
+                          ]
                         }
                       }
                     ]

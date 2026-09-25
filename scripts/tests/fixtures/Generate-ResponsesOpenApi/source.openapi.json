@@ -65,6 +65,9 @@
                         "anyOf": [
                           {
                             "type": "object",
+                            "required": [
+                              "type"
+                            ],
                             "properties": {
                               "type": {
                                 "type": "string"
@@ -73,6 +76,9 @@
                           },
                           {
                             "type": "object",
+                            "required": [
+                              "type"
+                            ],
                             "properties": {
                               "type": {}
                             }
@@ -114,6 +120,9 @@
                         "oneOf": [
                           {
                             "type": "object",
+                            "required": [
+                              "type"
+                            ],
                             "properties": {
                               "type": {
                                 "type": "string",
@@ -143,6 +152,9 @@
                           },
                           {
                             "type": "object",
+                            "required": [
+                              "type"
+                            ],
                             "properties": {
                               "type": {
                                 "type": "string",

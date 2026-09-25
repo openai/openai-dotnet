@@ -103,13 +103,6 @@
         }
       },
       "CreateWidget_Request_Variants": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "first": "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha",
-            "second": "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha_2"
-          }
-        },
         "oneOf": [
           {
             "$ref": "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha"

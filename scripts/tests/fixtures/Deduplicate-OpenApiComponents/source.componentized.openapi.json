@@ -16,9 +16,6 @@
                   "type": "object",
                   "properties": {
                     "implicitChoice": {
-                      "discriminator": {
-                        "propertyName": "kind"
-                      },
                       "oneOf": [
                         {
                           "$ref": "#/components/schemas/ParentA"
@@ -29,12 +26,6 @@
                       ]
                     },
                     "explicitChoice": {
-                      "discriminator": {
-                        "propertyName": "kind",
-                        "mapping": {
-                          "old-b": "#/components/schemas/ParentB"
-                        }
-                      },
                       "oneOf": [
                         {
                           "$ref": "#/components/schemas/ParentA"
@@ -103,9 +94,6 @@
             "$ref": "#/components/schemas/LeafA"
           },
           "choice": {
-            "discriminator": {
-              "propertyName": "kind"
-            },
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ExactA"
@@ -136,10 +124,7 @@
               {
                 "$ref": "#/components/schemas/ExactA"
               }
-            ],
-            "discriminator": {
-              "propertyName": "kind"
-            }
+            ]
           }
         },
         "required": [

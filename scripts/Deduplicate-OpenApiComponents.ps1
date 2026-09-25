@@ -5,8 +5,9 @@
 .DESCRIPTION
     Requires a mapping reconciled by Update-OpenApiComponentDeduplicationMap.ps1.
     Equivalent acyclic component trees are collapsed to their persisted canonical
-    names, all local reference-valued pointers are relocated, and explicit
-    discriminator aliases preserve pre-deduplication component-name identities.
+    names, and all local reference-valued pointers, including discriminator
+    mapping targets, are relocated. Discriminator mapping keys remain the exact
+    payload values materialized during componentization.
 
     The mapping is authoritative and is never modified by this command. New,
     missing, split, merged, or divergent groups fail before output is written.
@@ -73,264 +74,6 @@ function Resolve-ComponentDeduplicatorRepositoryPath {
     return [System.IO.Path]::GetFullPath((Join-Path $script:ComponentDeduplicatorRepositoryRoot $Path))
 }
 
-# Records one discriminator compatibility alias at its final discriminator
-# location. Several source discriminators can collapse into the same destination
-# when their containing component trees are deduplicated, so plans are merged by
-# destination pointer rather than stored per source occurrence.
-#
-# Reusing an alias is allowed only when it names the same canonical destination.
-# Conflicting meanings fail loudly instead of silently changing deserialization.
-function Add-OpenApiDiscriminatorAlias {
-    param(
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.Dictionary[string, object]]$AliasPlans,
-
-        [Parameter(Mandatory = $true)]
-        [string]$DiscriminatorPointer,
-
-        [Parameter(Mandatory = $true)]
-        [string]$Alias,
-
-        [Parameter(Mandatory = $true)]
-        [string]$DestinationPointer
-    )
-
-    if (-not $AliasPlans.ContainsKey($DiscriminatorPointer)) {
-        $AliasPlans[$DiscriminatorPointer] = [ordered]@{}
-    }
-    $aliases = $AliasPlans[$DiscriminatorPointer]
-    if (Test-JsonProperty -Object $aliases -Name $Alias) {
-        $existing = Get-JsonPropertyValue -Object $aliases -Name $Alias
-        if (-not [string]::Equals($existing, $DestinationPointer, [System.StringComparison]::Ordinal)) {
-            throw "Discriminator alias '$Alias' at '$DiscriminatorPointer' has conflicting destinations '$existing' and '$DestinationPointer'."
-        }
-        return
-    }
-    $aliases[$Alias] = $DestinationPointer
-}
-
-# Discovers discriminator aliases before refs and component roots are rewritten.
-# OpenAPI permits a discriminator without an explicit mapping; many tools then
-# use each direct branch component name as an implicit discriminator identity.
-# Removing `ParentB` in favor of `ParentA`, for example, could otherwise make the
-# old `ParentB` identity disappear. The generated plan preserves both names:
-#
-#   "ParentA": "#/components/schemas/SharedParent"
-#   "ParentB": "#/components/schemas/SharedParent"
-#
-# Only direct component-root branches participate. A descendant pointer is not a
-# component-name discriminator identity and is therefore deliberately ignored.
-function Add-OpenApiDiscriminatorAliasPlans {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [object]$Value,
-
-        [Parameter(Mandatory = $true)]
-        [string]$Pointer,
-
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.Dictionary[string, string]]$Relocations,
-
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.Dictionary[string, object]]$AliasPlans,
-
-        [Parameter()]
-        [int]$Depth = 0,
-
-        [Parameter()]
-        [int]$MaximumDepth = 200
-    )
-
-    if ($Depth -gt $MaximumDepth) {
-        throw "Discriminator alias discovery exceeds the supported depth of $MaximumDepth at '$Pointer'."
-    }
-    if ($null -eq $Value) {
-        return
-    }
-    if (Test-JsonArrayValue -Value $Value) {
-        for ($index = 0; $index -lt $Value.Count; $index++) {
-            Add-OpenApiDiscriminatorAliasPlans `
-                -Value $Value[$index] `
-                -Pointer "$Pointer/$index" `
-                -Relocations $Relocations `
-                -AliasPlans $AliasPlans `
-                -Depth ($Depth + 1) `
-                -MaximumDepth $MaximumDepth
-        }
-        return
-    }
-    if (-not (Test-JsonObjectValue -Value $Value)) {
-        return
-    }
-
-    $discriminator = Get-JsonPropertyValue -Object $Value -Name "discriminator"
-    if (Test-JsonObjectValue -Value $discriminator) {
-        # oneOf is the common case; anyOf is included because OpenAPI tooling can
-        # pair either composition with discriminator metadata.
-        $branches = [System.Collections.Generic.List[object]]::new()
-        foreach ($compositionName in @("oneOf", "anyOf")) {
-            $composition = Get-JsonPropertyValue -Object $Value -Name $compositionName
-            if (-not (Test-JsonArrayValue -Value $composition)) {
-                continue
-            }
-            foreach ($branch in $composition) {
-                if (-not (Test-JsonObjectValue -Value $branch)) {
-                    continue
-                }
-                $reference = Get-JsonPropertyValue -Object $branch -Name '$ref'
-                if ($reference -isnot [string]) {
-                    continue
-                }
-                $pointerInfo = Get-OpenApiSchemaComponentPointerInfo -Pointer $reference
-                if ($null -ne $pointerInfo -and [string]::IsNullOrEmpty($pointerInfo.Suffix)) {
-                    $destination = Get-RelocatedOpenApiPointer `
-                        -Pointer $pointerInfo.Pointer `
-                        -Relocations $Relocations
-                    $destinationInfo = Get-OpenApiSchemaComponentPointerInfo -Pointer $destination
-                    $branches.Add([PSCustomObject]@{
-                        SourceName = $pointerInfo.ComponentName
-                        SourcePointer = $pointerInfo.Pointer
-                        DestinationName = $destinationInfo.ComponentName
-                        DestinationPointer = $destination
-                    })
-                }
-            }
-        }
-
-        # A discriminator needs aliases when either its containing object moves
-        # (duplicate parent trees) or any direct branch target moves (duplicate
-        # children). Unaffected discriminators are left byte-for-byte alone.
-        $destinationObjectPointer = Get-RelocatedOpenApiPointer `
-            -Pointer $Pointer `
-            -Relocations $Relocations
-        $affected = -not [string]::Equals($Pointer, $destinationObjectPointer, [System.StringComparison]::Ordinal)
-        foreach ($branch in $branches) {
-            if (-not [string]::Equals($branch.SourcePointer, $branch.DestinationPointer, [System.StringComparison]::Ordinal)) {
-                $affected = $true
-                break
-            }
-        }
-        if ($affected -and $branches.Count -gt 0) {
-            $destinationDiscriminatorPointer = "$destinationObjectPointer/discriminator"
-            foreach ($branch in $branches) {
-            # Preserve the old implicit identity and also make the canonical
-            # identity explicit. Multiple aliases intentionally share a target.
-                Add-OpenApiDiscriminatorAlias `
-                    -AliasPlans $AliasPlans `
-                    -DiscriminatorPointer $destinationDiscriminatorPointer `
-                    -Alias $branch.SourceName `
-                    -DestinationPointer $branch.DestinationPointer
-                Add-OpenApiDiscriminatorAlias `
-                    -AliasPlans $AliasPlans `
-                    -DiscriminatorPointer $destinationDiscriminatorPointer `
-                    -Alias $branch.DestinationName `
-                    -DestinationPointer $branch.DestinationPointer
-            }
-        }
-    }
-
-    foreach ($property in (Get-JsonProperties -Value $Value)) {
-        Add-OpenApiDiscriminatorAliasPlans `
-            -Value $property.Value `
-            -Pointer "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
-            -Relocations $Relocations `
-            -AliasPlans $AliasPlans `
-            -Depth ($Depth + 1) `
-            -MaximumDepth $MaximumDepth
-    }
-}
-
-# Applies the precomputed alias plans without otherwise reordering the document.
-# Existing explicit mappings are copied first, then generated aliases are appended
-# in source branch encounter order. This makes output deterministic and keeps
-# source-authored mapping keys visually prominent.
-function ConvertTo-OpenApiDiscriminatorAliases {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [object]$Value,
-
-        [Parameter(Mandatory = $true)]
-        [string]$Pointer,
-
-        [Parameter(Mandatory = $true)]
-        [System.Collections.Generic.Dictionary[string, object]]$AliasPlans,
-
-        [Parameter()]
-        [int]$Depth = 0,
-
-        [Parameter()]
-        [int]$MaximumDepth = 200
-    )
-
-    if ($Depth -gt $MaximumDepth) {
-        throw "Discriminator alias application exceeds the supported depth of $MaximumDepth at '$Pointer'."
-    }
-    if ($null -eq $Value) {
-        return $null
-    }
-    if (Test-JsonArrayValue -Value $Value) {
-        [object[]]$items = [object[]]::new($Value.Count)
-        for ($index = 0; $index -lt $Value.Count; $index++) {
-            $items[$index] = ConvertTo-OpenApiDiscriminatorAliases `
-                -Value $Value[$index] `
-                -Pointer "$Pointer/$index" `
-                -AliasPlans $AliasPlans `
-                -Depth ($Depth + 1) `
-                -MaximumDepth $MaximumDepth
-        }
-        return ,$items
-    }
-    if (-not (Test-JsonObjectValue -Value $Value)) {
-        return $Value
-    }
-
-    $result = [ordered]@{}
-    foreach ($property in (Get-JsonProperties -Value $Value)) {
-        $propertyPointer = "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)"
-        if ([string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal) -and
-            $AliasPlans.ContainsKey($propertyPointer) -and
-            (Test-JsonObjectValue -Value $property.Value)) {
-            $discriminator = [ordered]@{}
-            $existingMapping = Get-JsonPropertyValue -Object $property.Value -Name "mapping"
-            foreach ($discriminatorProperty in (Get-JsonProperties -Value $property.Value)) {
-                if ([string]::Equals($discriminatorProperty.Name, "mapping", [System.StringComparison]::Ordinal)) {
-                    continue
-                }
-                $discriminator[$discriminatorProperty.Name] = Copy-JsonValue -Value $discriminatorProperty.Value
-            }
-            $mapping = [ordered]@{}
-            if (Test-JsonObjectValue -Value $existingMapping) {
-                foreach ($mappingProperty in (Get-JsonProperties -Value $existingMapping)) {
-                    $mapping[$mappingProperty.Name] = $mappingProperty.Value
-                }
-            }
-            foreach ($aliasProperty in (Get-JsonProperties -Value $AliasPlans[$propertyPointer])) {
-                # Relocation has already updated existing mapping values. A key
-                # conflict here means the source assigned that discriminator
-                # identity to a different schema, which cannot be reconciled safely.
-                if ($mapping.Contains($aliasProperty.Name) -and
-                    -not [string]::Equals($mapping[$aliasProperty.Name], $aliasProperty.Value, [System.StringComparison]::Ordinal)) {
-                    throw "Existing discriminator mapping '$($aliasProperty.Name)' at '$propertyPointer' conflicts with deduplication alias '$($aliasProperty.Value)'."
-                }
-                $mapping[$aliasProperty.Name] = $aliasProperty.Value
-            }
-            $discriminator["mapping"] = $mapping
-            $result[$property.Name] = $discriminator
-            continue
-        }
-
-        $result[$property.Name] = ConvertTo-OpenApiDiscriminatorAliases `
-            -Value $property.Value `
-            -Pointer $propertyPointer `
-            -AliasPlans $AliasPlans `
-            -Depth ($Depth + 1) `
-            -MaximumDepth $MaximumDepth
-    }
-    return $result
-}
-
 # Applies a fully reconciled persisted mapping to one componentized document.
 # The function is intentionally pure: neither the source document nor the mapping
 # is mutated, and all validation happens before the caller writes output bytes.
@@ -344,6 +87,7 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
     )
 
     Assert-OpenApiComponentDeduplicationMapping -Mapping $Mapping
+    $null = Assert-OpenApiDiscriminatorMappings -Document $Document
     $analysis = Get-OpenApiComponentDeduplicationAnalysis -Document $Document
     $sourceNames = [System.Collections.Generic.HashSet[string]]::new(
         [string[]]$analysis.ComponentNames,
@@ -383,13 +127,15 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
         $copy = Copy-JsonValue -Value $Document
         Assert-OpenApiReferencesResolve -Document $copy
         Assert-AdditionalOpenApiReferencesResolve -Document $copy
+        $outputDiscriminatorValidation = Assert-OpenApiDiscriminatorMappings -Document $copy
         return [PSCustomObject]@{
             Document = $copy
             ComponentCount = $analysis.ComponentNames.Count
             DuplicateGroupCount = 0
             RemovedComponentCount = 0
             RelocationCount = 0
-            DiscriminatorAliasCount = 0
+            DiscriminatorCount = $outputDiscriminatorValidation.DiscriminatorCount
+            DiscriminatorMappingEntryCount = $outputDiscriminatorValidation.MappingEntryCount
             AppliedGroups = [object[]]@()
             SkippedCycleComponents = [object[]]$analysis.CycleDependentComponents
         }
@@ -429,15 +175,6 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
             }
         }
     }
-
-    # Alias discovery must inspect the pre-relocation names; after refs move we
-    # could no longer infer every removed implicit discriminator identity.
-    $aliasPlans = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
-    Add-OpenApiDiscriminatorAliasPlans `
-        -Value $Document `
-        -Pointer "#" `
-        -Relocations $relocations `
-        -AliasPlans $aliasPlans
 
     # Rewrite every supported reference-valued keyword across the complete
     # document before deleting duplicate definitions. This avoids a transient
@@ -491,14 +228,10 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
         }
     }
 
-    # Alias metadata is added last because its destinations must already use the
-    # canonical component names. Existing mappings were relocated in the prior pass.
-    $result = ConvertTo-OpenApiDiscriminatorAliases `
-        -Value $rebuilt `
-        -Pointer "#" `
-        -AliasPlans $aliasPlans
+    $result = $rebuilt
     Assert-OpenApiReferencesResolve -Document $result
     Assert-AdditionalOpenApiReferencesResolve -Document $result
+    $outputDiscriminatorValidation = Assert-OpenApiDiscriminatorMappings -Document $result
 
     # Postconditions verify both graph safety and completeness: references must
     # resolve, no eligible acyclic duplicate group may remain, and the component
@@ -512,17 +245,14 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
         throw "Deduplicated output has $($resultAnalysis.ComponentNames.Count) components; expected $expectedCount."
     }
 
-    $aliasCount = 0
-    foreach ($aliases in $aliasPlans.Values) {
-        $aliasCount += @(Get-JsonProperties -Value $aliases).Count
-    }
     return [PSCustomObject]@{
         Document = $result
         ComponentCount = $resultAnalysis.ComponentNames.Count
         DuplicateGroupCount = $analysis.DuplicateGroupCount
         RemovedComponentCount = $analysis.RemovableComponentCount
         RelocationCount = $relocations.Count
-        DiscriminatorAliasCount = $aliasCount
+        DiscriminatorCount = $outputDiscriminatorValidation.DiscriminatorCount
+        DiscriminatorMappingEntryCount = $outputDiscriminatorValidation.MappingEntryCount
         AppliedGroups = [object[]]$groups
         SkippedCycleComponents = [object[]]$analysis.CycleDependentComponents
     }
@@ -588,7 +318,8 @@ function Invoke-OpenApiComponentDeduplicator {
     Write-Host "Components removed: $($result.RemovedComponentCount)"
     Write-Host "Components retained: $($result.ComponentCount)"
     Write-Host "Pointer prefixes relocated: $($result.RelocationCount)"
-    Write-Host "Discriminator aliases materialized: $($result.DiscriminatorAliasCount)"
+    Write-Host "Discriminators validated: $($result.DiscriminatorCount)"
+    Write-Host "Discriminator mapping entries retained: $($result.DiscriminatorMappingEntryCount)"
     Write-Host "Cycle-dependent components skipped: $($result.SkippedCycleComponents.Count)"
     # The console list makes the persisted decisions visible in CI logs without
     # requiring consumers to inspect the generated OpenAPI diff.
@@ -603,7 +334,8 @@ function Invoke-OpenApiComponentDeduplicator {
         DuplicateGroupCount = $result.DuplicateGroupCount
         RemovedComponentCount = $result.RemovedComponentCount
         RelocationCount = $result.RelocationCount
-        DiscriminatorAliasCount = $result.DiscriminatorAliasCount
+        DiscriminatorCount = $result.DiscriminatorCount
+        DiscriminatorMappingEntryCount = $result.DiscriminatorMappingEntryCount
         AppliedGroups = $result.AppliedGroups
         SkippedCycleComponents = $result.SkippedCycleComponents
     }

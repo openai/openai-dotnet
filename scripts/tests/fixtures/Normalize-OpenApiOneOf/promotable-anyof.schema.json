@@ -3,16 +3,28 @@
   "anyOf": [
     {
       "type": "object",
+      "required": [
+        "kind"
+      ],
       "properties": {
         "kind": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "first"
+          ]
         }
       }
     },
     {
       "type": "object",
+      "required": [
+        "kind"
+      ],
       "properties": {
-        "kind": {}
+        "kind": {
+          "type": "string",
+          "const": "second"
+        }
       }
     }
   ],

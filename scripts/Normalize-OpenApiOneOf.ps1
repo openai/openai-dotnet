@@ -4,14 +4,13 @@
 
 .DESCRIPTION
     Promotes an anyOf schema composition to oneOf when it has a sibling
-    discriminator, every branch has type object, and every branch defines the
-    discriminator property. It then removes an exact discriminator schema
-    keyword when its containing schema has no exact direct oneOf sibling.
+    discriminator, every branch has type object, and every branch requires the
+    discriminator property with finite, mutually exclusive string const/enum
+    values. It then removes an exact discriminator schema keyword when its
+    containing schema has no exact direct oneOf sibling.
 
-    Promotion requires property presence only. It does not require the
-    discriminator property to be required or constrained to exclusive values.
-    A discriminator paired with any direct oneOf property is preserved; this
-    stage does not otherwise validate the oneOf value.
+    A discriminator paired with any direct oneOf property is preserved; the
+    preceding discriminator-reconciliation stage validates that composition.
 
     Property-map entries named discriminator, string literals, examples, and
     ordinary OpenAPI objects are preserved. Encounter order is retained. Run
@@ -92,7 +91,9 @@ function Get-DiscriminatedOpenApiAnyOfCandidate {
     if (-not (Test-JsonArrayValue -Value $anyOf) -or $anyOf.Count -eq 0) {
         return $null
     }
-    foreach ($branch in $anyOf) {
+    $seenValues = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    for ($index = 0; $index -lt $anyOf.Count; $index++) {
+        $branch = $anyOf[$index]
         if (-not (Test-JsonObjectValue -Value $branch)) {
             return $null
         }
@@ -105,6 +106,20 @@ function Get-DiscriminatedOpenApiAnyOfCandidate {
         if (-not (Test-JsonObjectValue -Value $properties) -or
             -not (Test-JsonProperty -Object $properties -Name $propertyName)) {
             return $null
+        }
+        try {
+            [string[]]$values = @(Get-OpenApiDiscriminatorPropertyValues `
+                -Schema $branch `
+                -PropertyName $propertyName `
+                -Breadcrumb "$Breadcrumb/anyOf/$index")
+        }
+        catch {
+            return $null
+        }
+        foreach ($value in $values) {
+            if (-not $seenValues.Add($value)) {
+                return $null
+            }
         }
     }
 

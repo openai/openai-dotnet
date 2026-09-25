@@ -67,18 +67,41 @@ try {
     # form their own persisted group even when the literal ref names differ.
     Invoke-Test "equivalent oneOf wrapper components form a mapping group" {
         $source = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
+        $source.components.schemas["RedA"] = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("red") } }
+        }
+        $source.components.schemas["RedB"] = Copy-JsonValue -Value $source.components.schemas.RedA
+        $source.components.schemas["Blue"] = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{ kind = [ordered]@{ type = "string"; const = "blue" } }
+        }
         $source.components.schemas["UnionA"] = [ordered]@{
-            discriminator = [ordered]@{ propertyName = "kind" }
+            discriminator = [ordered]@{
+                propertyName = "kind"
+                mapping = [ordered]@{
+                    red = "#/components/schemas/RedA"
+                    blue = "#/components/schemas/Blue"
+                }
+            }
             oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/ExactA" },
-                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+                [ordered]@{ '$ref' = "#/components/schemas/RedA" },
+                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
             )
         }
         $source.components.schemas["UnionB"] = [ordered]@{
-            discriminator = [ordered]@{ propertyName = "kind" }
+            discriminator = [ordered]@{
+                propertyName = "kind"
+                mapping = [ordered]@{
+                    red = "#/components/schemas/RedB"
+                    blue = "#/components/schemas/Blue"
+                }
+            }
             oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/ExactB" },
-                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+                [ordered]@{ '$ref' = "#/components/schemas/RedB" },
+                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
             )
         }
 
@@ -220,6 +243,26 @@ try {
                 -MappingPath $mappingPath
         } "*group 'LeafA'*no longer belongs*"
         Assert-BytesEqual $beforeFailure ([System.IO.File]::ReadAllBytes($mappingPath)) "Failed reconciliation changed mapping bytes."
+
+        $invalidDiscriminator = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
+        $invalidDiscriminator.components.schemas["Red"] = [ordered]@{
+            type = "object"
+            required = @("kind")
+            properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("red") } }
+        }
+        $invalidDiscriminator.components.schemas["Choice"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @([ordered]@{ '$ref' = "#/components/schemas/Red" })
+        }
+        $invalidDiscriminatorPath = Join-Path $temporaryDirectory "invalid-discriminator.json"
+        $null = Write-OpenApiJsonFile -Document $invalidDiscriminator -Path $invalidDiscriminatorPath
+        [byte[]]$beforeDiscriminatorFailure = [System.IO.File]::ReadAllBytes($mappingPath)
+        Assert-Throws {
+            Invoke-OpenApiComponentDeduplicationMapUpdate `
+                -InputPath $invalidDiscriminatorPath `
+                -MappingPath $mappingPath
+        } "*incomplete or noncanonical discriminator mappings*"
+        Assert-BytesEqual $beforeDiscriminatorFailure ([System.IO.File]::ReadAllBytes($mappingPath)) "Invalid discriminator changed mapping bytes."
     }
 }
 finally {

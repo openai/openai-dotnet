@@ -98,7 +98,7 @@ try {
     }
 
     # The production-like format union permits arbitrary extra branch properties
-    # as long as each direct type property is a unique singleton string enum.
+    # as long as each branch requires finite, disjoint string type values.
     Invoke-Test "eligible object oneOf gains a direct type discriminator" {
         $schema = Get-TestFixtureCase -Cases $schemaCases -Name "eligible"
         $candidate = Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema
@@ -114,6 +114,54 @@ try {
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
     }
 
+    # Finite routing values may come from const, multi-value enum, or their
+    # intersection. Every accepted value must remain disjoint across branches.
+    Invoke-Test "const and multi-value enum branches are eligible" {
+        $schema = [ordered]@{
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; const = "first" }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("second", "third") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; const = "fourth"; enum = @("fourth", "unused") }
+                    }
+                }
+            )
+        }
+        $candidate = Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema
+        Assert-True ($null -ne $candidate) "Finite const/enum schema was not detected."
+        Assert-Sequence @("first", "second", "third", "fourth") @($candidate.EnumValues) "Finite discriminator values were incorrect."
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document (New-TestOpenApiDocument -Schema $schema)
+        Assert-Equal 1 $result.AddedDiscriminatorCount "Finite const/enum discriminator was not added."
+    }
+
+    # OpenAPI requires the discriminator field in every alternative. Optional
+    # properties are left undiscriminated rather than producing invalid metadata.
+    Invoke-Test "optional discriminator properties remain undiscriminated" {
+        $schema = Get-TestFixtureCase -Cases $schemaCases -Name "eligible"
+        $null = $schema.oneOf[1].Remove("required")
+        Assert-True ($null -eq (Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema)) "Optional discriminator property was considered eligible."
+        $source = New-TestOpenApiDocument -Schema $schema
+        $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $source
+        Assert-Equal 0 $result.AddedDiscriminatorCount "Optional discriminator received metadata."
+        Assert-Equal $before (ConvertTo-Json -InputObject $result.Document -Compress -Depth 100) "Optional discriminator schema changed."
+    }
+
     # Nested independent candidates are transformed in one immutable traversal.
     Invoke-Test "nested candidates are added independently" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
@@ -124,9 +172,31 @@ try {
         Assert-Equal "type" $properties.nested.properties.choice.discriminator.propertyName "Nested candidate was not discriminated."
     }
 
-    # Any existing direct discriminator protects the oneOf regardless of the
-    # discriminator value's shape or propertyName.
-    Invoke-Test "existing discriminator siblings remain unchanged" {
+    # Existing valid metadata is preserved, while malformed or non-inferable
+    # discriminators are removed without changing their oneOf validation.
+    Invoke-Test "existing discriminators are validated and reconciled" {
+        $valid = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{ kind = [ordered]@{ type = "string"; const = "first" } }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("kind")
+                    properties = [ordered]@{ kind = [ordered]@{ type = "string"; enum = @("second") } }
+                }
+            )
+        }
+        $validSource = New-TestOpenApiDocument -Schema $valid
+        $validBefore = ConvertTo-Json -InputObject $validSource -Compress -Depth 100
+        $validResult = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $validSource
+        Assert-Equal 0 $validResult.AddedDiscriminatorCount "Valid existing discriminator was replaced."
+        Assert-Equal 0 $validResult.RemovedInvalidDiscriminatorCount "Valid existing discriminator was removed."
+        Assert-Equal $validBefore (ConvertTo-Json -InputObject $validResult.Document -Compress -Depth 100) "Valid existing discriminator changed."
+
         foreach ($value in @(
             [ordered]@{ propertyName = "kind" },
             "malformed",
@@ -135,10 +205,12 @@ try {
             $schema = Get-TestFixtureCase -Cases $schemaCases -Name "eligible"
             $schema["discriminator"] = $value
             $source = New-TestOpenApiDocument -Schema $schema
-            $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
             $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $source
-            Assert-Equal 0 $result.AddedDiscriminatorCount "Existing discriminator was replaced."
-            Assert-Equal $before (ConvertTo-Json -InputObject $result.Document -Compress -Depth 100) "Existing discriminator schema changed."
+            $converted = Get-TestResponseSchema -Document $result.Document
+            Assert-Equal 1 $result.RemovedInvalidDiscriminatorCount "Invalid existing discriminator was not removed."
+            Assert-Equal 1 $result.AddedDiscriminatorCount "Valid inferred discriminator did not replace invalid metadata."
+            Assert-Equal "type" $converted.discriminator.propertyName "Invalid discriminator was not replaced with inferred type metadata."
+            Assert-True (Test-JsonProperty -Object $converted -Name "oneOf") "Removing invalid metadata changed oneOf validation."
         }
     }
 
@@ -154,16 +226,21 @@ try {
         Assert-Equal $before (ConvertTo-Json -InputObject $result.Document -Compress -Depth 100) "Ambiguous union changed."
     }
 
-    # Every exact eligibility gate is conservative, and example/literal objects
-    # are outside schema traversal.
-    Invoke-Test "near misses and literal lookalikes remain unchanged" {
+    # Every exact inference gate is conservative, invalid existing metadata is
+    # removed, and example/literal objects remain outside schema traversal.
+    Invoke-Test "near misses are preserved while invalid metadata is removed" {
         $source = New-TestOpenApiDocument -Schema (
             Get-TestFixtureCase -Cases $schemaCases -Name "nearMisses"
         )
-        $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
         $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $source
         Assert-Equal 0 $result.AddedDiscriminatorCount "A near miss received a discriminator."
-        Assert-Equal $before (ConvertTo-Json -InputObject $result.Document -Compress -Depth 100) "A near miss or literal changed."
+        Assert-Equal 2 $result.RemovedInvalidDiscriminatorCount "Invalid near-miss discriminators were not removed."
+        $converted = Get-TestResponseSchema -Document $result.Document
+        Assert-True (-not (Test-JsonProperty -Object $converted.properties.alreadyObject -Name "discriminator")) "Invalid object discriminator remained."
+        Assert-True (-not (Test-JsonProperty -Object $converted.properties.alreadyScalar -Name "discriminator")) "Invalid scalar discriminator remained."
+        Assert-True (Test-JsonProperty -Object $converted.properties.alreadyObject -Name "oneOf") "Near-miss oneOf changed."
+        Assert-True (Test-JsonProperty -Object $converted -Name "example") "Literal example was removed."
+        Assert-True (Test-JsonProperty -Object $converted.example -Name "oneOf") "Literal oneOf lookalike changed."
     }
 
     # The independent postcondition catches traversal regressions that would
@@ -184,6 +261,7 @@ try {
         $expected = Read-OpenApiDocument -Path $expectedFixturePath
         $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $source
         Assert-Equal 2 $result.AddedDiscriminatorCount "Golden discriminator count was incorrect."
+        Assert-Equal 1 $result.RemovedInvalidDiscriminatorCount "Golden invalid discriminator removal count was incorrect."
         Assert-JsonEqual $expected $result.Document "oneOf-discriminated fixture did not match its golden."
     }
 
