@@ -3,18 +3,23 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectFunction : InternalToolChoiceObject
+    [Experimental("OPENAI001")]
+    public partial class ResponseCustomCustomToolChoice : ResponseCustomToolChoice
     {
-        public InternalToolChoiceObjectFunction(string name) : base(InternalToolChoiceObjectType.Function)
+        public ResponseCustomCustomToolChoice(string name) : base(InternalResponseCustomToolChoiceKind.Custom)
         {
+            Argument.AssertNotNull(name, nameof(name));
+
             Name = name;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObjectFunction(InternalToolChoiceObjectType kind, in JsonPatch patch, string name) : base(kind, patch)
+        internal ResponseCustomCustomToolChoice(InternalResponseCustomToolChoiceKind kind, in JsonPatch patch, string name) : base(kind, patch)
         {
             Name = name;
         }

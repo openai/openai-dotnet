@@ -604,7 +604,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                         functionParameters: BinaryData.FromString("{}"),
                         strictModeEnabled: false)
                 },
-                ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
+                ToolChoice = ResponseDefaultToolChoice.Required,
             });
         Assert.That(response.GetOutputText(), Is.Null);
     }
@@ -860,7 +860,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedResponsesClient();
 
         ResponseToolChoice toolChoice
-            = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName);
+            = new ResponseCustomFunctionToolChoice(s_GetWeatherAtLocationToolName);
 
         CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
@@ -872,12 +872,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options);
 
         Assert.That(response.ToolChoice, Is.Not.Null);
-        Assert.That(response.ToolChoice.Kind, Is.EqualTo(ResponseToolChoiceKind.Function));
-        Assert.That(response.ToolChoice.FunctionName, Is.EqualTo(toolChoice.FunctionName));
+    ResponseCustomFunctionToolChoice responseToolChoice = response.ToolChoice.CustomToolChoice as ResponseCustomFunctionToolChoice;
+    Assert.That(responseToolChoice, Is.Not.Null);
+    Assert.That(responseToolChoice.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
 
         FunctionCallResponseItem functionCall = response.OutputItems.FirstOrDefault() as FunctionCallResponseItem;
         Assert.That(functionCall, Is.Not.Null);
-        Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
+    Assert.That(functionCall.FunctionName, Is.EqualTo(s_GetWeatherAtLocationToolName));
     }
 
     [RecordedTest]

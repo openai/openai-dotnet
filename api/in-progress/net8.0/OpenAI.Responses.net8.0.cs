@@ -983,6 +983,81 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
     }
     [Experimental("OPENAI001")]
+    public class ResponseCustomApplyPatchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomApplyPatchToolChoice>, IPersistableModel<ResponseCustomApplyPatchToolChoice> {
+        public ResponseCustomApplyPatchToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomCodeInterpreterToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCodeInterpreterToolChoice>, IPersistableModel<ResponseCustomCodeInterpreterToolChoice> {
+        public ResponseCustomCodeInterpreterToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomComputerToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomComputerToolChoice>, IPersistableModel<ResponseCustomComputerToolChoice> {
+        public ResponseCustomComputerToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomCustomToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCustomToolChoice>, IPersistableModel<ResponseCustomCustomToolChoice> {
+        public ResponseCustomCustomToolChoice();
+        public ResponseCustomCustomToolChoice(string name);
+        public string Name { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomFileSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFileSearchToolChoice>, IPersistableModel<ResponseCustomFileSearchToolChoice> {
+        public ResponseCustomFileSearchToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomFunctionToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomFunctionToolChoice>, IPersistableModel<ResponseCustomFunctionToolChoice> {
+        public ResponseCustomFunctionToolChoice();
+        public ResponseCustomFunctionToolChoice(string functionName);
+        public string FunctionName { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomImageGenerationToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomImageGenerationToolChoice>, IPersistableModel<ResponseCustomImageGenerationToolChoice> {
+        public ResponseCustomImageGenerationToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomMcpToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomMcpToolChoice>, IPersistableModel<ResponseCustomMcpToolChoice> {
+        public ResponseCustomMcpToolChoice();
+        public ResponseCustomMcpToolChoice(string name, string serverLabel);
+        public string Name { get; set; }
+        public string ServerLabel { get; set; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomProgrammaticToolCallingToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomProgrammaticToolCallingToolChoice>, IPersistableModel<ResponseCustomProgrammaticToolCallingToolChoice> {
+        public ResponseCustomProgrammaticToolCallingToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomShellToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomShellToolChoice>, IPersistableModel<ResponseCustomShellToolChoice> {
+        public ResponseCustomShellToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomToolChoice : IJsonModel<ResponseCustomToolChoice>, IPersistableModel<ResponseCustomToolChoice> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseCustomWebSearchToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomWebSearchToolChoice>, IPersistableModel<ResponseCustomWebSearchToolChoice> {
+        public ResponseCustomWebSearchToolChoice();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseDefaultToolChoice : IEquatable<ResponseDefaultToolChoice> {
+        public ResponseDefaultToolChoice(string value);
+        public static ResponseDefaultToolChoice Auto { get; }
+        public static ResponseDefaultToolChoice None { get; }
+        public static ResponseDefaultToolChoice Required { get; }
+        public readonly bool Equals(ResponseDefaultToolChoice other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseDefaultToolChoice left, ResponseDefaultToolChoice right);
+        public static implicit operator ResponseDefaultToolChoice(string value);
+        public static implicit operator ResponseDefaultToolChoice?(string value);
+        public static bool operator !=(ResponseDefaultToolChoice left, ResponseDefaultToolChoice right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
         public bool Deleted { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1528,27 +1603,12 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseToolChoice : IJsonModel<ResponseToolChoice>, IPersistableModel<ResponseToolChoice> {
-        public string FunctionName { get; }
-        public ResponseToolChoiceKind Kind { get; }
-        public static ResponseToolChoice CreateAutoChoice();
-        [Experimental("OPENAI001")]
-        public static ResponseToolChoice CreateComputerChoice();
-        public static ResponseToolChoice CreateFileSearchChoice();
-        public static ResponseToolChoice CreateFunctionChoice(string functionName);
-        public static ResponseToolChoice CreateNoneChoice();
-        public static ResponseToolChoice CreateRequiredChoice();
-        public static ResponseToolChoice CreateWebSearchChoice();
-    }
-    [Experimental("OPENAI001")]
-    public enum ResponseToolChoiceKind {
-        Unknown = 0,
-        Auto = 1,
-        None = 2,
-        Required = 3,
-        Function = 4,
-        FileSearch = 5,
-        WebSearch = 6,
-        Computer = 7
+        public ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
+        public ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
+        public ResponseCustomToolChoice CustomToolChoice { get; }
+        public ResponseDefaultToolChoice? DefaultToolChoice { get; }
+        public static implicit operator ResponseToolChoice(ResponseCustomToolChoice customToolChoice);
+        public static implicit operator ResponseToolChoice(ResponseDefaultToolChoice defaultToolChoice);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseToolKind : IEquatable<ResponseToolKind> {
