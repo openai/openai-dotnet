@@ -62,6 +62,37 @@ try {
         }
     }
 
+    # Componentization emits one direct-oneOf wrapper per occurrence. Wrappers
+    # whose corresponding branches reference equivalent component trees must
+    # form their own persisted group even when the literal ref names differ.
+    Invoke-Test "equivalent oneOf wrapper components form a mapping group" {
+        $source = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
+        $source.components.schemas["UnionA"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @(
+                [ordered]@{ '$ref' = "#/components/schemas/ExactA" },
+                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+            )
+        }
+        $source.components.schemas["UnionB"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @(
+                [ordered]@{ '$ref' = "#/components/schemas/ExactB" },
+                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+            )
+        }
+
+        $analysis = New-TestDeduplicationAnalysis -Document $source
+        $unionGroup = @($analysis.DuplicateGroups | Where-Object { $_.Members -ccontains "UnionA" })
+        Assert-Equal 1 $unionGroup.Count "Equivalent oneOf wrappers did not form exactly one group."
+        Assert-Sequence @("UnionA", "UnionB") @($unionGroup[0].Members) "oneOf wrapper group members were incorrect."
+
+        $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis
+        $mappedUnionGroup = @($result.Mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
+        Assert-Equal "UnionA" $mappedUnionGroup.id "oneOf wrapper group id was incorrect."
+        Assert-Equal "UnionA" $mappedUnionGroup.canonicalName "oneOf wrapper canonical default was incorrect."
+    }
+
     # Longitudinal stability beats current encounter order. BeforeLeaf is inserted
     # ahead of LeafA in the document but appends after the persisted members, so
     # neither the reviewed identity nor existing JSON order churns.

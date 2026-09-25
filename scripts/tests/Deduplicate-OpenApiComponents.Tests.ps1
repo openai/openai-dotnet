@@ -89,6 +89,49 @@ try {
         Assert-AdditionalOpenApiReferencesResolve -Document $result.Document
     }
 
+    # Generated oneOf wrappers participate in ordinary whole-tree deduplication.
+    # Their branch order remains significant, and aliases from both removed and
+    # retained wrapper copies merge at the canonical discriminator.
+    Invoke-Test "equivalent oneOf wrapper components collapse as complete trees" {
+        $source = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
+        $properties = $source.paths["/test"].post.responses["200"].content["application/json"].schema.properties
+        $properties["unionA"] = [ordered]@{ '$ref' = "#/components/schemas/UnionA" }
+        $properties["unionB"] = [ordered]@{ '$ref' = "#/components/schemas/UnionB" }
+        $source.components.schemas["UnionA"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @(
+                [ordered]@{ '$ref' = "#/components/schemas/ExactA" },
+                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+            )
+        }
+        $source.components.schemas["UnionB"] = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @(
+                [ordered]@{ '$ref' = "#/components/schemas/ExactB" },
+                [ordered]@{ '$ref' = "#/components/schemas/NearMiss" }
+            )
+        }
+
+        $mapping = New-RenamedTestMapping -Document $source
+        $unionGroup = @($mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
+        $unionGroup.canonicalName = "SharedUnion"
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
+
+        $outputProperties = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
+        Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionA.'$ref' "First wrapper ref was not relocated."
+        Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionB.'$ref' "Second wrapper ref was not relocated."
+        $union = $result.Document.components.schemas.SharedUnion
+        Assert-Sequence `
+            @("#/components/schemas/SharedExact", "#/components/schemas/NearMiss") `
+            @($union.oneOf.'$ref') `
+            "Canonical wrapper branches changed order or destinations."
+        Assert-Sequence `
+            @("ExactA", "SharedExact", "NearMiss", "ExactB") `
+            @((Get-JsonProperties -Value $union.discriminator.mapping).Name) `
+            "Wrapper discriminator aliases were not merged deterministically."
+        Assert-Equal 0 (New-TestDeduplicationAnalysis -Document $result.Document).DuplicateGroupCount "Wrapper deduplication left eligible groups."
+    }
+
     # A discriminator without mapping implicitly uses direct branch component
     # names. Once ParentA and ParentB collapse, both old identities plus the new
     # canonical identity must map explicitly to SharedParent. The nested case

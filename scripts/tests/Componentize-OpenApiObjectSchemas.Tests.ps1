@@ -119,14 +119,18 @@ try {
             "Canonical output path was incorrect."
     }
 
-    # Discovery is schema-aware: component roots and literal object lookalikes
-    # are excluded while every nested inline object occurrence is counted.
-    Invoke-Test "candidate discovery finds each inline object occurrence exactly once" {
+    # Discovery is schema-aware and parent-first: component roots and literal
+    # lookalikes are excluded, while a direct oneOf owner precedes its branches.
+    Invoke-Test "candidate discovery finds each inline schema occurrence exactly once" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
-        $candidates = @(Get-InlineOpenApiObjectSchemaCandidates -Document $source)
-        Assert-Equal 7 $candidates.Count "Candidate count was incorrect."
+        $candidates = @(Get-InlineOpenApiSchemaCandidates -Document $source)
+        Assert-Equal 8 $candidates.Count "Candidate count was incorrect."
         Assert-Sequence `
-            @(0, 1, 2, 1, 1, 1, 0) `
+            @("Object", "Object", "Object", "Object", "OneOf", "Object", "Object", "Object") `
+            @($candidates.Kind) `
+            "Candidate kinds or encounter order were incorrect."
+        Assert-Sequence `
+            @(0, 1, 2, 1, 1, 2, 2, 0) `
             @($candidates.CandidateDepth) `
             "Candidate nesting depths were incorrect."
         Assert-Equal 3 @($candidates | Where-Object { $null -ne $_.TypeEnumValue }).Count "Singleton enum count was incorrect."
@@ -141,8 +145,10 @@ try {
         $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         Assert-Equal 7 $result.DiscoveredObjectSchemaCount "Discovery statistic was incorrect."
-        Assert-Equal 7 $result.GeneratedComponentCount "Generated statistic was incorrect."
-        Assert-Equal 7 $result.RelocationCount "Relocation statistic was incorrect."
+        Assert-Equal 1 $result.DiscoveredOneOfSchemaCount "oneOf discovery statistic was incorrect."
+        Assert-Equal 8 $result.DiscoveredSchemaCount "Total discovery statistic was incorrect."
+        Assert-Equal 8 $result.GeneratedComponentCount "Generated statistic was incorrect."
+        Assert-Equal 8 $result.RelocationCount "Relocation statistic was incorrect."
         Assert-JsonEqual $expected $result.Document "Componentized fixture did not match its golden."
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
     }
@@ -159,10 +165,99 @@ try {
             "CreateWidget_Request_Child_TypeOfChildKind",
             "CreateWidget_Request_Child",
             "CreateWidget_Request_List",
+            "CreateWidget_Request_Variants",
             "CreateWidget_Request_Variants_TypeOfAlpha",
             "CreateWidget_Request_Variants_TypeOfAlpha_2",
             "ExistingRoot_Nested"
         ) @((Get-JsonProperties -Value $schemas).Name) "Generated component names or order were incorrect."
+    }
+
+    # A direct oneOf owner claims the ordinary semantic path name before its
+    # branches. A branch without a singleton type enum then uses the same base
+    # name and receives the normal numeric collision suffix.
+    Invoke-Test "oneOf owners precede branches and use ordinary collision suffixes" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["toolChoice"] = [ordered]@{
+            oneOf = @(
+                [ordered]@{
+                    type = "string"
+                    enum = @("auto", "none")
+                },
+                [ordered]@{
+                    type = "object"
+                    properties = [ordered]@{
+                        type = [ordered]@{
+                            type = "string"
+                            enum = @("file_search", "web_search")
+                        }
+                    }
+                }
+            )
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $wrapper = @($result.Candidates | Where-Object {
+            $_.Pointer.EndsWith("/properties/toolChoice", [System.StringComparison]::Ordinal)
+        })
+        $branch = @($result.Candidates | Where-Object {
+            $_.Pointer.EndsWith("/properties/toolChoice/oneOf/1", [System.StringComparison]::Ordinal)
+        })
+        Assert-Equal 1 $wrapper.Count "Direct oneOf owner was not discovered exactly once."
+        Assert-Equal "OneOf" $wrapper[0].Kind "Direct oneOf owner had the wrong candidate kind."
+        Assert-Equal "CreateWidget_Request_ToolChoice" $wrapper[0].Name "Direct oneOf owner did not claim the semantic base name."
+        Assert-Equal "CreateWidget_Request_ToolChoice_2" $branch[0].Name "Object branch did not receive the numeric collision suffix."
+        Assert-Equal `
+            "#/components/schemas/CreateWidget_Request_ToolChoice" `
+            $result.Document.components.schemas.CreateWidget_Request.properties.toolChoice.'$ref' `
+            "Direct oneOf owner was not replaced by its component reference."
+        Assert-Equal `
+            "#/components/schemas/CreateWidget_Request_ToolChoice_2" `
+            $result.Document.components.schemas.CreateWidget_Request_ToolChoice.oneOf[1].'$ref' `
+            "Componentized oneOf did not reference its object branch."
+    }
+
+    # The candidate is the complete Schema Object, so siblings of oneOf move into
+    # the component together. Direct oneOf eligibility wins over type=object and
+    # prevents the same source occurrence from producing two components.
+    Invoke-Test "oneOf components preserve sibling schema keywords" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["hybrid"] = [ordered]@{
+            type = "object"
+            description = "A constrained union."
+            maxProperties = 2
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("first") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("second") }
+                    }
+                }
+            )
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $ownerPointer = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/hybrid"
+        $owners = @($result.Candidates | Where-Object Pointer -eq $ownerPointer)
+        Assert-Equal 1 $owners.Count "Object/oneOf schema produced duplicate candidates."
+        Assert-Equal "OneOf" $owners[0].Kind "Direct oneOf did not take precedence over type=object."
+        Assert-Sequence @('$ref') @((Get-JsonProperties -Value $result.Document.components.schemas.CreateWidget_Request.properties.hybrid).Name) "Inline oneOf siblings remained beside the generated ref."
+        $component = $result.Document.components.schemas.CreateWidget_Request_Hybrid
+        Assert-Equal "object" $component.type "Type sibling did not move with oneOf."
+        Assert-Equal "A constrained union." $component.description "Description sibling did not move with oneOf."
+        Assert-Equal 2 $component.maxProperties "Constraint sibling did not move with oneOf."
+        Assert-Equal "type" $component.discriminator.propertyName "Discriminator sibling did not move with oneOf."
+        Assert-Equal 2 $component.oneOf.Count "oneOf branches changed during componentization."
     }
 
     # A nested candidate inherits the containing candidate's semantic enum name,
@@ -211,7 +306,7 @@ try {
         $first = $schemas.CreateWidget_Request_Variants_TypeOfAlpha
         $second = $schemas.CreateWidget_Request_Variants_TypeOfAlpha_2
         Assert-True (Test-JsonValuesEqual -Left $first -Right $second) "Duplicate fixture branches were not structurally equal."
-        $variantRefs = $schemas.CreateWidget_Request.properties.variants.oneOf
+        $variantRefs = $schemas.CreateWidget_Request_Variants.oneOf
         Assert-True (-not [string]::Equals($variantRefs[0].'$ref', $variantRefs[1].'$ref', [System.StringComparison]::Ordinal)) "Duplicate occurrences shared one component."
     }
 
@@ -235,10 +330,11 @@ try {
     Invoke-Test "references and discriminator mappings relocate to generated components" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
-        $root = $result.Document.components.schemas.CreateWidget_Request
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind" $root.properties.childAlias.'$ref' "Existing schema ref was not relocated."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha" $root.properties.variants.discriminator.mapping.first "First mapping was not relocated."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha_2" $root.properties.variants.discriminator.mapping.second "Second mapping was not relocated."
+        $schemas = $result.Document.components.schemas
+        Assert-Equal "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind" $schemas.CreateWidget_Request.properties.childAlias.'$ref' "Existing schema ref was not relocated."
+        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants" $schemas.CreateWidget_Request.properties.variants.'$ref' "oneOf owner was not relocated."
+        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha" $schemas.CreateWidget_Request_Variants.discriminator.mapping.first "First mapping was not relocated."
+        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_TypeOfAlpha_2" $schemas.CreateWidget_Request_Variants.discriminator.mapping.second "Second mapping was not relocated."
         Assert-OpenApiReferencesResolve -Document $result.Document
     }
 
@@ -256,12 +352,43 @@ try {
     # Type arrays and example objects are not exact schema-context object
     # candidates and must survive unchanged.
     Invoke-Test "near misses and literal object lookalikes remain inline" {
-        $source = Read-OpenApiDocument -Path $sourceFixturePath
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties.literal.example["oneOf"] = @(
+            [ordered]@{ type = "object" }
+        )
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $root = $result.Document.components.schemas.CreateWidget_Request
         Assert-Sequence @("object", "null") @($root.properties.nearMiss.type) "Type-array near miss changed."
         Assert-Equal "object" $root.properties.literal.example.type "Literal object changed."
         Assert-Equal "object" $root.properties.literal.example.properties.ignored.type "Nested literal object changed."
+        Assert-Equal 1 $root.properties.literal.example.oneOf.Count "Literal oneOf lookalike changed."
+    }
+
+    # Moving a schema that establishes JSON Schema URI or anchor scope can change
+    # reference meaning. Every such keyword is rejected with its source pointer.
+    Invoke-Test "scope-sensitive schema keywords fail explicitly" {
+        foreach ($case in @(
+            [PSCustomObject]@{ Keyword = '$id'; Value = "urn:test:root" },
+            [PSCustomObject]@{ Keyword = '$anchor'; Value = "root" },
+            [PSCustomObject]@{ Keyword = '$dynamicAnchor'; Value = "node" },
+            [PSCustomObject]@{ Keyword = '$recursiveAnchor'; Value = $true }
+        )) {
+            $source = Read-TestJsonFixture `
+                -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+            $schema = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
+            $schema[$case.Keyword] = $case.Value
+            Assert-Throws {
+                ConvertTo-ComponentizedOpenApiDocument -Document $source
+            } "*scope-sensitive keyword '$($case.Keyword)'*schema*$($case.Keyword)*"
+        }
+
+        $inherited = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $inherited.components.schemas.ExistingRoot['$id'] = "urn:test:existing"
+        Assert-Throws {
+            ConvertTo-ComponentizedOpenApiDocument -Document $inherited
+        } "*inherits scope from `$id*ExistingRoot*`$id*"
     }
 
     # Readable names are intentionally not truncated, and a unique long name
@@ -291,13 +418,15 @@ try {
         Assert-Equal "#/components/schemas/CreateWidget_Request_2" $result.Document.paths["/widgets"].post.requestBody.content["application/json"].schema.'$ref' "Generated name did not suffix the collision."
     }
 
-    # Once every inline object has moved, a second conversion performs no work
-    # and preserves the complete document structurally.
+    # Once every inline candidate has moved, a second conversion performs no
+    # work and preserves the complete document structurally.
     Invoke-Test "componentization is structurally idempotent" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $first = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $second = ConvertTo-ComponentizedOpenApiDocument -Document $first.Document
+        Assert-Equal 0 $second.DiscoveredSchemaCount "Second pass rediscovered candidates."
         Assert-Equal 0 $second.DiscoveredObjectSchemaCount "Second pass rediscovered candidates."
+        Assert-Equal 0 $second.DiscoveredOneOfSchemaCount "Second pass rediscovered oneOf candidates."
         Assert-Equal 0 $second.GeneratedComponentCount "Second pass generated components."
         Assert-JsonEqual $first.Document $second.Document "Second pass changed the componentized document."
     }
@@ -363,6 +492,21 @@ try {
         Assert-Throws {
             Invoke-OpenApiObjectSchemaComponentizer -InputPath $invalidPath
         } "*Could not parse OpenAPI JSON*"
+
+        $unsafe = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $unsafe.paths["/widgets"].post.requestBody.content["application/json"].schema['$anchor'] = "root"
+        $unsafePath = Join-Path $temporaryDirectory "unsafe.json"
+        $unsafeOutputPath = Join-Path $temporaryDirectory "unsafe-output.json"
+        $null = Write-OpenApiJsonFile -Document $unsafe -Path $unsafePath
+        [byte[]]$sentinel = [System.Text.Encoding]::UTF8.GetBytes("existing output`n")
+        [System.IO.File]::WriteAllBytes($unsafeOutputPath, $sentinel)
+        Assert-Throws {
+            Invoke-OpenApiObjectSchemaComponentizer `
+                -InputPath $unsafePath `
+                -OutputPath $unsafeOutputPath
+        } "*scope-sensitive keyword*`$anchor*"
+        Assert-BytesEqual $sentinel ([System.IO.File]::ReadAllBytes($unsafeOutputPath)) "Failed componentization changed output bytes."
     }
 }
 finally {

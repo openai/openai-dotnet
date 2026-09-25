@@ -1,19 +1,22 @@
 <#
 .SYNOPSIS
-    Moves inline object schemas into OpenAPI components.
+    Moves inline object and direct oneOf schemas into OpenAPI components.
 
 .DESCRIPTION
-    Finds every inline schema with the exact scalar type "object", creates one
-    components.schemas entry per occurrence, and replaces each inline definition
-    with a local $ref. Nested object schemas become separate components referenced
-    by their containing component.
+    Finds every inline Schema Object that owns a direct nonempty oneOf or has the
+    exact scalar type "object", creates one components.schemas entry per occurrence,
+    and replaces each inline definition with a local $ref. A direct oneOf owner
+    takes precedence when a schema satisfies both predicates. Nested candidates
+    become separate components referenced by their containing component.
 
     Component names combine underscore-separated source-path tokens and a
     TypeOf-prefixed singleton string enum from properties.type when available.
     Nested candidates inherit their containing component's semantic name before
     appending their relative path and enum tokens. Structural composition/item
     tokens are omitted, and numeric suffixes are used only to disambiguate
-    collisions. Structurally identical occurrences intentionally remain separate
+    collisions. The complete oneOf-containing Schema Object moves with all of its
+    siblings. Schemas whose relocation could change $id or anchor scope fail
+    explicitly. Structurally identical occurrences intentionally remain separate
     components. Run
     Update-OpenApiComponentDeduplicationMap.ps1 afterward, review its persisted
     decisions, then run Deduplicate-OpenApiComponents.ps1.
@@ -86,6 +89,109 @@ function Test-IsInlineOpenApiObjectSchema {
         [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
 }
 
+# A composition candidate is the complete Schema Object that owns oneOf, not the
+# oneOf array itself. Requiring a nonempty array avoids turning malformed or
+# vacuous composition keywords into generated components.
+function Test-IsInlineOpenApiOneOfSchema {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context
+    )
+
+    if (-not [string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -or
+        -not (Test-JsonObjectValue -Value $Value)) {
+        return $false
+    }
+
+    $oneOf = Get-JsonPropertyValue -Object $Value -Name "oneOf"
+    return (Test-JsonArrayValue -Value $oneOf) -and $oneOf.Count -gt 0
+}
+
+# Finds the first scope-sensitive JSON Schema keyword within a schema subtree.
+# Traversal remains schema-aware so a literal example containing a key such as
+# `$id` is not mistaken for a resolution scope. Relocating any matching subtree
+# is rejected until URI and anchor scope preservation is implemented explicitly.
+function Get-OpenApiScopeSensitiveSchemaKeywordOccurrence {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Pointer,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Schema scope inspection exceeds the supported depth of $MaximumDepth at '$Pointer'."
+    }
+    if ($null -eq $Value) {
+        return $null
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        $itemContext = $Context
+        if ([string]::Equals($Context, "SchemaArray", [System.StringComparison]::Ordinal)) {
+            $itemContext = "Schema"
+        }
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            $occurrence = Get-OpenApiScopeSensitiveSchemaKeywordOccurrence `
+                -Value $Value[$index] `
+                -Context $itemContext `
+                -Pointer "$Pointer/$index" `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+            if ($null -ne $occurrence) {
+                return $occurrence
+            }
+        }
+        return $null
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return $null
+    }
+
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal)) {
+        foreach ($keyword in @('$id', '$anchor', '$dynamicAnchor', '$recursiveAnchor')) {
+            if (Test-JsonProperty -Object $Value -Name $keyword) {
+                return [PSCustomObject]@{
+                    Keyword = $keyword
+                    Pointer = "$Pointer/$(ConvertTo-JsonPointerToken -Token $keyword)"
+                }
+            }
+        }
+    }
+
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        $childContext = Get-OpenApiSchemaChildContext `
+            -ParentContext $Context `
+            -PropertyName $property.Name `
+            -PropertyValue $property.Value
+        $occurrence = Get-OpenApiScopeSensitiveSchemaKeywordOccurrence `
+            -Value $property.Value `
+            -Context $childContext `
+            -Pointer "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth
+        if ($null -ne $occurrence) {
+            return $occurrence
+        }
+    }
+    return $null
+}
+
 # A singleton `properties.type.enum` is the strongest local semantic label we
 # have for discriminated variants. For example, an object whose type enum is
 # `function` contributes `TypeOfFunction` to its generated component name.
@@ -115,15 +221,17 @@ function Get-OpenApiObjectSchemaTypeEnumValue {
     return $enum[0]
 }
 
-# Performs one schema-aware discovery pass and records every exact object-schema
-# occurrence before any document is rewritten. Discovery and rewriting are kept
-# separate so all source pointers remain valid while names and relocations are
-# being planned.
+# Performs one schema-aware, parent-first discovery pass and records every direct
+# oneOf owner or exact object-schema occurrence before any document is rewritten.
+# Direct oneOf takes precedence when a Schema Object satisfies both predicates,
+# so one source occurrence always produces exactly one component candidate.
+# Discovery and rewriting are kept separate so all source pointers remain valid
+# while names and relocations are being planned.
 #
 # CandidateDepth is diagnostic information used by tests. ParentCandidatePointer
 # is behavioral: it lets nested components inherit semantic context that exists
 # only on their containing schema (for example `TypeOfToolSearchOutput`).
-function Add-InlineOpenApiObjectSchemaCandidates {
+function Add-InlineOpenApiSchemaCandidates {
     param(
         [Parameter(Mandatory = $true)]
         [AllowNull()]
@@ -154,6 +262,10 @@ function Add-InlineOpenApiObjectSchemaCandidates {
         [string]$ParentCandidatePointer,
 
         [Parameter()]
+        [AllowNull()]
+        [string]$InheritedIdPointer,
+
+        [Parameter()]
         [int]$Depth = 0,
 
         [Parameter()]
@@ -161,7 +273,7 @@ function Add-InlineOpenApiObjectSchemaCandidates {
     )
 
     if ($Depth -gt $MaximumDepth) {
-        throw "Object schema discovery exceeds the supported depth of $MaximumDepth at '$Pointer'."
+        throw "Inline schema discovery exceeds the supported depth of $MaximumDepth at '$Pointer'."
     }
     if ($null -eq $Value) {
         return
@@ -172,13 +284,14 @@ function Add-InlineOpenApiObjectSchemaCandidates {
             $itemContext = "Schema"
         }
         for ($index = 0; $index -lt $Value.Count; $index++) {
-            Add-InlineOpenApiObjectSchemaCandidates `
+            Add-InlineOpenApiSchemaCandidates `
                 -Value $Value[$index] `
                 -Context $itemContext `
                 -Pointer "$Pointer/$index" `
                 -Candidates $Candidates `
                 -CandidateDepth $CandidateDepth `
                 -ParentCandidatePointer $ParentCandidatePointer `
+                -InheritedIdPointer $InheritedIdPointer `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -190,21 +303,40 @@ function Add-InlineOpenApiObjectSchemaCandidates {
 
     # Existing entries under components.schemas are already component roots.
     # SuppressCurrentCandidate prevents promoting those roots again, while the
-    # traversal still discovers inline object schemas nested inside them.
-    $isCandidate = -not $SuppressCurrentCandidate -and
-        (Test-IsInlineOpenApiObjectSchema -Value $Value -Context $Context)
+    # traversal still discovers inline schemas nested inside them.
+    $candidateKind = $null
+    if (-not $SuppressCurrentCandidate) {
+        if (Test-IsInlineOpenApiOneOfSchema -Value $Value -Context $Context) {
+            $candidateKind = "OneOf"
+        }
+        elseif (Test-IsInlineOpenApiObjectSchema -Value $Value -Context $Context) {
+            $candidateKind = "Object"
+        }
+    }
+    $isCandidate = $null -ne $candidateKind
     $childCandidateDepth = $CandidateDepth
     $childParentCandidatePointer = $ParentCandidatePointer
     if ($isCandidate) {
         $Candidates.Add([PSCustomObject]@{
             Pointer = $Pointer
             Schema = $Value
+            Kind = $candidateKind
             CandidateDepth = $CandidateDepth
             ParentCandidatePointer = $ParentCandidatePointer
+            InheritedIdPointer = $InheritedIdPointer
             TypeEnumValue = Get-OpenApiObjectSchemaTypeEnumValue -Schema $Value
         })
         $childCandidateDepth++
         $childParentCandidatePointer = $Pointer
+    }
+
+    # Only `$id` establishes a base-URI scope inherited by descendants. Anchor
+    # keywords are still rejected when they occur inside a moved candidate, but
+    # they do not independently establish a descendant base URI.
+    $childInheritedIdPointer = $InheritedIdPointer
+    if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+        (Test-JsonProperty -Object $Value -Name '$id')) {
+        $childInheritedIdPointer = "$Pointer/$(ConvertTo-JsonPointerToken -Token '$id')"
     }
 
     # Encounter order is retained throughout discovery. It later determines
@@ -220,7 +352,7 @@ function Add-InlineOpenApiObjectSchemaCandidates {
 
         if ([string]::Equals($Context, "SchemaMap", [System.StringComparison]::Ordinal) -and
             $ComponentsSchemaMap) {
-            Add-InlineOpenApiObjectSchemaCandidates `
+            Add-InlineOpenApiSchemaCandidates `
                 -Value $property.Value `
                 -Context $childContext `
                 -Pointer $childPointer `
@@ -228,12 +360,13 @@ function Add-InlineOpenApiObjectSchemaCandidates {
                 -SuppressCurrentCandidate `
                 -CandidateDepth $childCandidateDepth `
                 -ParentCandidatePointer $childParentCandidatePointer `
+                -InheritedIdPointer $childInheritedIdPointer `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
             continue
         }
 
-        Add-InlineOpenApiObjectSchemaCandidates `
+        Add-InlineOpenApiSchemaCandidates `
             -Value $property.Value `
             -Context $childContext `
             -Pointer $childPointer `
@@ -241,6 +374,7 @@ function Add-InlineOpenApiObjectSchemaCandidates {
             -ComponentsSchemaMap:$childIsComponentsSchemaMap `
             -CandidateDepth $childCandidateDepth `
             -ParentCandidatePointer $childParentCandidatePointer `
+            -InheritedIdPointer $childInheritedIdPointer `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -248,19 +382,50 @@ function Add-InlineOpenApiObjectSchemaCandidates {
 
 # Returns a snapshot array rather than the mutable List used during recursion.
 # Callers can safely annotate candidate objects with generated names afterward.
-function Get-InlineOpenApiObjectSchemaCandidates {
+function Get-InlineOpenApiSchemaCandidates {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Document
     )
 
     $candidates = [System.Collections.Generic.List[object]]::new()
-    Add-InlineOpenApiObjectSchemaCandidates `
+    Add-InlineOpenApiSchemaCandidates `
         -Value $Document `
         -Context OpenApi `
         -Pointer "#" `
         -Candidates $candidates
-    return [object[]]$candidates.ToArray()
+    [object[]]$candidateArray = [object[]]$candidates.ToArray()
+
+    foreach ($candidate in $candidateArray) {
+        if ($candidate.InheritedIdPointer -is [string] -and
+            -not [string]::IsNullOrEmpty($candidate.InheritedIdPointer)) {
+            throw "Cannot componentize schema at '$($candidate.Pointer)' because it inherits scope from `$id at '$($candidate.InheritedIdPointer)'."
+        }
+        $occurrence = Get-OpenApiScopeSensitiveSchemaKeywordOccurrence `
+            -Value $candidate.Schema `
+            -Context Schema `
+            -Pointer $candidate.Pointer
+        if ($null -ne $occurrence) {
+            throw "Cannot componentize schema at '$($candidate.Pointer)' because scope-sensitive keyword '$($occurrence.Keyword)' at '$($occurrence.Pointer)' could change meaning after relocation."
+        }
+    }
+
+    return $candidateArray
+}
+
+# Preserve the previous discovery helper as an object-only compatibility view.
+# The componentizer itself uses Get-InlineOpenApiSchemaCandidates so direct oneOf
+# owners and object candidates participate in one ordered naming pass.
+function Get-InlineOpenApiObjectSchemaCandidates {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document
+    )
+
+    return [object[]]@(
+        Get-InlineOpenApiSchemaCandidates -Document $Document |
+            Where-Object Kind -eq "Object"
+    )
 }
 
 # Converts arbitrary path/enum text into a portable PascalCase name token.
@@ -333,10 +498,10 @@ function Get-OpenApiOperationComponentNamePrefix {
 # are retained.
 #
 # Nested candidates normally use their already-named parent in
-# Set-OpenApiObjectSchemaComponentNames. This fallback remains necessary for
+# Set-OpenApiSchemaComponentNames. This fallback remains necessary for
 # top-level candidates and structural-only descendants that add no useful local
 # name part of their own.
-function Get-OpenApiObjectSchemaComponentBaseName {
+function Get-OpenApiSchemaComponentBaseName {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Document,
@@ -431,7 +596,7 @@ function Get-OpenApiObjectSchemaComponentBaseName {
 # reserved first, so generated names can never overwrite source-authored roots.
 # Candidates arrive parent-before-child from discovery, which makes it possible
 # to inherit the final (including collision suffix) parent name deterministically.
-function Set-OpenApiObjectSchemaComponentNames {
+function Set-OpenApiSchemaComponentNames {
     param(
         [Parameter(Mandatory = $true)]
         [object]$Document,
@@ -510,7 +675,7 @@ function Set-OpenApiObjectSchemaComponentNames {
             }
         }
         if ([string]::IsNullOrWhiteSpace($baseName)) {
-            $baseName = Get-OpenApiObjectSchemaComponentBaseName `
+            $baseName = Get-OpenApiSchemaComponentBaseName `
                 -Document $Document `
                 -Candidate $candidate
         }
@@ -537,7 +702,7 @@ function Set-OpenApiObjectSchemaComponentNames {
 # Copies a value while replacing candidate occurrences with refs. ComponentRootPointer
 # is the one exception: while materializing a component definition, its root must
 # remain a full schema and only nested candidates become refs.
-function ConvertTo-ComponentizedOpenApiValue {
+function ConvertTo-ComponentizedOpenApiSchemaValue {
     param(
         [Parameter(Mandatory = $true)]
         [AllowNull()]
@@ -565,7 +730,7 @@ function ConvertTo-ComponentizedOpenApiValue {
     )
 
     if ($Depth -gt $MaximumDepth) {
-        throw "Object schema componentization exceeds the supported depth of $MaximumDepth at '$Pointer'."
+        throw "Inline schema componentization exceeds the supported depth of $MaximumDepth at '$Pointer'."
     }
     if ($null -eq $Value) {
         return $null
@@ -577,7 +742,7 @@ function ConvertTo-ComponentizedOpenApiValue {
         }
         [object[]]$items = [object[]]::new($Value.Count)
         for ($index = 0; $index -lt $Value.Count; $index++) {
-            $items[$index] = ConvertTo-ComponentizedOpenApiValue `
+            $items[$index] = ConvertTo-ComponentizedOpenApiSchemaValue `
                 -Value $Value[$index] `
                 -Context $itemContext `
                 -Pointer "$Pointer/$index" `
@@ -606,7 +771,7 @@ function ConvertTo-ComponentizedOpenApiValue {
             -ParentContext $Context `
             -PropertyName $property.Name `
             -PropertyValue $property.Value
-        $result[$property.Name] = ConvertTo-ComponentizedOpenApiValue `
+        $result[$property.Name] = ConvertTo-ComponentizedOpenApiSchemaValue `
             -Value $property.Value `
             -Context $childContext `
             -Pointer "$Pointer/$(ConvertTo-JsonPointerToken -Token $property.Name)" `
@@ -657,21 +822,23 @@ function ConvertTo-ComponentizedOpenApiDocument {
         [object]$Document
     )
 
-    [object[]]$candidates = @(Get-InlineOpenApiObjectSchemaCandidates -Document $Document)
+    [object[]]$candidates = @(Get-InlineOpenApiSchemaCandidates -Document $Document)
     if ($candidates.Count -eq 0) {
         $copy = Copy-JsonValue -Value $Document
         Assert-OpenApiReferencesResolve -Document $copy
         Assert-AdditionalOpenApiReferencesResolve -Document $copy
         return [PSCustomObject]@{
             Document = $copy
+            DiscoveredSchemaCount = 0
             DiscoveredObjectSchemaCount = 0
+            DiscoveredOneOfSchemaCount = 0
             GeneratedComponentCount = 0
             RelocationCount = 0
             Candidates = [object[]]@()
         }
     }
 
-    Set-OpenApiObjectSchemaComponentNames -Document $Document -Candidates $candidates
+    Set-OpenApiSchemaComponentNames -Document $Document -Candidates $candidates
     $candidateByPointer = [System.Collections.Generic.Dictionary[string, object]]::new(
         [System.StringComparer]::Ordinal
     )
@@ -692,7 +859,7 @@ function ConvertTo-ComponentizedOpenApiDocument {
     $relocatedSource = ConvertTo-RelocatedOpenApiPointers `
         -Value $Document `
         -Relocations $relocations
-    $componentized = ConvertTo-ComponentizedOpenApiValue `
+    $componentized = ConvertTo-ComponentizedOpenApiSchemaValue `
         -Value $relocatedSource `
         -Context OpenApi `
         -Pointer "#" `
@@ -720,7 +887,7 @@ function ConvertTo-ComponentizedOpenApiDocument {
             -Document $relocatedSource `
             -Pointer $candidate.Pointer `
             -Context "component source"
-        $schemas[$candidate.Name] = ConvertTo-ComponentizedOpenApiValue `
+        $schemas[$candidate.Name] = ConvertTo-ComponentizedOpenApiSchemaValue `
             -Value $sourceSchema `
             -Context Schema `
             -Pointer $candidate.Pointer `
@@ -756,20 +923,24 @@ function ConvertTo-ComponentizedOpenApiDocument {
     }
 
     # These checks define the stage contract: all local references resolve, no
-    # exact inline object candidates remain, and every generated root is used.
+    # inline object/direct-oneOf candidates remain, and every generated root is used.
     Assert-OpenApiReferencesResolve -Document $result
     Assert-AdditionalOpenApiReferencesResolve -Document $result
-    [object[]]$remainingCandidates = @(Get-InlineOpenApiObjectSchemaCandidates -Document $result)
+    [object[]]$remainingCandidates = @(Get-InlineOpenApiSchemaCandidates -Document $result)
     if ($remainingCandidates.Count -ne 0) {
-        throw "Componentized output retained $($remainingCandidates.Count) inline object schema candidates."
+        throw "Componentized output retained $($remainingCandidates.Count) inline schema candidates."
     }
     Assert-GeneratedOpenApiComponentsAreReferenced `
         -Document $result `
         -Candidates $candidates
 
+    $objectCandidateCount = @($candidates | Where-Object Kind -eq "Object").Count
+    $oneOfCandidateCount = @($candidates | Where-Object Kind -eq "OneOf").Count
     return [PSCustomObject]@{
         Document = $result
-        DiscoveredObjectSchemaCount = $candidates.Count
+        DiscoveredSchemaCount = $candidates.Count
+        DiscoveredObjectSchemaCount = $objectCandidateCount
+        DiscoveredOneOfSchemaCount = $oneOfCandidateCount
         GeneratedComponentCount = $candidates.Count
         RelocationCount = $relocations.Count
         Candidates = $candidates
@@ -859,7 +1030,9 @@ function Invoke-OpenApiObjectSchemaComponentizer {
     Write-Host ""
     Write-Host "Input: $resolvedInputPath"
     Write-Host "Output: $writtenPath"
+    Write-Host "Inline schemas discovered: $($result.DiscoveredSchemaCount)"
     Write-Host "Inline object schemas discovered: $($result.DiscoveredObjectSchemaCount)"
+    Write-Host "Inline oneOf schemas discovered: $($result.DiscoveredOneOfSchemaCount)"
     Write-Host "Schema components generated: $($result.GeneratedComponentCount)"
     Write-Host "JSON Pointer prefixes relocated: $($result.RelocationCount)"
 
