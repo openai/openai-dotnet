@@ -86,9 +86,10 @@ namespace OpenAI.Containers
             {
                 writer.WritePropertyName("allowed_domains"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "allowed_domains"u8);
                 for (int i = 0; i < AllowedDomains.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_domains[{i}]")))
                     {
                         continue;
                     }
@@ -114,9 +115,10 @@ namespace OpenAI.Containers
             {
                 writer.WritePropertyName("domain_secrets"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "domain_secrets"u8);
                 for (int i = 0; i < DomainSecrets.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]")) || DomainSecrets[i] != null && DomainSecrets[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]")) || DomainSecrets[i] != null && DomainSecrets[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -276,9 +278,10 @@ namespace OpenAI.Containers
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "domain_secrets"u8);
             for (int i = 0; i < DomainSecrets.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]")) && (DomainSecrets[i] == null || !DomainSecrets[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.domain_secrets[{i}]"))) && (DomainSecrets[i] == null || !DomainSecrets[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return DomainSecrets[i];
                 }

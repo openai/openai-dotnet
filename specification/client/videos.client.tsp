@@ -24,3 +24,6 @@ using TypeSpec.HttpClient.CSharp;
 
 // Rename method
 @@clientName(RetrieveVideoContent, "DownloadVideo");
+
+@@clientName(VideoCollectionOptions.after, "AfterId");
+@@clientName(VideoCollectionOptions.limit, "PageSizeLimit");

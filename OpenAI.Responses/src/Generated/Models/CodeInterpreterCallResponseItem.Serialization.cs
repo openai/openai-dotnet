@@ -101,9 +101,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "outputs"u8);
                 for (int i = 0; i < Outputs.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.outputs[{i}]")) || Outputs[i] != null && Outputs[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.outputs[{i}]")) || Outputs[i] != null && Outputs[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -280,9 +281,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "outputs"u8);
             for (int i = 0; i < Outputs.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.outputs[{i}]")) && (Outputs[i] == null || !Outputs[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.outputs[{i}]"))) && (Outputs[i] == null || !Outputs[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Outputs[i];
                 }

@@ -138,7 +138,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    inputMessages = BinaryData.FromString(prop.Value.GetRawText());
+                    inputMessages = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("sampling_params"u8))
@@ -157,11 +157,11 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("source"u8))
                 {
-                    source = BinaryData.FromString(prop.Value.GetRawText());
+                    source = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalEvalResponsesRunDataSourceParams(
                 kind,

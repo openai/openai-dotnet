@@ -147,7 +147,7 @@ namespace OpenAI
                     {
                         continue;
                     }
-                    parameters = BinaryData.FromString(prop.Value.GetRawText());
+                    parameters = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))

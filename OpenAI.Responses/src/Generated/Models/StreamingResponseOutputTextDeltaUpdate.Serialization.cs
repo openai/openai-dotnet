@@ -106,9 +106,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
                 for (int i = 0; i < TokenLogProbabilities.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TokenLogProbabilities[i] != null && TokenLogProbabilities[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || TokenLogProbabilities[i] != null && TokenLogProbabilities[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -284,9 +285,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
             for (int i = 0; i < TokenLogProbabilities.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) && (TokenLogProbabilities[i] == null || !TokenLogProbabilities[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]"))) && (TokenLogProbabilities[i] == null || !TokenLogProbabilities[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return TokenLogProbabilities[i];
                 }

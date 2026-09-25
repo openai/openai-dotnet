@@ -113,10 +113,10 @@ namespace OpenAI.Evals
             {
                 switch (discriminator.GetString())
                 {
-                    case "jsonl":
-                        return InternalEvalJsonlRunDataSourceParams.DeserializeInternalEvalJsonlRunDataSourceParams(element, options);
                     case "completions":
                         return InternalEvalCompletionsRunDataSourceParams.DeserializeInternalEvalCompletionsRunDataSourceParams(element, options);
+                    case "jsonl":
+                        return InternalEvalJsonlRunDataSourceParams.DeserializeInternalEvalJsonlRunDataSourceParams(element, options);
                     case "responses":
                         return InternalEvalResponsesRunDataSourceParams.DeserializeInternalEvalResponsesRunDataSourceParams(element, options);
                 }

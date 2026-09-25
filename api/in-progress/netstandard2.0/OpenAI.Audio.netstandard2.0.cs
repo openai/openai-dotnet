@@ -29,7 +29,7 @@ namespace OpenAI.Audio {
         public virtual Task<ClientResult> GenerateSpeechAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<BinaryData>> GenerateSpeechAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null);
+        public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<BinaryData>>> GenerateSpeechStreamingAsync(BinaryContent content, RequestOptions options = null);
         public virtual AsyncCollectionResult<StreamingSpeechUpdate> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult GetVoiceConsent(string consentId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVoiceConsentAsync(string consentId, RequestOptions options = null);
@@ -47,7 +47,7 @@ namespace OpenAI.Audio {
         public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioTranscriptionOptions options = null);
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<AsyncStreamingClientResult<Net.ServerSentEvents.SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null);
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null);

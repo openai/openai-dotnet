@@ -96,9 +96,10 @@ namespace OpenAI.Embeddings
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "data"u8);
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -281,9 +282,10 @@ namespace OpenAI.Embeddings
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "data"u8);
             for (int i = 0; i < Items.Count; i++)
             {
-                if (!Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]")) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]"))) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Items[i];
                 }

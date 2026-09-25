@@ -218,7 +218,7 @@ namespace OpenAI.Images
             {
                 if (prop.NameEquals("image"u8))
                 {
-                    image = BinaryData.FromString(prop.Value.GetRawText());
+                    image = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("prompt"u8))
@@ -232,7 +232,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    mask = BinaryData.FromString(prop.Value.GetRawText());
+                    mask = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
@@ -351,7 +351,7 @@ namespace OpenAI.Images
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new ImageEditOptions(
                 image,

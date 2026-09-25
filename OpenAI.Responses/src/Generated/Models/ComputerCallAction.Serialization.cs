@@ -108,6 +108,8 @@ namespace OpenAI.Responses
                         return InternalComputerActionDoubleClick.DeserializeInternalComputerActionDoubleClick(element, data, options);
                     case "drag":
                         return InternalComputerActionDrag.DeserializeInternalComputerActionDrag(element, data, options);
+                    case "keypress":
+                        return InternalComputerActionKeyPress.DeserializeInternalComputerActionKeyPress(element, data, options);
                     case "move":
                         return InternalComputerActionMove.DeserializeInternalComputerActionMove(element, data, options);
                     case "screenshot":
@@ -118,8 +120,6 @@ namespace OpenAI.Responses
                         return InternalComputerActionTypeKeys.DeserializeInternalComputerActionTypeKeys(element, data, options);
                     case "wait":
                         return InternalComputerActionWait.DeserializeInternalComputerActionWait(element, data, options);
-                    case "keypress":
-                        return InternalComputerActionKeyPress.DeserializeInternalComputerActionKeyPress(element, data, options);
                 }
             }
             return InternalUnknownComputerAction.DeserializeInternalUnknownComputerAction(element, data, options);

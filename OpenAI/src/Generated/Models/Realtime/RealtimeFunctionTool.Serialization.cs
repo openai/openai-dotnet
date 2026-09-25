@@ -149,7 +149,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    functionParameters = BinaryData.FromString(prop.Value.GetRawText());
+                    functionParameters = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

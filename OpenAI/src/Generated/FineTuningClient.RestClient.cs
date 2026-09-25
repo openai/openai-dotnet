@@ -15,20 +15,20 @@ namespace OpenAI.FineTuning
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         // Plugin customization: make PipelineMessage creation methods virtual
-        internal virtual PipelineMessage CreateGetFineTuningCheckpointPermissionsRequest(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetFineTuningCheckpointPermissionsRequest(string fineTunedModelCheckpoint, string afterId, int? pageSizeLimit, string order, string projectId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/fine_tuning/checkpoints/", false);
             uri.AppendPath(fineTunedModelCheckpoint, true);
             uri.AppendPath("/permissions", false);
-            if (after != null)
+            if (afterId != null)
             {
-                uri.AppendQuery("after", after, true);
+                uri.AppendQuery("after", afterId, true);
             }
-            if (limit != null)
+            if (pageSizeLimit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(pageSizeLimit), true);
             }
             if (order != null)
             {

@@ -92,12 +92,12 @@ namespace OpenAI.Chat
             {
                 switch (discriminator.GetString())
                 {
-                    case "text":
-                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, data, options);
-                    case "json_schema":
-                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, data, options);
                     case "json_object":
                         return InternalDotNetChatResponseFormatJsonObject.DeserializeInternalDotNetChatResponseFormatJsonObject(element, data, options);
+                    case "json_schema":
+                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, data, options);
+                    case "text":
+                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, data, options);
                 }
             }
             return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, data, options);
