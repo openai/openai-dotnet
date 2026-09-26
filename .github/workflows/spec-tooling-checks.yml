@@ -1,0 +1,45 @@
+# This workflow validates the specification processing tooling. The code integrity checks
+# deliberately ignore `specification/tools/**`, since a snapshot has nothing to say about code
+# generation, so the tool needs a check of its own.
+name: Spec tooling checks
+
+on:
+  pull_request:
+    paths:
+      - 'specification/tools/**'
+      - 'specification/base/typespec/**'
+      - 'scripts/Sync-OpenAISpec.ps1'
+      - '.github/workflows/spec-tooling-checks.yml'
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-spec-processor:
+    name: Validate spec processor
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run spec processor tests
+        run: dotnet test specification/tools/OpenAI.SpecProcessor.Tests
+          --configuration Release
+          --logger "trx;LogFilePrefix=spec-processor"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: ${{ !cancelled() }}
+        with:
+          name: spec-tooling-artifacts
+          path: ${{github.workspace}}/artifacts

@@ -1,0 +1,12 @@
+{
+  "Spec": {
+    "SourceUrl": "https://raw.githubusercontent.com/openai/openai-openapi/main/openapi.yaml",
+    "RawDownloadFile": "openai-rest-raw.yml",
+    "DiffReportFile": "diff-report.md"
+  },
+  "Defaults": {
+    "OutputDirectory": "../openai/current",
+    "ReportDirectory": "../openai/current",
+    "PreviousSpecDirectory": "../openai/previous"
+  }
+}
