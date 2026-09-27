@@ -5,6 +5,8 @@ using OpenAI.Assistants;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -277,5 +279,72 @@ public class AssistantsMockTests : ClientTestBase
         Assert.That(updates[0].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCreated));
         Assert.That(updates[1].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunInProgress));
         Assert.That(updates[2].UpdateKind, Is.EqualTo(StreamingUpdateReason.RunCompleted));
+    }
+
+    [Test]
+    public async Task CreateThreadAndRunWithoutThreadOptions()
+    {
+        string requestBody = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = Encoding.UTF8.GetString(stream.ToArray());
+                return new MockPipelineResponse(200).WithContent("""
+                    {"id":"run_abc","object":"thread.run","status":"queued"}
+                    """);
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        ThreadRun run = IsAsync
+            ? await client.CreateThreadAndRunAsync("asst_abc")
+            : client.CreateThreadAndRun("asst_abc");
+
+        Assert.That(run.Id, Is.EqualTo("run_abc"));
+        Assert.That(requestBody, Does.Contain("\"assistant_id\":\"asst_abc\""));
+        Assert.That(requestBody, Does.Not.Contain("\"thread\""));
+    }
+
+    [Test]
+    public async Task CreateThreadAndRunStreamingWithoutThreadOptions()
+    {
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
+                event: thread.run.created
+                data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+                event: done
+                data: [DONE]
+                """))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        List<StreamingUpdate> updates = new();
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate update in client.CreateThreadAndRunStreamingAsync("asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate update in client.CreateThreadAndRunStreaming("asst_abc"))
+            {
+                updates.Add(update);
+            }
+        }
+
+        Assert.That(updates, Has.Count.EqualTo(1));
     }
 }
