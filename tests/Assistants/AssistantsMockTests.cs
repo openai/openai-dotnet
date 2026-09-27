@@ -2,8 +2,10 @@ using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Assistants;
+using System;
 using System.ClientModel;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Assistants;
@@ -19,6 +21,92 @@ public class AssistantsMockTests : ClientTestBase
 
     public AssistantsMockTests(bool isAsync) : base(isAsync)
     {
+    }
+
+    [TestCase(false)]
+    [TestCase(true)]
+    public async Task CreateThreadAndRunRespectsTheCancellationToken(bool canceled)
+    {
+        using CancellationTokenSource cancellationSource = new();
+        if (canceled)
+        {
+            cancellationSource.Cancel();
+        }
+
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(_ => new MockPipelineResponse(200).WithContent("""
+                {"id":"run_abc","object":"thread.run","status":"queued"}
+                """))
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        if (canceled)
+        {
+            if (IsAsync)
+            {
+                Assert.That(async () => await client.CreateThreadAndRunAsync("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+            else
+            {
+                Assert.That(() => client.CreateThreadAndRun("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token),
+                    Throws.InstanceOf<OperationCanceledException>());
+            }
+        }
+        else
+        {
+            ThreadRun run = IsAsync
+                ? await client.CreateThreadAndRunAsync("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token)
+                : client.CreateThreadAndRun("asst_abc", new ThreadCreationOptions(), cancellationToken: cancellationSource.Token);
+            Assert.That(run.Id, Is.EqualTo("run_abc"));
+        }
+    }
+
+    [Test]
+    public async Task CreateThreadAndRunStreamingDoesNotBufferTheResponse()
+    {
+        bool? bufferResponse = null;
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                bufferResponse = message.BufferResponse;
+                return new MockPipelineResponse(200).WithContent("""
+                    event: thread.run.created
+                    data: {"id":"run_abc","object":"thread.run","status":"queued"}
+
+                    event: done
+                    data: [DONE]
+                    """);
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AssistantClient client = new(s_fakeCredential, clientOptions);
+
+        List<StreamingUpdate> updates = new();
+        if (IsAsync)
+        {
+            await foreach (StreamingUpdate update in client.CreateThreadAndRunStreamingAsync("asst_abc", new ThreadCreationOptions()))
+            {
+                updates.Add(update);
+            }
+        }
+        else
+        {
+            foreach (StreamingUpdate update in client.CreateThreadAndRunStreaming("asst_abc", new ThreadCreationOptions()))
+            {
+                updates.Add(update);
+            }
+        }
+
+        Assert.That(updates, Has.Count.EqualTo(1));
+        Assert.That(bufferResponse, Is.False);
     }
 
     [Test]

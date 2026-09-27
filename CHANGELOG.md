@@ -12,6 +12,9 @@
 
 ### Bugs Fixed
 
+- OpenAI.Assistants:
+  - Fixed the synchronous `AssistantClient.CreateThreadAndRun` protocol method discarding the caller's `RequestOptions`. Because of this, the synchronous `CreateThreadAndRun` convenience method ignored its `CancellationToken`, and the synchronous `CreateThreadAndRunStreaming` method buffered the whole response before yielding the first update. The asynchronous methods were not affected.
+
 ### Other Changes
 
 ## 2.14.0 (2026-09-15)
