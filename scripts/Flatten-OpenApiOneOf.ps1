@@ -4,13 +4,16 @@
 
 .DESCRIPTION
     Replaces a direct oneOf branch with its inner oneOf branches when the parent
-    and wrapper have the same discriminator and any additional siblings beyond
-    type, discriminator, and oneOf are deeply equal. Matching ordinary
-    constraints remain once on the parent. Location-sensitive identifiers,
-    anchors, and extension properties make a wrapper ineligible.
+    and wrapper use the same discriminator property and any additional siblings
+    beyond type, discriminator, and oneOf are deeply equal. Discriminator mapping
+    differences are ignored because final mappings are rebuilt after components
+    receive stable names. Matching ordinary constraints remain once on the
+    parent. Location-sensitive identifiers, anchors, and extension properties
+    make a wrapper ineligible.
 
-    The transformation assumes that no instance matches more than one promoted
-    leaf schema. It preserves encounter order, relocates affected local JSON
+    Every recursive leaf must require the discriminator property with finite
+    string const/enum values, and accepted values must be globally disjoint. The
+    transformation preserves encounter order, relocates affected local JSON
     pointers, and writes a separate oneOf-flattened document. Run
     Sort-OpenApiDocument.ps1 afterward to produce canonical ordering.
 
@@ -50,22 +53,6 @@ if (-not (Test-Path -LiteralPath $helperPath -PathType Leaf)) {
 }
 . $helperPath
 
-function Test-IsOpenApiObjectSchema {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [object]$Schema
-    )
-
-    if (-not (Test-JsonObjectValue -Value $Schema)) {
-        return $false
-    }
-
-    $type = Get-JsonPropertyValue -Object $Schema -Name "type"
-    return $type -is [string] -and
-        [string]::Equals($type, "object", [System.StringComparison]::Ordinal)
-}
-
 function Get-OpenApiDiscriminatorPropertyName {
     param(
         [Parameter(Mandatory = $true)]
@@ -83,137 +70,6 @@ function Get-OpenApiDiscriminatorPropertyName {
     }
 
     return $propertyName
-}
-
-function Test-ContainsUnsafeOpenApiOneOfSibling {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [object]$Value,
-
-        [Parameter()]
-        [int]$Depth = 0,
-
-        [Parameter()]
-        [int]$MaximumDepth = 200
-    )
-
-    if ($Depth -gt $MaximumDepth) {
-        throw "oneOf sibling inspection exceeds the supported depth of $MaximumDepth."
-    }
-    if ($null -eq $Value) {
-        return $false
-    }
-    if (Test-JsonArrayValue -Value $Value) {
-        foreach ($item in $Value) {
-            if (Test-ContainsUnsafeOpenApiOneOfSibling `
-                -Value $item `
-                -Depth ($Depth + 1) `
-                -MaximumDepth $MaximumDepth) {
-                return $true
-            }
-        }
-        return $false
-    }
-    if (-not (Test-JsonObjectValue -Value $Value)) {
-        return $false
-    }
-
-    foreach ($property in (Get-JsonProperties -Value $Value)) {
-        if (@('$id', '$anchor', '$dynamicAnchor', '$recursiveAnchor') -ccontains $property.Name -or
-            $property.Name.StartsWith("x-", [System.StringComparison]::OrdinalIgnoreCase)) {
-            return $true
-        }
-        if (Test-ContainsUnsafeOpenApiOneOfSibling `
-            -Value $property.Value `
-            -Depth ($Depth + 1) `
-            -MaximumDepth $MaximumDepth) {
-            return $true
-        }
-    }
-
-    return $false
-}
-
-function Test-OpenApiOneOfSiblingsMatch {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$ParentSchema,
-
-        [Parameter(Mandatory = $true)]
-        [object]$WrapperSchema
-    )
-
-    $parentProperties = @(
-        Get-JsonProperties -Value $ParentSchema |
-            Where-Object { @("type", "discriminator", "oneOf") -cnotcontains $_.Name }
-    )
-    $wrapperProperties = @(
-        Get-JsonProperties -Value $WrapperSchema |
-            Where-Object { @("type", "discriminator", "oneOf") -cnotcontains $_.Name }
-    )
-    if ($parentProperties.Count -ne $wrapperProperties.Count) {
-        return $false
-    }
-
-    foreach ($property in $parentProperties) {
-        if (-not (Test-JsonProperty -Object $WrapperSchema -Name $property.Name) -or
-            -not (Test-JsonValuesEqual `
-                -Left $property.Value `
-                -Right (Get-JsonPropertyValue -Object $WrapperSchema -Name $property.Name))) {
-            return $false
-        }
-
-        $sibling = [ordered]@{}
-        $sibling[$property.Name] = $property.Value
-        if (Test-ContainsUnsafeOpenApiOneOfSibling -Value $sibling) {
-            return $false
-        }
-    }
-
-    return $true
-}
-
-function Test-IsOpenApiOneOfLeafBranch {
-    param(
-        [Parameter(Mandatory = $true)]
-        [AllowNull()]
-        [object]$Branch,
-
-        [Parameter(Mandatory = $true)]
-        [string]$PropertyName
-    )
-
-    if (-not (Test-IsOpenApiObjectSchema -Schema $Branch)) {
-        return $false
-    }
-
-    $properties = Get-JsonPropertyValue -Object $Branch -Name "properties"
-    if (-not (Test-JsonObjectValue -Value $properties) -or
-        -not (Test-JsonProperty -Object $properties -Name $PropertyName)) {
-        return $false
-    }
-
-    $propertySchema = Get-JsonPropertyValue -Object $properties -Name $PropertyName
-    if (-not (Test-JsonObjectValue -Value $propertySchema)) {
-        return $false
-    }
-    $propertyType = Get-JsonPropertyValue -Object $propertySchema -Name "type"
-    $enum = Get-JsonPropertyValue -Object $propertySchema -Name "enum"
-    if ($propertyType -isnot [string] -or
-        -not [string]::Equals($propertyType, "string", [System.StringComparison]::Ordinal) -or
-        -not (Test-JsonArrayValue -Value $enum) -or
-        $enum.Count -eq 0) {
-        return $false
-    }
-
-    foreach ($enumValue in $enum) {
-        if ($enumValue -isnot [string]) {
-            return $false
-        }
-    }
-
-    return $true
 }
 
 function Get-FlattenableOpenApiOneOfWrapper {
@@ -236,8 +92,7 @@ function Get-FlattenableOpenApiOneOfWrapper {
         throw "nested oneOf eligibility exceeds the supported depth of $MaximumDepth."
     }
     if (-not (Test-JsonObjectValue -Value $ParentSchema) -or
-        -not (Test-IsOpenApiObjectSchema -Schema $WrapperSchema) -or
-        (Test-JsonProperty -Object $WrapperSchema -Name '$ref')) {
+        -not (Test-JsonObjectValue -Value $WrapperSchema)) {
         return $null
     }
 
@@ -254,42 +109,28 @@ function Get-FlattenableOpenApiOneOfWrapper {
         return $null
     }
 
-    $parentDiscriminator = Get-JsonPropertyValue -Object $ParentSchema -Name "discriminator"
-    $wrapperDiscriminator = Get-JsonPropertyValue -Object $WrapperSchema -Name "discriminator"
-    if (-not (Test-JsonObjectValue -Value $wrapperDiscriminator) -or
-        -not (Test-JsonValuesEqual `
-            -Left $parentDiscriminator `
-            -Right $wrapperDiscriminator)) {
+    $plan = Get-OpenApiInlineDiscriminatorUnionPlan `
+        -Schema $ParentSchema `
+        -PropertyName $propertyName `
+        -Breadcrumb "#" `
+        -RequireDiscriminator `
+        -Depth $Depth `
+        -MaximumDepth $MaximumDepth
+    if ($null -eq $plan) {
         return $null
     }
 
-    $parentOneOf = Get-JsonPropertyValue -Object $ParentSchema -Name "oneOf"
-    $wrapperOneOf = Get-JsonPropertyValue -Object $WrapperSchema -Name "oneOf"
-    if (-not (Test-JsonArrayValue -Value $parentOneOf) -or $parentOneOf.Count -eq 0 -or
-        -not (Test-JsonArrayValue -Value $wrapperOneOf) -or $wrapperOneOf.Count -eq 0 -or
-        -not (Test-OpenApiOneOfSiblingsMatch `
-            -ParentSchema $ParentSchema `
-            -WrapperSchema $WrapperSchema)) {
-        return $null
-    }
-
-    foreach ($branch in $wrapperOneOf) {
-        if (Test-IsOpenApiOneOfLeafBranch -Branch $branch -PropertyName $propertyName) {
-            continue
-        }
-        if ($null -eq (Get-FlattenableOpenApiOneOfWrapper `
-            -ParentSchema $WrapperSchema `
-            -WrapperSchema $branch `
-            -Depth ($Depth + 1) `
-            -MaximumDepth $MaximumDepth)) {
-            return $null
+    foreach ($branchPlan in $plan.BranchPlans) {
+        if ([object]::ReferenceEquals($branchPlan.Branch, $WrapperSchema) -and
+            [string]::Equals($branchPlan.Kind, "Wrapper", [System.StringComparison]::Ordinal)) {
+            return [PSCustomObject]@{
+                PropertyName = $propertyName
+                Branches = $branchPlan.NestedPlan.Branches
+                Values = $branchPlan.Values
+            }
         }
     }
-
-    return [PSCustomObject]@{
-        PropertyName = $propertyName
-        Branches = $wrapperOneOf
-    }
+    return $null
 }
 
 function Add-DirectOpenApiPointerRelocation {

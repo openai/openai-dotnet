@@ -13,13 +13,15 @@
     TypeOf-prefixed singleton string enum from properties.type when available.
     Nested candidates inherit their containing component's semantic name before
     appending their relative path and enum tokens. Structural composition/item
-    tokens are omitted, and numeric suffixes are used only to disambiguate
-    collisions. The complete oneOf-containing Schema Object moves with all of its
-    siblings. Schemas whose relocation could change $id or anchor scope fail
-    explicitly. After component names stabilize, every discriminator receives a
-    canonical exhaustive mapping from accepted const/enum payload values to its
-    branch component pointers. Structurally identical occurrences intentionally
-    remain separate components. Run
+    tokens are omitted. A direct oneOf without a discriminator receives a Union
+    marker; otherwise anonymous descendants use ArrayItem, Value, a unique JSON
+    shape, or AlternativeN before numeric collision suffixes beginning with `_1`.
+    The complete oneOf-containing Schema Object moves with all of its siblings.
+    Schemas whose relocation could change $id or anchor scope fail explicitly.
+    After component names stabilize, every discriminator receives a canonical
+    exhaustive mapping from accepted const/enum payload values to its branch
+    component pointers. Structurally identical occurrences intentionally remain
+    separate components. Run
     Update-OpenApiComponentDeduplicationMap.ps1 afterward, review its persisted
     decisions, then run Deduplicate-OpenApiComponents.ps1.
 
@@ -111,6 +113,23 @@ function Test-IsInlineOpenApiOneOfSchema {
 
     $oneOf = Get-JsonPropertyValue -Object $Value -Name "oneOf"
     return (Test-JsonArrayValue -Value $oneOf) -and $oneOf.Count -gt 0
+}
+
+# Marks a componentized oneOf owner whose alternatives cannot be selected by a
+# direct OpenAPI discriminator. The distinction is naming metadata only; both
+# forms remain OneOf candidates and follow the same relocation behavior.
+function Test-IsOpenApiNonDiscriminatedOneOfSchema {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet("OpenApi", "Components", "SchemaMap", "SchemaArray", "Schema", "Literal")]
+        [string]$Context
+    )
+
+    return (Test-IsInlineOpenApiOneOfSchema -Value $Value -Context $Context) -and
+        -not (Test-JsonProperty -Object $Value -Name "discriminator")
 }
 
 # Finds the first scope-sensitive JSON Schema keyword within a schema subtree.
@@ -323,6 +342,11 @@ function Add-InlineOpenApiSchemaCandidates {
             Pointer = $Pointer
             Schema = $Value
             Kind = $candidateKind
+            IsNonDiscriminatedUnion = [string]::Equals(
+                $candidateKind,
+                "OneOf",
+                [System.StringComparison]::Ordinal
+            ) -and (Test-IsOpenApiNonDiscriminatedOneOfSchema -Value $Value -Context $Context)
             CandidateDepth = $CandidateDepth
             ParentCandidatePointer = $ParentCandidatePointer
             InheritedIdPointer = $InheritedIdPointer
@@ -494,15 +518,206 @@ function Get-OpenApiOperationComponentNamePrefix {
         (ConvertTo-OpenApiComponentNameToken -Value $Tokens[1])
 }
 
+function Add-OpenApiComponentNamePart {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.List[string]]$Parts,
+
+        [Parameter()]
+        [AllowEmptyString()]
+        [string]$Part
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Part)) {
+        return
+    }
+    if ($Parts.Count -eq 0 -or
+        -not [string]::Equals($Parts[$Parts.Count - 1], $Part, [System.StringComparison]::Ordinal)) {
+        $Parts.Add($Part)
+    }
+}
+
+# Returns a direct JSON shape label only when the schema states one scalar type.
+# References, type arrays, and composition-only branches deliberately remain
+# anonymous so naming never depends on reference resolution or inference.
+function Get-OpenApiDirectSchemaShapeName {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Schema) -or
+        (Test-JsonProperty -Object $Schema -Name '$ref')) {
+        return $null
+    }
+    $type = Get-JsonPropertyValue -Object $Schema -Name "type"
+    if ($type -isnot [string]) {
+        return $null
+    }
+    switch -CaseSensitive ($type) {
+        "array" { return "Array" }
+        "boolean" { return "Boolean" }
+        "integer" { return "Integer" }
+        "null" { return "Null" }
+        "number" { return "Number" }
+        "object" { return "Object" }
+        "string" { return "String" }
+        default { return $null }
+    }
+}
+
+# Returns the one-based branch position when a candidate is a direct child of
+# its nearest candidate parent's oneOf. Deeper descendants return null.
+function Get-OpenApiDirectOneOfAlternativePosition {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$ParentCandidate,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Candidate
+    )
+
+    [string[]]$parentTokens = Get-JsonPointerTokens -Pointer $ParentCandidate.Pointer
+    [string[]]$candidateTokens = Get-JsonPointerTokens -Pointer $Candidate.Pointer
+    if ($candidateTokens.Count -ne $parentTokens.Count + 2 -or
+        -not [string]::Equals($candidateTokens[$parentTokens.Count], "oneOf", [System.StringComparison]::Ordinal)) {
+        return $null
+    }
+    $index = 0
+    if (-not [int]::TryParse(
+            $candidateTokens[$parentTokens.Count + 1],
+            [System.Globalization.NumberStyles]::None,
+            [System.Globalization.CultureInfo]::InvariantCulture,
+            [ref]$index)) {
+        return $null
+    }
+    $oneOf = Get-JsonPropertyValue -Object $ParentCandidate.Schema -Name "oneOf"
+    if (-not (Test-JsonArrayValue -Value $oneOf) -or $index -lt 0 -or $index -ge $oneOf.Count) {
+        return $null
+    }
+    return $index + 1
+}
+
+function Get-OpenApiUniqueOneOfAlternativeShapeName {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$ParentCandidate,
+
+        [Parameter(Mandatory = $true)]
+        [int]$AlternativePosition
+    )
+
+    $oneOf = Get-JsonPropertyValue -Object $ParentCandidate.Schema -Name "oneOf"
+    $shape = Get-OpenApiDirectSchemaShapeName -Schema $oneOf[$AlternativePosition - 1]
+    if ($null -eq $shape) {
+        return $null
+    }
+    $matchingShapeCount = 0
+    foreach ($branch in $oneOf) {
+        $branchShape = Get-OpenApiDirectSchemaShapeName -Schema $branch
+        if ($branchShape -is [string] -and
+            [string]::Equals($branchShape, $shape, [System.StringComparison]::Ordinal)) {
+            $matchingShapeCount++
+        }
+    }
+    if ($matchingShapeCount -eq 1) {
+        return $shape
+    }
+    return $null
+}
+
+# Produces the semantic suffix below an already-named parent candidate. Generic
+# storage roles are introduced only for a non-discriminated union owner or one
+# of its otherwise anonymous descendants.
+function Get-OpenApiNestedSchemaNameParts {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$ParentCandidate,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Candidate
+    )
+
+    [string[]]$parentTokens = Get-JsonPointerTokens -Pointer $ParentCandidate.Pointer
+    [string[]]$candidateTokens = Get-JsonPointerTokens -Pointer $Candidate.Pointer
+    $relativeTokens = [System.Collections.Generic.List[string]]::new()
+    $parts = [System.Collections.Generic.List[string]]::new()
+    for ($index = $parentTokens.Count; $index -lt $candidateTokens.Count; $index++) {
+        $token = $candidateTokens[$index]
+        $relativeTokens.Add($token)
+        if (@(
+            "properties",
+            "items",
+            "additionalProperties",
+            "oneOf",
+            "anyOf",
+            "allOf",
+            "prefixItems"
+        ) -ccontains $token -or $token -match "^[0-9]+$") {
+            continue
+        }
+        Add-OpenApiComponentNamePart `
+            -Parts $parts `
+            -Part (ConvertTo-OpenApiComponentNameToken -Value $token)
+    }
+
+    $usesUnionRoles = $Candidate.IsNonDiscriminatedUnion -or
+        $ParentCandidate.IsNonDiscriminatedUnion
+    if ($parts.Count -eq 0 -and
+        $usesUnionRoles -and
+        $Candidate.TypeEnumValue -isnot [string]) {
+        $role = $null
+        if ($relativeTokens.Count -gt 0 -and
+            [string]::Equals(
+                $relativeTokens[$relativeTokens.Count - 1],
+                "additionalProperties",
+                [System.StringComparison]::Ordinal
+            )) {
+            $role = "Value"
+        }
+        elseif ($relativeTokens.Count -eq 3 -and
+            [string]::Equals($relativeTokens[0], "oneOf", [System.StringComparison]::Ordinal) -and
+            $relativeTokens[1] -match "^[0-9]+$" -and
+            [string]::Equals($relativeTokens[2], "items", [System.StringComparison]::Ordinal)) {
+            $role = "ArrayItem"
+        }
+        else {
+            $alternativePosition = Get-OpenApiDirectOneOfAlternativePosition `
+                -ParentCandidate $ParentCandidate `
+                -Candidate $Candidate
+            if ($null -ne $alternativePosition) {
+                $role = Get-OpenApiUniqueOneOfAlternativeShapeName `
+                    -ParentCandidate $ParentCandidate `
+                    -AlternativePosition $alternativePosition
+                if ($null -eq $role) {
+                    $role = "Alternative$alternativePosition"
+                }
+            }
+        }
+        Add-OpenApiComponentNamePart -Parts $parts -Part $role
+    }
+
+    if ($Candidate.TypeEnumValue -is [string]) {
+        $enumToken = ConvertTo-OpenApiComponentNameToken -Value $Candidate.TypeEnumValue
+        if (-not [string]::IsNullOrWhiteSpace($enumToken)) {
+            Add-OpenApiComponentNamePart -Parts $parts -Part "TypeOf$enumToken"
+        }
+    }
+    if ($Candidate.IsNonDiscriminatedUnion) {
+        Add-OpenApiComponentNamePart -Parts $parts -Part "Union"
+    }
+    return [string[]]$parts.ToArray()
+}
+
 # Builds the fallback name directly from a candidate's source pointer. Structural
 # routing tokens (`properties`, `oneOf`, array indexes, media types, and so on)
 # are omitted, while semantic property names and the candidate's own type enum
 # are retained.
 #
-# Nested candidates normally use their already-named parent in
+# Nested candidates use their already-named parent in
 # Set-OpenApiSchemaComponentNames. This fallback remains necessary for
-# top-level candidates and structural-only descendants that add no useful local
-# name part of their own.
+# top-level candidates.
 function Get-OpenApiSchemaComponentBaseName {
     param(
         [Parameter(Mandatory = $true)]
@@ -515,30 +730,20 @@ function Get-OpenApiSchemaComponentBaseName {
     [string[]]$tokens = Get-JsonPointerTokens -Pointer $Candidate.Pointer
     $parts = [System.Collections.Generic.List[string]]::new()
 
-    function Add-NamePart {
-        param([AllowEmptyString()][string]$Part)
-
-        if ([string]::IsNullOrWhiteSpace($Part)) {
-            return
-        }
-        if ($parts.Count -eq 0 -or
-            -not [string]::Equals($parts[$parts.Count - 1], $Part, [System.StringComparison]::Ordinal)) {
-            $parts.Add($Part)
-        }
-    }
-
     $startIndex = 0
     $operationPrefix = Get-OpenApiOperationComponentNamePrefix -Document $Document -Tokens $tokens
     if (-not [string]::IsNullOrWhiteSpace($operationPrefix)) {
-        Add-NamePart -Part $operationPrefix
+        Add-OpenApiComponentNamePart -Parts $parts -Part $operationPrefix
         if ($tokens -ccontains "requestBody") {
-            Add-NamePart -Part "Request"
+            Add-OpenApiComponentNamePart -Parts $parts -Part "Request"
         }
         elseif ($tokens -ccontains "responses") {
-            Add-NamePart -Part "Response"
+            Add-OpenApiComponentNamePart -Parts $parts -Part "Response"
             $responsesIndex = [Array]::IndexOf($tokens, "responses")
             if ($responsesIndex -ge 0 -and $responsesIndex + 1 -lt $tokens.Count) {
-                Add-NamePart -Part (ConvertTo-OpenApiComponentNameToken -Value $tokens[$responsesIndex + 1])
+                Add-OpenApiComponentNamePart `
+                    -Parts $parts `
+                    -Part (ConvertTo-OpenApiComponentNameToken -Value $tokens[$responsesIndex + 1])
             }
         }
         $schemaIndex = [Array]::IndexOf($tokens, "schema")
@@ -547,7 +752,9 @@ function Get-OpenApiSchemaComponentBaseName {
     elseif ($tokens.Count -ge 3 -and
         [string]::Equals($tokens[0], "components", [System.StringComparison]::Ordinal) -and
         [string]::Equals($tokens[1], "schemas", [System.StringComparison]::Ordinal)) {
-        Add-NamePart -Part (ConvertTo-OpenApiComponentNameToken -Value $tokens[2])
+        Add-OpenApiComponentNamePart `
+            -Parts $parts `
+            -Part (ConvertTo-OpenApiComponentNameToken -Value $tokens[2])
         $startIndex = 3
     }
 
@@ -577,14 +784,17 @@ function Get-OpenApiSchemaComponentBaseName {
         }
 
         $nameToken = ConvertTo-OpenApiComponentNameToken -Value $token
-        Add-NamePart -Part $nameToken
+        Add-OpenApiComponentNamePart -Parts $parts -Part $nameToken
     }
 
     if ($Candidate.TypeEnumValue -is [string]) {
         $enumToken = ConvertTo-OpenApiComponentNameToken -Value $Candidate.TypeEnumValue
         if (-not [string]::IsNullOrWhiteSpace($enumToken)) {
-            Add-NamePart -Part "TypeOf$enumToken"
+            Add-OpenApiComponentNamePart -Parts $parts -Part "TypeOf$enumToken"
         }
+    }
+    if ($Candidate.IsNonDiscriminatedUnion) {
+        Add-OpenApiComponentNamePart -Parts $parts -Part "Union"
     }
 
     $baseName = $parts -join "_"
@@ -633,47 +843,14 @@ function Set-OpenApiSchemaComponentNames {
         if ($candidate.ParentCandidatePointer -is [string] -and
             $namedCandidateByPointer.ContainsKey($candidate.ParentCandidatePointer)) {
             $parentCandidate = $namedCandidateByPointer[$candidate.ParentCandidatePointer]
-            [string[]]$parentTokens = Get-JsonPointerTokens -Pointer $parentCandidate.Pointer
-            [string[]]$candidateTokens = Get-JsonPointerTokens -Pointer $candidate.Pointer
-            $nestedParts = [System.Collections.Generic.List[string]]::new()
-            # Only inspect the pointer suffix below the parent. Composition and
-            # collection scaffolding describes storage, not domain meaning, so
-            # it is discarded while names such as `tools` are retained.
-            for ($index = $parentTokens.Count; $index -lt $candidateTokens.Count; $index++) {
-                $token = $candidateTokens[$index]
-                if (@(
-                    "properties",
-                    "items",
-                    "additionalProperties",
-                    "oneOf",
-                    "anyOf",
-                    "allOf",
-                    "prefixItems"
-                ) -ccontains $token -or $token -match "^[0-9]+$") {
-                    continue
-                }
-                $nameToken = ConvertTo-OpenApiComponentNameToken -Value $token
-                if (-not [string]::IsNullOrWhiteSpace($nameToken) -and
-                    ($nestedParts.Count -eq 0 -or
-                        -not [string]::Equals($nestedParts[$nestedParts.Count - 1], $nameToken, [System.StringComparison]::Ordinal))) {
-                    $nestedParts.Add($nameToken)
-                }
-            }
-            if ($candidate.TypeEnumValue -is [string]) {
-                $enumToken = ConvertTo-OpenApiComponentNameToken -Value $candidate.TypeEnumValue
-                if (-not [string]::IsNullOrWhiteSpace($enumToken)) {
-                    $typePart = "TypeOf$enumToken"
-                    if ($nestedParts.Count -eq 0 -or
-                        -not [string]::Equals($nestedParts[$nestedParts.Count - 1], $typePart, [System.StringComparison]::Ordinal)) {
-                        $nestedParts.Add($typePart)
-                    }
-                }
-            }
-            # A child that contributes no semantic path token and no enum label
-            # uses the source-pointer fallback. This avoids manufacturing a copy
-            # of the parent name and forcing an otherwise meaningless `_2`.
+            [string[]]$nestedParts = @(Get-OpenApiNestedSchemaNameParts `
+                -ParentCandidate $parentCandidate `
+                -Candidate $candidate)
             if ($nestedParts.Count -gt 0) {
                 $baseName = "$($parentCandidate.Name)_$($nestedParts -join '_')"
+            }
+            else {
+                $baseName = $parentCandidate.Name
             }
         }
         if ([string]::IsNullOrWhiteSpace($baseName)) {
@@ -682,11 +859,11 @@ function Set-OpenApiSchemaComponentNames {
                 -Candidate $candidate
         }
         $name = $baseName
-        # Numeric suffixes resolve name collisions only. Structurally identical
-        # schemas still receive separate components here; the downstream,
-        # persisted deduplication workflow owns any structural consolidation.
+        # The first occurrence keeps the base name; conflicts use _1, _2, and so
+        # on. Structurally identical schemas still receive separate components
+        # here; persisted deduplication owns any structural consolidation.
         if (-not $usedNames.Add($name)) {
-            $suffix = 2
+            $suffix = 1
             do {
                 $name = "${baseName}_$suffix"
                 $suffix++

@@ -83,7 +83,7 @@
                             "kind": {
                               "type": "string",
                               "enum": [
-                                "message"
+                                "system_message"
                               ]
                             },
                             "role": {
@@ -104,7 +104,7 @@
                             "kind": {
                               "type": "string",
                               "enum": [
-                                "message"
+                                "user_message"
                               ]
                             },
                             "role": {

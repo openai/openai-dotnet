@@ -4,10 +4,11 @@
 
 .DESCRIPTION
     Adds `discriminator: { propertyName: "type" }` to a schema when its direct
-    nonempty oneOf contains only object branches, every branch requires a direct
-    string `properties.type` constrained by const or a nonempty enum, all accepted
-    values are disjoint across branches, and the containing schema has no direct
-    discriminator property.
+    nonempty oneOf recursively resolves to compatible object leaves. Every leaf
+    must require a direct string `properties.type` constrained by const or a
+    nonempty enum, and all accepted values must be disjoint across the complete
+    tree. Nested oneOf wrappers must use the same discriminator and carry only
+    structural siblings shared with their parent.
 
     The discriminator is inserted immediately before oneOf. Existing valid
     discriminators are preserved; existing invalid discriminators are removed
@@ -68,41 +69,18 @@ function Get-OpenApiOneOfDiscriminatorCandidate {
         return $null
     }
 
-    $discriminatorValues = [System.Collections.Generic.List[string]]::new()
-    $seenDiscriminatorValues = [System.Collections.Generic.HashSet[string]]::new(
-        [System.StringComparer]::Ordinal
-    )
-    for ($index = 0; $index -lt $oneOf.Count; $index++) {
-        $branch = $oneOf[$index]
-        if (-not (Test-JsonObjectValue -Value $branch)) {
-            return $null
-        }
-        $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
-        if ($branchType -isnot [string] -or
-            -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal)) {
-            return $null
-        }
-
-        try {
-            [string[]]$branchValues = @(Get-OpenApiDiscriminatorPropertyValues `
-                -Schema $branch `
-                -PropertyName "type" `
-                -Breadcrumb "#/oneOf/$index")
-        }
-        catch {
-            return $null
-        }
-        foreach ($value in $branchValues) {
-            if (-not $seenDiscriminatorValues.Add($value)) {
-                return $null
-            }
-            $discriminatorValues.Add($value)
-        }
+    $plan = Get-OpenApiInlineDiscriminatorUnionPlan `
+        -Schema $Schema `
+        -PropertyName "type" `
+        -Breadcrumb "#" `
+        -IgnoreSchemaDiscriminatorMetadata:$IgnoreExistingDiscriminator
+    if ($null -eq $plan) {
+        return $null
     }
 
     return [PSCustomObject]@{
         Branches = $oneOf
-        EnumValues = [string[]]$discriminatorValues.ToArray()
+        EnumValues = [string[]]$plan.Values
     }
 }
 
@@ -120,29 +98,11 @@ function Test-IsValidInlineOpenApiOneOfDiscriminator {
     if ($propertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($propertyName)) {
         return $false
     }
-    $oneOf = Get-JsonPropertyValue -Object $Schema -Name "oneOf"
-    if (-not (Test-JsonArrayValue -Value $oneOf) -or $oneOf.Count -eq 0) {
-        return $false
-    }
-
-    $seenValues = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    for ($index = 0; $index -lt $oneOf.Count; $index++) {
-        try {
-            [string[]]$values = @(Get-OpenApiDiscriminatorPropertyValues `
-                -Schema $oneOf[$index] `
-                -PropertyName $propertyName `
-                -Breadcrumb "#/oneOf/$index")
-        }
-        catch {
-            return $false
-        }
-        foreach ($value in $values) {
-            if (-not $seenValues.Add($value)) {
-                return $false
-            }
-        }
-    }
-    return $true
+    return $null -ne (Get-OpenApiInlineDiscriminatorUnionPlan `
+        -Schema $Schema `
+        -PropertyName $propertyName `
+        -Breadcrumb "#" `
+        -RequireDiscriminator)
 }
 
 function ConvertTo-OneOfDiscriminatedOpenApiValue {

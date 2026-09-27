@@ -149,6 +149,98 @@ try {
         Assert-Equal 1 $result.AddedDiscriminatorCount "Finite const/enum discriminator was not added."
     }
 
+    # A compatible nested discriminated oneOf contributes its leaf values to the
+    # outer union. The outer discriminator must survive so the flattening stage
+    # can promote those leaves before mappings are materialized.
+    Invoke-Test "existing discriminator accepts compatible nested oneOf branches" {
+        $nested = [ordered]@{
+            type = "object"
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("nested_a", "nested_alias") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; const = "nested_b" }
+                    }
+                }
+            )
+        }
+        $schema = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = @(
+                $nested,
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("outer") }
+                    }
+                }
+            )
+        }
+
+        Assert-True (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $schema) "Compatible nested discriminator was considered invalid."
+        $candidate = Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema -IgnoreExistingDiscriminator
+        Assert-Sequence @("nested_a", "nested_alias", "nested_b", "outer") @($candidate.EnumValues) "Recursive discriminator values were incorrect."
+        $source = New-TestOpenApiDocument -Schema $schema
+        $before = ConvertTo-Json -InputObject $source -Compress -Depth 100
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument -Document $source
+        Assert-Equal 0 $result.RemovedInvalidDiscriminatorCount "Compatible outer discriminator was removed."
+        Assert-Equal $before (ConvertTo-Json -InputObject $result.Document -Compress -Depth 100) "Compatible nested discriminator schema changed."
+
+        $inferred = Copy-JsonValue -Value $schema
+        $null = $inferred.Remove("discriminator")
+        $inferredResult = ConvertTo-OneOfDiscriminatedOpenApiDocument `
+            -Document (New-TestOpenApiDocument -Schema $inferred)
+        Assert-Equal 1 $inferredResult.AddedDiscriminatorCount "Compatible outer discriminator was not inferred."
+        Assert-Equal "type" (Get-TestResponseSchema $inferredResult.Document).discriminator.propertyName "Inferred outer discriminator was incorrect."
+    }
+
+    Invoke-Test "duplicate values across nested and outer branches reject the discriminator" {
+        $nested = [ordered]@{
+            type = "object"
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; const = "duplicate" }
+                    }
+                }
+            )
+        }
+        $schema = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = @(
+                $nested,
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("duplicate") }
+                    }
+                }
+            )
+        }
+
+        Assert-True (-not (Test-IsValidInlineOpenApiOneOfDiscriminator -Schema $schema)) "Cross-level duplicate was considered valid."
+        Assert-True ($null -eq (Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema -IgnoreExistingDiscriminator)) "Cross-level duplicate was inferable."
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument `
+            -Document (New-TestOpenApiDocument -Schema $schema)
+        $converted = Get-TestResponseSchema $result.Document
+        Assert-Equal 1 $result.RemovedInvalidDiscriminatorCount "Ambiguous outer discriminator was not removed."
+        Assert-True (-not (Test-JsonProperty -Object $converted -Name "discriminator")) "Ambiguous outer discriminator remained."
+    }
+
     # OpenAPI requires the discriminator field in every alternative. Optional
     # properties are left undiscriminated rather than producing invalid metadata.
     Invoke-Test "optional discriminator properties remain undiscriminated" {

@@ -135,6 +135,35 @@ try {
         Assert-True (Test-JsonProperty $schema "discriminator") "Promoted schema lost its discriminator."
     }
 
+    Invoke-Test "promotion accepts compatible nested discriminated oneOf branches" {
+        $leaf = {
+            param([string]$Value)
+            [ordered]@{
+                type = "object"
+                required = @("kind")
+                properties = [ordered]@{
+                    kind = [ordered]@{ type = "string"; const = $Value }
+                }
+            }
+        }
+        $nested = [ordered]@{
+            type = "object"
+            discriminator = [ordered]@{ propertyName = "kind" }
+            oneOf = @((& $leaf "nested_a"), (& $leaf "nested_b"))
+        }
+        $schema = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "kind" }
+            anyOf = @($nested, (& $leaf "outer"))
+        }
+
+        $result = ConvertTo-NormalizedOpenApiOneOfDocument `
+            -Document (New-TestOpenApiDocument -Schema $schema)
+        $normalized = Get-TestResponseSchema $result.Document
+        Assert-Equal 1 $result.PromotedAnyOfCount "Nested discriminator candidate was not promoted."
+        Assert-True (-not (Test-JsonProperty $normalized "anyOf")) "Nested candidate retained anyOf."
+        Assert-Equal 2 $normalized.oneOf.Count "Nested candidate changed branch count before flattening."
+    }
+
     # Every eligibility gate is conservative: malformed or mismatched unions
     # stay anyOf, after which their unpaired discriminator follows cleanup rules.
     Invoke-Test "near misses remain anyOf and follow orphan cleanup" {

@@ -92,6 +92,7 @@ function New-OneOfLeaf {
 
     return [ordered]@{
         type = "object"
+        required = @("kind")
         properties = [ordered]@{
             kind = [ordered]@{
                 type = "string"
@@ -107,8 +108,8 @@ function New-TransparentOneOfSchema {
         type = "object"
         discriminator = Copy-JsonValue -Value $discriminator
         oneOf = @(
-            (New-OneOfLeaf -Value "message")
-            (New-OneOfLeaf -Value "message")
+            (New-OneOfLeaf -Value "system_message")
+            (New-OneOfLeaf -Value "user_message")
         )
     }
     return [ordered]@{
@@ -147,9 +148,9 @@ try {
         Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Conversion mutated its input."
 
         $schema = Get-TestResponseSchema -Document $result.Document
-        Assert-Sequence @("alpha", "message", "message", "omega") @(
+        Assert-Sequence @("alpha", "system_message", "user_message", "omega") @(
             $schema.oneOf | ForEach-Object { $_.properties.kind.enum[0] }
-        ) "Promoted branch order or repeated values changed."
+        ) "Promoted branch order changed."
         Assert-Sequence @("shared", "label") @($schema.required) "Shared required constraint changed."
         Assert-Equal $true $schema.additionalProperties "Shared additionalProperties changed."
     }
@@ -160,9 +161,48 @@ try {
         $schema = Get-TestResponseSchema -Document $result.Document
         Assert-Equal 1 $result.FlattenedOneOfCount "Transparent wrapper was not flattened."
         Assert-Equal 4 $schema.oneOf.Count "Transparent wrapper emitted the wrong branch count."
-        Assert-Sequence @("alpha", "message", "message", "omega") @(
+        Assert-Sequence @("alpha", "system_message", "user_message", "omega") @(
             $schema.oneOf | ForEach-Object { $_.properties.kind.enum[0] }
         ) "Transparent wrapper changed branch order."
+    }
+
+    Invoke-Test "const and multi-value enum leaves flatten" {
+        $candidate = New-TransparentOneOfSchema
+        $firstProperty = $candidate.oneOf[1].oneOf[0].properties.kind
+        $null = $firstProperty.Remove("enum")
+        $firstProperty["const"] = "system_message"
+        $candidate.oneOf[1].oneOf[1].properties.kind.enum = @("user_message", "assistant_message")
+
+        $result = ConvertTo-FlattenedOpenApiOneOfDocument `
+            -Document (New-TestOpenApiDocument -Schema $candidate)
+        Assert-Equal 1 $result.FlattenedOneOfCount "Finite const/enum wrapper was not flattened."
+        Assert-Equal 4 (Get-TestResponseSchema $result.Document).oneOf.Count "Finite const/enum wrapper emitted the wrong branch count."
+    }
+
+    Invoke-Test "duplicate or optional recursive discriminator values remain nested" {
+        $duplicate = New-TransparentOneOfSchema
+        $duplicate.oneOf[1].oneOf[0].properties.kind.enum = @("alpha")
+        Assert-Equal 0 (ConvertTo-FlattenedOpenApiOneOfDocument `
+            -Document (New-TestOpenApiDocument -Schema $duplicate)).FlattenedOneOfCount "Cross-level duplicate was flattened."
+
+        $optional = New-TransparentOneOfSchema
+        $null = $optional.oneOf[1].oneOf[0].Remove("required")
+        Assert-Equal 0 (ConvertTo-FlattenedOpenApiOneOfDocument `
+            -Document (New-TestOpenApiDocument -Schema $optional)).FlattenedOneOfCount "Optional discriminator leaf was flattened."
+    }
+
+    Invoke-Test "mapping differences do not block structural flattening" {
+        $candidate = New-TransparentOneOfSchema
+        $candidate.discriminator["mapping"] = [ordered]@{
+            alpha = "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/0"
+        }
+        $candidate.oneOf[1].discriminator["mapping"] = [ordered]@{
+            system_message = "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/1/oneOf/0"
+        }
+
+        $result = ConvertTo-FlattenedOpenApiOneOfDocument `
+            -Document (New-TestOpenApiDocument -Schema $candidate)
+        Assert-Equal 1 $result.FlattenedOneOfCount "Mapping differences prevented structural flattening."
     }
 
     Invoke-Test "object member order is insignificant for matching siblings" {

@@ -641,6 +641,290 @@ function Get-OpenApiDiscriminatorPropertyValues {
         -Breadcrumb "$Breadcrumb/properties/$propertyToken")
 }
 
+# Scope-sensitive schema keywords and extensions cannot be discarded from a
+# nested wrapper without potentially changing its meaning.
+function Test-ContainsUnsafeOpenApiDiscriminatorUnionSibling {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Discriminator union sibling inspection exceeds the supported depth of $MaximumDepth."
+    }
+    if ($null -eq $Value) {
+        return $false
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        foreach ($item in $Value) {
+            if (Test-ContainsUnsafeOpenApiDiscriminatorUnionSibling `
+                -Value $item `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth) {
+                return $true
+            }
+        }
+        return $false
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return $false
+    }
+
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if (@('$id', '$anchor', '$dynamicAnchor', '$recursiveAnchor') -ccontains $property.Name -or
+            $property.Name.StartsWith("x-", [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
+        }
+        if (Test-ContainsUnsafeOpenApiDiscriminatorUnionSibling `
+            -Value $property.Value `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth) {
+            return $true
+        }
+    }
+    return $false
+}
+
+# Mapping is intentionally excluded: branch pointers move during flattening and
+# the final componentizer reconstructs the canonical exhaustive mapping.
+function Test-OpenApiDiscriminatorMetadataCompatible {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$ParentSchema,
+
+        [Parameter(Mandatory = $true)]
+        [object]$WrapperSchema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter()]
+        [switch]$IgnoreParentDiscriminator
+    )
+
+    $parentDiscriminator = Get-JsonPropertyValue -Object $ParentSchema -Name "discriminator"
+    $wrapperDiscriminator = Get-JsonPropertyValue -Object $WrapperSchema -Name "discriminator"
+    if (-not (Test-JsonObjectValue -Value $wrapperDiscriminator)) {
+        return $false
+    }
+    $wrapperPropertyName = Get-JsonPropertyValue -Object $wrapperDiscriminator -Name "propertyName"
+    if ($wrapperPropertyName -isnot [string] -or
+        -not [string]::Equals($wrapperPropertyName, $PropertyName, [System.StringComparison]::Ordinal)) {
+        return $false
+    }
+
+    $expected = [ordered]@{ propertyName = $PropertyName }
+    if (-not $IgnoreParentDiscriminator -and
+        (Test-JsonObjectValue -Value $parentDiscriminator)) {
+        $expected = [ordered]@{}
+        foreach ($property in (Get-JsonProperties -Value $parentDiscriminator)) {
+            if (-not [string]::Equals($property.Name, "mapping", [System.StringComparison]::Ordinal)) {
+                $expected[$property.Name] = $property.Value
+            }
+        }
+    }
+    $actual = [ordered]@{}
+    foreach ($property in (Get-JsonProperties -Value $wrapperDiscriminator)) {
+        if (-not [string]::Equals($property.Name, "mapping", [System.StringComparison]::Ordinal)) {
+            $actual[$property.Name] = $property.Value
+        }
+    }
+    return Test-JsonValuesEqual -Left $expected -Right $actual
+}
+
+function Test-OpenApiDiscriminatorUnionSiblingsMatch {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$ParentSchema,
+
+        [Parameter(Mandatory = $true)]
+        [object]$WrapperSchema,
+
+        [Parameter()]
+        [ValidateSet("oneOf", "anyOf")]
+        [string]$ParentCompositionName = "oneOf",
+
+        [Parameter()]
+        [ValidateSet("oneOf", "anyOf")]
+        [string]$WrapperCompositionName = "oneOf"
+    )
+
+    $parentProperties = @(
+        Get-JsonProperties -Value $ParentSchema |
+            Where-Object { @("type", "discriminator", $ParentCompositionName) -cnotcontains $_.Name }
+    )
+    $wrapperProperties = @(
+        Get-JsonProperties -Value $WrapperSchema |
+            Where-Object { @("type", "discriminator", $WrapperCompositionName) -cnotcontains $_.Name }
+    )
+    if ($parentProperties.Count -ne $wrapperProperties.Count) {
+        return $false
+    }
+    foreach ($property in $parentProperties) {
+        if (-not (Test-JsonProperty -Object $WrapperSchema -Name $property.Name) -or
+            -not (Test-JsonValuesEqual `
+                -Left $property.Value `
+                -Right (Get-JsonPropertyValue -Object $WrapperSchema -Name $property.Name))) {
+            return $false
+        }
+        $sibling = [ordered]@{}
+        $sibling[$property.Name] = $property.Value
+        if (Test-ContainsUnsafeOpenApiDiscriminatorUnionSibling -Value $sibling) {
+            return $false
+        }
+    }
+    return $true
+}
+
+# Recursively describes a union as direct leaves and transparent nested oneOf
+# wrappers. A null result means the union cannot safely use one discriminator or
+# be flattened under the requested property.
+function Get-OpenApiInlineDiscriminatorUnionPlan {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Schema,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb,
+
+        [Parameter()]
+        [ValidateSet("oneOf", "anyOf")]
+        [string]$CompositionName = "oneOf",
+
+        [Parameter()]
+        [switch]$RequireDiscriminator,
+
+        [Parameter()]
+        [switch]$IgnoreSchemaDiscriminatorMetadata,
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "Nested discriminator union analysis exceeds the supported depth of $MaximumDepth at '$Breadcrumb'."
+    }
+    if (-not (Test-JsonObjectValue -Value $Schema)) {
+        return $null
+    }
+    if ($RequireDiscriminator) {
+        $discriminator = Get-JsonPropertyValue -Object $Schema -Name "discriminator"
+        if (-not (Test-JsonObjectValue -Value $discriminator)) {
+            return $null
+        }
+        $actualPropertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+        if ($actualPropertyName -isnot [string] -or
+            -not [string]::Equals($actualPropertyName, $PropertyName, [System.StringComparison]::Ordinal)) {
+            return $null
+        }
+    }
+
+    $composition = Get-JsonPropertyValue -Object $Schema -Name $CompositionName
+    if (-not (Test-JsonArrayValue -Value $composition) -or $composition.Count -eq 0) {
+        return $null
+    }
+
+    $values = [System.Collections.Generic.List[string]]::new()
+    $seenValues = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $branchPlans = [System.Collections.Generic.List[object]]::new()
+    for ($index = 0; $index -lt $composition.Count; $index++) {
+        $branch = $composition[$index]
+        $branchBreadcrumb = "$Breadcrumb/$CompositionName/$index"
+        if (-not (Test-JsonObjectValue -Value $branch)) {
+            return $null
+        }
+
+        $isNestedWrapper = Test-JsonProperty -Object $branch -Name "oneOf"
+        if ($isNestedWrapper) {
+            $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
+            if ($branchType -isnot [string] -or
+                -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal) -or
+                (Test-JsonProperty -Object $branch -Name '$ref') -or
+                -not (Test-OpenApiDiscriminatorMetadataCompatible `
+                    -ParentSchema $Schema `
+                    -WrapperSchema $branch `
+                    -PropertyName $PropertyName `
+                    -IgnoreParentDiscriminator:$IgnoreSchemaDiscriminatorMetadata) -or
+                -not (Test-OpenApiDiscriminatorUnionSiblingsMatch `
+                    -ParentSchema $Schema `
+                    -WrapperSchema $branch `
+                    -ParentCompositionName $CompositionName `
+                    -WrapperCompositionName "oneOf")) {
+                return $null
+            }
+            $nestedPlan = Get-OpenApiInlineDiscriminatorUnionPlan `
+                -Schema $branch `
+                -PropertyName $PropertyName `
+                -Breadcrumb $branchBreadcrumb `
+                -RequireDiscriminator `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+            if ($null -eq $nestedPlan) {
+                return $null
+            }
+            [string[]]$branchValues = [string[]]$nestedPlan.Values
+            $branchPlans.Add([PSCustomObject]@{
+                Kind = "Wrapper"
+                Branch = $branch
+                Breadcrumb = $branchBreadcrumb
+                Values = $branchValues
+                NestedPlan = $nestedPlan
+            })
+        }
+        else {
+            $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
+            if ($branchType -isnot [string] -or
+                -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal)) {
+                return $null
+            }
+            try {
+                [string[]]$branchValues = @(Get-OpenApiDiscriminatorPropertyValues `
+                    -Schema $branch `
+                    -PropertyName $PropertyName `
+                    -Breadcrumb $branchBreadcrumb)
+            }
+            catch {
+                return $null
+            }
+            $branchPlans.Add([PSCustomObject]@{
+                Kind = "Leaf"
+                Branch = $branch
+                Breadcrumb = $branchBreadcrumb
+                Values = $branchValues
+                NestedPlan = $null
+            })
+        }
+
+        foreach ($value in $branchValues) {
+            if (-not $seenValues.Add($value)) {
+                return $null
+            }
+            $values.Add($value)
+        }
+    }
+
+    return [PSCustomObject]@{
+        PropertyName = $PropertyName
+        CompositionName = $CompositionName
+        Branches = $composition
+        BranchPlans = [object[]]$branchPlans.ToArray()
+        Values = [string[]]$values.ToArray()
+    }
+}
+
 # Normalizes a discriminator mapping target to a local component-schema root.
 # OpenAPI permits either a schema name or a reference string in the mapping.
 function Resolve-OpenApiDiscriminatorMappingTarget {

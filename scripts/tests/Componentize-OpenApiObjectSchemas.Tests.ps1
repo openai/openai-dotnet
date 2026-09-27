@@ -133,6 +133,8 @@ try {
             @(0, 1, 2, 1, 1, 2, 2, 0) `
             @($candidates.CandidateDepth) `
             "Candidate nesting depths were incorrect."
+        Assert-Equal 1 @($candidates | Where-Object IsNonDiscriminatedUnion).Count "Non-discriminated union count was incorrect."
+        Assert-True (@($candidates | Where-Object Kind -eq "OneOf")[0].IsNonDiscriminatedUnion) "oneOf candidate was not classified as a non-discriminated union."
         Assert-Equal 3 @($candidates | Where-Object { $null -ne $_.TypeEnumValue }).Count "Singleton enum count was incorrect."
         Assert-True (-not ($candidates.Pointer -ccontains "#/components/schemas/ExistingRoot")) "Existing component root was rediscovered."
     }
@@ -155,7 +157,7 @@ try {
 
     # Names combine underscore-separated operation/property context and direct
     # singleton type enums; only colliding bases receive numeric suffixes.
-    Invoke-Test "component names are semantic enum-aware and suffix only collisions" {
+    Invoke-Test "component names are semantic union-aware and suffix only collisions" {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $schemas = $result.Document.components.schemas
@@ -163,19 +165,18 @@ try {
             "ExistingRoot",
             "CreateWidget_Request",
             "CreateWidget_Request_Child_TypeOfChildKind",
-            "CreateWidget_Request_Child",
+            "CreateWidget_Request_Child_TypeOfChildKind_1",
             "CreateWidget_Request_List",
-            "CreateWidget_Request_Variants",
-            "CreateWidget_Request_Variants_TypeOfAlpha",
-            "CreateWidget_Request_Variants_TypeOfAlpha_2",
+            "CreateWidget_Request_Variants_Union",
+            "CreateWidget_Request_Variants_Union_TypeOfAlpha",
+            "CreateWidget_Request_Variants_Union_TypeOfAlpha_1",
             "ExistingRoot_Nested"
         ) @((Get-JsonProperties -Value $schemas).Name) "Generated component names or order were incorrect."
     }
 
-    # A direct oneOf owner claims the ordinary semantic path name before its
-    # branches. A branch without a singleton type enum then uses the same base
-    # name and receives the normal numeric collision suffix.
-    Invoke-Test "oneOf owners precede branches and use ordinary collision suffixes" {
+    # A direct oneOf without a discriminator is visibly a union. A unique object
+    # branch receives a shape role instead of an opaque numeric suffix.
+    Invoke-Test "non-discriminated oneOf owners and unique shapes use union roles" {
         $source = Read-TestJsonFixture `
             -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
         $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["toolChoice"] = [ordered]@{
@@ -205,16 +206,81 @@ try {
         })
         Assert-Equal 1 $wrapper.Count "Direct oneOf owner was not discovered exactly once."
         Assert-Equal "OneOf" $wrapper[0].Kind "Direct oneOf owner had the wrong candidate kind."
-        Assert-Equal "CreateWidget_Request_ToolChoice" $wrapper[0].Name "Direct oneOf owner did not claim the semantic base name."
-        Assert-Equal "CreateWidget_Request_ToolChoice_2" $branch[0].Name "Object branch did not receive the numeric collision suffix."
+        Assert-True $wrapper[0].IsNonDiscriminatedUnion "Direct oneOf owner was not classified as a union."
+        Assert-Equal "CreateWidget_Request_ToolChoice_Union" $wrapper[0].Name "Direct oneOf owner omitted its union marker."
+        Assert-Equal "CreateWidget_Request_ToolChoice_Union_Object" $branch[0].Name "Unique object branch omitted its shape role."
         Assert-Equal `
-            "#/components/schemas/CreateWidget_Request_ToolChoice" `
+            "#/components/schemas/CreateWidget_Request_ToolChoice_Union" `
             $result.Document.components.schemas.CreateWidget_Request.properties.toolChoice.'$ref' `
             "Direct oneOf owner was not replaced by its component reference."
         Assert-Equal `
-            "#/components/schemas/CreateWidget_Request_ToolChoice_2" `
-            $result.Document.components.schemas.CreateWidget_Request_ToolChoice.oneOf[1].'$ref' `
+            "#/components/schemas/CreateWidget_Request_ToolChoice_Union_Object" `
+            $result.Document.components.schemas.CreateWidget_Request_ToolChoice_Union.oneOf[1].'$ref' `
             "Componentized oneOf did not reference its object branch."
+    }
+
+    # Structural-only composition children inherit the complete semantic parent
+    # name, including an ancestor's TypeOf label, before collision suffixing.
+    Invoke-Test "structural-only children retain their semantic parent name" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["input"] = [ordered]@{
+            type = "object"
+            required = @("type", "content")
+            properties = [ordered]@{
+                type = [ordered]@{ type = "string"; enum = @("message") }
+                content = [ordered]@{
+                    type = "array"
+                    items = [ordered]@{
+                        oneOf = @(
+                            [ordered]@{ oneOf = @([ordered]@{ type = "string" }, [ordered]@{ type = "null" }) },
+                            [ordered]@{ oneOf = @([ordered]@{ type = "number" }, [ordered]@{ type = "boolean" }) }
+                        )
+                    }
+                }
+            }
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $contentPointer = "#/paths/~1widgets/post/requestBody/content/application~1json/schema/properties/input/properties/content/items"
+        $contentCandidates = @($result.Candidates | Where-Object {
+            $_.Pointer.StartsWith($contentPointer, [System.StringComparison]::Ordinal)
+        })
+        Assert-Sequence @(
+            "CreateWidget_Request_Input_TypeOfMessage_Content_Union",
+            "CreateWidget_Request_Input_TypeOfMessage_Content_Union_Alternative1_Union",
+            "CreateWidget_Request_Input_TypeOfMessage_Content_Union_Alternative2_Union"
+        ) @($contentCandidates.Name) "Structural-only children lost inherited semantic context."
+    }
+
+    Invoke-Test "array item and additional-properties unions use storage roles" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $root = $source.paths["/widgets"].post.requestBody.content["application/json"].schema
+        $root.properties["input"] = [ordered]@{
+            oneOf = @(
+                [ordered]@{ type = "string" },
+                [ordered]@{
+                    type = "array"
+                    items = [ordered]@{ type = "object"; properties = [ordered]@{} }
+                }
+            )
+        }
+        $root.properties["metadata"] = [ordered]@{
+            type = "object"
+            additionalProperties = [ordered]@{
+                oneOf = @(
+                    [ordered]@{ type = "string" },
+                    [ordered]@{ type = "number" }
+                )
+            }
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $names = @($result.Candidates.Name)
+        Assert-True ($names -ccontains "CreateWidget_Request_Input_Union") "Input union omitted its marker."
+        Assert-True ($names -ccontains "CreateWidget_Request_Input_Union_ArrayItem") "Array item omitted its role."
+        Assert-True ($names -ccontains "CreateWidget_Request_Metadata_Value_Union") "Dictionary value union omitted its role."
     }
 
     # The candidate is the complete Schema Object, so siblings of oneOf move into
@@ -251,6 +317,7 @@ try {
         $owners = @($result.Candidates | Where-Object Pointer -eq $ownerPointer)
         Assert-Equal 1 $owners.Count "Object/oneOf schema produced duplicate candidates."
         Assert-Equal "OneOf" $owners[0].Kind "Direct oneOf did not take precedence over type=object."
+        Assert-True (-not $owners[0].IsNonDiscriminatedUnion) "Discriminated oneOf was classified as a non-discriminated union."
         Assert-Sequence @('$ref') @((Get-JsonProperties -Value $result.Document.components.schemas.CreateWidget_Request.properties.hybrid).Name) "Inline oneOf siblings remained beside the generated ref."
         $component = $result.Document.components.schemas.CreateWidget_Request_Hybrid
         Assert-Equal "object" $component.type "Type sibling did not move with oneOf."
@@ -295,8 +362,8 @@ try {
         Assert-Sequence @("red", "blue") @((Get-JsonProperties -Value $choice.discriminator.mapping).Name) "Mapping keys were not accepted discriminator values."
         Assert-Sequence `
             @(
-                "#/components/schemas/CreateWidget_Request_MappedChoice_2",
-                "#/components/schemas/CreateWidget_Request_MappedChoice_3"
+                "#/components/schemas/CreateWidget_Request_MappedChoice_1",
+                "#/components/schemas/CreateWidget_Request_MappedChoice_2"
             ) `
             @((Get-JsonProperties -Value $choice.discriminator.mapping).Value) `
             "Mapping targets did not follow branch encounter order."
@@ -335,15 +402,15 @@ try {
         Assert-Sequence @("red", "crimson", "blue") @((Get-JsonProperties -Value $mapping).Name) "Finite mapping keys were incomplete or reordered."
         Assert-Sequence `
             @(
-                "#/components/schemas/CreateWidget_Request_FiniteChoice_2",
-                "#/components/schemas/CreateWidget_Request_FiniteChoice_2",
-                "#/components/schemas/CreateWidget_Request_FiniteChoice_3"
+                "#/components/schemas/CreateWidget_Request_FiniteChoice_1",
+                "#/components/schemas/CreateWidget_Request_FiniteChoice_1",
+                "#/components/schemas/CreateWidget_Request_FiniteChoice_2"
             ) `
             @((Get-JsonProperties -Value $mapping).Value) `
             "Finite mapping targets were incorrect."
     }
 
-    # Locks the production Input_3 shape that motivated this contract: generated
+    # Locks the production input-content shape that motivated this contract: generated
     # TypeOf names are targets, while snake_case payload values remain the keys.
     Invoke-Test "input content mappings use singleton type enum values" {
         $source = Read-TestJsonFixture `
@@ -503,7 +570,7 @@ try {
             $_.Pointer.EndsWith("/properties/tools/items/oneOf/0", [System.StringComparison]::Ordinal)
         })[0]
         Assert-Equal `
-            "CreateWidget_Request_Variants_TypeOfAlpha_Tools_TypeOfFunction" `
+            "CreateWidget_Request_Variants_Union_TypeOfAlpha_Tools_Union_TypeOfFunction" `
             $nested.Name `
             "Nested component omitted its enum-derived parent name."
     }
@@ -514,10 +581,10 @@ try {
         $source = Read-OpenApiDocument -Path $sourceFixturePath
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $schemas = $result.Document.components.schemas
-        $first = $schemas.CreateWidget_Request_Variants_TypeOfAlpha
-        $second = $schemas.CreateWidget_Request_Variants_TypeOfAlpha_2
+        $first = $schemas.CreateWidget_Request_Variants_Union_TypeOfAlpha
+        $second = $schemas.CreateWidget_Request_Variants_Union_TypeOfAlpha_1
         Assert-True (Test-JsonValuesEqual -Left $first -Right $second) "Duplicate fixture branches were not structurally equal."
-        $variantRefs = $schemas.CreateWidget_Request_Variants.oneOf
+        $variantRefs = $schemas.CreateWidget_Request_Variants_Union.oneOf
         Assert-True (-not [string]::Equals($variantRefs[0].'$ref', $variantRefs[1].'$ref', [System.StringComparison]::Ordinal)) "Duplicate occurrences shared one component."
     }
 
@@ -530,8 +597,8 @@ try {
         Assert-Equal "#/components/schemas/CreateWidget_Request" $result.Document.paths["/widgets"].post.requestBody.content["application/json"].schema.'$ref' "Root schema was not replaced."
         Assert-Equal "object" $schemas.CreateWidget_Request.type "Root component lost its object type."
         Assert-Equal "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind" $schemas.CreateWidget_Request.properties.child.'$ref' "Child component ref was incorrect."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Child" $schemas.CreateWidget_Request_Child_TypeOfChildKind.additionalProperties.'$ref' "Additional-properties ref was incorrect."
-        Assert-Equal "object" $schemas.CreateWidget_Request_Child.type "Nested component lost its root definition."
+        Assert-Equal "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind_1" $schemas.CreateWidget_Request_Child_TypeOfChildKind.additionalProperties.'$ref' "Additional-properties ref was incorrect."
+        Assert-Equal "object" $schemas.CreateWidget_Request_Child_TypeOfChildKind_1.type "Nested component lost its root definition."
         Assert-Equal 0 @(Get-InlineOpenApiObjectSchemaCandidates -Document $result.Document).Count "Componentized output retained inline object candidates."
     }
 
@@ -542,7 +609,7 @@ try {
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         $schemas = $result.Document.components.schemas
         Assert-Equal "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind" $schemas.CreateWidget_Request.properties.childAlias.'$ref' "Existing schema ref was not relocated."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants" $schemas.CreateWidget_Request.properties.variants.'$ref' "oneOf owner was not relocated."
+        Assert-Equal "#/components/schemas/CreateWidget_Request_Variants_Union" $schemas.CreateWidget_Request.properties.variants.'$ref' "oneOf owner was not relocated."
         Assert-OpenApiReferencesResolve -Document $result.Document
     }
 
@@ -623,7 +690,7 @@ try {
         $source.components.schemas["CreateWidget_Request"] = [ordered]@{ type = "string" }
         $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
         Assert-Equal "string" $result.Document.components.schemas.CreateWidget_Request.type "Existing colliding component was overwritten."
-        Assert-Equal "#/components/schemas/CreateWidget_Request_2" $result.Document.paths["/widgets"].post.requestBody.content["application/json"].schema.'$ref' "Generated name did not suffix the collision."
+        Assert-Equal "#/components/schemas/CreateWidget_Request_1" $result.Document.paths["/widgets"].post.requestBody.content["application/json"].schema.'$ref' "Generated name did not suffix the collision."
     }
 
     # Once every inline candidate has moved, a second conversion performs no

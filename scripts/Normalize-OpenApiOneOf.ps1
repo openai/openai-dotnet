@@ -4,10 +4,11 @@
 
 .DESCRIPTION
     Promotes an anyOf schema composition to oneOf when it has a sibling
-    discriminator, every branch has type object, and every branch requires the
-    discriminator property with finite, mutually exclusive string const/enum
-    values. It then removes an exact discriminator schema keyword when its
-    containing schema has no exact direct oneOf sibling.
+    discriminator and recursively resolves to compatible object leaves. Every
+    leaf must require the discriminator property with finite, mutually exclusive
+    string const/enum values. Compatible nested oneOf wrappers may contribute
+    leaves. The stage then removes an exact discriminator schema keyword when
+    its containing schema has no exact direct oneOf sibling.
 
     A discriminator paired with any direct oneOf property is preserved; the
     preceding discriminator-reconciliation stage validates that composition.
@@ -87,40 +88,14 @@ function Get-DiscriminatedOpenApiAnyOfCandidate {
         return $null
     }
 
-    $anyOf = Get-JsonPropertyValue -Object $Schema -Name "anyOf"
-    if (-not (Test-JsonArrayValue -Value $anyOf) -or $anyOf.Count -eq 0) {
+    $plan = Get-OpenApiInlineDiscriminatorUnionPlan `
+        -Schema $Schema `
+        -PropertyName $propertyName `
+        -Breadcrumb $Breadcrumb `
+        -CompositionName "anyOf" `
+        -RequireDiscriminator
+    if ($null -eq $plan) {
         return $null
-    }
-    $seenValues = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    for ($index = 0; $index -lt $anyOf.Count; $index++) {
-        $branch = $anyOf[$index]
-        if (-not (Test-JsonObjectValue -Value $branch)) {
-            return $null
-        }
-        $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
-        if ($branchType -isnot [string] -or
-            -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal)) {
-            return $null
-        }
-        $properties = Get-JsonPropertyValue -Object $branch -Name "properties"
-        if (-not (Test-JsonObjectValue -Value $properties) -or
-            -not (Test-JsonProperty -Object $properties -Name $propertyName)) {
-            return $null
-        }
-        try {
-            [string[]]$values = @(Get-OpenApiDiscriminatorPropertyValues `
-                -Schema $branch `
-                -PropertyName $propertyName `
-                -Breadcrumb "$Breadcrumb/anyOf/$index")
-        }
-        catch {
-            return $null
-        }
-        foreach ($value in $values) {
-            if (-not $seenValues.Add($value)) {
-                return $null
-            }
-        }
     }
 
     if (Test-JsonProperty -Object $Schema -Name "oneOf") {
@@ -129,7 +104,7 @@ function Get-DiscriminatedOpenApiAnyOfCandidate {
 
     return [PSCustomObject]@{
         PropertyName = $propertyName
-        Branches = $anyOf
+        Branches = $plan.Branches
     }
 }
 
