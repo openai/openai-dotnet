@@ -46,10 +46,9 @@ try {
         Assert-Sequence @("CycleA", "CycleB", "CycleAncestor") @($analysis.CycleDependentComponents) "Cycle-dependent classification was incorrect."
     }
 
-    # A first run has no historical policy to preserve. Each group's first source
-    # member therefore seeds its id, representative, and canonical output name,
-    # and group order follows source encounter order for deterministic review.
-    Invoke-Test "initial mapping uses first encounter defaults" {
+    # A first run has no historical policy to preserve. Each fixture group ties
+    # on segment count, so its first source member supplies all generated defaults.
+    Invoke-Test "initial mapping uses shortest defaults with encounter-order ties" {
         $source = Read-OpenApiDocument -Path $fixturePath
         $analysis = New-TestDeduplicationAnalysis -Document $source
         $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis
@@ -60,6 +59,74 @@ try {
             Assert-Equal $group.id $group.representative "Representative default was incorrect."
             Assert-Equal $group.id $group.canonicalName "Canonical-name default was incorrect."
         }
+    }
+
+    Invoke-Test "component name segments preserve every underscore boundary" {
+        Assert-Equal 1 (Get-OpenApiComponentNameSegmentCount -Name "Tool") "Single segment count was incorrect."
+        Assert-Equal 3 (Get-OpenApiComponentNameSegmentCount -Name "Tool_Output_1") "Collision suffix count was incorrect."
+        Assert-Equal 2 (Get-OpenApiComponentNameSegmentCount -Name "_Tool") "Leading boundary count was incorrect."
+        Assert-Equal 2 (Get-OpenApiComponentNameSegmentCount -Name "Tool_") "Trailing boundary count was incorrect."
+        Assert-Equal 3 (Get-OpenApiComponentNameSegmentCount -Name "Tool__Output") "Consecutive boundary count was incorrect."
+    }
+
+    Invoke-Test "new mapping chooses the first shortest representative without reordering members" {
+        [object[]]$members = @(
+            "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools",
+            "CreateResponse_Request_Tools",
+            "CreateResponse_Output_Tools",
+            "CreateResponse_Request_TypeOfTool_Tools"
+        )
+        $analysis = [PSCustomObject]@{
+            ComponentNames = $members
+            CycleDependentComponents = [object[]]@()
+            DuplicateGroups = [object[]]@([PSCustomObject]@{
+                GroupKey = "tools"
+                Fingerprint = "sha256:$('a' * 64)"
+                Members = $members
+            })
+        }
+
+        $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis
+        $group = $result.Mapping.groups[0]
+        Assert-Equal "CreateResponse_Request_Tools" $group.id "Shortest group id was not selected."
+        Assert-Equal $group.id $group.representative "Shortest representative was not selected."
+        Assert-Equal $group.id $group.canonicalName "Shortest canonical name was not selected."
+        Assert-Sequence $members @($group.members) "Selecting a later representative reordered members."
+    }
+
+    Invoke-Test "persisted representative remains stable when a shorter member appears" {
+        [object[]]$historicalMembers = @(
+            "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools",
+            "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchTool_Tools"
+        )
+        $mapping = [ordered]@{
+            version = [long]1
+            groups = [object[]]@([ordered]@{
+                id = $historicalMembers[0]
+                canonicalName = $historicalMembers[0]
+                representative = $historicalMembers[0]
+                fingerprint = "sha256:$('b' * 64)"
+                members = $historicalMembers
+            })
+        }
+        [object[]]$currentMembers = @($historicalMembers) + "CreateResponse_Request_Tools"
+        $analysis = [PSCustomObject]@{
+            ComponentNames = $currentMembers
+            CycleDependentComponents = [object[]]@()
+            DuplicateGroups = [object[]]@([PSCustomObject]@{
+                GroupKey = "tools"
+                Fingerprint = "sha256:$('a' * 64)"
+                Members = $currentMembers
+            })
+        }
+
+        $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis -Mapping $mapping
+        $group = $result.Mapping.groups[0]
+        Assert-Equal $historicalMembers[0] $group.id "Stable group id changed."
+        Assert-Equal $historicalMembers[0] $group.representative "Stable representative changed."
+        Assert-Equal $historicalMembers[0] $group.canonicalName "Stable canonical name changed."
+        Assert-Sequence $currentMembers @($group.members) "Shorter member was not appended."
+        Assert-Equal "Extended" $result.Statuses[0].Status "Group status was incorrect."
     }
 
     # Componentization emits one direct-oneOf wrapper per occurrence. Wrappers

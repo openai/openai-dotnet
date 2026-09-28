@@ -96,14 +96,15 @@ try {
         $properties = $source.paths["/test"].post.responses["200"].content["application/json"].schema.properties
         $properties["unionA"] = [ordered]@{ '$ref' = "#/components/schemas/UnionA" }
         $properties["unionB"] = [ordered]@{ '$ref' = "#/components/schemas/UnionB" }
-        $source.components.schemas["RedA"] = [ordered]@{
+        $longRedName = "CreateResponse_Request_InputUnion_ArrayItem_TypeOfRed_Tools"
+        $shortRedName = "CreateResponse_Request_Tools"
+        $source.components.schemas[$longRedName] = [ordered]@{
             type = "object"
             required = @("kind")
             properties = [ordered]@{
                 kind = [ordered]@{ type = "string"; enum = @("red") }
             }
         }
-        $source.components.schemas["RedB"] = Copy-JsonValue -Value $source.components.schemas.RedA
         $source.components.schemas["Blue"] = [ordered]@{
             type = "object"
             required = @("kind")
@@ -111,16 +112,17 @@ try {
                 kind = [ordered]@{ type = "string"; const = "blue" }
             }
         }
+        $source.components.schemas[$shortRedName] = Copy-JsonValue -Value $source.components.schemas[$longRedName]
         $source.components.schemas["UnionA"] = [ordered]@{
             discriminator = [ordered]@{
                 propertyName = "kind"
                 mapping = [ordered]@{
-                    red = "#/components/schemas/RedA"
+                    red = "#/components/schemas/$longRedName"
                     blue = "#/components/schemas/Blue"
                 }
             }
             oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/RedA" },
+                [ordered]@{ '$ref' = "#/components/schemas/$longRedName" },
                 [ordered]@{ '$ref' = "#/components/schemas/Blue" }
             )
         }
@@ -128,23 +130,29 @@ try {
             discriminator = [ordered]@{
                 propertyName = "kind"
                 mapping = [ordered]@{
-                    red = "#/components/schemas/RedB"
+                    red = "#/components/schemas/$shortRedName"
                     blue = "#/components/schemas/Blue"
                 }
             }
             oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/RedB" },
+                [ordered]@{ '$ref' = "#/components/schemas/$shortRedName" },
                 [ordered]@{ '$ref' = "#/components/schemas/Blue" }
             )
         }
 
         $mapping = New-RenamedTestMapping -Document $source
-        $redGroup = @($mapping.groups | Where-Object { $_.members -ccontains "RedA" })[0]
+        $redGroup = @($mapping.groups | Where-Object { $_.members -ccontains $longRedName })[0]
+        Assert-Sequence @($longRedName, $shortRedName) @($redGroup.members) "Red group member order changed."
+        Assert-Equal $shortRedName $redGroup.representative "Shortest red representative was not selected."
         $redGroup.canonicalName = "SharedRed"
         $unionGroup = @($mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
         $unionGroup.canonicalName = "SharedUnion"
         $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
 
+        $componentNames = @((Get-JsonProperties -Value $result.Document.components.schemas).Name)
+        $blueIndex = [Array]::IndexOf($componentNames, "Blue")
+        Assert-Equal ($blueIndex + 1) ([Array]::IndexOf($componentNames, "SharedRed")) "Canonical red component was not emitted at its representative's position."
+        Assert-True (-not (Test-JsonProperty -Object $result.Document.components.schemas -Name $longRedName)) "Non-representative red component remained."
         $outputProperties = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
         Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionA.'$ref' "First wrapper ref was not relocated."
         Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionB.'$ref' "Second wrapper ref was not relocated."

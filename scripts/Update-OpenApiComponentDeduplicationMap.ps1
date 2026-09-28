@@ -5,9 +5,11 @@
 .DESCRIPTION
     Analyzes an OpenAPI components.schemas graph after object componentization.
     New acyclic duplicate-tree groups are appended to a persisted JSON mapping;
-    existing groups retain their stable identity, representative, member order,
-    and canonical name. Newly equivalent members are appended, while equivalent
-    whole-group evolution updates only the fingerprint.
+    their first member with the fewest underscore-delimited name segments supplies
+    the initial identity, representative, and canonical name. Encounter order
+    resolves ties. Existing groups retain their stable identity, representative,
+    member order, and canonical name. Newly equivalent members are appended, while
+    equivalent whole-group evolution updates only the fingerprint.
 
     Missing, diverged, split, merged, colliding, or cycle-dependent historical
     groups fail before the mapping file is changed. Incomplete or noncanonical

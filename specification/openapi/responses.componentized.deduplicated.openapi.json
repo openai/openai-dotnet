@@ -153,7 +153,7 @@
           "metadata": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_Headers"
+                "$ref": "#/components/schemas/CreateResponse_Request_Metadata"
               },
               {
                 "type": "null"
@@ -435,7 +435,7 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools"
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools"
             }
           },
           "top_logprobs": {
@@ -735,22 +735,22 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "input_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-            "input_image": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-            "input_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+            "input_text": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText",
+            "input_image": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage",
+            "input_file": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile",
             "output_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText",
             "refusal": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfRefusal"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile"
           },
           {
             "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText"
@@ -759,134 +759,6 @@
             "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfRefusal"
           }
         ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText": {
-        "type": "object",
-        "required": [
-          "type",
-          "text"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_text"
-            ]
-          },
-          "text": {
-            "type": "string"
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint": {
-        "type": "object",
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage": {
-        "type": "object",
-        "required": [
-          "type",
-          "detail"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_image"
-            ]
-          },
-          "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "original"
-            ]
-          },
-          "file_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "image_url": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uri"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_file"
-            ]
-          },
-          "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low"
-            ]
-          },
-          "file_data": {
-            "type": "string"
-          },
-          "file_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "file_url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "filename": {
-            "type": "string"
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
-          }
-        }
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText": {
         "type": "object",
@@ -2110,7 +1982,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
+                "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
               },
               {
                 "type": "null"
@@ -2172,7 +2044,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
+                "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
               },
               {
                 "type": "null"
@@ -2246,7 +2118,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
+                "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
               },
               {
                 "type": "null"
@@ -2306,7 +2178,7 @@
             ]
           },
           "arguments": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall_Arguments"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
           },
           "call_id": {
             "anyOf": [
@@ -2353,11 +2225,6 @@
             ]
           }
         }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall_Arguments": {
-        "type": "object",
-        "required": [],
-        "properties": {}
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput": {
         "type": "object",
@@ -2375,7 +2242,7 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools"
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools"
             }
           },
           "call_id": {
@@ -2416,1558 +2283,6 @@
                   "in_progress",
                   "incomplete"
                 ]
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "function": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction",
-            "file_search": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch",
-            "computer": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputer",
-            "computer_use_preview": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputerUsePreview",
-            "web_search": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch",
-            "mcp": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp",
-            "code_interpreter": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter",
-            "programmatic_tool_calling": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfProgrammaticToolCalling",
-            "image_generation": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration",
-            "local_shell": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfLocalShell",
-            "shell": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell",
-            "custom": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom",
-            "namespace": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace",
-            "tool_search": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfToolSearch",
-            "web_search_preview": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
-            "apply_patch": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfApplyPatch"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputer"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputerUsePreview"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfProgrammaticToolCalling"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfLocalShell"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfToolSearch"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfApplyPatch"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction": {
-        "type": "object",
-        "required": [
-          "type",
-          "name",
-          "parameters",
-          "strict"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "function"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "parameters": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction_Parameters"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "strict": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                }
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "async": {
-            "type": "boolean"
-          },
-          "defer_loading": {
-            "type": "boolean"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "output_schema": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction_Parameters"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction_Parameters": {
-        "type": "object",
-        "additionalProperties": {}
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch": {
-        "type": "object",
-        "required": [
-          "type",
-          "vector_store_ids"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "file_search"
-            ]
-          },
-          "vector_store_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "filters": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_Filters"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "max_num_results": {
-            "type": "integer"
-          },
-          "ranking_options": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_RankingOptions"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_Filters": {
-        "type": "object",
-        "additionalProperties": true
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_RankingOptions": {
-        "type": "object",
-        "required": [],
-        "properties": {
-          "hybrid_search": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_RankingOptions_HybridSearch"
-          },
-          "ranker": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "default-2024-11-15"
-            ]
-          },
-          "score_threshold": {
-            "type": "number"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_RankingOptions_HybridSearch": {
-        "type": "object",
-        "required": [
-          "embedding_weight",
-          "text_weight"
-        ],
-        "properties": {
-          "embedding_weight": {
-            "type": "number"
-          },
-          "text_weight": {
-            "type": "number"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputer": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "computer"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputerUsePreview": {
-        "type": "object",
-        "required": [
-          "type",
-          "display_height",
-          "display_width",
-          "environment"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "computer_use_preview"
-            ]
-          },
-          "display_height": {
-            "type": "integer"
-          },
-          "display_width": {
-            "type": "integer"
-          },
-          "environment": {
-            "type": "string",
-            "enum": [
-              "browser",
-              "linux",
-              "mac",
-              "ubuntu",
-              "windows"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "web_search"
-            ]
-          },
-          "external_web_access": {
-            "type": "boolean"
-          },
-          "filters": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
-          },
-          "user_location": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters": {
-        "type": "object",
-        "properties": {
-          "allowed_domains": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate": {
-        "type": "object",
-        "properties": {
-          "city": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "region": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "timezone": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "approximate"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp": {
-        "type": "object",
-        "required": [
-          "type",
-          "server_label"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "mcp"
-            ]
-          },
-          "server_label": {
-            "type": "string"
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                },
-                "minItems": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "allowed_tools": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "authorization": {
-            "type": "string"
-          },
-          "connector_id": {
-            "type": "string",
-            "deprecated": true,
-            "enum": [
-              "connector_dropbox",
-              "connector_gmail",
-              "connector_googlecalendar",
-              "connector_googledrive",
-              "connector_microsoftteams",
-              "connector_outlookcalendar",
-              "connector_outlookemail",
-              "connector_sharepoint"
-            ]
-          },
-          "defer_loading": {
-            "type": "boolean"
-          },
-          "headers": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_Headers"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "require_approval": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "server_description": {
-            "type": "string"
-          },
-          "server_url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "tunnel_id": {
-            "type": "string",
-            "pattern": "^tunnel_[a-z0-9]{32}$"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion": {
-        "oneOf": [
-          {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion_Object"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion_Object": {
-        "type": "object",
-        "required": [],
-        "properties": {
-          "read_only": {
-            "type": "boolean"
-          },
-          "tool_names": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_Headers": {
-        "type": "object",
-        "additionalProperties": {
-          "type": "string"
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion_Object"
-          },
-          {
-            "type": "string",
-            "enum": [
-              "always",
-              "never"
-            ]
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion_Object": {
-        "type": "object",
-        "properties": {
-          "always": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion_Object"
-          },
-          "never": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion_Object"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter": {
-        "type": "object",
-        "required": [
-          "type",
-          "container"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "code_interpreter"
-            ]
-          },
-          "container": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion"
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                },
-                "minItems": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion": {
-        "oneOf": [
-          {
-            "type": "string"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "auto"
-            ]
-          },
-          "file_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 50
-          },
-          "memory_limit": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "disabled": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-            "allowlist": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "disabled"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
-        "type": "object",
-        "required": [
-          "type",
-          "allowed_domains"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "allowlist"
-            ]
-          },
-          "allowed_domains": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "minItems": 1
-          },
-          "domain_secrets": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
-            },
-            "minItems": 1
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
-        "type": "object",
-        "required": [
-          "domain",
-          "name",
-          "value"
-        ],
-        "properties": {
-          "domain": {
-            "type": "string",
-            "minLength": 1
-          },
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "value": {
-            "type": "string",
-            "maxLength": 10485760,
-            "minLength": 1
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfProgrammaticToolCalling": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "programmatic_tool_calling"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "image_generation"
-            ]
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "edit",
-              "generate"
-            ]
-          },
-          "background": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "opaque",
-              "transparent"
-            ]
-          },
-          "input_fidelity": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "high",
-                  "low"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "input_image_mask": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration_InputImageMask"
-          },
-          "model": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "string",
-                "enum": [
-                  "gpt-image-1",
-                  "gpt-image-1-mini",
-                  "gpt-image-1.5",
-                  "gpt-image-2",
-                  "gpt-image-2-2026-04-21",
-                  "gpt-image-2.5-flare",
-                  "gpt-image-2.5-flare-2026-09-08",
-                  "gpt-image-2.5-sunburst",
-                  "gpt-image-2.5-sunburst-2026-09-08"
-                ]
-              }
-            ]
-          },
-          "moderation": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "low"
-            ]
-          },
-          "output_compression": {
-            "type": "integer",
-            "maximum": 100,
-            "minimum": 0
-          },
-          "output_format": {
-            "type": "string",
-            "enum": [
-              "jpeg",
-              "png",
-              "webp"
-            ]
-          },
-          "partial_images": {
-            "type": "integer",
-            "maximum": 3,
-            "minimum": 0
-          },
-          "quality": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "max",
-              "medium",
-              "xhigh"
-            ]
-          },
-          "size": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "string",
-                "enum": [
-                  "1024x1024",
-                  "1024x1536",
-                  "1536x1024",
-                  "auto"
-                ]
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration_InputImageMask": {
-        "type": "object",
-        "required": [],
-        "properties": {
-          "file_id": {
-            "type": "string"
-          },
-          "image_url": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfLocalShell": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "local_shell"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "shell"
-            ]
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                },
-                "minItems": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "environment": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "container_auto": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-            "local": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal",
-            "container_reference": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerReference"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerReference"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "container_auto"
-            ]
-          },
-          "file_ids": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "maxItems": 50
-          },
-          "memory_limit": {
-            "anyOf": [
-              {
-                "type": "string",
-                "enum": [
-                  "16g",
-                  "1g",
-                  "4g",
-                  "64g"
-                ]
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
-          },
-          "skills": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills"
-            },
-            "maxItems": 200
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "skill_reference": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
-            "inline": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference": {
-        "type": "object",
-        "required": [
-          "type",
-          "skill_id"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "skill_reference"
-            ]
-          },
-          "skill_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
-          },
-          "version": {
-            "type": "string"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline": {
-        "type": "object",
-        "required": [
-          "type",
-          "description",
-          "name",
-          "source"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "inline"
-            ]
-          },
-          "description": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "source": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64": {
-        "type": "object",
-        "required": [
-          "type",
-          "data",
-          "media_type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "base64"
-            ]
-          },
-          "data": {
-            "type": "string",
-            "maxLength": 70254592,
-            "minLength": 1
-          },
-          "media_type": {
-            "type": "string",
-            "enum": [
-              "application/zip"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "local"
-            ]
-          },
-          "skills": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal_Skills"
-            },
-            "maxItems": 200
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal_Skills": {
-        "type": "object",
-        "required": [
-          "description",
-          "name",
-          "path"
-        ],
-        "properties": {
-          "description": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "path": {
-            "type": "string"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerReference": {
-        "type": "object",
-        "required": [
-          "type",
-          "container_id"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "container_reference"
-            ]
-          },
-          "container_id": {
-            "type": "string"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom": {
-        "type": "object",
-        "required": [
-          "type",
-          "name"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "custom"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                },
-                "minItems": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "async": {
-            "type": "boolean"
-          },
-          "defer_loading": {
-            "type": "boolean"
-          },
-          "description": {
-            "type": "string"
-          },
-          "format": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfText",
-            "grammar": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfGrammar"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfText"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfGrammar"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfText": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "text"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfGrammar": {
-        "type": "object",
-        "required": [
-          "type",
-          "definition",
-          "syntax"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "grammar"
-            ]
-          },
-          "definition": {
-            "type": "string"
-          },
-          "syntax": {
-            "type": "string",
-            "enum": [
-              "lark",
-              "regex"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace": {
-        "type": "object",
-        "required": [
-          "type",
-          "description",
-          "name",
-          "tools"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "namespace"
-            ]
-          },
-          "description": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "tools": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools"
-            },
-            "minItems": 1
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "function": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfFunction",
-            "custom": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfFunction"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom"
-          }
-        ]
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfFunction": {
-        "type": "object",
-        "required": [
-          "type",
-          "name"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "function"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "maxLength": 128,
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9_-]+$"
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                },
-                "minItems": 1
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "async": {
-            "type": "boolean"
-          },
-          "defer_loading": {
-            "type": "boolean"
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "output_schema": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction_Parameters"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "parameters": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall_Arguments"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "strict": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfToolSearch": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "tool_search"
-            ]
-          },
-          "description": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "execution": {
-            "type": "string",
-            "enum": [
-              "client",
-              "server"
-            ]
-          },
-          "parameters": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall_Arguments"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "web_search_preview"
-            ]
-          },
-          "search_content_types": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "image",
-                "text"
-              ]
-            }
-          },
-          "search_context_size": {
-            "type": "string",
-            "enum": [
-              "high",
-              "low",
-              "medium"
-            ]
-          },
-          "user_location": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "approximate"
-            ]
-          },
-          "city": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "country": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "region": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "timezone": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfApplyPatch": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "apply_patch"
-            ]
-          },
-          "allowed_callers": {
-            "anyOf": [
-              {
-                "type": "array",
-                "items": {
-                  "type": "string",
-                  "enum": [
-                    "direct",
-                    "programmatic"
-                  ]
-                },
-                "minItems": 1
               },
               {
                 "type": "null"
@@ -3999,7 +2314,7 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools"
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools"
             }
           },
           "id": {
@@ -4481,7 +2796,7 @@
             }
           },
           "env": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_Headers"
+            "$ref": "#/components/schemas/CreateResponse_Request_Metadata"
           },
           "timeout_ms": {
             "anyOf": [
@@ -4660,16 +2975,16 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "local": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal",
-            "container_reference": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+            "local": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
+            "container_reference": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
           }
         ]
       },
@@ -5367,20 +3682,20 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "input_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-            "input_image": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-            "input_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "input_text": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText",
+            "input_image": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage",
+            "input_file": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile"
           }
         ]
       },
@@ -5542,6 +3857,12 @@
           }
         }
       },
+      "CreateResponse_Request_Metadata": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
       "CreateResponse_Request_Moderation": {
         "type": "object",
         "required": [
@@ -5647,15 +3968,143 @@
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile"
           }
         ]
+      },
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText": {
+        "type": "object",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "input_text"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "prompt_cache_breakpoint": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
+          }
+        }
+      },
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint": {
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "explicit"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage": {
+        "type": "object",
+        "required": [
+          "type",
+          "detail"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "input_image"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "high",
+              "low",
+              "original"
+            ]
+          },
+          "file_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prompt_cache_breakpoint": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
+          }
+        }
+      },
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "input_file"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "high",
+              "low"
+            ]
+          },
+          "file_data": {
+            "type": "string"
+          },
+          "file_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "file_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "prompt_cache_breakpoint": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
+          }
+        }
       },
       "CreateResponse_Request_PromptCacheOptions": {
         "type": "object",
@@ -5808,14 +4257,14 @@
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfText",
+            "text": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText",
             "json_schema": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonSchema",
             "json_object": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonObject"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfText"
+            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText"
           },
           {
             "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonSchema"
@@ -5824,6 +4273,20 @@
             "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonObject"
           }
         ]
+      },
+      "CreateResponse_Request_Text_Format_TypeOfText": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "text"
+            ]
+          }
+        }
       },
       "CreateResponse_Request_Text_Format_TypeOfJsonSchema": {
         "type": "object",
@@ -5843,7 +4306,7 @@
             "type": "string"
           },
           "schema": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_Filters"
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools"
           },
           "description": {
             "type": "string"
@@ -5900,7 +4363,7 @@
             "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfCustom"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfProgrammaticToolCalling"
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling"
           },
           {
             "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfApplyPatch"
@@ -5934,10 +4397,14 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_Filters"
+              "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools"
             }
           }
         }
+      },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools": {
+        "type": "object",
+        "additionalProperties": true
       },
       "CreateResponse_Request_ToolChoiceUnion_Alternative3": {
         "type": "object",
@@ -6023,6 +4490,20 @@
           }
         }
       },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "programmatic_tool_calling"
+            ]
+          }
+        }
+      },
       "CreateResponse_Request_ToolChoiceUnion_TypeOfApplyPatch": {
         "type": "object",
         "required": [
@@ -6047,6 +4528,1525 @@
             "type": "string",
             "enum": [
               "shell"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "function": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction",
+            "file_search": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch",
+            "computer": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer",
+            "computer_use_preview": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputerUsePreview",
+            "web_search": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch",
+            "mcp": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp",
+            "code_interpreter": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter",
+            "programmatic_tool_calling": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling",
+            "image_generation": "#/components/schemas/CreateResponse_Request_Tools_TypeOfImageGeneration",
+            "local_shell": "#/components/schemas/CreateResponse_Request_Tools_TypeOfLocalShell",
+            "shell": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell",
+            "custom": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom",
+            "namespace": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace",
+            "tool_search": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch",
+            "web_search_preview": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview",
+            "apply_patch": "#/components/schemas/CreateResponse_Request_Tools_TypeOfApplyPatch"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputerUsePreview"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfImageGeneration"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfLocalShell"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfApplyPatch"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfFunction": {
+        "type": "object",
+        "required": [
+          "type",
+          "name",
+          "parameters",
+          "strict"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "function"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction_Parameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "strict": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "async": {
+            "type": "boolean"
+          },
+          "defer_loading": {
+            "type": "boolean"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction_Parameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfFunction_Parameters": {
+        "type": "object",
+        "additionalProperties": {}
+      },
+      "CreateResponse_Request_Tools_TypeOfFileSearch": {
+        "type": "object",
+        "required": [
+          "type",
+          "vector_store_ids"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "file_search"
+            ]
+          },
+          "vector_store_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_num_results": {
+            "type": "integer"
+          },
+          "ranking_options": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "hybrid_search": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch"
+          },
+          "ranker": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "default-2024-11-15"
+            ]
+          },
+          "score_threshold": {
+            "type": "number"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch": {
+        "type": "object",
+        "required": [
+          "embedding_weight",
+          "text_weight"
+        ],
+        "properties": {
+          "embedding_weight": {
+            "type": "number"
+          },
+          "text_weight": {
+            "type": "number"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfComputer": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "computer"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfComputerUsePreview": {
+        "type": "object",
+        "required": [
+          "type",
+          "display_height",
+          "display_width",
+          "environment"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "computer_use_preview"
+            ]
+          },
+          "display_height": {
+            "type": "integer"
+          },
+          "display_width": {
+            "type": "integer"
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "browser",
+              "linux",
+              "mac",
+              "ubuntu",
+              "windows"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfWebSearch": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "web_search"
+            ]
+          },
+          "external_web_access": {
+            "type": "boolean"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch_Filters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "search_context_size": {
+            "type": "string",
+            "enum": [
+              "high",
+              "low",
+              "medium"
+            ]
+          },
+          "user_location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfWebSearch_Filters": {
+        "type": "object",
+        "properties": {
+          "allowed_domains": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "approximate"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfMcp": {
+        "type": "object",
+        "required": [
+          "type",
+          "server_label"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "mcp"
+            ]
+          },
+          "server_label": {
+            "type": "string"
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                },
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "allowed_tools": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authorization": {
+            "type": "string"
+          },
+          "connector_id": {
+            "type": "string",
+            "deprecated": true,
+            "enum": [
+              "connector_dropbox",
+              "connector_gmail",
+              "connector_googlecalendar",
+              "connector_googledrive",
+              "connector_microsoftteams",
+              "connector_outlookcalendar",
+              "connector_outlookemail",
+              "connector_sharepoint"
+            ]
+          },
+          "defer_loading": {
+            "type": "boolean"
+          },
+          "headers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Metadata"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "require_approval": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "server_description": {
+            "type": "string"
+          },
+          "server_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "tunnel_id": {
+            "type": "string",
+            "pattern": "^tunnel_[a-z0-9]{32}$"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion": {
+        "oneOf": [
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "read_only": {
+            "type": "boolean"
+          },
+          "tool_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "always",
+              "never"
+            ]
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object": {
+        "type": "object",
+        "properties": {
+          "always": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object"
+          },
+          "never": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter": {
+        "type": "object",
+        "required": [
+          "type",
+          "container"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "code_interpreter"
+            ]
+          },
+          "container": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion"
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                },
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "auto"
+            ]
+          },
+          "file_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          },
+          "memory_limit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "16g",
+                  "1g",
+                  "4g",
+                  "64g"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "network_policy": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "disabled": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+            "allowlist": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "disabled"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
+        "type": "object",
+        "required": [
+          "type",
+          "allowed_domains"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "allowlist"
+            ]
+          },
+          "allowed_domains": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          },
+          "domain_secrets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
+        "type": "object",
+        "required": [
+          "domain",
+          "name",
+          "value"
+        ],
+        "properties": {
+          "domain": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": "string",
+            "maxLength": 10485760,
+            "minLength": 1
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfImageGeneration": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "image_generation"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "edit",
+              "generate"
+            ]
+          },
+          "background": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "opaque",
+              "transparent"
+            ]
+          },
+          "input_fidelity": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "low"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "input_image_mask": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "gpt-image-1",
+                  "gpt-image-1-mini",
+                  "gpt-image-1.5",
+                  "gpt-image-2",
+                  "gpt-image-2-2026-04-21",
+                  "gpt-image-2.5-flare",
+                  "gpt-image-2.5-flare-2026-09-08",
+                  "gpt-image-2.5-sunburst",
+                  "gpt-image-2.5-sunburst-2026-09-08"
+                ]
+              }
+            ]
+          },
+          "moderation": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "low"
+            ]
+          },
+          "output_compression": {
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 0
+          },
+          "output_format": {
+            "type": "string",
+            "enum": [
+              "jpeg",
+              "png",
+              "webp"
+            ]
+          },
+          "partial_images": {
+            "type": "integer",
+            "maximum": 3,
+            "minimum": 0
+          },
+          "quality": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "high",
+              "low",
+              "max",
+              "medium",
+              "xhigh"
+            ]
+          },
+          "size": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "1024x1024",
+                  "1024x1536",
+                  "1536x1024",
+                  "auto"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "file_id": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CreateResponse_Request_Tools_TypeOfLocalShell": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "local_shell"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "shell"
+            ]
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                },
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "environment": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "container_auto": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
+            "local": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
+            "container_reference": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "container_auto"
+            ]
+          },
+          "file_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 50
+          },
+          "memory_limit": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "16g",
+                  "1g",
+                  "4g",
+                  "64g"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "network_policy": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills"
+            },
+            "maxItems": 200
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "skill_reference": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
+            "inline": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference": {
+        "type": "object",
+        "required": [
+          "type",
+          "skill_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "skill_reference"
+            ]
+          },
+          "skill_id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline": {
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "name",
+          "source"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "inline"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "source": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64": {
+        "type": "object",
+        "required": [
+          "type",
+          "data",
+          "media_type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "base64"
+            ]
+          },
+          "data": {
+            "type": "string",
+            "maxLength": 70254592,
+            "minLength": 1
+          },
+          "media_type": {
+            "type": "string",
+            "enum": [
+              "application/zip"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "local"
+            ]
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills"
+            },
+            "maxItems": 200
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills": {
+        "type": "object",
+        "required": [
+          "description",
+          "name",
+          "path"
+        ],
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference": {
+        "type": "object",
+        "required": [
+          "type",
+          "container_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "container_reference"
+            ]
+          },
+          "container_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfCustom": {
+        "type": "object",
+        "required": [
+          "type",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "custom"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                },
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "async": {
+            "type": "boolean"
+          },
+          "defer_loading": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "format": {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom_Format"
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfCustom_Format": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "text": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText",
+            "grammar": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar": {
+        "type": "object",
+        "required": [
+          "type",
+          "definition",
+          "syntax"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "grammar"
+            ]
+          },
+          "definition": {
+            "type": "string"
+          },
+          "syntax": {
+            "type": "string",
+            "enum": [
+              "lark",
+              "regex"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfNamespace": {
+        "type": "object",
+        "required": [
+          "type",
+          "description",
+          "name",
+          "tools"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "namespace"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace_Tools"
+            },
+            "minItems": 1
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfNamespace_Tools": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "function": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction",
+            "custom": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction": {
+        "type": "object",
+        "required": [
+          "type",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "function"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$"
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                },
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "async": {
+            "type": "boolean"
+          },
+          "defer_loading": {
+            "type": "boolean"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "output_schema": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction_Parameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "strict": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfToolSearch": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "tool_search"
+            ]
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "execution": {
+            "type": "string",
+            "enum": [
+              "client",
+              "server"
+            ]
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfToolSearch_Parameters": {
+        "type": "object",
+        "required": [],
+        "properties": {}
+      },
+      "CreateResponse_Request_Tools_TypeOfWebSearchPreview": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "web_search_preview"
+            ]
+          },
+          "search_content_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "image",
+                "text"
+              ]
+            }
+          },
+          "search_context_size": {
+            "type": "string",
+            "enum": [
+              "high",
+              "low",
+              "medium"
+            ]
+          },
+          "user_location": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "approximate"
+            ]
+          },
+          "city": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "timezone": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_Tools_TypeOfApplyPatch": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "apply_patch"
+            ]
+          },
+          "allowed_callers": {
+            "anyOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "direct",
+                    "programmatic"
+                  ]
+                },
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
             ]
           }
         }

@@ -34,8 +34,9 @@
     Deletes the target component deduplication map after componentization
     succeeds, then bootstraps a fresh mapping from the current graph. Omitting
     this switch preserves and reconciles existing reviewed mapping decisions.
-    Reset is destructive and does not restore the old map if fresh analysis
-    subsequently fails.
+    Fresh groups default to their first member with the fewest underscore-delimited
+    name segments. Reset is destructive and does not restore the old map if fresh
+    analysis subsequently fails.
 
 .EXAMPLE
     ./scripts/Generate-ResponsesOpenApi.ps1

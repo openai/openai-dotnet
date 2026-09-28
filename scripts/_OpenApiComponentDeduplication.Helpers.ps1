@@ -637,6 +637,51 @@ function Assert-OpenApiComponentDeduplicationMapping {
     }
 }
 
+function Get-OpenApiComponentNameSegmentCount {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Name
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Name)) {
+        throw "An OpenAPI component name must be a nonempty string."
+    }
+
+    $segmentCount = 1
+    foreach ($character in $Name.ToCharArray()) {
+        if ($character -eq [char]'_') {
+            $segmentCount++
+        }
+    }
+    return $segmentCount
+}
+
+function Get-OpenApiComponentDeduplicationRepresentative {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [object[]]$Members
+    )
+
+    if ($Members.Count -eq 0) {
+        throw "A duplicate component group must contain at least one member."
+    }
+
+    $representative = $null
+    $fewestSegments = [int]::MaxValue
+    foreach ($member in $Members) {
+        if ($member -isnot [string] -or [string]::IsNullOrWhiteSpace($member)) {
+            throw "Every duplicate component group member must be a nonempty string."
+        }
+        $segmentCount = Get-OpenApiComponentNameSegmentCount -Name $member
+        if ($segmentCount -lt $fewestSegments) {
+            $representative = $member
+            $fewestSegments = $segmentCount
+        }
+    }
+    return $representative
+}
+
 # Reconciles current analysis with persisted review state. Historical groups are
 # matched by their members rather than fingerprint because legitimate whole-group
 # evolution changes fingerprints. The conservative rules are:
@@ -783,14 +828,14 @@ function Update-OpenApiComponentDeduplicationMapping {
     }
 
     # Any current group with no historical overlap is a new review decision. Its
-    # first encountered member supplies the initial id, representative, and
-    # canonical name; future runs preserve those defaults unless edited by a user.
+    # first shortest member supplies the initial id, representative, and canonical
+    # name; future runs preserve those defaults unless edited by a user.
     foreach ($currentGroup in $Analysis.DuplicateGroups) {
         $overlap = @($currentGroup.Members | Where-Object { $mappedMembers.Contains($_) })
         if ($overlap.Count -gt 0) {
             continue
         }
-        $representative = [string]$currentGroup.Members[0]
+        $representative = Get-OpenApiComponentDeduplicationRepresentative -Members $currentGroup.Members
         $updatedGroups.Add([ordered]@{
             id = $representative
             canonicalName = $representative
