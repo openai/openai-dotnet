@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalVectorStoreFileContentResponse : IJsonModel<InternalVectorStoreFileContentResponse>
     {
-        internal InternalVectorStoreFileContentResponse() : this(null, null, default, null, null)
+        internal InternalVectorStoreFileContentResponse() : this("vector_store.file_content.page", null, default, null, null)
         {
         }
 

@@ -4,6 +4,7 @@ using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Microsoft.TypeSpec.Generator.Snippets.Snippet;
@@ -62,9 +63,17 @@ public class ConstructorFixupVisitor : ScmLibraryVisitor
             List<ValueExpression> initializationExpressions = [];
             foreach (ParameterProvider parameter in serializationConstructor?.Signature.Parameters ?? [])
             {
+                ValueExpression? propertyInitializationExpression = modelProvider!.Properties?
+                    .FirstOrDefault(property => string.Equals(property.Name, parameter.Name, StringComparison.OrdinalIgnoreCase))
+                    ?.Body is AutoPropertyBody propertyBody
+                        ? propertyBody.InitializationExpression
+                        : null;
+
                 initializationExpressions.Add(
                     parameter.Type == discriminatorType && modelProvider?.DiscriminatorValueExpression is not null
                         ? modelProvider.DiscriminatorValueExpression!
+                        : propertyInitializationExpression is not null
+                            ? propertyInitializationExpression
                         : parameter.Type.IsValueType
                             ? Default
                             : Null);

@@ -13,7 +13,7 @@ namespace OpenAI.Batch
 {
     internal partial class InternalListBatchesResponse : IJsonModel<InternalListBatchesResponse>
     {
-        internal InternalListBatchesResponse() : this(null, null, null, default, null, null)
+        internal InternalListBatchesResponse() : this(null, null, null, default, "list", null)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalListFineTuningJobCheckpointsResponse : IJsonModel<InternalListFineTuningJobCheckpointsResponse>
     {
-        internal InternalListFineTuningJobCheckpointsResponse() : this(null, null, null, null, default, null)
+        internal InternalListFineTuningJobCheckpointsResponse() : this(null, "list", null, null, default, null)
         {
         }
 

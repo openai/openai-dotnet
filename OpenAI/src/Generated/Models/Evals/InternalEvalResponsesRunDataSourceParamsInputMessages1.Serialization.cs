@@ -12,7 +12,7 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalResponsesRunDataSourceParamsInputMessages1 : IJsonModel<InternalEvalResponsesRunDataSourceParamsInputMessages1>
     {
-        internal InternalEvalResponsesRunDataSourceParamsInputMessages1() : this(null, null, null)
+        internal InternalEvalResponsesRunDataSourceParamsInputMessages1() : this("template", null, null)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalListFineTuningJobEventsResponse : IJsonModel<InternalListFineTuningJobEventsResponse>
     {
-        internal InternalListFineTuningJobEventsResponse() : this(null, null, default, null)
+        internal InternalListFineTuningJobEventsResponse() : this(null, "list", default, null)
         {
         }
 

@@ -13,7 +13,7 @@ namespace OpenAI.Videos
 {
     internal partial class InternalVideoListResource : IJsonModel<InternalVideoListResource>
     {
-        internal InternalVideoListResource() : this(null, null, null, null, default, null)
+        internal InternalVideoListResource() : this("list", null, null, null, default, null)
         {
         }
 

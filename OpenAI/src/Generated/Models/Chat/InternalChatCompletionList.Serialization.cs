@@ -14,7 +14,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionList : IJsonModel<InternalChatCompletionList>
     {
-        internal InternalChatCompletionList() : this(null, null, null, null, default, default)
+        internal InternalChatCompletionList() : this("list", null, null, null, default, default)
         {
         }
 
