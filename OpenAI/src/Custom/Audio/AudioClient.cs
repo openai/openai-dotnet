@@ -206,7 +206,7 @@ public partial class AudioClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateSpeechAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
@@ -233,7 +233,7 @@ public partial class AudioClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateSpeech(content, cancellationToken.ToRequestOptions(streaming: true));
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
@@ -457,7 +457,7 @@ public partial class AudioClient
                 .ToMultipartContent(audio, audioFilename);
 
         ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
@@ -482,7 +482,7 @@ public partial class AudioClient
                     .ToMultipartContent(inputStream, audioFilePath);
 
             ClientResult result = await TranscribeAudioAsync(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false);
-            return SseStreamingClientResult.Create(
+            return SseStreamingResult.Create(
                 result.GetRawResponse(),
                 StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
                 cancellationToken,
@@ -511,7 +511,7 @@ public partial class AudioClient
                 .ToMultipartContent(audio, audioFilename);
 
         ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true));
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
@@ -536,7 +536,7 @@ public partial class AudioClient
                     .ToMultipartContent(inputStream, audioFilePath);
 
             ClientResult result = TranscribeAudio(content, content.ContentType, cancellationToken.ToRequestOptions(streaming: true));
-            return SseStreamingClientResult.Create(
+            return SseStreamingResult.Create(
                 result.GetRawResponse(),
                 StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
                 cancellationToken,
