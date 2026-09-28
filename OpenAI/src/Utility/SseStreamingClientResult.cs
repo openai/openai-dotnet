@@ -16,8 +16,7 @@ internal static class SseStreamingClientResult
 {
     private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
-#pragma warning disable SCME0005 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-    public static AsyncStreamingClientResult<T> Create<T>(
+    public static AsyncStreamingResult<T> Create<T>(
         PipelineResponse response,
         Func<JsonElement, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
@@ -36,7 +35,7 @@ internal static class SseStreamingClientResult
             additionalDisposalActions);
     }
 
-    public static AsyncStreamingClientResult<T> Create<T>(
+    public static AsyncStreamingResult<T> Create<T>(
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
         CancellationToken cancellationToken,
@@ -55,7 +54,7 @@ internal static class SseStreamingClientResult
                 additionalDisposalActions);
     }
 
-    public static AsyncStreamingClientResult<T> Create<T>(
+    public static AsyncStreamingResult<T> Create<T>(
         PipelineResponse response,
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
         CancellationToken cancellationToken,
@@ -74,7 +73,7 @@ internal static class SseStreamingClientResult
             additionalDisposalActions);
     }
 
-    public static AsyncStreamingClientResult<T> Create<T>(
+    public static AsyncStreamingResult<T> Create<T>(
         PipelineResponse response,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken,
@@ -83,12 +82,11 @@ internal static class SseStreamingClientResult
         Argument.AssertNotNull(response, nameof(response));
         Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
 
-        return AsyncStreamingClientResult.Create<T>(
+        return AsyncStreamingResult.Create<T>(
             response,
             (stream, producerCancellationToken) => EnumerateAsync(stream, eventDeserializerFunc, additionalDisposalActions, producerCancellationToken),
             cancellationToken);
     }
-#pragma warning restore SCME0005
 
     private static async IAsyncEnumerable<T> EnumerateAsync<T>(
         Stream stream,

@@ -10,7 +10,6 @@ namespace OpenAI.Examples;
 // please acknowledge their experimental status by suppressing the corresponding warning.
 
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
 
 public partial class ResponseExamples
 {
@@ -19,7 +18,7 @@ public partial class ResponseExamples
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        AsyncStreamingClientResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync("gpt-5", "Say 'this is a test.'");
+        AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync("gpt-5", "Say 'this is a test.'");
 
         Console.Write($"[ASSISTANT]: ");
         await foreach (StreamingResponseUpdate update in responseUpdates)
@@ -33,4 +32,3 @@ public partial class ResponseExamples
 }
 
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005

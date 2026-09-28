@@ -1,4 +1,3 @@
-#pragma warning disable SCME0005
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
@@ -894,7 +893,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        AsyncStreamingClientResult<StreamingResponseUpdate> updates = await client.CreateResponseStreamingAsync(createOptions);
+        AsyncStreamingResult<StreamingResponseUpdate> updates = await client.CreateResponseStreamingAsync(createOptions);
 
         string queuedResponseId = null;
         int lastSequenceNumber = 0;
@@ -927,7 +926,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             StreamingEnabled = true
         };
 
-        AsyncStreamingClientResult<StreamingResponseUpdate> continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
+        AsyncStreamingResult<StreamingResponseUpdate> continuedUpdates = await client.GetResponseStreamingAsync(getOptions);
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;

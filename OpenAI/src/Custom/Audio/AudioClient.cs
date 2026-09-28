@@ -194,10 +194,9 @@ public partial class AudioClient
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
     [Experimental("OPENAI001")]
-    public virtual async Task<AsyncStreamingClientResult<StreamingSpeechUpdate>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<AsyncStreamingResult<StreamingSpeechUpdate>> GenerateSpeechStreamingAsync(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -212,7 +211,6 @@ public partial class AudioClient
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005
     }
 
     /// <summary> Generates a life-like, spoken audio recording of the input text as a streaming SSE event collection. </summary>
@@ -223,10 +221,9 @@ public partial class AudioClient
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
     /// <returns> A streaming collection of speech generation updates. </returns>
     [Experimental("OPENAI001")]
-    public virtual AsyncStreamingClientResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual AsyncStreamingResult<StreamingSpeechUpdate> GenerateSpeechStreaming(string text, GeneratedSpeechVoice voice, SpeechGenerationOptions options = null, CancellationToken cancellationToken = default)
     {
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
         Argument.AssertNotNull(text, nameof(text));
         EnsureModelSupportsSpeechStreaming();
 
@@ -241,7 +238,6 @@ public partial class AudioClient
             StreamingSpeechUpdate.DeserializeStreamingSpeechUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005
     }
 
     #endregion
@@ -448,10 +444,9 @@ public partial class AudioClient
 
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
-    public virtual async Task<AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<AsyncStreamingResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -467,15 +462,13 @@ public partial class AudioClient
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
-    public virtual async Task<AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<AsyncStreamingResult<StreamingAudioTranscriptionUpdate>> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
@@ -501,15 +494,13 @@ public partial class AudioClient
             throw;
         }
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
-    public virtual AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual AsyncStreamingResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
         Argument.AssertNotNull(audio, nameof(audio));
         Argument.AssertNotNullOrEmpty(audioFilename, nameof(audioFilename));
 
@@ -525,15 +516,13 @@ public partial class AudioClient
             StreamingAudioTranscriptionUpdate.DeserializeStreamingAudioTranscriptionUpdate,
             cancellationToken);
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005
     }
 
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
-    public virtual AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual AsyncStreamingResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default)
     {
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
         Argument.AssertNotNullOrEmpty(audioFilePath, nameof(audioFilePath));
 
         EnsureModelSupportsStreaming();
@@ -559,7 +548,6 @@ public partial class AudioClient
             throw;
         }
 #pragma warning restore OPENAI001
-#pragma warning restore SCME0005
     }
 
     private void EnsureModelSupportsStreaming()

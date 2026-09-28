@@ -1,4 +1,3 @@
-﻿#pragma warning disable SCME0005
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -528,7 +527,7 @@ public class ReadMeSnippets
     public async Task ResponsesStreaming()
     {
         var clientMock = new Mock<ResponsesClient>();
-        var streamingResultMock = new Mock<AsyncStreamingClientResult<StreamingResponseUpdate>>();
+        var streamingResultMock = new Mock<AsyncStreamingResult<StreamingResponseUpdate>>();
 
         clientMock
             .Setup(c => c.CreateResponseAsync(

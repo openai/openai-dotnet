@@ -2,7 +2,6 @@
 // PAGE: https://platform.openai.com/docs/guides/streaming-responses#enable-streaming
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
 
 #:package System.Linq.Async@6.*
 #:package OpenAI@2.*
