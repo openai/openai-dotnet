@@ -1,4 +1,3 @@
-#pragma warning disable SCME0005
 #pragma warning disable OPENAI001
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
@@ -306,7 +305,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
 
         FileStream inputStream = null;
 
-        AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+        AsyncStreamingResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {
@@ -518,7 +517,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
             ResponseFormat = AudioTranscriptionFormat.Diarized,
         };
 
-        AsyncStreamingClientResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+        AsyncStreamingResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
 
         if (audioSourceKind == AudioSourceKind.UsingStream)
         {

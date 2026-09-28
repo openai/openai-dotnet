@@ -2,7 +2,6 @@
 // PAGE: https://platform.openai.com/docs/quickstart#stream-responses-and-build-realtime-apps
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0005
 
 #:package System.Linq.Async@6.*
 #:package OpenAI@2.*
