@@ -1,14 +1,18 @@
 <#
 .SYNOPSIS
-    Generates the canonical inline OpenAPI document for the /responses route.
+    Generates canonical inline, componentized, and deduplicated OpenAPI documents
+    for the /responses route.
 
 .DESCRIPTION
     Runs the OpenAPI transformation stages in order for the createResponse
     operation: Extract the route, Remove omitted properties, Inline references,
     Flatten allOf, Simplify string variants, Simplify recursive schemas, Add
     oneOf discriminators, Normalize oneOf metadata, Flatten nested oneOf
-    wrappers, and Sort. Each stage is retained under specification/openapi, and
-    the sorted result is also copied byte-for-byte to responses.openapi.json.
+    wrappers, Sort, Componentize object schemas, Reconcile the persisted
+    component deduplication map, and Apply component deduplication. Each inline
+    stage is retained under specification/openapi. After all stages succeed, the
+    deduplicated result is copied byte-for-byte to responses.openapi.json as the
+    final published artifact.
 
     The generated files are:
     - responses.extracted.openapi.json
@@ -21,16 +25,32 @@
     - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json
+    - responses.componentized.openapi.json
+    - responses.component-deduplication-map.json
+    - responses.componentized.deduplicated.openapi.json
     - responses.openapi.json
+
+.PARAMETER ResetDeduplicationMap
+    Deletes the target component deduplication map after componentization
+    succeeds, then bootstraps a fresh mapping from the current graph. Omitting
+    this switch preserves and reconciles existing reviewed mapping decisions.
+    Reset is destructive and does not restore the old map if fresh analysis
+    subsequently fails.
 
 .EXAMPLE
     ./scripts/Generate-ResponsesOpenApi.ps1
+
+.EXAMPLE
+    ./scripts/Generate-ResponsesOpenApi.ps1 -ResetDeduplicationMap
 #>
 
 #Requires -Version 7.0
 
 [CmdletBinding()]
-param()
+param(
+    [Parameter()]
+    [switch]$ResetDeduplicationMap
+)
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
@@ -57,6 +77,9 @@ function Get-ResponsesOpenApiArtifactPaths {
         OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json"
         OneOfFlattened = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json"
         Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
+        Componentized = Join-Path $fullOutputDirectory "responses.componentized.openapi.json"
+        DeduplicationMap = Join-Path $fullOutputDirectory "responses.component-deduplication-map.json"
+        Deduplicated = Join-Path $fullOutputDirectory "responses.componentized.deduplicated.openapi.json"
         Final = Join-Path $fullOutputDirectory "responses.openapi.json"
     }
 }
@@ -93,13 +116,32 @@ function Copy-OpenApiFileAtomically {
     return $fullDestinationPath
 }
 
+function Reset-ResponsesOpenApiDeduplicationMap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    $fullPath = [System.IO.Path]::GetFullPath($Path)
+    if (-not (Test-Path -LiteralPath $fullPath)) {
+        return
+    }
+    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
+        throw "Cannot reset the component deduplication map because its path is not a file: $fullPath"
+    }
+    [System.IO.File]::Delete($fullPath)
+}
+
 function Invoke-ResponsesOpenApiGeneration {
     param(
         [Parameter(Mandatory = $true)]
         [string]$SpecificationPath,
 
         [Parameter(Mandatory = $true)]
-        [string]$OutputDirectory
+        [string]$OutputDirectory,
+
+        [Parameter()]
+        [switch]$ResetDeduplicationMap
     )
 
     $resolvedSpecificationPath = (Resolve-Path -LiteralPath $SpecificationPath -ErrorAction Stop).ProviderPath
@@ -118,6 +160,9 @@ function Invoke-ResponsesOpenApiGeneration {
         "Normalize-OpenApiOneOf.ps1"
         "Flatten-OpenApiOneOf.ps1"
         "Sort-OpenApiDocument.ps1"
+        "Componentize-OpenApiObjectSchemas.ps1"
+        "Update-OpenApiComponentDeduplicationMap.ps1"
+        "Deduplicate-OpenApiComponents.ps1"
     )
     $stageScriptPaths = [ordered]@{}
     foreach ($stageScriptName in $stageScriptNames) {
@@ -169,9 +214,6 @@ function Invoke-ResponsesOpenApiGeneration {
     $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
         -InputPath $paths.OneOfFlattened `
         -OutputPath $paths.Sorted
-    $null = Copy-OpenApiFileAtomically `
-        -SourcePath $paths.Sorted `
-        -DestinationPath $paths.Final
 
     foreach ($artifactPath in @(
         $paths.Extracted,
@@ -183,22 +225,54 @@ function Invoke-ResponsesOpenApiGeneration {
         $paths.OneOfDiscriminated,
         $paths.OneOfNormalized,
         $paths.OneOfFlattened,
-        $paths.Sorted,
-        $paths.Final
+        $paths.Sorted
     )) {
         if (-not [System.IO.File]::Exists($artifactPath)) {
             throw "The responses OpenAPI pipeline did not produce '$artifactPath'."
         }
     }
 
-    [byte[]]$sortedBytes = [System.IO.File]::ReadAllBytes($paths.Sorted)
+    $null = & $stageScriptPaths["Componentize-OpenApiObjectSchemas.ps1"] `
+        -InputPath $paths.Sorted `
+        -OutputPath $paths.Componentized
+
+    if ($ResetDeduplicationMap) {
+        Reset-ResponsesOpenApiDeduplicationMap -Path $paths.DeduplicationMap
+    }
+
+    $null = & $stageScriptPaths["Update-OpenApiComponentDeduplicationMap.ps1"] `
+        -InputPath $paths.Componentized `
+        -MappingPath $paths.DeduplicationMap
+    $null = & $stageScriptPaths["Deduplicate-OpenApiComponents.ps1"] `
+        -InputPath $paths.Componentized `
+        -MappingPath $paths.DeduplicationMap `
+        -OutputPath $paths.Deduplicated
+
+    foreach ($artifactPath in @(
+        $paths.Componentized,
+        $paths.DeduplicationMap,
+        $paths.Deduplicated
+    )) {
+        if (-not [System.IO.File]::Exists($artifactPath)) {
+            throw "The Responses OpenAPI post-processing pipeline did not produce '$artifactPath'."
+        }
+    }
+
+    $null = Copy-OpenApiFileAtomically `
+        -SourcePath $paths.Deduplicated `
+        -DestinationPath $paths.Final
+    [byte[]]$deduplicatedBytes = [System.IO.File]::ReadAllBytes($paths.Deduplicated)
     [byte[]]$finalBytes = [System.IO.File]::ReadAllBytes($paths.Final)
-    if (-not [System.Linq.Enumerable]::SequenceEqual($sortedBytes, $finalBytes)) {
-        throw "The final responses.openapi.json file differs from the retained Sort-stage output."
+    if (-not [System.Linq.Enumerable]::SequenceEqual($deduplicatedBytes, $finalBytes)) {
+        throw "The final responses.openapi.json file differs from the retained deduplicated output."
     }
 
     Write-Host ""
     Write-Host "Responses OpenAPI generation complete."
+    Write-Host "Sorted inline output: $($paths.Sorted)"
+    Write-Host "Componentized output: $($paths.Componentized)"
+    Write-Host "Deduplication map: $($paths.DeduplicationMap)"
+    Write-Host "Deduplicated output: $($paths.Deduplicated)"
     Write-Host "Final output: $($paths.Final)"
 
     return $paths
@@ -209,5 +283,6 @@ function Invoke-ResponsesOpenApiGeneration {
 if ($MyInvocation.InvocationName -ne ".") {
     $null = Invoke-ResponsesOpenApiGeneration `
         -SpecificationPath $script:DefaultSpecificationPath `
-        -OutputDirectory $script:DefaultOutputDirectory
+        -OutputDirectory $script:DefaultOutputDirectory `
+        -ResetDeduplicationMap:$ResetDeduplicationMap
 }

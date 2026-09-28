@@ -28,7 +28,7 @@
 
 .PARAMETER InputPath
     The OpenAPI JSON document to componentize. When omitted, reads
-    specification/openapi/responses.openapi.json beneath the repository root.
+    the retained sorted Responses artifact beneath specification/openapi.
 
 .PARAMETER OutputPath
     The destination JSON file. When omitted for the canonical input, writes
@@ -67,7 +67,7 @@ if (-not (Test-Path -LiteralPath $helperPath -PathType Leaf)) {
 . $helperPath
 
 $script:ComponentizerRepositoryRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
-$script:DefaultComponentizerInputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.openapi.json"
+$script:DefaultComponentizerInputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
 $script:DefaultComponentizerOutputPath = Join-Path $script:ComponentizerRepositoryRoot "specification" "openapi" "responses.componentized.openapi.json"
 
 # Eligibility is deliberately narrower than "any JSON object with type=object".

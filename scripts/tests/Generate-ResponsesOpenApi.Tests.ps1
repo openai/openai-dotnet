@@ -12,6 +12,8 @@ Set-StrictMode -Version Latest
 $scriptPath = Join-Path $PSScriptRoot ".." "Generate-ResponsesOpenApi.ps1"
 . $scriptPath
 . (Join-Path $PSScriptRoot "_OpenApiTestFixture.Helpers.ps1")
+. (Join-Path $PSScriptRoot ".." "_OpenApiDocument.Helpers.ps1")
+. (Join-Path $PSScriptRoot ".." "_OpenApiComponentDeduplication.Helpers.ps1")
 
 $script:PassedTests = 0
 $script:FailedTests = 0
@@ -67,6 +69,13 @@ function Assert-Throws {
     throw "Expected an error matching '$MessagePattern', but no error was thrown."
 }
 
+function Assert-BytesEqual {
+    param([byte[]]$Expected, [byte[]]$Actual, [string]$Message)
+    if (-not [System.Linq.Enumerable]::SequenceEqual($Expected, $Actual)) {
+        throw $Message
+    }
+}
+
 function Write-TestSpecification {
     param([string]$Path)
     Copy-Item `
@@ -79,6 +88,32 @@ function Read-TestJson {
     return Get-Content -LiteralPath $Path -Raw -Encoding utf8 | ConvertFrom-Json -Depth 100
 }
 
+function Write-TestJson {
+    param([object]$Document, [string]$Path)
+    $json = ConvertTo-Json -InputObject $Document -Depth 100
+    [System.IO.File]::WriteAllText(
+        $Path,
+        "$json`n",
+        [System.Text.UTF8Encoding]::new($false)
+    )
+}
+
+function Write-DuplicateTestSpecification {
+    param([string]$Path)
+    $document = Read-TestJsonFixture -RelativePath "Generate-ResponsesOpenApi/source.openapi.json"
+    $properties = $document.paths["/responses"].post.requestBody.content["application/json"].schema.allOf[0].properties
+    foreach ($name in @("duplicateA", "duplicateB")) {
+        $properties[$name] = [ordered]@{
+            type = "object"
+            required = @("value")
+            properties = [ordered]@{
+                value = [ordered]@{ type = "string" }
+            }
+        }
+    }
+    Write-TestJson -Document $document -Path $Path
+}
+
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "generate-responses-openapi-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
@@ -88,6 +123,7 @@ try {
     Invoke-Test "dot-sourcing defines orchestration functions without running the pipeline" {
         Assert-True ($null -ne (Get-Command Invoke-ResponsesOpenApiGeneration -ErrorAction SilentlyContinue)) "Generation function was not defined."
         Assert-True ($null -ne (Get-Command Get-ResponsesOpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
+        Assert-True ($null -ne (Get-Command Reset-ResponsesOpenApiDeduplicationMap -ErrorAction SilentlyContinue)) "Map reset function was not defined."
         Assert-True (-not [System.IO.Directory]::Exists((Join-Path $temporaryDirectory "unexpected"))) "Dot-sourcing unexpectedly generated output."
     }
 
@@ -112,7 +148,10 @@ try {
             "Add-OpenApiOneOfDiscriminators.ps1",
             "Normalize-OpenApiOneOf.ps1",
             "Flatten-OpenApiOneOf.ps1",
-            "Sort-OpenApiDocument.ps1"
+            "Sort-OpenApiDocument.ps1",
+            "Componentize-OpenApiObjectSchemas.ps1",
+            "Update-OpenApiComponentDeduplicationMap.ps1",
+            "Deduplicate-OpenApiComponents.ps1"
         )) {
             $stageScriptPath = Join-Path (Split-Path $scriptPath -Parent) $stageScriptName
             Assert-True (Test-Path -LiteralPath $stageScriptPath -PathType Leaf) "Required stage script was not found: $stageScriptPath"
@@ -135,6 +174,9 @@ try {
             "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
+            "responses.componentized.openapi.json",
+            "responses.component-deduplication-map.json",
+            "responses.componentized.deduplicated.openapi.json",
             "responses.openapi.json"
         ) @(
             [System.IO.Path]::GetFileName($paths.Extracted),
@@ -147,13 +189,26 @@ try {
             [System.IO.Path]::GetFileName($paths.OneOfNormalized),
             [System.IO.Path]::GetFileName($paths.OneOfFlattened),
             [System.IO.Path]::GetFileName($paths.Sorted),
+            [System.IO.Path]::GetFileName($paths.Componentized),
+            [System.IO.Path]::GetFileName($paths.DeduplicationMap),
+            [System.IO.Path]::GetFileName($paths.Deduplicated),
             [System.IO.Path]::GetFileName($paths.Final)
         ) "Artifact names were incorrect."
+        foreach ($path in @(
+            $paths.Componentized,
+            $paths.DeduplicationMap,
+            $paths.Deduplicated
+        )) {
+            Assert-Equal `
+                ([System.IO.Path]::GetFullPath($outputDirectory)) `
+                ([System.IO.Path]::GetDirectoryName($path)) `
+                "Post-processing artifact was not rooted in the requested output directory."
+        }
     }
 
     # One compact end-to-end test owns stage ordering, intermediate persistence,
     # semantic handoffs, source immutability, and final alias identity.
-    Invoke-Test "pipeline persists every stage and creates a byte-identical final alias" {
+    Invoke-Test "pipeline persists every stage and publishes the deduplicated final alias" {
         $sourcePath = Join-Path $temporaryDirectory "openapi.json"
         $outputDirectory = Join-Path $temporaryDirectory "generated"
         Write-TestSpecification -Path $sourcePath
@@ -176,12 +231,15 @@ try {
             $paths.OneOfNormalized,
             $paths.OneOfFlattened,
             $paths.Sorted,
+            $paths.Componentized,
+            $paths.DeduplicationMap,
+            $paths.Deduplicated,
             $paths.Final
         )) {
             Assert-True ([System.IO.File]::Exists($artifactPath)) "Artifact was not created: $artifactPath"
         }
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($sourceBefore, [System.IO.File]::ReadAllBytes($sourcePath))) "Pipeline modified its source specification."
-        Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Sorted), [System.IO.File]::ReadAllBytes($paths.Final))) "Final output differs from the retained Sort-stage artifact."
+        Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Deduplicated), [System.IO.File]::ReadAllBytes($paths.Final))) "Final output differs from the retained deduplicated artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
 
         $extracted = Read-TestJson -Path $paths.Extracted
@@ -194,6 +252,9 @@ try {
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $oneOfFlattened = Read-TestJson -Path $paths.OneOfFlattened
         $sorted = Read-TestJson -Path $paths.Sorted
+        $componentized = Read-OpenApiDocument -Path $paths.Componentized
+        $mapping = Read-TestJson -Path $paths.DeduplicationMap
+        $deduplicated = Read-OpenApiDocument -Path $paths.Deduplicated
         Assert-Sequence @("/responses") @($extracted.paths.PSObject.Properties.Name) "Extract stage retained unrelated routes."
         Assert-Equal "Discard API description" $extracted.info.description "Extract stage removed metadata."
         $extractedModel = $extracted.paths.'/responses'.post.requestBody.content.'application/json'.schema.allOf[0].properties.model
@@ -291,6 +352,113 @@ try {
         Assert-Equal 3 $sortedNested.oneOf.Count "Sort stage changed retained oneOf branches."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
         Assert-Equal $true $sortedFilters.anyOf[0].additionalProperties "Sort stage lost the free-form recursive replacement."
+
+        Assert-Equal 1 $mapping.version "Deduplication map version was incorrect."
+        Assert-True ($mapping.PSObject.Properties.Name -ccontains "groups") "Deduplication map omitted groups."
+        Assert-OpenApiReferencesResolve -Document $componentized
+        Assert-AdditionalOpenApiReferencesResolve -Document $componentized
+        $null = Assert-OpenApiDiscriminatorMappings -Document $componentized
+        Assert-OpenApiReferencesResolve -Document $deduplicated
+        Assert-AdditionalOpenApiReferencesResolve -Document $deduplicated
+        $null = Assert-OpenApiDiscriminatorMappings -Document $deduplicated
+        $componentizedCount = @(Get-JsonProperties -Value (Get-OpenApiComponentSchemas -Document $componentized)).Count
+        $deduplicatedCount = @(Get-JsonProperties -Value (Get-OpenApiComponentSchemas -Document $deduplicated)).Count
+        Assert-True ($deduplicatedCount -le $componentizedCount) "Deduplication increased the component count."
+    }
+
+    Invoke-Test "map reset deletes only files" {
+        $mapPath = Join-Path $temporaryDirectory "reset-map.json"
+        [System.IO.File]::WriteAllText($mapPath, "map", [System.Text.UTF8Encoding]::new($false))
+        Reset-ResponsesOpenApiDeduplicationMap -Path $mapPath
+        Assert-True (-not [System.IO.File]::Exists($mapPath)) "Map reset did not delete the file."
+
+        $directoryPath = Join-Path $temporaryDirectory "map-directory"
+        $null = [System.IO.Directory]::CreateDirectory($directoryPath)
+        Assert-Throws {
+            Reset-ResponsesOpenApiDeduplicationMap -Path $directoryPath
+        } "*path is not a file*"
+        Assert-True ([System.IO.Directory]::Exists($directoryPath)) "Map reset removed a directory."
+    }
+
+    Invoke-Test "reviewed mapping is preserved unless reset is requested" {
+        $sourcePath = Join-Path $temporaryDirectory "duplicates.openapi.json"
+        $outputDirectory = Join-Path $temporaryDirectory "mapping-policy"
+        Write-DuplicateTestSpecification -Path $sourcePath
+
+        $paths = Invoke-ResponsesOpenApiGeneration `
+            -SpecificationPath $sourcePath `
+            -OutputDirectory $outputDirectory `
+            -ResetDeduplicationMap `
+            6>$null
+        $mapping = Read-TestJson -Path $paths.DeduplicationMap
+        $group = @($mapping.groups | Where-Object {
+            @($_.members) -ccontains "CreateResponse_Request_DuplicateA"
+        })[0]
+        Assert-True ($null -ne $group) "Duplicate fixture did not create a mapping group."
+        $defaultCanonicalName = $group.canonicalName
+        $group.canonicalName = "ReviewedDuplicate"
+        Write-TestJson -Document $mapping -Path $paths.DeduplicationMap
+        [byte[]]$reviewedMappingBytes = [System.IO.File]::ReadAllBytes($paths.DeduplicationMap)
+
+        $ordinaryPaths = Invoke-ResponsesOpenApiGeneration `
+            -SpecificationPath $sourcePath `
+            -OutputDirectory $outputDirectory `
+            6>$null
+        Assert-BytesEqual `
+            $reviewedMappingBytes `
+            ([System.IO.File]::ReadAllBytes($ordinaryPaths.DeduplicationMap)) `
+            "Ordinary generation rewrote reviewed mapping bytes."
+        $preservedMapping = Read-TestJson -Path $ordinaryPaths.DeduplicationMap
+        $preservedGroup = @($preservedMapping.groups | Where-Object {
+            @($_.members) -ccontains "CreateResponse_Request_DuplicateA"
+        })[0]
+        Assert-Equal "ReviewedDuplicate" $preservedGroup.canonicalName "Ordinary generation discarded the reviewed canonical name."
+        $preservedDocument = Read-TestJson -Path $ordinaryPaths.Deduplicated
+        Assert-Equal `
+            "#/components/schemas/ReviewedDuplicate" `
+            $preservedDocument.components.schemas.CreateResponse_Request.properties.duplicateA.'$ref' `
+            "Deduplicated output did not apply the reviewed canonical name."
+
+        $resetPaths = Invoke-ResponsesOpenApiGeneration `
+            -SpecificationPath $sourcePath `
+            -OutputDirectory $outputDirectory `
+            -ResetDeduplicationMap `
+            6>$null
+        $resetMapping = Read-TestJson -Path $resetPaths.DeduplicationMap
+        $resetGroup = @($resetMapping.groups | Where-Object {
+            @($_.members) -ccontains "CreateResponse_Request_DuplicateA"
+        })[0]
+        Assert-Equal $defaultCanonicalName $resetGroup.canonicalName "Reset did not restore the first-encounter canonical name."
+        $resetDocument = Read-TestJson -Path $resetPaths.Deduplicated
+        Assert-Equal `
+            "#/components/schemas/$defaultCanonicalName" `
+            $resetDocument.components.schemas.CreateResponse_Request.properties.duplicateA.'$ref' `
+            "Reset deduplicated output did not apply the default canonical name."
+        [byte[]]$resetMappingBytes = [System.IO.File]::ReadAllBytes($resetPaths.DeduplicationMap)
+        [byte[]]$resetDeduplicatedBytes = [System.IO.File]::ReadAllBytes($resetPaths.Deduplicated)
+
+        $secondResetPaths = Invoke-ResponsesOpenApiGeneration `
+            -SpecificationPath $sourcePath `
+            -OutputDirectory $outputDirectory `
+            -ResetDeduplicationMap `
+            6>$null
+        Assert-BytesEqual $resetMappingBytes ([System.IO.File]::ReadAllBytes($secondResetPaths.DeduplicationMap)) "Repeated reset changed default mapping bytes."
+        Assert-BytesEqual $resetDeduplicatedBytes ([System.IO.File]::ReadAllBytes($secondResetPaths.Deduplicated)) "Repeated reset changed deduplicated bytes."
+
+        $staleMapping = Read-TestJson -Path $secondResetPaths.DeduplicationMap
+        $staleGroup = @($staleMapping.groups | Where-Object {
+            @($_.members) -ccontains "CreateResponse_Request_DuplicateA"
+        })[0]
+        $staleGroup.members[1] = "MissingReviewedComponent"
+        Write-TestJson -Document $staleMapping -Path $secondResetPaths.DeduplicationMap
+        [byte[]]$staleBytes = [System.IO.File]::ReadAllBytes($secondResetPaths.DeduplicationMap)
+        Assert-Throws {
+            Invoke-ResponsesOpenApiGeneration `
+                -SpecificationPath $sourcePath `
+                -OutputDirectory $outputDirectory `
+                6>$null
+        } "*missing from the componentized source*"
+        Assert-BytesEqual $staleBytes ([System.IO.File]::ReadAllBytes($secondResetPaths.DeduplicationMap)) "Failed ordinary generation changed the stale map."
     }
 
     # Final publication must replace stale bytes atomically without requiring a
@@ -310,11 +478,18 @@ try {
     # Orchestration should validate its source before launching any stage or
     # creating a partial artifact chain.
     Invoke-Test "missing and non-file specifications fail clearly" {
+        $guardOutputDirectory = Join-Path $temporaryDirectory "reset-guard"
+        $guardPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $guardOutputDirectory
+        $null = [System.IO.Directory]::CreateDirectory($guardOutputDirectory)
+        [System.IO.File]::WriteAllText($guardPaths.DeduplicationMap, "preserve", [System.Text.UTF8Encoding]::new($false))
+        [byte[]]$guardBytes = [System.IO.File]::ReadAllBytes($guardPaths.DeduplicationMap)
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `
                 -SpecificationPath (Join-Path $temporaryDirectory "missing.json") `
-                -OutputDirectory (Join-Path $temporaryDirectory "missing-output")
+                -OutputDirectory $guardOutputDirectory `
+                -ResetDeduplicationMap
         } "*cannot find path*"
+        Assert-BytesEqual $guardBytes ([System.IO.File]::ReadAllBytes($guardPaths.DeduplicationMap)) "Early failure deleted the existing map."
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `
                 -SpecificationPath $temporaryDirectory `
