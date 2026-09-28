@@ -163,379 +163,368 @@
                                 "content": {
                                   "type": "array",
                                   "items": {
+                                    "discriminator": {
+                                      "propertyName": "type"
+                                    },
                                     "oneOf": [
                                       {
-                                        "discriminator": {
-                                          "propertyName": "type"
-                                        },
-                                        "oneOf": [
-                                          {
+                                        "type": "object",
+                                        "required": [
+                                          "type",
+                                          "text"
+                                        ],
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "input_text"
+                                            ]
+                                          },
+                                          "text": {
+                                            "type": "string"
+                                          },
+                                          "prompt_cache_breakpoint": {
                                             "type": "object",
                                             "required": [
-                                              "type",
-                                              "text"
+                                              "mode"
                                             ],
                                             "properties": {
-                                              "type": {
+                                              "mode": {
                                                 "type": "string",
                                                 "enum": [
-                                                  "input_text"
+                                                  "explicit"
                                                 ]
-                                              },
-                                              "text": {
-                                                "type": "string"
-                                              },
-                                              "prompt_cache_breakpoint": {
-                                                "type": "object",
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
-                                                  }
-                                                }
                                               }
                                             }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "required": [
+                                          "type",
+                                          "detail"
+                                        ],
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "input_image"
+                                            ]
                                           },
-                                          {
-                                            "type": "object",
-                                            "required": [
-                                              "type",
-                                              "detail"
-                                            ],
-                                            "properties": {
-                                              "type": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "input_image"
-                                                ]
-                                              },
-                                              "detail": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "auto",
-                                                  "high",
-                                                  "low",
-                                                  "original"
-                                                ]
-                                              },
-                                              "file_id": {
-                                                "anyOf": [
-                                                  {
-                                                    "type": "string"
-                                                  },
-                                                  {
-                                                    "type": "null"
-                                                  }
-                                                ]
-                                              },
-                                              "image_url": {
-                                                "anyOf": [
-                                                  {
-                                                    "type": "string",
-                                                    "format": "uri"
-                                                  },
-                                                  {
-                                                    "type": "null"
-                                                  }
-                                                ]
-                                              },
-                                              "prompt_cache_breakpoint": {
-                                                "type": "object",
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
-                                                  }
-                                                }
-                                              }
-                                            }
+                                          "detail": {
+                                            "type": "string",
+                                            "enum": [
+                                              "auto",
+                                              "high",
+                                              "low",
+                                              "original"
+                                            ]
                                           },
-                                          {
-                                            "type": "object",
-                                            "required": [
-                                              "type"
-                                            ],
-                                            "properties": {
-                                              "type": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "input_file"
-                                                ]
-                                              },
-                                              "detail": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "auto",
-                                                  "high",
-                                                  "low"
-                                                ]
-                                              },
-                                              "file_data": {
+                                          "file_id": {
+                                            "anyOf": [
+                                              {
                                                 "type": "string"
                                               },
-                                              "file_id": {
-                                                "anyOf": [
-                                                  {
-                                                    "type": "string"
-                                                  },
-                                                  {
-                                                    "type": "null"
-                                                  }
-                                                ]
-                                              },
-                                              "file_url": {
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "image_url": {
+                                            "anyOf": [
+                                              {
                                                 "type": "string",
                                                 "format": "uri"
                                               },
-                                              "filename": {
-                                                "type": "string"
-                                              },
-                                              "prompt_cache_breakpoint": {
-                                                "type": "object",
-                                                "required": [
-                                                  "mode"
-                                                ],
-                                                "properties": {
-                                                  "mode": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                      "explicit"
-                                                    ]
-                                                  }
-                                                }
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "prompt_cache_breakpoint": {
+                                            "type": "object",
+                                            "required": [
+                                              "mode"
+                                            ],
+                                            "properties": {
+                                              "mode": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "explicit"
+                                                ]
                                               }
                                             }
                                           }
-                                        ]
+                                        }
                                       },
                                       {
-                                        "discriminator": {
-                                          "propertyName": "type"
-                                        },
-                                        "oneOf": [
-                                          {
+                                        "type": "object",
+                                        "required": [
+                                          "type"
+                                        ],
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "input_file"
+                                            ]
+                                          },
+                                          "detail": {
+                                            "type": "string",
+                                            "enum": [
+                                              "auto",
+                                              "high",
+                                              "low"
+                                            ]
+                                          },
+                                          "file_data": {
+                                            "type": "string"
+                                          },
+                                          "file_id": {
+                                            "anyOf": [
+                                              {
+                                                "type": "string"
+                                              },
+                                              {
+                                                "type": "null"
+                                              }
+                                            ]
+                                          },
+                                          "file_url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                          },
+                                          "filename": {
+                                            "type": "string"
+                                          },
+                                          "prompt_cache_breakpoint": {
                                             "type": "object",
                                             "required": [
-                                              "type",
-                                              "annotations",
-                                              "logprobs",
-                                              "text"
+                                              "mode"
                                             ],
                                             "properties": {
-                                              "type": {
+                                              "mode": {
                                                 "type": "string",
                                                 "enum": [
-                                                  "output_text"
+                                                  "explicit"
                                                 ]
+                                              }
+                                            }
+                                          }
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "required": [
+                                          "type",
+                                          "annotations",
+                                          "logprobs",
+                                          "text"
+                                        ],
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "output_text"
+                                            ]
+                                          },
+                                          "annotations": {
+                                            "type": "array",
+                                            "items": {
+                                              "discriminator": {
+                                                "propertyName": "type"
                                               },
-                                              "annotations": {
-                                                "type": "array",
-                                                "items": {
-                                                  "discriminator": {
-                                                    "propertyName": "type"
-                                                  },
-                                                  "oneOf": [
-                                                    {
-                                                      "type": "object",
-                                                      "required": [
-                                                        "type",
-                                                        "file_id",
-                                                        "filename",
-                                                        "index"
-                                                      ],
-                                                      "properties": {
-                                                        "type": {
-                                                          "type": "string",
-                                                          "enum": [
-                                                            "file_citation"
-                                                          ]
-                                                        },
-                                                        "file_id": {
-                                                          "type": "string"
-                                                        },
-                                                        "filename": {
-                                                          "type": "string"
-                                                        },
-                                                        "index": {
-                                                          "type": "integer"
-                                                        }
-                                                      }
-                                                    },
-                                                    {
-                                                      "type": "object",
-                                                      "required": [
-                                                        "type",
-                                                        "end_index",
-                                                        "start_index",
-                                                        "title",
-                                                        "url"
-                                                      ],
-                                                      "properties": {
-                                                        "type": {
-                                                          "type": "string",
-                                                          "enum": [
-                                                            "url_citation"
-                                                          ]
-                                                        },
-                                                        "end_index": {
-                                                          "type": "integer"
-                                                        },
-                                                        "start_index": {
-                                                          "type": "integer"
-                                                        },
-                                                        "title": {
-                                                          "type": "string"
-                                                        },
-                                                        "url": {
-                                                          "type": "string",
-                                                          "format": "uri"
-                                                        }
-                                                      }
-                                                    },
-                                                    {
-                                                      "type": "object",
-                                                      "required": [
-                                                        "type",
-                                                        "container_id",
-                                                        "end_index",
-                                                        "file_id",
-                                                        "filename",
-                                                        "start_index"
-                                                      ],
-                                                      "properties": {
-                                                        "type": {
-                                                          "type": "string",
-                                                          "enum": [
-                                                            "container_file_citation"
-                                                          ]
-                                                        },
-                                                        "container_id": {
-                                                          "type": "string"
-                                                        },
-                                                        "end_index": {
-                                                          "type": "integer"
-                                                        },
-                                                        "file_id": {
-                                                          "type": "string"
-                                                        },
-                                                        "filename": {
-                                                          "type": "string"
-                                                        },
-                                                        "start_index": {
-                                                          "type": "integer"
-                                                        }
-                                                      }
-                                                    },
-                                                    {
-                                                      "type": "object",
-                                                      "required": [
-                                                        "type",
-                                                        "file_id",
-                                                        "index"
-                                                      ],
-                                                      "properties": {
-                                                        "type": {
-                                                          "type": "string",
-                                                          "enum": [
-                                                            "file_path"
-                                                          ]
-                                                        },
-                                                        "file_id": {
-                                                          "type": "string"
-                                                        },
-                                                        "index": {
-                                                          "type": "integer"
-                                                        }
-                                                      }
-                                                    }
-                                                  ]
-                                                }
-                                              },
-                                              "logprobs": {
-                                                "type": "array",
-                                                "items": {
+                                              "oneOf": [
+                                                {
                                                   "type": "object",
                                                   "required": [
-                                                    "bytes",
-                                                    "logprob",
-                                                    "token",
-                                                    "top_logprobs"
+                                                    "type",
+                                                    "file_id",
+                                                    "filename",
+                                                    "index"
                                                   ],
                                                   "properties": {
-                                                    "bytes": {
-                                                      "type": "array",
-                                                      "items": {
-                                                        "type": "integer"
-                                                      }
+                                                    "type": {
+                                                      "type": "string",
+                                                      "enum": [
+                                                        "file_citation"
+                                                      ]
                                                     },
-                                                    "logprob": {
-                                                      "type": "number"
-                                                    },
-                                                    "token": {
+                                                    "file_id": {
                                                       "type": "string"
                                                     },
-                                                    "top_logprobs": {
-                                                      "type": "array",
-                                                      "items": {
-                                                        "type": "object",
-                                                        "required": [
-                                                          "bytes",
-                                                          "logprob",
-                                                          "token"
-                                                        ],
-                                                        "properties": {
-                                                          "bytes": {
-                                                            "type": "array",
-                                                            "items": {
-                                                              "type": "integer"
-                                                            }
-                                                          },
-                                                          "logprob": {
-                                                            "type": "number"
-                                                          },
-                                                          "token": {
-                                                            "type": "string"
-                                                          }
+                                                    "filename": {
+                                                      "type": "string"
+                                                    },
+                                                    "index": {
+                                                      "type": "integer"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "required": [
+                                                    "type",
+                                                    "end_index",
+                                                    "start_index",
+                                                    "title",
+                                                    "url"
+                                                  ],
+                                                  "properties": {
+                                                    "type": {
+                                                      "type": "string",
+                                                      "enum": [
+                                                        "url_citation"
+                                                      ]
+                                                    },
+                                                    "end_index": {
+                                                      "type": "integer"
+                                                    },
+                                                    "start_index": {
+                                                      "type": "integer"
+                                                    },
+                                                    "title": {
+                                                      "type": "string"
+                                                    },
+                                                    "url": {
+                                                      "type": "string",
+                                                      "format": "uri"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "required": [
+                                                    "type",
+                                                    "container_id",
+                                                    "end_index",
+                                                    "file_id",
+                                                    "filename",
+                                                    "start_index"
+                                                  ],
+                                                  "properties": {
+                                                    "type": {
+                                                      "type": "string",
+                                                      "enum": [
+                                                        "container_file_citation"
+                                                      ]
+                                                    },
+                                                    "container_id": {
+                                                      "type": "string"
+                                                    },
+                                                    "end_index": {
+                                                      "type": "integer"
+                                                    },
+                                                    "file_id": {
+                                                      "type": "string"
+                                                    },
+                                                    "filename": {
+                                                      "type": "string"
+                                                    },
+                                                    "start_index": {
+                                                      "type": "integer"
+                                                    }
+                                                  }
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "required": [
+                                                    "type",
+                                                    "file_id",
+                                                    "index"
+                                                  ],
+                                                  "properties": {
+                                                    "type": {
+                                                      "type": "string",
+                                                      "enum": [
+                                                        "file_path"
+                                                      ]
+                                                    },
+                                                    "file_id": {
+                                                      "type": "string"
+                                                    },
+                                                    "index": {
+                                                      "type": "integer"
+                                                    }
+                                                  }
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "logprobs": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "required": [
+                                                "bytes",
+                                                "logprob",
+                                                "token",
+                                                "top_logprobs"
+                                              ],
+                                              "properties": {
+                                                "bytes": {
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "integer"
+                                                  }
+                                                },
+                                                "logprob": {
+                                                  "type": "number"
+                                                },
+                                                "token": {
+                                                  "type": "string"
+                                                },
+                                                "top_logprobs": {
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "required": [
+                                                      "bytes",
+                                                      "logprob",
+                                                      "token"
+                                                    ],
+                                                    "properties": {
+                                                      "bytes": {
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "integer"
                                                         }
+                                                      },
+                                                      "logprob": {
+                                                        "type": "number"
+                                                      },
+                                                      "token": {
+                                                        "type": "string"
                                                       }
                                                     }
                                                   }
                                                 }
-                                              },
-                                              "text": {
-                                                "type": "string"
                                               }
                                             }
                                           },
-                                          {
-                                            "type": "object",
-                                            "required": [
-                                              "type",
-                                              "refusal"
-                                            ],
-                                            "properties": {
-                                              "type": {
-                                                "type": "string",
-                                                "enum": [
-                                                  "refusal"
-                                                ]
-                                              },
-                                              "refusal": {
-                                                "type": "string"
-                                              }
-                                            }
+                                          "text": {
+                                            "type": "string"
                                           }
-                                        ]
+                                        }
+                                      },
+                                      {
+                                        "type": "object",
+                                        "required": [
+                                          "type",
+                                          "refusal"
+                                        ],
+                                        "properties": {
+                                          "type": {
+                                            "type": "string",
+                                            "enum": [
+                                              "refusal"
+                                            ]
+                                          },
+                                          "refusal": {
+                                            "type": "string"
+                                          }
+                                        }
                                       }
                                     ]
                                   }

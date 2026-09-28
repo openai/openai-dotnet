@@ -228,16 +228,21 @@ try {
         $simplifiedFilters = $simplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $recursiveSimplifiedFilters = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $recursiveSimplifiedFormat = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
+        $recursiveSimplifiedGrouped = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $discriminatedFormat = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
+        $discriminatedGrouped = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $normalizedOutputs = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
         $normalizedEvents = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $normalizedFilters = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $normalizedFormat = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
+        $normalizedGrouped = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $normalizedNested = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
+        $flattenedGrouped = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $flattenedNested = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $sortedEvents = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $sortedFilters = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
+        $sortedGrouped = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $sortedNested = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         Assert-Equal 2 $simplifiedModel.anyOf.Count "Simplify stage emitted the wrong branch count."
         Assert-Sequence @("zeta", "alpha", "middle") @($simplifiedModel.anyOf[1].enum) "Simplify stage did not preserve encounter order."
@@ -249,9 +254,14 @@ try {
         Assert-Equal $true $recursiveSimplifiedFilters.anyOf[0].additionalProperties "Recursive Simplify stage did not allow free-form properties."
         Assert-Equal "null" $recursiveSimplifiedFilters.anyOf[1].type "Recursive Simplify stage lost the nullable branch."
         Assert-True (-not ($recursiveSimplifiedFormat.PSObject.Properties.Name -ccontains "discriminator")) "Recursive Simplify stage added the discriminator early."
+        Assert-True (-not ($recursiveSimplifiedGrouped.PSObject.Properties.Name -ccontains "discriminator")) "Recursive Simplify stage added the grouped discriminator early."
         Assert-Sequence @("discriminator", "oneOf") @($discriminatedFormat.PSObject.Properties.Name) "oneOf discriminator stage emitted the wrong member order."
         Assert-Equal "type" $discriminatedFormat.discriminator.propertyName "oneOf discriminator stage used the wrong propertyName."
         Assert-Sequence @("text", "json_schema", "json_object") @($discriminatedFormat.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "oneOf discriminator stage changed branch values."
+        Assert-Equal "type" $discriminatedGrouped.discriminator.propertyName "Grouped parent discriminator was not inferred."
+        Assert-Equal 2 $discriminatedGrouped.oneOf.Count "Discriminator stage flattened grouped wrappers early."
+        Assert-Equal 3 $discriminatedGrouped.oneOf[0].oneOf.Count "Discriminator stage changed the grouped input wrapper."
+        Assert-Equal 2 $discriminatedGrouped.oneOf[1].oneOf.Count "Discriminator stage changed the grouped output wrapper."
         Assert-True (-not ($normalizedOutputs.PSObject.Properties.Name -ccontains "discriminator")) "Normalize stage retained the outer orphan."
         Assert-True (-not ($normalizedOutputs.items.PSObject.Properties.Name -ccontains "discriminator")) "Invalid nested discriminator remained."
         Assert-True ($normalizedEvents.PSObject.Properties.Name -ccontains "anyOf") "Normalize stage changed a non-inferable anyOf."
@@ -259,14 +269,25 @@ try {
         Assert-True (-not ($normalizedEvents.PSObject.Properties.Name -ccontains "discriminator")) "Normalize stage retained a non-inferable discriminator."
         Assert-True ($normalizedFilters.PSObject.Properties.Name -ccontains "anyOf") "Normalize stage changed the nullable recursive wrapper."
         Assert-Equal "type" $normalizedFormat.discriminator.propertyName "Normalize stage removed the inferred discriminator."
+        Assert-Equal "type" $normalizedGrouped.discriminator.propertyName "Normalize stage removed the grouped discriminator."
+        Assert-Equal 2 $normalizedGrouped.oneOf.Count "Normalize stage flattened grouped wrappers early."
         Assert-Equal 3 $normalizedNested.oneOf.Count "Normalize stage changed the nested outer union."
         Assert-Equal 2 $normalizedNested.oneOf[1].oneOf.Count "Normalize stage removed the matching wrapper early."
         Assert-True (-not ($normalizedNested.PSObject.Properties.Name -ccontains "discriminator")) "Invalid nested parent discriminator remained."
+        Assert-Equal "type" $flattenedGrouped.discriminator.propertyName "oneOf Flatten stage removed the grouped discriminator."
+        Assert-Sequence @("input_text", "input_image", "input_file", "output_text", "refusal") @(
+            $flattenedGrouped.oneOf | ForEach-Object { $_.properties.type.enum[0] }
+        ) "oneOf Flatten stage changed grouped leaf order."
+        Assert-Equal 0 @($flattenedGrouped.oneOf | Where-Object {
+            $_.PSObject.Properties.Name -ccontains "oneOf"
+        }).Count "oneOf Flatten stage retained a grouped wrapper."
         Assert-Equal 3 $flattenedNested.oneOf.Count "oneOf Flatten stage changed a non-discriminated union."
         Assert-Equal 2 $flattenedNested.oneOf[1].oneOf.Count "oneOf Flatten stage flattened a non-discriminated wrapper."
         Assert-Sequence @("shared") @($flattenedNested.required) "oneOf Flatten stage changed shared constraints."
         Assert-True ($flattenedNested.oneOf[1].PSObject.Properties.Name -ccontains "oneOf") "oneOf Flatten stage lost the retained wrapper."
         Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "anyOf") "Sort stage lost the retained anyOf."
+        Assert-Equal "type" $sortedGrouped.discriminator.propertyName "Sort stage lost the grouped discriminator."
+        Assert-Equal 5 $sortedGrouped.oneOf.Count "Sort stage changed grouped branches."
         Assert-Equal 3 $sortedNested.oneOf.Count "Sort stage changed retained oneOf branches."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
         Assert-Equal $true $sortedFilters.anyOf[0].additionalProperties "Sort stage lost the free-form recursive replacement."

@@ -13,8 +13,9 @@
 
     Every recursive leaf must require the discriminator property with finite
     string const/enum values, and accepted values must be globally disjoint. The
-    transformation preserves encounter order, relocates affected local JSON
-    pointers, and writes a separate oneOf-flattened document. Run
+    transparent nested wrappers may omit type when those leaves are explicit
+    objects. The transformation preserves encounter order, relocates affected
+    local JSON pointers, and writes a separate oneOf-flattened document. Run
     Sort-OpenApiDocument.ps1 afterward to produce canonical ordering.
 
 .PARAMETER InputPath

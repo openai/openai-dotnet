@@ -784,8 +784,10 @@ function Test-OpenApiDiscriminatorUnionSiblingsMatch {
 }
 
 # Recursively describes a union as direct leaves and transparent nested oneOf
-# wrappers. A null result means the union cannot safely use one discriminator or
-# be flattened under the requested property.
+# wrappers. A wrapper may omit type because its recursively validated leaves are
+# explicit objects; any present wrapper type must still be exactly object. A null
+# result means the union cannot safely use one discriminator or be flattened
+# under the requested property.
 function Get-OpenApiInlineDiscriminatorUnionPlan {
     param(
         [Parameter(Mandatory = $true)]
@@ -849,9 +851,14 @@ function Get-OpenApiInlineDiscriminatorUnionPlan {
 
         $isNestedWrapper = Test-JsonProperty -Object $branch -Name "oneOf"
         if ($isNestedWrapper) {
+            $hasBranchType = Test-JsonProperty -Object $branch -Name "type"
             $branchType = Get-JsonPropertyValue -Object $branch -Name "type"
-            if ($branchType -isnot [string] -or
-                -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal) -or
+            # Composition-only wrappers may omit type because their recursively
+            # validated leaves are explicit objects. Any present type remains
+            # strict and must be the exact scalar string "object".
+            if (($hasBranchType -and
+                    ($branchType -isnot [string] -or
+                        -not [string]::Equals($branchType, "object", [System.StringComparison]::Ordinal))) -or
                 (Test-JsonProperty -Object $branch -Name '$ref') -or
                 -not (Test-OpenApiDiscriminatorMetadataCompatible `
                     -ParentSchema $Schema `

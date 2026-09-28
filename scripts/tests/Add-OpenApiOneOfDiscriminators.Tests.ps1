@@ -204,6 +204,98 @@ try {
         Assert-Equal "type" (Get-TestResponseSchema $inferredResult.Document).discriminator.propertyName "Inferred outer discriminator was incorrect."
     }
 
+    # Composition-only wrappers do not need to repeat type=object when every
+    # recursively collected leaf is an explicit required object alternative.
+    Invoke-Test "composition-only wrappers infer one parent discriminator" {
+        $leaf = {
+            param([string]$Value)
+            [ordered]@{
+                type = "object"
+                required = @("type")
+                properties = [ordered]@{
+                    type = [ordered]@{ type = "string"; const = $Value }
+                }
+            }
+        }
+        $schema = [ordered]@{
+            oneOf = @(
+                [ordered]@{
+                    discriminator = [ordered]@{ propertyName = "type" }
+                    oneOf = @(
+                        (& $leaf "input_text")
+                        (& $leaf "input_image")
+                        (& $leaf "input_file")
+                    )
+                },
+                [ordered]@{
+                    discriminator = [ordered]@{ propertyName = "type" }
+                    oneOf = @(
+                        (& $leaf "output_text")
+                        (& $leaf "refusal")
+                    )
+                }
+            )
+        }
+
+        $candidate = Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema
+        Assert-Sequence `
+            @("input_text", "input_image", "input_file", "output_text", "refusal") `
+            @($candidate.EnumValues) `
+            "Composition-only wrapper values were incorrect."
+        $result = ConvertTo-OneOfDiscriminatedOpenApiDocument `
+            -Document (New-TestOpenApiDocument -Schema $schema)
+        $converted = Get-TestResponseSchema $result.Document
+        Assert-Equal 1 $result.AddedDiscriminatorCount "Parent discriminator was not inferred exactly once."
+        Assert-Equal "type" $converted.discriminator.propertyName "Parent discriminator property was incorrect."
+        Assert-Equal 2 $converted.oneOf.Count "Inference flattened wrappers before the flatten stage."
+        Assert-Equal 3 $converted.oneOf[0].oneOf.Count "Input wrapper changed during inference."
+        Assert-Equal 2 $converted.oneOf[1].oneOf.Count "Output wrapper changed during inference."
+    }
+
+    Invoke-Test "explicit non-object wrapper types remain ineligible" {
+        foreach ($case in @(
+            [PSCustomObject]@{ Name = "string"; Value = "string" },
+            [PSCustomObject]@{ Name = "array"; Value = "array" },
+            [PSCustomObject]@{ Name = "null"; Value = "null" },
+            [PSCustomObject]@{ Name = "type array"; Value = [object[]]@("object", "null") },
+            [PSCustomObject]@{ Name = "explicit null"; Value = $null }
+        )) {
+            $wrapper = [ordered]@{
+                type = $case.Value
+                discriminator = [ordered]@{ propertyName = "type" }
+                oneOf = @(
+                    [ordered]@{
+                        type = "object"
+                        required = @("type")
+                        properties = [ordered]@{
+                            type = [ordered]@{ type = "string"; const = "first" }
+                        }
+                    }
+                )
+            }
+            $schema = [ordered]@{
+                oneOf = @(
+                    $wrapper,
+                    [ordered]@{
+                        discriminator = [ordered]@{ propertyName = "type" }
+                        oneOf = @(
+                            [ordered]@{
+                                type = "object"
+                                required = @("type")
+                                properties = [ordered]@{
+                                    type = [ordered]@{ type = "string"; const = "second" }
+                                }
+                            }
+                        )
+                    }
+                )
+            }
+            Assert-True `
+                ($null -eq (Get-OpenApiOneOfDiscriminatorCandidate -Schema $schema)) `
+                "Explicit wrapper type '$($case.Name)' was considered eligible."
+        }
+    }
+
     Invoke-Test "duplicate values across nested and outer branches reject the discriminator" {
         $nested = [ordered]@{
             type = "object"

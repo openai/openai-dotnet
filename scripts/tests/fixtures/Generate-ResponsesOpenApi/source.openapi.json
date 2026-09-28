@@ -166,6 +166,94 @@
                           }
                         ]
                       },
+                      "grouped": {
+                        "oneOf": [
+                          {
+                            "discriminator": {
+                              "propertyName": "type"
+                            },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "required": [
+                                  "type"
+                                ],
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "input_text"
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "type": "object",
+                                "required": [
+                                  "type"
+                                ],
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "input_image"
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "type": "object",
+                                "required": [
+                                  "type"
+                                ],
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "input_file"
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          },
+                          {
+                            "discriminator": {
+                              "propertyName": "type"
+                            },
+                            "oneOf": [
+                              {
+                                "type": "object",
+                                "required": [
+                                  "type"
+                                ],
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "output_text"
+                                    ]
+                                  }
+                                }
+                              },
+                              {
+                                "type": "object",
+                                "required": [
+                                  "type"
+                                ],
+                                "properties": {
+                                  "type": {
+                                    "type": "string",
+                                    "enum": [
+                                      "refusal"
+                                    ]
+                                  }
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      },
                       "nested": {
                         "discriminator": {
                           "propertyName": "type"

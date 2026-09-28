@@ -7,8 +7,9 @@
     discriminator and recursively resolves to compatible object leaves. Every
     leaf must require the discriminator property with finite, mutually exclusive
     string const/enum values. Compatible nested oneOf wrappers may contribute
-    leaves. The stage then removes an exact discriminator schema keyword when
-    its containing schema has no exact direct oneOf sibling.
+    leaves and may omit type when their leaves are explicit objects. The stage
+    then removes an exact discriminator schema keyword when its containing
+    schema has no exact direct oneOf sibling.
 
     A discriminator paired with any direct oneOf property is preserved; the
     preceding discriminator-reconciliation stage validates that composition.

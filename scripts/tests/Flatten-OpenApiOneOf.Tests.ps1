@@ -122,6 +122,37 @@ function New-TransparentOneOfSchema {
     }
 }
 
+function New-GroupedOneOfSchema {
+    $base = "#/paths/~1test/post/responses/200/content/application~1json/schema"
+    $discriminator = [ordered]@{
+        propertyName = "kind"
+        mapping = [ordered]@{
+            input = "$base/oneOf/0/oneOf/0"
+            output = "$base/oneOf/1/oneOf/1"
+        }
+    }
+    return [ordered]@{
+        discriminator = $discriminator
+        oneOf = @(
+            [ordered]@{
+                discriminator = [ordered]@{ propertyName = "kind" }
+                oneOf = @(
+                    (New-OneOfLeaf -Value "input_text")
+                    (New-OneOfLeaf -Value "input_image")
+                    (New-OneOfLeaf -Value "input_file")
+                )
+            },
+            [ordered]@{
+                discriminator = [ordered]@{ propertyName = "kind" }
+                oneOf = @(
+                    (New-OneOfLeaf -Value "output_text")
+                    (New-OneOfLeaf -Value "refusal")
+                )
+            }
+        )
+    }
+}
+
 function New-MatchingOneOfDocument {
     return Read-TestJsonFixture -RelativePath "Flatten-OpenApiOneOf/source.openapi.json"
 }
@@ -164,6 +195,32 @@ try {
         Assert-Sequence @("alpha", "system_message", "user_message", "omega") @(
             $schema.oneOf | ForEach-Object { $_.properties.kind.enum[0] }
         ) "Transparent wrapper changed branch order."
+    }
+
+    Invoke-Test "composition-only wrapper groups flatten into one discriminated union" {
+        $source = New-TestOpenApiDocument -Schema (New-GroupedOneOfSchema)
+        $result = ConvertTo-FlattenedOpenApiOneOfDocument -Document $source
+        $schema = Get-TestResponseSchema -Document $result.Document
+        Assert-Equal 2 $result.FlattenedOneOfCount "Grouped wrapper count was incorrect."
+        Assert-Equal 5 $result.PromotedBranchCount "Grouped promotion count was incorrect."
+        Assert-Sequence @("input_text", "input_image", "input_file", "output_text", "refusal") @(
+            $schema.oneOf | ForEach-Object { $_.properties.kind.enum[0] }
+        ) "Grouped flattening changed leaf order."
+        Assert-Equal `
+            "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/0" `
+            $schema.discriminator.mapping.input `
+            "Input mapping was not relocated."
+        Assert-Equal `
+            "#/paths/~1test/post/responses/200/content/application~1json/schema/oneOf/4" `
+            $schema.discriminator.mapping.output `
+            "Output mapping was not relocated."
+        Assert-True (-not @($schema.oneOf | Where-Object {
+            Test-JsonProperty -Object $_ -Name "oneOf"
+        }).Count) "Grouped flattening retained a nested wrapper."
+
+        $second = ConvertTo-FlattenedOpenApiOneOfDocument -Document $result.Document
+        Assert-Equal 0 $second.FlattenedOneOfCount "Second grouped pass flattened a wrapper."
+        Assert-JsonEqual $result.Document $second.Document "Grouped flattening was not structurally idempotent."
     }
 
     Invoke-Test "const and multi-value enum leaves flatten" {

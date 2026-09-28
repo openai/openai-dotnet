@@ -2,35 +2,25 @@
   "version": 1,
   "groups": [
     {
-      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1",
-      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1",
-      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1",
-      "fingerprint": "sha256:e8e403f846a579e097e1869009c74c129d5030a2271f3882c4e2e9e461502128",
-      "members": [
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1",
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfCustomToolCallOutput_Output_Union_ArrayItem"
-      ]
-    },
-    {
-      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText",
-      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText",
-      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText",
+      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
+      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
+      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
       "fingerprint": "sha256:c3a1e47a233ef61d3af505440816ad5ee5772661d99b1f6d0494adbf4b6cda32",
       "members": [
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText",
+        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
         "CreateResponse_Request_Input_Union_ArrayItem_TypeOfCustomToolCallOutput_Output_Union_ArrayItem_TypeOfInputText",
         "CreateResponse_Request_Prompt_Variables_Value_Union_TypeOfInputText"
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText_PromptCacheBreakpoint",
-      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText_PromptCacheBreakpoint",
-      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText_PromptCacheBreakpoint",
+      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
+      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
+      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
       "fingerprint": "sha256:652dbcec25cb1327a50c7723c3bdca4f2dd1120f066a5a3d006a156992cc0474",
       "members": [
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText_PromptCacheBreakpoint",
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage_PromptCacheBreakpoint",
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile_PromptCacheBreakpoint",
+        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
+        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage_PromptCacheBreakpoint",
+        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile_PromptCacheBreakpoint",
         "CreateResponse_Request_Input_Union_ArrayItem_TypeOfFunctionCallOutput_Output_Union_ArrayItem_TypeOfInputText_PromptCacheBreakpoint",
         "CreateResponse_Request_Input_Union_ArrayItem_TypeOfFunctionCallOutput_Output_Union_ArrayItem_TypeOfInputImage_PromptCacheBreakpoint",
         "CreateResponse_Request_Input_Union_ArrayItem_TypeOfFunctionCallOutput_Output_Union_ArrayItem_TypeOfInputFile_PromptCacheBreakpoint",
@@ -43,23 +33,23 @@
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage",
-      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage",
-      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage",
+      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
+      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
+      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
       "fingerprint": "sha256:c00646b42041c20f9a7b5b95cc26d424b1ffe5a730dddad1a53e3a42c089e66b",
       "members": [
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage",
+        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
         "CreateResponse_Request_Input_Union_ArrayItem_TypeOfCustomToolCallOutput_Output_Union_ArrayItem_TypeOfInputImage",
         "CreateResponse_Request_Prompt_Variables_Value_Union_TypeOfInputImage"
       ]
     },
     {
-      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile",
-      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile",
-      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile",
+      "id": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+      "canonicalName": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+      "representative": "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
       "fingerprint": "sha256:95006c517e385a3697a94acf2001493f9a7a396e895edf56c73b72984f0b8692",
       "members": [
-        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile",
+        "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
         "CreateResponse_Request_Input_Union_ArrayItem_TypeOfCustomToolCallOutput_Output_Union_ArrayItem_TypeOfInputFile",
         "CreateResponse_Request_Prompt_Variables_Value_Union_TypeOfInputFile"
       ]

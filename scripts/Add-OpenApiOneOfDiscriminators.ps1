@@ -8,7 +8,8 @@
     must require a direct string `properties.type` constrained by const or a
     nonempty enum, and all accepted values must be disjoint across the complete
     tree. Nested oneOf wrappers must use the same discriminator and carry only
-    structural siblings shared with their parent.
+    structural siblings shared with their parent. Such wrappers may omit type
+    when every recursively collected leaf is an explicit object schema.
 
     The discriminator is inserted immediately before oneOf. Existing valid
     discriminators are preserved; existing invalid discriminators are removed

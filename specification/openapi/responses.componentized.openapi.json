@@ -692,7 +692,7 @@
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union"
+              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content"
             }
           },
           "role": {
@@ -731,38 +731,36 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union": {
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2"
-          }
-        ]
-      },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "input_text": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText",
-            "input_image": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage",
-            "input_file": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile"
+            "input_text": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
+            "input_image": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
+            "input_file": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+            "output_text": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText",
+            "refusal": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfRefusal"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfRefusal"
           }
         ]
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText": {
         "type": "object",
         "required": [
           "type",
@@ -779,11 +777,11 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText_PromptCacheBreakpoint"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputText_PromptCacheBreakpoint": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint": {
         "type": "object",
         "required": [
           "mode"
@@ -797,7 +795,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage": {
         "type": "object",
         "required": [
           "type",
@@ -841,11 +839,11 @@
             ]
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage_PromptCacheBreakpoint"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage_PromptCacheBreakpoint"
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputImage_PromptCacheBreakpoint": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputImage_PromptCacheBreakpoint": {
         "type": "object",
         "required": [
           "mode"
@@ -859,7 +857,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile": {
         "type": "object",
         "required": [
           "type"
@@ -900,11 +898,11 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile_PromptCacheBreakpoint"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile_PromptCacheBreakpoint"
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative1_TypeOfInputFile_PromptCacheBreakpoint": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfInputFile_PromptCacheBreakpoint": {
         "type": "object",
         "required": [
           "mode"
@@ -918,24 +916,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "output_text": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText",
-            "refusal": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfRefusal"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfRefusal"
-          }
-        ]
-      },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText": {
         "type": "object",
         "required": [
           "type",
@@ -953,13 +934,13 @@
           "annotations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations"
+              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations"
             }
           },
           "logprobs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Logprobs"
+              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs"
             }
           },
           "text": {
@@ -967,32 +948,32 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "file_citation": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfFileCitation",
-            "url_citation": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfUrlCitation",
-            "container_file_citation": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfContainerFileCitation",
-            "file_path": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfFilePath"
+            "file_citation": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFileCitation",
+            "url_citation": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfUrlCitation",
+            "container_file_citation": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfContainerFileCitation",
+            "file_path": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFilePath"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfFileCitation"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFileCitation"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfUrlCitation"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfUrlCitation"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfContainerFileCitation"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfContainerFileCitation"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfFilePath"
+            "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFilePath"
           }
         ]
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfFileCitation": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFileCitation": {
         "type": "object",
         "required": [
           "type",
@@ -1018,7 +999,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfUrlCitation": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfUrlCitation": {
         "type": "object",
         "required": [
           "type",
@@ -1049,7 +1030,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfContainerFileCitation": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfContainerFileCitation": {
         "type": "object",
         "required": [
           "type",
@@ -1083,7 +1064,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Annotations_TypeOfFilePath": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFilePath": {
         "type": "object",
         "required": [
           "type",
@@ -1105,7 +1086,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Logprobs": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs": {
         "type": "object",
         "required": [
           "bytes",
@@ -1129,12 +1110,12 @@
           "top_logprobs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Logprobs_TopLogprobs"
+              "$ref": "#/components/schemas/CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs_TopLogprobs"
             }
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfOutputText_Logprobs_TopLogprobs": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs_TopLogprobs": {
         "type": "object",
         "required": [
           "bytes",
@@ -1156,7 +1137,7 @@
           }
         }
       },
-      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_Union_Alternative2_TypeOfRefusal": {
+      "CreateResponse_Request_Input_Union_ArrayItem_TypeOfMessage_Content_TypeOfRefusal": {
         "type": "object",
         "required": [
           "type",

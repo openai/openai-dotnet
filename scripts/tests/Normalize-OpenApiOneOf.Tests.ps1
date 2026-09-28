@@ -147,7 +147,6 @@ try {
             }
         }
         $nested = [ordered]@{
-            type = "object"
             discriminator = [ordered]@{ propertyName = "kind" }
             oneOf = @((& $leaf "nested_a"), (& $leaf "nested_b"))
         }
@@ -162,6 +161,15 @@ try {
         Assert-Equal 1 $result.PromotedAnyOfCount "Nested discriminator candidate was not promoted."
         Assert-True (-not (Test-JsonProperty $normalized "anyOf")) "Nested candidate retained anyOf."
         Assert-Equal 2 $normalized.oneOf.Count "Nested candidate changed branch count before flattening."
+
+        $invalid = Copy-JsonValue -Value $schema
+        $invalid.anyOf[0]["type"] = "string"
+        $invalidResult = ConvertTo-NormalizedOpenApiOneOfDocument `
+            -Document (New-TestOpenApiDocument -Schema $invalid)
+        $invalidNormalized = Get-TestResponseSchema $invalidResult.Document
+        Assert-Equal 0 $invalidResult.PromotedAnyOfCount "Explicit non-object wrapper was promoted."
+        Assert-True (Test-JsonProperty $invalidNormalized "anyOf") "Explicit non-object wrapper lost anyOf."
+        Assert-True (-not (Test-JsonProperty $invalidNormalized "discriminator")) "Invalid anyOf discriminator remained."
     }
 
     # Every eligibility gate is conservative: malformed or mismatched unions
