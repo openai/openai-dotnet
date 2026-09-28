@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace OpenAI;
 
-internal static class SseStreamingClientResult
+internal static class SseStreamingResult
 {
     private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 

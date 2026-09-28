@@ -264,7 +264,7 @@ public partial class ResponsesClient
         }
 
         ClientResult result = CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions(streaming: true));
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken)
@@ -297,7 +297,7 @@ public partial class ResponsesClient
         }
 
         ClientResult result = await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken)
@@ -485,7 +485,7 @@ public partial class ResponsesClient
             startingAfter: options.StartingAfter,
             includeObfuscation: options.IncludeObfuscation,
             cancellationToken.ToRequestOptions(streaming: true));
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
@@ -522,7 +522,7 @@ public partial class ResponsesClient
             startingAfter: options.StartingAfter,
             includeObfuscation: options.IncludeObfuscation,
             requestOptions).ConfigureAwait(false);
-        return SseStreamingClientResult.Create(
+        return SseStreamingResult.Create(
             result.GetRawResponse(),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken);
