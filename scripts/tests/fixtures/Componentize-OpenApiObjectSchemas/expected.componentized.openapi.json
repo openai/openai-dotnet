@@ -55,7 +55,7 @@
             }
           },
           "variants": {
-            "$ref": "#/components/schemas/CreateWidget_Request_Variants_Union"
+            "$ref": "#/components/schemas/CreateWidget_Request_VariantsUnion"
           },
           "nearMiss": {
             "type": [
@@ -102,17 +102,17 @@
           }
         }
       },
-      "CreateWidget_Request_Variants_Union": {
+      "CreateWidget_Request_VariantsUnion": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateWidget_Request_Variants_Union_TypeOfAlpha"
+            "$ref": "#/components/schemas/CreateWidget_Request_VariantsUnion_TypeOfAlpha"
           },
           {
-            "$ref": "#/components/schemas/CreateWidget_Request_Variants_Union_TypeOfAlpha_1"
+            "$ref": "#/components/schemas/CreateWidget_Request_VariantsUnion_TypeOfAlpha_1"
           }
         ]
       },
-      "CreateWidget_Request_Variants_Union_TypeOfAlpha": {
+      "CreateWidget_Request_VariantsUnion_TypeOfAlpha": {
         "type": "object",
         "properties": {
           "type": {
@@ -123,7 +123,7 @@
           }
         }
       },
-      "CreateWidget_Request_Variants_Union_TypeOfAlpha_1": {
+      "CreateWidget_Request_VariantsUnion_TypeOfAlpha_1": {
         "type": "object",
         "properties": {
           "type": {

@@ -13,9 +13,10 @@
     TypeOf-prefixed singleton string enum from properties.type when available.
     Nested candidates inherit their containing component's semantic name before
     appending their relative path and enum tokens. Structural composition/item
-    tokens are omitted. A direct oneOf without a discriminator receives a Union
-    marker; otherwise anonymous descendants use ArrayItem, Value, a unique JSON
-    shape, or AlternativeN before numeric collision suffixes beginning with `_1`.
+    tokens are omitted. A direct oneOf without a discriminator appends Union to
+    its final semantic name segment; otherwise anonymous descendants use
+    ArrayItem, Value, a unique JSON shape, or AlternativeN before numeric
+    collision suffixes beginning with `_1`.
     The complete oneOf-containing Schema Object moves with all of its siblings.
     Schemas whose relocation could change $id or anchor scope fail explicitly.
     After component names stabilize, every discriminator receives a canonical
@@ -538,6 +539,25 @@ function Add-OpenApiComponentNamePart {
     }
 }
 
+# Appends the generated non-discriminated-union marker to the final semantic
+# part without introducing another underscore. Existing source-derived parts
+# ending in Union remain unchanged, and an empty name falls back to Union.
+function Add-OpenApiUnionNameSuffix {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [System.Collections.Generic.List[string]]$Parts
+    )
+
+    if ($Parts.Count -eq 0) {
+        $Parts.Add("Union")
+        return
+    }
+    if (-not $Parts[$Parts.Count - 1].EndsWith("Union", [System.StringComparison]::Ordinal)) {
+        $Parts[$Parts.Count - 1] = "$($Parts[$Parts.Count - 1])Union"
+    }
+}
+
 # Returns a direct JSON shape label only when the schema states one scalar type.
 # References, type arrays, and composition-only branches deliberately remain
 # anonymous so naming never depends on reference resolution or inference.
@@ -705,7 +725,7 @@ function Get-OpenApiNestedSchemaNameParts {
         }
     }
     if ($Candidate.IsNonDiscriminatedUnion) {
-        Add-OpenApiComponentNamePart -Parts $parts -Part "Union"
+        Add-OpenApiUnionNameSuffix -Parts $parts
     }
     return [string[]]$parts.ToArray()
 }
@@ -794,7 +814,7 @@ function Get-OpenApiSchemaComponentBaseName {
         }
     }
     if ($Candidate.IsNonDiscriminatedUnion) {
-        Add-OpenApiComponentNamePart -Parts $parts -Part "Union"
+        Add-OpenApiUnionNameSuffix -Parts $parts
     }
 
     $baseName = $parts -join "_"
