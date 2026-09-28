@@ -1,4 +1,3 @@
-#pragma warning disable SCME0005
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Containers;
@@ -424,7 +423,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponsesClient client = GetProxiedResponsesClient();
 
-        AsyncStreamingClientResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(options);
+        AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = await client.CreateResponseStreamingAsync(options);
 
         int mcpCallArgumentsDeltaUpdateCount = 0;
         int mcpCallArgumentsDoneUpdateCount = 0;
