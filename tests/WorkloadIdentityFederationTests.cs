@@ -128,6 +128,49 @@ public class WorkloadIdentityFederationTests
     }
 
     [Test]
+    public void SynchronousClientCallsDoNotCaptureTheCallingSynchronizationContext()
+    {
+        Exception capturedException = null;
+        using ManualResetEventSlim completed = new();
+        Thread thread = new(() =>
+        {
+            SynchronizationContext.SetSynchronizationContext(new NonPumpingSynchronizationContext());
+            try
+            {
+                OpenAIClient client = CreateClient(
+                    async _ =>
+                    {
+                        await Task.Yield();
+                        return SubjectToken;
+                    },
+                    message => IsTokenExchange(message) ? TokenResponse() : ServiceResponse(),
+                    expectSyncPipeline: true);
+
+                client.GetOpenAIModelClient().GetModels(new RequestOptions());
+            }
+            catch (Exception exception)
+            {
+                capturedException = exception;
+            }
+            finally
+            {
+                completed.Set();
+            }
+        })
+        {
+            IsBackground = true,
+        };
+
+        thread.Start();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(completed.Wait(TimeSpan.FromSeconds(10)), Is.True, "The synchronous call deadlocked.");
+            Assert.That(capturedException, Is.Null);
+        });
+    }
+
+    [Test]
     public async Task OmitsOptionalClientIdWhenNotConfigured()
     {
         string tokenRequestBody = null;
@@ -182,6 +225,106 @@ public class WorkloadIdentityFederationTests
     }
 
     [Test]
+    public async Task UsesUnexpiredCachedTokenWhenProactiveRefreshFails()
+    {
+        DateTimeOffset initialTime = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        DateTimeOffset now = initialTime;
+        int tokenExchangeCalls = 0;
+        int serviceRequestCalls = 0;
+        string authorizationHeader = null;
+        OpenAIClient client = CreateClient(
+            _ => new ValueTask<string>(SubjectToken),
+            message =>
+            {
+                if (IsTokenExchange(message))
+                {
+                    return Interlocked.Increment(ref tokenExchangeCalls) == 1
+                        ? TokenResponse()
+                        : new MockPipelineResponse(400).WithContent("{\"error\":\"invalid_grant\"}");
+                }
+
+                Interlocked.Increment(ref serviceRequestCalls);
+                message.Request.Headers.TryGetValue("Authorization", out authorizationHeader);
+                return ServiceResponse();
+            },
+            configureWorkloadIdentityOptions: options => SetUtcNowProvider(options, () => now));
+
+        await SendRequestAsync(client);
+        now = initialTime.AddMinutes(40);
+        await SendRequestAsync(client);
+
+        now = initialTime.AddHours(1);
+        InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+            await SendRequestAsync(client));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(tokenExchangeCalls, Is.EqualTo(3));
+            Assert.That(serviceRequestCalls, Is.EqualTo(2));
+            Assert.That(authorizationHeader, Is.EqualTo($"Bearer {AccessToken}"));
+            Assert.That(exception.Message, Does.Contain("HTTP status 400"));
+        });
+    }
+
+    [Test]
+    public async Task ConcurrentRequestsUseCachedTokenDuringProactiveRefresh()
+    {
+        DateTimeOffset now = new(2026, 1, 1, 0, 0, 0, TimeSpan.Zero);
+        int subjectTokenCalls = 0;
+        int tokenExchangeCalls = 0;
+        int serviceRequestCalls = 0;
+        TaskCompletionSource<bool> refreshStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        TaskCompletionSource<bool> releaseRefresh = new(TaskCreationOptions.RunContinuationsAsynchronously);
+        OpenAIClient client = CreateClient(
+            async _ =>
+            {
+                if (Interlocked.Increment(ref subjectTokenCalls) == 2)
+                {
+                    refreshStarted.TrySetResult(true);
+                    await releaseRefresh.Task.ConfigureAwait(false);
+                }
+                return SubjectToken;
+            },
+            message =>
+            {
+                if (IsTokenExchange(message))
+                {
+                    Interlocked.Increment(ref tokenExchangeCalls);
+                    return TokenResponse();
+                }
+
+                Interlocked.Increment(ref serviceRequestCalls);
+                return ServiceResponse();
+            },
+            configureWorkloadIdentityOptions: options => SetUtcNowProvider(options, () => now));
+
+        await SendRequestAsync(client);
+        now = now.AddMinutes(40);
+        Task refreshingRequest = SendRequestAsync(client);
+        await refreshStarted.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        try
+        {
+            Task cachedRequest = SendRequestAsync(client);
+            await cachedRequest.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.That(serviceRequestCalls, Is.EqualTo(2));
+        }
+        finally
+        {
+            releaseRefresh.TrySetResult(true);
+        }
+
+        await refreshingRequest;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(subjectTokenCalls, Is.EqualTo(2));
+            Assert.That(tokenExchangeCalls, Is.EqualTo(2));
+            Assert.That(serviceRequestCalls, Is.EqualTo(3));
+        });
+    }
+
+    [Test]
     public void CancelsSubjectTokenAcquisition()
     {
         OpenAIClient client = CreateClient(
@@ -221,7 +364,8 @@ public class WorkloadIdentityFederationTests
         OpenAIClient client = CreateClient(
             _ => new ValueTask<string>(SubjectToken),
             message => IsTokenExchange(message)
-                ? new MockPipelineResponse(400).WithContent($"{{\"error\":\"{responseSecret}\",\"subject_token\":\"{SubjectToken}\"}}")
+                ? new MockPipelineResponse(400).WithContent(
+                    $"{{\"error\":\"invalid_grant\",\"error_description\":\"{responseSecret}\",\"subject_token\":\"{SubjectToken}\"}}")
                 : throw new AssertionException("The service request should not run after a failed token exchange."));
 
         InvalidOperationException exception = Assert.ThrowsAsync<InvalidOperationException>(async () =>
@@ -229,6 +373,8 @@ public class WorkloadIdentityFederationTests
 
         Assert.Multiple(() =>
         {
+            Assert.That(exception.Message, Does.Contain("HTTP status 400"));
+            Assert.That(exception.Message, Does.Contain("invalid_grant"));
             Assert.That(exception.ToString(), Does.Not.Contain(SubjectToken));
             Assert.That(exception.ToString(), Does.Not.Contain(responseSecret));
         });
@@ -398,6 +544,37 @@ public class WorkloadIdentityFederationTests
             Assert.That(projectHeader, Is.EqualTo("project-id"));
             Assert.That(userAgentHeader, Does.Contain("wif-test-app"));
             Assert.That(telemetryLanguageHeader, Is.EqualTo("csharp"));
+        });
+    }
+
+    [Test]
+    public async Task CallerAddedPoliciesDoNotObserveTokenExchangeRequests()
+    {
+        int servicePolicyCalls = 0;
+        int tokenExchangePolicyCalls = 0;
+        OpenAIClient client = CreateClient(
+            _ => new ValueTask<string>(SubjectToken),
+            message => IsTokenExchange(message) ? TokenResponse() : ServiceResponse(),
+            configureClientOptions: options => options.AddPolicy(
+                new TestPipelinePolicy(message =>
+                {
+                    if (IsTokenExchange(message))
+                    {
+                        Interlocked.Increment(ref tokenExchangePolicyCalls);
+                    }
+                    else
+                    {
+                        Interlocked.Increment(ref servicePolicyCalls);
+                    }
+                }),
+                PipelinePosition.BeforeTransport));
+
+        await SendRequestAsync(client);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(tokenExchangePolicyCalls, Is.Zero);
+            Assert.That(servicePolicyCalls, Is.GreaterThan(0));
         });
     }
 
@@ -691,6 +868,13 @@ public class WorkloadIdentityFederationTests
                     _entries.Enqueue(exception.ToString());
                 }
             }
+        }
+    }
+
+    private sealed class NonPumpingSynchronizationContext : SynchronizationContext
+    {
+        public override void Post(SendOrPostCallback d, object state)
+        {
         }
     }
 

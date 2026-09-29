@@ -16,6 +16,18 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
     private const string IdTokenSubjectTokenType = "urn:ietf:params:oauth:token-type:id_token";
     private const string TokenEndpoint = "https://auth.openai.com/oauth/token";
     private static readonly TimeSpan s_defaultRefreshBuffer = TimeSpan.FromMinutes(20);
+    private static readonly HashSet<string> s_safeOAuthErrorCodes = new(StringComparer.Ordinal)
+    {
+        "invalid_request",
+        "invalid_client",
+        "invalid_grant",
+        "unauthorized_client",
+        "unsupported_grant_type",
+        "invalid_scope",
+        "invalid_subject_token",
+        "server_error",
+        "temporarily_unavailable",
+    };
 
     private readonly WorkloadIdentityFederationOptions _options;
     private readonly Lazy<ClientPipeline> _pipeline;
@@ -30,8 +42,14 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
         _options = options ?? throw new ArgumentNullException(nameof(options));
         clientOptions ??= new OpenAIClientOptions();
 
-        ClientPipelineOptions tokenExchangePipelineOptions = clientOptions.Clone();
-        ClientLoggingOptions loggingOptions = tokenExchangePipelineOptions.ClientLoggingOptions?.Clone()
+        ClientPipelineOptions tokenExchangePipelineOptions = new()
+        {
+            RetryPolicy = clientOptions.RetryPolicy,
+            Transport = clientOptions.Transport,
+            NetworkTimeout = clientOptions.NetworkTimeout,
+            EnableDistributedTracing = clientOptions.EnableDistributedTracing,
+        };
+        ClientLoggingOptions loggingOptions = clientOptions.ClientLoggingOptions?.Clone()
             ?? new ClientLoggingOptions();
         loggingOptions.EnableMessageContentLogging = false;
         tokenExchangePipelineOptions.ClientLoggingOptions = loggingOptions;
@@ -66,13 +84,33 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
             return cachedToken;
         }
 
+        bool lockTaken;
         if (async)
         {
-            await _refreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            lockTaken = await _refreshLock.WaitAsync(0, cancellationToken).ConfigureAwait(false);
         }
         else
         {
-            _refreshLock.Wait(cancellationToken);
+            lockTaken = _refreshLock.Wait(0, cancellationToken);
+        }
+
+        if (!lockTaken)
+        {
+            cachedToken = GetUnexpiredCachedToken();
+            if (cachedToken is not null)
+            {
+                return cachedToken;
+            }
+
+            if (async)
+            {
+                await _refreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                _refreshLock.Wait(cancellationToken);
+            }
+            lockTaken = true;
         }
 
         try
@@ -83,16 +121,35 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
                 return cachedToken;
             }
 
-            AuthenticationToken refreshedToken = await ExchangeTokenAsync(cancellationToken, async).ConfigureAwait(false);
-            lock (_cacheLock)
+            try
             {
-                _cachedToken = refreshedToken;
+                AuthenticationToken refreshedToken = await ExchangeTokenAsync(cancellationToken, async).ConfigureAwait(false);
+                lock (_cacheLock)
+                {
+                    _cachedToken = refreshedToken;
+                }
+                return refreshedToken;
             }
-            return refreshedToken;
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch
+            {
+                cachedToken = GetUnexpiredCachedToken();
+                if (cachedToken is not null)
+                {
+                    return cachedToken;
+                }
+                throw;
+            }
         }
         finally
         {
-            _refreshLock.Release();
+            if (lockTaken)
+            {
+                _refreshLock.Release();
+            }
         }
     }
 
@@ -110,12 +167,26 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
         }
     }
 
+    private AuthenticationToken GetUnexpiredCachedToken()
+    {
+        lock (_cacheLock)
+        {
+            if (_cachedToken is null)
+            {
+                return null;
+            }
+
+            DateTimeOffset expiresOn = _cachedToken.ExpiresOn ?? DateTimeOffset.MinValue;
+            return _options.UtcNowProvider() < expiresOn ? _cachedToken : null;
+        }
+    }
+
     private async ValueTask<AuthenticationToken> ExchangeTokenAsync(CancellationToken cancellationToken, bool async)
     {
         string subjectToken;
         try
         {
-            subjectToken = await _options.SubjectTokenProvider.GetTokenAsync(cancellationToken).ConfigureAwait(false);
+            subjectToken = await GetSubjectTokenAsync(cancellationToken, async).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -180,7 +251,7 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
         PipelineResponse response = message.Response;
         if (response is null || response.Status < 200 || response.Status >= 300)
         {
-            throw new InvalidOperationException("The workload identity token exchange failed.");
+            throw CreateTokenExchangeFailure(response);
         }
 
         try
@@ -212,10 +283,54 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
                 now + lifetime,
                 now + lifetime - refreshBuffer);
         }
-        catch (JsonException exception)
+        catch (JsonException)
         {
-            throw new InvalidOperationException("The workload identity token exchange returned an invalid response.", exception);
+            throw new InvalidOperationException("The workload identity token exchange returned an invalid response.");
         }
+    }
+
+    private ValueTask<string> GetSubjectTokenAsync(CancellationToken cancellationToken, bool async)
+    {
+        if (async)
+        {
+            return _options.SubjectTokenProvider.GetTokenAsync(cancellationToken);
+        }
+
+        return new ValueTask<string>(Task.Run(
+            async () => await _options.SubjectTokenProvider.GetTokenAsync(cancellationToken).ConfigureAwait(false),
+            cancellationToken));
+    }
+
+    private static InvalidOperationException CreateTokenExchangeFailure(PipelineResponse response)
+    {
+        if (response is null)
+        {
+            return new InvalidOperationException("The workload identity token exchange failed.");
+        }
+
+        string oauthError = null;
+        try
+        {
+            BinaryData content = response.Content;
+            if (content is not null)
+            {
+                using JsonDocument document = JsonDocument.Parse(content.ToString());
+                if (document.RootElement.TryGetProperty("error", out JsonElement errorElement)
+                    && errorElement.ValueKind == JsonValueKind.String
+                    && s_safeOAuthErrorCodes.Contains(errorElement.GetString()))
+                {
+                    oauthError = errorElement.GetString();
+                }
+            }
+        }
+        catch (JsonException)
+        {
+        }
+
+        string message = oauthError is null
+            ? $"The workload identity token exchange failed with HTTP status {response.Status}."
+            : $"The workload identity token exchange failed with HTTP status {response.Status} ({oauthError}).";
+        return new InvalidOperationException(message);
     }
 
     private static BinaryContent CreateRequestContent(IReadOnlyDictionary<string, string> values)

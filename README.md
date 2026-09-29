@@ -105,7 +105,7 @@ public sealed class RotatingFileSubjectTokenProvider : ISubjectTokenProvider
 
     public async ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
     {
-        string token = (await File.ReadAllTextAsync(_path, cancellationToken)).Trim();
+        string token = (await File.ReadAllTextAsync(_path, cancellationToken).ConfigureAwait(false)).Trim();
         if (string.IsNullOrEmpty(token))
         {
             throw new InvalidOperationException("The subject-token file is empty.");
@@ -140,7 +140,7 @@ WorkloadIdentityFederationOptions spiffeWorkloadIdentity = new(
 OpenAIClient spiffeClient = new(spiffeWorkloadIdentity);
 ```
 
-Return `WorkloadIdentitySubjectTokenType.IdToken` from `TokenType` for an OpenID Connect ID token. The SDK calls the provider again when the exchanged access token needs refreshing, caches and refreshes the OpenAI access token before expiration, coalesces concurrent refreshes, and forwards cancellation to both subject-token acquisition and token exchange.
+Return `WorkloadIdentitySubjectTokenType.IdToken` from `TokenType` for an OpenID Connect ID token. The SDK calls the provider again when the exchanged access token needs refreshing, caches and refreshes the OpenAI access token before expiration, coalesces concurrent refreshes, keeps using an unexpired cached access token if a proactive refresh fails, and forwards cancellation to both subject-token acquisition and token exchange.
 
 API-key authentication and workload identity are mutually exclusive. Configure exactly one credential mode per client; do not combine an API key with `WorkloadIdentityFederationOptions`.
 
