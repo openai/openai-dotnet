@@ -41,6 +41,11 @@ public sealed class WorkloadIdentityFederationOptions
         IdentityProviderId = AssertNotNullOrWhiteSpace(identityProviderId, nameof(identityProviderId));
         ServiceAccountId = AssertNotNullOrWhiteSpace(serviceAccountId, nameof(serviceAccountId));
 
+        if (!Enum.IsDefined(typeof(WorkloadIdentitySubjectTokenType), subjectTokenType))
+        {
+            throw new ArgumentOutOfRangeException(nameof(subjectTokenType));
+        }
+
         if (clientId is not null && string.IsNullOrWhiteSpace(clientId))
         {
             throw new ArgumentException("The client ID cannot be empty or whitespace.", nameof(clientId));
@@ -64,6 +69,8 @@ public sealed class WorkloadIdentityFederationOptions
 
     /// <summary>Gets the optional OAuth client identifier.</summary>
     public string ClientId { get; }
+
+    internal Func<DateTimeOffset> UtcNowProvider { get; set; } = () => DateTimeOffset.UtcNow;
 
     private static string AssertNotNullOrWhiteSpace(string value, string parameterName)
     {

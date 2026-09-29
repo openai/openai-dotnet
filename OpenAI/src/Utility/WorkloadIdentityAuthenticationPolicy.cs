@@ -29,9 +29,17 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         clientOptions ??= new OpenAIClientOptions();
+
+        ClientPipelineOptions tokenExchangePipelineOptions = clientOptions.Clone();
+        ClientLoggingOptions loggingOptions = tokenExchangePipelineOptions.ClientLoggingOptions?.Clone()
+            ?? new ClientLoggingOptions();
+        loggingOptions.EnableMessageContentLogging = false;
+        tokenExchangePipelineOptions.ClientLoggingOptions = loggingOptions;
+        tokenExchangePipelineOptions.MessageLoggingPolicy = new MessageLoggingPolicy(loggingOptions);
+
         _pipeline = new Lazy<ClientPipeline>(
             () => ClientPipeline.Create(
-                options: clientOptions,
+                options: tokenExchangePipelineOptions,
                 perCallPolicies: [],
                 perTryPolicies: [],
                 beforeTransportPolicies: []),
@@ -95,13 +103,25 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
             }
 
             DateTimeOffset refreshOn = _cachedToken.RefreshOn ?? _cachedToken.ExpiresOn ?? DateTimeOffset.MinValue;
-            return DateTimeOffset.UtcNow < refreshOn ? _cachedToken : null;
+            return _options.UtcNowProvider() < refreshOn ? _cachedToken : null;
         }
     }
 
     private async ValueTask<AuthenticationToken> ExchangeTokenAsync(CancellationToken cancellationToken, bool async)
     {
-        string subjectToken = await _options.SubjectTokenProvider(cancellationToken).ConfigureAwait(false);
+        string subjectToken;
+        try
+        {
+            subjectToken = await _options.SubjectTokenProvider(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            throw new InvalidOperationException("The subject token provider failed.");
+        }
         if (string.IsNullOrWhiteSpace(subjectToken))
         {
             throw new InvalidOperationException("The subject token provider returned an empty token.");
@@ -134,13 +154,24 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
         message.Request.Headers.Set("Content-Type", "application/json");
         message.Request.Content = CreateRequestContent(requestBody);
 
-        if (async)
+        try
         {
-            await _pipeline.Value.SendAsync(message).ConfigureAwait(false);
+            if (async)
+            {
+                await _pipeline.Value.SendAsync(message).ConfigureAwait(false);
+            }
+            else
+            {
+                _pipeline.Value.Send(message);
+            }
         }
-        else
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
-            _pipeline.Value.Send(message);
+            throw;
+        }
+        catch (Exception)
+        {
+            throw new InvalidOperationException("The workload identity token exchange failed.");
         }
 
         PipelineResponse response = message.Response;
@@ -156,6 +187,9 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
             if (!root.TryGetProperty("access_token", out JsonElement accessTokenElement)
                 || accessTokenElement.ValueKind != JsonValueKind.String
                 || string.IsNullOrWhiteSpace(accessTokenElement.GetString())
+                || !root.TryGetProperty("token_type", out JsonElement tokenTypeElement)
+                || tokenTypeElement.ValueKind != JsonValueKind.String
+                || !string.Equals(tokenTypeElement.GetString(), "Bearer", StringComparison.OrdinalIgnoreCase)
                 || !root.TryGetProperty("expires_in", out JsonElement expiresInElement)
                 || !expiresInElement.TryGetInt32(out int expiresInSeconds)
                 || expiresInSeconds <= 0)
@@ -163,7 +197,7 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
                 throw new InvalidOperationException("The workload identity token exchange returned an invalid response.");
             }
 
-            DateTimeOffset now = DateTimeOffset.UtcNow;
+            DateTimeOffset now = _options.UtcNowProvider();
             TimeSpan lifetime = TimeSpan.FromSeconds(expiresInSeconds);
             TimeSpan halfLifetime = TimeSpan.FromTicks(lifetime.Ticks / 2);
             TimeSpan refreshBuffer = s_defaultRefreshBuffer <= halfLifetime

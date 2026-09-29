@@ -134,6 +134,7 @@ public partial class OpenAIClient
 
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/> using workload identity federation. </summary>
     /// <param name="workloadIdentityOptions"> The workload identity federation configuration. </param>
+    /// <remarks>Workload identity federation and API-key authentication are mutually exclusive; use one constructor or the other.</remarks>
     /// <exception cref="ArgumentNullException"> <paramref name="workloadIdentityOptions"/> is null. </exception>
     public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions)
         : this(workloadIdentityOptions, new OpenAIClientOptions())
@@ -143,6 +144,7 @@ public partial class OpenAIClient
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/> using workload identity federation. </summary>
     /// <param name="workloadIdentityOptions"> The workload identity federation configuration. </param>
     /// <param name="options"> The options to configure the client. </param>
+    /// <remarks>Workload identity federation and API-key authentication are mutually exclusive; use one constructor or the other.</remarks>
     /// <exception cref="ArgumentNullException"> <paramref name="workloadIdentityOptions"/> is null. </exception>
     public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options)
         : this(

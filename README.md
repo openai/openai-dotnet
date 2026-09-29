@@ -108,6 +108,58 @@ OpenAIClient openAIClient = new(workloadIdentity);
 ChatClient client = openAIClient.GetChatClient("gpt-5.1");
 ```
 
+The provider is called again whenever the exchanged access token needs to be refreshed, so it can read a rotating token file instead of capturing one token at startup:
+
+```csharp
+SubjectTokenProvider rotatingFileProvider = async cancellationToken =>
+{
+    string token = (await File.ReadAllTextAsync(
+        "/path/to/rotating-subject-token.jwt",
+        cancellationToken)).Trim();
+
+    if (string.IsNullOrEmpty(token))
+    {
+        throw new InvalidOperationException("The subject-token file is empty.");
+    }
+
+    return token;
+};
+
+WorkloadIdentityFederationOptions rotatingFileWorkloadIdentity = new(
+    rotatingFileProvider,
+    WorkloadIdentitySubjectTokenType.Jwt,
+    identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
+    serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID");
+
+OpenAIClient rotatingFileClient = new(rotatingFileWorkloadIdentity);
+```
+
+For example, a SPIFFE workload can exchange a projected JWT-SVID from `/var/run/spiffe/openai.jwt`:
+
+```csharp
+SubjectTokenProvider spiffeJwtSvidProvider = async cancellationToken =>
+{
+    string jwtSvid = (await File.ReadAllTextAsync(
+        "/var/run/spiffe/openai.jwt",
+        cancellationToken)).Trim();
+
+    if (string.IsNullOrEmpty(jwtSvid))
+    {
+        throw new InvalidOperationException("The SPIFFE JWT-SVID file is empty.");
+    }
+
+    return jwtSvid;
+};
+
+WorkloadIdentityFederationOptions spiffeWorkloadIdentity = new(
+    spiffeJwtSvidProvider,
+    WorkloadIdentitySubjectTokenType.Jwt,
+    identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
+    serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID");
+
+OpenAIClient spiffeClient = new(spiffeWorkloadIdentity);
+```
+
 Use `WorkloadIdentitySubjectTokenType.IdToken` for an OpenID Connect ID token. The SDK caches the exchanged access token, refreshes it before expiration, coalesces concurrent refreshes, and forwards cancellation to the subject-token provider and token exchange. Workload identity and API-key authentication are separate constructor paths; configure one credential mode per client.
 
 ### Namespace organization
