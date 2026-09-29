@@ -10,6 +10,6 @@ namespace OpenAI.Moderations;
 [CodeGenType("CreateModerationRequestInputType")]
 public readonly partial struct ModerationInputPartKind
 {
-    [CodeGenMember("ImageUrl")]
-    public static ModerationInputPartKind Image { get; } = new ModerationInputPartKind(ImageUrlValue);
+    [CodeGenMember("ImageUri")]
+    public static ModerationInputPartKind Image { get; } = new ModerationInputPartKind(ImageUriValue);
 }

@@ -13,7 +13,7 @@ namespace OpenAI.Moderations
     public readonly partial struct ModerationInputPartKind : IEquatable<ModerationInputPartKind>
     {
         private readonly string _value;
-        private const string ImageUrlValue = "image_url";
+        private const string ImageUriValue = "image_url";
         private const string TextValue = "text";
 
         public ModerationInputPartKind(string value)

@@ -144,11 +144,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    status = prop.Value.GetString().ToMessageStatus();
+                    status = new MessageStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("role"u8))

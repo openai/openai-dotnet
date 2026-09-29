@@ -37,6 +37,10 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
             [
                 new("Id", "id", isCollection: false),
             ],
+        ["MessageResponseItem"] =
+            [
+                new("Status", "status", isCollection: false),
+            ],
     };
     private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =
         new("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");
