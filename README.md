@@ -86,6 +86,30 @@ ChatClient client = new(
 
 Replace `MODEL_NAME` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
 
+### Using workload identity federation
+
+Workload identity federation exchanges a JWT or OpenID Connect ID token from your identity provider for a short-lived OpenAI access token. Configure it on `OpenAIClient`, then create feature clients from that top-level client so they share the authenticated pipeline:
+
+```csharp
+SubjectTokenProvider subjectTokenProvider = async cancellationToken =>
+{
+    // Obtain a fresh token from your cloud or CI identity provider here.
+    return await identityProvider.GetSubjectTokenAsync(cancellationToken);
+};
+
+WorkloadIdentityFederationOptions workloadIdentity = new(
+    subjectTokenProvider,
+    WorkloadIdentitySubjectTokenType.Jwt,
+    identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
+    serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID",
+    clientId: "YOUR_OPTIONAL_CLIENT_ID");
+
+OpenAIClient openAIClient = new(workloadIdentity);
+ChatClient client = openAIClient.GetChatClient("gpt-5.1");
+```
+
+Use `WorkloadIdentitySubjectTokenType.IdToken` for an OpenID Connect ID token. The SDK caches the exchanged access token, refreshes it before expiration, coalesces concurrent refreshes, and forwards cancellation to the subject-token provider and token exchange. Workload identity and API-key authentication are separate constructor paths; configure one credential mode per client.
+
 ### Namespace organization
 
 The library is organized into namespaces by feature areas in the OpenAI REST API. Each namespace contains a corresponding client class.

@@ -132,6 +132,29 @@ public partial class OpenAIClient
         _keyCredential = credential;
     }
 
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/> using workload identity federation. </summary>
+    /// <param name="workloadIdentityOptions"> The workload identity federation configuration. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="workloadIdentityOptions"/> is null. </exception>
+    public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions)
+        : this(workloadIdentityOptions, new OpenAIClientOptions())
+    {
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAIClient"/> using workload identity federation. </summary>
+    /// <param name="workloadIdentityOptions"> The workload identity federation configuration. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="workloadIdentityOptions"/> is null. </exception>
+    public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options)
+        : this(
+            new BearerTokenPolicy(
+                new WorkloadIdentityAuthenticationTokenProvider(
+                    workloadIdentityOptions ?? throw new ArgumentNullException(nameof(workloadIdentityOptions)),
+                    options ??= new OpenAIClientOptions()),
+                scope: "https://api.openai.com/.default"),
+            options)
+    {
+    }
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
