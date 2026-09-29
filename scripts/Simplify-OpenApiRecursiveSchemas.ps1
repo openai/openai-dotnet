@@ -12,7 +12,8 @@
     Encounter order is preserved for every noncandidate value.
     Run Split-OpenApiMultiValueTypeEnums.ps1,
     Add-OpenApiOneOfDiscriminators.ps1, Normalize-OpenApiOneOf.ps1,
-    Flatten-OpenApiOneOf.ps1, and Sort-OpenApiDocument.ps1 afterward.
+    Flatten-OpenApiOneOf.ps1, Wrap-OpenApiSingletonTypeEnums.ps1, and
+    Sort-OpenApiDocument.ps1 afterward.
 
 .PARAMETER InputPath
     The allOf-flattened and string-simplified OpenAPI JSON document to simplify.

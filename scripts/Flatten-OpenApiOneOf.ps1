@@ -16,7 +16,8 @@
     transparent nested wrappers may omit type when those leaves are explicit
     objects. The transformation preserves encounter order, relocates affected
     local JSON pointers, and writes a separate oneOf-flattened document. Run
-    Sort-OpenApiDocument.ps1 afterward to produce canonical ordering.
+    Wrap-OpenApiSingletonTypeEnums.ps1 and then Sort-OpenApiDocument.ps1
+    afterward to produce canonical ordering.
 
 .PARAMETER InputPath
     The normalized OpenAPI JSON document to flatten.
@@ -30,8 +31,10 @@
 .EXAMPLE
     ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Wrap-OpenApiSingletonTypeEnums.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
 #>
 
 #Requires -Version 7.0

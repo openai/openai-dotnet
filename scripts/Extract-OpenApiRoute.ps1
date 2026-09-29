@@ -64,10 +64,12 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
     ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Wrap-OpenApiSingletonTypeEnums.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
     Noninteractively extracts both sides, removes omitted properties, inlines
-    references, then simplifies, normalizes, and sorts in eleven explicit stages.
+    references, then simplifies, normalizes, and sorts in twelve explicit stages.
 #>
 
 #Requires -Version 7.0

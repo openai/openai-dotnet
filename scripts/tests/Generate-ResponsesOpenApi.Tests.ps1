@@ -174,6 +174,7 @@ try {
             "Add-OpenApiOneOfDiscriminators.ps1",
             "Normalize-OpenApiOneOf.ps1",
             "Flatten-OpenApiOneOf.ps1",
+            "Wrap-OpenApiSingletonTypeEnums.ps1",
             "Sort-OpenApiDocument.ps1",
             "Componentize-OpenApiObjectSchemas.ps1",
             "Update-OpenApiComponentDeduplicationMap.ps1",
@@ -200,7 +201,8 @@ try {
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json",
             "responses.componentized.openapi.json",
             "responses.component-deduplication-map.json",
             "responses.componentized.deduplicated.openapi.json",
@@ -216,6 +218,7 @@ try {
             [System.IO.Path]::GetFileName($paths.OneOfDiscriminated),
             [System.IO.Path]::GetFileName($paths.OneOfNormalized),
             [System.IO.Path]::GetFileName($paths.OneOfFlattened),
+            [System.IO.Path]::GetFileName($paths.SingletonTypeWrapped),
             [System.IO.Path]::GetFileName($paths.Sorted),
             [System.IO.Path]::GetFileName($paths.Componentized),
             [System.IO.Path]::GetFileName($paths.DeduplicationMap),
@@ -243,9 +246,11 @@ try {
         [byte[]]$sourceBefore = [System.IO.File]::ReadAllBytes($sourcePath)
         $obsoleteSortedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
         $obsoleteDiscriminatedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json"
+        $obsoletePreWrapSortedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
         $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
         [System.IO.File]::WriteAllText($obsoleteSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         [System.IO.File]::WriteAllText($obsoleteDiscriminatedPath, "stale", [System.Text.UTF8Encoding]::new($false))
+        [System.IO.File]::WriteAllText($obsoletePreWrapSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         $paths = Invoke-ResponsesOpenApiGeneration `
             -SpecificationPath $sourcePath `
             -OutputDirectory $outputDirectory
@@ -261,6 +266,7 @@ try {
             $paths.OneOfDiscriminated,
             $paths.OneOfNormalized,
             $paths.OneOfFlattened,
+            $paths.SingletonTypeWrapped,
             $paths.Sorted,
             $paths.Componentized,
             $paths.DeduplicationMap,
@@ -273,6 +279,7 @@ try {
         Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Deduplicated), [System.IO.File]::ReadAllBytes($paths.Final))) "Final output differs from the retained deduplicated artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoleteDiscriminatedPath)) "Pipeline retained an obsolete pre-split artifact."
+        Assert-True (-not [System.IO.File]::Exists($obsoletePreWrapSortedPath)) "Pipeline retained an obsolete pre-wrapper sorted artifact."
 
         $extracted = Read-TestJson -Path $paths.Extracted
         $omitted = Read-TestJson -Path $paths.Omitted
@@ -284,6 +291,7 @@ try {
         $oneOfDiscriminated = Read-TestJson -Path $paths.OneOfDiscriminated
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $oneOfFlattened = Read-TestJson -Path $paths.OneOfFlattened
+        $singletonTypeWrapped = Read-TestJson -Path $paths.SingletonTypeWrapped
         $sorted = Read-TestJson -Path $paths.Sorted
         $componentized = Read-OpenApiDocument -Path $paths.Componentized
         $mapping = Read-TestJson -Path $paths.DeduplicationMap
@@ -336,6 +344,8 @@ try {
         $normalizedNested = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         $flattenedGrouped = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $flattenedNested = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
+        $flattenedSplitChoice = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
+        $wrappedSplitChoice = $singletonTypeWrapped.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $sortedEvents = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $sortedFilters = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
@@ -386,6 +396,10 @@ try {
         Assert-Equal 2 $flattenedNested.oneOf[1].oneOf.Count "oneOf Flatten stage flattened a non-discriminated wrapper."
         Assert-Sequence @("shared") @($flattenedNested.required) "oneOf Flatten stage changed shared constraints."
         Assert-True ($flattenedNested.oneOf[1].PSObject.Properties.Name -ccontains "oneOf") "oneOf Flatten stage lost the retained wrapper."
+        Assert-Equal 4 $flattenedSplitChoice.oneOf.Count "oneOf Flatten stage changed the mixed splitChoice union."
+        Assert-Equal 2 $wrappedSplitChoice.oneOf.Count "Singleton wrapper stage emitted the wrong splitChoice outer branch count."
+        Assert-Equal "type" $wrappedSplitChoice.oneOf[1].discriminator.propertyName "Singleton wrapper stage used the wrong discriminator."
+        Assert-Sequence @("alpha", "beta", "gamma") @($wrappedSplitChoice.oneOf[1].oneOf | ForEach-Object { $_.properties.type.enum[0] }) "Singleton wrapper stage changed splitChoice branch order."
         Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "anyOf") "Sort stage lost the retained anyOf."
         Assert-Equal "type" $sortedGrouped.discriminator.propertyName "Sort stage lost the grouped discriminator."
         Assert-Equal 5 $sortedGrouped.oneOf.Count "Sort stage changed grouped branches."
@@ -395,9 +409,10 @@ try {
 
         Assert-Equal 1 $mapping.version "Deduplication map version was incorrect."
         Assert-True ($mapping.PSObject.Properties.Name -ccontains "groups") "Deduplication map omitted groups."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_TypeOfAlpha") "Componentization omitted the alpha split variant."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_TypeOfBeta") "Componentization omitted the beta split variant."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_TypeOfGamma") "Componentization omitted the existing singleton variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2") "Componentization omitted the splitChoice discriminator wrapper."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2_TypeOfAlpha") "Componentization omitted the alpha split variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2_TypeOfBeta") "Componentization omitted the beta split variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2_TypeOfGamma") "Componentization omitted the existing singleton variant."
         Assert-OpenApiReferencesResolve -Document $componentized
         Assert-AdditionalOpenApiReferencesResolve -Document $componentized
         $null = Assert-OpenApiDiscriminatorMappings -Document $componentized

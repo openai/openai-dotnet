@@ -33,6 +33,7 @@ $testNames = @(
     "Add-OpenApiOneOfDiscriminators.Tests.ps1"
     "Normalize-OpenApiOneOf.Tests.ps1"
     "Flatten-OpenApiOneOf.Tests.ps1"
+    "Wrap-OpenApiSingletonTypeEnums.Tests.ps1"
     "Sort-OpenApiDocument.Tests.ps1"
     "Generate-ResponsesOpenApi.Tests.ps1"
     "Componentize-OpenApiObjectSchemas.Tests.ps1"

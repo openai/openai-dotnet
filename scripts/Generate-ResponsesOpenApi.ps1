@@ -8,11 +8,12 @@
     operation: Extract the route, Remove omitted properties, Inline references,
     Flatten allOf, Simplify string variants, Simplify recursive schemas, Split
     multi-value object type enums, Add oneOf discriminators, Normalize oneOf
-    metadata, Flatten nested oneOf wrappers, Sort, Componentize object schemas,
-    Reconcile the persisted component deduplication map, and Apply component
-    deduplication. Each inline stage is retained under specification/openapi.
-    After all stages succeed, the deduplicated result is copied byte-for-byte to
-    responses.openapi.json as the final published artifact.
+    metadata, Flatten nested oneOf wrappers, Wrap remaining singleton object type
+    enums, Sort, Componentize object schemas, Reconcile the persisted component
+    deduplication map, and Apply component deduplication. Each inline stage is
+    retained under specification/openapi. After all stages succeed, the
+    deduplicated result is copied byte-for-byte to responses.openapi.json as the
+    final published artifact.
 
     The generated files are:
     - responses.extracted.openapi.json
@@ -25,7 +26,8 @@
     - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
     - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
-    - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
+    - responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json
     - responses.componentized.openapi.json
     - responses.component-deduplication-map.json
     - responses.componentized.deduplicated.openapi.json
@@ -79,7 +81,8 @@ function Get-ResponsesOpenApiArtifactPaths {
         OneOfDiscriminated = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json"
         OneOfNormalized = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json"
         OneOfFlattened = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json"
-        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
+        SingletonTypeWrapped = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json"
+        Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json"
         Componentized = Join-Path $fullOutputDirectory "responses.componentized.openapi.json"
         DeduplicationMap = Join-Path $fullOutputDirectory "responses.component-deduplication-map.json"
         Deduplicated = Join-Path $fullOutputDirectory "responses.componentized.deduplicated.openapi.json"
@@ -163,6 +166,7 @@ function Invoke-ResponsesOpenApiGeneration {
         "Add-OpenApiOneOfDiscriminators.ps1"
         "Normalize-OpenApiOneOf.ps1"
         "Flatten-OpenApiOneOf.ps1"
+        "Wrap-OpenApiSingletonTypeEnums.ps1"
         "Sort-OpenApiDocument.ps1"
         "Componentize-OpenApiObjectSchemas.ps1"
         "Update-OpenApiComponentDeduplicationMap.ps1"
@@ -185,7 +189,8 @@ function Invoke-ResponsesOpenApiGeneration {
         "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json",
         "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
         "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
-        "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
+        "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json",
+        "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json"
     )) {
         $obsoletePath = Join-Path $fullOutputDirectory $obsoleteFileName
         if ([System.IO.File]::Exists($obsoletePath)) {
@@ -225,8 +230,11 @@ function Invoke-ResponsesOpenApiGeneration {
     $null = & $stageScriptPaths["Flatten-OpenApiOneOf.ps1"] `
         -InputPath $paths.OneOfNormalized `
         -OutputPath $paths.OneOfFlattened
-    $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
+    $null = & $stageScriptPaths["Wrap-OpenApiSingletonTypeEnums.ps1"] `
         -InputPath $paths.OneOfFlattened `
+        -OutputPath $paths.SingletonTypeWrapped
+    $null = & $stageScriptPaths["Sort-OpenApiDocument.ps1"] `
+        -InputPath $paths.SingletonTypeWrapped `
         -OutputPath $paths.Sorted
 
     foreach ($artifactPath in @(
@@ -240,6 +248,7 @@ function Invoke-ResponsesOpenApiGeneration {
         $paths.OneOfDiscriminated,
         $paths.OneOfNormalized,
         $paths.OneOfFlattened,
+        $paths.SingletonTypeWrapped,
         $paths.Sorted
     )) {
         if (-not [System.IO.File]::Exists($artifactPath)) {

@@ -15,7 +15,8 @@
     discriminators are preserved; existing invalid discriminators are removed
     without changing the oneOf validation. Ambiguous values, near-miss schemas,
     and encounter order outside the metadata change remain unchanged. Run
-    Normalize-OpenApiOneOf.ps1 and Flatten-OpenApiOneOf.ps1 before sorting.
+    Normalize-OpenApiOneOf.ps1, Flatten-OpenApiOneOf.ps1, and
+    Wrap-OpenApiSingletonTypeEnums.ps1 before sorting.
 
 .PARAMETER InputPath
     The type-enum-split OpenAPI JSON document to update.

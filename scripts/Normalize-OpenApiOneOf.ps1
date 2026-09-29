@@ -16,7 +16,8 @@
 
     Property-map entries named discriminator, string literals, examples, and
     ordinary OpenAPI objects are preserved. Encounter order is retained. Run
-    Flatten-OpenApiOneOf.ps1 and then Sort-OpenApiDocument.ps1 afterward.
+    Flatten-OpenApiOneOf.ps1, Wrap-OpenApiSingletonTypeEnums.ps1, and then
+    Sort-OpenApiDocument.ps1 afterward.
 
 .PARAMETER InputPath
     The OpenAPI JSON document to normalize.
@@ -32,8 +33,10 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
     ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Wrap-OpenApiSingletonTypeEnums.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
 #>
 
 #Requires -Version 7.0

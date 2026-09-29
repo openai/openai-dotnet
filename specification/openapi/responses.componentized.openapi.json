@@ -1997,7 +1997,7 @@
             "minLength": 1
           },
           "output": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output"
           },
           "acknowledged_safety_checks": {
             "anyOf": [
@@ -2038,6 +2038,19 @@
             ]
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "computer_screenshot": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot": {
         "type": "object",
@@ -2171,10 +2184,23 @@
           "sources": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl"
+              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources"
             }
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "url": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl": {
         "type": "object",
@@ -3492,11 +3518,24 @@
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "auto": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+          }
+        ]
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto": {
         "type": "object",
         "required": [
           "type"
@@ -3532,28 +3571,28 @@
             ]
           },
           "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy"
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "disabled": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-            "allowlist": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+            "disabled": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+            "allowlist": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
         "type": "object",
         "required": [
           "type"
@@ -3567,7 +3606,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
         "type": "object",
         "required": [
           "type",
@@ -3590,13 +3629,13 @@
           "domain_secrets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
+              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
             },
             "minItems": 1
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
         "type": "object",
         "required": [
           "domain",
@@ -4035,9 +4074,22 @@
             "type": "string"
           },
           "source": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source"
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "base64": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64": {
         "type": "object",
@@ -4555,7 +4607,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation"
               },
               {
                 "type": "null"
@@ -4563,6 +4615,19 @@
             ]
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "approximate": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate": {
         "type": "object",
@@ -5320,11 +5385,24 @@
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "auto": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+          }
+        ]
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto": {
         "type": "object",
         "required": [
           "type"
@@ -5360,28 +5438,28 @@
             ]
           },
           "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy"
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "disabled": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-            "allowlist": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+            "disabled": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+            "allowlist": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
         "type": "object",
         "required": [
           "type"
@@ -5395,7 +5473,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
         "type": "object",
         "required": [
           "type",
@@ -5418,13 +5496,13 @@
           "domain_secrets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
+              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
             },
             "minItems": 1
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
         "type": "object",
         "required": [
           "domain",
@@ -5863,9 +5941,22 @@
             "type": "string"
           },
           "source": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source"
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "base64": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64": {
         "type": "object",
@@ -6383,7 +6474,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation"
               },
               {
                 "type": "null"
@@ -6391,6 +6482,19 @@
             ]
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "approximate": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate": {
         "type": "object",
@@ -6549,13 +6653,13 @@
           "summary": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText"
+              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary"
             }
           },
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText"
+              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content"
             }
           },
           "encrypted_content": {
@@ -6578,6 +6682,19 @@
           }
         }
       },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "summary_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText"
+          }
+        ]
+      },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText": {
         "type": "object",
         "required": [
@@ -6595,6 +6712,19 @@
             "type": "string"
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "reasoning_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText": {
         "type": "object",
@@ -6906,7 +7036,7 @@
             ]
           },
           "action": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec"
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action"
           },
           "call_id": {
             "type": "string"
@@ -6923,6 +7053,19 @@
             ]
           }
         }
+      },
+      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "exec": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec"
+          }
+        ]
       },
       "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec": {
         "type": "object",
@@ -8659,17 +8802,32 @@
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2"
           }
         ]
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText": {
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "input_text": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText",
+            "input_image": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage",
+            "input_file": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile"
+          }
+        ]
+      },
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText": {
         "type": "object",
         "required": [
           "type",
@@ -8686,11 +8844,11 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText_PromptCacheBreakpoint"
           }
         }
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint": {
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText_PromptCacheBreakpoint": {
         "type": "object",
         "required": [
           "mode"
@@ -8704,7 +8862,7 @@
           }
         }
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage": {
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage": {
         "type": "object",
         "required": [
           "type",
@@ -8748,11 +8906,11 @@
             ]
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage_PromptCacheBreakpoint"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage_PromptCacheBreakpoint"
           }
         }
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage_PromptCacheBreakpoint": {
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage_PromptCacheBreakpoint": {
         "type": "object",
         "required": [
           "mode"
@@ -8766,7 +8924,7 @@
           }
         }
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile": {
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile": {
         "type": "object",
         "required": [
           "type"
@@ -8807,11 +8965,11 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile_PromptCacheBreakpoint"
+            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile_PromptCacheBreakpoint"
           }
         }
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile_PromptCacheBreakpoint": {
+      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile_PromptCacheBreakpoint": {
         "type": "object",
         "required": [
           "mode"
@@ -9071,50 +9229,76 @@
             ]
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfFileSearch"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfWebSearchPreview"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfComputer"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUsePreview"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUse"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfImageGeneration"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfCodeInterpreter"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfFunction"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfMcp"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfCustom"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfApplyPatch"
-          },
-          {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfShell"
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2"
           }
         ]
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "allowed_tools": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools",
+            "file_search": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFileSearch",
+            "web_search_preview": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfWebSearchPreview",
+            "computer": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputer",
+            "computer_use_preview": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUsePreview",
+            "computer_use": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUse",
+            "image_generation": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfImageGeneration",
+            "code_interpreter": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCodeInterpreter",
+            "function": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFunction",
+            "mcp": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfMcp",
+            "custom": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCustom",
+            "programmatic_tool_calling": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfProgrammaticToolCalling",
+            "apply_patch": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfApplyPatch",
+            "shell": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfShell"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFileSearch"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfWebSearchPreview"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputer"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUsePreview"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUse"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfImageGeneration"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCodeInterpreter"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFunction"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfMcp"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCustom"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfProgrammaticToolCalling"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfApplyPatch"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfShell"
+          }
+        ]
+      },
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools": {
         "type": "object",
         "required": [
           "type",
@@ -9138,16 +9322,16 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools"
+              "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools_Tools"
             }
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools_Tools": {
         "type": "object",
         "additionalProperties": true
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfFileSearch": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFileSearch": {
         "type": "object",
         "required": [
           "type"
@@ -9161,7 +9345,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfWebSearchPreview": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfWebSearchPreview": {
         "type": "object",
         "required": [
           "type"
@@ -9175,7 +9359,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfComputer": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputer": {
         "type": "object",
         "required": [
           "type"
@@ -9189,7 +9373,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUsePreview": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUsePreview": {
         "type": "object",
         "required": [
           "type"
@@ -9203,7 +9387,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUse": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUse": {
         "type": "object",
         "required": [
           "type"
@@ -9217,7 +9401,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfImageGeneration": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfImageGeneration": {
         "type": "object",
         "required": [
           "type"
@@ -9231,7 +9415,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfCodeInterpreter": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCodeInterpreter": {
         "type": "object",
         "required": [
           "type"
@@ -9245,7 +9429,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfFunction": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFunction": {
         "type": "object",
         "required": [
           "type",
@@ -9263,7 +9447,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfMcp": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfMcp": {
         "type": "object",
         "required": [
           "type",
@@ -9291,7 +9475,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfCustom": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCustom": {
         "type": "object",
         "required": [
           "type",
@@ -9309,7 +9493,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfProgrammaticToolCalling": {
         "type": "object",
         "required": [
           "type"
@@ -9323,7 +9507,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfApplyPatch": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfApplyPatch": {
         "type": "object",
         "required": [
           "type"
@@ -9337,7 +9521,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_TypeOfShell": {
+      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfShell": {
         "type": "object",
         "required": [
           "type"
@@ -9983,11 +10167,24 @@
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto": {
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "auto": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+          }
+        ]
+      },
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto": {
         "type": "object",
         "required": [
           "type"
@@ -10023,28 +10220,28 @@
             ]
           },
           "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy"
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy": {
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "disabled": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-            "allowlist": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+            "disabled": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+            "allowlist": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled": {
         "type": "object",
         "required": [
           "type"
@@ -10058,7 +10255,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist": {
         "type": "object",
         "required": [
           "type",
@@ -10081,13 +10278,13 @@
           "domain_secrets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
+              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
             },
             "minItems": 1
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
+      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
         "type": "object",
         "required": [
           "domain",
@@ -10526,9 +10723,22 @@
             "type": "string"
           },
           "source": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source"
           }
         }
+      },
+      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "base64": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+          }
+        ]
       },
       "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64": {
         "type": "object",
@@ -11046,7 +11256,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation"
               },
               {
                 "type": "null"
@@ -11054,6 +11264,19 @@
             ]
           }
         }
+      },
+      "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "approximate": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+          }
+        ]
       },
       "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate": {
         "type": "object",

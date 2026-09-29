@@ -6,10 +6,10 @@
     Applies deterministic ordering to schema definitions without changing their
     semantics. The sorter supports Inlined, allOf-flattened,
     string-variant-simplified, recursive-schema-simplified, oneOf-normalized,
-    and oneOf-flattened output from the OpenAPI scripts, including inferred
-    oneOf discriminators. It orders schema keys, property maps, required arrays,
-    and enum arrays while preserving ordinary OpenAPI object order and every
-    non-enum array order.
+    oneOf-flattened, and singleton-type-wrapped output from the OpenAPI scripts,
+    including inferred oneOf discriminators. It orders schema keys, property
+    maps, required arrays, and enum arrays while preserving ordinary OpenAPI
+    object order and every non-enum array order.
 
 .PARAMETER InputPath
     The extracted OpenAPI JSON document to sort.
@@ -21,7 +21,7 @@
 
 .EXAMPLE
     ./scripts/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
 
 #>
 

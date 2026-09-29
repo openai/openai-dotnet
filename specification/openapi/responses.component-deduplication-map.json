@@ -2,20 +2,20 @@
   "version": 1,
   "groups": [
     {
-      "id": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText",
-      "canonicalName": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText",
-      "representative": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText",
+      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
+      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
+      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
       "fingerprint": "sha256:c3a1e47a233ef61d3af505440816ad5ee5772661d99b1f6d0494adbf4b6cda32",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputText",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText"
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText"
       ]
     },
     {
-      "id": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint",
-      "canonicalName": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint",
-      "representative": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint",
+      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
+      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
+      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
       "fingerprint": "sha256:652dbcec25cb1327a50c7723c3bdca4f2dd1120f066a5a3d006a156992cc0474",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
@@ -27,31 +27,31 @@
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputText_PromptCacheBreakpoint",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputImage_PromptCacheBreakpoint",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputFile_PromptCacheBreakpoint",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputText_PromptCacheBreakpoint",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage_PromptCacheBreakpoint",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile_PromptCacheBreakpoint"
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText_PromptCacheBreakpoint",
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage_PromptCacheBreakpoint",
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile_PromptCacheBreakpoint"
       ]
     },
     {
-      "id": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage",
-      "canonicalName": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage",
-      "representative": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage",
+      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
+      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
+      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
       "fingerprint": "sha256:c00646b42041c20f9a7b5b95cc26d424b1ffe5a730dddad1a53e3a42c089e66b",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputImage",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputImage"
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage"
       ]
     },
     {
-      "id": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile",
-      "canonicalName": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile",
-      "representative": "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile",
+      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
       "fingerprint": "sha256:95006c517e385a3697a94acf2001493f9a7a396e895edf56c73b72984f0b8692",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputFile",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_TypeOfInputFile"
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile"
       ]
     },
     {
@@ -257,7 +257,7 @@
       "id": "CreateResponse_Request_Tools",
       "canonicalName": "CreateResponse_Request_Tools",
       "representative": "CreateResponse_Request_Tools",
-      "fingerprint": "sha256:165ce4495c43431c0beec49c590e44709adb4a2a5410d14512878df337cbab42",
+      "fingerprint": "sha256:638cd01c933add9c9588126a02d17604f30618ccfb762b511803668c35c669d8",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools",
@@ -304,15 +304,15 @@
       ]
     },
     {
-      "id": "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools",
-      "canonicalName": "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools",
-      "representative": "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools",
+      "id": "CreateResponse_Request_Tools_TypeOfFileSearch_Filters",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfFileSearch_Filters",
+      "representative": "CreateResponse_Request_Tools_TypeOfFileSearch_Filters",
       "fingerprint": "sha256:b7165ddbec73ba9b2b82e50ad9b5cc721193ebad6be9edc46355f1aea45b9077",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_Filters",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFileSearch_Filters",
         "CreateResponse_Request_Text_Format_TypeOfJsonSchema_Schema",
-        "CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools_Tools",
+        "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools_Tools",
         "CreateResponse_Request_Tools_TypeOfFileSearch_Filters"
       ]
     },
@@ -346,8 +346,8 @@
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputer",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfComputer",
-        "CreateResponse_Request_Tools_TypeOfComputer",
-        "CreateResponse_Request_ToolChoiceUnion_TypeOfComputer"
+        "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputer",
+        "CreateResponse_Request_Tools_TypeOfComputer"
       ]
     },
     {
@@ -472,7 +472,7 @@
       "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter",
       "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter",
-      "fingerprint": "sha256:1305476ff5efb26c2531a804c4ab8e7b8e0f6bd44054c82f1dbc412389b73c0c",
+      "fingerprint": "sha256:6afda8f24fe029c3f3a67f0247d2292b87824f1c92875495d53f41eb558a348f",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter",
@@ -483,7 +483,7 @@
       "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion",
       "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion",
-      "fingerprint": "sha256:c672e7fc49f36186ad11c52a2a762239fef99e0821abef0caf6db614842a5b89",
+      "fingerprint": "sha256:d22831bc96f2b5ecea09ea27d57c3fff1c09966280d71d78d68afdea6f985a8d",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion",
@@ -491,81 +491,92 @@
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto",
-      "fingerprint": "sha256:3560f6f34ac47e42b021af1657605d6e53de7773b272ef69a49083e79efa67b2",
+      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
+      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
+      "fingerprint": "sha256:a0b312539384ccea2d1ffe4bdb8f60d8818d75078815927acdfe3ce9fc669a50",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto"
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
+        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy",
+      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
+      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
+      "fingerprint": "sha256:3560f6f34ac47e42b021af1657605d6e53de7773b272ef69a49083e79efa67b2",
+      "members": [
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
+        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+      ]
+    },
+    {
+      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
+      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
       "fingerprint": "sha256:c84d8cf4fb31e2f591b39802230084e79d4ad8b9adb1d67b3d8435e40502af8e",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy",
+        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy",
         "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
+      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
       "fingerprint": "sha256:abac341f30478a2590c18efecd9e6ede8013ad4daf66a9ca4d243e11b9de20ee",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
+        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
         "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
+      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
+      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
       "fingerprint": "sha256:edd3e747ebfde75f65ff69cab1a1b8727e3d74d5ff48b1769d18fcf92bf33fe0",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
+        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
         "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
       "fingerprint": "sha256:d7ee1d34d7d9ec4eefc6bf77dad39e893918df42d10020888a47278bc3390a5b",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
         "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
       ]
     },
     {
-      "id": "CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling",
-      "canonicalName": "CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling",
-      "representative": "CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling",
+      "id": "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
+      "representative": "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
       "fingerprint": "sha256:0279c4adbcbac2faced5bdb5ed7fe5af24e2607dcdb93e27e65c129f8000ac1c",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfProgrammaticToolCalling",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfProgrammaticToolCalling",
-        "CreateResponse_Request_ToolChoiceUnion_TypeOfProgrammaticToolCalling",
+        "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfProgrammaticToolCalling",
         "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling"
       ]
     },
@@ -606,7 +617,7 @@
       "id": "CreateResponse_Request_Tools_TypeOfShell",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfShell",
       "representative": "CreateResponse_Request_Tools_TypeOfShell",
-      "fingerprint": "sha256:b8eaaf77014dc280f4e910883b9034850e4b44114f7aa5dd6199afa2c5f21ddd",
+      "fingerprint": "sha256:e581e73dfa29a7d6531fca0008ddf8e885a05f994c328e188a618690a8f7e4be",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell",
@@ -617,7 +628,7 @@
       "id": "CreateResponse_Request_Tools_TypeOfShell_Environment",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment",
       "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment",
-      "fingerprint": "sha256:e12d821988b2a4e8a9838512f43fd7555e61a5f365e9c8819f51099ba5cd97a2",
+      "fingerprint": "sha256:c040bb1b3b6287ad16611f88e60d12105d201bd05ded274700dfc5daebdda230",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment",
@@ -628,7 +639,7 @@
       "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
       "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-      "fingerprint": "sha256:f8e9533ed7d9cc059a9fd98e9f019418540ff410119bbe228fd38fa29699d610",
+      "fingerprint": "sha256:7806573a4a1b061161fea9448b2c401e1828222fdcf994aa38b995ac6fab4dcf",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
@@ -639,7 +650,7 @@
       "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
       "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
-      "fingerprint": "sha256:891480102563d717a324f6f4079b4d73d4ab055dd17eb77cd38a75204bbbedbf",
+      "fingerprint": "sha256:89fcb1a6d2680f0de8ee1d6cfa9e311414542a31ebadff75e93d3260839cb87f",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
@@ -661,11 +672,22 @@
       "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
       "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
-      "fingerprint": "sha256:e04ee2a7a7bceaaafd524cd22d49e7e8f78e578f740bc7f8eeba2c457263ea5c",
+      "fingerprint": "sha256:bcdaf3dd453c3af736f6803a062129c2a979cc42f18db5de4d17303b9c08fec6",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
         "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
+      ]
+    },
+    {
+      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
+      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
+      "fingerprint": "sha256:ba065cda442c6d8c9585671ae711933fa6cf666d8f49327ac87867ff431e690f",
+      "members": [
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
+        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source"
       ]
     },
     {
@@ -820,11 +842,22 @@
       "id": "CreateResponse_Request_Tools_TypeOfWebSearchPreview",
       "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearchPreview",
       "representative": "CreateResponse_Request_Tools_TypeOfWebSearchPreview",
-      "fingerprint": "sha256:68493c7d2cd196cb717156ae7511e4c76054dae3f5422d50d14e7518eb41eae9",
+      "fingerprint": "sha256:bcac517d3152909750f774943d3bd574e06112b9d397c49ca67f3c90332af056",
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview",
         "CreateResponse_Request_Tools_TypeOfWebSearchPreview"
+      ]
+    },
+    {
+      "id": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation",
+      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation",
+      "representative": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation",
+      "fingerprint": "sha256:bb7896f7a7c5179b632656343e83fc8a89ee8d167cef54a0fc6ad5a9db30752c",
+      "members": [
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation",
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation",
+        "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation"
       ]
     },
     {
@@ -857,6 +890,16 @@
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_Annotations"
+      ]
+    },
+    {
+      "id": "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2",
+      "canonicalName": "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2",
+      "representative": "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2",
+      "fingerprint": "sha256:e8e403f846a579e097e1869009c74c129d5030a2271f3882c4e2e9e461502128",
+      "members": [
+        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem",
+        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2"
       ]
     },
     {

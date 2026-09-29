@@ -6,11 +6,12 @@
     Reads allOf-flattened JSON produced by Flatten-OpenApiAllOf.ps1, replaces
     eligible nested string-only anyOf trees with at most one plain-string
     branch and one merged string-enum branch, and preserves encounter order.
-    Run Simplify-OpenApiRecursiveSchemas.ps1,
+    Run Simplify-OpenApiRecursiveSchemas.ps1, Split-OpenApiMultiValueTypeEnums.ps1,
     Add-OpenApiOneOfDiscriminators.ps1, Normalize-OpenApiOneOf.ps1,
-    Flatten-OpenApiOneOf.ps1, and then Sort-OpenApiDocument.ps1 afterward to
-    replace recursive objects, infer missing type discriminators, normalize and
-    flatten oneOf metadata, and produce canonical ordering.
+    Flatten-OpenApiOneOf.ps1, Wrap-OpenApiSingletonTypeEnums.ps1, and then
+    Sort-OpenApiDocument.ps1 afterward to replace recursive objects, normalize
+    type unions, wrap remaining singleton type enums, and produce canonical
+    ordering.
 
     A recursive anyOf tree is eligible only when every leaf is an
     unconstrained string or an enum containing only strings. Mixed or
@@ -44,8 +45,10 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
     ./scripts/Flatten-OpenApiOneOf.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
-    ./scripts/Sort-OpenApiDocument.ps1 `
+    ./scripts/Wrap-OpenApiSingletonTypeEnums.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+    ./scripts/Sort-OpenApiDocument.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json
 #>
 
 #Requires -Version 7.0

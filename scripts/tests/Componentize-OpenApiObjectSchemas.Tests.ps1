@@ -110,7 +110,7 @@ try {
         Assert-True ($null -ne (Get-Command ConvertTo-ComponentizedOpenApiDocument -ErrorAction SilentlyContinue)) "Conversion function was not defined."
         Assert-True ($null -ne (Get-Command Invoke-OpenApiObjectSchemaComponentizer -ErrorAction SilentlyContinue)) "CLI function was not defined."
         Assert-Equal `
-            ([System.IO.Path]::GetFullPath("./specification/openapi/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json")) `
+            ([System.IO.Path]::GetFullPath("./specification/openapi/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json")) `
             $script:DefaultComponentizerInputPath `
             "Canonical input path was incorrect."
         Assert-Equal `
@@ -231,6 +231,47 @@ try {
             "#/components/schemas/CreateWidget_Request_ToolChoiceUnion_Object" `
             $result.Document.components.schemas.CreateWidget_Request_ToolChoiceUnion.oneOf[1].'$ref' `
             "Componentized oneOf did not reference its object branch."
+    }
+
+    Invoke-Test "nested discriminator wrappers use Alternative names and materialize mappings" {
+        $source = Read-TestJsonFixture `
+            -RelativePath "Componentize-OpenApiObjectSchemas/source.openapi.json"
+        $typedBranches = [System.Collections.Generic.List[object]]::new()
+        foreach ($value in @("alpha", "beta")) {
+            $typedBranches.Add([ordered]@{
+                type = "object"
+                required = @("type")
+                properties = [ordered]@{
+                    type = [ordered]@{ type = "string"; enum = @($value) }
+                }
+            })
+        }
+        $source.paths["/widgets"].post.requestBody.content["application/json"].schema.properties["toolChoice"] = [ordered]@{
+            oneOf = @(
+                [ordered]@{ type = "string"; enum = @("auto") },
+                [ordered]@{
+                    discriminator = [ordered]@{ propertyName = "type" }
+                    oneOf = [object[]]$typedBranches.ToArray()
+                }
+            )
+        }
+
+        $result = ConvertTo-ComponentizedOpenApiDocument -Document $source
+        $schemas = $result.Document.components.schemas
+        Assert-True (Test-JsonProperty -Object $schemas -Name "CreateWidget_Request_ToolChoiceUnion") "Outer union component was omitted."
+        Assert-True (Test-JsonProperty -Object $schemas -Name "CreateWidget_Request_ToolChoiceUnion_Alternative2") "Nested discriminator wrapper omitted Alternative2."
+        Assert-True (Test-JsonProperty -Object $schemas -Name "CreateWidget_Request_ToolChoiceUnion_Alternative2_TypeOfAlpha") "Alpha leaf omitted wrapper context."
+        Assert-True (Test-JsonProperty -Object $schemas -Name "CreateWidget_Request_ToolChoiceUnion_Alternative2_TypeOfBeta") "Beta leaf omitted wrapper context."
+        Assert-Equal `
+            "#/components/schemas/CreateWidget_Request_ToolChoiceUnion_Alternative2" `
+            $schemas.CreateWidget_Request_ToolChoiceUnion.oneOf[1].'$ref' `
+            "Outer union did not reference its discriminator wrapper."
+        $wrapper = $schemas.CreateWidget_Request_ToolChoiceUnion_Alternative2
+        Assert-Sequence @("alpha", "beta") @((Get-JsonProperties -Value $wrapper.discriminator.mapping).Name) "Wrapper mapping keys were incorrect."
+        Assert-Sequence @(
+            "#/components/schemas/CreateWidget_Request_ToolChoiceUnion_Alternative2_TypeOfAlpha",
+            "#/components/schemas/CreateWidget_Request_ToolChoiceUnion_Alternative2_TypeOfBeta"
+        ) @((Get-JsonProperties -Value $wrapper.discriminator.mapping).Value) "Wrapper mapping targets were incorrect."
     }
 
     # Structural-only composition children inherit the complete semantic parent
