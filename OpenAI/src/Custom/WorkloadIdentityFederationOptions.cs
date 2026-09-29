@@ -4,13 +4,6 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-/// <summary>
-/// Represents an asynchronous callback that supplies a subject token for workload identity federation.
-/// </summary>
-/// <param name="cancellationToken">A token that can cancel subject-token acquisition.</param>
-/// <returns>The subject token to exchange for an OpenAI access token.</returns>
-public delegate ValueTask<string> SubjectTokenProvider(CancellationToken cancellationToken);
-
 /// <summary>Identifies the kind of subject token supplied for workload identity federation.</summary>
 public enum WorkloadIdentitySubjectTokenType
 {
@@ -21,18 +14,28 @@ public enum WorkloadIdentitySubjectTokenType
     IdToken,
 }
 
+/// <summary>Supplies short-lived subject tokens for workload identity federation.</summary>
+public interface ISubjectTokenProvider
+{
+    /// <summary>Gets the kind of subject token supplied by this provider.</summary>
+    WorkloadIdentitySubjectTokenType TokenType { get; }
+
+    /// <summary>Gets a fresh subject token to exchange for an OpenAI access token.</summary>
+    /// <param name="cancellationToken">A token that can cancel subject-token acquisition.</param>
+    /// <returns>The subject token to exchange for an OpenAI access token.</returns>
+    ValueTask<string> GetTokenAsync(CancellationToken cancellationToken);
+}
+
 /// <summary>Configures workload identity federation authentication for an <see cref="OpenAIClient"/>.</summary>
 public sealed class WorkloadIdentityFederationOptions
 {
     /// <summary>Initializes a new instance of <see cref="WorkloadIdentityFederationOptions"/>.</summary>
-    /// <param name="subjectTokenProvider">The asynchronous callback that supplies subject tokens.</param>
-    /// <param name="subjectTokenType">The kind of subject token supplied by <paramref name="subjectTokenProvider"/>.</param>
+    /// <param name="subjectTokenProvider">The provider that supplies subject tokens.</param>
     /// <param name="identityProviderId">The OpenAI identity-provider identifier.</param>
     /// <param name="serviceAccountId">The OpenAI service-account identifier.</param>
     /// <param name="clientId">An optional OAuth client identifier.</param>
     public WorkloadIdentityFederationOptions(
-        SubjectTokenProvider subjectTokenProvider,
-        WorkloadIdentitySubjectTokenType subjectTokenType,
+        ISubjectTokenProvider subjectTokenProvider,
         string identityProviderId,
         string serviceAccountId,
         string clientId = null)
@@ -41,9 +44,9 @@ public sealed class WorkloadIdentityFederationOptions
         IdentityProviderId = AssertNotNullOrWhiteSpace(identityProviderId, nameof(identityProviderId));
         ServiceAccountId = AssertNotNullOrWhiteSpace(serviceAccountId, nameof(serviceAccountId));
 
-        if (!Enum.IsDefined(typeof(WorkloadIdentitySubjectTokenType), subjectTokenType))
+        if (!Enum.IsDefined(typeof(WorkloadIdentitySubjectTokenType), subjectTokenProvider.TokenType))
         {
-            throw new ArgumentOutOfRangeException(nameof(subjectTokenType));
+            throw new ArgumentOutOfRangeException(nameof(subjectTokenProvider), "The subject token type is not supported.");
         }
 
         if (clientId is not null && string.IsNullOrWhiteSpace(clientId))
@@ -51,15 +54,11 @@ public sealed class WorkloadIdentityFederationOptions
             throw new ArgumentException("The client ID cannot be empty or whitespace.", nameof(clientId));
         }
 
-        SubjectTokenType = subjectTokenType;
         ClientId = clientId;
     }
 
-    /// <summary>Gets the asynchronous callback that supplies subject tokens.</summary>
-    public SubjectTokenProvider SubjectTokenProvider { get; }
-
-    /// <summary>Gets the kind of subject token supplied by <see cref="SubjectTokenProvider"/>.</summary>
-    public WorkloadIdentitySubjectTokenType SubjectTokenType { get; }
+    /// <summary>Gets the provider that supplies subject tokens.</summary>
+    public ISubjectTokenProvider SubjectTokenProvider { get; }
 
     /// <summary>Gets the OpenAI identity-provider identifier.</summary>
     public string IdentityProviderId { get; }

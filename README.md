@@ -88,79 +88,61 @@ Replace `MODEL_NAME` with your model name and `BASE_URL` with your endpoint URI.
 
 ### Using workload identity federation
 
-Workload identity federation exchanges a JWT or OpenID Connect ID token from your identity provider for a short-lived OpenAI access token. Configure it on `OpenAIClient`, then create feature clients from that top-level client so they share the authenticated pipeline:
+Workload identity federation exchanges a JWT or OpenID Connect ID token from your identity provider for a short-lived OpenAI access token. Subject tokens are short-lived bearer credentials: keep them secret and have the provider return a fresh, currently valid token whenever it is called.
 
 ```csharp
-SubjectTokenProvider subjectTokenProvider = async cancellationToken =>
+public sealed class RotatingFileSubjectTokenProvider : ISubjectTokenProvider
 {
-    // Obtain a fresh token from your cloud or CI identity provider here.
-    return await identityProvider.GetSubjectTokenAsync(cancellationToken);
-};
+    private readonly string _path;
+
+    public RotatingFileSubjectTokenProvider(string path)
+    {
+        _path = path;
+    }
+
+    public WorkloadIdentitySubjectTokenType TokenType
+        => WorkloadIdentitySubjectTokenType.Jwt;
+
+    public async ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
+    {
+        string token = (await File.ReadAllTextAsync(_path, cancellationToken)).Trim();
+        if (string.IsNullOrEmpty(token))
+        {
+            throw new InvalidOperationException("The subject-token file is empty.");
+        }
+
+        return token;
+    }
+}
 
 WorkloadIdentityFederationOptions workloadIdentity = new(
-    subjectTokenProvider,
-    WorkloadIdentitySubjectTokenType.Jwt,
+    new RotatingFileSubjectTokenProvider("/path/to/rotating-subject-token.jwt"),
     identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
     serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID",
     clientId: "YOUR_OPTIONAL_CLIENT_ID");
 
+// Feature clients created from OpenAIClient share its authenticated pipeline.
 OpenAIClient openAIClient = new(workloadIdentity);
 ChatClient client = openAIClient.GetChatClient("gpt-5.1");
-```
 
-The provider is called again whenever the exchanged access token needs to be refreshed, so it can read a rotating token file instead of capturing one token at startup:
-
-```csharp
-SubjectTokenProvider rotatingFileProvider = async cancellationToken =>
-{
-    string token = (await File.ReadAllTextAsync(
-        "/path/to/rotating-subject-token.jwt",
-        cancellationToken)).Trim();
-
-    if (string.IsNullOrEmpty(token))
-    {
-        throw new InvalidOperationException("The subject-token file is empty.");
-    }
-
-    return token;
-};
-
-WorkloadIdentityFederationOptions rotatingFileWorkloadIdentity = new(
-    rotatingFileProvider,
-    WorkloadIdentitySubjectTokenType.Jwt,
-    identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
-    serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID");
-
-OpenAIClient rotatingFileClient = new(rotatingFileWorkloadIdentity);
+// Standalone feature clients also accept workload identity directly.
+ChatClient standaloneClient = new("gpt-5.1", workloadIdentity);
 ```
 
 For example, a SPIFFE workload can exchange a projected JWT-SVID from `/var/run/spiffe/openai.jwt`:
 
 ```csharp
-SubjectTokenProvider spiffeJwtSvidProvider = async cancellationToken =>
-{
-    string jwtSvid = (await File.ReadAllTextAsync(
-        "/var/run/spiffe/openai.jwt",
-        cancellationToken)).Trim();
-
-    if (string.IsNullOrEmpty(jwtSvid))
-    {
-        throw new InvalidOperationException("The SPIFFE JWT-SVID file is empty.");
-    }
-
-    return jwtSvid;
-};
-
 WorkloadIdentityFederationOptions spiffeWorkloadIdentity = new(
-    spiffeJwtSvidProvider,
-    WorkloadIdentitySubjectTokenType.Jwt,
+    new RotatingFileSubjectTokenProvider("/var/run/spiffe/openai.jwt"),
     identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
     serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID");
 
 OpenAIClient spiffeClient = new(spiffeWorkloadIdentity);
 ```
 
-Use `WorkloadIdentitySubjectTokenType.IdToken` for an OpenID Connect ID token. The SDK caches the exchanged access token, refreshes it before expiration, coalesces concurrent refreshes, and forwards cancellation to the subject-token provider and token exchange. Workload identity and API-key authentication are separate constructor paths; configure one credential mode per client.
+Return `WorkloadIdentitySubjectTokenType.IdToken` from `TokenType` for an OpenID Connect ID token. The SDK calls the provider again when the exchanged access token needs refreshing, caches and refreshes the OpenAI access token before expiration, coalesces concurrent refreshes, and forwards cancellation to both subject-token acquisition and token exchange.
+
+API-key authentication and workload identity are mutually exclusive. Configure exactly one credential mode per client; do not combine an API key with `WorkloadIdentityFederationOptions`.
 
 ### Namespace organization
 

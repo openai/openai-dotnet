@@ -6,6 +6,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 namespace OpenAI {
+    public partial interface ISubjectTokenProvider {
+        WorkloadIdentitySubjectTokenType TokenType { get; }
+        ValueTask<string> GetTokenAsync(CancellationToken cancellationToken);
+    }
     public class OpenAIClient {
         protected OpenAIClient();
         public OpenAIClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
@@ -103,14 +107,12 @@ namespace OpenAI {
         public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
-    public delegate ValueTask<string> SubjectTokenProvider(CancellationToken cancellationToken);
     public sealed class WorkloadIdentityFederationOptions {
-        public WorkloadIdentityFederationOptions(SubjectTokenProvider subjectTokenProvider, WorkloadIdentitySubjectTokenType subjectTokenType, string identityProviderId, string serviceAccountId, string clientId = null);
+        public WorkloadIdentityFederationOptions(ISubjectTokenProvider subjectTokenProvider, string identityProviderId, string serviceAccountId, string clientId = null);
         public string ClientId { get; }
         public string IdentityProviderId { get; }
         public string ServiceAccountId { get; }
-        public SubjectTokenProvider SubjectTokenProvider { get; }
-        public WorkloadIdentitySubjectTokenType SubjectTokenType { get; }
+        public ISubjectTokenProvider SubjectTokenProvider { get; }
     }
     public enum WorkloadIdentitySubjectTokenType {
         Jwt = 0,

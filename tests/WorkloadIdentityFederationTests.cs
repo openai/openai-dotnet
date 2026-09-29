@@ -24,7 +24,7 @@ public class WorkloadIdentityFederationTests
 
     [TestCase(WorkloadIdentitySubjectTokenType.Jwt, "urn:ietf:params:oauth:token-type:jwt")]
     [TestCase(WorkloadIdentitySubjectTokenType.IdToken, "urn:ietf:params:oauth:token-type:id_token")]
-    public async Task ExchangesSubjectTokenAndAppliesBearerToken(
+    public async Task SendsExchangeRequestFieldsAndAppliesBearerToken(
         WorkloadIdentitySubjectTokenType subjectTokenType,
         string expectedSubjectTokenType)
     {
@@ -416,31 +416,155 @@ public class WorkloadIdentityFederationTests
     }
 
     [Test]
+    public void ExposesSubjectTokenProviderInterfaceAndWifFeatureClientConstructors()
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(typeof(ISubjectTokenProvider).IsPublic, Is.True);
+            Assert.That(typeof(ISubjectTokenProvider).IsInterface, Is.True);
+            Assert.That(typeof(ISubjectTokenProvider).GetProperty(nameof(ISubjectTokenProvider.TokenType)), Is.Not.Null);
+            Assert.That(typeof(ISubjectTokenProvider).GetMethod(nameof(ISubjectTokenProvider.GetTokenAsync)), Is.Not.Null);
+        });
+
+        Type[] featureClientTypes =
+        [
+            typeof(global::OpenAI.Assistants.AssistantClient),
+            typeof(global::OpenAI.Audio.AudioClient),
+            typeof(global::OpenAI.Batch.BatchClient),
+            typeof(global::OpenAI.Chat.ChatClient),
+            typeof(global::OpenAI.Containers.ContainerClient),
+            typeof(global::OpenAI.Conversations.ConversationClient),
+            typeof(global::OpenAI.Embeddings.EmbeddingClient),
+            typeof(global::OpenAI.Evals.EvaluationClient),
+            typeof(global::OpenAI.Files.OpenAIFileClient),
+            typeof(global::OpenAI.FineTuning.FineTuningClient),
+            typeof(global::OpenAI.Graders.GraderClient),
+            typeof(global::OpenAI.Images.ImageClient),
+            typeof(global::OpenAI.Models.OpenAIModelClient),
+            typeof(global::OpenAI.Moderations.ModerationClient),
+            typeof(global::OpenAI.Realtime.RealtimeClient),
+            typeof(global::OpenAI.Responses.ResponsesClient),
+            typeof(global::OpenAI.Skills.SkillClient),
+            typeof(global::OpenAI.VectorStores.VectorStoreClient),
+            typeof(global::OpenAI.Videos.VideoClient),
+        ];
+
+        Assert.Multiple(() =>
+        {
+            foreach (Type featureClientType in featureClientTypes)
+            {
+                Assert.That(
+                    featureClientType.GetConstructors().Any(constructor => constructor.GetParameters()
+                        .Any(parameter => parameter.ParameterType == typeof(WorkloadIdentityFederationOptions))),
+                    Is.True,
+                    $"{featureClientType.FullName} should accept workload identity federation options.");
+            }
+        });
+    }
+
+    [Test]
+    public async Task StandaloneFeatureClientAuthenticatesWithWorkloadIdentity()
+    {
+        string authorizationHeader = null;
+        WorkloadIdentityFederationOptions workloadIdentityOptions = CreateWorkloadIdentityOptions(
+            _ => new ValueTask<string>(SubjectToken));
+        OpenAIClientOptions clientOptions = new()
+        {
+            Endpoint = new Uri("https://example.invalid/v1"),
+            Transport = new MockPipelineTransport(message =>
+            {
+                if (IsTokenExchange(message))
+                {
+                    return TokenResponse();
+                }
+
+                message.Request.Headers.TryGetValue("Authorization", out authorizationHeader);
+                return ServiceResponse();
+            })
+            {
+                ExpectSyncPipeline = false,
+            },
+        };
+        global::OpenAI.Models.OpenAIModelClient client = new(workloadIdentityOptions, clientOptions);
+
+        await client.GetModelsAsync(new RequestOptions());
+
+        Assert.That(authorizationHeader, Is.EqualTo($"Bearer {AccessToken}"));
+    }
+
+    [Test]
+    public async Task RealtimeClientsUseWifAccessTokenForWebSocketSessions()
+    {
+        int tokenExchangeCalls = 0;
+        Func<PipelineMessage, MockPipelineResponse> transport = message =>
+        {
+            if (IsTokenExchange(message))
+            {
+                Interlocked.Increment(ref tokenExchangeCalls);
+                return TokenResponse();
+            }
+
+            throw new AssertionException("Only the token exchange should use the HTTP transport.");
+        };
+        WorkloadIdentityFederationOptions workloadIdentityOptions = CreateWorkloadIdentityOptions(
+            _ => new ValueTask<string>(SubjectToken));
+        global::OpenAI.Realtime.RealtimeClient standaloneClient = new(
+            workloadIdentityOptions,
+            new global::OpenAI.Realtime.RealtimeClientOptions
+            {
+                Transport = new MockPipelineTransport(transport) { ExpectSyncPipeline = false },
+            });
+        OpenAIClient topLevelClient = new(
+            workloadIdentityOptions,
+            new OpenAIClientOptions
+            {
+                Transport = new MockPipelineTransport(transport) { ExpectSyncPipeline = false },
+            });
+
+        ApiKeyCredential standaloneCredential = await GetRealtimeSessionCredentialAsync(standaloneClient);
+        ApiKeyCredential sharedPipelineCredential = await GetRealtimeSessionCredentialAsync(topLevelClient.GetRealtimeClient());
+        standaloneCredential.Deconstruct(out string standaloneToken);
+        sharedPipelineCredential.Deconstruct(out string sharedPipelineToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(standaloneToken, Is.EqualTo(AccessToken));
+            Assert.That(sharedPipelineToken, Is.EqualTo(AccessToken));
+            Assert.That(tokenExchangeCalls, Is.EqualTo(2));
+        });
+    }
+
+    [Test]
     public void ValidatesRequiredConfiguration()
     {
-        SubjectTokenProvider provider = _ => new ValueTask<string>(SubjectToken);
+        ISubjectTokenProvider provider = new TestSubjectTokenProvider(
+            _ => new ValueTask<string>(SubjectToken),
+            WorkloadIdentitySubjectTokenType.Jwt);
+        ISubjectTokenProvider unsupportedProvider = new TestSubjectTokenProvider(
+            _ => new ValueTask<string>(SubjectToken),
+            (WorkloadIdentitySubjectTokenType)99);
 
         Assert.Multiple(() =>
         {
             Assert.Throws<ArgumentNullException>(() => new WorkloadIdentityFederationOptions(
-                null, WorkloadIdentitySubjectTokenType.Jwt, "idp", "service-account"));
+                null, "idp", "service-account"));
             Assert.Throws<ArgumentOutOfRangeException>(() => new WorkloadIdentityFederationOptions(
-                provider, (WorkloadIdentitySubjectTokenType)99, "idp", "service-account"));
+                unsupportedProvider, "idp", "service-account"));
             Assert.Throws<ArgumentNullException>(() => new WorkloadIdentityFederationOptions(
-                provider, WorkloadIdentitySubjectTokenType.Jwt, null, "service-account"));
+                provider, null, "service-account"));
             Assert.Throws<ArgumentException>(() => new WorkloadIdentityFederationOptions(
-                provider, WorkloadIdentitySubjectTokenType.Jwt, " ", "service-account"));
+                provider, " ", "service-account"));
             Assert.Throws<ArgumentNullException>(() => new WorkloadIdentityFederationOptions(
-                provider, WorkloadIdentitySubjectTokenType.Jwt, "idp", null));
+                provider, "idp", null));
             Assert.Throws<ArgumentException>(() => new WorkloadIdentityFederationOptions(
-                provider, WorkloadIdentitySubjectTokenType.Jwt, "idp", " "));
+                provider, "idp", " "));
             Assert.Throws<ArgumentException>(() => new WorkloadIdentityFederationOptions(
-                provider, WorkloadIdentitySubjectTokenType.Jwt, "idp", "service-account", " "));
+                provider, "idp", "service-account", " "));
         });
     }
 
     private static OpenAIClient CreateClient(
-        SubjectTokenProvider subjectTokenProvider,
+        Func<CancellationToken, ValueTask<string>> subjectTokenProvider,
         Func<PipelineMessage, MockPipelineResponse> transport,
         WorkloadIdentitySubjectTokenType subjectTokenType = WorkloadIdentitySubjectTokenType.Jwt,
         string clientId = null,
@@ -448,11 +572,9 @@ public class WorkloadIdentityFederationTests
         Action<WorkloadIdentityFederationOptions> configureWorkloadIdentityOptions = null,
         Action<OpenAIClientOptions> configureClientOptions = null)
     {
-        WorkloadIdentityFederationOptions workloadIdentityOptions = new(
+        WorkloadIdentityFederationOptions workloadIdentityOptions = CreateWorkloadIdentityOptions(
             subjectTokenProvider,
             subjectTokenType,
-            identityProviderId: "identity-provider-id",
-            serviceAccountId: "service-account-id",
             clientId);
         configureWorkloadIdentityOptions?.Invoke(workloadIdentityOptions);
         OpenAIClientOptions clientOptions = new()
@@ -465,6 +587,28 @@ public class WorkloadIdentityFederationTests
         };
         configureClientOptions?.Invoke(clientOptions);
         return new OpenAIClient(workloadIdentityOptions, clientOptions);
+    }
+
+    private static WorkloadIdentityFederationOptions CreateWorkloadIdentityOptions(
+        Func<CancellationToken, ValueTask<string>> subjectTokenProvider,
+        WorkloadIdentitySubjectTokenType subjectTokenType = WorkloadIdentitySubjectTokenType.Jwt,
+        string clientId = null)
+        => new(
+            new TestSubjectTokenProvider(subjectTokenProvider, subjectTokenType),
+            identityProviderId: "identity-provider-id",
+            serviceAccountId: "service-account-id",
+            clientId);
+
+    private static async ValueTask<ApiKeyCredential> GetRealtimeSessionCredentialAsync(
+        global::OpenAI.Realtime.RealtimeClient client)
+    {
+        MethodInfo method = typeof(global::OpenAI.Realtime.RealtimeClient).GetMethod(
+            "GetSessionCredentialAsync",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        ValueTask<ApiKeyCredential> credentialTask = (ValueTask<ApiKeyCredential>)method.Invoke(
+            client,
+            [new global::OpenAI.Realtime.RealtimeSessionClientOptions(), CancellationToken.None]);
+        return await credentialTask;
     }
 
     private static async Task SendRequestAsync(OpenAIClient client)
@@ -548,5 +692,23 @@ public class WorkloadIdentityFederationTests
                 }
             }
         }
+    }
+
+    private sealed class TestSubjectTokenProvider : ISubjectTokenProvider
+    {
+        private readonly Func<CancellationToken, ValueTask<string>> _getToken;
+
+        public TestSubjectTokenProvider(
+            Func<CancellationToken, ValueTask<string>> getToken,
+            WorkloadIdentitySubjectTokenType tokenType)
+        {
+            _getToken = getToken;
+            TokenType = tokenType;
+        }
+
+        public WorkloadIdentitySubjectTokenType TokenType { get; }
+
+        public ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
+            => _getToken(cancellationToken);
     }
 }

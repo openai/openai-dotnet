@@ -20,6 +20,8 @@ namespace OpenAI.Models {
     public class OpenAIModelClient {
         protected OpenAIModelClient();
         public OpenAIModelClient(OpenAIModelClientSettings settings);
+        public OpenAIModelClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public OpenAIModelClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public OpenAIModelClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIModelClient(ApiKeyCredential credential);
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

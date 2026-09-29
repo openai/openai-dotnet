@@ -23,6 +23,8 @@ namespace OpenAI.Graders {
         protected GraderClient();
         [Experimental("SCME0002")]
         public GraderClient(GraderClientSettings settings);
+        public GraderClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public GraderClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public GraderClient(ApiKeyCredential credential);
         public GraderClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

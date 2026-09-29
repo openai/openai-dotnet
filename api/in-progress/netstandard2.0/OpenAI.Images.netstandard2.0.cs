@@ -139,6 +139,8 @@ namespace OpenAI.Images {
         protected ImageClient();
         public ImageClient(ImageClientSettings settings);
         protected internal ImageClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public ImageClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public ImageClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ImageClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ImageClient(string model, ApiKeyCredential credential);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

@@ -25,7 +25,7 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
 
     public WorkloadIdentityAuthenticationTokenProvider(
         WorkloadIdentityFederationOptions options,
-        OpenAIClientOptions clientOptions)
+        ClientPipelineOptions clientOptions)
     {
         _options = options ?? throw new ArgumentNullException(nameof(options));
         clientOptions ??= new OpenAIClientOptions();
@@ -54,6 +54,9 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
 
     public override ValueTask<AuthenticationToken> GetTokenAsync(GetTokenOptions options, CancellationToken cancellationToken)
         => GetTokenCoreAsync(cancellationToken, async: true);
+
+    internal async ValueTask<string> GetAccessTokenAsync(CancellationToken cancellationToken)
+        => (await GetTokenCoreAsync(cancellationToken, async: true).ConfigureAwait(false)).TokenValue;
 
     private async ValueTask<AuthenticationToken> GetTokenCoreAsync(CancellationToken cancellationToken, bool async)
     {
@@ -112,7 +115,7 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
         string subjectToken;
         try
         {
-            subjectToken = await _options.SubjectTokenProvider(cancellationToken).ConfigureAwait(false);
+            subjectToken = await _options.SubjectTokenProvider.GetTokenAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
@@ -127,7 +130,7 @@ internal sealed class WorkloadIdentityAuthenticationTokenProvider : Authenticati
             throw new InvalidOperationException("The subject token provider returned an empty token.");
         }
 
-        string subjectTokenType = _options.SubjectTokenType switch
+        string subjectTokenType = _options.SubjectTokenProvider.TokenType switch
         {
             WorkloadIdentitySubjectTokenType.Jwt => JwtSubjectTokenType,
             WorkloadIdentitySubjectTokenType.IdToken => IdTokenSubjectTokenType,
