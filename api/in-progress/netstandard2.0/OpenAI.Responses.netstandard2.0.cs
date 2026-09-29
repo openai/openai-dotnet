@@ -964,6 +964,7 @@ namespace OpenAI.Responses {
         public ReferenceResponseItem(string id) : base(default);
     }
     public class ResponseContentPart : IJsonModel<ResponseContentPart>, IPersistableModel<ResponseContentPart> {
+        public ResponseContentPart(ResponseContentPartKind kind);
         public BinaryData InputFileBytes { get; }
         public string InputFileBytesMediaType { get; }
         public string InputFileId { get; }
@@ -1458,6 +1459,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
+        public ResponseTextFormat(ResponseTextFormatKind kind);
         public ResponseTextFormatKind Kind { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]

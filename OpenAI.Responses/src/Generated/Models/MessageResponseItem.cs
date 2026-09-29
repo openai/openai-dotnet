@@ -22,7 +22,5 @@ namespace OpenAI.Responses
             Role = role;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-        public MessageStatus? Status { get; set; }
     }
 }

@@ -268,12 +268,12 @@ internal class OpenTelemetryScope : IDisposable
             SetActivityTagIfNotNull(OpenAiRequestServiceTierKey, serviceTier.ToString());
         }
 
-        var outputType = options?.TextOptions?.TextFormat?.Kind switch
-        {
-            ResponseTextFormatKind.Text => "text",
-            ResponseTextFormatKind.JsonObject or ResponseTextFormatKind.JsonSchema => "json",
-            _ => null,
-        };
+        ResponseTextFormatKind? textFormatKind = options?.TextOptions?.TextFormat?.Kind;
+        string outputType = textFormatKind == ResponseTextFormatKind.Text
+            ? "text"
+            : textFormatKind == ResponseTextFormatKind.JsonObject || textFormatKind == ResponseTextFormatKind.JsonSchema
+                ? "json"
+                : null;
         SetActivityTagIfNotNull(GenAiOutputTypeKey, outputType);
     }
 
@@ -344,15 +344,17 @@ internal class OpenTelemetryScope : IDisposable
 
     private void SetResponseFinishReasonAttribute(ResponseResult response)
     {
-        var reason = response.Status switch
-        {
-            ResponseStatus.Completed => "stop",
-            ResponseStatus.Failed or ResponseStatus.Cancelled => "error",
-            ResponseStatus.Incomplete when response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens => "length",
-            ResponseStatus.Incomplete when response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter => "content_filter",
-            ResponseStatus.Incomplete => "incomplete",
-            _ => null,
-        };
+        string reason = response.Status == ResponseStatus.Completed
+            ? "stop"
+            : response.Status == ResponseStatus.Failed || response.Status == ResponseStatus.Cancelled
+                ? "error"
+                : response.Status == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.MaxOutputTokens
+                    ? "length"
+                    : response.Status == ResponseStatus.Incomplete && response.IncompleteStatusDetails?.Reason == ResponseIncompleteStatusReason.ContentFilter
+                        ? "content_filter"
+                        : response.Status == ResponseStatus.Incomplete
+                            ? "incomplete"
+                            : null;
         if (reason != null)
         {
             _activity.SetTag(GenAiResponseFinishReasonKey, new[] { reason });

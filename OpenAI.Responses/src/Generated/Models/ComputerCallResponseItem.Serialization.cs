@@ -74,7 +74,8 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            // Plugin customization: remove options.Format != "W" check
+            if (!Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
@@ -160,10 +161,6 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
                     status = prop.Value.GetString().ToComputerCallStatus();
                     continue;
                 }

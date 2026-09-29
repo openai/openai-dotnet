@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     internal partial class InternalResponsesDeveloperMessage : MessageResponseItem
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        public InternalResponsesDeveloperMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.Developer)
+        public InternalResponsesDeveloperMessage(IEnumerable<ResponseContentPart> internalContent) : base(MessageRole.Developer)
         {
             InternalContent = internalContent.ToList();
             Patch.SetPropagators(PropagateSet, PropagateGet);
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponsesDeveloperMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)
+        internal InternalResponsesDeveloperMessage(ResponseItemKind kind, string id, in JsonPatch patch, MessageStatus? status, MessageRole role, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, role)
         {
             // Plugin customization: ensure initialization of collections
             InternalContent = internalContent ?? new ChangeTrackingList<ResponseContentPart>();
