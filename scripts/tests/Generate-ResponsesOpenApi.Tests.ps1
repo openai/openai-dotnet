@@ -78,9 +78,28 @@ function Assert-BytesEqual {
 
 function Write-TestSpecification {
     param([string]$Path)
-    Copy-Item `
-        -LiteralPath (Join-Path $script:OpenApiTestFixtureRoot "Generate-ResponsesOpenApi/source.openapi.json") `
-        -Destination $Path
+    $document = Read-TestJsonFixture -RelativePath "Generate-ResponsesOpenApi/source.openapi.json"
+    $properties = $document.paths["/responses"].post.requestBody.content["application/json"].schema.allOf[0].properties
+    $properties["splitChoice"] = [ordered]@{
+        oneOf = @(
+            [ordered]@{ type = "string"; enum = @("auto") },
+            [ordered]@{
+                type = "object"
+                required = @("type")
+                properties = [ordered]@{
+                    type = [ordered]@{ type = "string"; enum = @("alpha", "beta") }
+                }
+            },
+            [ordered]@{
+                type = "object"
+                required = @("type")
+                properties = [ordered]@{
+                    type = [ordered]@{ type = "string"; enum = @("gamma") }
+                }
+            }
+        )
+    }
+    Write-TestJson -Document $document -Path $Path
 }
 
 function Read-TestJson {
@@ -151,6 +170,7 @@ try {
             "Flatten-OpenApiAllOf.ps1",
             "Simplify-OpenApiStringVariants.ps1",
             "Simplify-OpenApiRecursiveSchemas.ps1",
+            "Split-OpenApiMultiValueTypeEnums.ps1",
             "Add-OpenApiOneOfDiscriminators.ps1",
             "Normalize-OpenApiOneOf.ps1",
             "Flatten-OpenApiOneOf.ps1",
@@ -176,10 +196,11 @@ try {
             "responses.inlined.flattened.openapi.json",
             "responses.inlined.flattened.simplified.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
-            "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json",
+            "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.sorted.openapi.json",
             "responses.componentized.openapi.json",
             "responses.component-deduplication-map.json",
             "responses.componentized.deduplicated.openapi.json",
@@ -191,6 +212,7 @@ try {
             [System.IO.Path]::GetFileName($paths.Flattened),
             [System.IO.Path]::GetFileName($paths.Simplified),
             [System.IO.Path]::GetFileName($paths.RecursiveSimplified),
+            [System.IO.Path]::GetFileName($paths.TypeEnumSplit),
             [System.IO.Path]::GetFileName($paths.OneOfDiscriminated),
             [System.IO.Path]::GetFileName($paths.OneOfNormalized),
             [System.IO.Path]::GetFileName($paths.OneOfFlattened),
@@ -220,8 +242,10 @@ try {
         Write-TestSpecification -Path $sourcePath
         [byte[]]$sourceBefore = [System.IO.File]::ReadAllBytes($sourcePath)
         $obsoleteSortedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.sorted.openapi.json"
+        $obsoleteDiscriminatedPath = Join-Path $outputDirectory "responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json"
         $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
         [System.IO.File]::WriteAllText($obsoleteSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
+        [System.IO.File]::WriteAllText($obsoleteDiscriminatedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         $paths = Invoke-ResponsesOpenApiGeneration `
             -SpecificationPath $sourcePath `
             -OutputDirectory $outputDirectory
@@ -233,6 +257,7 @@ try {
             $paths.Flattened,
             $paths.Simplified,
             $paths.RecursiveSimplified,
+            $paths.TypeEnumSplit,
             $paths.OneOfDiscriminated,
             $paths.OneOfNormalized,
             $paths.OneOfFlattened,
@@ -247,6 +272,7 @@ try {
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($sourceBefore, [System.IO.File]::ReadAllBytes($sourcePath))) "Pipeline modified its source specification."
         Assert-True ([System.Linq.Enumerable]::SequenceEqual([System.IO.File]::ReadAllBytes($paths.Deduplicated), [System.IO.File]::ReadAllBytes($paths.Final))) "Final output differs from the retained deduplicated artifact."
         Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
+        Assert-True (-not [System.IO.File]::Exists($obsoleteDiscriminatedPath)) "Pipeline retained an obsolete pre-split artifact."
 
         $extracted = Read-TestJson -Path $paths.Extracted
         $omitted = Read-TestJson -Path $paths.Omitted
@@ -254,6 +280,7 @@ try {
         $flattened = Read-TestJson -Path $paths.Flattened
         $simplified = Read-TestJson -Path $paths.Simplified
         $recursiveSimplified = Read-TestJson -Path $paths.RecursiveSimplified
+        $typeEnumSplit = Read-TestJson -Path $paths.TypeEnumSplit
         $oneOfDiscriminated = Read-TestJson -Path $paths.OneOfDiscriminated
         $oneOfNormalized = Read-TestJson -Path $paths.OneOfNormalized
         $oneOfFlattened = Read-TestJson -Path $paths.OneOfFlattened
@@ -296,8 +323,11 @@ try {
         $recursiveSimplifiedFilters = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $recursiveSimplifiedFormat = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
         $recursiveSimplifiedGrouped = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
+        $recursiveSimplifiedSplitChoice = $recursiveSimplified.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
+        $splitChoice = $typeEnumSplit.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
         $discriminatedFormat = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.format
         $discriminatedGrouped = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
+        $discriminatedSplitChoice = $oneOfDiscriminated.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
         $normalizedOutputs = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.outputs
         $normalizedEvents = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $normalizedFilters = $oneOfNormalized.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
@@ -322,6 +352,10 @@ try {
         Assert-Equal "null" $recursiveSimplifiedFilters.anyOf[1].type "Recursive Simplify stage lost the nullable branch."
         Assert-True (-not ($recursiveSimplifiedFormat.PSObject.Properties.Name -ccontains "discriminator")) "Recursive Simplify stage added the discriminator early."
         Assert-True (-not ($recursiveSimplifiedGrouped.PSObject.Properties.Name -ccontains "discriminator")) "Recursive Simplify stage added the grouped discriminator early."
+        Assert-Sequence @("alpha", "beta") @($recursiveSimplifiedSplitChoice.oneOf[1].properties.type.enum) "Recursive Simplify stage changed the multi-value type enum early."
+        Assert-Equal 4 $splitChoice.oneOf.Count "Type enum split stage emitted the wrong branch count."
+        Assert-Sequence @("alpha", "beta", "gamma") @($splitChoice.oneOf[1..3] | ForEach-Object { $_.properties.type.enum[0] }) "Type enum split stage emitted the wrong singleton branches."
+        Assert-True (-not ($discriminatedSplitChoice.PSObject.Properties.Name -ccontains "discriminator")) "Discriminator stage added metadata to a mixed scalar/object union."
         Assert-Sequence @("discriminator", "oneOf") @($discriminatedFormat.PSObject.Properties.Name) "oneOf discriminator stage emitted the wrong member order."
         Assert-Equal "type" $discriminatedFormat.discriminator.propertyName "oneOf discriminator stage used the wrong propertyName."
         Assert-Sequence @("text", "json_schema", "json_object") @($discriminatedFormat.oneOf | ForEach-Object { $_.properties.type.enum[0] }) "oneOf discriminator stage changed branch values."
@@ -361,6 +395,9 @@ try {
 
         Assert-Equal 1 $mapping.version "Deduplication map version was incorrect."
         Assert-True ($mapping.PSObject.Properties.Name -ccontains "groups") "Deduplication map omitted groups."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_TypeOfAlpha") "Componentization omitted the alpha split variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_TypeOfBeta") "Componentization omitted the beta split variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_TypeOfGamma") "Componentization omitted the existing singleton variant."
         Assert-OpenApiReferencesResolve -Document $componentized
         Assert-AdditionalOpenApiReferencesResolve -Document $componentized
         $null = Assert-OpenApiDiscriminatorMappings -Document $componentized

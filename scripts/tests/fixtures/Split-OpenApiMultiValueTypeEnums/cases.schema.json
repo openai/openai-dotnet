@@ -1,0 +1,164 @@
+{
+  "directCompositions": {
+    "type": "object",
+    "properties": {
+      "choice": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": [
+              "auto"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "preserved",
+            "required": [
+              "type",
+              "name"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "file_search",
+                  "web_search_preview",
+                  "computer",
+                  "computer_use_preview",
+                  "computer_use",
+                  "image_generation",
+                  "code_interpreter"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false,
+            "x-test": {
+              "note": "preserved"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      },
+      "fallback": {
+        "anyOf": [
+          {
+            "type": "object",
+            "title": "preserved",
+            "required": [
+              "type",
+              "name"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "first",
+                  "second"
+                ]
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false,
+            "x-test": {
+              "note": "preserved"
+            }
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    }
+  },
+  "nearMissesAndLiterals": {
+    "type": "object",
+    "properties": {
+      "optional": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "singleton": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "a"
+            ]
+          }
+        }
+      },
+      "wrongObjectType": {
+        "type": "string",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "a",
+              "b"
+            ]
+          }
+        }
+      },
+      "wrongPropertyType": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "integer",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        }
+      }
+    },
+    "example": {
+      "type": "object",
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "a",
+            "b"
+          ]
+        }
+      }
+    }
+  }
+}

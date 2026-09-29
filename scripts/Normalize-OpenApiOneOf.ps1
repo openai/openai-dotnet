@@ -29,11 +29,11 @@
 
 .EXAMPLE
     ./scripts/Normalize-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
     ./scripts/Flatten-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
     ./scripts/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
 #>
 
 #Requires -Version 7.0

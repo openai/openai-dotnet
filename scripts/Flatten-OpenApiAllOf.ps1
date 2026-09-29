@@ -39,14 +39,16 @@
         ./artifacts/openapi-extracts/responses.inlined.flattened.openapi.json
     ./scripts/Simplify-OpenApiRecursiveSchemas.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.openapi.json
-    ./scripts/Add-OpenApiOneOfDiscriminators.ps1 `
+    ./scripts/Split-OpenApiMultiValueTypeEnums.ps1 `
         ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.openapi.json
+    ./scripts/Add-OpenApiOneOfDiscriminators.ps1 `
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.openapi.json
     ./scripts/Normalize-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.openapi.json
     ./scripts/Flatten-OpenApiOneOf.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.openapi.json
     ./scripts/Sort-OpenApiDocument.ps1 `
-        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
+        ./artifacts/openapi-extracts/responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.openapi.json
 #>
 
 #Requires -Version 7.0

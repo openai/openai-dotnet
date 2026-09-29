@@ -346,7 +346,8 @@
       "members": [
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputer",
         "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfComputer",
-        "CreateResponse_Request_Tools_TypeOfComputer"
+        "CreateResponse_Request_Tools_TypeOfComputer",
+        "CreateResponse_Request_ToolChoiceUnion_TypeOfComputer"
       ]
     },
     {

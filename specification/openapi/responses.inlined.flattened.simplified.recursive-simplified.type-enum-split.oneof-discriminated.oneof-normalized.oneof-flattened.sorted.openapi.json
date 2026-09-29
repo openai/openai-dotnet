@@ -7885,13 +7885,91 @@
                           "type": {
                             "type": "string",
                             "enum": [
-                              "code_interpreter",
-                              "computer",
-                              "computer_use",
-                              "computer_use_preview",
-                              "file_search",
-                              "image_generation",
+                              "file_search"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
                               "web_search_preview"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "computer"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "computer_use_preview"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "computer_use"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "image_generation"
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "type": "object",
+                        "required": [
+                          "type"
+                        ],
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "code_interpreter"
                             ]
                           }
                         }

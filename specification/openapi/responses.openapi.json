@@ -4351,7 +4351,25 @@
             "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfAllowedTools"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative3"
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfFileSearch"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfWebSearchPreview"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUsePreview"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUse"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfImageGeneration"
+          },
+          {
+            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfCodeInterpreter"
           },
           {
             "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_TypeOfFunction"
@@ -4406,7 +4424,7 @@
         "type": "object",
         "additionalProperties": true
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative3": {
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfFileSearch": {
         "type": "object",
         "required": [
           "type"
@@ -4415,13 +4433,77 @@
           "type": {
             "type": "string",
             "enum": [
-              "code_interpreter",
-              "computer",
-              "computer_use",
-              "computer_use_preview",
-              "file_search",
-              "image_generation",
+              "file_search"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfWebSearchPreview": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
               "web_search_preview"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUsePreview": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "computer_use_preview"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfComputerUse": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "computer_use"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfImageGeneration": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "image_generation"
+            ]
+          }
+        }
+      },
+      "CreateResponse_Request_ToolChoiceUnion_TypeOfCodeInterpreter": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "code_interpreter"
             ]
           }
         }

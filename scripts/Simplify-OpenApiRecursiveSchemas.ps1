@@ -10,7 +10,8 @@
     whose branches all have type object, the containing anyOf schema is replaced
     instead. Parent anyOf collapse takes priority over branch replacement.
     Encounter order is preserved for every noncandidate value.
-    Run Add-OpenApiOneOfDiscriminators.ps1, Normalize-OpenApiOneOf.ps1,
+    Run Split-OpenApiMultiValueTypeEnums.ps1,
+    Add-OpenApiOneOfDiscriminators.ps1, Normalize-OpenApiOneOf.ps1,
     Flatten-OpenApiOneOf.ps1, and Sort-OpenApiDocument.ps1 afterward.
 
 .PARAMETER InputPath

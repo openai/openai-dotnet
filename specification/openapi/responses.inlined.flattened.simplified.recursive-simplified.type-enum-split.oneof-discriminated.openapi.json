@@ -2007,12 +2007,90 @@
                           "type": {
                             "type": "string",
                             "enum": [
-                              "file_search",
-                              "web_search_preview",
-                              "computer",
-                              "computer_use_preview",
-                              "computer_use",
-                              "image_generation",
+                              "file_search"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "web_search_preview"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "computer"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "computer_use_preview"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "computer_use"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "image_generation"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "type"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
                               "code_interpreter"
                             ]
                           }
@@ -7924,6 +8002,9 @@
                                             "discriminator": {
                                               "propertyName": "type"
                                             }
+                                          },
+                                          "discriminator": {
+                                            "propertyName": "type"
                                           }
                                         },
                                         {
