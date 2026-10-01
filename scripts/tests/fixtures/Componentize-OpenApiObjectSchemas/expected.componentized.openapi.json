@@ -12,7 +12,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateWidget_Request"
+                "$ref": "#/components/schemas/createWidget_request_object"
               }
             }
           }
@@ -31,11 +31,11 @@
         "type": "object",
         "properties": {
           "nested": {
-            "$ref": "#/components/schemas/ExistingRoot_Nested"
+            "$ref": "#/components/schemas/ExistingRoot_Nested_object"
           }
         }
       },
-      "CreateWidget_Request": {
+      "createWidget_request_object": {
         "type": "object",
         "required": [
           "child",
@@ -43,19 +43,19 @@
         ],
         "properties": {
           "child": {
-            "$ref": "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind"
+            "$ref": "#/components/schemas/createWidget_request_object_Child_object"
           },
           "childAlias": {
-            "$ref": "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind"
+            "$ref": "#/components/schemas/createWidget_request_object_Child_object"
           },
           "list": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateWidget_Request_List"
+              "$ref": "#/components/schemas/createWidget_request_object_List_array_item_object"
             }
           },
           "variants": {
-            "$ref": "#/components/schemas/CreateWidget_Request_VariantsUnion"
+            "$ref": "#/components/schemas/createWidget_request_object_Variants_union"
           },
           "nearMiss": {
             "type": [
@@ -76,7 +76,7 @@
           }
         }
       },
-      "CreateWidget_Request_Child_TypeOfChildKind": {
+      "createWidget_request_object_Child_object": {
         "type": "object",
         "properties": {
           "type": {
@@ -87,14 +87,14 @@
           }
         },
         "additionalProperties": {
-          "$ref": "#/components/schemas/CreateWidget_Request_Child_TypeOfChildKind_1"
+          "$ref": "#/components/schemas/createWidget_request_object_Child_object_value_dictionary"
         }
       },
-      "CreateWidget_Request_Child_TypeOfChildKind_1": {
+      "createWidget_request_object_Child_object_value_dictionary": {
         "type": "object",
         "additionalProperties": true
       },
-      "CreateWidget_Request_List": {
+      "createWidget_request_object_List_array_item_object": {
         "type": "object",
         "properties": {
           "value": {
@@ -102,17 +102,17 @@
           }
         }
       },
-      "CreateWidget_Request_VariantsUnion": {
+      "createWidget_request_object_Variants_union": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateWidget_Request_VariantsUnion_TypeOfAlpha"
+            "$ref": "#/components/schemas/createWidget_request_object_Variants_union_object1"
           },
           {
-            "$ref": "#/components/schemas/CreateWidget_Request_VariantsUnion_TypeOfAlpha_1"
+            "$ref": "#/components/schemas/createWidget_request_object_Variants_union_object2"
           }
         ]
       },
-      "CreateWidget_Request_VariantsUnion_TypeOfAlpha": {
+      "createWidget_request_object_Variants_union_object1": {
         "type": "object",
         "properties": {
           "type": {
@@ -123,7 +123,7 @@
           }
         }
       },
-      "CreateWidget_Request_VariantsUnion_TypeOfAlpha_1": {
+      "createWidget_request_object_Variants_union_object2": {
         "type": "object",
         "properties": {
           "type": {
@@ -134,7 +134,7 @@
           }
         }
       },
-      "ExistingRoot_Nested": {
+      "ExistingRoot_Nested_object": {
         "type": "object",
         "properties": {
           "id": {

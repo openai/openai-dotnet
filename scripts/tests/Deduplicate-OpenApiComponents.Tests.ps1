@@ -96,8 +96,8 @@ try {
         $properties = $source.paths["/test"].post.responses["200"].content["application/json"].schema.properties
         $properties["unionA"] = [ordered]@{ '$ref' = "#/components/schemas/UnionA" }
         $properties["unionB"] = [ordered]@{ '$ref' = "#/components/schemas/UnionB" }
-        $longRedName = "CreateResponse_Request_InputUnion_ArrayItem_TypeOfRed_Tools"
-        $shortRedName = "CreateResponse_Request_Tools"
+        $longRedName = "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfRed_Tools_array_item_object"
+        $shortRedName = "createResponse_request_object_Tools_array_item_object"
         $source.components.schemas[$longRedName] = [ordered]@{
             type = "object"
             required = @("kind")

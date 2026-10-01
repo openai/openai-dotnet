@@ -2,914 +2,914 @@
   "version": 1,
   "groups": [
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
+      "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
+      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
+      "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
       "fingerprint": "sha256:c3a1e47a233ef61d3af505440816ad5ee5772661d99b1f6d0494adbf4b6cda32",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputText",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputText",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
+      "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+      "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
       "fingerprint": "sha256:652dbcec25cb1327a50c7723c3bdca4f2dd1120f066a5a3d006a156992cc0474",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputText_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputImage_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputFile_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputText_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputImage_PromptCacheBreakpoint",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputFile_PromptCacheBreakpoint",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputText_PromptCacheBreakpoint",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage_PromptCacheBreakpoint",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile_PromptCacheBreakpoint"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage_PromptCacheBreakpoint_object",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
+      "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
+      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
+      "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
       "fingerprint": "sha256:c00646b42041c20f9a7b5b95cc26d424b1ffe5a730dddad1a53e3a42c089e66b",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputImage",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputImage"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputImage",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
+      "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
+      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
+      "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
       "fingerprint": "sha256:95006c517e385a3697a94acf2001493f9a7a396e895edf56c73b72984f0b8692",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem_TypeOfInputFile",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2_TypeOfInputFile"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfInputFile",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
       "fingerprint": "sha256:d2e6b156970db216edaf36cffd0fc3b884c7cedfa496f9cbe6285008662ddb15",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_AcknowledgedSafetyChecks"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_AcknowledgedSafetyChecks_array_item_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
       "fingerprint": "sha256:d6836659f403504a205f6f73f197d5bbf8b7df5ad5c1e2b71cfdba08fb39678f",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
       "fingerprint": "sha256:71740a1a1d0de9c60431a1aa62a6bba4516b88e96178ce51fa82e15806b8d043",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfClick"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfClick"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
       "fingerprint": "sha256:b8651d05ca1b011a3787feadfbf46b5e9d4cca7a7afce6e5be2ec7c04492139b",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfDoubleClick"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfDoubleClick"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
       "fingerprint": "sha256:00cd6eb75a921e668b11e5355345fd91bf8ac69fdb02b251f9048df004233de6",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfDrag"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfDrag"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag_Path",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag_Path",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag_Path",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
       "fingerprint": "sha256:6c7897b64630a09bf5f5e0434db69e7a3a6a2cb5be84f6bc1d2d24aa9f797e38",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag_Path",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfDrag_Path"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfDrag_Path_array_item_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
       "fingerprint": "sha256:e7fb9a516602060c30a795cdd2ac688e3a6bec5d5f97b812f39f729e1286ca8d",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfKeypress"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfKeypress"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
       "fingerprint": "sha256:f60b69d329a1346abe7274e7c5ae7f700ba7fb86c8bcb00c2088d63a08bd6460",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfMove"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfMove"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
       "fingerprint": "sha256:4bdaeb9a34573a1d4b123653baf09190356d218f7f233ab7469558f7e4b6e74f",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfScreenshot"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfScreenshot"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
       "fingerprint": "sha256:3a75365c30ccef5d20df7947eb8238db13f27077e01736e00a38b39dbce09274",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfScroll"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfScroll"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
       "fingerprint": "sha256:e4692bf8531edc78df565b9d4f772a811e42acb73f66781ce5a2f766c472c041",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfType"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfType"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
       "fingerprint": "sha256:9dab042dbda8b0715357d90c1cca795e9730a8f1fe2be0cce7e2dd34ffc755c7",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Actions_TypeOfWait"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Actions_array_item_discriminatedObject_typeOfWait"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject",
       "fingerprint": "sha256:b04e12388bb7e7ea68256537e1cce3ede45e2a0cb7c54d83c5e7bc08df116906",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCall_Caller"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
       "fingerprint": "sha256:02efa62fd5a120ce0b7cdb046b1ac2c65c6a0b9e3d76da4d8c346c6dd8b6b39c",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCallOutput_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_Caller_TypeOfDirect",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCall_Caller_TypeOfDirect"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Caller_discriminatedObject_typeOfDirect",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfDirect"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram",
       "fingerprint": "sha256:0fe8bcb897c1a772b943924bdb94eb3c86f219abad850d8c54bcff54e60faa3d",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCall_Caller_TypeOfProgram"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject",
       "fingerprint": "sha256:199b952c422b97d1aebec55c9020f21190883f35cec153da905c6b0a74e07ee9",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Caller",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Caller",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Caller",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCallOutput_Caller",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_Caller"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Caller_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Caller_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Caller_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Caller_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram",
       "fingerprint": "sha256:d56efbbac3d9f8ce717accda811ea802a517b5db56149c16ca351c6c1fb3ceb6",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Caller_TypeOfProgram",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Caller_TypeOfProgram",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Caller_TypeOfProgram",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCallOutput_Caller_TypeOfProgram",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_Caller_TypeOfProgram"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Caller_discriminatedObject_typeOfProgram",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Caller_discriminatedObject_typeOfProgram",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput_Caller_discriminatedObject_typeOfProgram",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Caller_discriminatedObject_typeOfProgram"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfToolSearch_Parameters",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfToolSearch_Parameters",
-      "representative": "CreateResponse_Request_Tools_TypeOfToolSearch_Parameters",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
       "fingerprint": "sha256:7c090063c6a407d75c8bce3c31829e579c5adceef557a4c4b2751a0757748639",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall_Arguments",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfFunction_Parameters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfToolSearch_Parameters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfFunction_Parameters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfToolSearch_Parameters",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction_Parameters",
-        "CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall_Arguments_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools",
-      "canonicalName": "CreateResponse_Request_Tools",
-      "representative": "CreateResponse_Request_Tools",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject",
       "fingerprint": "sha256:638cd01c933add9c9588126a02d17604f30618ccfb762b511803668c35c669d8",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools",
-        "CreateResponse_Request_Tools"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfFunction",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfFunction",
-      "representative": "CreateResponse_Request_Tools_TypeOfFunction",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
       "fingerprint": "sha256:36c09a9ae0f189a22a740a478927c6498e745e806cc4e890bfe09203aa87b292",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFunction",
-        "CreateResponse_Request_Tools_TypeOfFunction"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfFunction_Parameters",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfFunction_Parameters",
-      "representative": "CreateResponse_Request_Tools_TypeOfFunction_Parameters",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
       "fingerprint": "sha256:0dc2e31d7c4054a3b8682c50338ff0213d179418d657de49080303a7a3e0f5fa",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction_Parameters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFunction_OutputSchema",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfFunction_OutputSchema",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFunction_Parameters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFunction_OutputSchema",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfFunction_OutputSchema",
-        "CreateResponse_Request_Tools_TypeOfFunction_Parameters",
-        "CreateResponse_Request_Tools_TypeOfFunction_OutputSchema",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction_OutputSchema"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction_OutputSchema_dictionary"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfFileSearch",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfFileSearch",
-      "representative": "CreateResponse_Request_Tools_TypeOfFileSearch",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
       "fingerprint": "sha256:57de32ea5544624f2da7363b046f33803f29284c1fd259c124c20141e022ef1c",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFileSearch",
-        "CreateResponse_Request_Tools_TypeOfFileSearch"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfFileSearch_Filters",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfFileSearch_Filters",
-      "representative": "CreateResponse_Request_Tools_TypeOfFileSearch_Filters",
+      "id": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
+      "canonicalName": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
+      "representative": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
       "fingerprint": "sha256:b7165ddbec73ba9b2b82e50ad9b5cc721193ebad6be9edc46355f1aea45b9077",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_Filters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFileSearch_Filters",
-        "CreateResponse_Request_Text_Format_TypeOfJsonSchema_Schema",
-        "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools_Tools",
-        "CreateResponse_Request_Tools_TypeOfFileSearch_Filters"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch_Filters_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch_Filters_dictionary",
+        "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
+        "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools_Tools_array_item_dictionary",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_Filters_dictionary"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions",
-      "representative": "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
       "fingerprint": "sha256:5d6cb84fd5e2f6e35f925864d7d222fd99843b6bc9daea30f2d087b1f0667900",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_RankingOptions",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFileSearch_RankingOptions",
-        "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch",
-      "representative": "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
       "fingerprint": "sha256:9fe8ac3b94041021c96139495717b2c52b19c576a834b27c901a81d694a92b6b",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfFileSearch_RankingOptions_HybridSearch",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfFileSearch_RankingOptions_HybridSearch",
-        "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfComputer",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfComputer",
-      "representative": "CreateResponse_Request_Tools_TypeOfComputer",
+      "id": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
+      "canonicalName": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
+      "representative": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
       "fingerprint": "sha256:ec6dca9efe48ddae2f03199f0c8f624c6046ec3b6ee8e24e7130f3cbcc93cc22",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputer",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfComputer",
-        "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputer",
-        "CreateResponse_Request_Tools_TypeOfComputer"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfComputer",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfComputer",
+        "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputer"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfComputerUsePreview",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfComputerUsePreview",
-      "representative": "CreateResponse_Request_Tools_TypeOfComputerUsePreview",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
       "fingerprint": "sha256:343b8752bc94869d5207a40edb95fbe4a40c6fc7cd0a3ed3cf80d6509c9e7cb1",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfComputerUsePreview",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfComputerUsePreview",
-        "CreateResponse_Request_Tools_TypeOfComputerUsePreview"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfWebSearch",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearch",
-      "representative": "CreateResponse_Request_Tools_TypeOfWebSearch",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
       "fingerprint": "sha256:ca889a3da5e2c550d07413c70ffac0aaeb4be1be0c0f31f35d09d3208e948bd6",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearch",
-        "CreateResponse_Request_Tools_TypeOfWebSearch"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearch",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearch",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfWebSearch_Filters",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearch_Filters",
-      "representative": "CreateResponse_Request_Tools_TypeOfWebSearch_Filters",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
       "fingerprint": "sha256:4edf3d8d1a17419076c92beb0a34979d1e234eb4b5c2ad170950dd98ce953c12",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_Filters",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearch_Filters",
-        "CreateResponse_Request_Tools_TypeOfWebSearch_Filters"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
-      "representative": "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
       "fingerprint": "sha256:340c6cb71b4c73efc1e58e9ce702978263ffc52f45d9debba6eb22b4da9a8612",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfMcp",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfMcp",
-      "representative": "CreateResponse_Request_Tools_TypeOfMcp",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
       "fingerprint": "sha256:e7878c8115a99b77bfc1587c8e0c742fb31a2d026d66fc2647fadb21f1b155f8",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp",
-        "CreateResponse_Request_Tools_TypeOfMcp"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion",
-      "representative": "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
       "fingerprint": "sha256:d3c042e2861be765ef091f4ed80197437c65cb9b4f7f8e9d28131ca55dfe570c",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_AllowedToolsUnion",
-        "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object",
-      "representative": "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
       "fingerprint": "sha256:49cc3018e0a8ff392a601c516533c92ef3fb477034c19535bfdf5dabc267cf02",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_AllowedToolsUnion_Object",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion_Object_Always",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion_Object_Never",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_AllowedToolsUnion_Object",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_RequireApprovalUnion_Object_Always",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_RequireApprovalUnion_Object_Never",
-        "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object",
-        "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object_Always",
-        "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object_Never"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object_Always_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object_Never_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object_Always_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object_Never_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object_Always_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object_Never_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Metadata",
-      "canonicalName": "CreateResponse_Request_Metadata",
-      "representative": "CreateResponse_Request_Metadata",
+      "id": "createResponse_request_object_Metadata_dictionary",
+      "canonicalName": "createResponse_request_object_Metadata_dictionary",
+      "representative": "createResponse_request_object_Metadata_dictionary",
       "fingerprint": "sha256:feaba4e626b9eb2813568d0eb16b45603dc7dd4453c8cb5a97f5b5482607871d",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_Headers",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_Headers",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec_Env",
-        "CreateResponse_Request_Metadata",
-        "CreateResponse_Request_Tools_TypeOfMcp_Headers"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_Headers_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_Headers_dictionary",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Action_discriminatedObject_typeOfExec_Env_dictionary",
+        "createResponse_request_object_Metadata_dictionary",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_Headers_dictionary"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion",
-      "representative": "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
       "fingerprint": "sha256:fa941988a3c86841bd5984ddac09e5d3992c2ff753ac74ffc4cfce459cf8851d",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_RequireApprovalUnion",
-        "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object",
-      "representative": "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
       "fingerprint": "sha256:361e10486253bc7f544a34aa755dae9c75aec356b2f6c1159f5e829a82e8247d",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfMcp_RequireApprovalUnion_Object",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfMcp_RequireApprovalUnion_Object",
-        "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
       "fingerprint": "sha256:6afda8f24fe029c3f3a67f0247d2292b87824f1c92875495d53f41eb558a348f",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
       "fingerprint": "sha256:d22831bc96f2b5ecea09ea27d57c3fff1c09966280d71d78d68afdea6f985a8d",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
       "fingerprint": "sha256:a0b312539384ccea2d1ffe4bdb8f60d8818d75078815927acdfe3ce9fc669a50",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
-      "representative": "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
       "fingerprint": "sha256:3560f6f34ac47e42b021af1657605d6e53de7773b272ef69a49083e79efa67b2",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
       "fingerprint": "sha256:c84d8cf4fb31e2f591b39802230084e79d4ad8b9adb1d67b3d8435e40502af8e",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
       "fingerprint": "sha256:abac341f30478a2590c18efecd9e6ede8013ad4daf66a9ca4d243e11b9de20ee",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfDisabled",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
       "fingerprint": "sha256:edd3e747ebfde75f65ff69cab1a1b8727e3d74d5ff48b1769d18fcf92bf33fe0",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
       "fingerprint": "sha256:d7ee1d34d7d9ec4eefc6bf77dad39e893918df42d10020888a47278bc3390a5b",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
-      "representative": "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
+      "id": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
+      "canonicalName": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
+      "representative": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
       "fingerprint": "sha256:0279c4adbcbac2faced5bdb5ed7fe5af24e2607dcdb93e27e65c129f8000ac1c",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfProgrammaticToolCalling",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfProgrammaticToolCalling",
-        "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfProgrammaticToolCalling",
-        "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfProgrammaticToolCalling",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfProgrammaticToolCalling",
+        "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfProgrammaticToolCalling"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfImageGeneration",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfImageGeneration",
-      "representative": "CreateResponse_Request_Tools_TypeOfImageGeneration",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
       "fingerprint": "sha256:885c907bc46fb2117e1d2ead62d636565123991fb0edf7d4988b7c3f6910a231",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfImageGeneration",
-        "CreateResponse_Request_Tools_TypeOfImageGeneration"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask",
-      "representative": "CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
       "fingerprint": "sha256:c4316b372df546c0fe63b433f96f26a76ded44bb928ad0ad38294fbd2aac46d6",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfImageGeneration_InputImageMask",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfImageGeneration_InputImageMask",
-        "CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfLocalShell",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfLocalShell",
-      "representative": "CreateResponse_Request_Tools_TypeOfLocalShell",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
       "fingerprint": "sha256:7ff1dc81981767a9524cb5058a4af60dfd7d8b9e0e770d04117652a4b497d721",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfLocalShell",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfLocalShell",
-        "CreateResponse_Request_Tools_TypeOfLocalShell"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfLocalShell",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfLocalShell",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
       "fingerprint": "sha256:e581e73dfa29a7d6531fca0008ddf8e885a05f994c328e188a618690a8f7e4be",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell",
-        "CreateResponse_Request_Tools_TypeOfShell"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
       "fingerprint": "sha256:c040bb1b3b6287ad16611f88e60d12105d201bd05ded274700dfc5daebdda230",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
       "fingerprint": "sha256:7806573a4a1b061161fea9448b2c401e1828222fdcf994aa38b995ac6fab4dcf",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
       "fingerprint": "sha256:89fcb1a6d2680f0de8ee1d6cfa9e311414542a31ebadff75e93d3260839cb87f",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
       "fingerprint": "sha256:9f96404e5d2eba0dc5e382de7f409d20e3bb1cd0c188ac45fc27bb67078a9b6b",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
       "fingerprint": "sha256:bcdaf3dd453c3af736f6803a062129c2a979cc42f18db5de4d17303b9c08fec6",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
       "fingerprint": "sha256:ba065cda442c6d8c9585671ae711933fa6cf666d8f49327ac87867ff431e690f",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
       "fingerprint": "sha256:e8f04b6b8ea97dd1cde7ba5edde93aac8db5b1f25800b1dad898733f3f38583e",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
       "fingerprint": "sha256:a4090458cf7463632fc227a9eaa63dba70da396fdccc5f0ca0bccb0fb1c948a3",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfLocal",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Environment_TypeOfLocal",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Environment_discriminatedObject_typeOfLocal",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
       "fingerprint": "sha256:097968cb68764b2fb6887dc46e1662abcac5413223a566a1b5fb374928e9a9de",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfLocal_Skills",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfLocal_Skills",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Environment_TypeOfLocal_Skills",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference",
-      "representative": "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
       "fingerprint": "sha256:394024a92c33b7495201bc0539660168f1ff62af8f82a156bcac886c50eba787",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfShell_Environment_TypeOfContainerReference",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfShell_Environment_TypeOfContainerReference",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Environment_TypeOfContainerReference",
-        "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Environment_discriminatedObject_typeOfContainerReference",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCustom",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCustom",
-      "representative": "CreateResponse_Request_Tools_TypeOfCustom",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
       "fingerprint": "sha256:ce4f3c09db2df61e960aa5a18d88265fb973b37bc7b72060d063dab6d2821ab4",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfCustom",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCustom",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfCustom",
-        "CreateResponse_Request_Tools_TypeOfCustom",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfCustom"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCustom_Format",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCustom_Format",
-      "representative": "CreateResponse_Request_Tools_TypeOfCustom_Format",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
       "fingerprint": "sha256:a1a9837e61a0dd1df9fdeb51fd40f47d8db0fcd9f45ee4e1740df0fdd95033c6",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCustom_Format",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format",
-        "CreateResponse_Request_Tools_TypeOfCustom_Format",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Text_Format_TypeOfText",
-      "canonicalName": "CreateResponse_Request_Text_Format_TypeOfText",
-      "representative": "CreateResponse_Request_Text_Format_TypeOfText",
+      "id": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
+      "canonicalName": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
+      "representative": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
       "fingerprint": "sha256:b5b525772cd5089764fab3f84a899786bd6f501972ddc6fbc691d8ffcfb1b6f7",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfText",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format_TypeOfText",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCustom_Format_TypeOfText",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format_TypeOfText",
-        "CreateResponse_Request_Text_Format_TypeOfText",
-        "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfText",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format_TypeOfText"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText",
+        "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfText"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar",
-      "representative": "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
       "fingerprint": "sha256:d95c4ffcf47fe1be669a470c69efc8c334feabfd59e7b4cbc881098d5d610585",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfCustom_Format_TypeOfGrammar",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format_TypeOfGrammar",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfCustom_Format_TypeOfGrammar",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format_TypeOfGrammar",
-        "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfCustom_Format_TypeOfGrammar"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfNamespace",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfNamespace",
-      "representative": "CreateResponse_Request_Tools_TypeOfNamespace",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
       "fingerprint": "sha256:1b1bbdbf8a8b557c3b2b4b3cb94cff202eb1d9dd536fa1e0616c001afeba1b8f",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace",
-        "CreateResponse_Request_Tools_TypeOfNamespace"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfNamespace_Tools",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfNamespace_Tools",
-      "representative": "CreateResponse_Request_Tools_TypeOfNamespace_Tools",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
       "fingerprint": "sha256:d36e3fd8fe1fe542e0239588661e1ebe19766d0b048427236b9fee6295c3b2e9",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction",
-      "representative": "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
       "fingerprint": "sha256:a8f17047ce8b705a98f05a528a724e74bdbcfb51ac52ad0f1c2b77e89151eb53",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfNamespace_Tools_TypeOfFunction",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfNamespace_Tools_TypeOfFunction",
-        "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfToolSearch",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfToolSearch",
-      "representative": "CreateResponse_Request_Tools_TypeOfToolSearch",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
       "fingerprint": "sha256:aea1c4c0621d41ae734b40c1541e82096b7f2a99bcba43718f1031caabd2c151",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfToolSearch",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfToolSearch",
-        "CreateResponse_Request_Tools_TypeOfToolSearch"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfToolSearch",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfToolSearch",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfWebSearchPreview",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearchPreview",
-      "representative": "CreateResponse_Request_Tools_TypeOfWebSearchPreview",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
       "fingerprint": "sha256:bcac517d3152909750f774943d3bd574e06112b9d397c49ca67f3c90332af056",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview",
-        "CreateResponse_Request_Tools_TypeOfWebSearchPreview"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation",
-      "representative": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
       "fingerprint": "sha256:bb7896f7a7c5179b632656343e83fc8a89ee8d167cef54a0fc6ad5a9db30752c",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation",
-        "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
-      "representative": "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
       "fingerprint": "sha256:208f02c336c2bee712d164ee8c76efdc496502d61fe527cb31886ae36fa1ad59",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate",
-        "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate"
       ]
     },
     {
-      "id": "CreateResponse_Request_Tools_TypeOfApplyPatch",
-      "canonicalName": "CreateResponse_Request_Tools_TypeOfApplyPatch",
-      "representative": "CreateResponse_Request_Tools_TypeOfApplyPatch",
+      "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch",
+      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch",
+      "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch",
       "fingerprint": "sha256:0c639446b094251adfa93d21f387cc2f6ebe3c9acdd0e157d42666718f22f98a",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools_TypeOfApplyPatch",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools_Tools_TypeOfApplyPatch",
-        "CreateResponse_Request_Tools_TypeOfApplyPatch"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject_typeOfApplyPatch",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools_Tools_array_item_discriminatedObject_typeOfApplyPatch",
+        "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch"
       ]
     },
     {
-      "id": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema",
-      "canonicalName": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema",
-      "representative": "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema",
+      "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
+      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
+      "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
       "fingerprint": "sha256:58c51a63e587598e7890d2c40ee6baccc60ad6dfb451df1f0f3e57c897a33c25",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema",
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_Annotations"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_Annotations_object"
       ]
     },
     {
-      "id": "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2",
-      "canonicalName": "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2",
-      "representative": "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2",
+      "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject",
+      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject",
+      "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject",
       "fingerprint": "sha256:e8e403f846a579e097e1869009c74c129d5030a2271f3882c4e2e9e461502128",
       "members": [
-        "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion_ArrayItem",
-        "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2"
+        "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union_array_item_discriminatedObject",
+        "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject"
       ]
     },
     {
-      "id": "CreateResponse_Request_Moderation_Policy_Input",
-      "canonicalName": "CreateResponse_Request_Moderation_Policy_Input",
-      "representative": "CreateResponse_Request_Moderation_Policy_Input",
+      "id": "createResponse_request_object_Moderation_object_Policy_object_Input_object",
+      "canonicalName": "createResponse_request_object_Moderation_object_Policy_object_Input_object",
+      "representative": "createResponse_request_object_Moderation_object_Policy_object_Input_object",
       "fingerprint": "sha256:ac4e6b6291522467508d5bcf407d27ab6afc7a759bc977e836b4ac3aa966ca7b",
       "members": [
-        "CreateResponse_Request_Moderation_Policy_Input",
-        "CreateResponse_Request_Moderation_Policy_Output"
+        "createResponse_request_object_Moderation_object_Policy_object_Input_object",
+        "createResponse_request_object_Moderation_object_Policy_object_Output_object"
       ]
     }
   ]

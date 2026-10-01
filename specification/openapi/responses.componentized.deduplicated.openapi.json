@@ -41,7 +41,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateResponse_Request"
+                "$ref": "#/components/schemas/createResponse_request_object"
               }
             }
           }
@@ -56,7 +56,7 @@
   },
   "components": {
     "schemas": {
-      "CreateResponse_Request": {
+      "createResponse_request_object": {
         "type": "object",
         "properties": {
           "background": {
@@ -74,7 +74,7 @@
               {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/CreateResponse_Request_ContextManagement"
+                  "$ref": "#/components/schemas/createResponse_request_object_ContextManagement_array_item_object"
                 },
                 "minItems": 1
               },
@@ -86,7 +86,7 @@
           "conversation": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_ConversationUnion"
+                "$ref": "#/components/schemas/createResponse_request_object_Conversation_union"
               },
               {
                 "type": "null"
@@ -117,7 +117,7 @@
             ]
           },
           "input": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union"
           },
           "instructions": {
             "anyOf": [
@@ -153,7 +153,7 @@
           "metadata": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Metadata"
+                "$ref": "#/components/schemas/createResponse_request_object_Metadata_dictionary"
               },
               {
                 "type": "null"
@@ -279,7 +279,7 @@
           "moderation": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Moderation"
+                "$ref": "#/components/schemas/createResponse_request_object_Moderation_object"
               },
               {
                 "type": "null"
@@ -309,7 +309,7 @@
           "prompt": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Prompt"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object"
               },
               {
                 "type": "null"
@@ -327,7 +327,7 @@
             ]
           },
           "prompt_cache_options": {
-            "$ref": "#/components/schemas/CreateResponse_Request_PromptCacheOptions"
+            "$ref": "#/components/schemas/createResponse_request_object_PromptCacheOptions_object"
           },
           "prompt_cache_retention": {
             "anyOf": [
@@ -347,7 +347,7 @@
           "reasoning": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Reasoning"
+                "$ref": "#/components/schemas/createResponse_request_object_Reasoning_object"
               },
               {
                 "type": "null"
@@ -407,7 +407,7 @@
           "stream_options": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_StreamOptions"
+                "$ref": "#/components/schemas/createResponse_request_object_StreamOptions_object"
               },
               {
                 "type": "null"
@@ -427,15 +427,15 @@
             ]
           },
           "text": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Text"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object"
           },
           "tool_choice": {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union"
           },
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject"
             }
           },
           "top_logprobs": {
@@ -486,7 +486,7 @@
           }
         }
       },
-      "CreateResponse_Request_ContextManagement": {
+      "createResponse_request_object_ContextManagement_array_item_object": {
         "type": "object",
         "required": [
           "type"
@@ -508,17 +508,17 @@
           }
         }
       },
-      "CreateResponse_Request_ConversationUnion": {
+      "createResponse_request_object_Conversation_union": {
         "oneOf": [
           {
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ConversationUnion_Object"
+            "$ref": "#/components/schemas/createResponse_request_object_Conversation_union_object"
           }
         ]
       },
-      "CreateResponse_Request_ConversationUnion_Object": {
+      "createResponse_request_object_Conversation_union_object": {
         "type": "object",
         "required": [
           "id"
@@ -529,7 +529,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion": {
+      "createResponse_request_object_Input_union": {
         "oneOf": [
           {
             "type": "string"
@@ -537,145 +537,145 @@
           {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject"
             }
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "message": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage",
-            "file_search_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall",
-            "computer_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall",
-            "computer_call_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput",
-            "web_search_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall",
-            "function_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall",
-            "function_call_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput",
-            "tool_search_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall",
-            "tool_search_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput",
-            "additional_tools": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools",
-            "configuration_update": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfConfigurationUpdate",
-            "reasoning": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning",
-            "compaction": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCompaction",
-            "image_generation_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfImageGenerationCall",
-            "code_interpreter_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall",
-            "local_shell_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall",
-            "local_shell_call_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCallOutput",
-            "shell_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall",
-            "shell_call_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput",
-            "apply_patch_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall",
-            "apply_patch_call_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCallOutput",
-            "mcp_list_tools": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools",
-            "mcp_approval_request": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpApprovalRequest",
-            "mcp_approval_response": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpApprovalResponse",
-            "mcp_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall",
-            "custom_tool_call_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput",
-            "custom_tool_call": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCall",
-            "compaction_trigger": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCompactionTrigger",
-            "item_reference": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfItemReference",
-            "program": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfProgram",
-            "program_output": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfProgramOutput"
+            "message": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage",
+            "file_search_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall",
+            "computer_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall",
+            "computer_call_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput",
+            "web_search_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall",
+            "function_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall",
+            "function_call_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput",
+            "tool_search_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall",
+            "tool_search_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput",
+            "additional_tools": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools",
+            "configuration_update": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate",
+            "reasoning": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning",
+            "compaction": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompaction",
+            "image_generation_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall",
+            "code_interpreter_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall",
+            "local_shell_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall",
+            "local_shell_call_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCallOutput",
+            "shell_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall",
+            "shell_call_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput",
+            "apply_patch_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall",
+            "apply_patch_call_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput",
+            "mcp_list_tools": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools",
+            "mcp_approval_request": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalRequest",
+            "mcp_approval_response": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalResponse",
+            "mcp_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall",
+            "custom_tool_call_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput",
+            "custom_tool_call": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall",
+            "compaction_trigger": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompactionTrigger",
+            "item_reference": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfItemReference",
+            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgram",
+            "program_output": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgramOutput"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfConfigurationUpdate"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCompaction"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompaction"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfImageGenerationCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCallOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCallOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCallOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpApprovalRequest"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalRequest"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpApprovalResponse"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalResponse"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCall"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCompactionTrigger"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompactionTrigger"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfItemReference"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfItemReference"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfProgram"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgram"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfProgramOutput"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgramOutput"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage": {
         "type": "object",
         "required": [
           "type",
@@ -692,7 +692,7 @@
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject"
             }
           },
           "role": {
@@ -731,164 +731,36 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "input_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-            "input_image": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-            "input_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile",
-            "output_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText",
-            "refusal": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfRefusal"
+            "input_text": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
+            "input_image": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
+            "input_file": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
+            "output_text": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText",
+            "refusal": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfRefusal"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfRefusal"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfRefusal"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText": {
-        "type": "object",
-        "required": [
-          "type",
-          "text"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_text"
-            ]
-          },
-          "text": {
-            "type": "string"
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint": {
-        "type": "object",
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage": {
-        "type": "object",
-        "required": [
-          "type",
-          "detail"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_image"
-            ]
-          },
-          "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low",
-              "original"
-            ]
-          },
-          "file_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "image_url": {
-            "anyOf": [
-              {
-                "type": "string",
-                "format": "uri"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "input_file"
-            ]
-          },
-          "detail": {
-            "type": "string",
-            "enum": [
-              "auto",
-              "high",
-              "low"
-            ]
-          },
-          "file_data": {
-            "type": "string"
-          },
-          "file_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ]
-          },
-          "file_url": {
-            "type": "string",
-            "format": "uri"
-          },
-          "filename": {
-            "type": "string"
-          },
-          "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
-          }
-        }
-      },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText": {
         "type": "object",
         "required": [
           "type",
@@ -906,13 +778,13 @@
           "annotations": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject"
             }
           },
           "logprobs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Logprobs_array_item_object"
             }
           },
           "text": {
@@ -920,32 +792,32 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "file_citation": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFileCitation",
-            "url_citation": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfUrlCitation",
-            "container_file_citation": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfContainerFileCitation",
-            "file_path": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFilePath"
+            "file_citation": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfFileCitation",
+            "url_citation": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfUrlCitation",
+            "container_file_citation": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfContainerFileCitation",
+            "file_path": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfFilePath"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFileCitation"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfFileCitation"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfUrlCitation"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfUrlCitation"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfContainerFileCitation"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfContainerFileCitation"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFilePath"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfFilePath"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFileCitation": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfFileCitation": {
         "type": "object",
         "required": [
           "type",
@@ -971,7 +843,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfUrlCitation": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfUrlCitation": {
         "type": "object",
         "required": [
           "type",
@@ -1002,7 +874,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfContainerFileCitation": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfContainerFileCitation": {
         "type": "object",
         "required": [
           "type",
@@ -1036,7 +908,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Annotations_TypeOfFilePath": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Annotations_array_item_discriminatedObject_typeOfFilePath": {
         "type": "object",
         "required": [
           "type",
@@ -1058,7 +930,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Logprobs_array_item_object": {
         "type": "object",
         "required": [
           "bytes",
@@ -1082,12 +954,12 @@
           "top_logprobs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs_TopLogprobs"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Logprobs_array_item_object_TopLogprobs_array_item_object"
             }
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfOutputText_Logprobs_TopLogprobs": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfOutputText_Logprobs_array_item_object_TopLogprobs_array_item_object": {
         "type": "object",
         "required": [
           "bytes",
@@ -1109,7 +981,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfRefusal": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMessage_Content_array_item_discriminatedObject_typeOfRefusal": {
         "type": "object",
         "required": [
           "type",
@@ -1127,7 +999,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall": {
         "type": "object",
         "required": [
           "type",
@@ -1166,7 +1038,7 @@
               {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall_Results"
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object"
                 }
               },
               {
@@ -1176,13 +1048,13 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall_Results": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object": {
         "type": "object",
         "properties": {
           "attributes": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall_Results_Attributes"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object_Attributes_dictionary"
               },
               {
                 "type": "null"
@@ -1204,10 +1076,10 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall_Results_Attributes": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object_Attributes_dictionary": {
         "type": "object",
         "additionalProperties": {
-          "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall_Results_Attributes_ValueUnion"
+          "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object_Attributes_dictionary_value_union"
         },
         "maxProperties": 16,
         "propertyNames": {
@@ -1215,7 +1087,7 @@
           "maxLength": 64
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFileSearchCall_Results_Attributes_ValueUnion": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFileSearchCall_Results_array_item_object_Attributes_dictionary_value_union": {
         "oneOf": [
           {
             "type": "string",
@@ -1229,7 +1101,7 @@
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall": {
         "type": "object",
         "required": [
           "type",
@@ -1254,7 +1126,7 @@
           "pending_safety_checks": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object"
             }
           },
           "status": {
@@ -1266,17 +1138,17 @@
             ]
           },
           "action": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject"
           },
           "actions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject"
             }
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object": {
         "type": "object",
         "required": [
           "id"
@@ -1307,52 +1179,52 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "click": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick",
-            "double_click": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick",
-            "drag": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag",
-            "keypress": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress",
-            "move": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove",
-            "screenshot": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot",
-            "scroll": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll",
-            "type": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType",
-            "wait": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait"
+            "click": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
+            "double_click": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
+            "drag": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
+            "keypress": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
+            "move": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
+            "screenshot": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
+            "scroll": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
+            "type": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
+            "wait": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfClick": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick": {
         "type": "object",
         "required": [
           "type",
@@ -1398,7 +1270,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDoubleClick": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick": {
         "type": "object",
         "required": [
           "type",
@@ -1434,7 +1306,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag": {
         "type": "object",
         "required": [
           "type",
@@ -1450,7 +1322,7 @@
           "path": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag_Path"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object"
             }
           },
           "keys": {
@@ -1468,7 +1340,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfDrag_Path": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object": {
         "type": "object",
         "required": [
           "x",
@@ -1483,7 +1355,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfKeypress": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress": {
         "type": "object",
         "required": [
           "type",
@@ -1504,7 +1376,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfMove": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove": {
         "type": "object",
         "required": [
           "type",
@@ -1539,7 +1411,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScreenshot": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot": {
         "type": "object",
         "required": [
           "type"
@@ -1553,7 +1425,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfScroll": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll": {
         "type": "object",
         "required": [
           "type",
@@ -1596,7 +1468,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfType": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType": {
         "type": "object",
         "required": [
           "type",
@@ -1614,7 +1486,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_Action_TypeOfWait": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait": {
         "type": "object",
         "required": [
           "type"
@@ -1628,7 +1500,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput": {
         "type": "object",
         "required": [
           "type",
@@ -1648,14 +1520,14 @@
             "minLength": 1
           },
           "output": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Output_discriminatedObject"
           },
           "acknowledged_safety_checks": {
             "anyOf": [
               {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCall_PendingSafetyChecks"
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object"
                 }
               },
               {
@@ -1690,20 +1562,20 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Output_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "computer_screenshot": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot"
+            "computer_screenshot": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Output_discriminatedObject_typeOfComputerScreenshot"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Output_discriminatedObject_typeOfComputerScreenshot"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfComputerCallOutput_Output_TypeOfComputerScreenshot": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCallOutput_Output_discriminatedObject_typeOfComputerScreenshot": {
         "type": "object",
         "required": [
           "type"
@@ -1724,7 +1596,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall": {
         "type": "object",
         "required": [
           "type",
@@ -1740,7 +1612,7 @@
             ]
           },
           "action": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject"
           },
           "id": {
             "type": "string"
@@ -1757,29 +1629,29 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject": {
         "type": "object",
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "search": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch",
-            "open_page": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfOpenPage",
-            "find_in_page": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfFindInPage"
+            "search": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch",
+            "open_page": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfOpenPage",
+            "find_in_page": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfFindInPage"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfOpenPage"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfOpenPage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfFindInPage"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfFindInPage"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch": {
         "type": "object",
         "required": [
           "type"
@@ -1804,25 +1676,25 @@
           "sources": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch_Sources_array_item_discriminatedObject"
             }
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch_Sources_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "url": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl"
+            "url": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch_Sources_array_item_discriminatedObject_typeOfUrl"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch_Sources_array_item_discriminatedObject_typeOfUrl"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfSearch_Sources_TypeOfUrl": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfSearch_Sources_array_item_discriminatedObject_typeOfUrl": {
         "type": "object",
         "required": [
           "type",
@@ -1841,7 +1713,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfOpenPage": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfOpenPage": {
         "type": "object",
         "required": [
           "type"
@@ -1866,7 +1738,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchCall_Action_TypeOfFindInPage": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchCall_Action_discriminatedObject_typeOfFindInPage": {
         "type": "object",
         "required": [
           "type",
@@ -1889,7 +1761,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall": {
         "type": "object",
         "required": [
           "type",
@@ -1919,7 +1791,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -1942,24 +1814,24 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "direct": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect",
-            "program": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram"
+            "direct": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
+            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect": {
         "type": "object",
         "required": [
           "type"
@@ -1973,7 +1845,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfProgram": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram": {
         "type": "object",
         "required": [
           "type",
@@ -1991,7 +1863,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput": {
         "type": "object",
         "required": [
           "type",
@@ -2005,7 +1877,7 @@
             ]
           },
           "output": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union"
           },
           "call_id": {
             "anyOf": [
@@ -2022,7 +1894,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -2081,7 +1953,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union": {
         "oneOf": [
           {
             "type": "string",
@@ -2090,33 +1962,33 @@
           {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject"
             }
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "input_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputText",
-            "input_image": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputImage",
-            "input_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputFile"
+            "input_text": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText",
+            "input_image": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage",
+            "input_file": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputText"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputImage"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputFile"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputText": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputText": {
         "type": "object",
         "required": [
           "type",
@@ -2136,7 +2008,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
               },
               {
                 "type": "null"
@@ -2145,7 +2017,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputImage": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputImage": {
         "type": "object",
         "required": [
           "type"
@@ -2198,7 +2070,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
               },
               {
                 "type": "null"
@@ -2207,7 +2079,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_OutputUnion_ArrayItem_TypeOfInputFile": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Output_union_array_item_discriminatedObject_typeOfInputFile": {
         "type": "object",
         "required": [
           "type"
@@ -2272,7 +2144,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText_PromptCacheBreakpoint"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
               },
               {
                 "type": "null"
@@ -2281,24 +2153,24 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "direct": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect",
-            "program": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram"
+            "direct": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
+            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller_TypeOfDirect"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller_TypeOfProgram": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram": {
         "type": "object",
         "required": [
           "type",
@@ -2318,7 +2190,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchCall": {
         "type": "object",
         "required": [
           "type",
@@ -2332,7 +2204,7 @@
             ]
           },
           "arguments": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object"
           },
           "call_id": {
             "anyOf": [
@@ -2380,7 +2252,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput": {
         "type": "object",
         "required": [
           "type",
@@ -2396,7 +2268,7 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject"
             }
           },
           "call_id": {
@@ -2445,7 +2317,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfAdditionalTools": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfAdditionalTools": {
         "type": "object",
         "required": [
           "type",
@@ -2468,7 +2340,7 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject"
             }
           },
           "id": {
@@ -2483,7 +2355,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfConfigurationUpdate": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate": {
         "type": "object",
         "required": [
           "type"
@@ -2506,11 +2378,11 @@
             ]
           },
           "reasoning": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfConfigurationUpdate_Reasoning"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object"
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfConfigurationUpdate_Reasoning": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfConfigurationUpdate_Reasoning_object": {
         "type": "object",
         "properties": {
           "effort": {
@@ -2534,7 +2406,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning": {
         "type": "object",
         "required": [
           "type",
@@ -2554,13 +2426,13 @@
           "summary": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Summary_array_item_discriminatedObject"
             }
           },
           "content": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Content_array_item_discriminatedObject"
             }
           },
           "encrypted_content": {
@@ -2583,20 +2455,20 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Summary_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "summary_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText"
+            "summary_text": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Summary_array_item_discriminatedObject_typeOfSummaryText"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Summary_array_item_discriminatedObject_typeOfSummaryText"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Summary_TypeOfSummaryText": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Summary_array_item_discriminatedObject_typeOfSummaryText": {
         "type": "object",
         "required": [
           "type",
@@ -2614,20 +2486,20 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Content_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "reasoning_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText"
+            "reasoning_text": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Content_array_item_discriminatedObject_typeOfReasoningText"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Content_array_item_discriminatedObject_typeOfReasoningText"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfReasoning_Content_TypeOfReasoningText": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfReasoning_Content_array_item_discriminatedObject_typeOfReasoningText": {
         "type": "object",
         "required": [
           "type",
@@ -2645,7 +2517,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCompaction": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompaction": {
         "type": "object",
         "required": [
           "type",
@@ -2674,7 +2546,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfImageGenerationCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfImageGenerationCall": {
         "type": "object",
         "required": [
           "type",
@@ -2808,7 +2680,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall": {
         "type": "object",
         "required": [
           "type",
@@ -2846,7 +2718,7 @@
               {
                 "type": "array",
                 "items": {
-                  "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs"
+                  "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject"
                 }
               },
               {
@@ -2866,24 +2738,24 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "logs": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs_TypeOfLogs",
-            "image": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs_TypeOfImage"
+            "logs": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject_typeOfLogs",
+            "image": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject_typeOfImage"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs_TypeOfLogs"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject_typeOfLogs"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs_TypeOfImage"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject_typeOfImage"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs_TypeOfLogs": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject_typeOfLogs": {
         "type": "object",
         "required": [
           "type",
@@ -2901,7 +2773,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCodeInterpreterCall_Outputs_TypeOfImage": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCodeInterpreterCall_Outputs_array_item_discriminatedObject_typeOfImage": {
         "type": "object",
         "required": [
           "type",
@@ -2920,7 +2792,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall": {
         "type": "object",
         "required": [
           "type",
@@ -2937,7 +2809,7 @@
             ]
           },
           "action": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Action_discriminatedObject"
           },
           "call_id": {
             "type": "string"
@@ -2955,20 +2827,20 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Action_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "exec": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec"
+            "exec": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Action_discriminatedObject_typeOfExec"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Action_discriminatedObject_typeOfExec"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCall_Action_TypeOfExec": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCall_Action_discriminatedObject_typeOfExec": {
         "type": "object",
         "required": [
           "type",
@@ -2989,7 +2861,7 @@
             }
           },
           "env": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Metadata"
+            "$ref": "#/components/schemas/createResponse_request_object_Metadata_dictionary"
           },
           "timeout_ms": {
             "anyOf": [
@@ -3023,7 +2895,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfLocalShellCallOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfLocalShellCallOutput": {
         "type": "object",
         "required": [
           "type",
@@ -3061,7 +2933,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall": {
         "type": "object",
         "required": [
           "type",
@@ -3076,7 +2948,7 @@
             ]
           },
           "action": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Action"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Action_object"
           },
           "call_id": {
             "type": "string",
@@ -3086,7 +2958,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3096,7 +2968,7 @@
           "environment": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Environment"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Environment_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3130,7 +3002,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Action": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Action_object": {
         "type": "object",
         "required": [
           "commands"
@@ -3164,24 +3036,24 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCall_Environment": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCall_Environment_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "local": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
-            "container_reference": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+            "local": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
+            "container_reference": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput": {
         "type": "object",
         "required": [
           "type",
@@ -3203,13 +3075,13 @@
           "output": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object"
             }
           },
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3253,7 +3125,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object": {
         "type": "object",
         "required": [
           "outcome",
@@ -3262,7 +3134,7 @@
         ],
         "properties": {
           "outcome": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject"
           },
           "stderr": {
             "type": "string",
@@ -3274,24 +3146,24 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "timeout": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome_TypeOfTimeout",
-            "exit": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome_TypeOfExit"
+            "timeout": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject_typeOfTimeout",
+            "exit": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject_typeOfExit"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome_TypeOfTimeout"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject_typeOfTimeout"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome_TypeOfExit"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject_typeOfExit"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome_TypeOfTimeout": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject_typeOfTimeout": {
         "type": "object",
         "required": [
           "type"
@@ -3305,7 +3177,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfShellCallOutput_Output_Outcome_TypeOfExit": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfShellCallOutput_Output_array_item_object_Outcome_discriminatedObject_typeOfExit": {
         "type": "object",
         "required": [
           "type",
@@ -3323,7 +3195,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall": {
         "type": "object",
         "required": [
           "type",
@@ -3344,7 +3216,7 @@
             "minLength": 1
           },
           "operation": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject"
           },
           "status": {
             "type": "string",
@@ -3356,7 +3228,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3375,28 +3247,28 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "create_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfCreateFile",
-            "delete_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfDeleteFile",
-            "update_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfUpdateFile"
+            "create_file": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfCreateFile",
+            "delete_file": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfDeleteFile",
+            "update_file": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfUpdateFile"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfCreateFile"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfCreateFile"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfDeleteFile"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfDeleteFile"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfUpdateFile"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfUpdateFile"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfCreateFile": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfCreateFile": {
         "type": "object",
         "required": [
           "type",
@@ -3420,7 +3292,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfDeleteFile": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfDeleteFile": {
         "type": "object",
         "required": [
           "type",
@@ -3439,7 +3311,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCall_Operation_TypeOfUpdateFile": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Operation_discriminatedObject_typeOfUpdateFile": {
         "type": "object",
         "required": [
           "type",
@@ -3463,7 +3335,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfApplyPatchCallOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput": {
         "type": "object",
         "required": [
           "type",
@@ -3492,7 +3364,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3522,7 +3394,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools": {
         "type": "object",
         "required": [
           "type",
@@ -3546,7 +3418,7 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools"
+              "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object"
             }
           },
           "error": {
@@ -3561,7 +3433,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object": {
         "type": "object",
         "required": [
           "input_schema",
@@ -3569,7 +3441,7 @@
         ],
         "properties": {
           "input_schema": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object"
           },
           "name": {
             "type": "string"
@@ -3577,7 +3449,7 @@
           "annotations": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object"
               },
               {
                 "type": "null"
@@ -3596,10 +3468,10 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpListTools_Tools_InputSchema": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object": {
         "type": "object"
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpApprovalRequest": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalRequest": {
         "type": "object",
         "required": [
           "type",
@@ -3629,7 +3501,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpApprovalResponse": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpApprovalResponse": {
         "type": "object",
         "required": [
           "type",
@@ -3672,7 +3544,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall": {
         "type": "object",
         "required": [
           "type",
@@ -3713,7 +3585,7 @@
           "error": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3742,28 +3614,28 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "mcp_protocol_error": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfMcpProtocolError",
-            "mcp_tool_execution_error": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfMcpToolExecutionError",
-            "http_error": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfHttpError"
+            "mcp_protocol_error": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfMcpProtocolError",
+            "mcp_tool_execution_error": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfMcpToolExecutionError",
+            "http_error": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfHttpError"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfMcpProtocolError"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfMcpProtocolError"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfMcpToolExecutionError"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfMcpToolExecutionError"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfHttpError"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfHttpError"
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfMcpProtocolError": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfMcpProtocolError": {
         "type": "object",
         "required": [
           "type",
@@ -3785,7 +3657,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfMcpToolExecutionError": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfMcpToolExecutionError": {
         "type": "object",
         "required": [
           "type",
@@ -3801,7 +3673,7 @@
           "content": {}
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfMcpCall_Error_TypeOfHttpError": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpCall_Error_discriminatedObject_typeOfHttpError": {
         "type": "object",
         "required": [
           "type",
@@ -3823,7 +3695,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput": {
         "type": "object",
         "required": [
           "type",
@@ -3841,12 +3713,12 @@
             "type": "string"
           },
           "output": {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion"
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union"
           },
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCallOutput_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3858,7 +3730,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCallOutput_OutputUnion": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCallOutput_Output_union": {
         "oneOf": [
           {
             "type": "string"
@@ -3866,12 +3738,12 @@
           {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2"
+              "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject"
             }
           }
         ]
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCustomToolCall": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall": {
         "type": "object",
         "required": [
           "type",
@@ -3901,7 +3773,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfFunctionCall_Caller"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3916,7 +3788,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfCompactionTrigger": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCompactionTrigger": {
         "type": "object",
         "required": [
           "type"
@@ -3940,7 +3812,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfItemReference": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfItemReference": {
         "type": "object",
         "required": [
           "type",
@@ -3958,7 +3830,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfProgram": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgram": {
         "type": "object",
         "required": [
           "type",
@@ -3992,7 +3864,7 @@
           }
         }
       },
-      "CreateResponse_Request_InputUnion_ArrayItem_TypeOfProgramOutput": {
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfProgramOutput": {
         "type": "object",
         "required": [
           "type",
@@ -4029,13 +3901,13 @@
           }
         }
       },
-      "CreateResponse_Request_Metadata": {
+      "createResponse_request_object_Metadata_dictionary": {
         "type": "object",
         "additionalProperties": {
           "type": "string"
         }
       },
-      "CreateResponse_Request_Moderation": {
+      "createResponse_request_object_Moderation_object": {
         "type": "object",
         "required": [
           "model"
@@ -4047,7 +3919,7 @@
           "policy": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Moderation_Policy"
+                "$ref": "#/components/schemas/createResponse_request_object_Moderation_object_Policy_object"
               },
               {
                 "type": "null"
@@ -4056,14 +3928,14 @@
           }
         }
       },
-      "CreateResponse_Request_Moderation_Policy": {
+      "createResponse_request_object_Moderation_object_Policy_object": {
         "type": "object",
         "required": [],
         "properties": {
           "input": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Moderation_Policy_Input"
+                "$ref": "#/components/schemas/createResponse_request_object_Moderation_object_Policy_object_Input_object"
               },
               {
                 "type": "null"
@@ -4073,7 +3945,7 @@
           "output": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Moderation_Policy_Input"
+                "$ref": "#/components/schemas/createResponse_request_object_Moderation_object_Policy_object_Input_object"
               },
               {
                 "type": "null"
@@ -4082,7 +3954,7 @@
           }
         }
       },
-      "CreateResponse_Request_Moderation_Policy_Input": {
+      "createResponse_request_object_Moderation_object_Policy_object_Input_object": {
         "type": "object",
         "required": [
           "mode"
@@ -4097,7 +3969,7 @@
           }
         }
       },
-      "CreateResponse_Request_Prompt": {
+      "createResponse_request_object_Prompt_object": {
         "type": "object",
         "required": [
           "id"
@@ -4109,7 +3981,7 @@
           "variables": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary"
               },
               {
                 "type": "null"
@@ -4128,44 +4000,172 @@
           }
         }
       },
-      "CreateResponse_Request_Prompt_Variables": {
+      "createResponse_request_object_Prompt_object_Variables_dictionary": {
         "type": "object",
         "additionalProperties": {
-          "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion"
+          "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union"
         }
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion": {
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union": {
         "oneOf": [
           {
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject"
           }
         ]
       },
-      "CreateResponse_Request_Prompt_Variables_ValueUnion_Alternative2": {
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "input_text": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText",
-            "input_image": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage",
-            "input_file": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "input_text": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
+            "input_image": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
+            "input_file": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputText"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputImage"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_InputUnion_ArrayItem_TypeOfMessage_Content_TypeOfInputFile"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile"
           }
         ]
       },
-      "CreateResponse_Request_PromptCacheOptions": {
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText": {
+        "type": "object",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "input_text"
+            ]
+          },
+          "text": {
+            "type": "string"
+          },
+          "prompt_cache_breakpoint": {
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+          }
+        }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "explicit"
+            ]
+          }
+        }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage": {
+        "type": "object",
+        "required": [
+          "type",
+          "detail"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "input_image"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "high",
+              "low",
+              "original"
+            ]
+          },
+          "file_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prompt_cache_breakpoint": {
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+          }
+        }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "input_file"
+            ]
+          },
+          "detail": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "high",
+              "low"
+            ]
+          },
+          "file_data": {
+            "type": "string"
+          },
+          "file_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "file_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "prompt_cache_breakpoint": {
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+          }
+        }
+      },
+      "createResponse_request_object_PromptCacheOptions_object": {
         "type": "object",
         "required": [],
         "properties": {
@@ -4197,7 +4197,7 @@
           }
         }
       },
-      "CreateResponse_Request_Reasoning": {
+      "createResponse_request_object_Reasoning_object": {
         "type": "object",
         "properties": {
           "context": {
@@ -4281,7 +4281,7 @@
           }
         }
       },
-      "CreateResponse_Request_StreamOptions": {
+      "createResponse_request_object_StreamOptions_object": {
         "type": "object",
         "properties": {
           "include_obfuscation": {
@@ -4289,11 +4289,11 @@
           }
         }
       },
-      "CreateResponse_Request_Text": {
+      "createResponse_request_object_Text_object": {
         "type": "object",
         "properties": {
           "format": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject"
           },
           "verbosity": {
             "anyOf": [
@@ -4312,28 +4312,28 @@
           }
         }
       },
-      "CreateResponse_Request_Text_Format": {
+      "createResponse_request_object_Text_object_Format_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "text": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText",
-            "json_schema": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonSchema",
-            "json_object": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonObject"
+            "text": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
+            "json_schema": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema",
+            "json_object": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonObject"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonSchema"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfJsonObject"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonObject"
           }
         ]
       },
-      "CreateResponse_Request_Text_Format_TypeOfText": {
+      "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText": {
         "type": "object",
         "required": [
           "type"
@@ -4347,7 +4347,7 @@
           }
         }
       },
-      "CreateResponse_Request_Text_Format_TypeOfJsonSchema": {
+      "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema": {
         "type": "object",
         "required": [
           "type",
@@ -4365,7 +4365,7 @@
             "type": "string"
           },
           "schema": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_Filters"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary"
           },
           "description": {
             "type": "string"
@@ -4382,7 +4382,11 @@
           }
         }
       },
-      "CreateResponse_Request_Text_Format_TypeOfJsonObject": {
+      "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonObject": {
         "type": "object",
         "required": [
           "type"
@@ -4396,7 +4400,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion": {
+      "createResponse_request_object_ToolChoice_union": {
         "oneOf": [
           {
             "type": "string",
@@ -4407,76 +4411,76 @@
             ]
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject"
           }
         ]
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "allowed_tools": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools",
-            "file_search": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFileSearch",
-            "web_search_preview": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfWebSearchPreview",
-            "computer": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer",
-            "computer_use_preview": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUsePreview",
-            "computer_use": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUse",
-            "image_generation": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfImageGeneration",
-            "code_interpreter": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCodeInterpreter",
-            "function": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFunction",
-            "mcp": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfMcp",
-            "custom": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCustom",
-            "programmatic_tool_calling": "#/components/schemas/CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
-            "apply_patch": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfApplyPatch",
-            "shell": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfShell"
+            "allowed_tools": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools",
+            "file_search": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfFileSearch",
+            "web_search_preview": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfWebSearchPreview",
+            "computer": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
+            "computer_use_preview": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputerUsePreview",
+            "computer_use": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputerUse",
+            "image_generation": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfImageGeneration",
+            "code_interpreter": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfCodeInterpreter",
+            "function": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfFunction",
+            "mcp": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfMcp",
+            "custom": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfCustom",
+            "programmatic_tool_calling": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
+            "apply_patch": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfApplyPatch",
+            "shell": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfShell"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFileSearch"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfFileSearch"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfWebSearchPreview"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfWebSearchPreview"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUsePreview"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputerUsePreview"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUse"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputerUse"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfImageGeneration"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfImageGeneration"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCodeInterpreter"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfCodeInterpreter"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFunction"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfFunction"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfMcp"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfMcp"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCustom"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfCustom"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfApplyPatch"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfApplyPatch"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfShell"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfShell"
           }
         ]
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfAllowedTools": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfAllowedTools": {
         "type": "object",
         "required": [
           "type",
@@ -4500,12 +4504,12 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_Filters"
+              "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary"
             }
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFileSearch": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfFileSearch": {
         "type": "object",
         "required": [
           "type"
@@ -4519,7 +4523,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfWebSearchPreview": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfWebSearchPreview": {
         "type": "object",
         "required": [
           "type"
@@ -4533,7 +4537,21 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUsePreview": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "computer"
+            ]
+          }
+        }
+      },
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputerUsePreview": {
         "type": "object",
         "required": [
           "type"
@@ -4547,7 +4565,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfComputerUse": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputerUse": {
         "type": "object",
         "required": [
           "type"
@@ -4561,7 +4579,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfImageGeneration": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfImageGeneration": {
         "type": "object",
         "required": [
           "type"
@@ -4575,7 +4593,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCodeInterpreter": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfCodeInterpreter": {
         "type": "object",
         "required": [
           "type"
@@ -4589,7 +4607,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfFunction": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfFunction": {
         "type": "object",
         "required": [
           "type",
@@ -4607,7 +4625,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfMcp": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfMcp": {
         "type": "object",
         "required": [
           "type",
@@ -4635,7 +4653,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfCustom": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfCustom": {
         "type": "object",
         "required": [
           "type",
@@ -4653,7 +4671,21 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfApplyPatch": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "programmatic_tool_calling"
+            ]
+          }
+        }
+      },
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfApplyPatch": {
         "type": "object",
         "required": [
           "type"
@@ -4667,7 +4699,7 @@
           }
         }
       },
-      "CreateResponse_Request_ToolChoiceUnion_Alternative2_TypeOfShell": {
+      "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfShell": {
         "type": "object",
         "required": [
           "type"
@@ -4681,80 +4713,80 @@
           }
         }
       },
-      "CreateResponse_Request_Tools": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "function": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction",
-            "file_search": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch",
-            "computer": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer",
-            "computer_use_preview": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputerUsePreview",
-            "web_search": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch",
-            "mcp": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp",
-            "code_interpreter": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter",
-            "programmatic_tool_calling": "#/components/schemas/CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling",
-            "image_generation": "#/components/schemas/CreateResponse_Request_Tools_TypeOfImageGeneration",
-            "local_shell": "#/components/schemas/CreateResponse_Request_Tools_TypeOfLocalShell",
-            "shell": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell",
-            "custom": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom",
-            "namespace": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace",
-            "tool_search": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch",
-            "web_search_preview": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview",
-            "apply_patch": "#/components/schemas/CreateResponse_Request_Tools_TypeOfApplyPatch"
+            "function": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
+            "file_search": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
+            "computer": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
+            "computer_use_preview": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
+            "web_search": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
+            "mcp": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
+            "code_interpreter": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
+            "programmatic_tool_calling": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
+            "image_generation": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
+            "local_shell": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
+            "shell": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
+            "custom": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
+            "namespace": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
+            "tool_search": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
+            "web_search_preview": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
+            "apply_patch": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputer"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfComputerUsePreview"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling"
+            "$ref": "#/components/schemas/createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfImageGeneration"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfLocalShell"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfApplyPatch"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfFunction": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction": {
         "type": "object",
         "required": [
           "type",
@@ -4775,7 +4807,7 @@
           "parameters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction_Parameters"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary"
               },
               {
                 "type": "null"
@@ -4828,7 +4860,7 @@
           "output_schema": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction_Parameters"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary"
               },
               {
                 "type": "null"
@@ -4837,11 +4869,11 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfFunction_Parameters": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary": {
         "type": "object",
         "additionalProperties": {}
       },
-      "CreateResponse_Request_Tools_TypeOfFileSearch": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch": {
         "type": "object",
         "required": [
           "type",
@@ -4863,7 +4895,7 @@
           "filters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_Filters"
+                "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary"
               },
               {
                 "type": "null"
@@ -4874,20 +4906,16 @@
             "type": "integer"
           },
           "ranking_options": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object"
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfFileSearch_Filters": {
-        "type": "object",
-        "additionalProperties": true
-      },
-      "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object": {
         "type": "object",
         "required": [],
         "properties": {
           "hybrid_search": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object"
           },
           "ranker": {
             "type": "string",
@@ -4901,7 +4929,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfFileSearch_RankingOptions_HybridSearch": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object": {
         "type": "object",
         "required": [
           "embedding_weight",
@@ -4916,21 +4944,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfComputer": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "computer"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_Tools_TypeOfComputerUsePreview": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview": {
         "type": "object",
         "required": [
           "type",
@@ -4963,7 +4977,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfWebSearch": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch": {
         "type": "object",
         "required": [
           "type"
@@ -4981,7 +4995,7 @@
           "filters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch_Filters"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object"
               },
               {
                 "type": "null"
@@ -4999,7 +5013,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object"
               },
               {
                 "type": "null"
@@ -5008,7 +5022,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfWebSearch_Filters": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object": {
         "type": "object",
         "properties": {
           "allowed_domains": {
@@ -5026,7 +5040,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfWebSearch_UserLocation_TypeOfApproximate": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object": {
         "type": "object",
         "properties": {
           "city": {
@@ -5077,7 +5091,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfMcp": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp": {
         "type": "object",
         "required": [
           "type",
@@ -5114,7 +5128,7 @@
           "allowed_tools": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union"
               },
               {
                 "type": "null"
@@ -5144,7 +5158,7 @@
           "headers": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Metadata"
+                "$ref": "#/components/schemas/createResponse_request_object_Metadata_dictionary"
               },
               {
                 "type": "null"
@@ -5154,7 +5168,7 @@
           "require_approval": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union"
               },
               {
                 "type": "null"
@@ -5174,7 +5188,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union": {
         "oneOf": [
           {
             "type": "array",
@@ -5183,11 +5197,11 @@
             }
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object": {
         "type": "object",
         "required": [],
         "properties": {
@@ -5203,10 +5217,10 @@
         },
         "additionalProperties": false
       },
-      "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union": {
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object"
           },
           {
             "type": "string",
@@ -5217,19 +5231,19 @@
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfMcp_RequireApprovalUnion_Object": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object": {
         "type": "object",
         "properties": {
           "always": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object"
           },
           "never": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfMcp_AllowedToolsUnion_Object"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object"
           }
         },
         "additionalProperties": false
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter": {
         "type": "object",
         "required": [
           "type",
@@ -5243,7 +5257,7 @@
             ]
           },
           "container": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union"
           },
           "allowed_callers": {
             "anyOf": [
@@ -5265,30 +5279,30 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union": {
         "oneOf": [
           {
             "type": "string"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "auto": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+            "auto": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfCodeInterpreter_ContainerUnion_Alternative2_TypeOfAuto": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto": {
         "type": "object",
         "required": [
           "type"
@@ -5324,25 +5338,11 @@
             ]
           },
           "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject"
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfProgrammaticToolCalling": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "programmatic_tool_calling"
-            ]
-          }
-        }
-      },
-      "CreateResponse_Request_Tools_TypeOfImageGeneration": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration": {
         "type": "object",
         "required": [
           "type"
@@ -5385,7 +5385,7 @@
             ]
           },
           "input_image_mask": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object"
           },
           "model": {
             "anyOf": [
@@ -5462,7 +5462,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfImageGeneration_InputImageMask": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object": {
         "type": "object",
         "required": [],
         "properties": {
@@ -5475,7 +5475,7 @@
         },
         "additionalProperties": false
       },
-      "CreateResponse_Request_Tools_TypeOfLocalShell": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell": {
         "type": "object",
         "required": [
           "type"
@@ -5489,7 +5489,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell": {
         "type": "object",
         "required": [
           "type"
@@ -5522,7 +5522,7 @@
           "environment": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject"
               },
               {
                 "type": "null"
@@ -5531,28 +5531,28 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "container_auto": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto",
-            "local": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal",
-            "container_reference": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+            "container_auto": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
+            "local": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
+            "container_reference": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto": {
         "type": "object",
         "required": [
           "type"
@@ -5588,35 +5588,35 @@
             ]
           },
           "network_policy": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject"
           },
           "skills": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject"
             },
             "maxItems": 200
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "disabled": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled",
-            "allowlist": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist"
+            "disabled": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
+            "allowlist": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfDisabled": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled": {
         "type": "object",
         "required": [
           "type"
@@ -5630,7 +5630,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist": {
         "type": "object",
         "required": [
           "type",
@@ -5653,13 +5653,13 @@
           "domain_secrets": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object"
             },
             "minItems": 1
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_NetworkPolicy_TypeOfAllowlist_DomainSecrets": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object": {
         "type": "object",
         "required": [
           "domain",
@@ -5682,24 +5682,24 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "skill_reference": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference",
-            "inline": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
+            "skill_reference": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
+            "inline": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfSkillReference": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference": {
         "type": "object",
         "required": [
           "type",
@@ -5722,7 +5722,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline": {
         "type": "object",
         "required": [
           "type",
@@ -5744,24 +5744,24 @@
             "type": "string"
           },
           "source": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject"
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "base64": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+            "base64": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerAuto_Skills_TypeOfInline_Source_TypeOfBase64": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64": {
         "type": "object",
         "required": [
           "type",
@@ -5788,7 +5788,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal": {
         "type": "object",
         "required": [
           "type"
@@ -5803,13 +5803,13 @@
           "skills": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object"
             },
             "maxItems": 200
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfLocal_Skills": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object": {
         "type": "object",
         "required": [
           "description",
@@ -5828,7 +5828,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfShell_Environment_TypeOfContainerReference": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference": {
         "type": "object",
         "required": [
           "type",
@@ -5846,7 +5846,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfCustom": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom": {
         "type": "object",
         "required": [
           "type",
@@ -5890,28 +5890,28 @@
             "type": "string"
           },
           "format": {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom_Format"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject"
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfCustom_Format": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "text": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText",
-            "grammar": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar"
+            "text": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
+            "grammar": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Text_Format_TypeOfText"
+            "$ref": "#/components/schemas/createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfCustom_Format_TypeOfGrammar": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar": {
         "type": "object",
         "required": [
           "type",
@@ -5937,7 +5937,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfNamespace": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace": {
         "type": "object",
         "required": [
           "type",
@@ -5962,30 +5962,30 @@
           "tools": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace_Tools"
+              "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject"
             },
             "minItems": 1
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfNamespace_Tools": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "function": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction",
-            "custom": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom"
+            "function": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
+            "custom": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction"
           },
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfCustom"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfNamespace_Tools_TypeOfFunction": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction": {
         "type": "object",
         "required": [
           "type",
@@ -6041,7 +6041,7 @@
           "output_schema": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfFunction_Parameters"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary"
               },
               {
                 "type": "null"
@@ -6051,7 +6051,7 @@
           "parameters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object"
               },
               {
                 "type": "null"
@@ -6070,7 +6070,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfToolSearch": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch": {
         "type": "object",
         "required": [
           "type"
@@ -6102,7 +6102,7 @@
           "parameters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfToolSearch_Parameters"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object"
               },
               {
                 "type": "null"
@@ -6111,12 +6111,12 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfToolSearch_Parameters": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object": {
         "type": "object",
         "required": [],
         "properties": {}
       },
-      "CreateResponse_Request_Tools_TypeOfWebSearchPreview": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview": {
         "type": "object",
         "required": [
           "type"
@@ -6149,7 +6149,7 @@
           "user_location": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation"
+                "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject"
               },
               {
                 "type": "null"
@@ -6158,20 +6158,20 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject": {
         "discriminator": {
           "propertyName": "type",
           "mapping": {
-            "approximate": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+            "approximate": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate"
           }
         },
         "oneOf": [
           {
-            "$ref": "#/components/schemas/CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate"
+            "$ref": "#/components/schemas/createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate"
           }
         ]
       },
-      "CreateResponse_Request_Tools_TypeOfWebSearchPreview_UserLocation_TypeOfApproximate": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate": {
         "type": "object",
         "required": [
           "type"
@@ -6225,7 +6225,7 @@
           }
         }
       },
-      "CreateResponse_Request_Tools_TypeOfApplyPatch": {
+      "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch": {
         "type": "object",
         "required": [
           "type"

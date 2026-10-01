@@ -409,10 +409,11 @@ try {
 
         Assert-Equal 1 $mapping.version "Deduplication map version was incorrect."
         Assert-True ($mapping.PSObject.Properties.Name -ccontains "groups") "Deduplication map omitted groups."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2") "Componentization omitted the splitChoice discriminator wrapper."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2_TypeOfAlpha") "Componentization omitted the alpha split variant."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2_TypeOfBeta") "Componentization omitted the beta split variant."
-        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "CreateResponse_Request_SplitChoiceUnion_Alternative2_TypeOfGamma") "Componentization omitted the existing singleton variant."
+        $splitWrapperName = "createResponse_request_object_SplitChoice_union_discriminatedObject"
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name $splitWrapperName) "Componentization omitted the splitChoice discriminator wrapper."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfAlpha") "Componentization omitted the alpha split variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfBeta") "Componentization omitted the beta split variant."
+        Assert-True (Test-JsonProperty -Object $componentized.components.schemas -Name "${splitWrapperName}_typeOfGamma") "Componentization omitted the existing singleton variant."
         Assert-OpenApiReferencesResolve -Document $componentized
         Assert-AdditionalOpenApiReferencesResolve -Document $componentized
         $null = Assert-OpenApiDiscriminatorMappings -Document $componentized
@@ -441,8 +442,8 @@ try {
     Invoke-Test "reviewed mapping is preserved unless reset is requested" {
         $sourcePath = Join-Path $temporaryDirectory "duplicates.openapi.json"
         $outputDirectory = Join-Path $temporaryDirectory "mapping-policy"
-        $longDuplicateName = "CreateResponse_Request_DuplicateAContainer_DuplicateA"
-        $shortDuplicateName = "CreateResponse_Request_DuplicateB"
+        $longDuplicateName = "createResponse_request_object_DuplicateAContainer_object_DuplicateA_object"
+        $shortDuplicateName = "createResponse_request_object_DuplicateB_object"
         Write-DuplicateTestSpecification -Path $sourcePath
 
         $paths = Invoke-ResponsesOpenApiGeneration `
@@ -478,13 +479,19 @@ try {
         })[0]
         Assert-Equal "ReviewedDuplicate" $preservedGroup.canonicalName "Ordinary generation discarded the reviewed canonical name."
         $preservedDocument = Read-TestJson -Path $ordinaryPaths.Deduplicated
+        $preservedRoot = Get-JsonPropertyValue `
+            -Object $preservedDocument.components.schemas `
+            -Name "createResponse_request_object"
+        $preservedContainer = Get-JsonPropertyValue `
+            -Object $preservedDocument.components.schemas `
+            -Name "createResponse_request_object_DuplicateAContainer_object"
         Assert-Equal `
             "#/components/schemas/ReviewedDuplicate" `
-            $preservedDocument.components.schemas.CreateResponse_Request.properties.duplicateB.'$ref' `
+            $preservedRoot.properties.duplicateB.'$ref' `
             "Deduplicated output did not apply the reviewed canonical name."
         Assert-Equal `
             "#/components/schemas/ReviewedDuplicate" `
-            $preservedDocument.components.schemas.CreateResponse_Request_DuplicateAContainer.properties.duplicateA.'$ref' `
+            $preservedContainer.properties.duplicateA.'$ref' `
             "Nested duplicate did not apply the reviewed canonical name."
 
         $resetPaths = Invoke-ResponsesOpenApiGeneration `
@@ -498,13 +505,19 @@ try {
         })[0]
         Assert-Equal $defaultCanonicalName $resetGroup.canonicalName "Reset did not restore the shortest canonical name."
         $resetDocument = Read-TestJson -Path $resetPaths.Deduplicated
+        $resetRoot = Get-JsonPropertyValue `
+            -Object $resetDocument.components.schemas `
+            -Name "createResponse_request_object"
+        $resetContainer = Get-JsonPropertyValue `
+            -Object $resetDocument.components.schemas `
+            -Name "createResponse_request_object_DuplicateAContainer_object"
         Assert-Equal `
             "#/components/schemas/$defaultCanonicalName" `
-            $resetDocument.components.schemas.CreateResponse_Request.properties.duplicateB.'$ref' `
+            $resetRoot.properties.duplicateB.'$ref' `
             "Reset deduplicated output did not apply the default canonical name."
         Assert-Equal `
             "#/components/schemas/$defaultCanonicalName" `
-            $resetDocument.components.schemas.CreateResponse_Request_DuplicateAContainer.properties.duplicateA.'$ref' `
+            $resetContainer.properties.duplicateA.'$ref' `
             "Reset nested duplicate did not apply the default canonical name."
         [byte[]]$resetMappingBytes = [System.IO.File]::ReadAllBytes($resetPaths.DeduplicationMap)
         [byte[]]$resetDeduplicatedBytes = [System.IO.File]::ReadAllBytes($resetPaths.Deduplicated)
@@ -521,7 +534,7 @@ try {
         $staleGroup = @($staleMapping.groups | Where-Object {
             @($_.members) -ccontains $longDuplicateName
         })[0]
-        $staleGroup.members[0] = "MissingReviewedComponent"
+        $staleGroup.members[0] = "CreateResponse_Request_DuplicateAContainer_DuplicateA"
         Write-TestJson -Document $staleMapping -Path $secondResetPaths.DeduplicationMap
         [byte[]]$staleBytes = [System.IO.File]::ReadAllBytes($secondResetPaths.DeduplicationMap)
         Assert-Throws {

@@ -64,6 +64,9 @@ try {
     Invoke-Test "component name segments preserve every underscore boundary" {
         Assert-Equal 1 (Get-OpenApiComponentNameSegmentCount -Name "Tool") "Single segment count was incorrect."
         Assert-Equal 3 (Get-OpenApiComponentNameSegmentCount -Name "Tool_Output_1") "Collision suffix count was incorrect."
+        Assert-Equal 6 (Get-OpenApiComponentNameSegmentCount -Name "createResponse_request_object_Input_union_object1") "Structural ordinal count was incorrect."
+        Assert-Equal 8 (Get-OpenApiComponentNameSegmentCount -Name "createResponse_request_object_Input_union_array1_item_object") "Repeated array role count was incorrect."
+        Assert-Equal 9 (Get-OpenApiComponentNameSegmentCount -Name "createResponse_request_object_Input_union_array1_item_object_1") "Explanatory collision suffix count was incorrect."
         Assert-Equal 2 (Get-OpenApiComponentNameSegmentCount -Name "_Tool") "Leading boundary count was incorrect."
         Assert-Equal 2 (Get-OpenApiComponentNameSegmentCount -Name "Tool_") "Trailing boundary count was incorrect."
         Assert-Equal 3 (Get-OpenApiComponentNameSegmentCount -Name "Tool__Output") "Consecutive boundary count was incorrect."
@@ -71,10 +74,10 @@ try {
 
     Invoke-Test "new mapping chooses the first shortest representative without reordering members" {
         [object[]]$members = @(
-            "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools",
-            "CreateResponse_Request_Tools",
-            "CreateResponse_Output_Tools",
-            "CreateResponse_Request_TypeOfTool_Tools"
+            "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject",
+            "createResponse_request_object_Tools_array_item_discriminatedObject",
+            "createResponse_response_200_object_Tools_array_item_discriminatedObject",
+            "createResponse_request_object_typeOfTool_Tools_array_item_discriminatedObject"
         )
         $analysis = [PSCustomObject]@{
             ComponentNames = $members
@@ -88,7 +91,7 @@ try {
 
         $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis
         $group = $result.Mapping.groups[0]
-        Assert-Equal "CreateResponse_Request_Tools" $group.id "Shortest group id was not selected."
+        Assert-Equal "createResponse_request_object_Tools_array_item_discriminatedObject" $group.id "Shortest group id was not selected."
         Assert-Equal $group.id $group.representative "Shortest representative was not selected."
         Assert-Equal $group.id $group.canonicalName "Shortest canonical name was not selected."
         Assert-Sequence $members @($group.members) "Selecting a later representative reordered members."
@@ -96,8 +99,8 @@ try {
 
     Invoke-Test "persisted representative remains stable when a shorter member appears" {
         [object[]]$historicalMembers = @(
-            "CreateResponse_Request_InputUnion_ArrayItem_TypeOfToolSearchOutput_Tools",
-            "CreateResponse_Request_InputUnion_ArrayItem_TypeOfWebSearchTool_Tools"
+            "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfToolSearchOutput_Tools_array_item_discriminatedObject",
+            "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfWebSearchTool_Tools_array_item_discriminatedObject"
         )
         $mapping = [ordered]@{
             version = [long]1
@@ -109,7 +112,7 @@ try {
                 members = $historicalMembers
             })
         }
-        [object[]]$currentMembers = @($historicalMembers) + "CreateResponse_Request_Tools"
+        [object[]]$currentMembers = @($historicalMembers) + "createResponse_request_object_Tools_array_item_discriminatedObject"
         $analysis = [PSCustomObject]@{
             ComponentNames = $currentMembers
             CycleDependentComponents = [object[]]@()
