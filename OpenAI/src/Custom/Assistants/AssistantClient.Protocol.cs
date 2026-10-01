@@ -105,7 +105,7 @@ public partial class AssistantClient
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateThreadAndRun"/>
     public virtual ClientResult CreateThreadAndRun(BinaryContent content, RequestOptions options = null)
-        => _runSubClient.CreateThreadAndRun(content, options = null);
+        => _runSubClient.CreateThreadAndRun(content, options);
 
     /// <inheritdoc cref="InternalAssistantRunClient.CreateRunAsync"/>
     public virtual Task<ClientResult> CreateRunAsync(string threadId, BinaryContent content, RequestOptions options = null)
