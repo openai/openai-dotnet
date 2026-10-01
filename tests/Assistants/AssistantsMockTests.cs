@@ -4,6 +4,7 @@ using NUnit.Framework;
 using OpenAI.Assistants;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -107,6 +108,52 @@ public class AssistantsMockTests : ClientTestBase
 
         Assert.That(updates, Has.Count.EqualTo(1));
         Assert.That(bufferResponse, Is.False);
+    }
+
+    [Test]
+    public async Task ModifyAssistantForwardsTheCancellationToken()
+    {
+        // Every convenience method on this client hands its CancellationToken to the
+        // protocol layer via ToRequestOptions, which is what puts the token on the
+        // outgoing PipelineMessage. The synchronous ModifyAssistant overload passed a
+        // literal null instead, so the caller's token never reached the pipeline and
+        // the request could not be cancelled. Both overloads must forward it.
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent(
+            """
+            {"id":"asst_abc","object":"assistant"}
+            """);
+
+        OpenAIClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+
+        AssistantClient client = CreateProxyFromClient(new AssistantClient(s_fakeCredential, options));
+
+        using CancellationTokenSource cancellationSource = new();
+        cancellationSource.Cancel();
+
+        // Without the token the mock transport answers 200 and the call succeeds, so
+        // reaching this assertion at all depends on the token being forwarded.
+        // Branch on IsAsync so the synchronous overload is exercised too, since that
+        // is the one this change fixes.
+        if (IsAsync)
+        {
+            Assert.That(
+                async () => await client.ModifyAssistantAsync("asst_abc", new AssistantModificationOptions(), cancellationSource.Token),
+                Throws.InstanceOf<OperationCanceledException>());
+        }
+        else
+        {
+            Assert.That(
+                () => client.ModifyAssistant("asst_abc", new AssistantModificationOptions(), cancellationSource.Token),
+                Throws.InstanceOf<OperationCanceledException>());
+        }
+
+        await Task.CompletedTask;
     }
 
     [Test]
