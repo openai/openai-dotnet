@@ -711,6 +711,9 @@ public partial class ImageClient
 
         options ??= new();
         options.Prompt = prompt;
+        // This overload takes no image count, so clear any count carried over from a reused options
+        // instance, as the single-image edit overloads without an image count do.
+        options.N = null;
         options.Model = _model;
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(imageList, imageFilenameList, null, null);
@@ -746,6 +749,9 @@ public partial class ImageClient
 
         options ??= new();
         options.Prompt = prompt;
+        // This overload takes no image count, so clear any count carried over from a reused options
+        // instance, as the single-image edit overloads without an image count do.
+        options.N = null;
         options.Model = _model;
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(imageList, imageFilenameList, null, null);
