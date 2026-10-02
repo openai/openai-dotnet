@@ -53,11 +53,12 @@ try {
         $analysis = New-TestDeduplicationAnalysis -Document $source
         $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis
         Assert-True $result.Changed "Initial reconciliation did not report a change."
+        Assert-Equal 1 $result.Mapping.version "New mapping version was incorrect."
         Assert-Equal 3 $result.NewGroupCount "New group count was incorrect."
         Assert-Sequence @("LeafA", "ParentA", "ExactA") @($result.Mapping.groups.id) "Group order was incorrect."
         foreach ($group in $result.Mapping.groups) {
             Assert-Equal $group.id $group.representative "Representative default was incorrect."
-            Assert-Equal $group.id $group.canonicalName "Canonical-name default was incorrect."
+            Assert-True (-not (Test-JsonProperty -Object $group -Name "canonicalName")) "Mapping group retained canonicalName."
         }
     }
 
@@ -93,7 +94,6 @@ try {
         $group = $result.Mapping.groups[0]
         Assert-Equal "createResponse_request_object_Tools_array_item_discriminatedObject" $group.id "Shortest group id was not selected."
         Assert-Equal $group.id $group.representative "Shortest representative was not selected."
-        Assert-Equal $group.id $group.canonicalName "Shortest canonical name was not selected."
         Assert-Sequence $members @($group.members) "Selecting a later representative reordered members."
     }
 
@@ -106,7 +106,6 @@ try {
             version = [long]1
             groups = [object[]]@([ordered]@{
                 id = $historicalMembers[0]
-                canonicalName = $historicalMembers[0]
                 representative = $historicalMembers[0]
                 fingerprint = "sha256:$('b' * 64)"
                 members = $historicalMembers
@@ -127,7 +126,6 @@ try {
         $group = $result.Mapping.groups[0]
         Assert-Equal $historicalMembers[0] $group.id "Stable group id changed."
         Assert-Equal $historicalMembers[0] $group.representative "Stable representative changed."
-        Assert-Equal $historicalMembers[0] $group.canonicalName "Stable canonical name changed."
         Assert-Sequence $currentMembers @($group.members) "Shorter member was not appended."
         Assert-Equal "Extended" $result.Statuses[0].Status "Group status was incorrect."
     }
@@ -183,7 +181,6 @@ try {
         $result = Update-OpenApiComponentDeduplicationMapping -Analysis $analysis
         $mappedUnionGroup = @($result.Mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
         Assert-Equal "UnionA" $mappedUnionGroup.id "oneOf wrapper group id was incorrect."
-        Assert-Equal "UnionA" $mappedUnionGroup.canonicalName "oneOf wrapper canonical default was incorrect."
     }
 
     # Longitudinal stability beats current encounter order. BeforeLeaf is inserted
@@ -202,7 +199,6 @@ try {
         $leafGroup = $result.Mapping.groups[0]
         Assert-Equal "LeafA" $leafGroup.id "Stable group id changed."
         Assert-Equal "LeafA" $leafGroup.representative "Stable representative changed."
-        Assert-Equal "LeafA" $leafGroup.canonicalName "Stable canonical name changed."
         Assert-Sequence @("LeafA", "LeafB", "BeforeLeaf") @($leafGroup.members) "New member was not appended."
         Assert-Equal "Extended" $result.Statuses[0].Status "Group status was incorrect."
     }
@@ -224,25 +220,33 @@ try {
         Assert-Equal "FingerprintUpdated" $result.Statuses[1].Status "Parent fingerprint was not updated transitively."
     }
 
-    # canonicalName is explicitly user-editable policy, not a derived field to be
-    # reset on every run. A fresh name is preserved; a name already owned by an
+    # id is explicitly user-editable output policy, not a derived field to be
+    # reset on every run. A fresh name is preserved; an id already owned by an
     # unrelated source component is rejected before deduplication could overwrite it.
-    Invoke-Test "manual canonical names are preserved" {
+    Invoke-Test "manual ids are preserved and name deduplicated output" {
         $source = Read-OpenApiDocument -Path $fixturePath
         $mapping = New-TestDeduplicationMapping -Document $source
-        $mapping.groups[0].canonicalName = "SharedLeaf"
+        $mapping.groups[0].id = "SharedLeaf"
         $result = Update-OpenApiComponentDeduplicationMapping `
             -Analysis (New-TestDeduplicationAnalysis $source) `
             -Mapping $mapping
-        Assert-Equal "SharedLeaf" $result.Mapping.groups[0].canonicalName "Manual canonical name changed."
-        Assert-True (-not $result.Changed) "Manual canonical name caused spurious reconciliation changes."
+        Assert-Equal "SharedLeaf" $result.Mapping.groups[0].id "Manual id changed."
+        Assert-True (-not $result.Changed) "Manual id caused spurious reconciliation changes."
 
-        $mapping.groups[0].canonicalName = "NearMiss"
+        $mapping.groups[0].id = "NearMiss"
         Assert-Throws {
             Update-OpenApiComponentDeduplicationMapping `
                 -Analysis (New-TestDeduplicationAnalysis $source) `
                 -Mapping $mapping
         } "*collides with an unrelated source component*"
+
+        $mapping = New-TestDeduplicationMapping -Document $source
+        $mapping.groups[1].id = $mapping.groups[0].id
+        Assert-Throws {
+            Update-OpenApiComponentDeduplicationMapping `
+                -Analysis (New-TestDeduplicationAnalysis $source) `
+                -Mapping $mapping
+        } "*mapping id 'LeafA' is duplicated*"
     }
 
     # Persisted history is never guessed away. These mutations cover a removed

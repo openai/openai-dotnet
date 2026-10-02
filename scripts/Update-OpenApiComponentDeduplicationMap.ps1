@@ -119,8 +119,8 @@ function Invoke-OpenApiComponentDeduplicationMapUpdate {
     }
 
     # Absence is valid bootstrap state, not an error. Once present, however, the
-    # mapping is authoritative: reconciliation preserves its ids, representatives,
-    # member order, and manually selected canonical names.
+    # mapping is authoritative: reconciliation preserves its user-editable ids,
+    # representatives, and member order.
     $existingMapping = if ([System.IO.File]::Exists($MappingPath)) {
         Read-OpenApiComponentDeduplicationMapping -Path $MappingPath
     }
@@ -140,7 +140,8 @@ function Invoke-OpenApiComponentDeduplicationMapUpdate {
     # Do not rewrite an unchanged mapping. Besides avoiding timestamp churn, this
     # guarantees byte idempotence for a reviewed file on repeated updater runs.
     $writtenPath = [System.IO.Path]::GetFullPath($MappingPath)
-    if ($result.Changed -or -not [System.IO.File]::Exists($writtenPath)) {
+    $changed = $result.Changed
+    if ($changed -or -not [System.IO.File]::Exists($writtenPath)) {
         $writtenPath = Write-OpenApiJsonFile `
             -Document $result.Mapping `
             -Path $writtenPath
@@ -165,13 +166,13 @@ function Invoke-OpenApiComponentDeduplicationMapUpdate {
         else {
             ""
         }
-        Write-Host "[$($status.Status)] $($status.CanonicalName)$suffix"
+        Write-Host "[$($status.Status)] $($status.Id)$suffix"
     }
 
     return [PSCustomObject]@{
         Mapping = $result.Mapping
         MappingPath = $writtenPath
-        Changed = $result.Changed
+        Changed = $changed
         Statuses = $result.Statuses
         NewGroupCount = $result.NewGroupCount
         ExtendedGroupCount = $result.ExtendedGroupCount

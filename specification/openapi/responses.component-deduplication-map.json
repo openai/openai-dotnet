@@ -3,7 +3,6 @@
   "groups": [
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject",
       "fingerprint": "sha256:2244144a14e933304be1254de35dd77b34c569b7eeecf5cc3812b503d49d2157",
       "members": [
@@ -14,7 +13,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfApplyPatch",
       "fingerprint": "sha256:0c639446b094251adfa93d21f387cc2f6ebe3c9acdd0e157d42666718f22f98a",
       "members": [
@@ -25,7 +23,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter",
       "fingerprint": "sha256:028e0139d07ee74e9f0ad898e80e45eb8d8ad9c3c1ff3f916fb0bbcae8606aba",
       "members": [
@@ -36,7 +33,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union",
       "fingerprint": "sha256:77a09d7c5ff0f656726234017bb8d80fd62e5ba74db4730a5ceaf6a4d0dd157d",
       "members": [
@@ -47,7 +43,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject",
       "fingerprint": "sha256:42b007c2aa8df083d3eba55a559cd6c6794ceeda073553080fc57b107f8c39ce",
       "members": [
@@ -58,7 +53,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCodeInterpreter_Container_union_discriminatedObject_typeOfAuto",
       "fingerprint": "sha256:906ca8c403058a6f26d4340de0ab9da217667d5fca8c1669871e2fc487e70e1d",
       "members": [
@@ -69,7 +63,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject",
       "fingerprint": "sha256:bc0a9f8ce91ed934e72b40a01b333569e508808ca182ac7288c678890ea4e4c2",
       "members": [
@@ -83,7 +76,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist",
       "fingerprint": "sha256:edd3e747ebfde75f65ff69cab1a1b8727e3d74d5ff48b1769d18fcf92bf33fe0",
       "members": [
@@ -97,7 +89,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfAllowlist_DomainSecrets_array_item_object",
       "fingerprint": "sha256:d7ee1d34d7d9ec4eefc6bf77dad39e893918df42d10020888a47278bc3390a5b",
       "members": [
@@ -111,7 +102,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_NetworkPolicy_discriminatedObject_typeOfDisabled",
       "fingerprint": "sha256:abac341f30478a2590c18efecd9e6ede8013ad4daf66a9ca4d243e11b9de20ee",
       "members": [
@@ -125,7 +115,6 @@
     },
     {
       "id": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
-      "canonicalName": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
       "representative": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfComputer",
       "fingerprint": "sha256:ec6dca9efe48ddae2f03199f0c8f624c6046ec3b6ee8e24e7130f3cbcc93cc22",
       "members": [
@@ -137,7 +126,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfComputerUsePreview",
       "fingerprint": "sha256:343b8752bc94869d5207a40edb95fbe4a40c6fc7cd0a3ed3cf80d6509c9e7cb1",
       "members": [
@@ -148,7 +136,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom",
       "fingerprint": "sha256:a7070ff6425051ea4ba37e71fa2668dc52184d587962d380b45177f01703ea9c",
       "members": [
@@ -162,7 +149,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject",
       "fingerprint": "sha256:5660a472ab242bd2b94149a8837190f1eddce02d63ee72298b76c8143bb15320",
       "members": [
@@ -176,7 +162,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfCustom_Format_discriminatedObject_typeOfGrammar",
       "fingerprint": "sha256:d95c4ffcf47fe1be669a470c69efc8c334feabfd59e7b4cbc881098d5d610585",
       "members": [
@@ -190,7 +175,6 @@
     },
     {
       "id": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
-      "canonicalName": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
       "representative": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfText",
       "fingerprint": "sha256:b5b525772cd5089764fab3f84a899786bd6f501972ddc6fbc691d8ffcfb1b6f7",
       "members": [
@@ -205,7 +189,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch",
       "fingerprint": "sha256:57de32ea5544624f2da7363b046f33803f29284c1fd259c124c20141e022ef1c",
       "members": [
@@ -216,7 +199,6 @@
     },
     {
       "id": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
-      "canonicalName": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
       "representative": "createResponse_request_object_Text_object_Format_discriminatedObject_typeOfJsonSchema_Schema_dictionary",
       "fingerprint": "sha256:b7165ddbec73ba9b2b82e50ad9b5cc721193ebad6be9edc46355f1aea45b9077",
       "members": [
@@ -229,7 +211,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object",
       "fingerprint": "sha256:5d6cb84fd5e2f6e35f925864d7d222fd99843b6bc9daea30f2d087b1f0667900",
       "members": [
@@ -240,7 +221,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFileSearch_RankingOptions_object_HybridSearch_object",
       "fingerprint": "sha256:9fe8ac3b94041021c96139495717b2c52b19c576a834b27c901a81d694a92b6b",
       "members": [
@@ -251,7 +231,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction",
       "fingerprint": "sha256:36c09a9ae0f189a22a740a478927c6498e745e806cc4e890bfe09203aa87b292",
       "members": [
@@ -262,7 +241,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfFunction_Parameters_dictionary",
       "fingerprint": "sha256:0dc2e31d7c4054a3b8682c50338ff0213d179418d657de49080303a7a3e0f5fa",
       "members": [
@@ -279,7 +257,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration",
       "fingerprint": "sha256:885c907bc46fb2117e1d2ead62d636565123991fb0edf7d4988b7c3f6910a231",
       "members": [
@@ -290,7 +267,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfImageGeneration_InputImageMask_object",
       "fingerprint": "sha256:c4316b372df546c0fe63b433f96f26a76ded44bb928ad0ad38294fbd2aac46d6",
       "members": [
@@ -301,7 +277,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfLocalShell",
       "fingerprint": "sha256:7ff1dc81981767a9524cb5058a4af60dfd7d8b9e0e770d04117652a4b497d721",
       "members": [
@@ -312,7 +287,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp",
       "fingerprint": "sha256:e7878c8115a99b77bfc1587c8e0c742fb31a2d026d66fc2647fadb21f1b155f8",
       "members": [
@@ -323,7 +297,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union",
       "fingerprint": "sha256:d3c042e2861be765ef091f4ed80197437c65cb9b4f7f8e9d28131ca55dfe570c",
       "members": [
@@ -334,7 +307,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_AllowedTools_union_object",
       "fingerprint": "sha256:49cc3018e0a8ff392a601c516533c92ef3fb477034c19535bfdf5dabc267cf02",
       "members": [
@@ -351,7 +323,6 @@
     },
     {
       "id": "createResponse_request_object_Metadata_dictionary",
-      "canonicalName": "createResponse_request_object_Metadata_dictionary",
       "representative": "createResponse_request_object_Metadata_dictionary",
       "fingerprint": "sha256:feaba4e626b9eb2813568d0eb16b45603dc7dd4453c8cb5a97f5b5482607871d",
       "members": [
@@ -364,7 +335,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union",
       "fingerprint": "sha256:fa941988a3c86841bd5984ddac09e5d3992c2ff753ac74ffc4cfce459cf8851d",
       "members": [
@@ -375,7 +345,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfMcp_RequireApproval_union_object",
       "fingerprint": "sha256:361e10486253bc7f544a34aa755dae9c75aec356b2f6c1159f5e829a82e8247d",
       "members": [
@@ -386,7 +355,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace",
       "fingerprint": "sha256:352f035275a57935f04f29f6aaabc96d5ffc10e32d1381bc27e32c520c8c771c",
       "members": [
@@ -397,7 +365,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject",
       "fingerprint": "sha256:c0f5230424250acbef72c9b0979b90415c41b55a4ff490b107569906b7a07eac",
       "members": [
@@ -408,7 +375,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfNamespace_Tools_array_item_discriminatedObject_typeOfFunction",
       "fingerprint": "sha256:a8f17047ce8b705a98f05a528a724e74bdbcfb51ac52ad0f1c2b77e89151eb53",
       "members": [
@@ -419,7 +385,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch_Parameters_object",
       "fingerprint": "sha256:7c090063c6a407d75c8bce3c31829e579c5adceef557a4c4b2751a0757748639",
       "members": [
@@ -434,7 +399,6 @@
     },
     {
       "id": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
-      "canonicalName": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
       "representative": "createResponse_request_object_ToolChoice_union_discriminatedObject_typeOfProgrammaticToolCalling",
       "fingerprint": "sha256:0279c4adbcbac2faced5bdb5ed7fe5af24e2607dcdb93e27e65c129f8000ac1c",
       "members": [
@@ -446,7 +410,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell",
       "fingerprint": "sha256:0841a3a0387a3dc170a67d1806d0eb831f56e6d15dd935a1d76d293934b74ec6",
       "members": [
@@ -457,7 +420,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject",
       "fingerprint": "sha256:65633f629e13350f1b87a2575b4cc58c40f457e339db281b35ccff841c17a61d",
       "members": [
@@ -468,7 +430,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto",
       "fingerprint": "sha256:2e0f64f05fa06698c2e71602515564067321663e808e899c49e37fb5d7a258a8",
       "members": [
@@ -479,7 +440,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject",
       "fingerprint": "sha256:eb7e49e6e7e9577e731eeaa58c3a336f66613ddd502be737a6808230d1bd6267",
       "members": [
@@ -490,7 +450,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline",
       "fingerprint": "sha256:bcdaf3dd453c3af736f6803a062129c2a979cc42f18db5de4d17303b9c08fec6",
       "members": [
@@ -501,7 +460,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject",
       "fingerprint": "sha256:ba065cda442c6d8c9585671ae711933fa6cf666d8f49327ac87867ff431e690f",
       "members": [
@@ -512,7 +470,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfInline_Source_discriminatedObject_typeOfBase64",
       "fingerprint": "sha256:e8f04b6b8ea97dd1cde7ba5edde93aac8db5b1f25800b1dad898733f3f38583e",
       "members": [
@@ -523,7 +480,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerAuto_Skills_array_item_discriminatedObject_typeOfSkillReference",
       "fingerprint": "sha256:9f96404e5d2eba0dc5e382de7f409d20e3bb1cd0c188ac45fc27bb67078a9b6b",
       "members": [
@@ -534,7 +490,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfContainerReference",
       "fingerprint": "sha256:394024a92c33b7495201bc0539660168f1ff62af8f82a156bcac886c50eba787",
       "members": [
@@ -546,7 +501,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal",
       "fingerprint": "sha256:a4090458cf7463632fc227a9eaa63dba70da396fdccc5f0ca0bccb0fb1c948a3",
       "members": [
@@ -558,7 +512,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfShell_Environment_discriminatedObject_typeOfLocal_Skills_array_item_object",
       "fingerprint": "sha256:097968cb68764b2fb6887dc46e1662abcac5413223a566a1b5fb374928e9a9de",
       "members": [
@@ -570,7 +523,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfToolSearch",
       "fingerprint": "sha256:aea1c4c0621d41ae734b40c1541e82096b7f2a99bcba43718f1031caabd2c151",
       "members": [
@@ -581,7 +533,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch",
       "fingerprint": "sha256:ca889a3da5e2c550d07413c70ffac0aaeb4be1be0c0f31f35d09d3208e948bd6",
       "members": [
@@ -592,7 +543,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_Filters_object",
       "fingerprint": "sha256:4edf3d8d1a17419076c92beb0a34979d1e234eb4b5c2ad170950dd98ce953c12",
       "members": [
@@ -603,7 +553,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearch_UserLocation_object",
       "fingerprint": "sha256:340c6cb71b4c73efc1e58e9ce702978263ffc52f45d9debba6eb22b4da9a8612",
       "members": [
@@ -614,7 +563,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview",
       "fingerprint": "sha256:bcac517d3152909750f774943d3bd574e06112b9d397c49ca67f3c90332af056",
       "members": [
@@ -625,7 +573,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject",
       "fingerprint": "sha256:bb7896f7a7c5179b632656343e83fc8a89ee8d167cef54a0fc6ad5a9db30752c",
       "members": [
@@ -636,7 +583,6 @@
     },
     {
       "id": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
-      "canonicalName": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
       "representative": "createResponse_request_object_Tools_array_item_discriminatedObject_typeOfWebSearchPreview_UserLocation_discriminatedObject_typeOfApproximate",
       "fingerprint": "sha256:208f02c336c2bee712d164ee8c76efdc496502d61fe527cb31886ae36fa1ad59",
       "members": [
@@ -647,7 +593,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject",
       "fingerprint": "sha256:199b952c422b97d1aebec55c9020f21190883f35cec153da905c6b0a74e07ee9",
       "members": [
@@ -661,7 +606,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect",
       "fingerprint": "sha256:02efa62fd5a120ce0b7cdb046b1ac2c65c6a0b9e3d76da4d8c346c6dd8b6b39c",
       "members": [
@@ -677,7 +621,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram",
       "fingerprint": "sha256:d56efbbac3d9f8ce717accda811ea802a517b5db56149c16ca351c6c1fb3ceb6",
       "members": [
@@ -691,7 +634,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_PendingSafetyChecks_array_item_object",
       "fingerprint": "sha256:d2e6b156970db216edaf36cffd0fc3b884c7cedfa496f9cbe6285008662ddb15",
       "members": [
@@ -701,7 +643,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject",
       "fingerprint": "sha256:d6836659f403504a205f6f73f197d5bbf8b7df5ad5c1e2b71cfdba08fb39678f",
       "members": [
@@ -711,7 +652,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfClick",
       "fingerprint": "sha256:71740a1a1d0de9c60431a1aa62a6bba4516b88e96178ce51fa82e15806b8d043",
       "members": [
@@ -721,7 +661,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDoubleClick",
       "fingerprint": "sha256:b8651d05ca1b011a3787feadfbf46b5e9d4cca7a7afce6e5be2ec7c04492139b",
       "members": [
@@ -731,7 +670,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag",
       "fingerprint": "sha256:00cd6eb75a921e668b11e5355345fd91bf8ac69fdb02b251f9048df004233de6",
       "members": [
@@ -741,7 +679,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfDrag_Path_array_item_object",
       "fingerprint": "sha256:6c7897b64630a09bf5f5e0434db69e7a3a6a2cb5be84f6bc1d2d24aa9f797e38",
       "members": [
@@ -751,7 +688,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfKeypress",
       "fingerprint": "sha256:e7fb9a516602060c30a795cdd2ac688e3a6bec5d5f97b812f39f729e1286ca8d",
       "members": [
@@ -761,7 +697,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfMove",
       "fingerprint": "sha256:f60b69d329a1346abe7274e7c5ae7f700ba7fb86c8bcb00c2088d63a08bd6460",
       "members": [
@@ -771,7 +706,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScreenshot",
       "fingerprint": "sha256:4bdaeb9a34573a1d4b123653baf09190356d218f7f233ab7469558f7e4b6e74f",
       "members": [
@@ -781,7 +715,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfScroll",
       "fingerprint": "sha256:3a75365c30ccef5d20df7947eb8238db13f27077e01736e00a38b39dbce09274",
       "members": [
@@ -791,7 +724,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfType",
       "fingerprint": "sha256:e4692bf8531edc78df565b9d4f772a811e42acb73f66781ce5a2f766c472c041",
       "members": [
@@ -801,7 +733,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfComputerCall_Action_discriminatedObject_typeOfWait",
       "fingerprint": "sha256:9dab042dbda8b0715357d90c1cca795e9730a8f1fe2be0cce7e2dd34ffc755c7",
       "members": [
@@ -811,7 +742,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject",
       "fingerprint": "sha256:b04e12388bb7e7ea68256537e1cce3ede45e2a0cb7c54d83c5e7bc08df116906",
       "members": [
@@ -821,7 +751,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram",
       "fingerprint": "sha256:0fe8bcb897c1a772b943924bdb94eb3c86f219abad850d8c54bcff54e60faa3d",
       "members": [
@@ -831,7 +760,6 @@
     },
     {
       "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject",
-      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject",
       "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject",
       "fingerprint": "sha256:041b0c65bb7cce6c11c42c5164d0df93a1912a6e307c19787112b6f066f1cd17",
       "members": [
@@ -841,7 +769,6 @@
     },
     {
       "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
-      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
       "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile",
       "fingerprint": "sha256:95006c517e385a3697a94acf2001493f9a7a396e895edf56c73b72984f0b8692",
       "members": [
@@ -852,7 +779,6 @@
     },
     {
       "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object",
-      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object",
       "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object",
       "fingerprint": "sha256:652dbcec25cb1327a50c7723c3bdca4f2dd1120f066a5a3d006a156992cc0474",
       "members": [
@@ -872,7 +798,6 @@
     },
     {
       "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
-      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
       "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputImage",
       "fingerprint": "sha256:c00646b42041c20f9a7b5b95cc26d424b1ffe5a730dddad1a53e3a42c089e66b",
       "members": [
@@ -883,7 +808,6 @@
     },
     {
       "id": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
-      "canonicalName": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
       "representative": "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText",
       "fingerprint": "sha256:c3a1e47a233ef61d3af505440816ad5ee5772661d99b1f6d0494adbf4b6cda32",
       "members": [
@@ -894,7 +818,6 @@
     },
     {
       "id": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
-      "canonicalName": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
       "representative": "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfMcpListTools_Tools_array_item_object_InputSchema_object",
       "fingerprint": "sha256:58c51a63e587598e7890d2c40ee6baccc60ad6dfb451df1f0f3e57c897a33c25",
       "members": [
@@ -904,7 +827,6 @@
     },
     {
       "id": "createResponse_request_object_Moderation_object_Policy_object_Input_object",
-      "canonicalName": "createResponse_request_object_Moderation_object_Policy_object_Input_object",
       "representative": "createResponse_request_object_Moderation_object_Policy_object_Input_object",
       "fingerprint": "sha256:ac4e6b6291522467508d5bcf407d27ab6afc7a759bc977e836b4ac3aa966ca7b",
       "members": [

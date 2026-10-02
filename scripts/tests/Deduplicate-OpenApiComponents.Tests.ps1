@@ -35,13 +35,13 @@ $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 function New-RenamedTestMapping {
     param([object]$Document)
 
-    # Canonical names need not be existing member names. Using fresh `Shared*`
-    # names verifies that persisted naming policy is independent of whichever
+    # Ids need not be existing member names. Using fresh `Shared*` names verifies
+    # that persisted output naming is independent of whichever
     # source member was selected as the group's structural representative.
     $mapping = New-TestDeduplicationMapping -Document $Document
-    $mapping.groups[0].canonicalName = "SharedLeaf"
-    $mapping.groups[1].canonicalName = "SharedParent"
-    $mapping.groups[2].canonicalName = "SharedExact"
+    $mapping.groups[0].id = "SharedLeaf"
+    $mapping.groups[1].id = "SharedParent"
+    $mapping.groups[2].id = "SharedExact"
     return $mapping
 }
 
@@ -50,7 +50,7 @@ try {
     # the fingerprint model, allowing equivalent parent trees to collapse too;
     # cyclic and cycle-dependent schemas remain untouched because recursive tree
     # equality is intentionally outside this transformation's scope.
-    Invoke-Test "whole duplicate trees collapse under persisted canonical names" {
+    Invoke-Test "whole duplicate trees collapse under persisted ids" {
         $source = Read-OpenApiDocument -Path $fixturePath
         $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
         $mapping = New-RenamedTestMapping -Document $source
@@ -144,9 +144,9 @@ try {
         $redGroup = @($mapping.groups | Where-Object { $_.members -ccontains $longRedName })[0]
         Assert-Sequence @($longRedName, $shortRedName) @($redGroup.members) "Red group member order changed."
         Assert-Equal $shortRedName $redGroup.representative "Shortest red representative was not selected."
-        $redGroup.canonicalName = "SharedRed"
+        $redGroup.id = "SharedRed"
         $unionGroup = @($mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
-        $unionGroup.canonicalName = "SharedUnion"
+        $unionGroup.id = "SharedUnion"
         $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
 
         $componentNames = @((Get-JsonProperties -Value $result.Document.components.schemas).Name)

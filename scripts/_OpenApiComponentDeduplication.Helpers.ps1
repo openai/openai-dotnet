@@ -534,9 +534,9 @@ function Get-OpenApiComponentDeduplicationAnalysis {
     }
 }
 
-# Version 1 stores only reviewed decisions needed across runs. Canonical tree text
-# is deliberately omitted; it is recomputed from source and represented by the
-# compact fingerprint.
+# Version 1 uses id as both the stable group identity and the reviewed output
+# component name. Canonical tree text is deliberately omitted; it is recomputed
+# from source and represented by the compact fingerprint.
 function New-OpenApiComponentDeduplicationMapping {
     return [ordered]@{
         version = [long]1
@@ -564,8 +564,8 @@ function Read-OpenApiComponentDeduplicationMapping {
 }
 
 # Validates both per-group fields and mapping-wide ownership invariants:
-# unique ids, unique canonical names, globally disjoint members, a representative
-# contained in its group, and a correctly shaped SHA-256 fingerprint.
+# unique ids, globally disjoint members, a representative contained in its group,
+# and a correctly shaped SHA-256 fingerprint.
 function Assert-OpenApiComponentDeduplicationMapping {
     param(
         [Parameter(Mandatory = $true)]
@@ -590,27 +590,31 @@ function Assert-OpenApiComponentDeduplicationMapping {
     # These sets enforce mapping-wide uniqueness while groupMembers below catches
     # duplicates within one group's ordered member list.
     $ids = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    $canonicalNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
     $allMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $allowedGroupProperties = [System.Collections.Generic.HashSet[string]]::new(
+        [string[]]@("id", "representative", "fingerprint", "members"),
+        [System.StringComparer]::Ordinal
+    )
     foreach ($group in $groups) {
         if (-not (Test-JsonObjectValue -Value $group)) {
             throw "Every component deduplication mapping group must be an object."
         }
+        foreach ($property in (Get-JsonProperties -Value $group)) {
+            if (-not $allowedGroupProperties.Contains($property.Name)) {
+                throw "Mapping group contains unsupported property '$($property.Name)'."
+            }
+        }
         $id = Get-JsonPropertyValue -Object $group -Name "id"
-        $canonicalName = Get-JsonPropertyValue -Object $group -Name "canonicalName"
         $representative = Get-JsonPropertyValue -Object $group -Name "representative"
         $fingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
         $members = Get-JsonPropertyValue -Object $group -Name "members"
-        foreach ($value in @($id, $canonicalName, $representative, $fingerprint)) {
+        foreach ($value in @($id, $representative, $fingerprint)) {
             if ($value -isnot [string] -or [string]::IsNullOrWhiteSpace($value)) {
-                throw "Every mapping group must have nonempty string id, canonicalName, representative, and fingerprint values."
+                throw "Every mapping group must have nonempty string id, representative, and fingerprint values."
             }
         }
         if (-not $ids.Add($id)) {
             throw "Component deduplication mapping id '$id' is duplicated."
-        }
-        if (-not $canonicalNames.Add($canonicalName)) {
-            throw "Component deduplication canonical name '$canonicalName' is duplicated."
         }
         if (-not (Test-JsonArrayValue -Value $members) -or $members.Count -lt 2) {
             throw "Mapping group '$id' must contain at least two members."
@@ -685,7 +689,7 @@ function Get-OpenApiComponentDeduplicationRepresentative {
 # Reconciles current analysis with persisted review state. Historical groups are
 # matched by their members rather than fingerprint because legitimate whole-group
 # evolution changes fingerprints. The conservative rules are:
-#   * historical ids, canonical names, representatives, order, and members persist;
+#   * historical ids, representatives, order, and members persist;
 #   * newly equivalent members append in current source order;
 #   * whole-group fingerprint evolution is accepted and reported;
 #   * missing/diverged/split/merged/cycle-dependent history fails;
@@ -729,7 +733,6 @@ function Update-OpenApiComponentDeduplicationMapping {
     $mappingGroups = Get-JsonPropertyValue -Object $Mapping -Name "groups"
     foreach ($group in $mappingGroups) {
         $id = Get-JsonPropertyValue -Object $group -Name "id"
-        $canonicalName = Get-JsonPropertyValue -Object $group -Name "canonicalName"
         $representative = Get-JsonPropertyValue -Object $group -Name "representative"
         $oldFingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
         [object[]]$oldMembers = [object[]](Get-JsonPropertyValue -Object $group -Name "members")
@@ -795,10 +798,10 @@ function Update-OpenApiComponentDeduplicationMapping {
             $null = $mappedMembers.Add($member)
         }
 
-        # A canonical name may be a member name or a fresh user-selected name. It
-        # may not overwrite an unrelated source component at apply time.
-        if ($sourceNames.Contains($canonicalName) -and -not ($memberList -ccontains $canonicalName)) {
-            throw "Canonical name '$canonicalName' for group '$id' collides with an unrelated source component."
+        # An id may be a member name or a fresh user-selected output name. It may
+        # not overwrite an unrelated source component at apply time.
+        if ($sourceNames.Contains($id) -and -not ($memberList -ccontains $id)) {
+            throw "Mapping id '$id' collides with an unrelated source component."
         }
 
         # Extension takes precedence over fingerprint evolution in the summary;
@@ -814,7 +817,6 @@ function Update-OpenApiComponentDeduplicationMapping {
         }
         $updatedGroups.Add([ordered]@{
             id = $id
-            canonicalName = $canonicalName
             representative = $representative
             fingerprint = $currentGroup.Fingerprint
             members = [object[]]$memberList.ToArray()
@@ -822,14 +824,13 @@ function Update-OpenApiComponentDeduplicationMapping {
         $statuses.Add([PSCustomObject]@{
             Id = $id
             Status = $status
-            CanonicalName = $canonicalName
             AddedMembers = [object[]]$addedMembers.ToArray()
         })
     }
 
     # Any current group with no historical overlap is a new review decision. Its
-    # first shortest member supplies the initial id, representative, and canonical
-    # name; future runs preserve those defaults unless edited by a user.
+    # first shortest member supplies the initial id and representative; future
+    # runs preserve those defaults unless the id is edited by a user.
     foreach ($currentGroup in $Analysis.DuplicateGroups) {
         $overlap = @($currentGroup.Members | Where-Object { $mappedMembers.Contains($_) })
         if ($overlap.Count -gt 0) {
@@ -838,7 +839,6 @@ function Update-OpenApiComponentDeduplicationMapping {
         $representative = Get-OpenApiComponentDeduplicationRepresentative -Members $currentGroup.Members
         $updatedGroups.Add([ordered]@{
             id = $representative
-            canonicalName = $representative
             representative = $representative
             fingerprint = $currentGroup.Fingerprint
             members = [object[]]$currentGroup.Members
@@ -849,7 +849,6 @@ function Update-OpenApiComponentDeduplicationMapping {
         $statuses.Add([PSCustomObject]@{
             Id = $representative
             Status = "New"
-            CanonicalName = $representative
             AddedMembers = [object[]]$currentGroup.Members
         })
     }
@@ -859,16 +858,6 @@ function Update-OpenApiComponentDeduplicationMapping {
         groups = [object[]]$updatedGroups.ToArray()
     }
     Assert-OpenApiComponentDeduplicationMapping -Mapping $updatedMapping
-
-    # Validate the assembled document again because newly discovered defaults
-    # can collide with persisted ids/names even when the input mapping was valid.
-    $canonicalOwners = [System.Collections.Generic.Dictionary[string, string]]::new([System.StringComparer]::Ordinal)
-    foreach ($group in $updatedMapping.groups) {
-        if ($canonicalOwners.ContainsKey($group.canonicalName)) {
-            throw "Canonical name '$($group.canonicalName)' is shared by mapping groups '$($canonicalOwners[$group.canonicalName])' and '$($group.id)'."
-        }
-        $canonicalOwners[$group.canonicalName] = $group.id
-    }
 
     # Structural JSON equality determines Changed. The file-oriented updater can
     # therefore skip writing and preserve exact bytes on an idempotent second run.

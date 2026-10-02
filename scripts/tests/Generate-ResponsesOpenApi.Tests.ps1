@@ -496,9 +496,9 @@ try {
         Assert-Sequence @($longDuplicateName, $shortDuplicateName) @($group.members) "Fresh mapping reordered duplicate members."
         Assert-Equal $shortDuplicateName $group.id "Fresh mapping did not use the shortest group id."
         Assert-Equal $shortDuplicateName $group.representative "Fresh mapping did not use the shortest representative."
-        Assert-Equal $shortDuplicateName $group.canonicalName "Fresh mapping did not use the shortest canonical name."
-        $defaultCanonicalName = $group.canonicalName
-        $group.canonicalName = "ReviewedDuplicate"
+        Assert-True (-not ($group.PSObject.Properties.Name -ccontains "canonicalName")) "Fresh mapping retained canonicalName."
+        $defaultId = $group.id
+        $group.id = "ReviewedDuplicate"
         Write-TestJson -Document $mapping -Path $paths.DeduplicationMap
         [byte[]]$reviewedMappingBytes = [System.IO.File]::ReadAllBytes($paths.DeduplicationMap)
 
@@ -514,7 +514,7 @@ try {
         $preservedGroup = @($preservedMapping.groups | Where-Object {
             @($_.members) -ccontains $longDuplicateName
         })[0]
-        Assert-Equal "ReviewedDuplicate" $preservedGroup.canonicalName "Ordinary generation discarded the reviewed canonical name."
+        Assert-Equal "ReviewedDuplicate" $preservedGroup.id "Ordinary generation discarded the reviewed id."
         $preservedDocument = Read-TestJson -Path $ordinaryPaths.Deduplicated
         $preservedRoot = Get-JsonPropertyValue `
             -Object $preservedDocument.components.schemas `
@@ -540,7 +540,7 @@ try {
         $resetGroup = @($resetMapping.groups | Where-Object {
             @($_.members) -ccontains $longDuplicateName
         })[0]
-        Assert-Equal $defaultCanonicalName $resetGroup.canonicalName "Reset did not restore the shortest canonical name."
+        Assert-Equal $defaultId $resetGroup.id "Reset did not restore the shortest id."
         $resetDocument = Read-TestJson -Path $resetPaths.Deduplicated
         $resetRoot = Get-JsonPropertyValue `
             -Object $resetDocument.components.schemas `
@@ -549,11 +549,11 @@ try {
             -Object $resetDocument.components.schemas `
             -Name "createResponse_request_object_DuplicateAContainer_object"
         Assert-Equal `
-            "#/components/schemas/$defaultCanonicalName" `
+            "#/components/schemas/$defaultId" `
             $resetRoot.properties.duplicateB.'$ref' `
             "Reset deduplicated output did not apply the default canonical name."
         Assert-Equal `
-            "#/components/schemas/$defaultCanonicalName" `
+            "#/components/schemas/$defaultId" `
             $resetContainer.properties.duplicateA.'$ref' `
             "Reset nested duplicate did not apply the default canonical name."
         [byte[]]$resetMappingBytes = [System.IO.File]::ReadAllBytes($resetPaths.DeduplicationMap)

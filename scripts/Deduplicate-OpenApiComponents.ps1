@@ -97,23 +97,23 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
 
     # The same entry point supports two valid shapes:
     #   * source shape: every historical member is still present;
-    #   * collapsed shape: only each group's canonical name is present.
+    #   * collapsed shape: only each group's id is present.
     # Anything between those states is rejected as a partial/manual application.
     $sourceShape = $true
     $collapsedShape = $true
     foreach ($group in $groups) {
         [object[]]$members = [object[]](Get-JsonPropertyValue -Object $group -Name "members")
-        $canonicalName = Get-JsonPropertyValue -Object $group -Name "canonicalName"
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
         foreach ($member in $members) {
             if (-not $sourceNames.Contains($member)) {
                 $sourceShape = $false
             }
-            if (-not [string]::Equals($member, $canonicalName, [System.StringComparison]::Ordinal) -and
+            if (-not [string]::Equals($member, $id, [System.StringComparison]::Ordinal) -and
                 $sourceNames.Contains($member)) {
                 $collapsedShape = $false
             }
         }
-        if (-not $sourceNames.Contains($canonicalName)) {
+        if (-not $sourceNames.Contains($id)) {
             $collapsedShape = $false
         }
     }
@@ -160,9 +160,9 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
     $memberToGroup = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
     $representativeToGroup = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
     foreach ($group in $groups) {
-        $canonicalName = Get-JsonPropertyValue -Object $group -Name "canonicalName"
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
         $representative = Get-JsonPropertyValue -Object $group -Name "representative"
-        $destination = "#/components/schemas/$(ConvertTo-JsonPointerToken -Token $canonicalName)"
+        $destination = "#/components/schemas/$(ConvertTo-JsonPointerToken -Token $id)"
         $representativeToGroup[$representative] = $group
         foreach ($member in [object[]](Get-JsonPropertyValue -Object $group -Name "members")) {
             $memberToGroup[$member] = $group
@@ -185,8 +185,8 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
     $relocatedSchemas = Get-OpenApiComponentSchemas -Document $relocated
     # Rebuild schemas in original encounter order. Unmapped components retain
     # their position. A mapped group is emitted exactly once, at its persisted
-    # representative's position, under the possibly user-edited canonical name.
-    # This separates stable output placement from canonical naming policy.
+    # representative's position, under the possibly user-edited id. This
+    # separates stable output placement from source-member selection.
     $schemas = [ordered]@{}
     foreach ($componentName in $analysis.ComponentNames) {
         if (-not $memberToGroup.ContainsKey($componentName)) {
@@ -199,11 +199,11 @@ function ConvertTo-DeduplicatedOpenApiComponentsDocument {
             continue
         }
         $group = $representativeToGroup[$componentName]
-        $canonicalName = Get-JsonPropertyValue -Object $group -Name "canonicalName"
-        if ($schemas.Contains($canonicalName)) {
-            throw "Canonical component '$canonicalName' would overwrite an existing output component."
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
+        if ($schemas.Contains($id)) {
+            throw "Deduplicated component '$id' would overwrite an existing output component."
         }
-        $schemas[$canonicalName] = Get-JsonPropertyValue -Object $relocatedSchemas -Name $componentName
+        $schemas[$id] = Get-JsonPropertyValue -Object $relocatedSchemas -Name $componentName
     }
 
     # Only components.schemas is rebuilt. Security schemes and any future
@@ -324,7 +324,7 @@ function Invoke-OpenApiComponentDeduplicator {
     # The console list makes the persisted decisions visible in CI logs without
     # requiring consumers to inspect the generated OpenAPI diff.
     foreach ($group in $result.AppliedGroups) {
-        Write-Host "$($group.canonicalName) <- $($group.members -join ', ')"
+        Write-Host "$($group.id) <- $($group.members -join ', ')"
     }
 
     return [PSCustomObject]@{
