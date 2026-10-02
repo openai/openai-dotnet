@@ -93,6 +93,13 @@ public partial class RealtimeClient
         _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
+    internal RealtimeClient(ClientPipeline pipeline, RealtimeClientOptions options, ApiKeyCredential credential)
+        : this(pipeline, options)
+    {
+        // WebSocket authentication does not use the shared HTTP pipeline.
+        _keyCredential = credential;
+    }
+
     [Experimental("SCME0002")]
     public RealtimeClient(RealtimeClientSettings settings)
         : this(AuthenticationPolicy.Create(settings), settings?.Options)
