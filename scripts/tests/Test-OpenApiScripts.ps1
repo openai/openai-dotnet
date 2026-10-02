@@ -38,7 +38,7 @@ $testNames = @(
     "Generate-ResponsesOpenApi.Tests.ps1"
     "Finalize-ResponsesOpenApi.Tests.ps1"
     "Componentize-OpenApiObjectSchemas.Tests.ps1"
-    "Update-OpenApiComponentDeduplicationMap.Tests.ps1"
+    "Generate-OpenApiComponentDefaultMap.Tests.ps1"
     "Deduplicate-OpenApiComponents.Tests.ps1"
 )
 

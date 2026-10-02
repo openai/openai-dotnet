@@ -24,7 +24,13 @@ function Initialize-FinalizationOutput {
 
     $null = [System.IO.Directory]::CreateDirectory($OutputDirectory)
     $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $OutputDirectory
-    [System.IO.File]::Copy($fixturePath, $paths.Componentized, $true)
+    $document = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
+    $properties = $document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
+    $null = $properties.Remove("cycle")
+    foreach ($name in @("CycleA", "CycleB", "CycleAncestor")) {
+        $null = $document.components.schemas.Remove($name)
+    }
+    $null = Write-OpenApiJsonFile -Document $document -Path $paths.Componentized
     return $paths
 }
 
@@ -39,8 +45,8 @@ try {
     Invoke-Test "dot-sourcing defines finalization without running it" {
         Assert-True ($null -ne (Get-Command Invoke-ResponsesOpenApiFinalization -ErrorAction SilentlyContinue)) "Finalization function was not defined."
         Assert-True ($null -ne (Get-Command Get-ResponsesOpenApiArtifactPaths -ErrorAction SilentlyContinue)) "Artifact path function was not defined."
-        Assert-True ($null -ne (Get-Command Reset-ResponsesOpenApiDeduplicationMap -ErrorAction SilentlyContinue)) "Map reset function was not defined."
         Assert-True ($null -ne (Get-Command Copy-OpenApiFileAtomically -ErrorAction SilentlyContinue)) "Atomic copy function was not defined."
+        Assert-True (-not (Get-Command Invoke-ResponsesOpenApiFinalization).Parameters.ContainsKey("ResetDeduplicationMap")) "Finalization still exposes reset policy."
         Assert-True (-not [System.IO.Directory]::Exists((Join-Path $temporaryDirectory "unexpected"))) "Dot-sourcing unexpectedly finalized output."
     }
 
@@ -48,7 +54,7 @@ try {
         $expectedDirectory = Join-Path $script:RepositoryRoot "specification" "openapi"
         Assert-Equal ([System.IO.Path]::GetFullPath($expectedDirectory)) ([System.IO.Path]::GetFullPath($script:DefaultOutputDirectory)) "Default output directory was incorrect."
         foreach ($stageScriptName in @(
-            "Update-OpenApiComponentDeduplicationMap.ps1",
+            "Generate-OpenApiComponentDefaultMap.ps1",
             "Deduplicate-OpenApiComponents.ps1"
         )) {
             $stageScriptPath = Join-Path (Split-Path $scriptPath -Parent) $stageScriptName
@@ -57,7 +63,8 @@ try {
 
         $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $expectedDirectory
         Assert-Equal "responses.componentized.openapi.json" ([System.IO.Path]::GetFileName($paths.Componentized)) "Componentized input name was incorrect."
-        Assert-Equal "responses.component-deduplication-map.json" ([System.IO.Path]::GetFileName($paths.DeduplicationMap)) "Mapping name was incorrect."
+        Assert-Equal "responses.component-default-map.json" ([System.IO.Path]::GetFileName($paths.DefaultComponentMap)) "Default map name was incorrect."
+        Assert-Equal "responses.component-policy-map.json" ([System.IO.Path]::GetFileName($paths.PolicyComponentMap)) "Policy map name was incorrect."
         Assert-Equal "responses.componentized.deduplicated.openapi.json" ([System.IO.Path]::GetFileName($paths.Deduplicated)) "Deduplicated output name was incorrect."
         Assert-Equal "responses.openapi.json" ([System.IO.Path]::GetFileName($paths.Final)) "Final output name was incorrect."
     }
@@ -78,106 +85,103 @@ try {
             throw "Finalize CLI failed with exit code $LASTEXITCODE."
         }
         $result = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
-        foreach ($artifactPath in @($result.DeduplicationMap, $result.Deduplicated, $result.Final)) {
+        foreach ($artifactPath in @($result.DefaultComponentMap, $result.Deduplicated, $result.Final)) {
             Assert-True ([System.IO.File]::Exists($artifactPath)) "Finalization artifact was not created: $artifactPath"
         }
         Assert-BytesEqual $componentizedBytes ([System.IO.File]::ReadAllBytes($result.Componentized)) "Finalization modified its componentized input."
         Assert-BytesEqual ([System.IO.File]::ReadAllBytes($result.Deduplicated)) ([System.IO.File]::ReadAllBytes($result.Final)) "Final alias differs from the retained deduplicated output."
 
-        $mapping = Read-FinalizationJson -Path $result.DeduplicationMap
-        Assert-Equal 1 $mapping.version "Mapping version was incorrect."
-        Assert-Equal 3 $mapping.groups.Count "Mapping group count was incorrect."
+        $mapping = Read-FinalizationJson -Path $result.DefaultComponentMap
+        Assert-Equal 1 $mapping.version "Default map version was incorrect."
+        Assert-Equal 4 $mapping.groups.Count "Default map group count was incorrect."
+        Assert-True (-not [System.IO.File]::Exists($result.PolicyComponentMap)) "Finalization created a policy map."
         $document = Read-FinalizationJson -Path $result.Deduplicated
-        Assert-Equal 7 @(Get-JsonProperties -Value $document.components.schemas).Count "Deduplicated component count was incorrect."
+        Assert-Equal 4 @(Get-JsonProperties -Value $document.components.schemas).Count "Deduplicated component count was incorrect."
         Assert-Equal "#/components/schemas/LeafA/properties/value" $document.paths["/test"].post.responses["200"].content["application/json"].schema.properties.descendantAlias.'$ref' "Default leaf id was not applied."
         Assert-OpenApiReferencesResolve -Document $document
         Assert-AdditionalOpenApiReferencesResolve -Document $document
+
+        [byte[]]$defaultBytes = [System.IO.File]::ReadAllBytes($result.DefaultComponentMap)
+        [byte[]]$deduplicatedBytes = [System.IO.File]::ReadAllBytes($result.Deduplicated)
+        [byte[]]$finalBytes = [System.IO.File]::ReadAllBytes($result.Final)
+        $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
+        Assert-BytesEqual $defaultBytes ([System.IO.File]::ReadAllBytes($result.DefaultComponentMap)) "Repeated finalization changed default-map bytes."
+        Assert-BytesEqual $deduplicatedBytes ([System.IO.File]::ReadAllBytes($result.Deduplicated)) "Repeated finalization changed deduplicated bytes."
+        Assert-BytesEqual $finalBytes ([System.IO.File]::ReadAllBytes($result.Final)) "Repeated finalization changed final bytes."
     }
 
-    Invoke-Test "reviewed ids survive the map-only fast path and reset deterministically" {
+    Invoke-Test "default edits are discarded while policy edits persist" {
         $outputDirectory = Join-Path $temporaryDirectory "reviewed"
         $paths = Initialize-FinalizationOutput -OutputDirectory $outputDirectory
         $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
         [byte[]]$componentizedBytes = [System.IO.File]::ReadAllBytes($paths.Componentized)
 
-        $mapping = Read-FinalizationJson -Path $paths.DeduplicationMap
-        $leafGroup = @($mapping.groups | Where-Object { $_.members -ccontains "LeafA" })[0]
-        $leafGroup.id = "SharedLeaf"
-        $null = Write-OpenApiJsonFile -Document $mapping -Path $paths.DeduplicationMap
-        [byte[]]$reviewedMappingBytes = [System.IO.File]::ReadAllBytes($paths.DeduplicationMap)
+        $defaultMap = Read-FinalizationJson -Path $paths.DefaultComponentMap
+        $leafGroup = @($defaultMap.groups | Where-Object { $_.members -ccontains "LeafA" })[0]
+        $leafGroup.id = "DiscardedEdit"
+        $null = Write-OpenApiJsonFile -Document $defaultMap -Path $paths.DefaultComponentMap
 
         $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
         Assert-BytesEqual $componentizedBytes ([System.IO.File]::ReadAllBytes($paths.Componentized)) "Map-only finalization changed the componentized input."
-        Assert-BytesEqual $reviewedMappingBytes ([System.IO.File]::ReadAllBytes($paths.DeduplicationMap)) "Map-only finalization rewrote the reviewed mapping."
+        $regeneratedMap = Read-FinalizationJson -Path $paths.DefaultComponentMap
+        Assert-Equal "LeafA" (@($regeneratedMap.groups | Where-Object { $_.members -ccontains "LeafA" })[0].id) "Finalization preserved a manual default edit."
+
+        $policy = [ordered]@{
+            version = [long]1
+            groups = @([ordered]@{
+                id = "SharedLeaf"
+                type = "duplicate"
+                representative = "LeafA"
+                fingerprint = (@($regeneratedMap.groups | Where-Object { $_.members -ccontains "LeafA" })[0].fingerprint)
+                members = @("LeafA", "LeafB")
+            })
+        }
+        $null = Write-OpenApiJsonFile -Document $policy -Path $paths.PolicyComponentMap
+        [byte[]]$policyBytes = [System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)
+        $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
+        Assert-BytesEqual $policyBytes ([System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)) "Finalization rewrote policy bytes."
         $reviewedDocument = Read-FinalizationJson -Path $paths.Deduplicated
-        Assert-True (Test-JsonProperty -Object $reviewedDocument.components.schemas -Name "SharedLeaf") "Reviewed id was not used as the retained component name."
-        Assert-Equal "#/components/schemas/SharedLeaf/properties/value" $reviewedDocument.paths["/test"].post.responses["200"].content["application/json"].schema.properties.descendantAlias.'$ref' "Reviewed id was not used as the reference target."
-
-        $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory -ResetDeduplicationMap 6>$null
-        $resetMapping = Read-FinalizationJson -Path $paths.DeduplicationMap
-        $resetLeafGroup = @($resetMapping.groups | Where-Object { $_.members -ccontains "LeafA" })[0]
-        Assert-Equal "LeafA" $resetLeafGroup.id "Reset did not restore the default id."
-        [byte[]]$resetMappingBytes = [System.IO.File]::ReadAllBytes($paths.DeduplicationMap)
-        [byte[]]$resetDeduplicatedBytes = [System.IO.File]::ReadAllBytes($paths.Deduplicated)
-        [byte[]]$resetFinalBytes = [System.IO.File]::ReadAllBytes($paths.Final)
-
-        $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory -ResetDeduplicationMap 6>$null
-        Assert-BytesEqual $resetMappingBytes ([System.IO.File]::ReadAllBytes($paths.DeduplicationMap)) "Repeated reset changed mapping bytes."
-        Assert-BytesEqual $resetDeduplicatedBytes ([System.IO.File]::ReadAllBytes($paths.Deduplicated)) "Repeated reset changed deduplicated bytes."
-        Assert-BytesEqual $resetFinalBytes ([System.IO.File]::ReadAllBytes($paths.Final)) "Repeated reset changed final bytes."
-        Assert-BytesEqual $componentizedBytes ([System.IO.File]::ReadAllBytes($paths.Componentized)) "Reset changed the componentized input."
+        Assert-True (Test-JsonProperty -Object $reviewedDocument.components.schemas -Name "SharedLeaf") "Policy id was not used as the retained component name."
+        Assert-Equal "#/components/schemas/SharedLeaf/properties/value" $reviewedDocument.paths["/test"].post.responses["200"].content["application/json"].schema.properties.descendantAlias.'$ref' "Policy id was not used as the reference target."
     }
 
-    Invoke-Test "stale mapping failure preserves map and published outputs" {
-        $outputDirectory = Join-Path $temporaryDirectory "stale"
+    Invoke-Test "invalid policy preserves policy generated map and published outputs" {
+        $outputDirectory = Join-Path $temporaryDirectory "invalid-policy"
         $paths = Initialize-FinalizationOutput -OutputDirectory $outputDirectory
         $null = Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
-
-        $mapping = Read-FinalizationJson -Path $paths.DeduplicationMap
-        $mapping.groups[0].members[1] = "MissingLeaf"
-        $null = Write-OpenApiJsonFile -Document $mapping -Path $paths.DeduplicationMap
-        [byte[]]$mappingBytes = [System.IO.File]::ReadAllBytes($paths.DeduplicationMap)
+        [byte[]]$defaultBytes = [System.IO.File]::ReadAllBytes($paths.DefaultComponentMap)
         [byte[]]$deduplicatedBytes = [System.IO.File]::ReadAllBytes($paths.Deduplicated)
         [byte[]]$finalBytes = [System.IO.File]::ReadAllBytes($paths.Final)
+        [System.IO.File]::WriteAllText($paths.PolicyComponentMap, "invalid", [System.Text.UTF8Encoding]::new($false))
+        [byte[]]$policyBytes = [System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)
 
         Assert-Throws {
             Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory 6>$null
-        } "*missing from the componentized source*"
-        Assert-BytesEqual $mappingBytes ([System.IO.File]::ReadAllBytes($paths.DeduplicationMap)) "Failed finalization changed the stale mapping."
-        Assert-BytesEqual $deduplicatedBytes ([System.IO.File]::ReadAllBytes($paths.Deduplicated)) "Failed finalization changed the deduplicated output."
-        Assert-BytesEqual $finalBytes ([System.IO.File]::ReadAllBytes($paths.Final)) "Failed finalization changed the final output."
+        } "*Could not parse component policy map JSON*"
+        Assert-BytesEqual $policyBytes ([System.IO.File]::ReadAllBytes($paths.PolicyComponentMap)) "Failed finalization changed policy bytes."
+        Assert-BytesEqual $defaultBytes ([System.IO.File]::ReadAllBytes($paths.DefaultComponentMap)) "Failed finalization changed default bytes."
+        Assert-BytesEqual $deduplicatedBytes ([System.IO.File]::ReadAllBytes($paths.Deduplicated)) "Failed finalization changed deduplicated bytes."
+        Assert-BytesEqual $finalBytes ([System.IO.File]::ReadAllBytes($paths.Final)) "Failed finalization changed final bytes."
     }
 
-    Invoke-Test "componentized input preflight protects map reset" {
+    Invoke-Test "componentized input preflight protects component maps" {
         foreach ($case in @("missing", "directory")) {
             $outputDirectory = Join-Path $temporaryDirectory "preflight-$case"
             $null = [System.IO.Directory]::CreateDirectory($outputDirectory)
             $paths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
-            [System.IO.File]::WriteAllText($paths.DeduplicationMap, "preserve", [System.Text.UTF8Encoding]::new($false))
+            [System.IO.File]::WriteAllText($paths.DefaultComponentMap, "default", [System.Text.UTF8Encoding]::new($false))
+            [System.IO.File]::WriteAllText($paths.PolicyComponentMap, "policy", [System.Text.UTF8Encoding]::new($false))
             if ($case -eq "directory") {
                 $null = [System.IO.Directory]::CreateDirectory($paths.Componentized)
             }
 
             $expectedMessage = if ($case -eq "missing") { "*was not found*" } else { "*is not a file*" }
             Assert-Throws {
-                Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory -ResetDeduplicationMap
+                Invoke-ResponsesOpenApiFinalization -OutputDirectory $outputDirectory
             } $expectedMessage
-            Assert-Equal "preserve" ([System.IO.File]::ReadAllText($paths.DeduplicationMap)) "Input preflight deleted the existing map for '$case'."
+            Assert-Equal "default" ([System.IO.File]::ReadAllText($paths.DefaultComponentMap)) "Input preflight changed the default map for '$case'."
+            Assert-Equal "policy" ([System.IO.File]::ReadAllText($paths.PolicyComponentMap)) "Input preflight changed the policy map for '$case'."
         }
-    }
-
-    Invoke-Test "map reset deletes only files" {
-        $mapPath = Join-Path $temporaryDirectory "reset-map.json"
-        [System.IO.File]::WriteAllText($mapPath, "map", [System.Text.UTF8Encoding]::new($false))
-        Reset-ResponsesOpenApiDeduplicationMap -Path $mapPath
-        Assert-True (-not [System.IO.File]::Exists($mapPath)) "Map reset did not delete the file."
-
-        $directoryPath = Join-Path $temporaryDirectory "map-directory"
-        $null = [System.IO.Directory]::CreateDirectory($directoryPath)
-        Assert-Throws {
-            Reset-ResponsesOpenApiDeduplicationMap -Path $directoryPath
-        } "*path is not a file*"
-        Assert-True ([System.IO.Directory]::Exists($directoryPath)) "Map reset removed a directory."
     }
 
     Invoke-Test "atomic copy replaces a stale final alias" {

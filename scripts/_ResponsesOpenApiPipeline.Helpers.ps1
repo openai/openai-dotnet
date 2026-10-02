@@ -21,7 +21,8 @@ function Get-ResponsesOpenApiArtifactPaths {
         SingletonTypeWrapped = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json"
         Sorted = Join-Path $fullOutputDirectory "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json"
         Componentized = Join-Path $fullOutputDirectory "responses.componentized.openapi.json"
-        DeduplicationMap = Join-Path $fullOutputDirectory "responses.component-deduplication-map.json"
+        DefaultComponentMap = Join-Path $fullOutputDirectory "responses.component-default-map.json"
+        PolicyComponentMap = Join-Path $fullOutputDirectory "responses.component-policy-map.json"
         Deduplicated = Join-Path $fullOutputDirectory "responses.componentized.deduplicated.openapi.json"
         Final = Join-Path $fullOutputDirectory "responses.openapi.json"
     }

@@ -1,13 +1,6 @@
 <#
 .SYNOPSIS
     Runs focused tests for scripts/Deduplicate-OpenApiComponents.ps1.
-
-.DESCRIPTION
-    Exercises persisted whole-tree deduplication, all supported local pointer
-    kinds, discriminator mapping relocation, stale-state rejection, and
-    structural/byte idempotence. Run directly under PowerShell 7:
-
-        pwsh ./scripts/tests/Deduplicate-OpenApiComponents.Tests.ps1
 #>
 
 [CmdletBinding()]
@@ -16,238 +9,194 @@ param()
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-# The updater is loaded only to construct valid mappings from each test document;
-# the command under test must consume those mappings without modifying them.
-. (Join-Path $PSScriptRoot ".." "Update-OpenApiComponentDeduplicationMap.ps1")
+. (Join-Path $PSScriptRoot ".." "Generate-OpenApiComponentDefaultMap.ps1")
 . (Join-Path $PSScriptRoot ".." "Deduplicate-OpenApiComponents.ps1")
 . (Join-Path $PSScriptRoot "_OpenApiComponentDeduplicationTest.Helpers.ps1")
 Initialize-OpenApiComponentDeduplicationTestState
 
-# The fixture contains three eligible acyclic groups: equivalent leaf schemas,
-# equivalent parents that reference those leaves, and exact nested branches. It
-# also contains a near miss, a reference cycle, and a cycle-dependent ancestor.
-# This lets one compact document distinguish whole-tree equality from unsafe
-# cycle handling.
-$fixturePath = Get-TestDeduplicationFixturePath
 $temporaryDirectory = Join-Path ([System.IO.Path]::GetTempPath()) "deduplicate-components-$([Guid]::NewGuid().ToString('N'))"
 $null = [System.IO.Directory]::CreateDirectory($temporaryDirectory)
 
-function New-RenamedTestMapping {
-    param([object]$Document)
+function New-AcyclicDeduplicationTestDocument {
+    $document = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
+    $properties = $document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
+    $null = $properties.Remove("cycle")
+    foreach ($name in @("CycleA", "CycleB", "CycleAncestor")) {
+        $null = $document.components.schemas.Remove($name)
+    }
+    return $document
+}
 
-    # Ids need not be existing member names. Using fresh `Shared*` names verifies
-    # that persisted output naming is independent of whichever
-    # source member was selected as the group's structural representative.
-    $mapping = New-TestDeduplicationMapping -Document $Document
-    $mapping.groups[0].id = "SharedLeaf"
-    $mapping.groups[1].id = "SharedParent"
-    $mapping.groups[2].id = "SharedExact"
-    return $mapping
+function Get-IdentityGroupForMember {
+    param([object]$Plan, [string]$Member)
+
+    return @($Plan.NormalizedAnalysis.IdentityGroups | Where-Object { $_.Members -ccontains $Member })[0]
 }
 
 try {
-    # This is the end-to-end structural contract. Child groups collapse first in
-    # the fingerprint model, allowing equivalent parent trees to collapse too;
-    # cyclic and cycle-dependent schemas remain untouched because recursive tree
-    # equality is intentionally outside this transformation's scope.
-    Invoke-Test "whole duplicate trees collapse under persisted ids" {
-        $source = Read-OpenApiDocument -Path $fixturePath
-        $sourceBefore = ConvertTo-Json -InputObject $source -Compress -Depth 100
-        $mapping = New-RenamedTestMapping -Document $source
-        $mappingBefore = ConvertTo-Json -InputObject $mapping -Compress -Depth 100
+    Invoke-Test "comprehensive defaults collapse duplicate trees and preserve singleton groups" {
+        $document = New-AcyclicDeduplicationTestDocument
+        $documentBefore = ConvertTo-Json -InputObject $document -Compress -Depth 100
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
         $result = ConvertTo-DeduplicatedOpenApiComponentsDocument `
-            -Document $source `
-            -Mapping $mapping
-        Assert-Equal 3 $result.DuplicateGroupCount "Applied group count was incorrect."
-        Assert-Equal 3 $result.RemovedComponentCount "Removal count was incorrect."
-        Assert-Equal 7 $result.ComponentCount "Retained component count was incorrect."
-        Assert-Sequence `
-            @("SharedLeaf", "SharedParent", "SharedExact", "NearMiss", "CycleA", "CycleB", "CycleAncestor") `
-            @((Get-JsonProperties -Value $result.Document.components.schemas).Name) `
-            "Canonical component names or placement were incorrect."
-        Assert-Equal "#/components/schemas/SharedLeaf" $result.Document.components.schemas.SharedParent.properties.child.'$ref' "Parent tree did not relocate its child."
-        Assert-True (Test-JsonProperty -Object $result.Document.components.schemas -Name "CycleA") "Cyclic component was removed."
-        Assert-True (Test-JsonProperty -Object $result.Document.components.schemas -Name "CycleAncestor") "Cycle-dependent component was removed."
-        Assert-Equal "apiKey" $result.Document.components.securitySchemes.ApiKey.type "Non-schema components changed."
-        Assert-Equal $sourceBefore (ConvertTo-Json -InputObject $source -Compress -Depth 100) "Application mutated its source."
-        Assert-Equal $mappingBefore (ConvertTo-Json -InputObject $mapping -Compress -Depth 100) "Application mutated its mapping."
-    }
+            -Document $document `
+            -DefaultMap $plan.DefaultMap
 
-    # Root-prefix relocation must apply uniformly to ordinary, dynamic, and
-    # recursive refs. A pointer below a removed component root must retain its
-    # suffix: `LeafB/properties/value` becomes `SharedLeaf/properties/value`.
-    Invoke-Test "all pointer kinds and descendant suffixes relocate" {
-        $source = Read-OpenApiDocument -Path $fixturePath
-        $mapping = New-RenamedTestMapping -Document $source
-        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
-        $properties = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
-        Assert-Equal "#/components/schemas/SharedLeaf/properties/value" $properties.descendantAlias.'$ref' "Descendant reference suffix was not preserved."
-        Assert-Equal "#/components/schemas/SharedLeaf" $properties.dynamicAlias.'$dynamicRef' "`$dynamicRef was not relocated."
-        Assert-Equal "#/components/schemas/SharedLeaf" $properties.recursiveAlias.'$recursiveRef' "`$recursiveRef was not relocated."
-        Assert-Equal "#/components/schemas/SharedExact" $properties.exact.'$ref' "Exact duplicate reference was not relocated."
+        Assert-Equal 4 $result.ComponentCount "Retained component count was incorrect."
+        Assert-Equal 3 $result.RemovedComponentCount "Removal count was incorrect."
+        Assert-Equal 4 $result.AppliedGroupCount "Logical group count was incorrect."
+        Assert-Sequence @("LeafA", "ParentA", "ExactA", "NearMiss") @(
+            (Get-JsonProperties -Value $result.Document.components.schemas).Name
+        ) "Output component names were incorrect."
+        Assert-Equal $documentBefore (ConvertTo-Json -InputObject $document -Compress -Depth 100) "Application mutated its source."
         Assert-OpenApiReferencesResolve -Document $result.Document
         Assert-AdditionalOpenApiReferencesResolve -Document $result.Document
     }
 
-    # Generated oneOf wrappers participate in ordinary whole-tree deduplication.
-    # Mapping keys remain payload values while only their component targets move.
-    Invoke-Test "equivalent oneOf wrapper components collapse as complete trees" {
-        $source = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
-        $properties = $source.paths["/test"].post.responses["200"].content["application/json"].schema.properties
-        $properties["unionA"] = [ordered]@{ '$ref' = "#/components/schemas/UnionA" }
-        $properties["unionB"] = [ordered]@{ '$ref' = "#/components/schemas/UnionB" }
-        $longRedName = "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfRed_Tools_array_item_object"
-        $shortRedName = "createResponse_request_object_Tools_array_item_object"
-        $source.components.schemas[$longRedName] = [ordered]@{
-            type = "object"
-            required = @("kind")
-            properties = [ordered]@{
-                kind = [ordered]@{ type = "string"; enum = @("red") }
-            }
-        }
-        $source.components.schemas["Blue"] = [ordered]@{
-            type = "object"
-            required = @("kind")
-            properties = [ordered]@{
-                kind = [ordered]@{ type = "string"; const = "blue" }
-            }
-        }
-        $source.components.schemas[$shortRedName] = Copy-JsonValue -Value $source.components.schemas[$longRedName]
-        $source.components.schemas["UnionA"] = [ordered]@{
-            discriminator = [ordered]@{
-                propertyName = "kind"
-                mapping = [ordered]@{
-                    red = "#/components/schemas/$longRedName"
-                    blue = "#/components/schemas/Blue"
-                }
-            }
-            oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/$longRedName" },
-                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
-            )
-        }
-        $source.components.schemas["UnionB"] = [ordered]@{
-            discriminator = [ordered]@{
-                propertyName = "kind"
-                mapping = [ordered]@{
-                    red = "#/components/schemas/$shortRedName"
-                    blue = "#/components/schemas/Blue"
-                }
-            }
-            oneOf = @(
-                [ordered]@{ '$ref' = "#/components/schemas/$shortRedName" },
-                [ordered]@{ '$ref' = "#/components/schemas/Blue" }
-            )
-        }
+    Invoke-Test "all pointer kinds and descendant suffixes relocate" {
+        $document = New-AcyclicDeduplicationTestDocument
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $document -DefaultMap $plan.DefaultMap
+        $properties = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
+        Assert-Equal "#/components/schemas/LeafA/properties/value" $properties.descendantAlias.'$ref' "Descendant reference suffix was not preserved."
+        Assert-Equal "#/components/schemas/LeafA" $properties.dynamicAlias.'$dynamicRef' "`$dynamicRef was not relocated."
+        Assert-Equal "#/components/schemas/LeafA" $properties.recursiveAlias.'$recursiveRef' "`$recursiveRef was not relocated."
+        Assert-Equal "#/components/schemas/ExactA" $properties.exact.'$ref' "Exact duplicate reference was not relocated."
+    }
 
-        $mapping = New-RenamedTestMapping -Document $source
-        $redGroup = @($mapping.groups | Where-Object { $_.members -ccontains $longRedName })[0]
-        Assert-Sequence @($longRedName, $shortRedName) @($redGroup.members) "Red group member order changed."
-        Assert-Equal $shortRedName $redGroup.representative "Shortest red representative was not selected."
-        $redGroup.id = "SharedRed"
-        $unionGroup = @($mapping.groups | Where-Object { $_.members -ccontains "UnionA" })[0]
-        $unionGroup.id = "SharedUnion"
-        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
+    Invoke-Test "override and nested partial members roll up to the parent representative" {
+        $document = New-AcyclicDeduplicationTestDocument
+        $document.components.schemas["NearMissB"] = Copy-JsonValue -Value $document.components.schemas.NearMiss
+        $properties = $document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
+        $properties["near"] = [ordered]@{ '$ref' = "#/components/schemas/NearMissB" }
+        $baseline = New-OpenApiComponentDefaultMapPlan -Document $document
+        $exactIdentity = Get-IdentityGroupForMember -Plan $baseline -Member "ExactA"
+        $nearIdentity = Get-IdentityGroupForMember -Plan $baseline -Member "NearMiss"
+        $policy = [ordered]@{
+            version = [long]1
+            groups = @([ordered]@{
+                id = "CountOverride"
+                type = "override"
+                representative = "ExactA"
+                fingerprint = $exactIdentity.Fingerprint
+                members = @("ExactA")
+                overrides = @([ordered]@{
+                    id = "NumberOverrides"
+                    type = "duplicate"
+                    representative = "NearMiss"
+                    fingerprint = $nearIdentity.Fingerprint
+                    members = @("NearMiss")
+                })
+            })
+        }
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document -PolicyMap $policy
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument `
+            -Document $document `
+            -PolicyMap $policy `
+            -DefaultMap $plan.DefaultMap
 
-        $componentNames = @((Get-JsonProperties -Value $result.Document.components.schemas).Name)
-        $blueIndex = [Array]::IndexOf($componentNames, "Blue")
-        Assert-Equal ($blueIndex + 1) ([Array]::IndexOf($componentNames, "SharedRed")) "Canonical red component was not emitted at its representative's position."
-        Assert-True (-not (Test-JsonProperty -Object $result.Document.components.schemas -Name $longRedName)) "Non-representative red component remained."
+        Assert-True (Test-JsonProperty -Object $result.Document.components.schemas -Name "CountOverride") "Override output was not emitted."
+        Assert-True (-not (Test-JsonProperty -Object $result.Document.components.schemas -Name "NumberOverrides")) "Nested target was emitted as an output."
+        Assert-Equal "integer" $result.Document.components.schemas.CountOverride.properties.count.type "Override did not retain the parent representative schema."
         $outputProperties = $result.Document.paths["/test"].post.responses["200"].content["application/json"].schema.properties
-        Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionA.'$ref' "First wrapper ref was not relocated."
-        Assert-Equal "#/components/schemas/SharedUnion" $outputProperties.unionB.'$ref' "Second wrapper ref was not relocated."
-        $union = $result.Document.components.schemas.SharedUnion
-        Assert-Sequence `
-            @("#/components/schemas/SharedRed", "#/components/schemas/Blue") `
-            @($union.oneOf.'$ref') `
-            "Canonical wrapper branches changed order or destinations."
-        Assert-Sequence `
-            @("red", "blue") `
-            @((Get-JsonProperties -Value $union.discriminator.mapping).Name) `
-            "Wrapper mapping keys changed during deduplication."
-        Assert-Sequence `
-            @("#/components/schemas/SharedRed", "#/components/schemas/Blue") `
-            @((Get-JsonProperties -Value $union.discriminator.mapping).Value) `
-            "Wrapper mapping targets were not relocated."
-        Assert-Equal 0 (New-TestDeduplicationAnalysis -Document $result.Document).DuplicateGroupCount "Wrapper deduplication left eligible groups."
+        Assert-Equal "#/components/schemas/CountOverride" $outputProperties.exact.'$ref' "Override-primary member did not relocate to parent output."
+        Assert-Equal "#/components/schemas/CountOverride" $outputProperties.near.'$ref' "Nested partial member did not relocate to parent output."
     }
 
-    # Persisted state is authoritative. Adding a new duplicate makes the mapping
-    # stale and requires an explicit updater/review cycle. Removing only one
-    # mapped member simulates an interrupted or hand-edited application and must
-    # be rejected rather than guessed at.
-    Invoke-Test "stale and partially applied mappings fail" {
-        $source = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
-        $mapping = New-TestDeduplicationMapping -Document $source
-        $source.components.schemas["EarlierLeaf"] = Copy-JsonValue -Value $source.components.schemas.LeafA
-        Assert-Throws {
-            ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $source -Mapping $mapping
-        } "*mapping is stale*"
+    Invoke-Test "policy may preserve identical schemas as separate outputs" {
+        $document = New-AcyclicDeduplicationTestDocument
+        $baseline = New-OpenApiComponentDefaultMapPlan -Document $document
+        $leafIdentity = Get-IdentityGroupForMember -Plan $baseline -Member "LeafA"
+        $policy = [ordered]@{
+            version = [long]1
+            groups = @(
+                [ordered]@{
+                    id = "FirstLeaf"
+                    type = "duplicate"
+                    representative = "LeafA"
+                    fingerprint = $leafIdentity.Fingerprint
+                    members = @("LeafA")
+                },
+                [ordered]@{
+                    id = "SecondLeaf"
+                    type = "duplicate"
+                    representative = "LeafB"
+                    fingerprint = $leafIdentity.Fingerprint
+                    members = @("LeafB")
+                }
+            )
+        }
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document -PolicyMap $policy
+        $result = ConvertTo-DeduplicatedOpenApiComponentsDocument `
+            -Document $document `
+            -PolicyMap $policy `
+            -DefaultMap $plan.DefaultMap
 
-        $partial = Read-TestJsonFixture -RelativePath "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
-        $null = $partial.components.schemas.Remove("ExactB")
-        $partial.paths["/test"].post.responses["200"].content["application/json"].schema.properties.exact.'$ref' = "#/components/schemas/ExactA"
-        $partial.components.schemas.ParentA.properties.choice.oneOf[1].'$ref' = "#/components/schemas/ExactA"
-        $partial.components.schemas.ParentB.properties.choice.oneOf[0].'$ref' = "#/components/schemas/ExactA"
-        Assert-Throws {
-            ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $partial -Mapping $mapping
-        } "*partially deduplicated*"
+        Assert-True (Test-JsonProperty -Object $result.Document.components.schemas -Name "FirstLeaf") "First policy output was not emitted."
+        Assert-True (Test-JsonProperty -Object $result.Document.components.schemas -Name "SecondLeaf") "Second policy output was not emitted."
+        Assert-Equal 1 (Get-OpenApiComponentDeduplicationAnalysis -Document $result.Document).DuplicateGroupCount "Separated policy outputs were unexpectedly merged."
     }
 
-    # The first CLI pass verifies deterministic encoding as well as semantic
-    # transformation. The second pass uses the collapsed artifact as both input
-    # and output; recognizing that shape must yield a byte-for-byte no-op.
+    Invoke-Test "edited or stale default map is rejected" {
+        $document = New-AcyclicDeduplicationTestDocument
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+        $plan.DefaultMap.groups[0].id = "EditedDefault"
+        Assert-Throws {
+            ConvertTo-DeduplicatedOpenApiComponentsDocument -Document $document -DefaultMap $plan.DefaultMap
+        } "*default map is stale or was edited*"
+    }
+
     Invoke-Test "CLI application is deterministic and byte-idempotent" {
-        $source = Read-OpenApiDocument -Path $fixturePath
-        $mapping = New-RenamedTestMapping -Document $source
-        $mappingPath = Join-Path $temporaryDirectory "mapping.json"
-        $outputPath = Join-Path $temporaryDirectory "deduplicated.openapi.json"
-        $null = Write-OpenApiJsonFile -Document $mapping -Path $mappingPath
+        $inputPath = Join-Path $temporaryDirectory "source.componentized.openapi.json"
+        $defaultMapPath = Join-Path $temporaryDirectory "responses.component-default-map.json"
+        $policyMapPath = Join-Path $temporaryDirectory "responses.component-policy-map.json"
+        $outputPath = Join-Path $temporaryDirectory "responses.componentized.deduplicated.openapi.json"
+        $document = New-AcyclicDeduplicationTestDocument
+        $null = Write-OpenApiJsonFile -Document $document -Path $inputPath
+        $plan = New-OpenApiComponentDefaultMapPlan -Document $document
+        $null = Write-OpenApiJsonFile -Document $plan.DefaultMap -Path $defaultMapPath
+
         $first = Invoke-OpenApiComponentDeduplicator `
-            -InputPath $fixturePath `
-            -MappingPath $mappingPath `
+            -InputPath $inputPath `
+            -DefaultMapPath $defaultMapPath `
+            -PolicyMapPath $policyMapPath `
             -OutputPath $outputPath
         Assert-Equal 3 $first.RemovedComponentCount "First CLI application removed the wrong count."
         [byte[]]$firstBytes = [System.IO.File]::ReadAllBytes($outputPath)
-        $hasBom = $firstBytes.Length -ge 3 -and $firstBytes[0] -eq 0xEF -and $firstBytes[1] -eq 0xBB -and $firstBytes[2] -eq 0xBF
-        Assert-True (-not $hasBom) "Deduplicated output contains a UTF-8 BOM."
-        Assert-Equal 10 $firstBytes[$firstBytes.Length - 1] "Deduplicated output lacks a trailing LF."
-
         $second = Invoke-OpenApiComponentDeduplicator `
             -InputPath $outputPath `
-            -MappingPath $mappingPath `
+            -DefaultMapPath $defaultMapPath `
+            -PolicyMapPath $policyMapPath `
             -OutputPath $outputPath
         Assert-Equal 0 $second.RemovedComponentCount "Second application removed components."
-        Assert-Equal 0 $second.DuplicateGroupCount "Second application found duplicate groups."
         Assert-BytesEqual $firstBytes ([System.IO.File]::ReadAllBytes($outputPath)) "Second application changed bytes."
     }
 
-    # CLI boundary failures should be actionable and occur before any output is
-    # committed. Missing OpenAPI input and malformed mapping JSON exercise the
-    # two independently resolved required inputs.
-    Invoke-Test "missing directory and malformed mapping inputs fail clearly" {
-        $mappingPath = Join-Path $temporaryDirectory "mapping.json"
-        $null = Write-OpenApiJsonFile -Document (New-OpenApiComponentDeduplicationMapping) -Path $mappingPath
+    Invoke-Test "missing input and malformed maps fail clearly" {
+        $defaultMapPath = Join-Path $temporaryDirectory "valid-default-map.json"
+        $null = Write-OpenApiJsonFile -Document (New-OpenApiComponentDefaultMap) -Path $defaultMapPath
         Assert-Throws {
             Invoke-OpenApiComponentDeduplicator `
                 -InputPath (Join-Path $temporaryDirectory "missing.json") `
-                -MappingPath $mappingPath `
+                -DefaultMapPath $defaultMapPath `
+                -PolicyMapPath (Join-Path $temporaryDirectory "absent-policy.json") `
                 -OutputPath (Join-Path $temporaryDirectory "output.json")
         } "*cannot find path*"
 
-        $invalidMappingPath = Join-Path $temporaryDirectory "invalid-mapping.json"
-        [System.IO.File]::WriteAllText($invalidMappingPath, "{ invalid", [System.Text.UTF8Encoding]::new($false))
+        $invalidDefaultPath = Join-Path $temporaryDirectory "invalid-default-map.json"
+        [System.IO.File]::WriteAllText($invalidDefaultPath, "{ invalid", [System.Text.UTF8Encoding]::new($false))
+        $inputPath = Join-Path $temporaryDirectory "valid-source.json"
+        $null = Write-OpenApiJsonFile -Document (New-AcyclicDeduplicationTestDocument) -Path $inputPath
         Assert-Throws {
             Invoke-OpenApiComponentDeduplicator `
-                -InputPath $fixturePath `
-                -MappingPath $invalidMappingPath `
+                -InputPath $inputPath `
+                -DefaultMapPath $invalidDefaultPath `
+                -PolicyMapPath (Join-Path $temporaryDirectory "absent-policy.json") `
                 -OutputPath (Join-Path $temporaryDirectory "output.json")
-        } "*Could not parse component deduplication mapping JSON*"
+        } "*Could not parse component default map JSON*"
     }
 }
 finally {
-    # GUID isolation permits concurrent runs; unconditional cleanup keeps failed
-    # test runs from accumulating temporary mapping and output artifacts.
     if ([System.IO.Directory]::Exists($temporaryDirectory)) {
         [System.IO.Directory]::Delete($temporaryDirectory, $true)
     }

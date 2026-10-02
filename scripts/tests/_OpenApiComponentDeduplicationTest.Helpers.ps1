@@ -81,17 +81,10 @@ function Get-TestDeduplicationFixturePath {
     return Join-Path $script:OpenApiTestFixtureRoot "Deduplicate-OpenApiComponents/source.componentized.openapi.json"
 }
 
-# These wrappers keep scenario setup terse while still exercising the same public
-# helper pipeline used by the production updater.
+# This wrapper keeps scenario setup terse while exercising production analysis.
 function New-TestDeduplicationAnalysis {
     param([object]$Document)
     return Get-OpenApiComponentDeduplicationAnalysis -Document $Document
-}
-
-function New-TestDeduplicationMapping {
-    param([object]$Document)
-    $analysis = New-TestDeduplicationAnalysis -Document $Document
-    return (Update-OpenApiComponentDeduplicationMapping -Analysis $analysis).Mapping
 }
 
 # Print one summary and fail the process only after all scenarios have run.

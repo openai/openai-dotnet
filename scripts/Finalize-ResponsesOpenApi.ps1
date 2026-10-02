@@ -4,28 +4,19 @@
 
 .DESCRIPTION
     Starts from responses.componentized.openapi.json in the target output
-    directory, reconciles the persisted component deduplication map, applies
-    component deduplication, and atomically publishes the result as
-    responses.openapi.json. Run Generate-ResponsesOpenApi.ps1 first whenever an
-    upstream transformation or the source OpenAPI specification changes.
+    directory, validates the optional manually maintained policy component map,
+    regenerates the complete default component map, applies the resolved maps,
+    and atomically publishes the result as responses.openapi.json. Run
+    Generate-ResponsesOpenApi.ps1 first whenever an upstream transformation or
+    the source OpenAPI specification changes.
 
 .PARAMETER OutputDirectory
     Directory containing responses.componentized.openapi.json and receiving the
-    deduplication map, deduplicated document, and final published artifact.
+    generated default map, deduplicated document, and final published artifact.
     Defaults to specification/openapi.
-
-.PARAMETER ResetDeduplicationMap
-    Deletes the target component deduplication map after the componentized input
-    and required stage scripts pass preflight, then bootstraps a fresh mapping.
-    Omitting this switch preserves and reconciles existing reviewed mapping IDs.
-    Reset is destructive and does not restore the old map if fresh analysis
-    subsequently fails.
 
 .EXAMPLE
     ./scripts/Finalize-ResponsesOpenApi.ps1
-
-.EXAMPLE
-    ./scripts/Finalize-ResponsesOpenApi.ps1 -ResetDeduplicationMap
 
 .EXAMPLE
     ./scripts/Finalize-ResponsesOpenApi.ps1 -OutputDirectory ./artifacts/responses
@@ -36,10 +27,7 @@
 [CmdletBinding()]
 param(
     [Parameter()]
-    [string]$OutputDirectory,
-
-    [Parameter()]
-    [switch]$ResetDeduplicationMap
+    [string]$OutputDirectory
 )
 
 $ErrorActionPreference = "Stop"
@@ -82,33 +70,14 @@ function Copy-OpenApiFileAtomically {
     return $fullDestinationPath
 }
 
-function Reset-ResponsesOpenApiDeduplicationMap {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path
-    )
-
-    $fullPath = [System.IO.Path]::GetFullPath($Path)
-    if (-not (Test-Path -LiteralPath $fullPath)) {
-        return
-    }
-    if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) {
-        throw "Cannot reset the component deduplication map because its path is not a file: $fullPath"
-    }
-    [System.IO.File]::Delete($fullPath)
-}
-
 function Invoke-ResponsesOpenApiFinalization {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$OutputDirectory,
-
-        [Parameter()]
-        [switch]$ResetDeduplicationMap
+        [string]$OutputDirectory
     )
 
     $stageScriptNames = @(
-        "Update-OpenApiComponentDeduplicationMap.ps1"
+        "Generate-OpenApiComponentDefaultMap.ps1"
         "Deduplicate-OpenApiComponents.ps1"
     )
     $stageScriptPaths = [ordered]@{}
@@ -127,20 +96,21 @@ function Invoke-ResponsesOpenApiFinalization {
     if (-not (Test-Path -LiteralPath $paths.Componentized -PathType Leaf)) {
         throw "The componentized Responses OpenAPI input path is not a file: $($paths.Componentized)"
     }
-
-    if ($ResetDeduplicationMap) {
-        Reset-ResponsesOpenApiDeduplicationMap -Path $paths.DeduplicationMap
+    if (Test-Path -LiteralPath $paths.PolicyComponentMap -PathType Container) {
+        throw "The component policy map path is not a file: $($paths.PolicyComponentMap)"
     }
 
-    $null = & $stageScriptPaths["Update-OpenApiComponentDeduplicationMap.ps1"] `
+    $null = & $stageScriptPaths["Generate-OpenApiComponentDefaultMap.ps1"] `
         -InputPath $paths.Componentized `
-        -MappingPath $paths.DeduplicationMap
+        -DefaultMapPath $paths.DefaultComponentMap `
+        -PolicyMapPath $paths.PolicyComponentMap
     $null = & $stageScriptPaths["Deduplicate-OpenApiComponents.ps1"] `
         -InputPath $paths.Componentized `
-        -MappingPath $paths.DeduplicationMap `
+        -DefaultMapPath $paths.DefaultComponentMap `
+        -PolicyMapPath $paths.PolicyComponentMap `
         -OutputPath $paths.Deduplicated
 
-    foreach ($artifactPath in @($paths.DeduplicationMap, $paths.Deduplicated)) {
+    foreach ($artifactPath in @($paths.DefaultComponentMap, $paths.Deduplicated)) {
         if (-not [System.IO.File]::Exists($artifactPath)) {
             throw "The Responses OpenAPI finalization pipeline did not produce '$artifactPath'."
         }
@@ -158,7 +128,8 @@ function Invoke-ResponsesOpenApiFinalization {
     Write-Host ""
     Write-Host "Responses OpenAPI finalization complete."
     Write-Host "Componentized input: $($paths.Componentized)"
-    Write-Host "Deduplication map: $($paths.DeduplicationMap)"
+    Write-Host "Policy component map: $(if ([System.IO.File]::Exists($paths.PolicyComponentMap)) { $paths.PolicyComponentMap } else { '<none>' })"
+    Write-Host "Default component map: $($paths.DefaultComponentMap)"
     Write-Host "Deduplicated output: $($paths.Deduplicated)"
     Write-Host "Final output: $($paths.Final)"
 
@@ -172,6 +143,5 @@ if ($MyInvocation.InvocationName -ne ".") {
         $OutputDirectory = $script:DefaultOutputDirectory
     }
     $null = Invoke-ResponsesOpenApiFinalization `
-        -OutputDirectory $OutputDirectory `
-        -ResetDeduplicationMap:$ResetDeduplicationMap
+        -OutputDirectory $OutputDirectory
 }

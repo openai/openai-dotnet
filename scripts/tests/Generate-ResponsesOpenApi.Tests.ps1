@@ -208,7 +208,8 @@ try {
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.openapi.json",
             "responses.inlined.flattened.simplified.recursive-simplified.type-enum-split.oneof-discriminated.oneof-normalized.oneof-flattened.singleton-type-wrapped.sorted.openapi.json",
             "responses.componentized.openapi.json",
-            "responses.component-deduplication-map.json",
+            "responses.component-default-map.json",
+            "responses.component-policy-map.json",
             "responses.componentized.deduplicated.openapi.json",
             "responses.openapi.json"
         ) @(
@@ -225,13 +226,15 @@ try {
             [System.IO.Path]::GetFileName($paths.SingletonTypeWrapped),
             [System.IO.Path]::GetFileName($paths.Sorted),
             [System.IO.Path]::GetFileName($paths.Componentized),
-            [System.IO.Path]::GetFileName($paths.DeduplicationMap),
+            [System.IO.Path]::GetFileName($paths.DefaultComponentMap),
+            [System.IO.Path]::GetFileName($paths.PolicyComponentMap),
             [System.IO.Path]::GetFileName($paths.Deduplicated),
             [System.IO.Path]::GetFileName($paths.Final)
         ) "Artifact names were incorrect."
         foreach ($path in @(
             $paths.Componentized,
-            $paths.DeduplicationMap,
+            $paths.DefaultComponentMap,
+            $paths.PolicyComponentMap,
             $paths.Deduplicated
         )) {
             Assert-Equal `
@@ -256,7 +259,7 @@ try {
         [System.IO.File]::WriteAllText($obsoleteDiscriminatedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         [System.IO.File]::WriteAllText($obsoletePreWrapSortedPath, "stale", [System.Text.UTF8Encoding]::new($false))
         $expectedPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $outputDirectory
-        foreach ($downstreamPath in @($expectedPaths.DeduplicationMap, $expectedPaths.Deduplicated, $expectedPaths.Final)) {
+        foreach ($downstreamPath in @($expectedPaths.DefaultComponentMap, $expectedPaths.PolicyComponentMap, $expectedPaths.Deduplicated, $expectedPaths.Final)) {
             [System.IO.File]::WriteAllText($downstreamPath, "downstream-sentinel", [System.Text.UTF8Encoding]::new($false))
         }
         $pwshPath = (Get-Process -Id $PID).Path
@@ -290,7 +293,7 @@ try {
             Assert-True ([System.IO.File]::Exists($artifactPath)) "Artifact was not created: $artifactPath"
         }
         Assert-True ([System.Linq.Enumerable]::SequenceEqual($sourceBefore, [System.IO.File]::ReadAllBytes($sourcePath))) "Pipeline modified its source specification."
-        foreach ($downstreamPath in @($paths.DeduplicationMap, $paths.Deduplicated, $paths.Final)) {
+        foreach ($downstreamPath in @($paths.DefaultComponentMap, $paths.PolicyComponentMap, $paths.Deduplicated, $paths.Final)) {
             Assert-Equal "downstream-sentinel" ([System.IO.File]::ReadAllText($downstreamPath)) "Generation modified downstream artifact '$downstreamPath'."
         }
         Assert-True (-not [System.IO.File]::Exists($obsoleteSortedPath)) "Pipeline retained the obsolete sorted artifact."
@@ -445,14 +448,14 @@ try {
         $guardOutputDirectory = Join-Path $temporaryDirectory "source-guard"
         $guardPaths = Get-ResponsesOpenApiArtifactPaths -OutputDirectory $guardOutputDirectory
         $null = [System.IO.Directory]::CreateDirectory($guardOutputDirectory)
-        [System.IO.File]::WriteAllText($guardPaths.DeduplicationMap, "preserve", [System.Text.UTF8Encoding]::new($false))
-        [byte[]]$guardBytes = [System.IO.File]::ReadAllBytes($guardPaths.DeduplicationMap)
+        [System.IO.File]::WriteAllText($guardPaths.DefaultComponentMap, "preserve", [System.Text.UTF8Encoding]::new($false))
+        [byte[]]$guardBytes = [System.IO.File]::ReadAllBytes($guardPaths.DefaultComponentMap)
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `
                 -SpecificationPath (Join-Path $temporaryDirectory "missing.json") `
                 -OutputDirectory $guardOutputDirectory
         } "*cannot find path*"
-        Assert-BytesEqual $guardBytes ([System.IO.File]::ReadAllBytes($guardPaths.DeduplicationMap)) "Early failure deleted the existing map."
+        Assert-BytesEqual $guardBytes ([System.IO.File]::ReadAllBytes($guardPaths.DefaultComponentMap)) "Early failure changed the existing default map."
         Assert-Throws {
             Invoke-ResponsesOpenApiGeneration `
                 -SpecificationPath $temporaryDirectory `

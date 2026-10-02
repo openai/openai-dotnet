@@ -1,14 +1,14 @@
 #Requires -Version 7.0
 
-# Private graph, fingerprint, and mapping helpers shared by the component
-# deduplication scripts. The public scripts dot-source the document helpers first.
+# Private graph, fingerprint, and component-map helpers shared by the component
+# processing scripts. The public scripts dot-source the document helpers first.
 #
 # The implementation has five stages:
 #   1. discover component-to-component pointer edges;
 #   2. classify cycles and every component that depends on one;
 #   3. recursively fingerprint the remaining acyclic component trees;
 #   4. group trees with identical canonical content;
-#   5. reconcile those current groups with persisted, reviewed identities.
+#   5. validate policy, generate comprehensive defaults, and resolve outputs.
 #
 # Component encounter order is preserved for readable, deterministic artifacts.
 # Object property order is not part of structural identity, so canonicalization
@@ -388,7 +388,7 @@ function Get-OpenApiComponentTreeIdentity {
     }
 }
 
-# Builds the complete analysis consumed by both mapping reconciliation and apply.
+# Builds the complete analysis consumed by component-map generation and apply.
 # It preserves source component order while deriving dependencies, cycle safety,
 # recursive identities, duplicate groups, and expected removal counts.
 function Get-OpenApiComponentDeduplicationAnalysis {
@@ -495,6 +495,7 @@ function Get-OpenApiComponentDeduplicationAnalysis {
 
     # Emit each group once, at its first member's source position. Members and
     # groups therefore remain deterministic and easy to review in generated JSON.
+    $identityGroupList = [System.Collections.Generic.List[object]]::new()
     $duplicateGroups = [System.Collections.Generic.List[object]]::new()
     foreach ($componentName in $componentNames) {
         if ($cycleDependent.Contains($componentName)) {
@@ -503,16 +504,19 @@ function Get-OpenApiComponentDeduplicationAnalysis {
         $identity = $state.Identities[$componentName]
         $groupKey = "$($identity.Fingerprint)`n$($identity.CanonicalText)"
         $members = $identityGroups[$groupKey]
-        if ($members.Count -lt 2 -or
-            -not [string]::Equals($members[0], $componentName, [System.StringComparison]::Ordinal)) {
+        if (-not [string]::Equals($members[0], $componentName, [System.StringComparison]::Ordinal)) {
             continue
         }
-        $duplicateGroups.Add([PSCustomObject]@{
+        $group = [PSCustomObject]@{
             Fingerprint = $identity.Fingerprint
             CanonicalText = $identity.CanonicalText
             GroupKey = $groupKey
             Members = [object[]]$members.ToArray()
-        })
+        }
+        $identityGroupList.Add($group)
+        if ($members.Count -ge 2) {
+            $duplicateGroups.Add($group)
+        }
     }
 
     $removableCount = 0
@@ -526,118 +530,12 @@ function Get-OpenApiComponentDeduplicationAnalysis {
         Dependencies = $dependencies
         OccurrencesByComponent = $occurrencesByComponent
         Identities = $state.Identities
+        IdentityGroups = [object[]]$identityGroupList.ToArray()
         DuplicateGroups = [object[]]$duplicateGroups.ToArray()
         DuplicateGroupCount = $duplicateGroups.Count
         RemovableComponentCount = $removableCount
         CycleComponents = [object[]]@($componentNames | Where-Object { $cycleNodes.Contains($_) })
         CycleDependentComponents = [object[]]@($componentNames | Where-Object { $cycleDependent.Contains($_) })
-    }
-}
-
-# Version 1 uses id as both the stable group identity and the reviewed output
-# component name. Canonical tree text is deliberately omitted; it is recomputed
-# from source and represented by the compact fingerprint.
-function New-OpenApiComponentDeduplicationMapping {
-    return [ordered]@{
-        version = [long]1
-        groups = [object[]]@()
-    }
-}
-
-# Mapping JSON has a stricter contract than general OpenAPI JSON. Parse and
-# validate at the boundary so downstream reconciliation can rely on its shape.
-function Read-OpenApiComponentDeduplicationMapping {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string]$Path
-    )
-
-    try {
-        $mapping = Get-Content -LiteralPath $Path -Raw -Encoding utf8 |
-            ConvertFrom-Json -AsHashtable -Depth 100
-    }
-    catch {
-        throw "Could not parse component deduplication mapping JSON at '$Path': $($_.Exception.Message)"
-    }
-    Assert-OpenApiComponentDeduplicationMapping -Mapping $mapping
-    return $mapping
-}
-
-# Validates both per-group fields and mapping-wide ownership invariants:
-# unique ids, globally disjoint members, a representative contained in its group,
-# and a correctly shaped SHA-256 fingerprint.
-function Assert-OpenApiComponentDeduplicationMapping {
-    param(
-        [Parameter(Mandatory = $true)]
-        [object]$Mapping
-    )
-
-    if (-not (Test-JsonObjectValue -Value $Mapping)) {
-        throw "The component deduplication mapping must be a JSON object."
-    }
-    $version = Get-JsonPropertyValue -Object $Mapping -Name "version"
-    if ($version -isnot [long] -and $version -isnot [int]) {
-        throw "The component deduplication mapping version must be an integer."
-    }
-    if ([long]$version -ne 1) {
-        throw "Unsupported component deduplication mapping version '$version'."
-    }
-    $groups = Get-JsonPropertyValue -Object $Mapping -Name "groups"
-    if (-not (Test-JsonArrayValue -Value $groups)) {
-        throw "The component deduplication mapping groups property must be an array."
-    }
-
-    # These sets enforce mapping-wide uniqueness while groupMembers below catches
-    # duplicates within one group's ordered member list.
-    $ids = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    $allMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    $allowedGroupProperties = [System.Collections.Generic.HashSet[string]]::new(
-        [string[]]@("id", "representative", "fingerprint", "members"),
-        [System.StringComparer]::Ordinal
-    )
-    foreach ($group in $groups) {
-        if (-not (Test-JsonObjectValue -Value $group)) {
-            throw "Every component deduplication mapping group must be an object."
-        }
-        foreach ($property in (Get-JsonProperties -Value $group)) {
-            if (-not $allowedGroupProperties.Contains($property.Name)) {
-                throw "Mapping group contains unsupported property '$($property.Name)'."
-            }
-        }
-        $id = Get-JsonPropertyValue -Object $group -Name "id"
-        $representative = Get-JsonPropertyValue -Object $group -Name "representative"
-        $fingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
-        $members = Get-JsonPropertyValue -Object $group -Name "members"
-        foreach ($value in @($id, $representative, $fingerprint)) {
-            if ($value -isnot [string] -or [string]::IsNullOrWhiteSpace($value)) {
-                throw "Every mapping group must have nonempty string id, representative, and fingerprint values."
-            }
-        }
-        if (-not $ids.Add($id)) {
-            throw "Component deduplication mapping id '$id' is duplicated."
-        }
-        if (-not (Test-JsonArrayValue -Value $members) -or $members.Count -lt 2) {
-            throw "Mapping group '$id' must contain at least two members."
-        }
-        $groupMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-        foreach ($member in $members) {
-            if ($member -isnot [string] -or [string]::IsNullOrWhiteSpace($member)) {
-                throw "Every member of mapping group '$id' must be a nonempty string."
-            }
-            if (-not $groupMembers.Add($member)) {
-                throw "Mapping group '$id' contains duplicate member '$member'."
-            }
-            if (-not $allMembers.Add($member)) {
-                throw "Component '$member' belongs to more than one mapping group."
-            }
-        }
-        if (-not $groupMembers.Contains($representative)) {
-            throw "Representative '$representative' is not a member of mapping group '$id'."
-        }
-        if (-not $fingerprint.StartsWith("sha256:", [System.StringComparison]::Ordinal) -or
-            $fingerprint.Length -ne 71) {
-            throw "Mapping group '$id' has invalid fingerprint '$fingerprint'."
-        }
     }
 }
 
@@ -686,189 +584,716 @@ function Get-OpenApiComponentDeduplicationRepresentative {
     return $representative
 }
 
-# Reconciles current analysis with persisted review state. Historical groups are
-# matched by their members rather than fingerprint because legitimate whole-group
-# evolution changes fingerprints. The conservative rules are:
-#   * historical ids, representatives, order, and members persist;
-#   * newly equivalent members append in current source order;
-#   * whole-group fingerprint evolution is accepted and reported;
-#   * missing/diverged/split/merged/cycle-dependent history fails;
-#   * wholly new groups append after all historical groups.
-function Update-OpenApiComponentDeduplicationMapping {
+function New-OpenApiComponentPolicyMap {
+    return [ordered]@{
+        version = [long]1
+        groups = [object[]]@()
+    }
+}
+
+function New-OpenApiComponentDefaultMap {
+    return [ordered]@{
+        version = [long]1
+        groups = [object[]]@()
+    }
+}
+
+function Test-OpenApiComponentFingerprint {
     param(
         [Parameter(Mandatory = $true)]
-        [object]$Analysis,
+        [AllowNull()]
+        [object]$Value
+    )
+
+    return $Value -is [string] -and [System.Text.RegularExpressions.Regex]::IsMatch(
+        $Value,
+        "\Asha256:[0-9a-f]{64}\z",
+        [System.Text.RegularExpressions.RegexOptions]::CultureInvariant
+    )
+}
+
+function Assert-OpenApiComponentMapRoot {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Map,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Description
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Map)) {
+        throw "The $Description must be a JSON object."
+    }
+    $allowedProperties = [System.Collections.Generic.HashSet[string]]::new(
+        [string[]]@("version", "groups"),
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($property in (Get-JsonProperties -Value $Map)) {
+        if (-not $allowedProperties.Contains($property.Name)) {
+            throw "The $Description contains unsupported property '$($property.Name)'."
+        }
+    }
+    $version = Get-JsonPropertyValue -Object $Map -Name "version"
+    if (($version -isnot [long] -and $version -isnot [int]) -or [long]$version -ne 1) {
+        throw "The $Description must have integer version 1."
+    }
+    $groups = Get-JsonPropertyValue -Object $Map -Name "groups"
+    if (-not (Test-JsonArrayValue -Value $groups)) {
+        throw "The $Description groups property must be an array."
+    }
+}
+
+function Assert-OpenApiDuplicateGroupShape {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Group,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+
+        [Parameter()]
+        [switch]$AllowPartial
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Group)) {
+        throw "$Path must be an object."
+    }
+    $allowedNames = [System.Collections.Generic.List[string]]::new()
+    foreach ($name in @("id", "type", "representative", "fingerprint", "members")) {
+        $allowedNames.Add($name)
+    }
+    if ($AllowPartial) {
+        $allowedNames.Add("is_partial")
+    }
+    $allowedProperties = [System.Collections.Generic.HashSet[string]]::new(
+        [string[]]$allowedNames.ToArray(),
+        [System.StringComparer]::Ordinal
+    )
+    foreach ($property in (Get-JsonProperties -Value $Group)) {
+        if (-not $allowedProperties.Contains($property.Name)) {
+            throw "$Path contains unsupported property '$($property.Name)'."
+        }
+    }
+    foreach ($requiredName in @("id", "type", "representative", "fingerprint", "members")) {
+        if (-not (Test-JsonProperty -Object $Group -Name $requiredName)) {
+            throw "$Path is missing required property '$requiredName'."
+        }
+    }
+    $id = Get-JsonPropertyValue -Object $Group -Name "id"
+    $type = Get-JsonPropertyValue -Object $Group -Name "type"
+    $representative = Get-JsonPropertyValue -Object $Group -Name "representative"
+    $fingerprint = Get-JsonPropertyValue -Object $Group -Name "fingerprint"
+    $members = Get-JsonPropertyValue -Object $Group -Name "members"
+    if ($id -isnot [string] -or [string]::IsNullOrWhiteSpace($id)) {
+        throw "$Path must have a nonempty string id."
+    }
+    if (-not [string]::Equals($type, "duplicate", [System.StringComparison]::Ordinal)) {
+        throw "$Path must have type 'duplicate'."
+    }
+    if ($representative -isnot [string] -or [string]::IsNullOrWhiteSpace($representative)) {
+        throw "$Path must have a nonempty string representative."
+    }
+    if (-not (Test-OpenApiComponentFingerprint -Value $fingerprint)) {
+        throw "$Path has invalid fingerprint '$fingerprint'."
+    }
+    if (-not (Test-JsonArrayValue -Value $members) -or $members.Count -lt 1) {
+        throw "$Path must contain at least one member."
+    }
+    $memberSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($member in $members) {
+        if ($member -isnot [string] -or [string]::IsNullOrWhiteSpace($member)) {
+            throw "Every member of $Path must be a nonempty string."
+        }
+        if (-not $memberSet.Add($member)) {
+            throw "$Path contains duplicate member '$member'."
+        }
+    }
+    if (-not $memberSet.Contains($representative)) {
+        throw "Representative '$representative' is not a member of $Path."
+    }
+    if (Test-JsonProperty -Object $Group -Name "is_partial") {
+        $isPartial = Get-JsonPropertyValue -Object $Group -Name "is_partial"
+        if (-not $AllowPartial -or $isPartial -isnot [bool] -or -not $isPartial) {
+            throw "$Path may specify is_partial only as true in a default map."
+        }
+    }
+}
+
+function Assert-OpenApiComponentPolicyMap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Map
+    )
+
+    Assert-OpenApiComponentMapRoot -Map $Map -Description "component policy map"
+    $ids = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $allMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    [object[]]$groups = [object[]](Get-JsonPropertyValue -Object $Map -Name "groups")
+    for ($groupIndex = 0; $groupIndex -lt $groups.Count; $groupIndex++) {
+        $group = $groups[$groupIndex]
+        $path = "Policy group[$groupIndex]"
+        if (-not (Test-JsonObjectValue -Value $group)) {
+            throw "$path must be an object."
+        }
+        $type = Get-JsonPropertyValue -Object $group -Name "type"
+        if ([string]::Equals($type, "duplicate", [System.StringComparison]::Ordinal)) {
+            Assert-OpenApiDuplicateGroupShape -Group $group -Path $path
+            $nestedGroups = @()
+        }
+        elseif ([string]::Equals($type, "override", [System.StringComparison]::Ordinal)) {
+            $allowedProperties = [System.Collections.Generic.HashSet[string]]::new(
+                [string[]]@("id", "type", "representative", "fingerprint", "members", "overrides"),
+                [System.StringComparer]::Ordinal
+            )
+            foreach ($property in (Get-JsonProperties -Value $group)) {
+                if (-not $allowedProperties.Contains($property.Name)) {
+                    throw "$path contains unsupported property '$($property.Name)'."
+                }
+            }
+            foreach ($requiredName in @("id", "type", "representative", "fingerprint", "members", "overrides")) {
+                if (-not (Test-JsonProperty -Object $group -Name $requiredName)) {
+                    throw "$path is missing required property '$requiredName'."
+                }
+            }
+            $id = Get-JsonPropertyValue -Object $group -Name "id"
+            $representative = Get-JsonPropertyValue -Object $group -Name "representative"
+            $fingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
+            $members = Get-JsonPropertyValue -Object $group -Name "members"
+            $nestedGroups = Get-JsonPropertyValue -Object $group -Name "overrides"
+            if ($id -isnot [string] -or [string]::IsNullOrWhiteSpace($id)) {
+                throw "$path must have a nonempty string id."
+            }
+            if ($representative -isnot [string] -or [string]::IsNullOrWhiteSpace($representative)) {
+                throw "$path must have a nonempty string representative."
+            }
+            if (-not (Test-OpenApiComponentFingerprint -Value $fingerprint)) {
+                throw "$path has invalid fingerprint '$fingerprint'."
+            }
+            if (-not (Test-JsonArrayValue -Value $members) -or $members.Count -lt 1) {
+                throw "$path must contain at least one member."
+            }
+            if (-not (Test-JsonArrayValue -Value $nestedGroups) -or $nestedGroups.Count -lt 1) {
+                throw "$path must contain at least one overrides group."
+            }
+            $memberSet = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+            foreach ($member in $members) {
+                if ($member -isnot [string] -or [string]::IsNullOrWhiteSpace($member)) {
+                    throw "Every member of $path must be a nonempty string."
+                }
+                if (-not $memberSet.Add($member)) {
+                    throw "$path contains duplicate member '$member'."
+                }
+            }
+            if (-not $memberSet.Contains($representative)) {
+                throw "Representative '$representative' is not a member of $path."
+            }
+            for ($nestedIndex = 0; $nestedIndex -lt $nestedGroups.Count; $nestedIndex++) {
+                $nested = $nestedGroups[$nestedIndex]
+                $nestedPath = "$path overrides[$nestedIndex]"
+                Assert-OpenApiDuplicateGroupShape -Group $nested -Path $nestedPath
+                $nestedFingerprint = Get-JsonPropertyValue -Object $nested -Name "fingerprint"
+                if ([string]::Equals($fingerprint, $nestedFingerprint, [System.StringComparison]::Ordinal)) {
+                    throw "$nestedPath fingerprint must differ from its parent override fingerprint."
+                }
+            }
+        }
+        else {
+            throw "$path must have type 'duplicate' or 'override'."
+        }
+
+        $groupId = Get-JsonPropertyValue -Object $group -Name "id"
+        if (-not $ids.Add($groupId)) {
+            throw "Component policy id '$groupId' is duplicated."
+        }
+        foreach ($member in [object[]](Get-JsonPropertyValue -Object $group -Name "members")) {
+            if (-not $allMembers.Add($member)) {
+                throw "Component '$member' belongs to more than one policy group."
+            }
+        }
+        for ($nestedIndex = 0; $nestedIndex -lt @($nestedGroups).Count; $nestedIndex++) {
+            $nested = $nestedGroups[$nestedIndex]
+            $nestedId = Get-JsonPropertyValue -Object $nested -Name "id"
+            if (-not $ids.Add($nestedId)) {
+                throw "Component policy id '$nestedId' is duplicated."
+            }
+            foreach ($member in [object[]](Get-JsonPropertyValue -Object $nested -Name "members")) {
+                if (-not $allMembers.Add($member)) {
+                    throw "Component '$member' belongs to more than one policy group."
+                }
+            }
+        }
+    }
+}
+
+function Assert-OpenApiComponentDefaultMap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Map
+    )
+
+    Assert-OpenApiComponentMapRoot -Map $Map -Description "component default map"
+    $ids = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $allMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    [object[]]$groups = [object[]](Get-JsonPropertyValue -Object $Map -Name "groups")
+    for ($groupIndex = 0; $groupIndex -lt $groups.Count; $groupIndex++) {
+        $group = $groups[$groupIndex]
+        $path = "Default group[$groupIndex]"
+        Assert-OpenApiDuplicateGroupShape -Group $group -Path $path -AllowPartial
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
+        if (-not $ids.Add($id)) {
+            throw "Component default id '$id' is duplicated."
+        }
+        foreach ($member in [object[]](Get-JsonPropertyValue -Object $group -Name "members")) {
+            if (-not $allMembers.Add($member)) {
+                throw "Component '$member' belongs to more than one default group."
+            }
+        }
+    }
+}
+
+function Read-OpenApiComponentPolicyMap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    try {
+        $map = Get-Content -LiteralPath $Path -Raw -Encoding utf8 |
+            ConvertFrom-Json -AsHashtable -Depth 100
+    }
+    catch {
+        throw "Could not parse component policy map JSON at '$Path': $($_.Exception.Message)"
+    }
+    Assert-OpenApiComponentPolicyMap -Map $map
+    return $map
+}
+
+function Read-OpenApiComponentDefaultMap {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Path
+    )
+
+    try {
+        $map = Get-Content -LiteralPath $Path -Raw -Encoding utf8 |
+            ConvertFrom-Json -AsHashtable -Depth 100
+    }
+    catch {
+        throw "Could not parse component default map JSON at '$Path': $($_.Exception.Message)"
+    }
+    Assert-OpenApiComponentDefaultMap -Map $map
+    return $map
+}
+
+function Get-OpenApiComponentPolicyState {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
 
         [Parameter()]
         [AllowNull()]
-        [object]$Mapping
+        [object]$PolicyMap
     )
 
-    if ($null -eq $Mapping) {
-        $Mapping = New-OpenApiComponentDeduplicationMapping
+    if ($null -eq $PolicyMap) {
+        $PolicyMap = New-OpenApiComponentPolicyMap
     }
-    Assert-OpenApiComponentDeduplicationMapping -Mapping $Mapping
+    Assert-OpenApiComponentPolicyMap -Map $PolicyMap
 
-    # Every eligible component belongs to at most one current structural group,
-    # making member lookup the bridge from historical identity to current shape.
-    $currentGroupByMember = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
-    foreach ($currentGroup in $Analysis.DuplicateGroups) {
-        foreach ($member in $currentGroup.Members) {
-            $currentGroupByMember[$member] = $currentGroup
+    $rawAnalysis = Get-OpenApiComponentDeduplicationAnalysis -Document $Document
+    if ($rawAnalysis.CycleDependentComponents.Count -gt 0) {
+        throw "Component map generation does not support cycle-dependent components: $($rawAnalysis.CycleDependentComponents -join ', ')."
+    }
+    $sourceNames = [System.Collections.Generic.HashSet[string]]::new(
+        [string[]]$rawAnalysis.ComponentNames,
+        [System.StringComparer]::Ordinal
+    )
+    $claimedMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $policyIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $targets = [System.Collections.Generic.List[object]]::new()
+    $relocations = [System.Collections.Generic.Dictionary[string, string]]::new([System.StringComparer]::Ordinal)
+    [object[]]$groups = [object[]](Get-JsonPropertyValue -Object $PolicyMap -Name "groups")
+
+    for ($groupIndex = 0; $groupIndex -lt $groups.Count; $groupIndex++) {
+        $group = $groups[$groupIndex]
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
+        $type = Get-JsonPropertyValue -Object $group -Name "type"
+        $representative = Get-JsonPropertyValue -Object $group -Name "representative"
+        [object[]]$members = [object[]](Get-JsonPropertyValue -Object $group -Name "members")
+        $null = $policyIds.Add($id)
+        foreach ($member in $members) {
+            if (-not $sourceNames.Contains($member)) {
+                throw "Policy component '$member' in group '$id' is missing from the componentized source."
+            }
+            $null = $claimedMembers.Add($member)
+        }
+        $outputMembers = [System.Collections.Generic.List[string]]::new()
+        foreach ($member in $members) {
+            $outputMembers.Add($member)
+        }
+
+        $targets.Add([PSCustomObject]@{
+            Id = $id
+            Type = if ([string]::Equals($type, "override", [System.StringComparison]::Ordinal)) { "OverridePrimary" } else { "Duplicate" }
+            Path = $id
+            Fingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
+            Representative = $representative
+            Members = $members
+            OutputId = $id
+            OutputRepresentative = $representative
+            ParentGroup = $group
+        })
+
+        [object[]]$nestedGroups = if ([string]::Equals($type, "override", [System.StringComparison]::Ordinal)) {
+            [object[]](Get-JsonPropertyValue -Object $group -Name "overrides")
+        }
+        else {
+            [object[]]@()
+        }
+        foreach ($nested in $nestedGroups) {
+            $nestedId = Get-JsonPropertyValue -Object $nested -Name "id"
+            [object[]]$nestedMembers = [object[]](Get-JsonPropertyValue -Object $nested -Name "members")
+            $null = $policyIds.Add($nestedId)
+            foreach ($member in $nestedMembers) {
+                if (-not $sourceNames.Contains($member)) {
+                    throw "Policy component '$member' in nested group '$nestedId' is missing from the componentized source."
+                }
+                $null = $claimedMembers.Add($member)
+                $outputMembers.Add($member)
+            }
+            $targets.Add([PSCustomObject]@{
+                Id = $nestedId
+                Type = "OverrideNested"
+                Path = "$id/overrides/$nestedId"
+                Fingerprint = Get-JsonPropertyValue -Object $nested -Name "fingerprint"
+                Representative = Get-JsonPropertyValue -Object $nested -Name "representative"
+                Members = $nestedMembers
+                OutputId = $id
+                OutputRepresentative = $representative
+                ParentGroup = $group
+            })
+        }
+
+        if ($sourceNames.Contains($id) -and -not ($outputMembers -ccontains $id)) {
+            throw "Policy output id '$id' collides with an unrelated source component."
+        }
+        $destination = "#/components/schemas/$(ConvertTo-JsonPointerToken -Token $representative)"
+        foreach ($member in $outputMembers) {
+            $source = "#/components/schemas/$(ConvertTo-JsonPointerToken -Token $member)"
+            if (-not [string]::Equals($source, $destination, [System.StringComparison]::Ordinal)) {
+                Add-OpenApiPointerRelocation `
+                    -Relocations $relocations `
+                    -SourcePrefix $source `
+                    -DestinationPrefix $destination
+            }
+        }
+    }
+
+    $normalizedDocument = if ($relocations.Count -gt 0) {
+        ConvertTo-RelocatedOpenApiPointers -Value $Document -Relocations $relocations
+    }
+    else {
+        Copy-JsonValue -Value $Document
+    }
+    $analysis = Get-OpenApiComponentDeduplicationAnalysis -Document $normalizedDocument
+    if ($analysis.CycleDependentComponents.Count -gt 0) {
+        throw "Component policy normalization creates cycle-dependent components: $($analysis.CycleDependentComponents -join ', ')."
+    }
+
+    foreach ($target in $targets) {
+        $representativeIdentity = $analysis.Identities[$target.Representative]
+        if (-not [string]::Equals(
+            $target.Fingerprint,
+            $representativeIdentity.Fingerprint,
+            [System.StringComparison]::Ordinal
+        )) {
+            throw "Policy target '$($target.Path)' fingerprint '$($target.Fingerprint)' does not match current fingerprint '$($representativeIdentity.Fingerprint)'."
+        }
+        foreach ($member in $target.Members) {
+            $identity = $analysis.Identities[$member]
+            if (-not [string]::Equals(
+                $identity.Fingerprint,
+                $target.Fingerprint,
+                [System.StringComparison]::Ordinal
+            ) -or -not [string]::Equals(
+                $identity.CanonicalText,
+                $representativeIdentity.CanonicalText,
+                [System.StringComparison]::Ordinal
+            )) {
+                throw "Policy component '$member' does not match fingerprint '$($target.Fingerprint)' for target '$($target.Path)'."
+            }
+        }
+    }
+
+    return [PSCustomObject]@{
+        PolicyMap = $PolicyMap
+        RawAnalysis = $rawAnalysis
+        NormalizedDocument = $normalizedDocument
+        Analysis = $analysis
+        Targets = [object[]]$targets.ToArray()
+        ClaimedMembers = $claimedMembers
+        PolicyIds = $policyIds
+    }
+}
+
+function Get-OpenApiComponentLogicalGroups {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$PolicyMap,
+
+        [Parameter(Mandatory = $true)]
+        [object]$DefaultMap,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [object[]]$ComponentNames
+    )
+
+    $partialById = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+    $ordinaryDefaults = [System.Collections.Generic.List[object]]::new()
+    foreach ($group in [object[]](Get-JsonPropertyValue -Object $DefaultMap -Name "groups")) {
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
+        if (Test-JsonProperty -Object $group -Name "is_partial") {
+            $partialById[$id] = $group
+        }
+        else {
+            $ordinaryDefaults.Add($group)
+        }
+    }
+
+    $logicalGroups = [System.Collections.Generic.List[object]]::new()
+    $consumedPartials = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($group in [object[]](Get-JsonPropertyValue -Object $PolicyMap -Name "groups")) {
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
+        $members = [System.Collections.Generic.List[string]]::new()
+        foreach ($member in [object[]](Get-JsonPropertyValue -Object $group -Name "members")) {
+            $members.Add($member)
+        }
+        if ($partialById.ContainsKey($id)) {
+            foreach ($member in [object[]](Get-JsonPropertyValue -Object $partialById[$id] -Name "members")) {
+                $members.Add($member)
+            }
+            $null = $consumedPartials.Add($id)
+        }
+        if ([string]::Equals(
+            (Get-JsonPropertyValue -Object $group -Name "type"),
+            "override",
+            [System.StringComparison]::Ordinal
+        )) {
+            foreach ($nested in [object[]](Get-JsonPropertyValue -Object $group -Name "overrides")) {
+                $nestedId = Get-JsonPropertyValue -Object $nested -Name "id"
+                foreach ($member in [object[]](Get-JsonPropertyValue -Object $nested -Name "members")) {
+                    $members.Add($member)
+                }
+                if ($partialById.ContainsKey($nestedId)) {
+                    foreach ($member in [object[]](Get-JsonPropertyValue -Object $partialById[$nestedId] -Name "members")) {
+                        $members.Add($member)
+                    }
+                    $null = $consumedPartials.Add($nestedId)
+                }
+            }
+        }
+        $logicalGroups.Add([PSCustomObject]@{
+            Id = $id
+            Type = Get-JsonPropertyValue -Object $group -Name "type"
+            Representative = Get-JsonPropertyValue -Object $group -Name "representative"
+            Members = [object[]]$members.ToArray()
+        })
+    }
+    foreach ($group in $ordinaryDefaults) {
+        $logicalGroups.Add([PSCustomObject]@{
+            Id = Get-JsonPropertyValue -Object $group -Name "id"
+            Type = "duplicate"
+            Representative = Get-JsonPropertyValue -Object $group -Name "representative"
+            Members = [object[]](Get-JsonPropertyValue -Object $group -Name "members")
+        })
+    }
+    foreach ($partialId in $partialById.Keys) {
+        if (-not $consumedPartials.Contains($partialId)) {
+            throw "Partial default group '$partialId' does not match a policy target."
         }
     }
 
     $sourceNames = [System.Collections.Generic.HashSet[string]]::new(
-        [string[]]$Analysis.ComponentNames,
+        [string[]]$ComponentNames,
         [System.StringComparer]::Ordinal
     )
-    $mappedMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
-    $claimedCurrentGroups = [System.Collections.Generic.Dictionary[string, string]]::new([System.StringComparer]::Ordinal)
-    $updatedGroups = [System.Collections.Generic.List[object]]::new()
-    $statuses = [System.Collections.Generic.List[object]]::new()
-
-    # Reconcile persisted groups first and in persisted order. This is what keeps
-    # stable decisions intact when a newly discovered duplicate appears earlier
-    # than the old representative in source order.
-    $mappingGroups = Get-JsonPropertyValue -Object $Mapping -Name "groups"
-    foreach ($group in $mappingGroups) {
-        $id = Get-JsonPropertyValue -Object $group -Name "id"
-        $representative = Get-JsonPropertyValue -Object $group -Name "representative"
-        $oldFingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
-        [object[]]$oldMembers = [object[]](Get-JsonPropertyValue -Object $group -Name "members")
-
-        foreach ($member in $oldMembers) {
+    $logicalIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $claimedMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($group in $logicalGroups) {
+        if (-not $logicalIds.Add($group.Id)) {
+            throw "Logical component id '$($group.Id)' is duplicated."
+        }
+        foreach ($member in $group.Members) {
             if (-not $sourceNames.Contains($member)) {
-                throw "Mapped component '$member' in group '$id' is missing from the componentized source."
+                throw "Logical group '$($group.Id)' contains missing component '$member'."
             }
-            if ($Analysis.CycleDependentComponents -ccontains $member) {
-                throw "Mapped component '$member' in group '$id' is now cycle-dependent and cannot be deduplicated."
+            if (-not $claimedMembers.Add($member)) {
+                throw "Component '$member' belongs to more than one logical output group."
             }
         }
-        if (-not $sourceNames.Contains($representative)) {
-            throw "Representative '$representative' in group '$id' is missing from the componentized source."
+        if (-not ($group.Members -ccontains $group.Representative)) {
+            throw "Representative '$($group.Representative)' is not a member of logical group '$($group.Id)'."
         }
+        if ($sourceNames.Contains($group.Id) -and -not ($group.Members -ccontains $group.Id)) {
+            throw "Logical output id '$($group.Id)' collides with an unrelated source component."
+        }
+    }
+    foreach ($componentName in $ComponentNames) {
+        if (-not $claimedMembers.Contains($componentName)) {
+            throw "Component '$componentName' is not covered by the policy and default maps."
+        }
+    }
+    return [object[]]$logicalGroups.ToArray()
+}
 
-        # All historical members must still land in one current duplicate group.
-        # No group means divergence; different groups mean the history split.
-        $currentGroup = $null
-        foreach ($member in $oldMembers) {
-            if (-not $currentGroupByMember.ContainsKey($member)) {
-                throw "Mapped component '$member' in group '$id' no longer belongs to a duplicate group."
-            }
-            $memberGroup = $currentGroupByMember[$member]
-            if ($null -eq $currentGroup) {
-                $currentGroup = $memberGroup
-            }
-            elseif (-not [string]::Equals(
-                $currentGroup.GroupKey,
-                $memberGroup.GroupKey,
-                [System.StringComparison]::Ordinal
-            )) {
-                throw "Mapped group '$id' split because its historical members are no longer equivalent."
-            }
-        }
+function New-OpenApiComponentDefaultMapPlan {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
 
-        # Two historical groups resolving to one current group is a merge. It
-        # requires human review because two persisted canonical identities now
-        # compete for one structural group.
-        if ($claimedCurrentGroups.ContainsKey($currentGroup.GroupKey)) {
-            throw "Mapped groups '$($claimedCurrentGroups[$currentGroup.GroupKey])' and '$id' merged into one current duplicate group."
-        }
-        $claimedCurrentGroups[$currentGroup.GroupKey] = $id
+        [Parameter()]
+        [AllowNull()]
+        [object]$PolicyMap
+    )
 
-        # Preserve historical member order and append only genuinely new members.
-        # Example: [LeafA, LeafB] plus an earlier source member BeforeLeaf becomes
-        # [LeafA, LeafB, BeforeLeaf], retaining longitudinal diff stability.
-        $memberList = [System.Collections.Generic.List[string]]::new()
-        foreach ($member in $oldMembers) {
-            $memberList.Add($member)
-            $null = $mappedMembers.Add($member)
+    $policyState = Get-OpenApiComponentPolicyState -Document $Document -PolicyMap $PolicyMap
+    $targetsByGroupKey = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+    foreach ($target in $policyState.Targets) {
+        $identity = $policyState.Analysis.Identities[$target.Representative]
+        $groupKey = "$($identity.Fingerprint)`n$($identity.CanonicalText)"
+        if (-not $targetsByGroupKey.ContainsKey($groupKey)) {
+            $targetsByGroupKey[$groupKey] = [System.Collections.Generic.List[object]]::new()
         }
-        $addedMembers = [System.Collections.Generic.List[string]]::new()
-        foreach ($member in $currentGroup.Members) {
-            if ($memberList -ccontains $member) {
-                continue
-            }
-            if ($mappedMembers.Contains($member)) {
-                throw "Component '$member' is claimed by multiple mapping groups."
-            }
-            $memberList.Add($member)
-            $addedMembers.Add($member)
-            $null = $mappedMembers.Add($member)
-        }
-
-        # An id may be a member name or a fresh user-selected output name. It may
-        # not overwrite an unrelated source component at apply time.
-        if ($sourceNames.Contains($id) -and -not ($memberList -ccontains $id)) {
-            throw "Mapping id '$id' collides with an unrelated source component."
-        }
-
-        # Extension takes precedence over fingerprint evolution in the summary;
-        # either way the current fingerprint is persisted below.
-        $status = if ($addedMembers.Count -gt 0) {
-            "Extended"
-        }
-        elseif (-not [string]::Equals($oldFingerprint, $currentGroup.Fingerprint, [System.StringComparison]::Ordinal)) {
-            "FingerprintUpdated"
-        }
-        else {
-            "Unchanged"
-        }
-        $updatedGroups.Add([ordered]@{
-            id = $id
-            representative = $representative
-            fingerprint = $currentGroup.Fingerprint
-            members = [object[]]$memberList.ToArray()
-        })
-        $statuses.Add([PSCustomObject]@{
-            Id = $id
-            Status = $status
-            AddedMembers = [object[]]$addedMembers.ToArray()
-        })
+        $targetsByGroupKey[$groupKey].Add($target)
     }
 
-    # Any current group with no historical overlap is a new review decision. Its
-    # first shortest member supplies the initial id and representative; future
-    # runs preserve those defaults unless the id is edited by a user.
-    foreach ($currentGroup in $Analysis.DuplicateGroups) {
-        $overlap = @($currentGroup.Members | Where-Object { $mappedMembers.Contains($_) })
-        if ($overlap.Count -gt 0) {
+    $defaultGroups = [System.Collections.Generic.List[object]]::new()
+    $ordinaryCount = 0
+    $singletonCount = 0
+    $partialCount = 0
+    foreach ($identityGroup in $policyState.Analysis.IdentityGroups) {
+        [object[]]$members = @($identityGroup.Members | Where-Object {
+            -not $policyState.ClaimedMembers.Contains($_)
+        })
+        if ($members.Count -eq 0) {
             continue
         }
-        $representative = Get-OpenApiComponentDeduplicationRepresentative -Members $currentGroup.Members
-        $updatedGroups.Add([ordered]@{
-            id = $representative
-            representative = $representative
-            fingerprint = $currentGroup.Fingerprint
-            members = [object[]]$currentGroup.Members
-        })
-        foreach ($member in $currentGroup.Members) {
-            $null = $mappedMembers.Add($member)
+        [object[]]$candidates = @()
+        if ($targetsByGroupKey.ContainsKey($identityGroup.GroupKey)) {
+            $candidates = [object[]]$targetsByGroupKey[$identityGroup.GroupKey].ToArray()
         }
-        $statuses.Add([PSCustomObject]@{
-            Id = $representative
-            Status = "New"
-            AddedMembers = [object[]]$currentGroup.Members
-        })
+        if ($candidates.Count -gt 1) {
+            $candidatePaths = @($candidates | ForEach-Object Path)
+            throw "Components '$($members -join ', ')' match multiple policy targets: $($candidatePaths -join ', '). Promote them manually to one policy target."
+        }
+
+        $representative = Get-OpenApiComponentDeduplicationRepresentative -Members $members
+        if ($candidates.Count -eq 1) {
+            $target = $candidates[0]
+            $defaultGroups.Add([ordered]@{
+                id = $target.Id
+                type = "duplicate"
+                representative = $representative
+                fingerprint = $identityGroup.Fingerprint
+                members = [object[]]$members
+                is_partial = $true
+            })
+            $partialCount++
+        }
+        else {
+            $defaultGroups.Add([ordered]@{
+                id = $representative
+                type = "duplicate"
+                representative = $representative
+                fingerprint = $identityGroup.Fingerprint
+                members = [object[]]$members
+            })
+            $ordinaryCount++
+            if ($members.Count -eq 1) {
+                $singletonCount++
+            }
+        }
     }
 
-    $updatedMapping = [ordered]@{
+    $defaultMap = [ordered]@{
         version = [long]1
-        groups = [object[]]$updatedGroups.ToArray()
+        groups = [object[]]$defaultGroups.ToArray()
     }
-    Assert-OpenApiComponentDeduplicationMapping -Mapping $updatedMapping
+    Assert-OpenApiComponentDefaultMap -Map $defaultMap
 
-    # Structural JSON equality determines Changed. The file-oriented updater can
-    # therefore skip writing and preserve exact bytes on an idempotent second run.
-    return [PSCustomObject]@{
-        Mapping = $updatedMapping
-        Changed = -not (Test-JsonValuesEqual -Left $Mapping -Right $updatedMapping)
-        Statuses = [object[]]$statuses.ToArray()
-        NewGroupCount = @($statuses | Where-Object Status -eq "New").Count
-        ExtendedGroupCount = @($statuses | Where-Object Status -eq "Extended").Count
-        FingerprintUpdatedGroupCount = @($statuses | Where-Object Status -eq "FingerprintUpdated").Count
-        UnchangedGroupCount = @($statuses | Where-Object Status -eq "Unchanged").Count
-        SkippedCycleComponents = [object[]]$Analysis.CycleDependentComponents
+    $defaultIds = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $defaultMembers = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($group in $defaultMap.groups) {
+        $id = Get-JsonPropertyValue -Object $group -Name "id"
+        $isPartial = Test-JsonProperty -Object $group -Name "is_partial"
+        if ($policyState.PolicyIds.Contains($id) -and -not $isPartial) {
+            throw "Default group id '$id' collides with a policy id."
+        }
+        $null = $defaultIds.Add($id)
+        $representative = Get-JsonPropertyValue -Object $group -Name "representative"
+        $identity = $policyState.Analysis.Identities[$representative]
+        $fingerprint = Get-JsonPropertyValue -Object $group -Name "fingerprint"
+        foreach ($member in [object[]](Get-JsonPropertyValue -Object $group -Name "members")) {
+            if ($policyState.ClaimedMembers.Contains($member)) {
+                throw "Default component '$member' is already claimed by policy."
+            }
+            $null = $defaultMembers.Add($member)
+            $memberIdentity = $policyState.Analysis.Identities[$member]
+            if (-not [string]::Equals($memberIdentity.Fingerprint, $fingerprint, [System.StringComparison]::Ordinal) -or
+                -not [string]::Equals($memberIdentity.CanonicalText, $identity.CanonicalText, [System.StringComparison]::Ordinal)) {
+                throw "Default component '$member' does not match group fingerprint '$fingerprint'."
+            }
+        }
     }
+    foreach ($componentName in $policyState.Analysis.ComponentNames) {
+        if (-not $policyState.ClaimedMembers.Contains($componentName) -and
+            -not $defaultMembers.Contains($componentName)) {
+            throw "Component '$componentName' was not emitted in the default map."
+        }
+    }
+
+    [object[]]$logicalGroups = @(Get-OpenApiComponentLogicalGroups `
+        -PolicyMap $policyState.PolicyMap `
+        -DefaultMap $defaultMap `
+        -ComponentNames $policyState.Analysis.ComponentNames)
+    $removableCount = 0
+    foreach ($group in $logicalGroups) {
+        $removableCount += $group.Members.Count - 1
+    }
+    return [PSCustomObject]@{
+        PolicyMap = $policyState.PolicyMap
+        DefaultMap = $defaultMap
+        LogicalGroups = $logicalGroups
+        RawAnalysis = $policyState.RawAnalysis
+        NormalizedAnalysis = $policyState.Analysis
+        ComponentCount = $policyState.Analysis.ComponentNames.Count
+        PolicyComponentCount = $policyState.ClaimedMembers.Count
+        OrdinaryDefaultGroupCount = $ordinaryCount
+        SingletonDefaultGroupCount = $singletonCount
+        PartialDefaultGroupCount = $partialCount
+        LogicalGroupCount = $logicalGroups.Count
+        RemovableComponentCount = $removableCount
+    }
+}
+
+function Resolve-OpenApiComponentMapPlan {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter()]
+        [AllowNull()]
+        [object]$PolicyMap,
+
+        [Parameter(Mandatory = $true)]
+        [object]$DefaultMap
+    )
+
+    Assert-OpenApiComponentDefaultMap -Map $DefaultMap
+    $plan = New-OpenApiComponentDefaultMapPlan -Document $Document -PolicyMap $PolicyMap
+    if (-not (Test-JsonValuesEqual -Left $DefaultMap -Right $plan.DefaultMap)) {
+        throw "The component default map is stale or was edited. Regenerate it before applying component maps."
+    }
+    return $plan
 }

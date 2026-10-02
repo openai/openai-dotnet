@@ -21,9 +21,9 @@
     After component names stabilize, every discriminator receives a canonical
     exhaustive mapping from accepted const/enum payload values to its branch
     component pointers. Structurally identical occurrences intentionally remain
-    separate components. Run
-    Update-OpenApiComponentDeduplicationMap.ps1 afterward, review its persisted
-    decisions, then run Deduplicate-OpenApiComponents.ps1.
+    separate components. Run Finalize-ResponsesOpenApi.ps1 afterward to validate
+    optional policy, regenerate the default component map, deduplicate, and
+    publish the final Responses artifact.
 
 .PARAMETER InputPath
     The OpenAPI JSON document to componentize. When omitted, reads
@@ -36,8 +36,7 @@
 
 .EXAMPLE
     ./scripts/Componentize-OpenApiObjectSchemas.ps1
-    ./scripts/Update-OpenApiComponentDeduplicationMap.ps1
-    ./scripts/Deduplicate-OpenApiComponents.ps1
+    ./scripts/Finalize-ResponsesOpenApi.ps1
 
 .EXAMPLE
     ./scripts/Componentize-OpenApiObjectSchemas.ps1 `
