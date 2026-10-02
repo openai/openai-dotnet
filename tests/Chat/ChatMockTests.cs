@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json;
 
 namespace OpenAI.Tests.Chat;
 
@@ -288,6 +290,86 @@ public class ChatMockTests : ClientTestBase
         stopwatch.Stop();
 
         Assert.That(response.IsDisposed);
+    }
+
+    [SyncOnly]
+    [Test]
+    public void CompleteChatStreamingIncludesUsageByDefault()
+    {
+        string requestBody = CaptureStreamingRequestBody();
+
+        using JsonDocument document = JsonDocument.Parse(requestBody);
+        JsonElement streamOptions = document.RootElement.GetProperty("stream_options");
+
+        Assert.That(streamOptions.GetProperty("include_usage").GetBoolean(), Is.True);
+    }
+
+    [SyncOnly]
+    [Test]
+    public void CompleteChatStreamingCanOmitUsage()
+    {
+        string requestBody = CaptureStreamingRequestBody(
+            new ChatCompletionOptions
+            {
+                IncludeUsageInStreaming = null
+            });
+
+        using JsonDocument document = JsonDocument.Parse(requestBody);
+
+        Assert.That(
+            document.RootElement.TryGetProperty("stream_options", out _),
+            Is.False);
+    }
+
+    [SyncOnly]
+    [Test]
+    public void CompleteChatStreamingCanDisableUsage()
+    {
+        string requestBody = CaptureStreamingRequestBody(
+            new ChatCompletionOptions
+            {
+                IncludeUsageInStreaming = false
+            });
+
+        using JsonDocument document = JsonDocument.Parse(requestBody);
+        JsonElement streamOptions = document.RootElement.GetProperty("stream_options");
+
+        Assert.That(streamOptions.GetProperty("include_usage").GetBoolean(), Is.False);
+    }
+
+    private string CaptureStreamingRequestBody(ChatCompletionOptions completionOptions = null)
+    {
+        string requestBody = null;
+        MockPipelineResponse response = CreateStreamingChatResponse();
+
+        OpenAIClientOptions options = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+
+                return response;
+            })
+            {
+                ExpectSyncPipeline = true
+            }
+        };
+
+        ChatClient client = CreateProxyFromClient(
+            new ChatClient("model", s_fakeCredential, options));
+
+        CollectionResult<StreamingChatCompletionUpdate> result =
+            client.CompleteChatStreaming(s_messages, completionOptions);
+
+        using IEnumerator<StreamingChatCompletionUpdate> enumerator =
+            result.GetEnumerator();
+
+        Assert.That(enumerator.MoveNext(), Is.True);
+        Assert.That(requestBody, Is.Not.Null);
+
+        return requestBody;
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
