@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchActionUriSource : WebSearchActionSource
     {
-        public WebSearchActionUriSource(Uri uri) : base(InternalWebSearchActionSearchSourcesType.Url)
+        public WebSearchActionUriSource(Uri uri) : base(InternalWebSearchActionSearchSourcesType.Uri)
         {
             Argument.AssertNotNull(uri, nameof(uri));
 

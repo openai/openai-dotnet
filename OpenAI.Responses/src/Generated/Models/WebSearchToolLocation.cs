@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected WebSearchToolLocation(InternalWebSearchUserLocationKind kind)
+        internal WebSearchToolLocation(InternalWebSearchUserLocationKind kind)
         {
             Kind = kind;
         }

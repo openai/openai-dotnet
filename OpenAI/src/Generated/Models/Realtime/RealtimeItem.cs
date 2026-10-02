@@ -15,13 +15,13 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeItem(InternalRealtimeConversationItemTypeGA kind)
+        protected internal RealtimeItem(RealtimeItemKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeItem(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch)
+        internal RealtimeItem(RealtimeItemKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalRealtimeConversationItemTypeGA Kind { get; set; }
+        public RealtimeItemKind Kind { get; }
     }
 }

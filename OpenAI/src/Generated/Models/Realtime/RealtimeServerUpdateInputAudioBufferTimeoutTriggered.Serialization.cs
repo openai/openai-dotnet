@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateInputAudioBufferTimeoutTriggered : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferTimeoutTriggered>
     {
-        internal RealtimeServerUpdateInputAudioBufferTimeoutTriggered() : this(InternalRealtimeServerEventTypeGA.InputAudioBufferTimeoutTriggered, default, null, default, default, null)
+        public RealtimeServerUpdateInputAudioBufferTimeoutTriggered() : this(RealtimeServerUpdateKind.InputAudioBufferTimeoutTriggered, default, null, default, default, null)
         {
         }
 
@@ -117,7 +117,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -129,7 +129,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))

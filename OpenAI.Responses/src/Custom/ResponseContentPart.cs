@@ -12,7 +12,7 @@ namespace OpenAI.Responses;
 public partial class ResponseContentPart
 {
     // CUSTOM: Renamed to "Kind" and converted to public enum from internal extensible type.
-    [CodeGenMember("Type")]
+    [CodeGenMember("Kind")]
     internal InternalItemContentType InternalType { get; set; }
     public ResponseContentPartKind Kind
     {

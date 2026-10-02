@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    [PersistableModelProxy(typeof(UnknownGrader))]
     public partial class Grader : IJsonModel<Grader>
     {
         internal Grader()
@@ -113,18 +112,18 @@ namespace OpenAI.Graders
             {
                 switch (discriminator.GetString())
                 {
-                    case "string_check":
-                        return GraderStringCheck.DeserializeGraderStringCheck(element, options);
-                    case "text_similarity":
-                        return GraderTextSimilarity.DeserializeGraderTextSimilarity(element, options);
+                    case "label_model":
+                        return GraderLabelModel.DeserializeGraderLabelModel(element, options);
+                    case "multi":
+                        return GraderMulti.DeserializeGraderMulti(element, options);
                     case "python":
                         return GraderPython.DeserializeGraderPython(element, options);
                     case "score_model":
                         return GraderScoreModel.DeserializeGraderScoreModel(element, options);
-                    case "multi":
-                        return GraderMulti.DeserializeGraderMulti(element, options);
-                    case "label_model":
-                        return GraderLabelModel.DeserializeGraderLabelModel(element, options);
+                    case "string_check":
+                        return GraderStringCheck.DeserializeGraderStringCheck(element, options);
+                    case "text_similarity":
+                        return GraderTextSimilarity.DeserializeGraderTextSimilarity(element, options);
                 }
             }
             return UnknownGrader.DeserializeUnknownGrader(element, options);

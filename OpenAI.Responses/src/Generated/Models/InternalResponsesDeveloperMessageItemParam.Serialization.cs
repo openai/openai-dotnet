@@ -86,9 +86,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "content"u8);
                 for (int i = 0; i < Content.Count; i++)
                 {
-                    if (Content[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || Content[i] != null && Content[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -164,11 +165,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Content == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveContentArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
+                {
+                    return false;
+                }
+                if (Content[index] == null)
                 {
                     return false;
                 }
@@ -187,7 +196,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Content == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
+                {
+                    return false;
+                }
+                if (Content[index] == null)
                 {
                     return false;
                 }
@@ -216,9 +233,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "content"u8);
             for (int i = 0; i < Content.Count; i++)
             {
-                if (!Content[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]"))) && (Content[i] == null || !Content[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Content[i];
                 }

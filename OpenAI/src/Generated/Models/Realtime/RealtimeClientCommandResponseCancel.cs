@@ -10,12 +10,12 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeClientCommandResponseCancel : RealtimeClientCommand
     {
-        public RealtimeClientCommandResponseCancel() : this(InternalRealtimeClientEventTypeGA.ResponseCancel, default, null, null)
+        public RealtimeClientCommandResponseCancel() : this(RealtimeClientCommandKind.ResponseCancel, default, null, null)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeClientCommandResponseCancel(InternalRealtimeClientEventTypeGA kind, in JsonPatch patch, string eventId, string responseId) : base(kind, patch)
+        internal RealtimeClientCommandResponseCancel(RealtimeClientCommandKind kind, in JsonPatch patch, string eventId, string responseId) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;

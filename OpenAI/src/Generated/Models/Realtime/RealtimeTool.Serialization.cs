@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeToolBaseGA))]
     public partial class RealtimeTool : IJsonModel<RealtimeTool>
     {
         internal RealtimeTool()

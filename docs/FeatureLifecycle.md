@@ -52,7 +52,9 @@ For a stable client API feature area, new protocol methods are introduced as sta
 
 Protocol models are generally promoted to stable after a short period of feedback and refinement. Convenience APIs undergo a more thorough feedback and tuning process because they introduce opinionated abstractions intended for long-term use.
 
-Experimental APIs are marked with .NET's `[Experimental]` attribute. The C# compiler reports an error when code consumes an experimental API. Each experimental feature has its own diagnostic ID, so acknowledging one feature does not acknowledge another.
+### Suppressing Experimental warnings
+
+The C# compiler reports an error when code consumes an experimental API. Each experimental feature has its own diagnostic ID, so acknowledging one feature does not acknowledge another. To acknowledge the risk, opt in by [suppressing the diagnostic](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/suppress-warnings) in the way that fits your application.
 
 To acknowledge use of an experimental feature for a project, add its diagnostic ID to the `NoWarn` property. For example, to use an API marked with `OPENAI001`:
 
@@ -72,4 +74,16 @@ A source-level suppression is also possible when its narrower scope is appropria
 
 Suppress an experimental diagnostic only after deciding that the API's potential compile-time and behavioral changes are acceptable for the application. See [Preview APIs](https://learn.microsoft.com/dotnet/fundamentals/apicompat/preview-apis) for the .NET behavior and additional suppression options.
 
-When an individual protocol model or convenience API becomes stable, it is covered by the library's strong backward compatibility commitment. Breaking changes are considered only in rare and critical circumstances, such as a severe security issue.
+### What Experimental means
+
+`Experimental` designates a client API surface that is still undergoing iteration and may change in breaking ways. This includes both compile-time and behavioral changes in the client API.
+
+Once an individual client API becomes stable and is no longer marked experimental, it is covered by a strong backward compatibility guarantee. We will not make binary breaking changes and will only make disruptive behavioral changes when there is a critical need, such as patching a security vulnerability.
+
+### What Experimental doesn't mean
+
+- It does not indicate whether a feature of the REST API is experimental. The [OpenAI platform docs](https://developers.openai.com/api/reference/overview) are the authoritative source for that information.
+
+- It does not indicate the quality or reliability of a client feature. We believe that all client features we release meet our quality bar and are safe and reliable to use in production environments.
+
+- It does not indicate whether a client feature is supported. We support all released client features when used with the official OpenAI service, subject to our [support policy](../SUPPORT.md).

@@ -15,8 +15,6 @@ namespace OpenAI
 
         public string ApiKey { get; set; }
 
-        public AuthenticationPolicy AuthenticationPolicy { get; set; }
-
         public OpenAIClientOptions Options { get; set; }
     }
 }

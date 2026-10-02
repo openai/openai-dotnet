@@ -84,18 +84,37 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
-#if NET8_0_OR_GREATER
-                global::System.Span<byte> buffer = stackalloc byte[256];
-#endif
-                foreach (var item in Metadata)
+                bool hasPatch = Patch.Contains("$"u8, "metadata"u8);
+                if (hasPatch)
                 {
 #if NET8_0_OR_GREATER
-                    int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
-                    bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
-#else
-                    bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+                    global::System.Span<byte> buffer = stackalloc byte[256];
 #endif
-                    if (!patchContains)
+                    foreach (var item in Metadata)
+                    {
+#if NET8_0_OR_GREATER
+                        int bytesWritten = global::System.Text.Encoding.UTF8.GetBytes(item.Key.AsSpan(), buffer);
+                        bool patchContains = (bytesWritten == 256) ? Patch.Contains("$.metadata"u8, global::System.Text.Encoding.UTF8.GetBytes(item.Key)) : Patch.Contains("$.metadata"u8, buffer.Slice(0, bytesWritten));
+#else
+                        bool patchContains = Patch.Contains("$.metadata"u8, Encoding.UTF8.GetBytes(item.Key));
+#endif
+                        if (!patchContains)
+                        {
+                            writer.WritePropertyName(item.Key);
+                            if (item.Value == null)
+                            {
+                                writer.WriteNullValue();
+                                continue;
+                            }
+                            writer.WriteStringValue(item.Value);
+                        }
+                    }
+
+                    Patch.WriteTo(writer, "$.metadata"u8);
+                }
+                else
+                {
+                    foreach (var item in Metadata)
                     {
                         writer.WritePropertyName(item.Key);
                         if (item.Value == null)
@@ -106,8 +125,6 @@ namespace OpenAI.Conversations
                         writer.WriteStringValue(item.Value);
                     }
                 }
-
-                Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
             if (Patch.Contains("$.items"u8))
@@ -122,9 +139,10 @@ namespace OpenAI.Conversations
             {
                 writer.WritePropertyName("items"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "items"u8);
                 for (int i = 0; i < Items.Count; i++)
                 {
-                    if (Items[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]")) || Items[i] != null && Items[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -214,11 +232,19 @@ namespace OpenAI.Conversations
             {
                 int propertyLength = "items"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Items == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveItemsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Items.Count)
+                {
+                    return false;
+                }
+                if (Items[index] == null)
                 {
                     return false;
                 }
@@ -237,7 +263,15 @@ namespace OpenAI.Conversations
             {
                 int propertyLength = "items"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Items == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Items.Count)
+                {
+                    return false;
+                }
+                if (Items[index] == null)
                 {
                     return false;
                 }
@@ -266,9 +300,10 @@ namespace OpenAI.Conversations
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "items"u8);
             for (int i = 0; i < Items.Count; i++)
             {
-                if (!Items[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.items[{i}]"))) && (Items[i] == null || !Items[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Items[i];
                 }

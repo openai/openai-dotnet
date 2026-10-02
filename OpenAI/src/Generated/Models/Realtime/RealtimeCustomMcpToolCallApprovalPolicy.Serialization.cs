@@ -140,10 +140,18 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("always"u8))
             {
+                if (ToolsAlwaysRequiringApproval == null)
+                {
+                    return false;
+                }
                 return ToolsAlwaysRequiringApproval.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("always"u8.Length)], out value);
             }
             if (local.StartsWith("never"u8))
             {
+                if (ToolsNeverRequiringApproval == null)
+                {
+                    return false;
+                }
                 return ToolsNeverRequiringApproval.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("never"u8.Length)], out value);
             }
             return false;
@@ -157,11 +165,19 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("always"u8))
             {
+                if (ToolsAlwaysRequiringApproval == null)
+                {
+                    return false;
+                }
                 ToolsAlwaysRequiringApproval.Patch.Set([.. "$"u8, .. local.Slice("always"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("never"u8))
             {
+                if (ToolsNeverRequiringApproval == null)
+                {
+                    return false;
+                }
                 ToolsNeverRequiringApproval.Patch.Set([.. "$"u8, .. local.Slice("never"u8.Length)], value);
                 return true;
             }

@@ -40,22 +40,7 @@ namespace OpenAI;
 @tag("Videos")
 @list
 op ListVideos(
-  /** Number of items to retrieve */
-  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  @query(#{ explode: true })
-  @maxValue(100)
-  @minValue(0)
-  limit?: integer,
-
-  /** Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order. */
-  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  @query(#{ explode: true })
-  order?: VideosOrderEnum,
-
-  /** Identifier for the last item from the previous pagination request */
-  #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  @query(#{ explode: true })
-  after?: string,
+  ...VideoCollectionOptions,
 ): VideoListResource;
 
 /** Create a video */

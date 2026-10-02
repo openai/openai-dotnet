@@ -9,7 +9,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageContentImageUrlObject : MessageContent
     {
-        internal InternalMessageContentImageUrlObject(InternalMessageContentImageUrlObjectImageUrl imageUrl) : base(InternalMessageContentType.ImageUrl)
+        internal InternalMessageContentImageUrlObject(InternalMessageContentImageUrlObjectImageUrl imageUrl) : base(InternalMessageContentType.ImageUri)
         {
             ImageUrl = imageUrl;
         }

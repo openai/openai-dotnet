@@ -27,9 +27,9 @@ public partial class RealtimeServerUpdateInputAudioBufferTimeoutTriggered
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioStartMs")]
-    public TimeSpan AudioStartTime { get; }
+    public TimeSpan AudioStartTime { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("AudioEndMs")]
-    public TimeSpan AudioEndTime { get; }
+    public TimeSpan AudioEndTime { get; set; }
 }

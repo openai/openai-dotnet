@@ -139,7 +139,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("content"u8))
                 {
-                    content = BinaryData.FromString(prop.Value.GetRawText());
+                    content = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("type"u8))
@@ -152,7 +152,7 @@ namespace OpenAI.Evals
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalEvalItem(role, content, kind, additionalBinaryDataProperties);
         }

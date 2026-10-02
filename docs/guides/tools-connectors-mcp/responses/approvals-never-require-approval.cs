@@ -16,7 +16,7 @@ options.Tools.Add(
         serverLabel: "deepwiki",
         serverUri: new Uri("https://mcp.deepwiki.com/mcp"),
         allowedTools: new McpToolFilter() { ToolNames = { "ask_question", "read_wiki_structure" } },
-        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
     )
 );
 options.InputItems.Add(

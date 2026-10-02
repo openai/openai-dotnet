@@ -22,7 +22,7 @@ namespace OpenAI.Realtime
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalRealtimeErrorGA Error { get; }
+        internal InternalRealtimeErrorGA Error { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

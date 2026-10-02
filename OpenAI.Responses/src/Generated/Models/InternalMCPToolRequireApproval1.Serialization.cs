@@ -140,10 +140,18 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("always"u8))
             {
+                if (Always == null)
+                {
+                    return false;
+                }
                 return Always.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("always"u8.Length)], out value);
             }
             if (local.StartsWith("never"u8))
             {
+                if (Never == null)
+                {
+                    return false;
+                }
                 return Never.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("never"u8.Length)], out value);
             }
             return false;
@@ -157,11 +165,19 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("always"u8))
             {
+                if (Always == null)
+                {
+                    return false;
+                }
                 Always.Patch.Set([.. "$"u8, .. local.Slice("always"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("never"u8))
             {
+                if (Never == null)
+                {
+                    return false;
+                }
                 Never.Patch.Set([.. "$"u8, .. local.Slice("never"u8.Length)], value);
                 return true;
             }

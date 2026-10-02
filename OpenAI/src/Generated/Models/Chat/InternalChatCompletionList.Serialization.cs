@@ -99,9 +99,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "data"u8);
                 for (int i = 0; i < Data.Count; i++)
                 {
-                    if (Data[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]")) || Data[i] != null && Data[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -210,11 +211,19 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "data"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Data == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveDataArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Data.Count)
+                {
+                    return false;
+                }
+                if (Data[index] == null)
                 {
                     return false;
                 }
@@ -233,7 +242,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "data"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Data == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Data.Count)
+                {
+                    return false;
+                }
+                if (Data[index] == null)
                 {
                     return false;
                 }
@@ -262,9 +279,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "data"u8);
             for (int i = 0; i < Data.Count; i++)
             {
-                if (!Data[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.data[{i}]"))) && (Data[i] == null || !Data[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Data[i];
                 }

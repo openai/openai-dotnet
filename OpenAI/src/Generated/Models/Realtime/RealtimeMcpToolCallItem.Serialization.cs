@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMcpToolCallItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallItem>
     {
-        internal RealtimeMcpToolCallItem() : this(InternalRealtimeConversationItemTypeGA.McpCall, default, null, null, null, null, null, null, null)
+        public RealtimeMcpToolCallItem() : this(RealtimeItemKind.McpCall, default, null, null, null, null, null, null, null)
         {
         }
 
@@ -132,7 +132,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeConversationItemTypeGA kind = default;
+            RealtimeItemKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -147,7 +147,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeConversationItemTypeGA(prop.Value.GetString());
+                    kind = new RealtimeItemKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -221,6 +221,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("error"u8))
             {
+                if (Error == null)
+                {
+                    return false;
+                }
                 return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
             }
             return false;
@@ -234,6 +238,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("error"u8))
             {
+                if (Error == null)
+                {
+                    return false;
+                }
                 Error.Patch.Set([.. "$"u8, .. local.Slice("error"u8.Length)], value);
                 return true;
             }

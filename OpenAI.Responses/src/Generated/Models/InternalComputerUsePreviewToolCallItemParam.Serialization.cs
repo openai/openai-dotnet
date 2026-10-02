@@ -96,9 +96,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("pending_safety_checks"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "pending_safety_checks"u8);
                 for (int i = 0; i < PendingSafetyChecks.Count; i++)
                 {
-                    if (PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.pending_safety_checks[{i}]")) || PendingSafetyChecks[i] != null && PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -178,17 +179,29 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("action"u8))
             {
+                if (Action == null)
+                {
+                    return false;
+                }
                 return Action.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("action"u8.Length)], out value);
             }
             if (local.StartsWith("pending_safety_checks"u8))
             {
                 int propertyLength = "pending_safety_checks"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (PendingSafetyChecks == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolvePendingSafetyChecksArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= PendingSafetyChecks.Count)
+                {
+                    return false;
+                }
+                if (PendingSafetyChecks[index] == null)
                 {
                     return false;
                 }
@@ -205,6 +218,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("action"u8))
             {
+                if (Action == null)
+                {
+                    return false;
+                }
                 Action.Patch.Set([.. "$"u8, .. local.Slice("action"u8.Length)], value);
                 return true;
             }
@@ -212,7 +229,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "pending_safety_checks"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (PendingSafetyChecks == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= PendingSafetyChecks.Count)
+                {
+                    return false;
+                }
+                if (PendingSafetyChecks[index] == null)
                 {
                     return false;
                 }
@@ -241,9 +266,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "pending_safety_checks"u8);
             for (int i = 0; i < PendingSafetyChecks.Count; i++)
             {
-                if (!PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.pending_safety_checks[{i}]"))) && (PendingSafetyChecks[i] == null || !PendingSafetyChecks[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return PendingSafetyChecks[i];
                 }

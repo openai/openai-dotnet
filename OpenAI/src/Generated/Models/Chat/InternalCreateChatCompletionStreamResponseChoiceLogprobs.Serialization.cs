@@ -81,9 +81,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "content"u8);
                 for (int i = 0; i < Content.Count; i++)
                 {
-                    if (Content[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]")) || Content[i] != null && Content[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -104,9 +105,10 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "refusal"u8);
                 for (int i = 0; i < Refusal.Count; i++)
                 {
-                    if (Refusal[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.refusal[{i}]")) || Refusal[i] != null && Refusal[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -191,11 +193,19 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Content == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveContentArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
+                {
+                    return false;
+                }
+                if (Content[index] == null)
                 {
                     return false;
                 }
@@ -205,11 +215,19 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "refusal"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Refusal == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveRefusalArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Refusal.Count)
+                {
+                    return false;
+                }
+                if (Refusal[index] == null)
                 {
                     return false;
                 }
@@ -228,7 +246,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "content"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Content == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Content.Count)
+                {
+                    return false;
+                }
+                if (Content[index] == null)
                 {
                     return false;
                 }
@@ -239,7 +265,15 @@ namespace OpenAI.Chat
             {
                 int propertyLength = "refusal"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Refusal == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Refusal.Count)
+                {
+                    return false;
+                }
+                if (Refusal[index] == null)
                 {
                     return false;
                 }
@@ -268,9 +302,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "content"u8);
             for (int i = 0; i < Content.Count; i++)
             {
-                if (!Content[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.content[{i}]"))) && (Content[i] == null || !Content[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Content[i];
                 }
@@ -296,9 +331,10 @@ namespace OpenAI.Chat
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "refusal"u8);
             for (int i = 0; i < Refusal.Count; i++)
             {
-                if (!Refusal[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.refusal[{i}]"))) && (Refusal[i] == null || !Refusal[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Refusal[i];
                 }

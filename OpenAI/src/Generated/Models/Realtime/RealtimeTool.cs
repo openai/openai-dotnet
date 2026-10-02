@@ -15,13 +15,13 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected RealtimeTool(InternalRealtimeToolBaseTypeGA kind)
+        protected internal RealtimeTool(RealtimeToolKind kind)
         {
             Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeTool(InternalRealtimeToolBaseTypeGA kind, in JsonPatch patch)
+        internal RealtimeTool(RealtimeToolKind kind, in JsonPatch patch)
         {
             Kind = kind;
             _patch = patch;
@@ -33,6 +33,6 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        internal InternalRealtimeToolBaseTypeGA Kind { get; set; }
+        public RealtimeToolKind Kind { get; }
     }
 }

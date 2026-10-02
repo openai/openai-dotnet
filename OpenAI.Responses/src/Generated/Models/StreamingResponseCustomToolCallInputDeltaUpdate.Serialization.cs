@@ -183,6 +183,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("agent"u8))
             {
+                if (Agent == null)
+                {
+                    return false;
+                }
                 return Agent.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("agent"u8.Length)], out value);
             }
             return false;
@@ -196,6 +200,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("agent"u8))
             {
+                if (Agent == null)
+                {
+                    return false;
+                }
                 Agent.Patch.Set([.. "$"u8, .. local.Slice("agent"u8.Length)], value);
                 return true;
             }

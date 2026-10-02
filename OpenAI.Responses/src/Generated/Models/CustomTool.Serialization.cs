@@ -91,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("allowed_callers"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "allowed_callers"u8);
                 for (int i = 0; i < AllowedCallers.Count; i++)
                 {
-                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_callers[{i}]")))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.allowed_callers[{i}]")))
                     {
                         continue;
                     }
@@ -219,6 +220,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("format"u8))
             {
+                if (ToolFormat == null)
+                {
+                    return false;
+                }
                 return ToolFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
             }
             return false;
@@ -232,6 +237,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("format"u8))
             {
+                if (ToolFormat == null)
+                {
+                    return false;
+                }
                 ToolFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
                 return true;
             }

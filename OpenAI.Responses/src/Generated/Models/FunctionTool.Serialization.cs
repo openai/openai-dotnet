@@ -169,7 +169,7 @@ namespace OpenAI.Responses
                         functionParameters = null;
                         continue;
                     }
-                    functionParameters = BinaryData.FromString(prop.Value.GetRawText());
+                    functionParameters = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("strict"u8))

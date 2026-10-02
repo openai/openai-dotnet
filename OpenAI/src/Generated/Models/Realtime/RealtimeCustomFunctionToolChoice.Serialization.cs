@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeCustomFunctionToolChoice : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomFunctionToolChoice>
     {
-        internal RealtimeCustomFunctionToolChoice() : this(InternalToolChoiceBaseTypeGA.Function, default, null)
+        public RealtimeCustomFunctionToolChoice() : this(InternalToolChoiceBaseTypeGA.Function, default, null)
         {
         }
 

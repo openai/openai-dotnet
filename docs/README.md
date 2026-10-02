@@ -38,10 +38,10 @@ After installation, verify that the required SDK is available:
 dotnet --list-sdks
 ```
 
-The output lists each installed SDK and its installation path. It may include newer major versions, but this repository requires .NET 10 SDK version 10.0.400 or later in the `10.0.*` series, for example:
+The output lists each installed SDK and its installation path. It may include newer major versions, but this repository requires .NET 10 SDK version 10.0.401 or later in the `10.0.*` series, for example:
 
 ```text
-10.0.400 [C:\Program Files\dotnet\sdk]
+10.0.401 [C:\Program Files\dotnet\sdk]
 ```
 
 ## Setup
@@ -190,9 +190,9 @@ using OpenAI.Responses;          // Regular C# code follows
 
 ## Troubleshooting
 
-### Problem: `dotnet --list-sdks` does not include 10.0.400 or a compatible later .NET 10 SDK
+### Problem: `dotnet --list-sdks` does not include 10.0.401 or a compatible later .NET 10 SDK
 
-- **Solution**: Install the .NET 10 **SDK** (not just the runtime). The `global.json` file in the repository root requires version 10.0.400 or a compatible later SDK.
+- **Solution**: Install the .NET 10 **SDK** (not just the runtime). The `global.json` file in the repository root requires version 10.0.401 or a compatible later SDK.
 
 ### Problem: "Couldn't find a project to run"
 

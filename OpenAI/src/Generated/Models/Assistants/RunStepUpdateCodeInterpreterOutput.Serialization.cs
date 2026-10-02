@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [PersistableModelProxy(typeof(UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject))]
     public partial class RunStepUpdateCodeInterpreterOutput : IJsonModel<RunStepUpdateCodeInterpreterOutput>
     {
         internal RunStepUpdateCodeInterpreterOutput()
@@ -113,10 +112,10 @@ namespace OpenAI.Assistants
             {
                 switch (discriminator.GetString())
                 {
-                    case "logs":
-                        return InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject.DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject(element, options);
                     case "image":
                         return InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject.DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(element, options);
+                    case "logs":
+                        return InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject.DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject(element, options);
                 }
             }
             return UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject.DeserializeUnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(element, options);

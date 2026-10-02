@@ -94,7 +94,7 @@ namespace OpenAI.Evals
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WriteNumberValue(CreatedOn, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -212,7 +212,7 @@ namespace OpenAI.Evals
             string id = default;
             string runId = default;
             string evalId = default;
-            DateTimeOffset createdAt = default;
+            DateTimeOffset createdOn = default;
             string status = default;
             int datasourceItemId = default;
             IDictionary<string, BinaryData> datasourceItem = default;
@@ -243,7 +243,7 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    createdOn = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))
@@ -267,7 +267,7 @@ namespace OpenAI.Evals
                         }
                         else
                         {
-                            dictionary.Add(prop0.Name, BinaryData.FromString(prop0.Value.GetRawText()));
+                            dictionary.Add(prop0.Name, prop0.Value.GetUtf8Bytes());
                         }
                     }
                     datasourceItem = dictionary;
@@ -293,7 +293,7 @@ namespace OpenAI.Evals
                                 }
                                 else
                                 {
-                                    dictionary.Add(prop0.Name, BinaryData.FromString(prop0.Value.GetRawText()));
+                                    dictionary.Add(prop0.Name, prop0.Value.GetUtf8Bytes());
                                 }
                             }
                             array.Add(dictionary);
@@ -308,14 +308,14 @@ namespace OpenAI.Evals
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalEvalRunOutputItem(
                 @object,
                 id,
                 runId,
                 evalId,
-                createdAt,
+                createdOn,
                 status,
                 datasourceItemId,
                 datasourceItem,

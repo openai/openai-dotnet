@@ -170,7 +170,7 @@ namespace OpenAI.FineTuning
                         }
                         else
                         {
-                            array.Add(BinaryData.FromString(item.GetRawText()));
+                            array.Add(item.GetUtf8Bytes());
                         }
                     }
                     messages = array;
@@ -214,7 +214,7 @@ namespace OpenAI.FineTuning
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalTodoFineTuneChatRequestInput(messages ?? new ChangeTrackingList<BinaryData>(), tools ?? new ChangeTrackingList<ChatTool>(), parallelToolCalls, functions ?? new ChangeTrackingList<ChatFunction>(), additionalBinaryDataProperties);
         }

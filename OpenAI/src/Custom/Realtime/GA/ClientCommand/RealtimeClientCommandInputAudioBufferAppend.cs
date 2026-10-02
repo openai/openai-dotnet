@@ -25,5 +25,5 @@ public partial class RealtimeClientCommandInputAudioBufferAppend
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]
-    public BinaryData AudioBytes { get; }
+    public BinaryData AudioBytes { get; set; }
 }

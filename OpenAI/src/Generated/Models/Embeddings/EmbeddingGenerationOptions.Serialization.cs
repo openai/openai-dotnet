@@ -145,7 +145,7 @@ namespace OpenAI.Embeddings
             {
                 if (prop.NameEquals("input"u8))
                 {
-                    input = BinaryData.FromString(prop.Value.GetRawText());
+                    input = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 if (prop.NameEquals("model"u8))

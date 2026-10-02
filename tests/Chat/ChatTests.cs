@@ -772,7 +772,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchWorks()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-search-preview");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-5-search-api");
 
         ChatCompletionOptions options = new()
         {

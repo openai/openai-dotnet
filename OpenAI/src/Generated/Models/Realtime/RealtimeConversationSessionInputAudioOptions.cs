@@ -15,9 +15,12 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public RealtimeConversationSessionInputAudioOptions()
         {
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeConversationSessionInputAudioOptions(RealtimeAudioFormat audioFormat, RealtimeAudioTranscriptionOptions audioTranscriptionOptions, RealtimeNoiseReduction noiseReduction, RealtimeTurnDetection turnDetection, in JsonPatch patch)

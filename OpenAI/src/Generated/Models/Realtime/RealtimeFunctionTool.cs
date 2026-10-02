@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeFunctionTool : RealtimeTool
     {
-        public RealtimeFunctionTool(string functionName) : base(InternalRealtimeToolBaseTypeGA.Function)
+        public RealtimeFunctionTool(string functionName) : base(RealtimeToolKind.Function)
         {
             Argument.AssertNotNull(functionName, nameof(functionName));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeFunctionTool(InternalRealtimeToolBaseTypeGA kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters) : base(kind, patch)
+        internal RealtimeFunctionTool(RealtimeToolKind kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters) : base(kind, patch)
         {
             FunctionName = functionName;
             FunctionDescription = functionDescription;

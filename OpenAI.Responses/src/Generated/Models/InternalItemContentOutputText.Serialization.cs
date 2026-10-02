@@ -91,9 +91,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
                 for (int i = 0; i < Annotations.Count; i++)
                 {
-                    if (Annotations[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]")) || Annotations[i] != null && Annotations[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -114,9 +115,10 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
                 for (int i = 0; i < Logprobs.Count; i++)
                 {
-                    if (Logprobs[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]")) || Logprobs[i] != null && Logprobs[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -207,11 +209,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Annotations == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveAnnotationsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
+                {
+                    return false;
+                }
+                if (Annotations[index] == null)
                 {
                     return false;
                 }
@@ -221,11 +231,19 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (Logprobs == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveLogprobsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
+                {
+                    return false;
+                }
+                if (Logprobs[index] == null)
                 {
                     return false;
                 }
@@ -244,7 +262,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "annotations"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Annotations == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Annotations.Count)
+                {
+                    return false;
+                }
+                if (Annotations[index] == null)
                 {
                     return false;
                 }
@@ -255,7 +281,15 @@ namespace OpenAI.Responses
             {
                 int propertyLength = "logprobs"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (Logprobs == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= Logprobs.Count)
+                {
+                    return false;
+                }
+                if (Logprobs[index] == null)
                 {
                     return false;
                 }
@@ -284,9 +318,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "annotations"u8);
             for (int i = 0; i < Annotations.Count; i++)
             {
-                if (!Annotations[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.annotations[{i}]"))) && (Annotations[i] == null || !Annotations[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Annotations[i];
                 }
@@ -312,9 +347,10 @@ namespace OpenAI.Responses
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "logprobs"u8);
             for (int i = 0; i < Logprobs.Count; i++)
             {
-                if (!Logprobs[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.logprobs[{i}]"))) && (Logprobs[i] == null || !Logprobs[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return Logprobs[i];
                 }

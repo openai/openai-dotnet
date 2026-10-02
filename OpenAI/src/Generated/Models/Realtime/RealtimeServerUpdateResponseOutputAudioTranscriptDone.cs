@@ -10,7 +10,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class RealtimeServerUpdateResponseOutputAudioTranscriptDone : RealtimeServerUpdate
     {
-        internal RealtimeServerUpdateResponseOutputAudioTranscriptDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(InternalRealtimeServerEventTypeGA.ResponseOutputAudioTranscriptDone)
+        internal RealtimeServerUpdateResponseOutputAudioTranscriptDone(string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(RealtimeServerUpdateKind.ResponseOutputAudioTranscriptDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -21,7 +21,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal RealtimeServerUpdateResponseOutputAudioTranscriptDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(kind, patch)
+        internal RealtimeServerUpdateResponseOutputAudioTranscriptDone(RealtimeServerUpdateKind kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, int contentIndex, string transcript) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -32,16 +32,16 @@ namespace OpenAI.Realtime
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string EventId { get; }
+        public string EventId { get; set; }
 
-        public string ResponseId { get; }
+        public string ResponseId { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
 
-        public string Transcript { get; }
+        public string Transcript { get; set; }
     }
 }

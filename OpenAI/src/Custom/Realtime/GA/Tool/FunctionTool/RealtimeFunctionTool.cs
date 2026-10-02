@@ -9,7 +9,7 @@ public partial class RealtimeFunctionTool
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Name")]
-    public string FunctionName { get; }
+    public string FunctionName { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Description")]

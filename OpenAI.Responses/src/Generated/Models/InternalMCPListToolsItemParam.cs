@@ -11,11 +11,14 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPListToolsItemParam : InternalItemParam
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(ResponseItemKind.McpListTools)
         {
             ServerLabel = serverLabel;
             Tools = tools.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalMCPListToolsItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, patch)

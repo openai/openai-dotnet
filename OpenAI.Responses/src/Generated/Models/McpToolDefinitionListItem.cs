@@ -14,6 +14,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolDefinitionListItem : ResponseItem
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions) : base(ResponseItemKind.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
@@ -21,7 +22,9 @@ namespace OpenAI.Responses
 
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions.ToList();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal McpToolDefinitionListItem(ResponseItemKind kind, string id, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, patch)

@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerUpdateRateLimitsUpdated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateRateLimitsUpdated>
     {
-        internal RealtimeServerUpdateRateLimitsUpdated() : this(InternalRealtimeServerEventTypeGA.RateLimitsUpdated, default, null, null)
+        public RealtimeServerUpdateRateLimitsUpdated() : this(RealtimeServerUpdateKind.RateLimitsUpdated, default, null, null)
         {
         }
 
@@ -91,9 +91,10 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("rate_limits"u8);
                 writer.WriteStartArray();
+                bool hasPatch = Patch.Contains("$"u8, "rate_limits"u8);
                 for (int i = 0; i < RateLimitDetails.Count; i++)
                 {
-                    if (RateLimitDetails[i].Patch.IsRemoved("$"u8))
+                    if (hasPatch && Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]")) || RateLimitDetails[i] != null && RateLimitDetails[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
@@ -126,7 +127,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeServerEventTypeGA kind = default;
+            RealtimeServerUpdateKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -136,7 +137,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeServerEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeServerUpdateKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))
@@ -169,11 +170,19 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "rate_limits"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (RateLimitDetails == null)
+                {
+                    return false;
+                }
                 if (currentSlice.IsEmpty)
                 {
                     return TryResolveRateLimitDetailsArray(out value);
                 }
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
+                {
+                    return false;
+                }
+                if (RateLimitDetails[index] == null)
                 {
                     return false;
                 }
@@ -192,7 +201,15 @@ namespace OpenAI.Realtime
             {
                 int propertyLength = "rate_limits"u8.Length;
                 ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                if (RateLimitDetails == null)
+                {
+                    return false;
+                }
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed) || index >= RateLimitDetails.Count)
+                {
+                    return false;
+                }
+                if (RateLimitDetails[index] == null)
                 {
                     return false;
                 }
@@ -221,9 +238,10 @@ namespace OpenAI.Realtime
             {
                 yield break;
             }
+            bool hasPatch = Patch.Contains("$"u8, "rate_limits"u8);
             for (int i = 0; i < RateLimitDetails.Count; i++)
             {
-                if (!RateLimitDetails[i].Patch.IsRemoved("$"u8))
+                if ((!hasPatch || !Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.rate_limits[{i}]"))) && (RateLimitDetails[i] == null || !RateLimitDetails[i].Patch.IsRemoved("$"u8)))
                 {
                     yield return RateLimitDetails[i];
                 }

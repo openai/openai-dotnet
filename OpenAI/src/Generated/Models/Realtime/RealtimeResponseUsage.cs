@@ -15,9 +15,12 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeResponseUsage()
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        public RealtimeResponseUsage()
         {
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal RealtimeResponseUsage(int? totalTokenCount, int? inputTokenCount, int? outputTokenCount, RealtimeResponseInputTokenUsageDetails inputTokenDetails, RealtimeResponseOutputTokenUsageDetails outputTokenDetails, in JsonPatch patch)
@@ -37,8 +40,8 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
+        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; set; }
 
-        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; set; }
     }
 }

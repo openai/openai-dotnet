@@ -8,5 +8,5 @@ public partial class RealtimeError
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Param")]
-    public string ParameterName { get; }
+    public string ParameterName { get; set; }
 }

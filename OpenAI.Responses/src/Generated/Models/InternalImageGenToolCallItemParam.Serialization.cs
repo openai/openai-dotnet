@@ -76,7 +76,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Result) && !Patch.Contains("$.result"u8))
             {
                 writer.WritePropertyName("result"u8);
-                writer.WriteBase64StringValue(Result.ToArray(), "D");
+                writer.WriteBase64StringValue(Result, "D");
             }
             else if (!Patch.Contains("$.result"u8))
             {

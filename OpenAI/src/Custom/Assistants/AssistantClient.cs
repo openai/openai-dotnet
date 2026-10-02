@@ -979,7 +979,7 @@ public partial class AssistantClient
             truncationStrategy: runOptions.TruncationStrategy,
             parallelToolCalls: runOptions.AllowParallelToolCalls,
             model: runOptions.ModelOverride,
-            toolResources: threadOptions.ToolResources,
+            toolResources: threadOptions?.ToolResources,
             responseFormat: runOptions.ResponseFormat,
             toolChoice: runOptions.ToolConstraint,
             additionalBinaryDataProperties: null);

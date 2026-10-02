@@ -13,7 +13,7 @@ namespace OpenAI.Graders
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected Grader(GraderType kind)
+        internal Grader(GraderType kind)
         {
             Kind = kind;
         }

@@ -69,8 +69,6 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            // Plugin customization: remove options.Format != "W" check
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
@@ -126,6 +124,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     status = prop.Value.GetString().ToWebSearchCallStatus();
                     continue;
                 }
@@ -151,6 +153,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("action"u8))
             {
+                if (Action == null)
+                {
+                    return false;
+                }
                 return Action.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("action"u8.Length)], out value);
             }
             return false;
@@ -164,6 +170,10 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("action"u8))
             {
+                if (Action == null)
+                {
+                    return false;
+                }
                 Action.Patch.Set([.. "$"u8, .. local.Slice("action"u8.Length)], value);
                 return true;
             }

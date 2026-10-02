@@ -16,7 +16,7 @@ options.Tools.Add(
         serverLabel: "dmcp",
         serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
         allowedTools: new McpToolFilter() { ToolNames = { "roll" } },
-        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(DefaultMcpToolCallApprovalPolicy.NeverRequireApproval)
     )
 );
 options.InputItems.Add(

@@ -1069,9 +1069,6 @@ namespace OpenAI
 #pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeItem is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeItem))]
 #pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeItem is experimental and may change in future versions.
-#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeLogProbabilityDetails is experimental and may change in future versions.
-    [ModelReaderWriterBuildable(typeof(RealtimeLogProbabilityDetails))]
-#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeLogProbabilityDetails is experimental and may change in future versions.
 #pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeMaxOutputTokenCount is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeMaxOutputTokenCount))]
 #pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeMaxOutputTokenCount is experimental and may change in future versions.
@@ -1312,6 +1309,9 @@ namespace OpenAI
 #pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeSessionOptions is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeSessionOptions))]
 #pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeSessionOptions is experimental and may change in future versions.
+#pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTokenLogProbabilityDetails is experimental and may change in future versions.
+    [ModelReaderWriterBuildable(typeof(RealtimeTokenLogProbabilityDetails))]
+#pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTokenLogProbabilityDetails is experimental and may change in future versions.
 #pragma warning disable OPENAI002 // global::OpenAI.Realtime.RealtimeTool is experimental and may change in future versions.
     [ModelReaderWriterBuildable(typeof(RealtimeTool))]
 #pragma warning restore OPENAI002 // global::OpenAI.Realtime.RealtimeTool is experimental and may change in future versions.

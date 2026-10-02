@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeClientSecret : IJsonModel<RealtimeClientSecret>
     {
-        internal RealtimeClientSecret()
+        public RealtimeClientSecret()
         {
         }
 

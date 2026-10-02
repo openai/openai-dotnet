@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentImageUrlObject : InternalMessageDeltaContent, IJsonModel<InternalMessageDeltaContentImageUrlObject>
     {
-        internal InternalMessageDeltaContentImageUrlObject() : this(InternalMessageContentType.ImageUrl, null, default, null)
+        internal InternalMessageDeltaContentImageUrlObject() : this(InternalMessageContentType.ImageUri, null, default, null)
         {
         }
 
@@ -121,7 +121,7 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalMessageDeltaContentImageUrlObject(kind, additionalBinaryDataProperties, index, imageUrl);
         }

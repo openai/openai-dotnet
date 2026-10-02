@@ -198,7 +198,7 @@ namespace OpenAI.Assistants
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new MessageCreationOptions(role, content, attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }

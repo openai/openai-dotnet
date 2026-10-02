@@ -183,7 +183,7 @@ namespace OpenAI.Responses
                         error = null;
                         continue;
                     }
-                    error = BinaryData.FromString(prop.Value.GetRawText());
+                    error = prop.Value.GetUtf8Bytes();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

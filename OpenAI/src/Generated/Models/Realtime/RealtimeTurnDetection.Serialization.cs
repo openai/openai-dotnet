@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeTurnDetectionBaseGA))]
     public partial class RealtimeTurnDetection : IJsonModel<RealtimeTurnDetection>
     {
         internal RealtimeTurnDetection()
@@ -103,10 +102,10 @@ namespace OpenAI.Realtime
             {
                 switch (discriminator.GetString())
                 {
-                    case "server_vad":
-                        return RealtimeServerVadTurnDetection.DeserializeRealtimeServerVadTurnDetection(element, data, options);
                     case "semantic_vad":
                         return RealtimeSemanticVadTurnDetection.DeserializeRealtimeSemanticVadTurnDetection(element, data, options);
+                    case "server_vad":
+                        return RealtimeServerVadTurnDetection.DeserializeRealtimeServerVadTurnDetection(element, data, options);
                 }
             }
             return InternalUnknownRealtimeTurnDetectionBaseGA.DeserializeInternalUnknownRealtimeTurnDetectionBaseGA(element, data, options);

@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeNoiseReduction : IJsonModel<RealtimeNoiseReduction>
     {
-        internal RealtimeNoiseReduction()
+        public RealtimeNoiseReduction()
         {
         }
 

@@ -81,7 +81,7 @@ namespace OpenAI.Chat
             if (Optional.IsDefined(AudioBytesUpdate) && !Patch.Contains("$.data"u8))
             {
                 writer.WritePropertyName("data"u8);
-                writer.WriteBase64StringValue(AudioBytesUpdate.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytesUpdate, "D");
             }
             if (Optional.IsDefined(ExpiresAt) && !Patch.Contains("$.expires_at"u8))
             {

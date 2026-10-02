@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeClientCommandInputAudioBufferAppend : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferAppend>
     {
-        internal RealtimeClientCommandInputAudioBufferAppend() : this(InternalRealtimeClientEventTypeGA.InputAudioBufferAppend, default, null, null)
+        public RealtimeClientCommandInputAudioBufferAppend() : this(RealtimeClientCommandKind.InputAudioBufferAppend, default, null, null)
         {
         }
 
@@ -81,7 +81,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytes, "D");
             }
 
             Patch.WriteTo(writer);
@@ -107,7 +107,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeClientEventTypeGA kind = default;
+            RealtimeClientCommandKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -117,7 +117,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeClientEventTypeGA(prop.Value.GetString());
+                    kind = new RealtimeClientCommandKind(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("event_id"u8))

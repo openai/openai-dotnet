@@ -191,6 +191,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("cached_tokens_details"u8))
             {
+                if (CachedTokenDetails == null)
+                {
+                    return false;
+                }
                 return CachedTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("cached_tokens_details"u8.Length)], out value);
             }
             return false;
@@ -204,6 +208,10 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("cached_tokens_details"u8))
             {
+                if (CachedTokenDetails == null)
+                {
+                    return false;
+                }
                 CachedTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("cached_tokens_details"u8.Length)], value);
                 return true;
             }

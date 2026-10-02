@@ -67,7 +67,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(AudioBytes, "D");
             }
         }
 
@@ -106,7 +106,7 @@ namespace OpenAI.Audio
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new StreamingSpeechAudioDeltaUpdate(kind, additionalBinaryDataProperties, audioBytes);
         }

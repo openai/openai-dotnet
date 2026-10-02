@@ -16,7 +16,7 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal RealtimeRateLimitDetails()
+        public RealtimeRateLimitDetails()
         {
         }
 
@@ -36,8 +36,8 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public RealtimeRateLimitName? Name { get; }
+        public RealtimeRateLimitName? Name { get; set; }
 
-        public int? Limit { get; }
+        public int? Limit { get; set; }
     }
 }

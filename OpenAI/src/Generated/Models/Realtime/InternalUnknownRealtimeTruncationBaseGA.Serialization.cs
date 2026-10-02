@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalUnknownRealtimeTruncationBaseGA : RealtimeCustomTruncation, IJsonModel<RealtimeCustomTruncation>
     {
-        internal InternalUnknownRealtimeTruncationBaseGA() : this(default, default)
+        public InternalUnknownRealtimeTruncationBaseGA() : this(default, default)
         {
         }
 

@@ -30,16 +30,14 @@ public partial class RealtimeToolChoice
         {
             throw new FormatException($"The model {nameof(RealtimeToolChoice)} does not support writing '{format}' format.");
         }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        if (Optional.IsDefined(DefaultToolChoice) && !Patch.Contains("$.default_tool_choice"u8))
+        if (Optional.IsDefined(DefaultToolChoice))
         {
             writer.WriteStringValue(DefaultToolChoice.Value.ToString());
         }
-        if (Optional.IsDefined(CustomToolChoice) && !Patch.Contains("$.custom_tool_choice"u8))
+        else if (Optional.IsDefined(CustomToolChoice))
         {
             writer.WriteObjectValue(CustomToolChoice, options);
         }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
@@ -60,11 +58,36 @@ public partial class RealtimeToolChoice
         {
             defaultToolChoice = new RealtimeDefaultToolChoice(element.GetString());
         }
-        else
+        else if (element.ValueKind == JsonValueKind.Object)
         {
             customToolChoice = RealtimeCustomToolChoice.DeserializeRealtimeCustomToolChoice(element, element.GetUtf8Bytes(), options);
+        }
+        else
+        {
+            throw new JsonException($"Expected realtime tool choice to be null, an object, or a string but found {element.ValueKind}.");
         }
 
         return new RealtimeToolChoice(defaultToolChoice, customToolChoice, patch);
     }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+    {
+        value = default;
+        return CustomToolChoice is not null
+            && !jsonPath.SequenceEqual("$"u8)
+            && CustomToolChoice.Patch.TryGetEncodedValue(jsonPath, out value);
+    }
+
+    private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+    {
+        if (CustomToolChoice is null || jsonPath.SequenceEqual("$"u8))
+        {
+            return false;
+        }
+
+        CustomToolChoice.Patch.Set(jsonPath, value);
+        return true;
+    }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 }

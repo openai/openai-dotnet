@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    [PersistableModelProxy(typeof(InternalUnknownChunkingStrategyConfig))]
     public partial class AudioTranscriptionCustomChunkingStrategy : IJsonModel<AudioTranscriptionCustomChunkingStrategy>
     {
         internal AudioTranscriptionCustomChunkingStrategy()

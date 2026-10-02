@@ -9,7 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeClientEventGA))]
     public partial class RealtimeClientCommand : IJsonModel<RealtimeClientCommand>
     {
         internal RealtimeClientCommand()
@@ -103,28 +102,28 @@ namespace OpenAI.Realtime
             {
                 switch (discriminator.GetString())
                 {
-                    case "session.update":
-                        return RealtimeClientCommandSessionUpdate.DeserializeRealtimeClientCommandSessionUpdate(element, data, options);
-                    case "input_audio_buffer.append":
-                        return RealtimeClientCommandInputAudioBufferAppend.DeserializeRealtimeClientCommandInputAudioBufferAppend(element, data, options);
-                    case "input_audio_buffer.commit":
-                        return RealtimeClientCommandInputAudioBufferCommit.DeserializeRealtimeClientCommandInputAudioBufferCommit(element, data, options);
-                    case "input_audio_buffer.clear":
-                        return RealtimeClientCommandInputAudioBufferClear.DeserializeRealtimeClientCommandInputAudioBufferClear(element, data, options);
                     case "conversation.item.create":
                         return RealtimeClientCommandConversationItemCreate.DeserializeRealtimeClientCommandConversationItemCreate(element, data, options);
+                    case "conversation.item.delete":
+                        return RealtimeClientCommandConversationItemDelete.DeserializeRealtimeClientCommandConversationItemDelete(element, data, options);
                     case "conversation.item.retrieve":
                         return RealtimeClientCommandConversationItemRetrieve.DeserializeRealtimeClientCommandConversationItemRetrieve(element, data, options);
                     case "conversation.item.truncate":
                         return RealtimeClientCommandConversationItemTruncate.DeserializeRealtimeClientCommandConversationItemTruncate(element, data, options);
-                    case "conversation.item.delete":
-                        return RealtimeClientCommandConversationItemDelete.DeserializeRealtimeClientCommandConversationItemDelete(element, data, options);
-                    case "response.create":
-                        return RealtimeClientCommandResponseCreate.DeserializeRealtimeClientCommandResponseCreate(element, data, options);
-                    case "response.cancel":
-                        return RealtimeClientCommandResponseCancel.DeserializeRealtimeClientCommandResponseCancel(element, data, options);
+                    case "input_audio_buffer.append":
+                        return RealtimeClientCommandInputAudioBufferAppend.DeserializeRealtimeClientCommandInputAudioBufferAppend(element, data, options);
+                    case "input_audio_buffer.clear":
+                        return RealtimeClientCommandInputAudioBufferClear.DeserializeRealtimeClientCommandInputAudioBufferClear(element, data, options);
+                    case "input_audio_buffer.commit":
+                        return RealtimeClientCommandInputAudioBufferCommit.DeserializeRealtimeClientCommandInputAudioBufferCommit(element, data, options);
                     case "output_audio_buffer.clear":
                         return RealtimeClientCommandOutputAudioBufferClear.DeserializeRealtimeClientCommandOutputAudioBufferClear(element, data, options);
+                    case "response.cancel":
+                        return RealtimeClientCommandResponseCancel.DeserializeRealtimeClientCommandResponseCancel(element, data, options);
+                    case "response.create":
+                        return RealtimeClientCommandResponseCreate.DeserializeRealtimeClientCommandResponseCreate(element, data, options);
+                    case "session.update":
+                        return RealtimeClientCommandSessionUpdate.DeserializeRealtimeClientCommandSessionUpdate(element, data, options);
                 }
             }
             return InternalUnknownRealtimeClientEventGA.DeserializeInternalUnknownRealtimeClientEventGA(element, data, options);
