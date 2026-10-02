@@ -33,7 +33,78 @@
       { "type": "string", "description": "first" },
       { "type": "string", "description": "second" }
     ],
+    "anyOf": [
+      { "type": "string", "description": "first" },
+      { "type": "boolean", "description": "second" }
+    ],
+    "prefixItems": [
+      { "type": "string", "description": "first" },
+      { "type": "boolean", "description": "second" }
+    ],
     "customArray": ["zeta", "alpha"]
+  },
+  "ordinaryOneOf": {
+    "oneOf": [
+      { "$ref": "#/components/schemas/Ref" },
+      { "type": "string", "description": "string" },
+      { "type": "object", "description": "object first" },
+      { "type": "array", "description": "array" },
+      { "type": ["object", "null"], "description": "type array" },
+      { "type": "boolean", "description": "boolean" },
+      {
+        "description": "composition",
+        "oneOf": [
+          { "type": "string", "description": "nested string" },
+          { "type": "null", "description": "nested null" }
+        ]
+      },
+      { "type": "object", "description": "object second" }
+    ]
+  },
+  "discriminatedOneOf": {
+    "discriminator": { "propertyName": "kind" },
+    "oneOf": [
+      {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["gamma"] }
+        }
+      },
+      {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": { "type": "string", "enum": ["beta", "alpha"] }
+        }
+      },
+      {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": { "type": "string", "const": "aardvark" }
+        }
+      }
+    ]
+  },
+  "invalidDiscriminatedOneOf": {
+    "discriminator": { "propertyName": "kind" },
+    "oneOf": [
+      {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "kind": { "type": "string", "const": "alpha" }
+        }
+      },
+      {
+        "type": "object",
+        "required": ["kind"],
+        "properties": {
+          "name": { "type": "string" }
+        }
+      }
+    ]
   },
   "ordinaryPostProperty": {
     "required": true,

@@ -8,8 +8,11 @@
     string-variant-simplified, recursive-schema-simplified, oneOf-normalized,
     oneOf-flattened, and singleton-type-wrapped output from the OpenAPI scripts,
     including inferred oneOf discriminators. It orders schema keys, property
-    maps, required arrays, and enum arrays while preserving ordinary OpenAPI
-    object order and every non-enum array order.
+    maps, required arrays, enum arrays, and oneOf branches. Ordinary oneOf
+    branches with a direct scalar type sort by that type before an encounter-
+    ordered unclassifiable tail. Discriminated oneOf branches sort by their
+    ordinal-smallest accepted discriminator value. Other non-enum arrays retain
+    encounter order. Local JSON Pointers are relocated when branch indexes move.
 
 .PARAMETER InputPath
     The extracted OpenAPI JSON document to sort.
@@ -107,6 +110,331 @@ function Sort-JsonEnumValues {
         $sortedValues[$index] = $sortedEntries[$index].Value
     }
     return ,$sortedValues
+}
+
+function Get-OpenApiSortedDiscriminatorBranchValues {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Branch,
+
+        [Parameter(Mandatory = $true)]
+        [string]$PropertyName,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb
+    )
+
+    if (-not (Test-JsonObjectValue -Value $Branch)) {
+        throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName' because the branch is not a Schema Object."
+    }
+
+    $targetSchema = $Branch
+    $branchProperties = @(Get-JsonProperties -Value $Branch)
+    if ($branchProperties.Count -eq 1 -and
+        [string]::Equals($branchProperties[0].Name, '$ref', [System.StringComparison]::Ordinal)) {
+        $reference = $branchProperties[0].Value
+        if ($reference -isnot [string] -or
+            -not $reference.StartsWith("#/", [System.StringComparison]::Ordinal)) {
+            throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName' because its `$ref is not a local JSON Pointer."
+        }
+        try {
+            $targetSchema = Resolve-LocalJsonPointer `
+                -Document $Document `
+                -Pointer $reference `
+                -Context "discriminated oneOf branch at $Breadcrumb"
+        }
+        catch {
+            throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName': $($_.Exception.Message)"
+        }
+    }
+    elseif (Test-JsonProperty -Object $Branch -Name "oneOf") {
+        $nestedPlan = Get-OpenApiInlineDiscriminatorUnionPlan `
+            -Schema $Branch `
+            -PropertyName $PropertyName `
+            -Breadcrumb $Breadcrumb `
+            -RequireDiscriminator
+        if ($null -eq $nestedPlan -or $nestedPlan.Values.Count -eq 0) {
+            throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName' because it does not expose finite discriminator values."
+        }
+        return ,(Sort-OrdinalStrings -Values ([string[]]$nestedPlan.Values))
+    }
+
+    try {
+        [string[]]$values = @(Get-OpenApiDiscriminatorPropertyValues `
+            -Schema $targetSchema `
+            -PropertyName $PropertyName `
+            -Breadcrumb $Breadcrumb)
+    }
+    catch {
+        throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName': $($_.Exception.Message)"
+    }
+    if ($values.Count -eq 0) {
+        throw "Cannot sort discriminated oneOf branch at '$Breadcrumb' by property '$PropertyName' because it does not accept a finite string value."
+    }
+    return ,(Sort-OrdinalStrings -Values $values)
+}
+
+function Compare-OpenApiOneOfSortEntries {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Left,
+
+        [Parameter(Mandatory = $true)]
+        [object]$Right,
+
+        [Parameter()]
+        [switch]$Discriminated
+    )
+
+    if (-not $Discriminated -and $Left.IsClassifiable -ne $Right.IsClassifiable) {
+        if ($Left.IsClassifiable) {
+            return -1
+        }
+        return 1
+    }
+    if ($Left.IsClassifiable -and $Right.IsClassifiable) {
+        $keyComparison = [System.StringComparer]::Ordinal.Compare($Left.SortKey, $Right.SortKey)
+        if ($keyComparison -ne 0) {
+            return $keyComparison
+        }
+    }
+    return $Left.OriginalIndex.CompareTo($Right.OriginalIndex)
+}
+
+function ConvertTo-SortedOpenApiOneOfBranches {
+    param(
+        [Parameter(Mandatory = $true)]
+        [object]$Document,
+
+        [Parameter(Mandatory = $true)]
+        [object]$OwnerSchema,
+
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [object[]]$Branches,
+
+        [Parameter(Mandatory = $true)]
+        [string]$Breadcrumb,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, object]]$OneOfPermutations,
+
+        [Parameter(Mandatory = $true)]
+        [int]$Depth,
+
+        [Parameter(Mandatory = $true)]
+        [int]$MaximumDepth
+    )
+
+    $isDiscriminated = Test-JsonProperty -Object $OwnerSchema -Name "discriminator"
+    $discriminator = if ($isDiscriminated) {
+        Get-JsonPropertyValue -Object $OwnerSchema -Name "discriminator"
+    }
+    else {
+        $null
+    }
+    $propertyName = $null
+    if ($isDiscriminated) {
+        $ownerBreadcrumb = $Breadcrumb.Substring(0, $Breadcrumb.Length - "/oneOf".Length)
+        if (-not (Test-JsonObjectValue -Value $discriminator)) {
+            throw "Discriminator at '$ownerBreadcrumb/discriminator' must be an object before its oneOf can be sorted."
+        }
+        $propertyName = Get-JsonPropertyValue -Object $discriminator -Name "propertyName"
+        if ($propertyName -isnot [string] -or [string]::IsNullOrWhiteSpace($propertyName)) {
+            throw "Discriminator propertyName at '$ownerBreadcrumb/discriminator/propertyName' must be a nonempty string before its oneOf can be sorted."
+        }
+    }
+
+    $sortedEntries = [System.Collections.Generic.List[object]]::new()
+    for ($index = 0; $index -lt $Branches.Count; $index++) {
+        $branchBreadcrumb = "$Breadcrumb/$index"
+        $sortedBranch = ConvertTo-SortedOpenApiValue `
+            -Value $Branches[$index] `
+            -Context Schema `
+            -Document $Document `
+            -Breadcrumb $branchBreadcrumb `
+            -OneOfPermutations $OneOfPermutations `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth
+
+        $isClassifiable = $false
+        $sortKey = $null
+        if ($isDiscriminated) {
+            [string[]]$acceptedValues = @(Get-OpenApiSortedDiscriminatorBranchValues `
+                -Document $Document `
+                -Branch $Branches[$index] `
+                -PropertyName $propertyName `
+                -Breadcrumb $branchBreadcrumb)
+            $isClassifiable = $true
+            $sortKey = $acceptedValues[0]
+        }
+        elseif (Test-JsonObjectValue -Value $Branches[$index]) {
+            $branchType = Get-JsonPropertyValue -Object $Branches[$index] -Name "type"
+            if ($branchType -is [string]) {
+                $isClassifiable = $true
+                $sortKey = $branchType
+            }
+        }
+
+        $entry = [PSCustomObject]@{
+            OriginalIndex = $index
+            IsClassifiable = $isClassifiable
+            SortKey = $sortKey
+            Value = $sortedBranch
+        }
+        $insertionIndex = $sortedEntries.Count
+        for ($sortedIndex = 0; $sortedIndex -lt $sortedEntries.Count; $sortedIndex++) {
+            if ((Compare-OpenApiOneOfSortEntries `
+                    -Left $entry `
+                    -Right $sortedEntries[$sortedIndex] `
+                    -Discriminated:$isDiscriminated) -lt 0) {
+                $insertionIndex = $sortedIndex
+                break
+            }
+        }
+        $sortedEntries.Insert($insertionIndex, $entry)
+    }
+
+    [object[]]$sortedBranches = [object[]]::new($sortedEntries.Count)
+    [int[]]$oldToNew = [int[]]::new($sortedEntries.Count)
+    $changed = $false
+    for ($newIndex = 0; $newIndex -lt $sortedEntries.Count; $newIndex++) {
+        $entry = $sortedEntries[$newIndex]
+        $sortedBranches[$newIndex] = $entry.Value
+        $oldToNew[$entry.OriginalIndex] = $newIndex
+        if ($entry.OriginalIndex -ne $newIndex) {
+            $changed = $true
+        }
+    }
+    if ($changed) {
+        if ($OneOfPermutations.ContainsKey($Breadcrumb)) {
+            throw "oneOf sorting registered duplicate permutations for '$Breadcrumb'."
+        }
+        $OneOfPermutations[$Breadcrumb] = $oldToNew
+    }
+    return ,$sortedBranches
+}
+
+function Get-SortedOpenApiOneOfPointer {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Pointer,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, object]]$OneOfPermutations
+    )
+
+    if ([string]::Equals($Pointer, "#", [System.StringComparison]::Ordinal) -or
+        -not $Pointer.StartsWith("#/", [System.StringComparison]::Ordinal) -or
+        $OneOfPermutations.Count -eq 0) {
+        return $Pointer
+    }
+
+    [string[]]$tokens = Get-JsonPointerTokens -Pointer $Pointer
+    $originalPrefix = "#"
+    $sortedPrefix = "#"
+    foreach ($token in $tokens) {
+        $sortedToken = $token
+        if ($OneOfPermutations.ContainsKey($originalPrefix)) {
+            $oldIndex = 0
+            if (-not [int]::TryParse(
+                    $token,
+                    [System.Globalization.NumberStyles]::None,
+                    [System.Globalization.CultureInfo]::InvariantCulture,
+                    [ref]$oldIndex)) {
+                throw "JSON Pointer '$Pointer' has nonnumeric branch token '$token' below reordered oneOf '$originalPrefix'."
+            }
+            [int[]]$permutation = [int[]]$OneOfPermutations[$originalPrefix]
+            if ($oldIndex -lt 0 -or $oldIndex -ge $permutation.Count) {
+                throw "JSON Pointer '$Pointer' has out-of-range branch index '$oldIndex' below reordered oneOf '$originalPrefix'."
+            }
+            $sortedToken = $permutation[$oldIndex].ToString([System.Globalization.CultureInfo]::InvariantCulture)
+        }
+        $originalPrefix = "$originalPrefix/$(ConvertTo-JsonPointerToken -Token $token)"
+        $sortedPrefix = "$sortedPrefix/$(ConvertTo-JsonPointerToken -Token $sortedToken)"
+    }
+    return $sortedPrefix
+}
+
+function ConvertTo-SortedOpenApiPointers {
+    param(
+        [Parameter(Mandatory = $true)]
+        [AllowNull()]
+        [object]$Value,
+
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Generic.Dictionary[string, object]]$OneOfPermutations,
+
+        [Parameter()]
+        [ValidateSet("Default", "Discriminator", "Mapping")]
+        [string]$Context = "Default",
+
+        [Parameter()]
+        [int]$Depth = 0,
+
+        [Parameter()]
+        [int]$MaximumDepth = 200
+    )
+
+    if ($Depth -gt $MaximumDepth) {
+        throw "oneOf pointer relocation exceeds the supported depth of $MaximumDepth."
+    }
+    if ($null -eq $Value) {
+        return $null
+    }
+    if (Test-JsonArrayValue -Value $Value) {
+        [object[]]$items = [object[]]::new($Value.Count)
+        for ($index = 0; $index -lt $Value.Count; $index++) {
+            $items[$index] = ConvertTo-SortedOpenApiPointers `
+                -Value $Value[$index] `
+                -OneOfPermutations $OneOfPermutations `
+                -Context Default `
+                -Depth ($Depth + 1) `
+                -MaximumDepth $MaximumDepth
+        }
+        return ,$items
+    }
+    if (-not (Test-JsonObjectValue -Value $Value)) {
+        return $Value
+    }
+
+    $result = [ordered]@{}
+    foreach ($property in (Get-JsonProperties -Value $Value)) {
+        if ([string]::Equals($Context, "Mapping", [System.StringComparison]::Ordinal) -and
+            $property.Value -is [string]) {
+            $result[$property.Name] = Get-SortedOpenApiOneOfPointer `
+                -Pointer $property.Value `
+                -OneOfPermutations $OneOfPermutations
+            continue
+        }
+        if (@('$ref', '$dynamicRef', '$recursiveRef') -ccontains $property.Name -and
+            $property.Value -is [string]) {
+            $result[$property.Name] = Get-SortedOpenApiOneOfPointer `
+                -Pointer $property.Value `
+                -OneOfPermutations $OneOfPermutations
+            continue
+        }
+
+        $childContext = "Default"
+        if ([string]::Equals($Context, "Default", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "discriminator", [System.StringComparison]::Ordinal)) {
+            $childContext = "Discriminator"
+        }
+        elseif ([string]::Equals($Context, "Discriminator", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "mapping", [System.StringComparison]::Ordinal)) {
+            $childContext = "Mapping"
+        }
+        $result[$property.Name] = ConvertTo-SortedOpenApiPointers `
+            -Value $property.Value `
+            -OneOfPermutations $OneOfPermutations `
+            -Context $childContext `
+            -Depth ($Depth + 1) `
+            -MaximumDepth $MaximumDepth
+    }
+    return $result
 }
 
 function Get-OrderedRequiredPropertyNames {
@@ -223,6 +551,17 @@ function ConvertTo-SortedOpenApiValue {
         [string]$Context = "OpenApi",
 
         [Parameter()]
+        [AllowNull()]
+        [object]$Document,
+
+        [Parameter()]
+        [string]$Breadcrumb = "#",
+
+        [Parameter()]
+        [AllowNull()]
+        [System.Collections.Generic.Dictionary[string, object]]$OneOfPermutations,
+
+        [Parameter()]
         [int]$Depth = 0,
 
         [Parameter()]
@@ -230,7 +569,15 @@ function ConvertTo-SortedOpenApiValue {
     )
 
     if ($Depth -gt $MaximumDepth) {
-        throw "JSON sorting exceeds the supported depth of $MaximumDepth."
+        throw "JSON sorting exceeds the supported depth of $MaximumDepth at '$Breadcrumb'."
+    }
+    if ($null -eq $Document) {
+        $Document = $Value
+    }
+    if ($null -eq $OneOfPermutations) {
+        $OneOfPermutations = [System.Collections.Generic.Dictionary[string, object]]::new(
+            [System.StringComparer]::Ordinal
+        )
     }
     if ($null -eq $Value) {
         return $null
@@ -245,6 +592,9 @@ function ConvertTo-SortedOpenApiValue {
             $items[$index] = ConvertTo-SortedOpenApiValue `
                 -Value $Value[$index] `
                 -Context $itemContext `
+                -Document $Document `
+                -Breadcrumb "$Breadcrumb/$index" `
+                -OneOfPermutations $OneOfPermutations `
                 -Depth ($Depth + 1) `
                 -MaximumDepth $MaximumDepth
         }
@@ -274,6 +624,7 @@ function ConvertTo-SortedOpenApiValue {
 
     $result = [ordered]@{}
     foreach ($property in (Get-JsonProperties -Value $Value)) {
+        $propertyBreadcrumb = "$Breadcrumb/$(ConvertTo-JsonPointerToken -Token $property.Name)"
         if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
             [string]::Equals($property.Name, "enum", [System.StringComparison]::Ordinal) -and
             (Test-JsonArrayValue -Value $property.Value)) {
@@ -282,10 +633,27 @@ function ConvertTo-SortedOpenApiValue {
                 $enumValues[$index] = ConvertTo-SortedOpenApiValue `
                     -Value $property.Value[$index] `
                     -Context Literal `
+                    -Document $Document `
+                    -Breadcrumb "$propertyBreadcrumb/$index" `
+                    -OneOfPermutations $OneOfPermutations `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
             $result[$property.Name] = Sort-JsonEnumValues -Values $enumValues
+            continue
+        }
+
+        if ([string]::Equals($Context, "Schema", [System.StringComparison]::Ordinal) -and
+            [string]::Equals($property.Name, "oneOf", [System.StringComparison]::Ordinal) -and
+            (Test-JsonArrayValue -Value $property.Value)) {
+            $result[$property.Name] = ConvertTo-SortedOpenApiOneOfBranches `
+                -Document $Document `
+                -OwnerSchema $Value `
+                -Branches ([object[]]$property.Value) `
+                -Breadcrumb $propertyBreadcrumb `
+                -OneOfPermutations $OneOfPermutations `
+                -Depth $Depth `
+                -MaximumDepth $MaximumDepth
             continue
         }
 
@@ -319,6 +687,9 @@ function ConvertTo-SortedOpenApiValue {
                 $orderedProperties[$propertyName] = ConvertTo-SortedOpenApiValue `
                     -Value (Get-JsonPropertyValue -Object $property.Value -Name $propertyName) `
                     -Context Schema `
+                    -Document $Document `
+                    -Breadcrumb "$propertyBreadcrumb/$(ConvertTo-JsonPointerToken -Token $propertyName)" `
+                    -OneOfPermutations $OneOfPermutations `
                     -Depth ($Depth + 1) `
                     -MaximumDepth $MaximumDepth
             }
@@ -333,6 +704,9 @@ function ConvertTo-SortedOpenApiValue {
         $result[$property.Name] = ConvertTo-SortedOpenApiValue `
             -Value $property.Value `
             -Context $childContext `
+            -Document $Document `
+            -Breadcrumb $propertyBreadcrumb `
+            -OneOfPermutations $OneOfPermutations `
             -Depth ($Depth + 1) `
             -MaximumDepth $MaximumDepth
     }
@@ -349,8 +723,20 @@ function ConvertTo-SortedOpenApiDocument {
         [object]$Document
     )
 
-    $sorted = ConvertTo-SortedOpenApiValue -Value $Document
+    $oneOfPermutations = [System.Collections.Generic.Dictionary[string, object]]::new(
+        [System.StringComparer]::Ordinal
+    )
+    $sorted = ConvertTo-SortedOpenApiValue `
+        -Value $Document `
+        -Document $Document `
+        -OneOfPermutations $oneOfPermutations
+    if ($oneOfPermutations.Count -gt 0) {
+        $sorted = ConvertTo-SortedOpenApiPointers `
+            -Value $sorted `
+            -OneOfPermutations $oneOfPermutations
+    }
     Assert-OpenApiReferencesResolve -Document $sorted
+    Assert-AdditionalOpenApiReferencesResolve -Document $sorted
     return $sorted
 }
 

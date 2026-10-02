@@ -99,6 +99,35 @@ function Write-TestSpecification {
             }
         )
     }
+    $properties["tools"] = [ordered]@{
+        type = "array"
+        items = [ordered]@{
+            discriminator = [ordered]@{ propertyName = "type" }
+            oneOf = @(
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("web_search_preview") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("function") }
+                    }
+                },
+                [ordered]@{
+                    type = "object"
+                    required = @("type")
+                    properties = [ordered]@{
+                        type = [ordered]@{ type = "string"; enum = @("apply_patch") }
+                    }
+                }
+            )
+        }
+    }
     Write-TestJson -Document $document -Path $Path
 }
 
@@ -346,11 +375,13 @@ try {
         $flattenedNested = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
         $flattenedSplitChoice = $oneOfFlattened.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
         $wrappedSplitChoice = $singletonTypeWrapped.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.splitChoice
+        $wrappedTools = $singletonTypeWrapped.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.tools
         $sortedModel = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.model
         $sortedEvents = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.events
         $sortedFilters = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.filters
         $sortedGrouped = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.grouped
         $sortedNested = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.nested
+        $sortedTools = $sorted.paths.'/responses'.post.requestBody.content.'application/json'.schema.properties.tools
         Assert-Equal 2 $simplifiedModel.anyOf.Count "Simplify stage emitted the wrong branch count."
         Assert-Sequence @("zeta", "alpha", "middle") @($simplifiedModel.anyOf[1].enum) "Simplify stage did not preserve encounter order."
         Assert-True ($simplifiedOutputs.PSObject.Properties.Name -ccontains "discriminator") "Simplify stage removed the orphan before Normalize."
@@ -400,10 +431,16 @@ try {
         Assert-Equal 2 $wrappedSplitChoice.oneOf.Count "Singleton wrapper stage emitted the wrong splitChoice outer branch count."
         Assert-Equal "type" $wrappedSplitChoice.oneOf[1].discriminator.propertyName "Singleton wrapper stage used the wrong discriminator."
         Assert-Sequence @("alpha", "beta", "gamma") @($wrappedSplitChoice.oneOf[1].oneOf | ForEach-Object { $_.properties.type.enum[0] }) "Singleton wrapper stage changed splitChoice branch order."
+        Assert-Sequence @("web_search_preview", "function", "apply_patch") @(
+            $wrappedTools.items.oneOf | ForEach-Object { $_.properties.type.enum[0] }
+        ) "A pre-sort stage changed tools branch order."
         Assert-True ($sortedEvents.PSObject.Properties.Name -ccontains "anyOf") "Sort stage lost the retained anyOf."
         Assert-Equal "type" $sortedGrouped.discriminator.propertyName "Sort stage lost the grouped discriminator."
         Assert-Equal 5 $sortedGrouped.oneOf.Count "Sort stage changed grouped branches."
         Assert-Equal 3 $sortedNested.oneOf.Count "Sort stage changed retained oneOf branches."
+        Assert-Sequence @("apply_patch", "function", "web_search_preview") @(
+            $sortedTools.items.oneOf | ForEach-Object { $_.properties.type.enum[0] }
+        ) "Sort stage did not order tools by discriminator value."
         Assert-Sequence @("alpha", "middle", "zeta") @($sortedModel.anyOf[1].enum) "Sort stage did not canonicalize the enum."
         Assert-Equal $true $sortedFilters.anyOf[0].additionalProperties "Sort stage lost the free-form recursive replacement."
 
