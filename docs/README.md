@@ -44,7 +44,7 @@ dotnet --version
 You should see output similar to:
 
 ```text
-10.0.400
+10.0.401
 ```
 
 ## Setup
