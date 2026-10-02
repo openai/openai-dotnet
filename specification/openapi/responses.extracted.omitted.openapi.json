@@ -35971,7 +35971,8 @@
           "filters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/Filters"
+                "type": "object",
+                "additionalProperties": true
               },
               {
                 "type": "null"

@@ -746,7 +746,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -853,6 +853,57 @@
           }
         }
       },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "direct": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect",
+            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect"
+          },
+          {
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram"
+          }
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "direct"
+            ]
+          }
+        }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfProgram": {
+        "type": "object",
+        "required": [
+          "type",
+          "caller_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "program"
+            ]
+          },
+          "caller_id": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          }
+        }
+      },
       "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCallOutput": {
         "type": "object",
         "required": [
@@ -882,7 +933,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -1653,7 +1704,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -1664,6 +1715,41 @@
             "type": "string"
           },
           "namespace": {
+            "type": "string"
+          }
+        }
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject": {
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "direct": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect",
+            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram"
+          }
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject_typeOfDirect"
+          },
+          {
+            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram"
+          }
+        ]
+      },
+      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject_typeOfProgram": {
+        "type": "object",
+        "required": [
+          "type",
+          "caller_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "program"
+            ]
+          },
+          "caller_id": {
             "type": "string"
           }
         }
@@ -1691,7 +1777,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -1848,7 +1934,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfCustomToolCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -1868,55 +1954,6 @@
               "in_progress",
               "incomplete"
             ]
-          }
-        }
-      },
-      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "direct": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
-            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect"
-          },
-          {
-            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram"
-          }
-        ]
-      },
-      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect": {
-        "type": "object",
-        "required": [
-          "type"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "direct"
-            ]
-          }
-        }
-      },
-      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfProgram": {
-        "type": "object",
-        "required": [
-          "type",
-          "caller_id"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "program"
-            ]
-          },
-          "caller_id": {
-            "type": "string"
           }
         }
       },
@@ -1951,7 +1988,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -2110,7 +2147,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
               },
               {
                 "type": "null"
@@ -2172,7 +2209,7 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
               },
               {
                 "type": "null"
@@ -2201,49 +2238,12 @@
           "prompt_cache_breakpoint": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+                "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
               },
               {
                 "type": "null"
               }
             ]
-          }
-        }
-      },
-      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject": {
-        "discriminator": {
-          "propertyName": "type",
-          "mapping": {
-            "direct": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect",
-            "program": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram"
-          }
-        },
-        "oneOf": [
-          {
-            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCall_Caller_discriminatedObject_typeOfDirect"
-          },
-          {
-            "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram"
-          }
-        ]
-      },
-      "createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject_typeOfProgram": {
-        "type": "object",
-        "required": [
-          "type",
-          "caller_id"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "program"
-            ]
-          },
-          "caller_id": {
-            "type": "string",
-            "maxLength": 64,
-            "minLength": 1
           }
         }
       },
@@ -3372,7 +3372,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -3495,7 +3495,7 @@
           "caller": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfFunctionCallOutput_Caller_discriminatedObject"
+                "$ref": "#/components/schemas/createResponse_request_object_Input_union_array_item_discriminatedObject_typeOfApplyPatchCall_Caller_discriminatedObject"
               },
               {
                 "type": "null"
@@ -4078,7 +4078,21 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
+          }
+        }
+      },
+      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object": {
+        "type": "object",
+        "required": [
+          "mode"
+        ],
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "explicit"
+            ]
           }
         }
       },
@@ -4126,7 +4140,7 @@
             ]
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
           }
         }
       },
@@ -4147,21 +4161,7 @@
             "type": "string"
           },
           "prompt_cache_breakpoint": {
-            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object"
-          }
-        }
-      },
-      "createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputText_PromptCacheBreakpoint_object": {
-        "type": "object",
-        "required": [
-          "mode"
-        ],
-        "properties": {
-          "mode": {
-            "type": "string",
-            "enum": [
-              "explicit"
-            ]
+            "$ref": "#/components/schemas/createResponse_request_object_Prompt_object_Variables_dictionary_value_union_discriminatedObject_typeOfInputFile_PromptCacheBreakpoint_object"
           }
         }
       },

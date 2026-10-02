@@ -68962,8 +68962,8 @@
           "filters": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/Filters",
-                "description": "A filter to apply."
+                "type": "object",
+                "additionalProperties": true
               },
               {
                 "type": "null"
