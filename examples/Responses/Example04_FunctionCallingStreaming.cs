@@ -5,6 +5,7 @@ using System.ClientModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -17,7 +18,7 @@ public partial class ResponseExamples
     // See Example03_FunctionCalling.cs for the tool and function definitions.
 
     [Test]
-    public void Example04_FunctionCallingStreaming()
+    public async Task Example04_FunctionCallingStreaming()
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -35,9 +36,9 @@ public partial class ResponseExamples
         {
             requiresAction = false;
 
-            CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming(options);
+            AsyncStreamingResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming(options);
 
-            foreach (StreamingResponseUpdate update in responseUpdates)
+            await foreach (StreamingResponseUpdate update in responseUpdates)
             {
                 if (update is StreamingResponseOutputItemAddedUpdate outputItemAddedUpdated)
                 {

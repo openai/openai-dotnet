@@ -88,7 +88,7 @@ public partial class ResponsesSmokeTests
         };
 
         List<StreamingResponseUpdate> receivedUpdates = [];
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(createOptions))
+        await foreach (StreamingResponseUpdate update in await client.CreateResponseStreamingAsync(createOptions))
         {
             receivedUpdates.Add(update);
         }
