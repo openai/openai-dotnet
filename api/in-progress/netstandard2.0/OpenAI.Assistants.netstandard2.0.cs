@@ -24,6 +24,8 @@ namespace OpenAI.Assistants {
     public class AssistantClient {
         protected AssistantClient();
         public AssistantClient(AssistantClientSettings settings);
+        public AssistantClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public AssistantClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public AssistantClient(ApiKeyCredential credential);
         public AssistantClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

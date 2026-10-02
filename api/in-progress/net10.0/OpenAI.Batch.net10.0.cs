@@ -11,6 +11,8 @@ namespace OpenAI.Batch {
         protected BatchClient();
         [Experimental("SCME0002")]
         public BatchClient(BatchClientSettings settings);
+        public BatchClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public BatchClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public BatchClient(ApiKeyCredential credential);
         public BatchClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

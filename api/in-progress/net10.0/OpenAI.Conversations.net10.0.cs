@@ -11,6 +11,8 @@ namespace OpenAI.Conversations {
         protected ConversationClient();
         [Experimental("SCME0002")]
         public ConversationClient(ConversationClientSettings settings);
+        public ConversationClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public ConversationClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public ConversationClient(ApiKeyCredential credential);
         public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

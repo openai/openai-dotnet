@@ -9,6 +9,8 @@ namespace OpenAI.Videos {
     public class VideoClient {
         protected VideoClient();
         public VideoClient(VideoClientSettings settings);
+        public VideoClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public VideoClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public VideoClient(ApiKeyCredential credential);
         public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

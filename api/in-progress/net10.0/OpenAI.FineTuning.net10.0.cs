@@ -31,6 +31,8 @@ namespace OpenAI.FineTuning {
         protected FineTuningClient();
         [Experimental("SCME0002")]
         public FineTuningClient(FineTuningClientSettings settings);
+        public FineTuningClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public FineTuningClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
         public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

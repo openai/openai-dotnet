@@ -27,6 +27,8 @@ namespace OpenAI.FineTuning {
     public class FineTuningClient {
         protected FineTuningClient();
         public FineTuningClient(FineTuningClientSettings settings);
+        public FineTuningClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public FineTuningClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public FineTuningClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public FineTuningClient(ApiKeyCredential credential);
         public FineTuningClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

@@ -86,6 +86,64 @@ ChatClient client = new(
 
 Replace `MODEL_NAME` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
 
+### Using workload identity federation
+
+Workload identity federation exchanges a JWT or OpenID Connect ID token from your identity provider for a short-lived OpenAI access token. Subject tokens are short-lived bearer credentials: keep them secret and have the provider return a fresh, currently valid token whenever it is called.
+
+```csharp
+public sealed class RotatingFileSubjectTokenProvider : ISubjectTokenProvider
+{
+    private readonly string _path;
+
+    public RotatingFileSubjectTokenProvider(string path)
+    {
+        _path = path;
+    }
+
+    public WorkloadIdentitySubjectTokenType TokenType
+        => WorkloadIdentitySubjectTokenType.Jwt;
+
+    public async ValueTask<string> GetTokenAsync(CancellationToken cancellationToken)
+    {
+        string token = (await File.ReadAllTextAsync(_path, cancellationToken).ConfigureAwait(false)).Trim();
+        if (string.IsNullOrEmpty(token))
+        {
+            throw new InvalidOperationException("The subject-token file is empty.");
+        }
+
+        return token;
+    }
+}
+
+WorkloadIdentityFederationOptions workloadIdentity = new(
+    new RotatingFileSubjectTokenProvider("/path/to/rotating-subject-token.jwt"),
+    identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
+    serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID",
+    clientId: "YOUR_OPTIONAL_CLIENT_ID");
+
+// Feature clients created from OpenAIClient share its authenticated pipeline.
+OpenAIClient openAIClient = new(workloadIdentity);
+ChatClient client = openAIClient.GetChatClient("gpt-5.1");
+
+// Standalone feature clients also accept workload identity directly.
+ChatClient standaloneClient = new("gpt-5.1", workloadIdentity);
+```
+
+For example, a SPIFFE workload can exchange a projected JWT-SVID from `/var/run/spiffe/openai.jwt`:
+
+```csharp
+WorkloadIdentityFederationOptions spiffeWorkloadIdentity = new(
+    new RotatingFileSubjectTokenProvider("/var/run/spiffe/openai.jwt"),
+    identityProviderId: "YOUR_IDENTITY_PROVIDER_ID",
+    serviceAccountId: "YOUR_SERVICE_ACCOUNT_ID");
+
+OpenAIClient spiffeClient = new(spiffeWorkloadIdentity);
+```
+
+Return `WorkloadIdentitySubjectTokenType.IdToken` from `TokenType` for an OpenID Connect ID token. The SDK calls the provider again when the exchanged access token needs refreshing, caches and refreshes the OpenAI access token before expiration, coalesces concurrent refreshes, keeps using an unexpired cached access token if a proactive refresh fails, and forwards cancellation to both subject-token acquisition and token exchange.
+
+API-key authentication and workload identity are mutually exclusive. Configure exactly one credential mode per client; do not combine an API key with `WorkloadIdentityFederationOptions`.
+
 ### Namespace organization
 
 The library is organized into namespaces by feature areas in the OpenAI REST API. Each namespace contains a corresponding client class.

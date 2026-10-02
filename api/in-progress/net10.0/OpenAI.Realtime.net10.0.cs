@@ -49,6 +49,8 @@ namespace OpenAI.Realtime {
         protected RealtimeClient();
         [Experimental("SCME0002")]
         public RealtimeClient(RealtimeClientSettings settings);
+        public RealtimeClient(WorkloadIdentityFederationOptions workloadIdentityOptions, RealtimeClientOptions options);
+        public RealtimeClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options);
         public RealtimeClient(ApiKeyCredential credential);
         [Experimental("OPENAI001")]
