@@ -15,7 +15,7 @@
   },
   "features": {
     "ghcr.io/devcontainers/features/dotnet:2": {
-      "version": "10.0.400"
+      "version": "10.0.401"
     },
     "ghcr.io/devcontainers/features/node:2": {
       "version": "lts"
