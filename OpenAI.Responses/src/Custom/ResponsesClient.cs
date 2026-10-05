@@ -77,7 +77,7 @@ public partial class ResponsesClient
 
         Pipeline = OpenAIClientUtilities.CreatePipeline(authenticationPolicy, options, options.UserAgentApplicationId, options.OrganizationId, options.ProjectId);
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        _telemetry = new OpenTelemetrySource(_endpoint);
+        _telemetry = new OpenTelemetrySource(_endpoint, options.ClientLoggingOptions);
     }
 
     // CUSTOM:
@@ -95,7 +95,7 @@ public partial class ResponsesClient
 
         Pipeline = pipeline;
         _endpoint = OpenAIClientUtilities.GetEndpoint(options.Endpoint);
-        _telemetry = new OpenTelemetrySource(_endpoint);
+        _telemetry = new OpenTelemetrySource(_endpoint, options.ClientLoggingOptions);
     }
 
     [Experimental("SCME0002")]
@@ -265,7 +265,10 @@ public partial class ResponsesClient
         return new SseUpdateCollection<StreamingResponseUpdate>(
             () => CreateResponse((BinaryContent)options, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+            cancellationToken)
+        {
+            LifecycleFactory = () => _telemetry?.StartResponsesStreamingScope(options),
+        };
     }
 
     // CUSTOM: Added protocol model method.
@@ -294,7 +297,10 @@ public partial class ResponsesClient
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
             async () => await CreateResponseAsync((BinaryContent)options, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            requestOptions.CancellationToken);
+            requestOptions.CancellationToken)
+        {
+            LifecycleFactory = () => _telemetry?.StartResponsesStreamingScope(options),
+        };
     }
 
     // CUSTOM: Added convenience method with no options.

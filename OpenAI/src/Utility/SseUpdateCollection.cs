@@ -4,6 +4,7 @@ using System.ClientModel.Primitives;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.ServerSentEvents;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 
@@ -19,6 +20,9 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     private readonly Func<ClientResult> _sendRequestFunc;
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
+    private ConditionalWeakTable<ClientResult, SseLifecycle<T>>? _lifecycles;
+
+    internal Func<SseLifecycle<T>?>? LifecycleFactory { get; set; }
 
     public List<Action> AdditionalDisposalActions { get; } = [];
 
@@ -85,20 +89,52 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         _cancellationToken = cancellationToken;
     }
 
-    public override ContinuationToken? GetContinuationToken(ClientResult page)
-        // Continuation is not supported for SSE streams.
-        => null;
+    // Continuation is not supported for SSE streams.
+    public override ContinuationToken? GetContinuationToken(ClientResult page) => null;
 
     public override IEnumerable<ClientResult> GetRawPages()
     {
         // We don't currently support resuming a dropped connection from the
         // last received event, so the response collection has a single element.
-        yield return _sendRequestFunc();
+        var lifecycle = LifecycleFactory?.Invoke();
+        ClientResult? page = null;
+        try
+        {
+            using (lifecycle?.Enter())
+            {
+                try
+                {
+                    page = _sendRequestFunc();
+                    lifecycle?.OnResponse(page.GetRawResponse());
+                }
+                catch (Exception exception)
+                {
+                    lifecycle?.OnException(exception);
+                    throw;
+                }
+            }
+            if (lifecycle is not null)
+            {
+                LazyInitializer.EnsureInitialized(ref _lifecycles)!.Add(page, lifecycle);
+            }
+            yield return page;
+        }
+        finally
+        {
+            lifecycle?.Complete(SseCompletionKind.RawResponse);
+            if (page is not null)
+            {
+                _lifecycles?.Remove(page);
+            }
+        }
     }
 
     protected override IEnumerable<T> GetValuesFromPage(ClientResult page)
     {
-        using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions);
+        SseLifecycle<T>? lifecycle = null;
+        _lifecycles?.TryGetValue(page, out lifecycle);
+        lifecycle?.OnTypedResponse();
+        using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions, lifecycle);
         while (enumerator.MoveNext())
         {
             yield return enumerator.Current;
@@ -127,12 +163,15 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         private U? _current;
         private bool _started;
+        private bool _disposed;
+        private readonly SseLifecycle<U>? _lifecycle;
 
         public SseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> eventDeserializerFunc,
             ClientResult page,
             CancellationToken cancellationToken,
-            List<Action> additionalDisposalActions)
+            List<Action> additionalDisposalActions,
+            SseLifecycle<U>? lifecycle)
         {
             Argument.AssertNotNull(eventDeserializerFunc, nameof(eventDeserializerFunc));
             Argument.AssertNotNull(page, nameof(page));
@@ -141,6 +180,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             _response = page.GetRawResponse();
             _cancellationToken = cancellationToken;
             _additionalDisposalActions = additionalDisposalActions;
+            _lifecycle = lifecycle;
         }
 
         U IEnumerator<U>.Current => _current!;
@@ -148,6 +188,29 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         object IEnumerator.Current => _current!;
 
         public bool MoveNext()
+        {
+            using var activation = _lifecycle?.Enter();
+            try
+            {
+                var hasNext = MoveNextCore();
+                if (hasNext)
+                {
+                    _lifecycle?.OnUpdate(_current!);
+                }
+                else
+                {
+                    _lifecycle?.Complete(SseCompletionKind.EndOfStream);
+                }
+                return hasNext;
+            }
+            catch (Exception exception)
+            {
+                _lifecycle?.OnException(exception);
+                throw;
+            }
+        }
+
+        private bool MoveNextCore()
         {
             if (_events is null && _started)
             {
@@ -183,6 +246,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                     break;
                 }
 
+                _lifecycle?.OnEvent();
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
@@ -220,19 +284,40 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            using var activation = _lifecycle?.Enter();
+            try
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+            catch (Exception exception)
+            {
+                _lifecycle?.OnException(exception);
+                throw;
+            }
+            finally
+            {
+                _lifecycle?.Complete(SseCompletionKind.Disposed);
+            }
         }
 
         private void Dispose(bool disposing)
         {
-            if (disposing && _events is not null)
+            if ((!disposing) || (_disposed))
             {
-                _events.Dispose();
+                return;
+            }
+            _disposed = true;
+            try
+            {
+                _updates?.Dispose();
+                _events?.Dispose();
+            }
+            finally
+            {
                 _events = null;
-
-                // Dispose the response so we don't leave the network connection open.
-                _response?.Dispose();
+                // Cancellation can occur before the first parser read, but the connection is already open.
+                _response.Dispose();
             }
 
             foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])

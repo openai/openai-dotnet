@@ -92,7 +92,7 @@ public partial class ChatClient
         _model = model;
         Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
-        _telemetry = new OpenTelemetrySource(model, _endpoint);
+        _telemetry = new OpenTelemetrySource(model, _endpoint, options.ClientLoggingOptions);
     }
 
     // CUSTOM:
@@ -116,7 +116,7 @@ public partial class ChatClient
         _model = model;
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
-        _telemetry = new OpenTelemetrySource(model, _endpoint);
+        _telemetry = new OpenTelemetrySource(model, _endpoint, options.ClientLoggingOptions);
     }
 
     [Experimental("SCME0002")]

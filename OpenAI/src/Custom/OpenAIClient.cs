@@ -358,9 +358,9 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual ResponsesClient GetResponsesClient() => new TopLevelResponsesClient(Pipeline, new ResponsesClientOptions
     {
-        // The shared-pipeline constructor only consumes the endpoint. Other settings are already
-        // baked into the reused pipeline or only apply when building a new pipeline.
+        // Transport settings are already baked into the shared pipeline; operation logging still needs its configuration.
         Endpoint = _options.Endpoint,
+        ClientLoggingOptions = _options.ClientLoggingOptions,
     });
 
     /// <summary>

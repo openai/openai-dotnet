@@ -1,6 +1,9 @@
-﻿using OpenAI.Chat;
+﻿using Microsoft.Extensions.Logging;
+using OpenAI.Chat;
 using OpenAI.Responses;
 using System;
+using System.ClientModel.Primitives;
+using System.Diagnostics;
 
 namespace OpenAI.Telemetry;
 
@@ -15,8 +18,14 @@ internal class OpenTelemetrySource
     private readonly int _serverPort;
     private readonly string _model;
     private readonly bool _useLatestSemanticConventions;
+    private readonly ILogger _exceptionLogger;
 
-    public OpenTelemetrySource(string model, Uri endpoint)
+    public OpenTelemetrySource(string model, Uri endpoint, ClientLoggingOptions loggingOptions = null)
+        : this(model, endpoint, loggingOptions, "OpenAI.ChatClient.Operations")
+    {
+    }
+
+    private OpenTelemetrySource(string model, Uri endpoint, ClientLoggingOptions loggingOptions, string loggerCategory)
     {
         _useLatestSemanticConventions = OpenTelemetrySemanticConventionStabilityOptIn.IsLatestGenAiSemanticConventionEnabled;
         _providerAttributeKey = _useLatestSemanticConventions
@@ -25,24 +34,46 @@ internal class OpenTelemetrySource
         _serverAddress = endpoint.Host;
         _serverPort = endpoint.Port;
         _model = model;
+        if ((IsOTelEnabled) && (_useLatestSemanticConventions) && (loggingOptions?.EnableLogging != false))
+        {
+            _exceptionLogger = loggingOptions?.LoggerFactory?.CreateLogger(loggerCategory);
+        }
     }
 
-    public OpenTelemetrySource(Uri endpoint)
-        : this(null, endpoint)
+    public OpenTelemetrySource(Uri endpoint, ClientLoggingOptions loggingOptions = null)
+        : this(null, endpoint, loggingOptions, "OpenAI.ResponsesClient.Operations")
     {
     }
 
     public OpenTelemetryScope StartChatScope(ChatCompletionOptions completionsOptions)
     {
         return IsOTelEnabled
-            ? OpenTelemetryScope.StartChat(_model, ChatOperationName, _serverAddress, _serverPort, completionsOptions, _providerAttributeKey)
+            ? OpenTelemetryScope.StartChat(_model, ChatOperationName, _serverAddress, _serverPort, completionsOptions, _providerAttributeKey, _useLatestSemanticConventions, exceptionLogger: _exceptionLogger)
             : null;
     }
 
     public OpenTelemetryScope StartResponsesScope(CreateResponseOptions options)
     {
         return IsOTelEnabled
-            ? OpenTelemetryScope.StartResponses(options?.Model, ChatOperationName, _serverAddress, _serverPort, options, _providerAttributeKey, _useLatestSemanticConventions)
+            ? OpenTelemetryScope.StartResponses(options?.Model, ChatOperationName, _serverAddress, _serverPort, options, _providerAttributeKey, _useLatestSemanticConventions, exceptionLogger: _exceptionLogger)
             : null;
+    }
+
+    public SseLifecycle<StreamingResponseUpdate> StartResponsesStreamingScope(CreateResponseOptions options)
+    {
+        if (!IsOTelEnabled)
+        {
+            return null;
+        }
+        var previous = Activity.Current;
+        try
+        {
+            return OpenTelemetryScope.StartResponses(options?.Model, ChatOperationName, _serverAddress, _serverPort,
+                options, _providerAttributeKey, _useLatestSemanticConventions, streaming: true, exceptionLogger: _exceptionLogger)?.CreateStreamingLifecycle();
+        }
+        finally
+        {
+            Activity.Current = previous;
+        }
     }
 }

@@ -20,6 +20,9 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     private readonly Func<Task<ClientResult>> _sendRequestAsync;
     private readonly Func<SseItem<byte[]>, IEnumerable<T>> _eventDeserializerFunc;
     private readonly CancellationToken _cancellationToken;
+    private ConditionalWeakTable<ClientResult, SseLifecycle<T>>? _lifecycles;
+
+    internal Func<SseLifecycle<T>?>? LifecycleFactory { get; set; }
 
     public List<Action> AdditionalDisposalActions { get; } = [];
 
@@ -84,21 +87,53 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         _cancellationToken = cancellationToken;
     }
 
-    public override ContinuationToken? GetContinuationToken(ClientResult page)
-        // Continuation is not supported for SSE streams.
-        => null;
+    // Continuation is not supported for SSE streams.
+    public override ContinuationToken? GetContinuationToken(ClientResult page) => null;
 
     public async override IAsyncEnumerable<ClientResult> GetRawPagesAsync()
     {
         // We don't currently support resuming a dropped connection from the
         // last received event, so the response collection has a single element.
-        yield return await _sendRequestAsync();
+        var lifecycle = LifecycleFactory?.Invoke();
+        ClientResult? page = null;
+        try
+        {
+            using (lifecycle?.Enter())
+            {
+                try
+                {
+                    page = await _sendRequestAsync().ConfigureAwait(false);
+                    lifecycle?.OnResponse(page.GetRawResponse());
+                }
+                catch (Exception exception)
+                {
+                    lifecycle?.OnException(exception);
+                    throw;
+                }
+            }
+            if (lifecycle is not null)
+            {
+                LazyInitializer.EnsureInitialized(ref _lifecycles)!.Add(page, lifecycle);
+            }
+            yield return page;
+        }
+        finally
+        {
+            lifecycle?.Complete(SseCompletionKind.RawResponse);
+            if (page is not null)
+            {
+                _lifecycles?.Remove(page);
+            }
+        }
     }
 
     protected async override IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)
     {
-        await using IAsyncEnumerator<T> enumerator = new AsyncSseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions);
-        
+        SseLifecycle<T>? lifecycle = null;
+        _lifecycles?.TryGetValue(page, out lifecycle);
+        lifecycle?.OnTypedResponse();
+        await using IAsyncEnumerator<T> enumerator = new AsyncSseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions, lifecycle);
+
         while (await enumerator.MoveNextAsync().ConfigureAwait(false))
         {
             yield return enumerator.Current;
@@ -136,7 +171,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToSingleViaJson<U>(
         Func<JsonElement, BinaryData, ModelReaderWriterOptions, U> jsonSingleDeserializationFunc)
             => DeserializeSseToMultipleViaJson<U>((e, d, o) => [jsonSingleDeserializationFunc.Invoke(e, d, o)]);
-    
+
     private sealed class AsyncSseUpdateEnumerator<U> : IAsyncEnumerator<U>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
@@ -159,12 +194,15 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
         private U? _current;
         private bool _started;
+        private bool _disposed;
+        private readonly SseLifecycle<U>? _lifecycle;
 
         public AsyncSseUpdateEnumerator(
             Func<SseItem<byte[]>, IEnumerable<U>> deserializerFunc,
             ClientResult page,
             CancellationToken cancellationToken,
-            List<Action> additionalDisposalActions)
+            List<Action> additionalDisposalActions,
+            SseLifecycle<U>? lifecycle)
         {
             Argument.AssertNotNull(page, nameof(page));
 
@@ -172,11 +210,35 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             _response = page.GetRawResponse();
             _cancellationToken = cancellationToken;
             _additionalDisposalActions = additionalDisposalActions;
+            _lifecycle = lifecycle;
         }
 
         U IAsyncEnumerator<U>.Current => _current!;
 
         async ValueTask<bool> IAsyncEnumerator<U>.MoveNextAsync()
+        {
+            using var activation = _lifecycle?.Enter();
+            try
+            {
+                var hasNext = await MoveNextCoreAsync().ConfigureAwait(false);
+                if (hasNext)
+                {
+                    _lifecycle?.OnUpdate(_current!);
+                }
+                else
+                {
+                    _lifecycle?.Complete(SseCompletionKind.EndOfStream);
+                }
+                return hasNext;
+            }
+            catch (Exception exception)
+            {
+                _lifecycle?.OnException(exception);
+                throw;
+            }
+        }
+
+        private async ValueTask<bool> MoveNextCoreAsync()
         {
             if (_events is null && _started)
             {
@@ -212,6 +274,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                     break;
                 }
 
+                _lifecycle?.OnEvent();
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
@@ -246,20 +309,43 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsyncCore().ConfigureAwait(false);
-
-            GC.SuppressFinalize(this);
+            using var activation = _lifecycle?.Enter();
+            try
+            {
+                await DisposeAsyncCore().ConfigureAwait(false);
+                GC.SuppressFinalize(this);
+            }
+            catch (Exception exception)
+            {
+                _lifecycle?.OnException(exception);
+                throw;
+            }
+            finally
+            {
+                _lifecycle?.Complete(SseCompletionKind.Disposed);
+            }
         }
 
         private async ValueTask DisposeAsyncCore()
         {
-            if (_events is not null)
+            if (_disposed)
             {
-                await _events.DisposeAsync().ConfigureAwait(false);
+                return;
+            }
+            _disposed = true;
+            try
+            {
+                _updates?.Dispose();
+                if (_events is not null)
+                {
+                    await _events.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
                 _events = null;
-
-                // Dispose the response so we don't leave the network connection open.
-                _response?.Dispose();
+                // Cancellation can occur before the first parser read, but the connection is already open.
+                _response.Dispose();
             }
 
             foreach (Action additionalDisposalAction in _additionalDisposalActions ?? [])
