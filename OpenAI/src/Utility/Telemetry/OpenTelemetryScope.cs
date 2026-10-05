@@ -212,7 +212,7 @@ internal partial class OpenTelemetryScope : IDisposable
         }
     }
 
-    public void RecordException(Exception ex, string responseModel = null, string responseServiceTier = null, bool recordMetrics = true)
+    public void RecordException(Exception ex, string responseModel = null, string responseServiceTier = null)
     {
         if ((_useLatestSemanticConventions) && (!_exceptionLogged))
         {
@@ -225,11 +225,8 @@ internal partial class OpenTelemetryScope : IDisposable
             responseModel ??= _responseMetadata.Model;
             responseServiceTier ??= _responseMetadata.ServiceTier;
         }
-        if (recordMetrics)
-        {
-            RecordMetrics(responseModel, responseServiceTier, errorType, null, null,
-                responseSystemFingerprint: _useLatestSemanticConventions ? _responseMetadata.SystemFingerprint : null);
-        }
+        RecordMetrics(responseModel, responseServiceTier, errorType, null, null,
+            responseSystemFingerprint: _useLatestSemanticConventions ? _responseMetadata.SystemFingerprint : null);
         if (_activity?.IsAllDataRequested == true)
         {
             if (_useLatestSemanticConventions)

@@ -151,7 +151,9 @@ When no terminal response has been observed:
   current activity afterward. Merely ending raw enumeration does not end the activity. With the
   default conventions, the activity continues to end at raw-page handoff.
   Time while the caller retains an unread raw response is included in the latest-mode span duration.
-  Raw processing does not emit inference duration, usage, or chunk timing measurements, and does
+  Latest-mode raw processing records operation duration once at that same boundary, including
+  `error.type` for read/disposal exceptions and omitting it otherwise. This also works when only
+  metrics are enabled. Raw processing does not emit token usage or chunk timing measurements, and does
   not infer provider status or finish reasons from uninterpreted content. Handoff and disposal
   without an observed error do not manufacture cancellation errors. Request-send failures are
   still reported. Raw-page callers still own disposal of the response.

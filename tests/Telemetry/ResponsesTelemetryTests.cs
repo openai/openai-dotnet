@@ -561,7 +561,7 @@ public class ResponsesTelemetryTests
     }
 
     [Test]
-    public async Task RawStreamingActivityCoversBodyWithoutInferenceMeasurements(
+    public async Task RawStreamingActivityAndDurationCoverBodyWithoutTokenOrTimingMeasurements(
         [Values] bool useAsync, [Values] bool consumeBody, [Values] bool disposeEarly, [Values] bool latest)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
@@ -612,7 +612,8 @@ public class ResponsesTelemetryTests
             Assert.That(Activity.Current, Is.SameAs(parent));
             Assert.That(retainedResponse, Is.Not.Null);
             Assert.That(activities.Activities, Has.Count.EqualTo(((latest) && (!consumeBody)) ? 0 : 1));
-            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
+            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0,
+                Is.EqualTo(((latest) && (consumeBody)) ? 1 : 0));
             AssertNoStreamingTokenOrTimingMeasurements(metrics);
 
             if (!consumeBody)
@@ -642,7 +643,11 @@ public class ResponsesTelemetryTests
         }
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activities.Activities, Has.Count.EqualTo(1));
-        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0, Is.EqualTo(latest ? 1 : 0));
+        if (latest)
+        {
+            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration").Single().tags.ContainsKey("error.type"), Is.False);
+        }
         AssertNoStreamingTokenOrTimingMeasurements(metrics);
     }
 
@@ -701,7 +706,7 @@ public class ResponsesTelemetryTests
             Assert.That(raw.ContentStream.Position, Is.Zero);
             raw.Dispose();
             Assert.That(activities.Activities, Has.Count.EqualTo(2));
-            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
+            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(2));
             Assert.That(activities.Activities.All(activity => activity.ParentId == parent.Id), Is.True);
             Assert.That(Activity.Current, Is.SameAs(parent));
         }

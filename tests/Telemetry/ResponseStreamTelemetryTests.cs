@@ -21,11 +21,12 @@ public class ResponseStreamTelemetryTests
     public async Task RawBodyCompletesOnceAtItsObservedBoundary(
         [Values] bool useAsync,
         [Values("eof", "dispose", "read-error", "dispose-error", "cancel")] string ending,
-        [Values] bool latest)
+        [Values] bool latest,
+        [Values] bool trace)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
-        using var activities = new TestActivityListener(SourceName);
+        using var activities = trace ? new TestActivityListener(SourceName) : null;
         using var metrics = new TestMeterListener(SourceName);
         using var parent = new Activity("request-parent").Start();
         var inner = new ProbeStream(ending);
@@ -36,7 +37,8 @@ public class ResponseStreamTelemetryTests
         lifecycle.Complete(SseCompletionKind.RawResponse);
         Assert.That(inner.Reads, Is.Zero);
         Assert.That(inner.Disposals, Is.Zero);
-        Assert.That(activities.Activities.Count, Is.EqualTo(latest ? 0 : 1));
+        Assert.That(activities?.Activities.Count ?? 0, Is.EqualTo(((trace) && (!latest)) ? 1 : 0));
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
 
         using var reader = new Activity("reader-parent").Start();
         var stream = response.ContentStream;
@@ -85,25 +87,50 @@ public class ResponseStreamTelemetryTests
         }
 
         Assert.That(Activity.Current, Is.SameAs(reader));
-        Assert.That(activities.Activities, Has.Count.EqualTo(1));
-        var activity = activities.Activities[0];
-        Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
         var failed = ending is "read-error" or "dispose-error" or "cancel";
-        Assert.That(activity.Status, Is.EqualTo((latest && failed) ? ActivityStatusCode.Error : ActivityStatusCode.Unset));
-        Assert.That(activity.StatusDescription, Is.Null);
-        Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.Null);
-        Assert.That(activity.GetTagItem("gen_ai.response.time_to_first_chunk"), Is.Null);
-        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
+        var activity = trace ? activities.Activities[0] : null;
+        if (trace)
+        {
+            Assert.That(activities.Activities, Has.Count.EqualTo(1));
+            Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
+            Assert.That(activity.Status, Is.EqualTo(((latest) && (failed)) ? ActivityStatusCode.Error : ActivityStatusCode.Unset));
+            Assert.That(activity.StatusDescription, Is.Null);
+            Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.Null);
+            Assert.That(activity.GetTagItem("gen_ai.response.time_to_first_chunk"), Is.Null);
+        }
+        var durations = metrics.GetMeasurements("gen_ai.client.operation.duration");
+        if (latest)
+        {
+            Assert.That(durations, Has.Count.EqualTo(1));
+            var duration = durations[0];
+            Assert.That(duration.value, Is.GreaterThanOrEqualTo(0.0));
+            Assert.That(duration.tags["gen_ai.provider.name"], Is.EqualTo("openai"));
+            Assert.That(duration.tags["gen_ai.operation.name"], Is.EqualTo("chat"));
+            Assert.That(duration.tags["gen_ai.request.model"], Is.EqualTo("model"));
+            Assert.That(duration.tags["server.address"], Is.EqualTo("example.invalid"));
+            Assert.That(duration.tags["server.port"], Is.EqualTo(443));
+            Assert.That(duration.tags.TryGetValue("error.type", out var errorType), Is.EqualTo(failed));
+            Assert.That(errorType, Is.EqualTo(failed ? (ending == "cancel" ? typeof(OperationCanceledException).FullName : typeof(IOException).FullName) : null));
+            if (trace)
+            {
+                Assert.That(errorType, Is.EqualTo(activity.GetTagItem("error.type")));
+            }
+        }
+        else
+        {
+            Assert.That(durations, Is.Null);
+        }
         Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.input_tokens"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk"), Is.Null);
         if (latest)
         {
-            Assert.That(inner.CompletionContext, Is.SameAs(activity));
+            Assert.That(inner.CompletionContext, Is.SameAs(activity ?? reader));
             await Dispose();
             lifecycle.Complete(SseCompletionKind.RawResponse);
             Assert.That(inner.Disposals, Is.EqualTo(1));
-            Assert.That(activities.Activities, Has.Count.EqualTo(1));
+            Assert.That(activities?.Activities.Count ?? 0, Is.EqualTo(trace ? 1 : 0));
+            Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
         }
     }
 
@@ -117,6 +144,7 @@ public class ResponseStreamTelemetryTests
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
         using var activities = new TestActivityListener(SourceName);
+        using var metrics = new TestMeterListener(SourceName);
         using var parent = new Activity("parent").Start();
         using var response = new MockPipelineResponse(200) { ContentStream = new MemoryStream() };
         var lifecycle = new OpenTelemetrySource(new Uri("https://example.invalid"))
@@ -129,6 +157,7 @@ public class ResponseStreamTelemetryTests
         Assert.That(await stream.ReadAsync(Array.Empty<byte>(), 0, 0), Is.Zero);
         Assert.That(await stream.ReadAsync(Memory<byte>.Empty), Is.Zero);
         Assert.That(activities.Activities, Is.Empty);
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
 
         var buffer = new byte[1];
         switch (readApi)
@@ -143,6 +172,7 @@ public class ResponseStreamTelemetryTests
         Assert.That(Activity.Current, Is.SameAs(parent));
         response.Dispose();
         Assert.That(activities.Activities, Has.Count.EqualTo(1));
+        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
     }
 
     [Test]
@@ -151,6 +181,7 @@ public class ResponseStreamTelemetryTests
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true);
         using var activities = new TestActivityListener(SourceName);
+        using var metrics = new TestMeterListener(SourceName);
         var inner = new MemoryStream();
         using var response = new MockPipelineResponse(200) { ContentStream = inner };
         var lifecycle = new OpenTelemetrySource(new Uri("https://example.invalid"))
@@ -164,6 +195,11 @@ public class ResponseStreamTelemetryTests
         lifecycle.Complete(SseCompletionKind.EndOfStream);
         Assert.That(activities.Activities, Has.Count.EqualTo(1));
         Assert.That(activities.Activities[0].GetTagItem("error.type"), Is.EqualTo("incomplete_stream"));
+        response.Dispose();
+        lifecycle.Complete(SseCompletionKind.RawResponse);
+        var durations = metrics.GetMeasurements("gen_ai.client.operation.duration");
+        Assert.That(durations, Has.Count.EqualTo(1));
+        Assert.That(durations[0].tags["error.type"], Is.EqualTo("incomplete_stream"));
     }
 
     private sealed class ProbeStream(string ending) : MemoryStream(new byte[] { 1, 2, 3 })

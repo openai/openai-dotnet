@@ -66,7 +66,11 @@ internal partial class OpenTelemetryScope
                 _completed = true;
                 if (exception is not null)
                 {
-                    _scope.RecordException(exception, recordMetrics: false);
+                    _scope.RecordException(exception);
+                }
+                else
+                {
+                    _scope.RecordMetrics(null, null, null, null, null);
                 }
                 _scope.Dispose();
             }

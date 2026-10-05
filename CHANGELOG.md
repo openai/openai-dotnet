@@ -26,8 +26,9 @@
   - Latest-mode spans and metrics omit cache or reasoning token subsets that exceed their reported totals.
 
 - OpenAI.Responses:
-  - Raw-page streaming enumeration no longer reports response handoff as cancellation. Caller-owned body processing is not included in inference metrics.
+  - Raw-page streaming enumeration no longer reports response handoff as cancellation.
   - Latest-mode raw-page streaming spans remain open through response-body EOF, stream disposal, or a read/disposal failure.
+  - Latest-mode raw-page streaming records operation duration once at the observed body completion boundary, including the span's error type for failures.
   - Latest-mode streaming spans now retain observed response metadata across interruption, record abnormal finish reasons and first-chunk latency, and omit the streaming attribute on buffered requests.
 
 ### Other Changes

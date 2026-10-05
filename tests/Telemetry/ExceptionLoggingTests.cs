@@ -529,7 +529,9 @@ public class ExceptionLoggingTests
         Assert.That(record.TraceId, Is.EqualTo(activity.TraceId.ToHexString()));
         Assert.That(record.SpanId, Is.EqualTo(activity.SpanId.ToHexString()));
         Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
-        Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
+        var durations = metrics.GetMeasurements("gen_ai.client.operation.duration");
+        Assert.That(durations, Has.Count.EqualTo(1));
+        Assert.That(durations[0].tags["error.type"], Is.EqualTo(activity.GetTagItem("error.type")));
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
 
         retained.Dispose();
