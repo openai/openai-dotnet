@@ -15,12 +15,14 @@ namespace OpenAI.Assistants
             FileSearch = fileSearch;
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject(RunStepToolCallKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int index, string id, InternalRunStepDetailsToolCallsFileSearchObjectFileSearch fileSearch) : base(kind, additionalBinaryDataProperties)
         {
             Index = index;
             Id = id;
             FileSearch = fileSearch;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public int Index { get; }
 

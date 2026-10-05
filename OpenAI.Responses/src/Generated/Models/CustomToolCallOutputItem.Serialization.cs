@@ -221,7 +221,7 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 callId,
-                output,
+                output ?? new ChangeTrackingList<ResponseContentPart>(),
                 agent,
                 caller,
                 createdBy,

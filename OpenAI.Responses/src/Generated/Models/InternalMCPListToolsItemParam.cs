@@ -12,6 +12,7 @@ namespace OpenAI.Responses
     internal partial class InternalMCPListToolsItemParam : InternalItemParam
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(ResponseItemKind.McpListTools)
         {
             ServerLabel = serverLabel;
@@ -19,8 +20,10 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalMCPListToolsItemParam(ResponseItemKind kind, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -30,10 +33,13 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string ServerLabel { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<McpToolDefinition> Tools { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string Error { get; set; }
     }

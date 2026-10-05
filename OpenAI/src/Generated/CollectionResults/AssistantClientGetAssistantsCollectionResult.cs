@@ -11,13 +11,16 @@ namespace OpenAI.Assistants
 {
     internal partial class AssistantClientGetAssistantsCollectionResult : CollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly AssistantClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly int? _pageSizeLimit;
         private readonly string _order;
         private readonly string _afterId;
         private readonly string _beforeId;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public AssistantClientGetAssistantsCollectionResult(AssistantClient client, int? pageSizeLimit, string order, string afterId, string beforeId, RequestOptions options)
         {
             _client = client;
@@ -27,6 +30,7 @@ namespace OpenAI.Assistants
             _beforeId = beforeId;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public override IEnumerable<ClientResult> GetRawPages()
         {

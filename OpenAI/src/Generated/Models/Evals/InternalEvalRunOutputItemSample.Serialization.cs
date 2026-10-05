@@ -241,8 +241,8 @@ namespace OpenAI.Evals
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalEvalRunOutputItemSample(
-                input,
-                output,
+                input ?? new ChangeTrackingList<InternalEvalRunOutputItemSampleInput>(),
+                output ?? new ChangeTrackingList<InternalEvalRunOutputItemSampleOutput>(),
                 finishReason,
                 model,
                 usage,

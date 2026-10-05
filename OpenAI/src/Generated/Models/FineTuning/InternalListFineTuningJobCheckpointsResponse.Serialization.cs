@@ -194,7 +194,7 @@ namespace OpenAI.FineTuning
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
             return new InternalListFineTuningJobCheckpointsResponse(
-                data,
+                data ?? new ChangeTrackingList<FineTuningCheckpoint>(),
                 @object,
                 firstId,
                 lastId,

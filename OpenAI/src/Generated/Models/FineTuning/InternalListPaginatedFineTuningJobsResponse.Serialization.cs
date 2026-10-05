@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalListPaginatedFineTuningJobsResponse : IJsonModel<InternalListPaginatedFineTuningJobsResponse>
     {
-        internal InternalListPaginatedFineTuningJobsResponse() : this(null, default, null, null)
+        internal InternalListPaginatedFineTuningJobsResponse()
         {
         }
 
@@ -71,6 +71,7 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalListPaginatedFineTuningJobsResponse)} does not support writing '{format}' format.");
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
@@ -81,6 +82,7 @@ namespace OpenAI.FineTuning
                 }
                 writer.WriteEndArray();
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
             {
                 writer.WritePropertyName("has_more"u8);
@@ -126,6 +128,7 @@ namespace OpenAI.FineTuning
             return DeserializeInternalListPaginatedFineTuningJobsResponse(document.RootElement, options);
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalListPaginatedFineTuningJobsResponse DeserializeInternalListPaginatedFineTuningJobsResponse(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -161,7 +164,8 @@ namespace OpenAI.FineTuning
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, prop.Value.GetUtf8Bytes());
             }
-            return new InternalListPaginatedFineTuningJobsResponse(data, hasMore, @object, additionalBinaryDataProperties);
+            return new InternalListPaginatedFineTuningJobsResponse(data ?? new ChangeTrackingList<InternalFineTuningJob>(), hasMore, @object, additionalBinaryDataProperties);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

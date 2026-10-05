@@ -16,6 +16,7 @@ namespace OpenAI.Realtime
         {
         }
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         protected override RealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeTranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Realtime
                     throw new FormatException($"The model {nameof(RealtimeTranscriptionUsage)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -45,7 +47,9 @@ namespace OpenAI.Realtime
 
         BinaryData IPersistableModel<RealtimeTranscriptionUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         RealtimeTranscriptionUsage IPersistableModel<RealtimeTranscriptionUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         string IPersistableModel<RealtimeTranscriptionUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
@@ -78,8 +82,11 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         RealtimeTranscriptionUsage IJsonModel<RealtimeTranscriptionUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI002 // This generated code depends on experimental functionality.
         protected override RealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeTranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +97,7 @@ namespace OpenAI.Realtime
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeRealtimeTranscriptionUsage(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI002 // This generated code depends on experimental functionality.
 
         internal static InternalUnknownTranscriptionTokenUsageBaseGA DeserializeInternalUnknownTranscriptionTokenUsageBaseGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class ComputerCallActionKindExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ComputerCallActionKind value) => value switch
         {
             ComputerCallActionKind.Screenshot => "screenshot",
@@ -21,7 +22,9 @@ namespace OpenAI.Responses
             ComputerCallActionKind.Move => "move",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ComputerCallActionKind value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static ComputerCallActionKind ToComputerCallActionKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "screenshot"))
@@ -62,5 +65,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ComputerCallActionKind value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

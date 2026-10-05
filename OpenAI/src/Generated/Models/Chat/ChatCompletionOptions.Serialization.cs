@@ -201,10 +201,13 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.modalities"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ReasoningEffortLevel) && !Patch.Contains("$.reasoning_effort"u8))
+            if (this._additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
             {
-                writer.WritePropertyName("reasoning_effort"u8);
-                writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
+                if (Optional.IsDefined(ReasoningEffortLevel) && !Patch.Contains("$.reasoning_effort"u8))
+                {
+                    writer.WritePropertyName("reasoning_effort"u8);
+                    writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
+                }
             }
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_completion_tokens"u8))
             {
@@ -231,10 +234,13 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);
             }
-            if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
+            if (this._additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(AudioOptions, options);
+                if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
+                {
+                    writer.WritePropertyName("audio"u8);
+                    writer.WriteObjectValue(AudioOptions, options);
+                }
             }
             if (Optional.IsDefined(StoredOutputEnabled) && !Patch.Contains("$.store"u8))
             {
@@ -279,10 +285,13 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("n"u8);
                 writer.WriteNumberValue(N.Value);
             }
-            if (Optional.IsDefined(OutputPrediction) && !Patch.Contains("$.prediction"u8))
+            if (this._additionalBinaryDataProperties?.ContainsKey("prediction") != true)
             {
-                writer.WritePropertyName("prediction"u8);
-                writer.WriteObjectValue(OutputPrediction, options);
+                if (Optional.IsDefined(OutputPrediction) && !Patch.Contains("$.prediction"u8))
+                {
+                    writer.WritePropertyName("prediction"u8);
+                    writer.WriteObjectValue(OutputPrediction, options);
+                }
             }
             if (Optional.IsDefined(Seed) && !Patch.Contains("$.seed"u8))
             {
@@ -741,7 +750,7 @@ namespace OpenAI.Chat
                 endUserId,
                 safetyIdentifier,
                 serviceTier,
-                messages,
+                messages ?? new ChangeTrackingList<ChatMessage>(),
                 model,
                 internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>(),
                 reasoningEffortLevel,
@@ -791,6 +800,7 @@ namespace OpenAI.Chat
                 }
                 return ResponseFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("response_format"u8.Length)], out value);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (AudioOptions == null)
@@ -799,6 +809,8 @@ namespace OpenAI.Chat
                 }
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("prediction"u8))
             {
                 if (OutputPrediction == null)
@@ -807,6 +819,7 @@ namespace OpenAI.Chat
                 }
                 return OutputPrediction.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prediction"u8.Length)], out value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("stream_options"u8))
             {
                 if (StreamOptions == null)
@@ -924,6 +937,7 @@ namespace OpenAI.Chat
                 ResponseFormat.Patch.Set([.. "$"u8, .. local.Slice("response_format"u8.Length)], value);
                 return true;
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (AudioOptions == null)
@@ -933,6 +947,8 @@ namespace OpenAI.Chat
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("prediction"u8))
             {
                 if (OutputPrediction == null)
@@ -942,6 +958,7 @@ namespace OpenAI.Chat
                 OutputPrediction.Patch.Set([.. "$"u8, .. local.Slice("prediction"u8.Length)], value);
                 return true;
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("stream_options"u8))
             {
                 if (StreamOptions == null)

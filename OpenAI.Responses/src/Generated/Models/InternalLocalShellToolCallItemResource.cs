@@ -18,6 +18,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalLocalShellToolCallItemResource(ResponseItemKind kind, string id, in JsonPatch patch, InternalLocalShellToolCallItemResourceStatus? status, string callId, InternalLocalShellExecAction action) : base(kind, id, patch)
         {
             Status = status;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal InternalLocalShellToolCallItemResourceStatus? Status { get; set; }
 

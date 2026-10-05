@@ -69,10 +69,13 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ParticipantName);
             }
-            if (Optional.IsDefined(OutputAudioReference) && !Patch.Contains("$.audio"u8))
+            if (this._additionalBinaryDataProperties?.ContainsKey("audio") != true)
             {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(OutputAudioReference, options);
+                if (Optional.IsDefined(OutputAudioReference) && !Patch.Contains("$.audio"u8))
+                {
+                    writer.WritePropertyName("audio"u8);
+                    writer.WriteObjectValue(OutputAudioReference, options);
+                }
             }
             if (Patch.Contains("$.tool_calls"u8))
             {
@@ -218,6 +221,7 @@ namespace OpenAI.Chat
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (OutputAudioReference == null)
@@ -226,6 +230,7 @@ namespace OpenAI.Chat
                 }
                 return OutputAudioReference.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)
@@ -265,6 +270,7 @@ namespace OpenAI.Chat
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("audio"u8))
             {
                 if (OutputAudioReference == null)
@@ -274,6 +280,7 @@ namespace OpenAI.Chat
                 OutputAudioReference.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (local.StartsWith("function_call"u8))
             {
                 if (FunctionCall == null)

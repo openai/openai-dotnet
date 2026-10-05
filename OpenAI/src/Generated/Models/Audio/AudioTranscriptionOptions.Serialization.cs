@@ -137,11 +137,13 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(Stream.Value);
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue(ChunkingStrategy, options);
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsCollectionDefined(KnownSpeakerNames) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_names") != true)
             {
                 writer.WritePropertyName("known_speaker_names"u8);
@@ -157,6 +159,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             if (Optional.IsCollectionDefined(KnownSpeakerReferenceUris) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
             {
                 writer.WritePropertyName("known_speaker_references"u8);
@@ -172,6 +175,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

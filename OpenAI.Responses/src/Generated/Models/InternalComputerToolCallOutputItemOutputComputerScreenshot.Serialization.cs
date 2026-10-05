@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot : ComputerCallOutput, IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -86,6 +88,7 @@ namespace OpenAI.Responses
 
         InternalComputerToolCallOutputItemOutputComputerScreenshot IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
@@ -96,6 +99,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalComputerToolCallOutputItemOutputComputerScreenshot DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

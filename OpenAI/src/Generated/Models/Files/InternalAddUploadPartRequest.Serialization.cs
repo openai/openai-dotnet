@@ -66,11 +66,13 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalAddUploadPartRequest)} does not support writing '{format}' format.");
             }
+#pragma warning disable SCME0004 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteObjectValue(Data, options);
             }
+#pragma warning restore SCME0004 // This generated code depends on experimental functionality.
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

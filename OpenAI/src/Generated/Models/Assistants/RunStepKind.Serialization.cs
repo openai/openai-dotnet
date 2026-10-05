@@ -8,13 +8,16 @@ namespace OpenAI.Assistants
 {
     internal static partial class RunStepKindExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this RunStepKind value) => value switch
         {
             RunStepKind.CreatedMessage => "message_creation",
             RunStepKind.ToolCall => "tool_calls",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepKind value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static RunStepKind ToRunStepKind(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "message_creation"))
@@ -27,5 +30,6 @@ namespace OpenAI.Assistants
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown RunStepKind value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

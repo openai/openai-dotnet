@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class WebSearchCallStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this WebSearchCallStatus value) => value switch
         {
             WebSearchCallStatus.InProgress => "in_progress",
@@ -16,7 +17,9 @@ namespace OpenAI.Responses
             WebSearchCallStatus.Failed => "failed",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown WebSearchCallStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static WebSearchCallStatus ToWebSearchCallStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "in_progress"))
@@ -37,5 +40,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown WebSearchCallStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

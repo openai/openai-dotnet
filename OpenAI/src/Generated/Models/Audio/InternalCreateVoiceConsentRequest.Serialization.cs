@@ -71,11 +71,13 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
+#pragma warning disable SCME0004 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("recording") != true)
             {
                 writer.WritePropertyName("recording"u8);
                 writer.WriteObjectValue(Recording, options);
             }
+#pragma warning restore SCME0004 // This generated code depends on experimental functionality.
             if (_additionalBinaryDataProperties?.ContainsKey("language") != true)
             {
                 writer.WritePropertyName("language"u8);

@@ -231,9 +231,9 @@ namespace OpenAI.Evals
                 additionalBinaryDataProperties,
                 name,
                 model,
-                input,
-                labels,
-                passingLabels);
+                input ?? new ChangeTrackingList<BinaryData>(),
+                labels ?? new ChangeTrackingList<string>(),
+                passingLabels ?? new ChangeTrackingList<string>());
         }
     }
 }

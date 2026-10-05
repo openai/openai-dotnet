@@ -17,12 +17,14 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalComputerActionKeyPress(ComputerCallActionKind kind, in JsonPatch patch, IList<string> keys) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Keys = keys ?? new ChangeTrackingList<string>();
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public IList<string> Keys { get; }
     }

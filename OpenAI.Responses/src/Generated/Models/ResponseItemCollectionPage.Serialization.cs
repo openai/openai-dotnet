@@ -194,7 +194,7 @@ namespace OpenAI.Responses
             }
             return new ResponseItemCollectionPage(
                 @object,
-                data0,
+                data0 ?? new ChangeTrackingList<ResponseItem>(),
                 hasMore,
                 firstId,
                 lastId,

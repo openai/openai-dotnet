@@ -254,10 +254,13 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+            if (this._additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
+                if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
+                {
+                    writer.WritePropertyName("status"u8);
+                    writer.WriteStringValue(Status.Value.ToSerialString());
+                }
             }
             if (!Patch.Contains("$.created_at"u8))
             {
@@ -714,7 +717,7 @@ namespace OpenAI.Responses
                 createdAt,
                 error,
                 incompleteStatusDetails,
-                outputItems,
+                outputItems ?? new ChangeTrackingList<ResponseItem>(),
                 instructions,
                 usage,
                 parallelToolCallsEnabled,

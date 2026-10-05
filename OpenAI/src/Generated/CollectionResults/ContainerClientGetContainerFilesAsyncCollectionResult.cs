@@ -12,13 +12,16 @@ namespace OpenAI.Containers
 {
     internal partial class ContainerClientGetContainerFilesAsyncCollectionResult : AsyncCollectionResult
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         private readonly ContainerClient _client;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
         private readonly string _containerId;
         private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
         private readonly RequestOptions _options;
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ContainerClientGetContainerFilesAsyncCollectionResult(ContainerClient client, string containerId, int? limit, string order, string after, RequestOptions options)
         {
             _client = client;
@@ -28,7 +31,9 @@ namespace OpenAI.Containers
             _after = after;
             _options = options;
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
         {
             PipelineMessage message = _client.CreateGetContainerFilesRequest(_containerId, _limit, _order, _after, _options);
@@ -49,7 +54,9 @@ namespace OpenAI.Containers
                 message = _client.CreateGetContainerFilesRequest(_containerId, _limit, _order, nextToken, _options);
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((ContainerFileCollectionPage)page).LastId;
@@ -62,10 +69,13 @@ namespace OpenAI.Containers
                 return null;
             }
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
 
+#pragma warning disable SCME0001 // This generated code depends on experimental functionality.
         private async ValueTask<ClientResult> GetNextResponseAsync(PipelineMessage message)
         {
             return ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
         }
+#pragma warning restore SCME0001 // This generated code depends on experimental functionality.
     }
 }

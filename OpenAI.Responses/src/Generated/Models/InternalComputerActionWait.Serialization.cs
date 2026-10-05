@@ -12,6 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionWait : ComputerCallAction, IJsonModel<InternalComputerActionWait>
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionWait>)this).GetFormatFromOptions(options) : options.Format;
@@ -26,6 +27,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerActionWait)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -76,6 +78,7 @@ namespace OpenAI.Responses
 
         InternalComputerActionWait IJsonModel<InternalComputerActionWait>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionWait)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionWait>)this).GetFormatFromOptions(options) : options.Format;
@@ -86,7 +89,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerActionWait(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionWait DeserializeInternalComputerActionWait(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -108,5 +113,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionWait(kind, patch);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

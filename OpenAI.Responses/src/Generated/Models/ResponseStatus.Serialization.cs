@@ -8,6 +8,7 @@ namespace OpenAI.Responses
 {
     internal static partial class ResponseStatusExtensions
     {
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static string ToSerialString(this ResponseStatus value) => value switch
         {
             ResponseStatus.Completed => "completed",
@@ -18,7 +19,9 @@ namespace OpenAI.Responses
             ResponseStatus.Incomplete => "incomplete",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseStatus value.")
         };
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public static ResponseStatus ToResponseStatus(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "completed"))
@@ -47,5 +50,6 @@ namespace OpenAI.Responses
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown ResponseStatus value.");
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

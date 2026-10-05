@@ -11,6 +11,7 @@ namespace OpenAI.Responses
     internal partial class InternalComputerUsePreviewToolCallOutputItemParam : InternalItemParam
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(ResponseItemKind.ComputerCallOutput)
         {
             CallId = callId;
@@ -19,8 +20,10 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal InternalComputerUsePreviewToolCallOutputItemParam(ResponseItemKind kind, in JsonPatch patch, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
@@ -30,11 +33,16 @@ namespace OpenAI.Responses
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         public string CallId { get; set; }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         public ComputerCallOutput Output { get; set; }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

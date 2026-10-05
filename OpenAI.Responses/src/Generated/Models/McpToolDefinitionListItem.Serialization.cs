@@ -191,7 +191,7 @@ namespace OpenAI.Responses
                 id,
                 patch,
                 serverLabel,
-                toolDefinitions,
+                toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>(),
                 error);
         }
 

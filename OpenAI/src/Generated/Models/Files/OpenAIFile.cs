@@ -15,7 +15,9 @@ namespace OpenAI.Files
         internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
         {
             Id = id;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             SizeInBytesLong = sizeInBytesLong;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             CreatedAt = createdAt;
             Filename = filename;
             Purpose = purpose;
@@ -25,7 +27,9 @@ namespace OpenAI.Files
         internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
             SizeInBytesLong = sizeInBytesLong;
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             CreatedAt = createdAt;
             ExpiresAt = expiresAt;
             Filename = filename;

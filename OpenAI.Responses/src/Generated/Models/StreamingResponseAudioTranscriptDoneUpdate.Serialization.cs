@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseAudioTranscriptDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(StreamingResponseAudioTranscriptDoneUpdate)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -80,6 +82,7 @@ namespace OpenAI.Responses
 
         StreamingResponseAudioTranscriptDoneUpdate IJsonModel<StreamingResponseAudioTranscriptDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseAudioTranscriptDoneUpdate)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseAudioTranscriptDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
@@ -90,6 +93,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeStreamingResponseAudioTranscriptDoneUpdate(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static StreamingResponseAudioTranscriptDoneUpdate DeserializeStreamingResponseAudioTranscriptDoneUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

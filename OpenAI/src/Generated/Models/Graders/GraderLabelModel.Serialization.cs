@@ -212,9 +212,9 @@ namespace OpenAI.Graders
                 additionalBinaryDataProperties,
                 name,
                 model,
-                input,
-                labels,
-                passingLabels);
+                input ?? new ChangeTrackingList<InternalEvalItem>(),
+                labels ?? new ChangeTrackingList<string>(),
+                passingLabels ?? new ChangeTrackingList<string>());
         }
     }
 }

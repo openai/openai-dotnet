@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentOutputAudio>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalItemContentOutputAudio)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -90,6 +92,7 @@ namespace OpenAI.Responses
 
         InternalItemContentOutputAudio IJsonModel<InternalItemContentOutputAudio>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentOutputAudio)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentOutputAudio>)this).GetFormatFromOptions(options) : options.Format;
@@ -100,6 +103,7 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalItemContentOutputAudio(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         internal static InternalItemContentOutputAudio DeserializeInternalItemContentOutputAudio(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {

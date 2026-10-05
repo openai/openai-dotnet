@@ -16,6 +16,7 @@ namespace OpenAI.Responses
         {
         }
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionClick>)this).GetFormatFromOptions(options) : options.Format;
@@ -30,6 +31,7 @@ namespace OpenAI.Responses
                     throw new FormatException($"The model {nameof(InternalComputerActionClick)} does not support reading '{options.Format}' format.");
             }
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -73,10 +75,15 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.button"u8))
+            if (this._additionalBinaryDataProperties?.ContainsKey("button") != true)
             {
-                writer.WritePropertyName("button"u8);
-                writer.WriteStringValue(Button.ToSerialString());
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
+                if (!Patch.Contains("$.button"u8))
+                {
+                    writer.WritePropertyName("button"u8);
+                    writer.WriteStringValue(Button.ToSerialString());
+                }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             }
             if (!Patch.Contains("$.x"u8))
             {
@@ -95,6 +102,7 @@ namespace OpenAI.Responses
 
         InternalComputerActionClick IJsonModel<InternalComputerActionClick>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionClick)JsonModelCreateCore(ref reader, options);
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         protected override ComputerCallAction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionClick>)this).GetFormatFromOptions(options) : options.Format;
@@ -105,7 +113,9 @@ namespace OpenAI.Responses
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalComputerActionClick(document.RootElement, null, options);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
 
+#pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
         internal static InternalComputerActionClick DeserializeInternalComputerActionClick(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
@@ -145,5 +155,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionClick(kind, patch, button, x, y);
         }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
     }
 }

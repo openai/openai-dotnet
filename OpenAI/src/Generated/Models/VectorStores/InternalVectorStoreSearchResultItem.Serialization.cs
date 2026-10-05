@@ -222,7 +222,7 @@ namespace OpenAI.VectorStores
                 filename,
                 score,
                 attributes,
-                content,
+                content ?? new ChangeTrackingList<InternalVectorStoreSearchResultContentObject>(),
                 additionalBinaryDataProperties);
         }
     }

@@ -194,7 +194,7 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionList(
                 @object,
-                data0,
+                data0 ?? new ChangeTrackingList<ChatCompletion>(),
                 firstId,
                 lastId,
                 hasMore,
