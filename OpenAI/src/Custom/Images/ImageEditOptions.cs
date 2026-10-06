@@ -83,11 +83,19 @@ public partial class ImageEditOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
+    private static string GetImageContentType(string filename) => Path.GetExtension(filename)?.ToLowerInvariant() switch
+    {
+        ".png" => "image/png",
+        ".jpg" or ".jpeg" => "image/jpeg",
+        ".webp" => "image/webp",
+        _ => null,
+    };
+
     internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(image, "image", imageFilename);
+        content.Add(image, "image", imageFilename, GetImageContentType(imageFilename));
 
         content.Add(Prompt, "prompt");
 
@@ -108,7 +116,7 @@ public partial class ImageEditOptions
 
         if (mask is not null)
         {
-            content.Add(mask, "mask", maskFilename);
+            content.Add(mask, "mask", maskFilename, GetImageContentType(maskFilename));
         }
 
         if (Model is not null)
