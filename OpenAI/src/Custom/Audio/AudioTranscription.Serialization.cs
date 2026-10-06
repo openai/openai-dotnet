@@ -38,7 +38,6 @@ public partial class AudioTranscription
     public static explicit operator AudioTranscription(ClientResult result)
     {
         using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeAudioTranscription(document.RootElement, ModelSerializationExtensions.WireOptions);
+        return FromResponse(response);
     }
 }
