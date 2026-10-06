@@ -8,8 +8,8 @@ Responses OpenAPI finalization uses two component maps:
 Run the upstream pipeline and finalization separately:
 
 ```powershell
-./scripts/Generate-ResponsesOpenApi.ps1
-./scripts/Finalize-ResponsesOpenApi.ps1
+./scripts/specification/Generate-ResponsesOpenApi.ps1
+./scripts/specification/Finalize-ResponsesOpenApi.ps1
 ```
 
 Finalization validates policy, replaces the default map, applies both maps, and publishes `responses.openapi.json`.
