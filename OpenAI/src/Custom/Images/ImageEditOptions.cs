@@ -19,6 +19,8 @@ public partial class ImageEditOptions
     [CodeGenMember("Image")]
     internal BinaryData Image { get; set; }
 
+    internal ImageFileContentType? ImageContentType { get; set; }
+
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     [CodeGenMember("Mask")]
     internal BinaryData Mask { get; set; }
@@ -83,11 +85,16 @@ public partial class ImageEditOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename, Stream mask, string maskFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(
+        Stream image,
+        string imageFilename,
+        Stream mask,
+        string maskFilename,
+        ImageFileContentType? imageContentType = null)
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(image, "image", imageFilename);
+        content.Add(image, "image", imageFilename, (imageContentType ?? ImageContentType)?.ToSerialString());
 
         content.Add(Prompt, "prompt");
 

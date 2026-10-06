@@ -6,6 +6,8 @@ using System;
 using System.ClientModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -152,6 +154,75 @@ public class ImagesMockTests : ClientTestBase
 
         Assert.That(async () => await client.GenerateImageEditAsync(stream, "filename", "prompt", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
+    }
+
+    [Test]
+    public async Task GenerateImageEditSendsExplicitImageContentType()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
+        using Stream image = new MemoryStream([0x01]);
+        using Stream mask = new MemoryStream([0x02]);
+
+        await client.GenerateImageEditAsync(
+            image,
+            "ファイル.png",
+            ImageFileContentType.Png,
+            "prompt",
+            mask,
+            "маска.png");
+
+        Assert.That(requestBody, Does.Contain("Content-Type: image/png"));
+    }
+
+    [Test]
+    public async Task GenerateImageEditProtocolApiSupportsExplicitContentType()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = false
+            }
+        };
+        ImageClient client = new("gpt-image-2", s_fakeCredential, clientOptions);
+        await using Stream image = new MemoryStream([0x01]);
+        using var imagePart = new StreamContent(image);
+        imagePart.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+        using var form = new MultipartFormDataContent();
+        form.Add(imagePart, "image", "ファイル.png");
+        form.Add(new StringContent("Change the background to white"), "prompt");
+        form.Add(new StringContent("gpt-image-2"), "model");
+        string multipartContentType = form.Headers.ContentType.ToString();
+        await using Stream body = await form.ReadAsStreamAsync();
+        using BinaryContent content = BinaryContent.Create(body);
+
+        ClientResult result = await client.GenerateImageEditsAsync(content, multipartContentType);
+
+        Assert.That(result.GetRawResponse().Status, Is.EqualTo(200));
+        Assert.That(requestBody, Does.Contain("Content-Type: image/png"));
     }
 
     [Test]
@@ -384,6 +455,32 @@ public class ImagesMockTests : ClientTestBase
         cancellationSource.Cancel();
         Assert.That(async () => await client.GenerateImageVariationAsync(stream, "filename", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
+    }
+
+    [Test]
+    public async Task GenerateImageVariationSendsExplicitContentType()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
+        using Stream image = new MemoryStream([0x01]);
+
+        await client.GenerateImageVariationAsync(image, "ファイル.webp", ImageFileContentType.Webp);
+
+        Assert.That(requestBody, Does.Contain("Content-Type: image/webp"));
     }
 
     [Test]

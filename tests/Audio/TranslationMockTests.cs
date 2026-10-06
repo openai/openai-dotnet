@@ -125,6 +125,32 @@ public partial class TranslationMockTests : ClientTestBase
                 Throws.InstanceOf<OperationCanceledException>());
     }
 
+    [Test]
+    public async Task TranslateAudioSendsExplicitContentType()
+    {
+        string requestBody = null;
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"text":"translated"}""");
+        OpenAIClientOptions clientOptions = new()
+        {
+            Transport = new MockPipelineTransport(message =>
+            {
+                using MemoryStream stream = new();
+                message.Request.Content.WriteTo(stream);
+                requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
+                return response;
+            })
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
+        };
+        AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential, clientOptions));
+        using Stream audio = new MemoryStream([0x01]);
+
+        await client.TranslateAudioAsync(audio, "音声.m4a", AudioFileContentType.Mp4);
+
+        Assert.That(requestBody, Does.Contain("Content-Type: audio/mp4"));
+    }
+
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content = null)
     {
         MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content ?? "{}");

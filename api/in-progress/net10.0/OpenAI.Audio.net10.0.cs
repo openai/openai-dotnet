@@ -54,34 +54,58 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult GetVoiceConsentsAsync(string after = null, int? limit = null, RequestOptions options = null);
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
         public virtual Task<ClientResult> TranscribeAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
+        public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(string audioFilePath, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioTranscriptionOptions options = null);
         [Experimental("OPENAI001")]
+        public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual Task<AsyncStreamingResult<Net.ServerSentEvents.SseItem<BinaryData>>> TranscribeAudioStreamingAsync(BinaryContent content, string contentType, RequestOptions options = null);
         [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult<AudioTranslation> TranslateAudio(string audioFilePath, AudioFileContentType contentType, AudioTranslationOptions options = null);
         public virtual ClientResult<AudioTranslation> TranslateAudio(string audioFilePath, AudioTranslationOptions options = null);
         public virtual Task<ClientResult> TranslateAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(string audioFilePath, AudioFileContentType contentType, AudioTranslationOptions options = null);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(string audioFilePath, AudioTranslationOptions options = null);
         [Experimental("OPENAI001")]
         public virtual ClientResult UpdateVoiceConsent(string consentId, BinaryContent content, RequestOptions options = null);
@@ -93,6 +117,14 @@ namespace OpenAI.Audio {
         public string Model { get; set; }
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
+    }
+    public enum AudioFileContentType {
+        Flac = 0,
+        Mpeg = 1,
+        Mp4 = 2,
+        Ogg = 3,
+        Wav = 4,
+        Webm = 5
     }
     [Flags]
     public enum AudioTimestampGranularities {

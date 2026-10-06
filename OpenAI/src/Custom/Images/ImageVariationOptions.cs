@@ -18,6 +18,8 @@ public partial class ImageVariationOptions
     [CodeGenMember("Image")]
     internal BinaryData Image { get; set; }
 
+    internal ImageFileContentType? ImageContentType { get; set; }
+
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     [CodeGenMember("N")]
     internal long? N { get; set; }
@@ -40,11 +42,14 @@ public partial class ImageVariationOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal MultiPartFormDataBinaryContent ToMultipartContent(Stream image, string imageFilename)
+    internal MultiPartFormDataBinaryContent ToMultipartContent(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType? contentType = null)
     {
         MultiPartFormDataBinaryContent content = new();
 
-        content.Add(image, "image", imageFilename);
+        content.Add(image, "image", imageFilename, (contentType ?? ImageContentType)?.ToSerialString());
 
         if (EndUserId is not null)
         {

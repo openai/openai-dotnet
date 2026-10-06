@@ -860,6 +860,372 @@ public partial class ImageClient
 
     #endregion
 
+    #region Multipart content type overloads
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEditAsync(
+            image,
+            imageFilename,
+            prompt,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEdit(
+            image,
+            imageFilename,
+            prompt,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        ImageEditOptions options = null)
+        => GenerateImageEditAsync(
+            imageFilePath,
+            prompt,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        ImageEditOptions options = null)
+        => GenerateImageEdit(
+            imageFilePath,
+            prompt,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        Stream mask,
+        string maskFilename,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEditAsync(
+            image,
+            imageFilename,
+            prompt,
+            mask,
+            maskFilename,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        Stream mask,
+        string maskFilename,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEdit(
+            image,
+            imageFilename,
+            prompt,
+            mask,
+            maskFilename,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        string maskFilePath,
+        ImageEditOptions options = null)
+        => GenerateImageEditAsync(
+            imageFilePath,
+            prompt,
+            maskFilePath,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImage> GenerateImageEdit(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        string maskFilePath,
+        ImageEditOptions options = null)
+        => GenerateImageEdit(
+            imageFilePath,
+            prompt,
+            maskFilePath,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        int imageCount,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEditsAsync(
+            image,
+            imageFilename,
+            prompt,
+            imageCount,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        int imageCount,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEdits(
+            image,
+            imageFilename,
+            prompt,
+            imageCount,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        int imageCount,
+        ImageEditOptions options = null)
+        => GenerateImageEditsAsync(
+            imageFilePath,
+            prompt,
+            imageCount,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        int imageCount,
+        ImageEditOptions options = null)
+        => GenerateImageEdits(
+            imageFilePath,
+            prompt,
+            imageCount,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        Stream mask,
+        string maskFilename,
+        int imageCount,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEditsAsync(
+            image,
+            imageFilename,
+            prompt,
+            mask,
+            maskFilename,
+            imageCount,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType imageContentType,
+        string prompt,
+        Stream mask,
+        string maskFilename,
+        int imageCount,
+        ImageEditOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageEdits(
+            image,
+            imageFilename,
+            prompt,
+            mask,
+            maskFilename,
+            imageCount,
+            WithContentType(options, imageContentType),
+            cancellationToken);
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        string maskFilePath,
+        int imageCount,
+        ImageEditOptions options = null)
+        => GenerateImageEditsAsync(
+            imageFilePath,
+            prompt,
+            maskFilePath,
+            imageCount,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
+        string imageFilePath,
+        ImageFileContentType imageContentType,
+        string prompt,
+        string maskFilePath,
+        int imageCount,
+        ImageEditOptions options = null)
+        => GenerateImageEdits(
+            imageFilePath,
+            prompt,
+            maskFilePath,
+            imageCount,
+            WithContentType(options, imageContentType));
+
+    /// <summary> Generates an image variation with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType contentType,
+        ImageVariationOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageVariationAsync(
+            image,
+            imageFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Generates an image variation with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImage> GenerateImageVariation(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType contentType,
+        ImageVariationOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageVariation(
+            image,
+            imageFilename,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Generates an image variation with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(
+        string imageFilePath,
+        ImageFileContentType contentType,
+        ImageVariationOptions options = null)
+        => GenerateImageVariationAsync(
+            imageFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Generates an image variation with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImage> GenerateImageVariation(
+        string imageFilePath,
+        ImageFileContentType contentType,
+        ImageVariationOptions options = null)
+        => GenerateImageVariation(
+            imageFilePath,
+            WithContentType(options, contentType));
+
+    /// <summary> Generates image variations with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType contentType,
+        int imageCount,
+        ImageVariationOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageVariationsAsync(
+            image,
+            imageFilename,
+            imageCount,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Generates image variations with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(
+        Stream image,
+        string imageFilename,
+        ImageFileContentType contentType,
+        int imageCount,
+        ImageVariationOptions options = null,
+        CancellationToken cancellationToken = default)
+        => GenerateImageVariations(
+            image,
+            imageFilename,
+            imageCount,
+            WithContentType(options, contentType),
+            cancellationToken);
+
+    /// <summary> Generates image variations with an explicit image media type. </summary>
+    public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(
+        string imageFilePath,
+        ImageFileContentType contentType,
+        int imageCount,
+        ImageVariationOptions options = null)
+        => GenerateImageVariationsAsync(
+            imageFilePath,
+            imageCount,
+            WithContentType(options, contentType));
+
+    /// <summary> Generates image variations with an explicit image media type. </summary>
+    public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(
+        string imageFilePath,
+        ImageFileContentType contentType,
+        int imageCount,
+        ImageVariationOptions options = null)
+        => GenerateImageVariations(
+            imageFilePath,
+            imageCount,
+            WithContentType(options, contentType));
+
+    #endregion
+
+    private static ImageEditOptions WithContentType(
+        ImageEditOptions options,
+        ImageFileContentType imageContentType)
+    {
+        options ??= new();
+        options.ImageContentType = imageContentType;
+        return options;
+    }
+
+    private static ImageVariationOptions WithContentType(
+        ImageVariationOptions options,
+        ImageFileContentType contentType)
+    {
+        options ??= new();
+        options.ImageContentType = contentType;
+        return options;
+    }
+
     private void CreateImageGenerationOptions(string prompt, int? imageCount, ref ImageGenerationOptions options)
     {
         options.Prompt = prompt;
