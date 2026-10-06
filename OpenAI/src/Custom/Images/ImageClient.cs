@@ -863,6 +863,7 @@ public partial class ImageClient
     #region Multipart content type overloads
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
         Stream image,
         string imageFilename,
@@ -878,6 +879,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImage> GenerateImageEdit(
         Stream image,
         string imageFilename,
@@ -893,6 +895,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -904,6 +907,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImage> GenerateImageEdit(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -915,6 +919,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
         Stream image,
         string imageFilename,
@@ -934,6 +939,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImage> GenerateImageEdit(
         Stream image,
         string imageFilename,
@@ -953,6 +959,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImage>> GenerateImageEditAsync(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -966,6 +973,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates an edited or extended image with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImage> GenerateImageEdit(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -979,6 +987,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
         Stream image,
         string imageFilename,
@@ -996,6 +1005,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
         Stream image,
         string imageFilename,
@@ -1013,6 +1023,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -1026,6 +1037,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -1039,6 +1051,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
         Stream image,
         string imageFilename,
@@ -1060,6 +1073,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
         Stream image,
         string imageFilename,
@@ -1081,6 +1095,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageEditsAsync(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -1096,6 +1111,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates edited or extended images with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageEdits(
         string imageFilePath,
         ImageFileContentType imageContentType,
@@ -1111,6 +1127,7 @@ public partial class ImageClient
             WithContentType(options, imageContentType));
 
     /// <summary> Generates an image variation with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(
         Stream image,
         string imageFilename,
@@ -1124,6 +1141,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates an image variation with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImage> GenerateImageVariation(
         Stream image,
         string imageFilename,
@@ -1137,6 +1155,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates an image variation with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImage>> GenerateImageVariationAsync(
         string imageFilePath,
         ImageFileContentType contentType,
@@ -1146,6 +1165,7 @@ public partial class ImageClient
             WithContentType(options, contentType));
 
     /// <summary> Generates an image variation with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImage> GenerateImageVariation(
         string imageFilePath,
         ImageFileContentType contentType,
@@ -1155,6 +1175,7 @@ public partial class ImageClient
             WithContentType(options, contentType));
 
     /// <summary> Generates image variations with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(
         Stream image,
         string imageFilename,
@@ -1170,6 +1191,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates image variations with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(
         Stream image,
         string imageFilename,
@@ -1185,6 +1207,7 @@ public partial class ImageClient
             cancellationToken);
 
     /// <summary> Generates image variations with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(
         string imageFilePath,
         ImageFileContentType contentType,
@@ -1196,6 +1219,7 @@ public partial class ImageClient
             WithContentType(options, contentType));
 
     /// <summary> Generates image variations with an explicit image media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<GeneratedImageCollection> GenerateImageVariations(
         string imageFilePath,
         ImageFileContentType contentType,

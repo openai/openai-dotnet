@@ -54,13 +54,17 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult GetVoiceConsentsAsync(string after = null, int? limit = null, RequestOptions options = null);
         public virtual ClientResult TranscribeAudio(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null);
         public virtual ClientResult<AudioTranscription> TranscribeAudio(string audioFilePath, AudioTranscriptionOptions options = null);
         public virtual Task<ClientResult> TranscribeAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioFileContentType contentType, AudioTranscriptionOptions options = null);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioTranscriptionOptions options = null);
         [Experimental("OPENAI001")]
@@ -98,13 +102,17 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         public virtual AsyncCollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreamingAsync(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult TranslateAudio(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult<AudioTranslation> TranslateAudio(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
         public virtual ClientResult<AudioTranslation> TranslateAudio(string audioFilePath, AudioFileContentType contentType, AudioTranslationOptions options = null);
         public virtual ClientResult<AudioTranslation> TranslateAudio(string audioFilePath, AudioTranslationOptions options = null);
         public virtual Task<ClientResult> TranslateAudioAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioFileContentType contentType, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(Stream audio, string audioFilename, AudioTranslationOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(string audioFilePath, AudioFileContentType contentType, AudioTranslationOptions options = null);
         public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(string audioFilePath, AudioTranslationOptions options = null);
         [Experimental("OPENAI001")]

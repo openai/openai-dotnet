@@ -638,6 +638,7 @@ public partial class AudioClient
     #region Multipart content type overloads
 
     /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(
         Stream audio,
         string audioFilename,
@@ -651,6 +652,7 @@ public partial class AudioClient
             cancellationToken);
 
     /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<AudioTranscription> TranscribeAudio(
         Stream audio,
         string audioFilename,
@@ -664,6 +666,7 @@ public partial class AudioClient
             cancellationToken);
 
     /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(
         string audioFilePath,
         AudioFileContentType contentType,
@@ -673,6 +676,7 @@ public partial class AudioClient
             WithContentType(options, contentType));
 
     /// <summary> Transcribes audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<AudioTranscription> TranscribeAudio(
         string audioFilePath,
         AudioFileContentType contentType,
@@ -782,6 +786,7 @@ public partial class AudioClient
             cancellationToken);
 
     /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(
         Stream audio,
         string audioFilename,
@@ -795,6 +800,7 @@ public partial class AudioClient
             cancellationToken);
 
     /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<AudioTranslation> TranslateAudio(
         Stream audio,
         string audioFilename,
@@ -808,6 +814,7 @@ public partial class AudioClient
             cancellationToken);
 
     /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual Task<ClientResult<AudioTranslation>> TranslateAudioAsync(
         string audioFilePath,
         AudioFileContentType contentType,
@@ -817,6 +824,7 @@ public partial class AudioClient
             WithContentType(options, contentType));
 
     /// <summary> Translates audio with an explicit file media type. </summary>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<AudioTranslation> TranslateAudio(
         string audioFilePath,
         AudioFileContentType contentType,
