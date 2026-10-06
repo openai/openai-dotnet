@@ -1,6 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Audio;
 
 /// <summary> The media type of an audio file supplied in a multipart request. </summary>
+[Experimental("OPENAI001")]
 public enum AudioFileContentType
 {
     /// <summary> The <c>audio/flac</c> media type. </summary>

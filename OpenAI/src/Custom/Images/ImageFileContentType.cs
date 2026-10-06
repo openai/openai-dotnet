@@ -1,6 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Images;
 
 /// <summary> The media type of an image file supplied in a multipart request. </summary>
+[Experimental("OPENAI001")]
 public enum ImageFileContentType
 {
     /// <summary> The <c>image/png</c> media type. </summary>
