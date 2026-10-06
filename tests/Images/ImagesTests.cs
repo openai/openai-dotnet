@@ -70,8 +70,10 @@ public partial class ImagesTests : ImageTestFixtureBase
     {
         ImageClient client = CreateProxyFromClient(new ImageClient(TestModel.Images, new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string prompt = "An isolated stop sign.";
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageAsync(prompt));
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImageAsync(prompt),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 
     [RecordedTest]
@@ -106,8 +108,9 @@ public partial class ImagesTests : ImageTestFixtureBase
     {
         ImageClient client = CreateProxyFromClient(new ImageClient(TestModel.Images, new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string prompt = "An isolated stop sign.";
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImagesAsync(prompt, 2));
-
-        Assert.That(ex.Status, Is.EqualTo(401));
+        Assert.That(
+            async () => await client.GenerateImagesAsync(prompt, 2),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(401));
     }
 }
