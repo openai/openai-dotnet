@@ -108,8 +108,9 @@ public class SseUpdateCollectionTests
         Assert.That(
             async () =>
             {
-                await foreach (string _ in collection)
+                await foreach (string update in collection)
                 {
+                    Assert.That(update, Is.EqualTo("A"));
                 }
             },
             Throws.TypeOf<OperationCanceledException>());
@@ -153,8 +154,9 @@ public class SseUpdateCollectionTests
         Assert.That(
             async () =>
             {
-                await foreach (string _ in collection)
+                await foreach (string update in collection)
                 {
+                    Assert.That(update, Is.EqualTo("A"));
                 }
             },
             Throws.TypeOf<OperationCanceledException>());
