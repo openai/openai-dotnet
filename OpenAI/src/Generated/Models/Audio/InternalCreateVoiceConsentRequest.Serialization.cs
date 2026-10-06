@@ -68,10 +68,8 @@ namespace OpenAI.Audio
             }
             writer.WritePropertyName("name"u8);
             writer.WriteStringValue(Name);
-#pragma warning disable SCME0004 // This generated code depends on experimental functionality.
             writer.WritePropertyName("recording"u8);
             writer.WriteObjectValue(Recording, options);
-#pragma warning restore SCME0004 // This generated code depends on experimental functionality.
             writer.WritePropertyName("language"u8);
             writer.WriteStringValue(Language);
             // Plugin customization: remove options.Format != "W" check

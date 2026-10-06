@@ -129,9 +129,21 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
             if (stmt is SuppressionStatement { Inner: not null } suppressionStatement)
             {
                 // TO-DO: remove once enumerable logic is updated to handle nested suppression statements
-                flattenedStatements.Add(suppressionStatement.DisableStatement);
+                string suppressionCode = suppressionStatement.Code.ToDisplayString();
+                bool hasFileScopedSuppression = method.EnclosingType.DisabledFileWarnings.Any(
+                    fileSuppression => string.Equals(
+                        fileSuppression.Code.ToDisplayString(),
+                        suppressionCode,
+                        StringComparison.Ordinal));
+                if (!hasFileScopedSuppression)
+                {
+                    flattenedStatements.Add(suppressionStatement.DisableStatement);
+                }
                 flattenedStatements.AddRange(suppressionStatement.Inner);
-                flattenedStatements.Add(suppressionStatement.RestoreStatement);
+                if (!hasFileScopedSuppression)
+                {
+                    flattenedStatements.Add(suppressionStatement.RestoreStatement);
+                }
             }
             else
             {

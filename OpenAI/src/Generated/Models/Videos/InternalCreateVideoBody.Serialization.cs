@@ -73,13 +73,11 @@ namespace OpenAI.Videos
             }
             writer.WritePropertyName("prompt"u8);
             writer.WriteStringValue(Prompt);
-#pragma warning disable SCME0004 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(InputReference))
             {
                 writer.WritePropertyName("input_reference"u8);
                 writer.WriteObjectValue(InputReference, options);
             }
-#pragma warning restore SCME0004 // This generated code depends on experimental functionality.
             if (Optional.IsDefined(Seconds))
             {
                 writer.WritePropertyName("seconds"u8);
