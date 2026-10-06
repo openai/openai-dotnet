@@ -240,7 +240,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
+        CreateImageEditOptions(prompt, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -269,7 +269,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, null, null, null, ref options);
+        CreateImageEditOptions(prompt, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
@@ -346,7 +346,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(maskFilename, nameof(maskFilename));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
+        CreateImageEditOptions(prompt, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -383,7 +383,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(maskFilename, nameof(maskFilename));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, null, ref options);
+        CreateImageEditOptions(prompt, null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
@@ -469,7 +469,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
+        CreateImageEditOptions(prompt, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -499,7 +499,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(prompt, nameof(prompt));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, null, null, imageCount, ref options);
+        CreateImageEditOptions(prompt, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, null, null);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
@@ -579,7 +579,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(maskFilename, nameof(maskFilename));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
+        CreateImageEditOptions(prompt, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = await GenerateImageEditsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -617,7 +617,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(maskFilename, nameof(maskFilename));
 
         options ??= new();
-        CreateImageEditOptions(image, imageFilename, prompt, mask, maskFilename, imageCount, ref options);
+        CreateImageEditOptions(prompt, imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename, mask, maskFilename);
         ClientResult result = GenerateImageEdits(content, content.ContentType, cancellationToken.ToRequestOptions());
@@ -703,7 +703,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
 
         options ??= new();
-        CreateImageVariationOptions(image, imageFilename, null, ref options);
+        CreateImageVariationOptions(null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -727,7 +727,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
 
         options ??= new();
-        CreateImageVariationOptions(image, imageFilename, null, ref options);
+        CreateImageVariationOptions(null, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
@@ -788,7 +788,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
 
         options ??= new();
-        CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
+        CreateImageVariationOptions(imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = await GenerateImageVariationsAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
@@ -813,7 +813,7 @@ public partial class ImageClient
         Argument.AssertNotNullOrEmpty(imageFilename, nameof(imageFilename));
 
         options ??= new();
-        CreateImageVariationOptions(image, imageFilename, imageCount, ref options);
+        CreateImageVariationOptions(imageCount, ref options);
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(image, imageFilename);
         ClientResult result = GenerateImageVariations(content, content.ContentType, cancellationToken.ToRequestOptions());
@@ -1233,14 +1233,14 @@ public partial class ImageClient
         options.Model = _model;
     }
 
-    private void CreateImageEditOptions(Stream image, string imageFilename, string prompt, Stream mask, string maskFilename, int? imageCount, ref ImageEditOptions options)
+    private void CreateImageEditOptions(string prompt, int? imageCount, ref ImageEditOptions options)
     {
         options.Prompt = prompt;
         options.N = imageCount;
         options.Model = _model;
     }
 
-    private void CreateImageVariationOptions(Stream image, string imageFilename, int? imageCount, ref ImageVariationOptions options)
+    private void CreateImageVariationOptions(int? imageCount, ref ImageVariationOptions options)
     {
         options.N = imageCount;
         options.Model = _model;
