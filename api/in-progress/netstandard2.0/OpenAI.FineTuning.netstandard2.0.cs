@@ -203,10 +203,14 @@ namespace OpenAI.FineTuning {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool operator !=(HyperparameterBatchSize first, HyperparameterBatchSize second);
     }
-    public class HyperparameterBetaFactor : IEquatable<int>, IEquatable<string>, IJsonModel<HyperparameterBetaFactor>, IPersistableModel<HyperparameterBetaFactor> {
+    public class HyperparameterBetaFactor : IEquatable<double>, IEquatable<int>, IEquatable<string>, IJsonModel<HyperparameterBetaFactor>, IPersistableModel<HyperparameterBetaFactor> {
+        public HyperparameterBetaFactor(double beta);
         public HyperparameterBetaFactor(int beta);
         public static HyperparameterBetaFactor CreateAuto();
+        public static HyperparameterBetaFactor CreateBeta(double beta);
         public static HyperparameterBetaFactor CreateBeta(int beta);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool Equals(double other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public bool Equals(int other);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -217,6 +221,7 @@ namespace OpenAI.FineTuning {
         public override int GetHashCode();
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool operator ==(HyperparameterBetaFactor first, HyperparameterBetaFactor second);
+        public static implicit operator HyperparameterBetaFactor(double beta);
         public static implicit operator HyperparameterBetaFactor(int beta);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static bool operator !=(HyperparameterBetaFactor first, HyperparameterBetaFactor second);

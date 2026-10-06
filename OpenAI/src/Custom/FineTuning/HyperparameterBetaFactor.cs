@@ -13,10 +13,10 @@ internal readonly partial struct InternalCreateFineTuningJobRequestHyperparamete
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersBetaOption")]
-public partial class HyperparameterBetaFactor : IEquatable<int>, IEquatable<string>, IJsonModel<HyperparameterBetaFactor>
+public partial class HyperparameterBetaFactor : IEquatable<double>, IEquatable<int>, IEquatable<string>, IJsonModel<HyperparameterBetaFactor>
 {
     private readonly string _stringValue;
-    private readonly int? _intValue;
+    private readonly double? _doubleValue;
 
     internal HyperparameterBetaFactor() { }
     internal HyperparameterBetaFactor(string predefinedLabel)
@@ -24,35 +24,43 @@ public partial class HyperparameterBetaFactor : IEquatable<int>, IEquatable<stri
         _stringValue = predefinedLabel;
     }
 
-    public HyperparameterBetaFactor(int beta)
+    public HyperparameterBetaFactor(int beta) : this((double)beta)
     {
-        _intValue = beta;
+    }
+
+    public HyperparameterBetaFactor(double beta)
+    {
+        _doubleValue = beta;
     }
 
     public static HyperparameterBetaFactor CreateAuto() => new(InternalCreateFineTuningJobRequestHyperparametersBetaChoiceEnum.Auto.ToString());
     public static HyperparameterBetaFactor CreateBeta(int beta) => new(beta);
+    public static HyperparameterBetaFactor CreateBeta(double beta) => new(beta);
 
     public static implicit operator HyperparameterBetaFactor(int beta) => new(beta);
+    public static implicit operator HyperparameterBetaFactor(double beta) => new(beta);
     
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool operator ==(HyperparameterBetaFactor first, HyperparameterBetaFactor second)
     {
         if (first is null && second is null) return true;
         if (first is null || second is null) return false;
-        if (first._intValue.HasValue != second._intValue.HasValue) return false;
-        if (first._intValue.HasValue) return first._intValue == second._intValue;
+        if (first._doubleValue.HasValue != second._doubleValue.HasValue) return false;
+        if (first._doubleValue.HasValue) return first._doubleValue == second._doubleValue;
         return first._stringValue == second._stringValue;
     }
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static bool operator !=(HyperparameterBetaFactor first, HyperparameterBetaFactor second) => !(first == second);
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool Equals(int other) => _intValue == other;
+    public bool Equals(int other) => _doubleValue == other;
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool Equals(string other) => _intValue is null && _stringValue == other;
+    public bool Equals(double other) => _doubleValue == other;
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public bool Equals(string other) => _doubleValue is null && _stringValue == other;
     [EditorBrowsable(EditorBrowsableState.Never)]
     public override bool Equals(object other) => other is HyperparameterBetaFactor cc && cc == this;
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public override int GetHashCode() => _intValue?.GetHashCode() ?? _stringValue.GetHashCode();
+    public override int GetHashCode() => _doubleValue?.GetHashCode() ?? _stringValue.GetHashCode();
 
     void IJsonModel<HyperparameterBetaFactor>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
@@ -67,9 +75,9 @@ public partial class HyperparameterBetaFactor : IEquatable<int>, IEquatable<stri
 
     internal static void SerializeHyperparameterBeta(HyperparameterBetaFactor instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        if (instance._intValue is not null)
+        if (instance._doubleValue is not null)
         {
-            writer.WriteNumberValue(instance._intValue.Value);
+            writer.WriteNumberValue(instance._doubleValue.Value);
         }
         else
         {
@@ -89,7 +97,7 @@ public partial class HyperparameterBetaFactor : IEquatable<int>, IEquatable<stri
 
         return element.ValueKind switch
         {
-            JsonValueKind.Number => new(element.GetInt32()),
+            JsonValueKind.Number => new(element.GetDouble()),
             JsonValueKind.String => new(element.GetString()),
             _ => throw new ArgumentException($"Unsupported JsonValueKind", "beta")
         };
