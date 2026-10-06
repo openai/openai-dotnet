@@ -126,6 +126,7 @@ namespace OpenAI.Audio {
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
+    [Experimental("OPENAI001")]
     public enum AudioFileContentType {
         Flac = 0,
         Mpeg = 1,

@@ -276,6 +276,7 @@ namespace OpenAI.Images {
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
     }
+    [Experimental("OPENAI001")]
     public enum ImageFileContentType {
         Png = 0,
         Jpeg = 1,
