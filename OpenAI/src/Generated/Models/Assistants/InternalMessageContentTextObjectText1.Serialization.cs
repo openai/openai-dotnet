@@ -63,22 +63,16 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalMessageContentTextObjectText1)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("value") != true)
-            {
-                writer.WritePropertyName("value"u8);
-                writer.WriteStringValue(Value);
-            }
+            writer.WritePropertyName("value"u8);
+            writer.WriteStringValue(Value);
             // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("annotations") != true)
+            writer.WritePropertyName("annotations"u8);
+            writer.WriteStartArray();
+            foreach (InternalMessageContentTextObjectAnnotation item in Annotations)
             {
-                writer.WritePropertyName("annotations"u8);
-                writer.WriteStartArray();
-                foreach (InternalMessageContentTextObjectAnnotation item in Annotations)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

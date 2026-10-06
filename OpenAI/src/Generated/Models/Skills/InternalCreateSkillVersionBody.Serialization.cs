@@ -63,19 +63,16 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalCreateSkillVersionBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("files") != true)
-            {
-                writer.WritePropertyName("files"u8);
+            writer.WritePropertyName("files"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Files);
+            writer.WriteRawValue(Files);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Files))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+            using (JsonDocument document = JsonDocument.Parse(Files))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
-            if (Optional.IsDefined(Default) && _additionalBinaryDataProperties?.ContainsKey("default") != true)
+#endif
+            if (Optional.IsDefined(Default))
             {
                 writer.WritePropertyName("default"u8);
                 writer.WriteBooleanValue(Default.Value);

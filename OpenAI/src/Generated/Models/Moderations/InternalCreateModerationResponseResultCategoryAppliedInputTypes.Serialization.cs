@@ -63,201 +63,162 @@ namespace OpenAI.Moderations
             {
                 throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("hate") != true)
+            writer.WritePropertyName("hate"u8);
+            writer.WriteStartArray();
+            foreach (string item in Hate)
             {
-                writer.WritePropertyName("hate"u8);
-                writer.WriteStartArray();
-                foreach (string item in Hate)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("hate/threatening") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("hate/threatening"u8);
+            writer.WriteStartArray();
+            foreach (string item in HateThreatening)
             {
-                writer.WritePropertyName("hate/threatening"u8);
-                writer.WriteStartArray();
-                foreach (string item in HateThreatening)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("harassment") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("harassment"u8);
+            writer.WriteStartArray();
+            foreach (string item in Harassment)
             {
-                writer.WritePropertyName("harassment"u8);
-                writer.WriteStartArray();
-                foreach (string item in Harassment)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("harassment/threatening") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("harassment/threatening"u8);
+            writer.WriteStartArray();
+            foreach (string item in HarassmentThreatening)
             {
-                writer.WritePropertyName("harassment/threatening"u8);
-                writer.WriteStartArray();
-                foreach (string item in HarassmentThreatening)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("illicit") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("illicit"u8);
+            writer.WriteStartArray();
+            foreach (string item in Illicit)
             {
-                writer.WritePropertyName("illicit"u8);
-                writer.WriteStartArray();
-                foreach (string item in Illicit)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("illicit/violent") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("illicit/violent"u8);
+            writer.WriteStartArray();
+            foreach (string item in IllicitViolent)
             {
-                writer.WritePropertyName("illicit/violent"u8);
-                writer.WriteStartArray();
-                foreach (string item in IllicitViolent)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("self-harm") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("self-harm"u8);
+            writer.WriteStartArray();
+            foreach (string item in SelfHarm)
             {
-                writer.WritePropertyName("self-harm"u8);
-                writer.WriteStartArray();
-                foreach (string item in SelfHarm)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("self-harm/intent") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("self-harm/intent"u8);
+            writer.WriteStartArray();
+            foreach (string item in SelfHarmIntent)
             {
-                writer.WritePropertyName("self-harm/intent"u8);
-                writer.WriteStartArray();
-                foreach (string item in SelfHarmIntent)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("self-harm/instructions") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("self-harm/instructions"u8);
+            writer.WriteStartArray();
+            foreach (string item in SelfHarmInstructions)
             {
-                writer.WritePropertyName("self-harm/instructions"u8);
-                writer.WriteStartArray();
-                foreach (string item in SelfHarmInstructions)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("sexual") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("sexual"u8);
+            writer.WriteStartArray();
+            foreach (string item in Sexual)
             {
-                writer.WritePropertyName("sexual"u8);
-                writer.WriteStartArray();
-                foreach (string item in Sexual)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("sexual/minors") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("sexual/minors"u8);
+            writer.WriteStartArray();
+            foreach (string item in SexualMinors)
             {
-                writer.WritePropertyName("sexual/minors"u8);
-                writer.WriteStartArray();
-                foreach (string item in SexualMinors)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("violence") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("violence"u8);
+            writer.WriteStartArray();
+            foreach (string item in Violence)
             {
-                writer.WritePropertyName("violence"u8);
-                writer.WriteStartArray();
-                foreach (string item in Violence)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("violence/graphic") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("violence/graphic"u8);
+            writer.WriteStartArray();
+            foreach (string item in ViolenceGraphic)
             {
-                writer.WritePropertyName("violence/graphic"u8);
-                writer.WriteStartArray();
-                foreach (string item in ViolenceGraphic)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

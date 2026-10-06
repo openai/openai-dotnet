@@ -71,40 +71,28 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(RunGraderResponse)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("reward") != true)
-            {
-                writer.WritePropertyName("reward"u8);
-                writer.WriteNumberValue(Reward);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
-            {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteObjectValue(Metadata, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("sub_rewards") != true)
-            {
-                writer.WritePropertyName("sub_rewards"u8);
+            writer.WritePropertyName("reward"u8);
+            writer.WriteNumberValue(Reward);
+            writer.WritePropertyName("metadata"u8);
+            writer.WriteObjectValue(Metadata, options);
+            writer.WritePropertyName("sub_rewards"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(SubRewards);
+            writer.WriteRawValue(SubRewards);
 #else
-                using (JsonDocument document = JsonDocument.Parse(SubRewards))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model_grader_token_usage_per_model") != true)
+            using (JsonDocument document = JsonDocument.Parse(SubRewards))
             {
-                writer.WritePropertyName("model_grader_token_usage_per_model"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ModelGraderTokenUsagePerModel);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ModelGraderTokenUsagePerModel))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
+#endif
+            writer.WritePropertyName("model_grader_token_usage_per_model"u8);
+#if NET6_0_OR_GREATER
+            writer.WriteRawValue(ModelGraderTokenUsagePerModel);
+#else
+            using (JsonDocument document = JsonDocument.Parse(ModelGraderTokenUsagePerModel))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
+            }
+#endif
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -67,37 +67,28 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(SpeechGenerationOptions)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
-            {
-                writer.WritePropertyName("input"u8);
-                writer.WriteStringValue(Input);
-            }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model.ToString());
+            writer.WritePropertyName("input"u8);
+            writer.WriteStringValue(Input);
+            if (Optional.IsDefined(Instructions))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("voice") != true)
-            {
-                writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.ToString());
-            }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            writer.WritePropertyName("voice"u8);
+            writer.WriteStringValue(Voice.ToString());
+            if (Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (Optional.IsDefined(SpeedRatio) && _additionalBinaryDataProperties?.ContainsKey("speed") != true)
+            if (Optional.IsDefined(SpeedRatio))
             {
                 writer.WritePropertyName("speed"u8);
                 writer.WriteNumberValue(SpeedRatio.Value);
             }
-            if (Optional.IsDefined(StreamFormat) && _additionalBinaryDataProperties?.ContainsKey("stream_format") != true)
+            if (Optional.IsDefined(StreamFormat))
             {
                 writer.WritePropertyName("stream_format"u8);
                 writer.WriteStringValue(StreamFormat.Value.ToString());

@@ -64,11 +64,8 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalItemContentInputText)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
         }
 
         InternalEvalItemContentInputText IJsonModel<InternalEvalItemContentInputText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalItemContentInputText)JsonModelCreateCore(ref reader, options);

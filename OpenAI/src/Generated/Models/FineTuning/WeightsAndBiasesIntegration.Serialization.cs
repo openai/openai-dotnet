@@ -64,11 +64,8 @@ namespace OpenAI.FineTuning
                 throw new FormatException($"The model {nameof(WeightsAndBiasesIntegration)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("wandb") != true)
-            {
-                writer.WritePropertyName("wandb"u8);
-                writer.WriteObjectValue(_innerWandb, options);
-            }
+            writer.WritePropertyName("wandb"u8);
+            writer.WriteObjectValue(_innerWandb, options);
         }
 
         WeightsAndBiasesIntegration IJsonModel<WeightsAndBiasesIntegration>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WeightsAndBiasesIntegration)JsonModelCreateCore(ref reader, options);

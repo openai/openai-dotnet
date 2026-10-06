@@ -66,29 +66,26 @@ namespace OpenAI.Videos
             {
                 throw new FormatException($"The model {nameof(InternalCreateVideoBody)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.Value.ToString());
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
-            {
-                writer.WritePropertyName("prompt"u8);
-                writer.WriteStringValue(Prompt);
-            }
+            writer.WritePropertyName("prompt"u8);
+            writer.WriteStringValue(Prompt);
 #pragma warning disable SCME0004 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(InputReference) && _additionalBinaryDataProperties?.ContainsKey("input_reference") != true)
+            if (Optional.IsDefined(InputReference))
             {
                 writer.WritePropertyName("input_reference"u8);
                 writer.WriteObjectValue(InputReference, options);
             }
 #pragma warning restore SCME0004 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(Seconds) && _additionalBinaryDataProperties?.ContainsKey("seconds") != true)
+            if (Optional.IsDefined(Seconds))
             {
                 writer.WritePropertyName("seconds"u8);
                 writer.WriteStringValue(Seconds.Value.ToString());
             }
-            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
+            if (Optional.IsDefined(Size))
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());

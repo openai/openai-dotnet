@@ -60,13 +60,13 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalMessageDeltaObjectDelta)} does not support writing '{format}' format.");
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
+            if (Optional.IsDefined(Role))
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.Value.ToSerialString());
             }
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (Optional.IsCollectionDefined(Content))
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();

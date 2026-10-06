@@ -60,12 +60,12 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalFineTuningJobsPageToken)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Limit) && _additionalBinaryDataProperties?.ContainsKey("limit") != true)
+            if (Optional.IsDefined(Limit))
             {
                 writer.WritePropertyName("limit"u8);
                 writer.WriteNumberValue(Limit.Value);
             }
-            if (Optional.IsDefined(After) && _additionalBinaryDataProperties?.ContainsKey("after") != true)
+            if (Optional.IsDefined(After))
             {
                 writer.WritePropertyName("after"u8);
                 writer.WriteStringValue(After);

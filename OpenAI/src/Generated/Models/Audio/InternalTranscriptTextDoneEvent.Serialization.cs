@@ -63,17 +63,11 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalTranscriptTextDoneEvent)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
-            if (Optional.IsCollectionDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind);
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
+            if (Optional.IsCollectionDefined(Logprobs))
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
@@ -83,7 +77,7 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            if (Optional.IsDefined(Usage))
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);

@@ -67,39 +67,36 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageVariationOptions)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("image") != true)
-            {
-                writer.WritePropertyName("image"u8);
+            writer.WritePropertyName("image"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Image);
+            writer.WriteRawValue(Image);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Image))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+            using (JsonDocument document = JsonDocument.Parse(Image))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+#endif
+            if (Optional.IsDefined(Model))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model.Value.ToString());
             }
-            if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
+            if (Optional.IsDefined(N))
             {
                 writer.WritePropertyName("n"u8);
                 writer.WriteNumberValue(N.Value);
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
+            if (Optional.IsDefined(Size))
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
             }
-            if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
+            if (Optional.IsDefined(EndUserId))
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);

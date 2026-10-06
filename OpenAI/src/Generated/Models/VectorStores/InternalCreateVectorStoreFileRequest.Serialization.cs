@@ -63,17 +63,14 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalCreateVectorStoreFileRequest)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
-            {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
+            writer.WritePropertyName("file_id"u8);
+            writer.WriteStringValue(FileId);
+            if (Optional.IsDefined(ChunkingStrategy))
             {
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue(ChunkingStrategy, options);
             }
-            if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
+            if (Optional.IsCollectionDefined(Attributes))
             {
                 writer.WritePropertyName("attributes"u8);
                 writer.WriteStartObject();

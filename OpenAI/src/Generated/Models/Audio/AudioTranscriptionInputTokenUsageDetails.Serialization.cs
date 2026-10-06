@@ -59,12 +59,12 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranscriptionInputTokenUsageDetails)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(TextTokenCount) && _additionalBinaryDataProperties?.ContainsKey("text_tokens") != true)
+            if (Optional.IsDefined(TextTokenCount))
             {
                 writer.WritePropertyName("text_tokens"u8);
                 writer.WriteNumberValue(TextTokenCount.Value);
             }
-            if (Optional.IsDefined(AudioTokenCount) && _additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
+            if (Optional.IsDefined(AudioTokenCount))
             {
                 writer.WritePropertyName("audio_tokens"u8);
                 writer.WriteNumberValue(AudioTokenCount.Value);

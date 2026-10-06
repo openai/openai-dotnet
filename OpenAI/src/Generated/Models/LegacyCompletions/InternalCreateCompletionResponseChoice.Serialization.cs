@@ -63,33 +63,21 @@ namespace OpenAI.LegacyCompletions
             {
                 throw new FormatException($"The model {nameof(InternalCreateCompletionResponseChoice)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("finish_reason") != true)
+            writer.WritePropertyName("finish_reason"u8);
+            writer.WriteStringValue(FinishReason.ToString());
+            writer.WritePropertyName("index"u8);
+            writer.WriteNumberValue(Index);
+            if (Optional.IsDefined(Logprobs))
             {
-                writer.WritePropertyName("finish_reason"u8);
-                writer.WriteStringValue(FinishReason.ToString());
+                writer.WritePropertyName("logprobs"u8);
+                writer.WriteObjectValue(Logprobs, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
+            else
             {
-                writer.WritePropertyName("index"u8);
-                writer.WriteNumberValue(Index);
+                writer.WriteNull("logprobs"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
-            {
-                if (Optional.IsDefined(Logprobs))
-                {
-                    writer.WritePropertyName("logprobs"u8);
-                    writer.WriteObjectValue(Logprobs, options);
-                }
-                else
-                {
-                    writer.WriteNull("logprobs"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -59,32 +59,32 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(AssistantModificationOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ReasoningEffortLevel))
             {
                 writer.WritePropertyName("reasoning_effort"u8);
                 writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            if (Optional.IsDefined(Description))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(Instructions))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (Optional.IsCollectionDefined(DefaultTools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            if (Optional.IsCollectionDefined(DefaultTools))
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -94,12 +94,12 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            if (Optional.IsDefined(ToolResources))
             {
                 writer.WritePropertyName("tool_resources"u8);
                 writer.WriteObjectValue(ToolResources, options);
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
@@ -115,17 +115,17 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(NucleusSamplingFactor))
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);

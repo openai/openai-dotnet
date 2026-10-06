@@ -64,18 +64,12 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
-            {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
-            }
+            writer.WritePropertyName("role"u8);
+            writer.WriteStringValue(Role.ToSerialString());
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
-            {
-                writer.WritePropertyName("content"u8);
-                SerializeContent(writer, options);
-            }
-            if (Optional.IsCollectionDefined(Attachments) && _additionalBinaryDataProperties?.ContainsKey("attachments") != true)
+            writer.WritePropertyName("content"u8);
+            SerializeContent(writer, options);
+            if (Optional.IsCollectionDefined(Attachments))
             {
                 writer.WritePropertyName("attachments"u8);
                 writer.WriteStartArray();
@@ -85,7 +79,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();

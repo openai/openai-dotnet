@@ -71,11 +71,8 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalCreateTranslationResponseJson)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -59,12 +59,12 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(ThreadModificationOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            if (Optional.IsDefined(ToolResources))
             {
                 writer.WritePropertyName("tool_resources"u8);
                 writer.WriteObjectValue(ToolResources, options);
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();

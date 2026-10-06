@@ -63,71 +63,32 @@ namespace OpenAI.Moderations
             {
                 throw new FormatException($"The model {nameof(InternalModerationCategoryScores)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("hate") != true)
-            {
-                writer.WritePropertyName("hate"u8);
-                writer.WriteNumberValue(Hate);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("hate/threatening") != true)
-            {
-                writer.WritePropertyName("hate/threatening"u8);
-                writer.WriteNumberValue(HateThreatening);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("harassment") != true)
-            {
-                writer.WritePropertyName("harassment"u8);
-                writer.WriteNumberValue(Harassment);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("harassment/threatening") != true)
-            {
-                writer.WritePropertyName("harassment/threatening"u8);
-                writer.WriteNumberValue(HarassmentThreatening);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("illicit") != true)
-            {
-                writer.WritePropertyName("illicit"u8);
-                writer.WriteNumberValue(Illicit);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("illicit/violent") != true)
-            {
-                writer.WritePropertyName("illicit/violent"u8);
-                writer.WriteNumberValue(IllicitViolent);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("self-harm") != true)
-            {
-                writer.WritePropertyName("self-harm"u8);
-                writer.WriteNumberValue(SelfHarm);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("self-harm/intent") != true)
-            {
-                writer.WritePropertyName("self-harm/intent"u8);
-                writer.WriteNumberValue(SelfHarmIntent);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("self-harm/instructions") != true)
-            {
-                writer.WritePropertyName("self-harm/instructions"u8);
-                writer.WriteNumberValue(SelfHarmInstructions);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("sexual") != true)
-            {
-                writer.WritePropertyName("sexual"u8);
-                writer.WriteNumberValue(Sexual);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("sexual/minors") != true)
-            {
-                writer.WritePropertyName("sexual/minors"u8);
-                writer.WriteNumberValue(SexualMinors);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("violence") != true)
-            {
-                writer.WritePropertyName("violence"u8);
-                writer.WriteNumberValue(Violence);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("violence/graphic") != true)
-            {
-                writer.WritePropertyName("violence/graphic"u8);
-                writer.WriteNumberValue(ViolenceGraphic);
-            }
+            writer.WritePropertyName("hate"u8);
+            writer.WriteNumberValue(Hate);
+            writer.WritePropertyName("hate/threatening"u8);
+            writer.WriteNumberValue(HateThreatening);
+            writer.WritePropertyName("harassment"u8);
+            writer.WriteNumberValue(Harassment);
+            writer.WritePropertyName("harassment/threatening"u8);
+            writer.WriteNumberValue(HarassmentThreatening);
+            writer.WritePropertyName("illicit"u8);
+            writer.WriteNumberValue(Illicit);
+            writer.WritePropertyName("illicit/violent"u8);
+            writer.WriteNumberValue(IllicitViolent);
+            writer.WritePropertyName("self-harm"u8);
+            writer.WriteNumberValue(SelfHarm);
+            writer.WritePropertyName("self-harm/intent"u8);
+            writer.WriteNumberValue(SelfHarmIntent);
+            writer.WritePropertyName("self-harm/instructions"u8);
+            writer.WriteNumberValue(SelfHarmInstructions);
+            writer.WritePropertyName("sexual"u8);
+            writer.WriteNumberValue(Sexual);
+            writer.WritePropertyName("sexual/minors"u8);
+            writer.WriteNumberValue(SexualMinors);
+            writer.WritePropertyName("violence"u8);
+            writer.WriteNumberValue(Violence);
+            writer.WritePropertyName("violence/graphic"u8);
+            writer.WriteNumberValue(ViolenceGraphic);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

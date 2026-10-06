@@ -63,27 +63,18 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningEvent)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
-            {
-                writer.WritePropertyName("message"u8);
-                writer.WriteStringValue(Message);
-            }
-            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+            writer.WritePropertyName("message"u8);
+            writer.WriteStringValue(Message);
+            if (Optional.IsDefined(Kind))
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.Value.ToString());
             }
-            if (Optional.IsDefined(Data) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
+            if (Optional.IsDefined(Data))
             {
                 writer.WritePropertyName("data"u8);
 #if NET6_0_OR_GREATER
@@ -95,16 +86,10 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("level") != true)
-            {
-                writer.WritePropertyName("level"u8);
-                writer.WriteStringValue(Level);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(_object);
-            }
+            writer.WritePropertyName("level"u8);
+            writer.WriteStringValue(Level);
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(_object);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -63,18 +63,15 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalCreateSkillBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("files") != true)
-            {
-                writer.WritePropertyName("files"u8);
+            writer.WritePropertyName("files"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Files);
+            writer.WriteRawValue(Files);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Files))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+            using (JsonDocument document = JsonDocument.Parse(Files))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
+#endif
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

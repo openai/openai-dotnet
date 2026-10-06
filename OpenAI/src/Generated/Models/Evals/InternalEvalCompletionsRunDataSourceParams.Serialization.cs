@@ -64,7 +64,7 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalCompletionsRunDataSourceParams)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(InputMessages) && _additionalBinaryDataProperties?.ContainsKey("input_messages") != true)
+            if (Optional.IsDefined(InputMessages))
             {
                 writer.WritePropertyName("input_messages"u8);
 #if NET6_0_OR_GREATER
@@ -76,28 +76,25 @@ namespace OpenAI.Evals
                 }
 #endif
             }
-            if (Optional.IsDefined(SamplingParams) && _additionalBinaryDataProperties?.ContainsKey("sampling_params") != true)
+            if (Optional.IsDefined(SamplingParams))
             {
                 writer.WritePropertyName("sampling_params"u8);
                 writer.WriteObjectValue(SamplingParams, options);
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("source") != true)
-            {
-                writer.WritePropertyName("source"u8);
+            writer.WritePropertyName("source"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Source);
+            writer.WriteRawValue(Source);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Source))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+            using (JsonDocument document = JsonDocument.Parse(Source))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
+#endif
         }
 
         InternalEvalCompletionsRunDataSourceParams IJsonModel<InternalEvalCompletionsRunDataSourceParams>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalCompletionsRunDataSourceParams)JsonModelCreateCore(ref reader, options);

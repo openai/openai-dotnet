@@ -71,63 +71,42 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreFile)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(FileId);
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            if (Optional.IsDefined(UsageInBytes))
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(FileId);
+                writer.WritePropertyName("usage_bytes"u8);
+                writer.WriteNumberValue(UsageInBytes.Value);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            else
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteNull("usage_bytes"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
-            {
-                if (Optional.IsDefined(UsageInBytes))
-                {
-                    writer.WritePropertyName("usage_bytes"u8);
-                    writer.WriteNumberValue(UsageInBytes.Value);
-                }
-                else
-                {
-                    writer.WriteNull("usage_bytes"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("vector_store_id") != true)
-            {
-                writer.WritePropertyName("vector_store_id"u8);
-                writer.WriteStringValue(VectorStoreId);
-            }
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+            writer.WritePropertyName("vector_store_id"u8);
+            writer.WriteStringValue(VectorStoreId);
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
-            }
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToSerialString());
 #pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
+            if (Optional.IsDefined(LastError))
             {
-                if (Optional.IsDefined(LastError))
-                {
-                    writer.WritePropertyName("last_error"u8);
-                    writer.WriteObjectValue(LastError, options);
-                }
-                else
-                {
-                    writer.WriteNull("last_error"u8);
-                }
+                writer.WritePropertyName("last_error"u8);
+                writer.WriteObjectValue(LastError, options);
             }
-            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
+            else
+            {
+                writer.WriteNull("last_error"u8);
+            }
+            if (Optional.IsDefined(ChunkingStrategy))
             {
                 writer.WritePropertyName("chunking_strategy"u8);
                 writer.WriteObjectValue(ChunkingStrategy, options);
             }
-            if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
+            if (Optional.IsCollectionDefined(Attributes))
             {
                 writer.WritePropertyName("attributes"u8);
                 writer.WriteStartObject();

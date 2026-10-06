@@ -63,17 +63,17 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(GeneratedImage)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(ImageBytes) && _additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
+            if (Optional.IsDefined(ImageBytes))
             {
                 writer.WritePropertyName("b64_json"u8);
                 writer.WriteBase64StringValue(ImageBytes, "D");
             }
-            if (Optional.IsDefined(ImageUri) && _additionalBinaryDataProperties?.ContainsKey("url") != true)
+            if (Optional.IsDefined(ImageUri))
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(ImageUri.AbsoluteUri);
             }
-            if (Optional.IsDefined(RevisedPrompt) && _additionalBinaryDataProperties?.ContainsKey("revised_prompt") != true)
+            if (Optional.IsDefined(RevisedPrompt))
             {
                 writer.WritePropertyName("revised_prompt"u8);
                 writer.WriteStringValue(RevisedPrompt);

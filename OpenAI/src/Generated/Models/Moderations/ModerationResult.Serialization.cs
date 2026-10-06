@@ -55,11 +55,8 @@ namespace OpenAI.Moderations
             {
                 throw new FormatException($"The model {nameof(ModerationResult)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("flagged") != true)
-            {
-                writer.WritePropertyName("flagged"u8);
-                writer.WriteBooleanValue(Flagged);
-            }
+            writer.WritePropertyName("flagged"u8);
+            writer.WriteBooleanValue(Flagged);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -63,12 +63,12 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalCreateEvalRequest)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
@@ -84,21 +84,15 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndObject();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("data_source_config") != true)
+            writer.WritePropertyName("data_source_config"u8);
+            writer.WriteObjectValue(DataSourceConfig, options);
+            writer.WritePropertyName("testing_criteria"u8);
+            writer.WriteStartArray();
+            foreach (InternalEvalGraderParams item in TestingCriteria)
             {
-                writer.WritePropertyName("data_source_config"u8);
-                writer.WriteObjectValue(DataSourceConfig, options);
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("testing_criteria") != true)
-            {
-                writer.WritePropertyName("testing_criteria"u8);
-                writer.WriteStartArray();
-                foreach (InternalEvalGraderParams item in TestingCriteria)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

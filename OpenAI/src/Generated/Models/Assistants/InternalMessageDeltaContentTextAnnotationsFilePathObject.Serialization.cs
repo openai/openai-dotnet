@@ -64,27 +64,24 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObject)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
-            {
-                writer.WritePropertyName("index"u8);
-                writer.WriteNumberValue(Index);
-            }
-            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
+            writer.WritePropertyName("index"u8);
+            writer.WriteNumberValue(Index);
+            if (Optional.IsDefined(Text))
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
-            if (Optional.IsDefined(FilePath) && _additionalBinaryDataProperties?.ContainsKey("file_path") != true)
+            if (Optional.IsDefined(FilePath))
             {
                 writer.WritePropertyName("file_path"u8);
                 writer.WriteObjectValue(FilePath, options);
             }
-            if (Optional.IsDefined(StartIndex) && _additionalBinaryDataProperties?.ContainsKey("start_index") != true)
+            if (Optional.IsDefined(StartIndex))
             {
                 writer.WritePropertyName("start_index"u8);
                 writer.WriteNumberValue(StartIndex.Value);
             }
-            if (Optional.IsDefined(EndIndex) && _additionalBinaryDataProperties?.ContainsKey("end_index") != true)
+            if (Optional.IsDefined(EndIndex))
             {
                 writer.WritePropertyName("end_index"u8);
                 writer.WriteNumberValue(EndIndex.Value);

@@ -64,11 +64,8 @@ namespace OpenAI.Audio
                 throw new FormatException($"The model {nameof(AudioTranscriptionDurationUsage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("seconds") != true)
-            {
-                writer.WritePropertyName("seconds"u8);
-                writer.WriteNumberValue(Duration.TotalSeconds);
-            }
+            writer.WritePropertyName("seconds"u8);
+            writer.WriteNumberValue(Duration.TotalSeconds);
         }
 
         AudioTranscriptionDurationUsage IJsonModel<AudioTranscriptionDurationUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (AudioTranscriptionDurationUsage)JsonModelCreateCore(ref reader, options);

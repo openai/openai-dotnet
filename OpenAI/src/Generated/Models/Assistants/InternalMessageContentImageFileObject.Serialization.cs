@@ -66,11 +66,8 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalMessageContentImageFileObject)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("image_file") != true)
-            {
-                writer.WritePropertyName("image_file"u8);
-                writer.WriteObjectValue(ImageFile, options);
-            }
+            writer.WritePropertyName("image_file"u8);
+            writer.WriteObjectValue(ImageFile, options);
         }
 
         InternalMessageContentImageFileObject IJsonModel<InternalMessageContentImageFileObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMessageContentImageFileObject)JsonModelCreateCore(ref reader, options);

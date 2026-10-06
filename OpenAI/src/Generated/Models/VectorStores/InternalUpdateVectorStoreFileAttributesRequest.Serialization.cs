@@ -63,35 +63,32 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalUpdateVectorStoreFileAttributesRequest)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("attributes") != true)
+            if (Optional.IsCollectionDefined(Attributes))
             {
-                if (Optional.IsCollectionDefined(Attributes))
+                writer.WritePropertyName("attributes"u8);
+                writer.WriteStartObject();
+                foreach (var item in Attributes)
                 {
-                    writer.WritePropertyName("attributes"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Attributes)
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
                     {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-#if NET6_0_OR_GREATER
-                        writer.WriteRawValue(item.Value);
-#else
-                        using (JsonDocument document = JsonDocument.Parse(item.Value))
-                        {
-                            JsonSerializer.Serialize(writer, document.RootElement);
-                        }
-#endif
+                        writer.WriteNullValue();
+                        continue;
                     }
-                    writer.WriteEndObject();
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
                 }
-                else
-                {
-                    writer.WriteNull("attributes"u8);
-                }
+                writer.WriteEndObject();
+            }
+            else
+            {
+                writer.WriteNull("attributes"u8);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

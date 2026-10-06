@@ -64,26 +64,17 @@ namespace OpenAI.Audio
                 throw new FormatException($"The model {nameof(AudioTranscriptionTokenUsage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
-            {
-                writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(InputTokenCount);
-            }
-            if (Optional.IsDefined(InputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("input_token_details") != true)
+            writer.WritePropertyName("input_tokens"u8);
+            writer.WriteNumberValue(InputTokenCount);
+            if (Optional.IsDefined(InputTokenDetails))
             {
                 writer.WritePropertyName("input_token_details"u8);
                 writer.WriteObjectValue(InputTokenDetails, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
-            {
-                writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokenCount);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
-            }
+            writer.WritePropertyName("output_tokens"u8);
+            writer.WriteNumberValue(OutputTokenCount);
+            writer.WritePropertyName("total_tokens"u8);
+            writer.WriteNumberValue(TotalTokenCount);
         }
 
         AudioTranscriptionTokenUsage IJsonModel<AudioTranscriptionTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (AudioTranscriptionTokenUsage)JsonModelCreateCore(ref reader, options);

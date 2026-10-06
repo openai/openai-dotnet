@@ -60,7 +60,7 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(FineTuneReinforcementHyperparameters)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
+            if (Optional.IsDefined(BatchSize))
             {
                 writer.WritePropertyName("batch_size"u8);
 #if NET6_0_OR_GREATER
@@ -72,7 +72,7 @@ namespace OpenAI.Graders
                 }
 #endif
             }
-            if (Optional.IsDefined(LearningRateMultiplier) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
+            if (Optional.IsDefined(LearningRateMultiplier))
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
 #if NET6_0_OR_GREATER
@@ -84,7 +84,7 @@ namespace OpenAI.Graders
                 }
 #endif
             }
-            if (Optional.IsDefined(NEpochs) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            if (Optional.IsDefined(NEpochs))
             {
                 writer.WritePropertyName("n_epochs"u8);
 #if NET6_0_OR_GREATER
@@ -96,12 +96,12 @@ namespace OpenAI.Graders
                 }
 #endif
             }
-            if (Optional.IsDefined(ReasoningEffort) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ReasoningEffort))
             {
                 writer.WritePropertyName("reasoning_effort"u8);
                 writer.WriteStringValue(ReasoningEffort.Value.ToString());
             }
-            if (Optional.IsDefined(ComputeMultiplier) && _additionalBinaryDataProperties?.ContainsKey("compute_multiplier") != true)
+            if (Optional.IsDefined(ComputeMultiplier))
             {
                 writer.WritePropertyName("compute_multiplier"u8);
 #if NET6_0_OR_GREATER
@@ -113,7 +113,7 @@ namespace OpenAI.Graders
                 }
 #endif
             }
-            if (Optional.IsDefined(EvalInterval) && _additionalBinaryDataProperties?.ContainsKey("eval_interval") != true)
+            if (Optional.IsDefined(EvalInterval))
             {
                 writer.WritePropertyName("eval_interval"u8);
 #if NET6_0_OR_GREATER
@@ -125,7 +125,7 @@ namespace OpenAI.Graders
                 }
 #endif
             }
-            if (Optional.IsDefined(EvalSamples) && _additionalBinaryDataProperties?.ContainsKey("eval_samples") != true)
+            if (Optional.IsDefined(EvalSamples))
             {
                 writer.WritePropertyName("eval_samples"u8);
 #if NET6_0_OR_GREATER

@@ -75,16 +75,13 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (this._additionalBinaryDataProperties?.ContainsKey("button") != true)
-            {
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-                if (!Patch.Contains("$.button"u8))
-                {
-                    writer.WritePropertyName("button"u8);
-                    writer.WriteStringValue(Button.ToSerialString());
-                }
-#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
+            if (!Patch.Contains("$.button"u8))
+            {
+                writer.WritePropertyName("button"u8);
+                writer.WriteStringValue(Button.ToSerialString());
             }
+#pragma warning restore OPENAI001 // This generated code depends on experimental functionality.
             if (!Patch.Contains("$.x"u8))
             {
                 writer.WritePropertyName("x"u8);

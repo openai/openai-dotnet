@@ -63,26 +63,17 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTokenLogProbabilityDetails)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("token") != true)
+            writer.WritePropertyName("token"u8);
+            writer.WriteStringValue(Token);
+            writer.WritePropertyName("logprob"u8);
+            writer.WriteNumberValue(LogProbability);
+            writer.WritePropertyName("bytes"u8);
+            writer.WriteStartArray();
+            foreach (byte item in Utf8Bytes.Span)
             {
-                writer.WritePropertyName("token"u8);
-                writer.WriteStringValue(Token);
+                writer.WriteNumberValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("logprob") != true)
-            {
-                writer.WritePropertyName("logprob"u8);
-                writer.WriteNumberValue(LogProbability);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
-            {
-                writer.WritePropertyName("bytes"u8);
-                writer.WriteStartArray();
-                foreach (byte item in Utf8Bytes.Span)
-                {
-                    writer.WriteNumberValue(item);
-                }
-                writer.WriteEndArray();
-            }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

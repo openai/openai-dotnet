@@ -64,11 +64,8 @@ namespace OpenAI.VectorStores
                 throw new FormatException($"The model {nameof(InternalStaticChunkingStrategyResponseParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("static") != true)
-            {
-                writer.WritePropertyName("static"u8);
-                writer.WriteObjectValue(Static, options);
-            }
+            writer.WritePropertyName("static"u8);
+            writer.WriteObjectValue(Static, options);
         }
 
         InternalStaticChunkingStrategyResponseParam IJsonModel<InternalStaticChunkingStrategyResponseParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalStaticChunkingStrategyResponseParam)JsonModelCreateCore(ref reader, options);

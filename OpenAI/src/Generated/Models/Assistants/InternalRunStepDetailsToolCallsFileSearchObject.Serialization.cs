@@ -66,11 +66,8 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObject)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("file_search") != true)
-            {
-                writer.WritePropertyName("file_search"u8);
-                writer.WriteObjectValue(FileSearch, options);
-            }
+            writer.WritePropertyName("file_search"u8);
+            writer.WriteObjectValue(FileSearch, options);
         }
 
         InternalRunStepDetailsToolCallsFileSearchObject IJsonModel<InternalRunStepDetailsToolCallsFileSearchObject>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRunStepDetailsToolCallsFileSearchObject)JsonModelCreateCore(ref reader, options);

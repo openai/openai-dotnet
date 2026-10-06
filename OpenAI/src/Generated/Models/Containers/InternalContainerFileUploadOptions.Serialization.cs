@@ -85,13 +85,10 @@ namespace OpenAI.Containers
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("file") != true)
+            if (Optional.IsDefined(File) && !Patch.Contains("$.file"u8))
             {
-                if (Optional.IsDefined(File) && !Patch.Contains("$.file"u8))
-                {
-                    writer.WritePropertyName("file"u8);
-                    writer.WriteObjectValue(File, options);
-                }
+                writer.WritePropertyName("file"u8);
+                writer.WriteObjectValue(File, options);
             }
 
             Patch.WriteTo(writer);

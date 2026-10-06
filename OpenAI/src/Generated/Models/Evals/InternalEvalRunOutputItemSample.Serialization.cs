@@ -63,66 +63,36 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalRunOutputItemSample)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
+            writer.WritePropertyName("input"u8);
+            writer.WriteStartArray();
+            foreach (InternalEvalRunOutputItemSampleInput item in Input)
             {
-                writer.WritePropertyName("input"u8);
-                writer.WriteStartArray();
-                foreach (InternalEvalRunOutputItemSampleInput item in Input)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("output"u8);
+            writer.WriteStartArray();
+            foreach (InternalEvalRunOutputItemSampleOutput item in Output)
             {
-                writer.WritePropertyName("output"u8);
-                writer.WriteStartArray();
-                foreach (InternalEvalRunOutputItemSampleOutput item in Output)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("finish_reason") != true)
-            {
-                writer.WritePropertyName("finish_reason"u8);
-                writer.WriteStringValue(FinishReason);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
-            {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
-            {
-                writer.WritePropertyName("error"u8);
-                writer.WriteObjectValue(Error, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("temperature") != true)
-            {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
-            {
-                writer.WritePropertyName("max_completion_tokens"u8);
-                writer.WriteNumberValue(MaxCompletionTokens);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("top_p") != true)
-            {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(TopP);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("seed") != true)
-            {
-                writer.WritePropertyName("seed"u8);
-                writer.WriteNumberValue(Seed);
-            }
+            writer.WriteEndArray();
+            writer.WritePropertyName("finish_reason"u8);
+            writer.WriteStringValue(FinishReason);
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model);
+            writer.WritePropertyName("usage"u8);
+            writer.WriteObjectValue(Usage, options);
+            writer.WritePropertyName("error"u8);
+            writer.WriteObjectValue(Error, options);
+            writer.WritePropertyName("temperature"u8);
+            writer.WriteNumberValue(Temperature);
+            writer.WritePropertyName("max_completion_tokens"u8);
+            writer.WriteNumberValue(MaxCompletionTokens);
+            writer.WritePropertyName("top_p"u8);
+            writer.WriteNumberValue(TopP);
+            writer.WritePropertyName("seed"u8);
+            writer.WriteNumberValue(Seed);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

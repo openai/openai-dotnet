@@ -63,19 +63,16 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalCompactResponseMethodPublicBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model))
             {
-                if (Optional.IsDefined(Model))
-                {
-                    writer.WritePropertyName("model"u8);
-                    writer.WriteStringValue(Model.Value.ToString());
-                }
-                else
-                {
-                    writer.WriteNull("model"u8);
-                }
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
             }
-            if (Optional.IsDefined(Input) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
+            else
+            {
+                writer.WriteNull("model"u8);
+            }
+            if (Optional.IsDefined(Input))
             {
                 writer.WritePropertyName("input"u8);
 #if NET6_0_OR_GREATER
@@ -87,12 +84,12 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(PreviousResponseId) && _additionalBinaryDataProperties?.ContainsKey("previous_response_id") != true)
+            if (Optional.IsDefined(PreviousResponseId))
             {
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(Instructions))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);

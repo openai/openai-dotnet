@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(FileId) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+            if (Optional.IsDefined(FileId))
             {
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);

@@ -63,21 +63,12 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalRunPerTestingCriteriaResult)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("testing_criteria") != true)
-            {
-                writer.WritePropertyName("testing_criteria"u8);
-                writer.WriteStringValue(TestingCriteria);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("passed") != true)
-            {
-                writer.WritePropertyName("passed"u8);
-                writer.WriteNumberValue(Passed);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("failed") != true)
-            {
-                writer.WritePropertyName("failed"u8);
-                writer.WriteNumberValue(Failed);
-            }
+            writer.WritePropertyName("testing_criteria"u8);
+            writer.WriteStringValue(TestingCriteria);
+            writer.WritePropertyName("passed"u8);
+            writer.WriteNumberValue(Passed);
+            writer.WritePropertyName("failed"u8);
+            writer.WriteNumberValue(Failed);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

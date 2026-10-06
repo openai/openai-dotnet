@@ -71,36 +71,21 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalCompactResource)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            writer.WritePropertyName("output"u8);
+            writer.WriteStartArray();
+            foreach (ResponseItem item in Output)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
-            {
-                writer.WritePropertyName("output"u8);
-                writer.WriteStartArray();
-                foreach (ResponseItem item in Output)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("usage") != true)
-            {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
-            }
+            writer.WriteEndArray();
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedOn, "U");
+            writer.WritePropertyName("usage"u8);
+            writer.WriteObjectValue(Usage, options);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

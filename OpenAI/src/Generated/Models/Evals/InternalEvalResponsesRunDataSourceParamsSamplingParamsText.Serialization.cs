@@ -59,7 +59,7 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalResponsesRunDataSourceParamsSamplingParamsText)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Format) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
+            if (Optional.IsDefined(Format))
             {
                 writer.WritePropertyName("format"u8);
                 writer.WriteObjectValue(Format, options);

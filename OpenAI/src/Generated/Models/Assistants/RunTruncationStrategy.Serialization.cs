@@ -63,12 +63,9 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunTruncationStrategy)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
-            }
-            if (Optional.IsDefined(LastMessages) && _additionalBinaryDataProperties?.ContainsKey("last_messages") != true)
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind.ToString());
+            if (Optional.IsDefined(LastMessages))
             {
                 writer.WritePropertyName("last_messages"u8);
                 writer.WriteNumberValue(LastMessages.Value);

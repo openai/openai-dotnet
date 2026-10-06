@@ -73,21 +73,15 @@ namespace OpenAI.Models
             {
                 throw new FormatException($"The model {nameof(OpenAIModelCollection)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            writer.WritePropertyName("data"u8);
+            writer.WriteStartArray();
+            foreach (OpenAIModel item in Items)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
-            {
-                writer.WritePropertyName("data"u8);
-                writer.WriteStartArray();
-                foreach (OpenAIModel item in Items)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -63,41 +63,20 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningCheckpoint)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("fine_tuned_model_checkpoint") != true)
-            {
-                writer.WritePropertyName("fine_tuned_model_checkpoint"u8);
-                writer.WriteStringValue(ModelId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("step_number") != true)
-            {
-                writer.WritePropertyName("step_number"u8);
-                writer.WriteNumberValue(StepNumber);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("metrics") != true)
-            {
-                writer.WritePropertyName("metrics"u8);
-                writer.WriteObjectValue(Metrics, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("fine_tuning_job_id") != true)
-            {
-                writer.WritePropertyName("fine_tuning_job_id"u8);
-                writer.WriteStringValue(JobId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(_object);
-            }
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+            writer.WritePropertyName("fine_tuned_model_checkpoint"u8);
+            writer.WriteStringValue(ModelId);
+            writer.WritePropertyName("step_number"u8);
+            writer.WriteNumberValue(StepNumber);
+            writer.WritePropertyName("metrics"u8);
+            writer.WriteObjectValue(Metrics, options);
+            writer.WritePropertyName("fine_tuning_job_id"u8);
+            writer.WriteStringValue(JobId);
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(_object);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

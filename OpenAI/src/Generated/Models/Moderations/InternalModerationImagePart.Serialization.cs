@@ -66,11 +66,8 @@ namespace OpenAI.Moderations
                 throw new FormatException($"The model {nameof(InternalModerationImagePart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("image_url") != true)
-            {
-                writer.WritePropertyName("image_url"u8);
-                writer.WriteObjectValue(ImageUrl, options);
-            }
+            writer.WritePropertyName("image_url"u8);
+            writer.WriteObjectValue(ImageUrl, options);
         }
 
         InternalModerationImagePart IJsonModel<InternalModerationImagePart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalModerationImagePart)JsonModelCreateCore(ref reader, options);

@@ -65,56 +65,41 @@ namespace OpenAI.Graders
                 throw new FormatException($"The model {nameof(GraderLabelModel)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            writer.WritePropertyName("name"u8);
+            writer.WriteStringValue(Name);
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model);
+            writer.WritePropertyName("input"u8);
+            writer.WriteStartArray();
+            foreach (InternalEvalItem item in Input)
             {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("labels"u8);
+            writer.WriteStartArray();
+            foreach (string item in Labels)
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("input") != true)
-            {
-                writer.WritePropertyName("input"u8);
-                writer.WriteStartArray();
-                foreach (InternalEvalItem item in Input)
+                if (item == null)
                 {
-                    writer.WriteObjectValue(item, options);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("labels") != true)
+            writer.WriteEndArray();
+            writer.WritePropertyName("passing_labels"u8);
+            writer.WriteStartArray();
+            foreach (string item in PassingLabels)
             {
-                writer.WritePropertyName("labels"u8);
-                writer.WriteStartArray();
-                foreach (string item in Labels)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("passing_labels") != true)
-            {
-                writer.WritePropertyName("passing_labels"u8);
-                writer.WriteStartArray();
-                foreach (string item in PassingLabels)
-                {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
-                }
-                writer.WriteEndArray();
-            }
+            writer.WriteEndArray();
         }
 
         GraderLabelModel IJsonModel<GraderLabelModel>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GraderLabelModel)JsonModelCreateCore(ref reader, options);

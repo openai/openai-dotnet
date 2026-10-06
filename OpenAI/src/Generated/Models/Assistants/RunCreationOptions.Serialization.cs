@@ -63,32 +63,29 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunCreationOptions)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("assistant_id") != true)
-            {
-                writer.WritePropertyName("assistant_id"u8);
-                writer.WriteStringValue(AssistantId);
-            }
-            if (Optional.IsDefined(ModelOverride) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            writer.WritePropertyName("assistant_id"u8);
+            writer.WriteStringValue(AssistantId);
+            if (Optional.IsDefined(ModelOverride))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(ModelOverride);
             }
-            if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ReasoningEffortLevel))
             {
                 writer.WritePropertyName("reasoning_effort"u8);
                 writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
-            if (Optional.IsDefined(InstructionsOverride) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(InstructionsOverride))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(InstructionsOverride);
             }
-            if (Optional.IsDefined(AdditionalInstructions) && _additionalBinaryDataProperties?.ContainsKey("additional_instructions") != true)
+            if (Optional.IsDefined(AdditionalInstructions))
             {
                 writer.WritePropertyName("additional_instructions"u8);
                 writer.WriteStringValue(AdditionalInstructions);
             }
-            if (Optional.IsCollectionDefined(InternalMessages) && _additionalBinaryDataProperties?.ContainsKey("additional_messages") != true)
+            if (Optional.IsCollectionDefined(InternalMessages))
             {
                 writer.WritePropertyName("additional_messages"u8);
                 writer.WriteStartArray();
@@ -98,7 +95,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(ToolsOverride) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            if (Optional.IsCollectionDefined(ToolsOverride))
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -108,7 +105,7 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
@@ -124,47 +121,47 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(NucleusSamplingFactor))
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
-            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            if (Optional.IsDefined(Stream))
             {
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(Stream.Value);
             }
-            if (Optional.IsDefined(MaxInputTokenCount) && _additionalBinaryDataProperties?.ContainsKey("max_prompt_tokens") != true)
+            if (Optional.IsDefined(MaxInputTokenCount))
             {
                 writer.WritePropertyName("max_prompt_tokens"u8);
                 writer.WriteNumberValue(MaxInputTokenCount.Value);
             }
-            if (Optional.IsDefined(MaxOutputTokenCount) && _additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
+            if (Optional.IsDefined(MaxOutputTokenCount))
             {
                 writer.WritePropertyName("max_completion_tokens"u8);
                 writer.WriteNumberValue(MaxOutputTokenCount.Value);
             }
-            if (Optional.IsDefined(TruncationStrategy) && _additionalBinaryDataProperties?.ContainsKey("truncation_strategy") != true)
+            if (Optional.IsDefined(TruncationStrategy))
             {
                 writer.WritePropertyName("truncation_strategy"u8);
                 writer.WriteObjectValue(TruncationStrategy, options);
             }
-            if (Optional.IsDefined(ToolConstraint) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            if (Optional.IsDefined(ToolConstraint))
             {
                 writer.WritePropertyName("tool_choice"u8);
                 SerializeToolConstraint(writer, options);
             }
-            if (Optional.IsDefined(AllowParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
+            if (Optional.IsDefined(AllowParallelToolCalls))
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(AllowParallelToolCalls.Value);
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);

@@ -122,6 +122,7 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
 
         var updatedStatements = new List<MethodBodyStatement>();
         var flattenedStatements = new List<MethodBodyStatement>();
+        bool hasAdditionalPropertiesField = HasAdditionalPropertiesField(method.EnclosingType);
 
         foreach (var stmt in statements)
         {
@@ -153,13 +154,13 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
                 // If we already have an if statement that contains property writing, we need to add the condition to the existing if statement.
                 // For dynamic models, we can skip adding the SARD condition.
                 case IfStatement ifStatement:
-                    ProcessIfStatement(ifStatement, writePropertyNameTarget, additionalConditionsForWritingType, updatedStatements);
+                    ProcessIfStatement(ifStatement, writePropertyNameTarget, additionalConditionsForWritingType, hasAdditionalPropertiesField, updatedStatements);
                     break;
                 case IfElseStatement ifElseStatement when GetPatchContainsExpression(ifElseStatement.If.Condition) != null:
                     ProcessIfElseStatement(ifElseStatement, writePropertyNameTarget, additionalConditionsForWritingType, updatedStatements);
                     break;
                 case var _ when writePropertyNameTarget is not null:
-                    line = ProcessWritePropertyNameStatement(statement, writePropertyNameTarget, additionalConditionsForWritingType, flattenedStatements, line, updatedStatements);
+                    line = ProcessWritePropertyNameStatement(statement, writePropertyNameTarget, additionalConditionsForWritingType, flattenedStatements, line, hasAdditionalPropertiesField, updatedStatements);
                     break;
                 default:
                     updatedStatements.Add(statement);
@@ -171,17 +172,31 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         return method;
     }
 
+    private static bool HasAdditionalPropertiesField(TypeProvider type)
+    {
+        for (TypeProvider? current = type; current is not null; current = (current as ModelProvider)?.BaseModelProvider)
+        {
+            if (current.Fields.Any(field => field.Name == AdditionalPropertiesFieldName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static void ProcessIfStatement(
         IfStatement ifStatement,
         string? writePropertyNameTarget,
         List<WritePropertyNameAdditionalReplacementInfo> additionalConditionsForWritingType,
+        bool hasAdditionalPropertiesField,
         List<MethodBodyStatement> updatedStatements)
     {
         if (writePropertyNameTarget is not null)
         {
             ValueExpression? patchContainsCondition = GetPatchContainsExpression(ifStatement.Condition);
 
-            if (patchContainsCondition is null)
+            if (patchContainsCondition is null && hasAdditionalPropertiesField)
             {
                 ifStatement.Update(condition: ifStatement.Condition.As<bool>().And(GetContainsKeyCondition(writePropertyNameTarget)));
             }
@@ -237,35 +252,49 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         List<WritePropertyNameAdditionalReplacementInfo> additionalConditionsForWritingType,
         List<MethodBodyStatement> flattenedStatements,
         int currentLine,
+        bool hasAdditionalPropertiesField,
         List<MethodBodyStatement> updatedStatements)
     {
         var line = currentLine;
-        ScopedApi<bool> enclosingIfCondition = GetContainsKeyCondition(writePropertyNameTarget);
+        ScopedApi<bool>? enclosingIfCondition = hasAdditionalPropertiesField
+            ? GetContainsKeyCondition(writePropertyNameTarget)
+            : null;
 
         if (additionalConditionsForWritingType.FirstOrDefault(additionalCondition => additionalCondition.JsonName == writePropertyNameTarget) is var matchingReplacementInfo && matchingReplacementInfo != null)
         {
             updatedStatements.Add(OptionalDefinedCheckComment);
-            enclosingIfCondition = GetOptionalIsCollectionDefinedCondition(matchingReplacementInfo).And(enclosingIfCondition);
+            var optionalDefinedCondition = GetOptionalIsCollectionDefinedCondition(matchingReplacementInfo);
+            enclosingIfCondition = enclosingIfCondition is null
+                ? optionalDefinedCondition
+                : optionalDefinedCondition.And(enclosingIfCondition);
         }
 
-        var ifSt = new IfStatement(enclosingIfCondition) { statement };
+        var statements = new List<MethodBodyStatement> { statement };
 
         // If this is a plain expression statement, we need to add the next statement as well which
         // will either write the property value or start writing an array
         if (statement is ExpressionStatement)
         {
-            ifSt.Add(flattenedStatements[++line]);
+            statements.Add(flattenedStatements[++line]);
             // Include array writing in the if statement
             if (flattenedStatements[line + 1] is ForEachStatement)
             {
                 // Foreach
-                ifSt.Add(flattenedStatements[++line]);
+                statements.Add(flattenedStatements[++line]);
                 // End array
-                ifSt.Add(flattenedStatements[++line]);
+                statements.Add(flattenedStatements[++line]);
             }
         }
 
-        updatedStatements.Add(ifSt);
+        if (enclosingIfCondition is null)
+        {
+            updatedStatements.AddRange(statements);
+        }
+        else
+        {
+            updatedStatements.Add(new IfStatement(enclosingIfCondition) { statements });
+        }
+
         return line;
     }
 

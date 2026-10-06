@@ -63,11 +63,8 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(FileChunkingStrategy)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
-            }
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind.ToString());
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -254,13 +254,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("status") != true)
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
-                if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
-                {
-                    writer.WritePropertyName("status"u8);
-                    writer.WriteStringValue(Status.Value.ToSerialString());
-                }
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
             if (!Patch.Contains("$.created_at"u8))
             {

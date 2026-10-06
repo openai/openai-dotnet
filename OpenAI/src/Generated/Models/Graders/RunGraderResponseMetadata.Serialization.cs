@@ -63,61 +63,40 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(RunGraderResponseMetadata)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
-            {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("errors") != true)
-            {
-                writer.WritePropertyName("errors"u8);
-                writer.WriteObjectValue(Errors, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("execution_time") != true)
-            {
-                writer.WritePropertyName("execution_time"u8);
-                writer.WriteNumberValue(ExecutionTime);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("scores") != true)
-            {
-                writer.WritePropertyName("scores"u8);
+            writer.WritePropertyName("name"u8);
+            writer.WriteStringValue(Name);
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind);
+            writer.WritePropertyName("errors"u8);
+            writer.WriteObjectValue(Errors, options);
+            writer.WritePropertyName("execution_time"u8);
+            writer.WriteNumberValue(ExecutionTime);
+            writer.WritePropertyName("scores"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Scores);
+            writer.WriteRawValue(Scores);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Scores))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
+            using (JsonDocument document = JsonDocument.Parse(Scores))
+            {
+                JsonSerializer.Serialize(writer, document.RootElement);
+            }
 #endif
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("token_usage") != true)
+            if (Optional.IsDefined(TokenUsage))
             {
-                if (Optional.IsDefined(TokenUsage))
-                {
-                    writer.WritePropertyName("token_usage"u8);
-                    writer.WriteNumberValue(TokenUsage.Value);
-                }
-                else
-                {
-                    writer.WriteNull("token_usage"u8);
-                }
+                writer.WritePropertyName("token_usage"u8);
+                writer.WriteNumberValue(TokenUsage.Value);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("sampled_model_name") != true)
+            else
             {
-                if (Optional.IsDefined(SampledModelName))
-                {
-                    writer.WritePropertyName("sampled_model_name"u8);
-                    writer.WriteStringValue(SampledModelName);
-                }
-                else
-                {
-                    writer.WriteNull("sampled_model_name"u8);
-                }
+                writer.WriteNull("token_usage"u8);
+            }
+            if (Optional.IsDefined(SampledModelName))
+            {
+                writer.WritePropertyName("sampled_model_name"u8);
+                writer.WriteStringValue(SampledModelName);
+            }
+            else
+            {
+                writer.WriteNull("sampled_model_name"u8);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

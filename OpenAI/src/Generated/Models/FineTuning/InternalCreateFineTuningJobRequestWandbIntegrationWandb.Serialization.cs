@@ -63,22 +63,19 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("project") != true)
-            {
-                writer.WritePropertyName("project"u8);
-                writer.WriteStringValue(Project);
-            }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            writer.WritePropertyName("project"u8);
+            writer.WriteStringValue(Project);
+            if (Optional.IsDefined(Name))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Entity) && _additionalBinaryDataProperties?.ContainsKey("entity") != true)
+            if (Optional.IsDefined(Entity))
             {
                 writer.WritePropertyName("entity"u8);
                 writer.WriteStringValue(Entity);
             }
-            if (Optional.IsCollectionDefined(Tags) && _additionalBinaryDataProperties?.ContainsKey("tags") != true)
+            if (Optional.IsCollectionDefined(Tags))
             {
                 writer.WritePropertyName("tags"u8);
                 writer.WriteStartArray();

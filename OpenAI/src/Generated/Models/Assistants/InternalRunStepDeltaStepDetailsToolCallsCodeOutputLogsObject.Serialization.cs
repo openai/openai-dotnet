@@ -66,12 +66,9 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
-            {
-                writer.WritePropertyName("index"u8);
-                writer.WriteNumberValue(Index);
-            }
-            if (Optional.IsDefined(InternalLogs) && _additionalBinaryDataProperties?.ContainsKey("logs") != true)
+            writer.WritePropertyName("index"u8);
+            writer.WriteNumberValue(Index);
+            if (Optional.IsDefined(InternalLogs))
             {
                 writer.WritePropertyName("logs"u8);
                 writer.WriteStringValue(InternalLogs);

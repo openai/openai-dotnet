@@ -63,22 +63,19 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningTrainingMethod)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
-            }
-            if (Optional.IsDefined(Supervised) && _additionalBinaryDataProperties?.ContainsKey("supervised") != true)
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind.ToString());
+            if (Optional.IsDefined(Supervised))
             {
                 writer.WritePropertyName("supervised"u8);
                 writer.WriteObjectValue(Supervised, options);
             }
-            if (Optional.IsDefined(Dpo) && _additionalBinaryDataProperties?.ContainsKey("dpo") != true)
+            if (Optional.IsDefined(Dpo))
             {
                 writer.WritePropertyName("dpo"u8);
                 writer.WriteObjectValue(Dpo, options);
             }
-            if (Optional.IsDefined(Reinforcement) && _additionalBinaryDataProperties?.ContainsKey("reinforcement") != true)
+            if (Optional.IsDefined(Reinforcement))
             {
                 writer.WritePropertyName("reinforcement"u8);
                 writer.WriteObjectValue(Reinforcement, options);

@@ -71,93 +71,57 @@ namespace OpenAI.Videos
             {
                 throw new FormatException($"The model {nameof(InternalVideoResource)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model.ToString());
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToString());
+            writer.WritePropertyName("progress"u8);
+            writer.WriteNumberValue(Progress);
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt);
+            if (Optional.IsDefined(CompletedAt))
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WritePropertyName("completed_at"u8);
+                writer.WriteNumberValue(CompletedAt.Value);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            else
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteNull("completed_at"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(ExpiresAt))
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
+                writer.WritePropertyName("expires_at"u8);
+                writer.WriteNumberValue(ExpiresAt.Value);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            else
             {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteNull("expires_at"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("progress") != true)
+            writer.WritePropertyName("size"u8);
+            writer.WriteStringValue(Size.ToString());
+            writer.WritePropertyName("seconds"u8);
+            writer.WriteStringValue(Seconds.ToString());
+            if (Optional.IsDefined(RemixedFromVideoId))
             {
-                writer.WritePropertyName("progress"u8);
-                writer.WriteNumberValue(Progress);
+                writer.WritePropertyName("remixed_from_video_id"u8);
+                writer.WriteStringValue(RemixedFromVideoId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
+            else
             {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt);
+                writer.WriteNull("remixed_from_video_id"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("completed_at") != true)
+            if (Optional.IsDefined(Error))
             {
-                if (Optional.IsDefined(CompletedAt))
-                {
-                    writer.WritePropertyName("completed_at"u8);
-                    writer.WriteNumberValue(CompletedAt.Value);
-                }
-                else
-                {
-                    writer.WriteNull("completed_at"u8);
-                }
+                writer.WritePropertyName("error"u8);
+                writer.WriteObjectValue(Error, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            else
             {
-                if (Optional.IsDefined(ExpiresAt))
-                {
-                    writer.WritePropertyName("expires_at"u8);
-                    writer.WriteNumberValue(ExpiresAt.Value);
-                }
-                else
-                {
-                    writer.WriteNull("expires_at"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
-            {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("seconds") != true)
-            {
-                writer.WritePropertyName("seconds"u8);
-                writer.WriteStringValue(Seconds.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("remixed_from_video_id") != true)
-            {
-                if (Optional.IsDefined(RemixedFromVideoId))
-                {
-                    writer.WritePropertyName("remixed_from_video_id"u8);
-                    writer.WriteStringValue(RemixedFromVideoId);
-                }
-                else
-                {
-                    writer.WriteNull("remixed_from_video_id"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("error") != true)
-            {
-                if (Optional.IsDefined(Error))
-                {
-                    writer.WritePropertyName("error"u8);
-                    writer.WriteObjectValue(Error, options);
-                }
-                else
-                {
-                    writer.WriteNull("error"u8);
-                }
+                writer.WriteNull("error"u8);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

@@ -71,21 +71,12 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalDeletedSkillResource)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            writer.WritePropertyName("deleted"u8);
+            writer.WriteBooleanValue(Deleted);
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

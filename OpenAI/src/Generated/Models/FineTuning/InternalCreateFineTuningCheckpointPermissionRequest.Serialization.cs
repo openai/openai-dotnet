@@ -63,21 +63,18 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalCreateFineTuningCheckpointPermissionRequest)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("project_ids") != true)
+            writer.WritePropertyName("project_ids"u8);
+            writer.WriteStartArray();
+            foreach (string item in ProjectIds)
             {
-                writer.WritePropertyName("project_ids"u8);
-                writer.WriteStartArray();
-                foreach (string item in ProjectIds)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+                writer.WriteStringValue(item);
             }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

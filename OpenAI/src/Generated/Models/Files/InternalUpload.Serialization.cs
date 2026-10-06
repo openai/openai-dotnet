@@ -71,47 +71,26 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalUpload)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedOn, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("filename") != true)
-            {
-                writer.WritePropertyName("filename"u8);
-                writer.WriteStringValue(Filename);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
-            {
-                writer.WritePropertyName("bytes"u8);
-                writer.WriteNumberValue(Bytes);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("purpose") != true)
-            {
-                writer.WritePropertyName("purpose"u8);
-                writer.WriteStringValue(Purpose);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
-            {
-                writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresOn, "U");
-            }
-            if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedOn, "U");
+            writer.WritePropertyName("filename"u8);
+            writer.WriteStringValue(Filename);
+            writer.WritePropertyName("bytes"u8);
+            writer.WriteNumberValue(Bytes);
+            writer.WritePropertyName("purpose"u8);
+            writer.WriteStringValue(Purpose);
+            writer.WritePropertyName("status"u8);
+            writer.WriteStringValue(Status.ToString());
+            writer.WritePropertyName("expires_at"u8);
+            writer.WriteNumberValue(ExpiresOn, "U");
+            if (Optional.IsDefined(Object))
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object.Value.ToString());
             }
-            if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
+            if (Optional.IsDefined(File))
             {
                 writer.WritePropertyName("file"u8);
                 writer.WriteObjectValue(File, options);

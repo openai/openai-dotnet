@@ -71,50 +71,35 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(AssistantThread)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(Id);
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            writer.WritePropertyName("created_at"u8);
+            writer.WriteNumberValue(CreatedAt, "U");
+            if (Optional.IsDefined(ToolResources))
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue(ToolResources, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            else
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
-            {
-                writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
-            {
-                if (Optional.IsDefined(ToolResources))
-                {
-                    writer.WritePropertyName("tool_resources"u8);
-                    writer.WriteObjectValue(ToolResources, options);
-                }
-                else
-                {
-                    writer.WriteNull("tool_resources"u8);
-                }
+                writer.WriteNull("tool_resources"u8);
             }
             // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            writer.WritePropertyName("metadata"u8);
+            writer.WriteStartObject();
+            foreach (var item in Metadata)
             {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
+                writer.WritePropertyName(item.Key);
+                if (item.Value == null)
                 {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item.Value);
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndObject();
+                writer.WriteStringValue(item.Value);
             }
+            writer.WriteEndObject();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

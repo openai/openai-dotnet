@@ -63,26 +63,14 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(InternalImagesUsage)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
-            {
-                writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(InputTokens);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
-            {
-                writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokens);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens_details") != true)
-            {
-                writer.WritePropertyName("input_tokens_details"u8);
-                writer.WriteObjectValue(InputTokensDetails, options);
-            }
+            writer.WritePropertyName("total_tokens"u8);
+            writer.WriteNumberValue(TotalTokens);
+            writer.WritePropertyName("input_tokens"u8);
+            writer.WriteNumberValue(InputTokens);
+            writer.WritePropertyName("output_tokens"u8);
+            writer.WriteNumberValue(OutputTokens);
+            writer.WritePropertyName("input_tokens_details"u8);
+            writer.WriteObjectValue(InputTokensDetails, options);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

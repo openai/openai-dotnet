@@ -64,12 +64,9 @@ namespace OpenAI.Assistants
                 throw new FormatException($"The model {nameof(InternalMessageDeltaContentImageUrlObject)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
-            {
-                writer.WritePropertyName("index"u8);
-                writer.WriteNumberValue(Index);
-            }
-            if (Optional.IsDefined(ImageUrl) && _additionalBinaryDataProperties?.ContainsKey("image_url") != true)
+            writer.WritePropertyName("index"u8);
+            writer.WriteNumberValue(Index);
+            if (Optional.IsDefined(ImageUrl))
             {
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteObjectValue(ImageUrl, options);

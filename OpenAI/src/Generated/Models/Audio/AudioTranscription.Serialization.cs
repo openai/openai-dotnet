@@ -67,23 +67,14 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranscription)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("language") != true)
-            {
-                writer.WritePropertyName("language"u8);
-                writer.WriteStringValue(Language);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
-            {
-                writer.WritePropertyName("duration"u8);
-                writer.WriteNumberValue(Duration.Value.TotalSeconds);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
+            writer.WritePropertyName("language"u8);
+            writer.WriteStringValue(Language);
+            writer.WritePropertyName("duration"u8);
+            writer.WriteNumberValue(Duration.Value.TotalSeconds);
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
             // Plugin customization: remove options.Format != "W" check
-            if (Optional.IsCollectionDefined(Words) && _additionalBinaryDataProperties?.ContainsKey("words") != true)
+            if (Optional.IsCollectionDefined(Words))
             {
                 writer.WritePropertyName("words"u8);
                 writer.WriteStartArray();
@@ -94,7 +85,7 @@ namespace OpenAI.Audio
                 writer.WriteEndArray();
             }
             // Plugin customization: remove options.Format != "W" check
-            if (Optional.IsCollectionDefined(Segments) && _additionalBinaryDataProperties?.ContainsKey("segments") != true)
+            if (Optional.IsCollectionDefined(Segments))
             {
                 writer.WritePropertyName("segments"u8);
                 writer.WriteStartArray();
@@ -104,13 +95,13 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            if (Optional.IsDefined(Usage))
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
 #pragma warning disable OPENAI001 // This generated code depends on experimental functionality.
-            if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities))
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();

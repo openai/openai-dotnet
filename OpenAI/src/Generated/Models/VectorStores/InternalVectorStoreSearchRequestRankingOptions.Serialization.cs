@@ -59,12 +59,12 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(InternalVectorStoreSearchRequestRankingOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Ranker) && _additionalBinaryDataProperties?.ContainsKey("ranker") != true)
+            if (Optional.IsDefined(Ranker))
             {
                 writer.WritePropertyName("ranker"u8);
                 writer.WriteStringValue(Ranker.Value.ToString());
             }
-            if (Optional.IsDefined(ScoreThreshold) && _additionalBinaryDataProperties?.ContainsKey("score_threshold") != true)
+            if (Optional.IsDefined(ScoreThreshold))
             {
                 writer.WritePropertyName("score_threshold"u8);
                 writer.WriteNumberValue(ScoreThreshold.Value);

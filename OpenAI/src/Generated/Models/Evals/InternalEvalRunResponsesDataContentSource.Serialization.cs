@@ -60,7 +60,7 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalRunResponsesDataContentSource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
@@ -76,42 +76,42 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(InstructionsSearch) && _additionalBinaryDataProperties?.ContainsKey("instructions_search") != true)
+            if (Optional.IsDefined(InstructionsSearch))
             {
                 writer.WritePropertyName("instructions_search"u8);
                 writer.WriteStringValue(InstructionsSearch);
             }
-            if (Optional.IsDefined(CreatedAfter) && _additionalBinaryDataProperties?.ContainsKey("created_after") != true)
+            if (Optional.IsDefined(CreatedAfter))
             {
                 writer.WritePropertyName("created_after"u8);
                 writer.WriteNumberValue(CreatedAfter.Value);
             }
-            if (Optional.IsDefined(CreatedBefore) && _additionalBinaryDataProperties?.ContainsKey("created_before") != true)
+            if (Optional.IsDefined(CreatedBefore))
             {
                 writer.WritePropertyName("created_before"u8);
                 writer.WriteNumberValue(CreatedBefore.Value);
             }
-            if (Optional.IsDefined(ReasoningEffort) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ReasoningEffort))
             {
                 writer.WritePropertyName("reasoning_effort"u8);
                 writer.WriteStringValue(ReasoningEffort.Value.ToString());
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(TopP))
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(TopP.Value);
             }
-            if (Optional.IsCollectionDefined(Users) && _additionalBinaryDataProperties?.ContainsKey("users") != true)
+            if (Optional.IsCollectionDefined(Users))
             {
                 writer.WritePropertyName("users"u8);
                 writer.WriteStartArray();
@@ -126,7 +126,7 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            if (Optional.IsCollectionDefined(Tools))
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();

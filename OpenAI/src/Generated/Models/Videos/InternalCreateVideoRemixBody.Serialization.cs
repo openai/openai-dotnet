@@ -63,11 +63,8 @@ namespace OpenAI.Videos
             {
                 throw new FormatException($"The model {nameof(InternalCreateVideoRemixBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
-            {
-                writer.WritePropertyName("prompt"u8);
-                writer.WriteStringValue(Prompt);
-            }
+            writer.WritePropertyName("prompt"u8);
+            writer.WriteStringValue(Prompt);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

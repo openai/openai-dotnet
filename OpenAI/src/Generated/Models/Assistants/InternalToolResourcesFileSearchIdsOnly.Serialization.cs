@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalToolResourcesFileSearchIdsOnly)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(VectorStoreIds) && _additionalBinaryDataProperties?.ContainsKey("vector_store_ids") != true)
+            if (Optional.IsCollectionDefined(VectorStoreIds))
             {
                 writer.WritePropertyName("vector_store_ids"u8);
                 writer.WriteStartArray();

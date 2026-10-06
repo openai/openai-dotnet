@@ -59,27 +59,27 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalResponsesRunDataSourceParamsSamplingParams)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(MaxCompletionTokens) && _additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
+            if (Optional.IsDefined(MaxCompletionTokens))
             {
                 writer.WritePropertyName("max_completion_tokens"u8);
                 writer.WriteNumberValue(MaxCompletionTokens.Value);
             }
-            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(TopP))
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(TopP.Value);
             }
-            if (Optional.IsDefined(Seed) && _additionalBinaryDataProperties?.ContainsKey("seed") != true)
+            if (Optional.IsDefined(Seed))
             {
                 writer.WritePropertyName("seed"u8);
                 writer.WriteNumberValue(Seed.Value);
             }
-            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            if (Optional.IsCollectionDefined(Tools))
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -89,7 +89,7 @@ namespace OpenAI.Evals
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Text) && _additionalBinaryDataProperties?.ContainsKey("text") != true)
+            if (Optional.IsDefined(Text))
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteObjectValue(Text, options);

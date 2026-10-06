@@ -63,11 +63,8 @@ namespace OpenAI.Skills
             {
                 throw new FormatException($"The model {nameof(InternalSetDefaultSkillVersionBody)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("default_version") != true)
-            {
-                writer.WritePropertyName("default_version"u8);
-                writer.WriteStringValue(DefaultVersion);
-            }
+            writer.WritePropertyName("default_version"u8);
+            writer.WriteStringValue(DefaultVersion);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

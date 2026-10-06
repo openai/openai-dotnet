@@ -63,96 +63,54 @@ namespace OpenAI.Graders
             {
                 throw new FormatException($"The model {nameof(RunGraderResponseMetadataErrors)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("formula_parse_error") != true)
+            writer.WritePropertyName("formula_parse_error"u8);
+            writer.WriteBooleanValue(FormulaParseError);
+            writer.WritePropertyName("sample_parse_error"u8);
+            writer.WriteBooleanValue(SampleParseError);
+            writer.WritePropertyName("truncated_observation_error"u8);
+            writer.WriteBooleanValue(TruncatedObservationError);
+            writer.WritePropertyName("unresponsive_reward_error"u8);
+            writer.WriteBooleanValue(UnresponsiveRewardError);
+            writer.WritePropertyName("invalid_variable_error"u8);
+            writer.WriteBooleanValue(InvalidVariableError);
+            writer.WritePropertyName("other_error"u8);
+            writer.WriteBooleanValue(OtherError);
+            writer.WritePropertyName("python_grader_server_error"u8);
+            writer.WriteBooleanValue(PythonGraderServerError);
+            if (Optional.IsDefined(PythonGraderServerErrorType))
             {
-                writer.WritePropertyName("formula_parse_error"u8);
-                writer.WriteBooleanValue(FormulaParseError);
+                writer.WritePropertyName("python_grader_server_error_type"u8);
+                writer.WriteStringValue(PythonGraderServerErrorType);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("sample_parse_error") != true)
+            else
             {
-                writer.WritePropertyName("sample_parse_error"u8);
-                writer.WriteBooleanValue(SampleParseError);
+                writer.WriteNull("python_grader_server_error_type"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("truncated_observation_error") != true)
+            writer.WritePropertyName("python_grader_runtime_error"u8);
+            writer.WriteBooleanValue(PythonGraderRuntimeError);
+            if (Optional.IsDefined(PythonGraderRuntimeErrorDetails))
             {
-                writer.WritePropertyName("truncated_observation_error"u8);
-                writer.WriteBooleanValue(TruncatedObservationError);
+                writer.WritePropertyName("python_grader_runtime_error_details"u8);
+                writer.WriteStringValue(PythonGraderRuntimeErrorDetails);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("unresponsive_reward_error") != true)
+            else
             {
-                writer.WritePropertyName("unresponsive_reward_error"u8);
-                writer.WriteBooleanValue(UnresponsiveRewardError);
+                writer.WriteNull("python_grader_runtime_error_details"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("invalid_variable_error") != true)
+            writer.WritePropertyName("model_grader_server_error"u8);
+            writer.WriteBooleanValue(ModelGraderServerError);
+            writer.WritePropertyName("model_grader_refusal_error"u8);
+            writer.WriteBooleanValue(ModelGraderRefusalError);
+            writer.WritePropertyName("model_grader_parse_error"u8);
+            writer.WriteBooleanValue(ModelGraderParseError);
+            if (Optional.IsDefined(ModelGraderServerErrorDetails))
             {
-                writer.WritePropertyName("invalid_variable_error"u8);
-                writer.WriteBooleanValue(InvalidVariableError);
+                writer.WritePropertyName("model_grader_server_error_details"u8);
+                writer.WriteStringValue(ModelGraderServerErrorDetails);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("other_error") != true)
+            else
             {
-                writer.WritePropertyName("other_error"u8);
-                writer.WriteBooleanValue(OtherError);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("python_grader_server_error") != true)
-            {
-                writer.WritePropertyName("python_grader_server_error"u8);
-                writer.WriteBooleanValue(PythonGraderServerError);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("python_grader_server_error_type") != true)
-            {
-                if (Optional.IsDefined(PythonGraderServerErrorType))
-                {
-                    writer.WritePropertyName("python_grader_server_error_type"u8);
-                    writer.WriteStringValue(PythonGraderServerErrorType);
-                }
-                else
-                {
-                    writer.WriteNull("python_grader_server_error_type"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("python_grader_runtime_error") != true)
-            {
-                writer.WritePropertyName("python_grader_runtime_error"u8);
-                writer.WriteBooleanValue(PythonGraderRuntimeError);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("python_grader_runtime_error_details") != true)
-            {
-                if (Optional.IsDefined(PythonGraderRuntimeErrorDetails))
-                {
-                    writer.WritePropertyName("python_grader_runtime_error_details"u8);
-                    writer.WriteStringValue(PythonGraderRuntimeErrorDetails);
-                }
-                else
-                {
-                    writer.WriteNull("python_grader_runtime_error_details"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model_grader_server_error") != true)
-            {
-                writer.WritePropertyName("model_grader_server_error"u8);
-                writer.WriteBooleanValue(ModelGraderServerError);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model_grader_refusal_error") != true)
-            {
-                writer.WritePropertyName("model_grader_refusal_error"u8);
-                writer.WriteBooleanValue(ModelGraderRefusalError);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model_grader_parse_error") != true)
-            {
-                writer.WritePropertyName("model_grader_parse_error"u8);
-                writer.WriteBooleanValue(ModelGraderParseError);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model_grader_server_error_details") != true)
-            {
-                if (Optional.IsDefined(ModelGraderServerErrorDetails))
-                {
-                    writer.WritePropertyName("model_grader_server_error_details"u8);
-                    writer.WriteStringValue(ModelGraderServerErrorDetails);
-                }
-                else
-                {
-                    writer.WriteNull("model_grader_server_error_details"u8);
-                }
+                writer.WriteNull("model_grader_server_error_details"u8);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

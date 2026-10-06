@@ -59,7 +59,7 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(MessageModificationOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();

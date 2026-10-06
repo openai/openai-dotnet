@@ -59,11 +59,8 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalAssistantToolsFileSearchTypeOnly)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
-            }
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -62,17 +62,14 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(InternalAssistantsFunctionDefinition)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            if (Optional.IsDefined(Description))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
-            {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
-            }
-            if (Optional.IsDefined(Parameters) && _additionalBinaryDataProperties?.ContainsKey("parameters") != true)
+            writer.WritePropertyName("name"u8);
+            writer.WriteStringValue(Name);
+            if (Optional.IsDefined(Parameters))
             {
                 writer.WritePropertyName("parameters"u8);
 #if NET6_0_OR_GREATER
@@ -84,7 +81,7 @@ namespace OpenAI
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            if (Optional.IsDefined(Strict))
             {
                 writer.WritePropertyName("strict"u8);
                 writer.WriteBooleanValue(Strict.Value);

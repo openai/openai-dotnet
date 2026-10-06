@@ -63,16 +63,10 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(MessageCreationAttachment)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
-            {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
-            {
-                writer.WritePropertyName("tools"u8);
-                SerializeTools(writer, options);
-            }
+            writer.WritePropertyName("file_id"u8);
+            writer.WriteStringValue(FileId);
+            writer.WritePropertyName("tools"u8);
+            SerializeTools(writer, options);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

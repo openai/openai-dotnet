@@ -63,27 +63,24 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequest)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("assistant_id") != true)
-            {
-                writer.WritePropertyName("assistant_id"u8);
-                writer.WriteStringValue(AssistantId);
-            }
-            if (Optional.IsDefined(Thread) && _additionalBinaryDataProperties?.ContainsKey("thread") != true)
+            writer.WritePropertyName("assistant_id"u8);
+            writer.WriteStringValue(AssistantId);
+            if (Optional.IsDefined(Thread))
             {
                 writer.WritePropertyName("thread"u8);
                 writer.WriteObjectValue(Thread, options);
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (Optional.IsDefined(Model))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            if (Optional.IsDefined(Instructions))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            if (Optional.IsCollectionDefined(Tools))
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
@@ -93,12 +90,12 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            if (Optional.IsDefined(ToolResources))
             {
                 writer.WritePropertyName("tool_resources"u8);
                 writer.WriteObjectValue(ToolResources, options);
             }
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();
@@ -114,47 +111,47 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(TopP) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
+            if (Optional.IsDefined(TopP))
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(TopP.Value);
             }
-            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            if (Optional.IsDefined(Stream))
             {
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(Stream.Value);
             }
-            if (Optional.IsDefined(MaxPromptTokens) && _additionalBinaryDataProperties?.ContainsKey("max_prompt_tokens") != true)
+            if (Optional.IsDefined(MaxPromptTokens))
             {
                 writer.WritePropertyName("max_prompt_tokens"u8);
                 writer.WriteNumberValue(MaxPromptTokens.Value);
             }
-            if (Optional.IsDefined(MaxCompletionTokens) && _additionalBinaryDataProperties?.ContainsKey("max_completion_tokens") != true)
+            if (Optional.IsDefined(MaxCompletionTokens))
             {
                 writer.WritePropertyName("max_completion_tokens"u8);
                 writer.WriteNumberValue(MaxCompletionTokens.Value);
             }
-            if (Optional.IsDefined(TruncationStrategy) && _additionalBinaryDataProperties?.ContainsKey("truncation_strategy") != true)
+            if (Optional.IsDefined(TruncationStrategy))
             {
                 writer.WritePropertyName("truncation_strategy"u8);
                 writer.WriteObjectValue(TruncationStrategy, options);
             }
-            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            if (Optional.IsDefined(ToolChoice))
             {
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue(ToolChoice, options);
             }
-            if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
+            if (Optional.IsDefined(ParallelToolCalls))
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCalls.Value);
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);

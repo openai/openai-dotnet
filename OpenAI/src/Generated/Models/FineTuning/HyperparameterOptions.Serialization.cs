@@ -59,17 +59,17 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(HyperparameterOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
+            if (Optional.IsDefined(BatchSize))
             {
                 writer.WritePropertyName("batch_size"u8);
                 writer.WriteObjectValue(BatchSize, options);
             }
-            if (Optional.IsDefined(LearningRate) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
+            if (Optional.IsDefined(LearningRate))
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
                 writer.WriteObjectValue(LearningRate, options);
             }
-            if (Optional.IsDefined(EpochCount) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            if (Optional.IsDefined(EpochCount))
             {
                 writer.WritePropertyName("n_epochs"u8);
                 writer.WriteObjectValue(EpochCount, options);

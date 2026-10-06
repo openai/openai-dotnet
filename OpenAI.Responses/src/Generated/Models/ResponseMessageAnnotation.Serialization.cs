@@ -71,13 +71,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ResponseMessageAnnotation)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (this._additionalBinaryDataProperties?.ContainsKey("type") != true)
+            if (!Patch.Contains("$.type"u8))
             {
-                if (!Patch.Contains("$.type"u8))
-                {
-                    writer.WritePropertyName("type"u8);
-                    writer.WriteStringValue(Kind.ToSerialString());
-                }
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToSerialString());
             }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }

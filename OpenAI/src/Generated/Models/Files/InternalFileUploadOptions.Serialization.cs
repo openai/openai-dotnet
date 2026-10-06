@@ -60,24 +60,18 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
-            {
-                writer.WritePropertyName("file"u8);
+            writer.WritePropertyName("file"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(global::System.BinaryData.FromStream(File));
+            writer.WriteRawValue(global::System.BinaryData.FromStream(File));
 #else
-                using (JsonDocument document = JsonDocument.Parse(BinaryData.FromStream(File)))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("purpose") != true)
+            using (JsonDocument document = JsonDocument.Parse(BinaryData.FromStream(File)))
             {
-                writer.WritePropertyName("purpose"u8);
-                writer.WriteStringValue(Purpose.ToString());
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
-            if (Optional.IsDefined(ExpiresAfter) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
+#endif
+            writer.WritePropertyName("purpose"u8);
+            writer.WriteStringValue(Purpose.ToString());
+            if (Optional.IsDefined(ExpiresAfter))
             {
                 writer.WritePropertyName("expires_after"u8);
                 writer.WriteObjectValue<InternalFileExpirationAfter?>(ExpiresAfter.Value, options);

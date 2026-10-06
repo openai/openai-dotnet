@@ -63,26 +63,17 @@ namespace OpenAI.Internal
             {
                 throw new FormatException($"The model {nameof(InternalLogProbProperties)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("token") != true)
+            writer.WritePropertyName("token"u8);
+            writer.WriteStringValue(Token);
+            writer.WritePropertyName("logprob"u8);
+            writer.WriteNumberValue(Logprob);
+            writer.WritePropertyName("bytes"u8);
+            writer.WriteStartArray();
+            foreach (int item in Bytes)
             {
-                writer.WritePropertyName("token"u8);
-                writer.WriteStringValue(Token);
+                writer.WriteNumberValue(item);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("logprob") != true)
-            {
-                writer.WritePropertyName("logprob"u8);
-                writer.WriteNumberValue(Logprob);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
-            {
-                writer.WritePropertyName("bytes"u8);
-                writer.WriteStartArray();
-                foreach (int item in Bytes)
-                {
-                    writer.WriteNumberValue(item);
-                }
-                writer.WriteEndArray();
-            }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -69,7 +69,7 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningHyperparameters)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(_BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
+            if (Optional.IsDefined(_BatchSize))
             {
                 writer.WritePropertyName("batch_size"u8);
 #if NET6_0_OR_GREATER
@@ -81,7 +81,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (Optional.IsDefined(_LearningRateMultiplier) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
+            if (Optional.IsDefined(_LearningRateMultiplier))
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
 #if NET6_0_OR_GREATER
@@ -93,7 +93,7 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (Optional.IsDefined(_EpochCount) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            if (Optional.IsDefined(_EpochCount))
             {
                 writer.WritePropertyName("n_epochs"u8);
 #if NET6_0_OR_GREATER

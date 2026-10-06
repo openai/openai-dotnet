@@ -63,33 +63,27 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalEvalCompletionsRunDataSourceParamsInputMessages1)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            writer.WritePropertyName("type"u8);
+            writer.WriteStringValue(Kind);
+            writer.WritePropertyName("template"u8);
+            writer.WriteStartArray();
+            foreach (BinaryData item in Template)
             {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("template") != true)
-            {
-                writer.WritePropertyName("template"u8);
-                writer.WriteStartArray();
-                foreach (BinaryData item in Template)
+                if (item == null)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    writer.WriteNullValue();
+                    continue;
                 }
-                writer.WriteEndArray();
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(item);
+#else
+                using (JsonDocument document = JsonDocument.Parse(item))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
+            writer.WriteEndArray();
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

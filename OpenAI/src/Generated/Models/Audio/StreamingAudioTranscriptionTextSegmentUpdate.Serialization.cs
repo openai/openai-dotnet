@@ -64,31 +64,16 @@ namespace OpenAI.Audio
                 throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextSegmentUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(SegmentId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
-            {
-                writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(StartTime.TotalSeconds);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
-            {
-                writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(EndTime.TotalSeconds);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("speaker") != true)
-            {
-                writer.WritePropertyName("speaker"u8);
-                writer.WriteStringValue(SpeakerLabel);
-            }
+            writer.WritePropertyName("id"u8);
+            writer.WriteStringValue(SegmentId);
+            writer.WritePropertyName("start"u8);
+            writer.WriteNumberValue(StartTime.TotalSeconds);
+            writer.WritePropertyName("end"u8);
+            writer.WriteNumberValue(EndTime.TotalSeconds);
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
+            writer.WritePropertyName("speaker"u8);
+            writer.WriteStringValue(SpeakerLabel);
         }
 
         StreamingAudioTranscriptionTextSegmentUpdate IJsonModel<StreamingAudioTranscriptionTextSegmentUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextSegmentUpdate)JsonModelCreateCore(ref reader, options);

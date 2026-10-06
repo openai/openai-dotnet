@@ -63,34 +63,25 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningError)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("code") != true)
+            if (Optional.IsDefined(Code))
             {
-                if (Optional.IsDefined(Code))
-                {
-                    writer.WritePropertyName("code"u8);
-                    writer.WriteStringValue(Code);
-                }
-                else
-                {
-                    writer.WriteNull("code"u8);
-                }
+                writer.WritePropertyName("code"u8);
+                writer.WriteStringValue(Code);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("message") != true)
+            else
             {
-                writer.WritePropertyName("message"u8);
-                writer.WriteStringValue(Message);
+                writer.WriteNull("code"u8);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("param") != true)
+            writer.WritePropertyName("message"u8);
+            writer.WriteStringValue(Message);
+            if (Optional.IsDefined(InvalidParameter))
             {
-                if (Optional.IsDefined(InvalidParameter))
-                {
-                    writer.WritePropertyName("param"u8);
-                    writer.WriteStringValue(InvalidParameter);
-                }
-                else
-                {
-                    writer.WriteNull("param"u8);
-                }
+                writer.WritePropertyName("param"u8);
+                writer.WriteStringValue(InvalidParameter);
+            }
+            else
+            {
+                writer.WriteNull("param"u8);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

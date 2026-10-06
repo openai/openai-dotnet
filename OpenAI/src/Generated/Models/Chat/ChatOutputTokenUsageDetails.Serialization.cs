@@ -72,13 +72,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatOutputTokenUsageDetails)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (this._additionalBinaryDataProperties?.ContainsKey("accepted_prediction_tokens") != true)
+            if (!Patch.Contains("$.accepted_prediction_tokens"u8))
             {
-                if (!Patch.Contains("$.accepted_prediction_tokens"u8))
-                {
-                    writer.WritePropertyName("accepted_prediction_tokens"u8);
-                    writer.WriteNumberValue(AcceptedPredictionTokenCount);
-                }
+                writer.WritePropertyName("accepted_prediction_tokens"u8);
+                writer.WriteNumberValue(AcceptedPredictionTokenCount);
             }
             if (!Patch.Contains("$.audio_tokens"u8))
             {
@@ -90,13 +87,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("reasoning_tokens"u8);
                 writer.WriteNumberValue(ReasoningTokenCount);
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("rejected_prediction_tokens") != true)
+            if (!Patch.Contains("$.rejected_prediction_tokens"u8))
             {
-                if (!Patch.Contains("$.rejected_prediction_tokens"u8))
-                {
-                    writer.WritePropertyName("rejected_prediction_tokens"u8);
-                    writer.WriteNumberValue(RejectedPredictionTokenCount);
-                }
+                writer.WritePropertyName("rejected_prediction_tokens"u8);
+                writer.WriteNumberValue(RejectedPredictionTokenCount);
             }
 
             Patch.WriteTo(writer);

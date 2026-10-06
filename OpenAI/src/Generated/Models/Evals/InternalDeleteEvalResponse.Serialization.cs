@@ -71,21 +71,12 @@ namespace OpenAI.Evals
             {
                 throw new FormatException($"The model {nameof(InternalDeleteEvalResponse)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("eval_id") != true)
-            {
-                writer.WritePropertyName("eval_id"u8);
-                writer.WriteStringValue(EvalId);
-            }
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
+            writer.WritePropertyName("deleted"u8);
+            writer.WriteBooleanValue(Deleted);
+            writer.WritePropertyName("eval_id"u8);
+            writer.WriteStringValue(EvalId);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

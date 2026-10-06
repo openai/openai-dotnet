@@ -59,37 +59,34 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningCheckpointMetrics)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("step") != true)
-            {
-                writer.WritePropertyName("step"u8);
-                writer.WriteNumberValue(StepNumber);
-            }
-            if (Optional.IsDefined(TrainLoss) && _additionalBinaryDataProperties?.ContainsKey("train_loss") != true)
+            writer.WritePropertyName("step"u8);
+            writer.WriteNumberValue(StepNumber);
+            if (Optional.IsDefined(TrainLoss))
             {
                 writer.WritePropertyName("train_loss"u8);
                 writer.WriteNumberValue(TrainLoss.Value);
             }
-            if (Optional.IsDefined(TrainMeanTokenAccuracy) && _additionalBinaryDataProperties?.ContainsKey("train_mean_token_accuracy") != true)
+            if (Optional.IsDefined(TrainMeanTokenAccuracy))
             {
                 writer.WritePropertyName("train_mean_token_accuracy"u8);
                 writer.WriteNumberValue(TrainMeanTokenAccuracy.Value);
             }
-            if (Optional.IsDefined(ValidLoss) && _additionalBinaryDataProperties?.ContainsKey("valid_loss") != true)
+            if (Optional.IsDefined(ValidLoss))
             {
                 writer.WritePropertyName("valid_loss"u8);
                 writer.WriteNumberValue(ValidLoss.Value);
             }
-            if (Optional.IsDefined(ValidMeanTokenAccuracy) && _additionalBinaryDataProperties?.ContainsKey("valid_mean_token_accuracy") != true)
+            if (Optional.IsDefined(ValidMeanTokenAccuracy))
             {
                 writer.WritePropertyName("valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(ValidMeanTokenAccuracy.Value);
             }
-            if (Optional.IsDefined(FullValidLoss) && _additionalBinaryDataProperties?.ContainsKey("full_valid_loss") != true)
+            if (Optional.IsDefined(FullValidLoss))
             {
                 writer.WritePropertyName("full_valid_loss"u8);
                 writer.WriteNumberValue(FullValidLoss.Value);
             }
-            if (Optional.IsDefined(FullValidMeanTokenAccuracy) && _additionalBinaryDataProperties?.ContainsKey("full_valid_mean_token_accuracy") != true)
+            if (Optional.IsDefined(FullValidMeanTokenAccuracy))
             {
                 writer.WritePropertyName("full_valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(FullValidMeanTokenAccuracy.Value);

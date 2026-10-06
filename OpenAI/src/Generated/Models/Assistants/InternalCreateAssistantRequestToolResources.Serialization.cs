@@ -59,12 +59,12 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(CodeInterpreter) && _additionalBinaryDataProperties?.ContainsKey("code_interpreter") != true)
+            if (Optional.IsDefined(CodeInterpreter))
             {
                 writer.WritePropertyName("code_interpreter"u8);
                 writer.WriteObjectValue(CodeInterpreter, options);
             }
-            if (Optional.IsDefined(FileSearch) && _additionalBinaryDataProperties?.ContainsKey("file_search") != true)
+            if (Optional.IsDefined(FileSearch))
             {
                 writer.WritePropertyName("file_search"u8);
                 writer.WriteObjectValue(FileSearch, options);

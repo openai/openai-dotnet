@@ -65,22 +65,16 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalGraderPythonResource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
-            {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("source") != true)
-            {
-                writer.WritePropertyName("source"u8);
-                writer.WriteStringValue(Source);
-            }
-            if (Optional.IsDefined(ImageTag) && _additionalBinaryDataProperties?.ContainsKey("image_tag") != true)
+            writer.WritePropertyName("name"u8);
+            writer.WriteStringValue(Name);
+            writer.WritePropertyName("source"u8);
+            writer.WriteStringValue(Source);
+            if (Optional.IsDefined(ImageTag))
             {
                 writer.WritePropertyName("image_tag"u8);
                 writer.WriteStringValue(ImageTag);
             }
-            if (Optional.IsDefined(PassThreshold) && _additionalBinaryDataProperties?.ContainsKey("pass_threshold") != true)
+            if (Optional.IsDefined(PassThreshold))
             {
                 writer.WritePropertyName("pass_threshold"u8);
                 writer.WriteNumberValue(PassThreshold.Value);

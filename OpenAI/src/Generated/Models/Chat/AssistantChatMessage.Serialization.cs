@@ -69,13 +69,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ParticipantName);
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            if (Optional.IsDefined(OutputAudioReference) && !Patch.Contains("$.audio"u8))
             {
-                if (Optional.IsDefined(OutputAudioReference) && !Patch.Contains("$.audio"u8))
-                {
-                    writer.WritePropertyName("audio"u8);
-                    writer.WriteObjectValue(OutputAudioReference, options);
-                }
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(OutputAudioReference, options);
             }
             if (Patch.Contains("$.tool_calls"u8))
             {

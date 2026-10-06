@@ -59,17 +59,17 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(Name))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Arguments) && _additionalBinaryDataProperties?.ContainsKey("arguments") != true)
+            if (Optional.IsDefined(Arguments))
             {
                 writer.WritePropertyName("arguments"u8);
                 writer.WriteStringValue(Arguments);
             }
-            if (Optional.IsDefined(Output) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
+            if (Optional.IsDefined(Output))
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(Output);

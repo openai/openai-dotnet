@@ -60,7 +60,7 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalStoredCompletionsDataSourceConfigParams)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsCollectionDefined(Metadata))
             {
                 writer.WritePropertyName("metadata"u8);
                 writer.WriteStartObject();

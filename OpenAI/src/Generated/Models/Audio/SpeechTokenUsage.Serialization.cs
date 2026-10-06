@@ -63,21 +63,12 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(SpeechTokenUsage)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
-            {
-                writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(InputTokenCount);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
-            {
-                writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokenCount);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
-            }
+            writer.WritePropertyName("input_tokens"u8);
+            writer.WriteNumberValue(InputTokenCount);
+            writer.WritePropertyName("output_tokens"u8);
+            writer.WriteNumberValue(OutputTokenCount);
+            writer.WritePropertyName("total_tokens"u8);
+            writer.WriteNumberValue(TotalTokenCount);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

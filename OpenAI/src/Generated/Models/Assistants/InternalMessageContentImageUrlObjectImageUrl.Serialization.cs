@@ -63,12 +63,9 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalMessageContentImageUrlObjectImageUrl)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
-            {
-                writer.WritePropertyName("url"u8);
-                writer.WriteStringValue(Url.AbsoluteUri);
-            }
-            if (Optional.IsDefined(Detail) && _additionalBinaryDataProperties?.ContainsKey("detail") != true)
+            writer.WritePropertyName("url"u8);
+            writer.WriteStringValue(Url.AbsoluteUri);
+            if (Optional.IsDefined(Detail))
             {
                 writer.WritePropertyName("detail"u8);
                 writer.WriteStringValue(Detail);

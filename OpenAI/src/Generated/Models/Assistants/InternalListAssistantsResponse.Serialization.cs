@@ -71,37 +71,22 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalListAssistantsResponse)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
+            writer.WritePropertyName("object"u8);
+            writer.WriteStringValue(Object);
             // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
+            writer.WritePropertyName("data"u8);
+            writer.WriteStartArray();
+            foreach (Assistant item in Data)
             {
-                writer.WritePropertyName("data"u8);
-                writer.WriteStartArray();
-                foreach (Assistant item in Data)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("first_id") != true)
-            {
-                writer.WritePropertyName("first_id"u8);
-                writer.WriteStringValue(FirstId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("last_id") != true)
-            {
-                writer.WritePropertyName("last_id"u8);
-                writer.WriteStringValue(LastId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
-            {
-                writer.WritePropertyName("has_more"u8);
-                writer.WriteBooleanValue(HasMore);
-            }
+            writer.WriteEndArray();
+            writer.WritePropertyName("first_id"u8);
+            writer.WriteStringValue(FirstId);
+            writer.WritePropertyName("last_id"u8);
+            writer.WriteStringValue(LastId);
+            writer.WritePropertyName("has_more"u8);
+            writer.WriteBooleanValue(HasMore);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -71,33 +71,21 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(DiarizedAudioTranscription)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("task") != true)
-            {
-                writer.WritePropertyName("task"u8);
-                writer.WriteStringValue(Task);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
-            {
-                writer.WritePropertyName("duration"u8);
-                writer.WriteNumberValue(Duration.TotalSeconds);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
+            writer.WritePropertyName("task"u8);
+            writer.WriteStringValue(Task);
+            writer.WritePropertyName("duration"u8);
+            writer.WriteNumberValue(Duration.TotalSeconds);
+            writer.WritePropertyName("text"u8);
+            writer.WriteStringValue(Text);
             // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("segments") != true)
+            writer.WritePropertyName("segments"u8);
+            writer.WriteStartArray();
+            foreach (DiarizedTranscriptionSegment item in Segments)
             {
-                writer.WritePropertyName("segments"u8);
-                writer.WriteStartArray();
-                foreach (DiarizedTranscriptionSegment item in Segments)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            writer.WriteEndArray();
+            if (Optional.IsDefined(Usage))
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);

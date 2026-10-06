@@ -66,23 +66,14 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(InternalCreateVoiceConsentRequest)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
-            {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
-            }
+            writer.WritePropertyName("name"u8);
+            writer.WriteStringValue(Name);
 #pragma warning disable SCME0004 // This generated code depends on experimental functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("recording") != true)
-            {
-                writer.WritePropertyName("recording"u8);
-                writer.WriteObjectValue(Recording, options);
-            }
+            writer.WritePropertyName("recording"u8);
+            writer.WriteObjectValue(Recording, options);
 #pragma warning restore SCME0004 // This generated code depends on experimental functionality.
-            if (_additionalBinaryDataProperties?.ContainsKey("language") != true)
-            {
-                writer.WritePropertyName("language"u8);
-                writer.WriteStringValue(Language);
-            }
+            writer.WritePropertyName("language"u8);
+            writer.WriteStringValue(Language);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

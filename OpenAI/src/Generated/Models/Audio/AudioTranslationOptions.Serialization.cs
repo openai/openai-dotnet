@@ -67,34 +67,28 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranslationOptions)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
-            {
-                writer.WritePropertyName("file"u8);
+            writer.WritePropertyName("file"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(File);
+            writer.WriteRawValue(File);
 #else
-                using (JsonDocument document = JsonDocument.Parse(File))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            using (JsonDocument document = JsonDocument.Parse(File))
             {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
+                JsonSerializer.Serialize(writer, document.RootElement);
             }
-            if (Optional.IsDefined(Prompt) && _additionalBinaryDataProperties?.ContainsKey("prompt") != true)
+#endif
+            writer.WritePropertyName("model"u8);
+            writer.WriteStringValue(Model.ToString());
+            if (Optional.IsDefined(Prompt))
             {
                 writer.WritePropertyName("prompt"u8);
                 writer.WriteStringValue(Prompt);
             }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            if (Optional.IsDefined(ResponseFormat))
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
-            if (Optional.IsDefined(Temperature) && _additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            if (Optional.IsDefined(Temperature))
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);

@@ -64,16 +64,13 @@ namespace OpenAI.Evals
                 throw new FormatException($"The model {nameof(InternalEvalRunFileContentDataContentSource)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+            writer.WritePropertyName("content"u8);
+            writer.WriteStartArray();
+            foreach (InternalEvalJsonlRunDataSourceParamsSourceContent item in Content)
             {
-                writer.WritePropertyName("content"u8);
-                writer.WriteStartArray();
-                foreach (InternalEvalJsonlRunDataSourceParamsSourceContent item in Content)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
+                writer.WriteObjectValue(item, options);
             }
+            writer.WriteEndArray();
         }
 
         InternalEvalRunFileContentDataContentSource IJsonModel<InternalEvalRunFileContentDataContentSource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalEvalRunFileContentDataContentSource)JsonModelCreateCore(ref reader, options);

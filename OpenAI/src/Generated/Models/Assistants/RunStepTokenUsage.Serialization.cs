@@ -63,21 +63,12 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunStepTokenUsage)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("completion_tokens") != true)
-            {
-                writer.WritePropertyName("completion_tokens"u8);
-                writer.WriteNumberValue(OutputTokenCount);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("prompt_tokens") != true)
-            {
-                writer.WritePropertyName("prompt_tokens"u8);
-                writer.WriteNumberValue(InputTokenCount);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
-            }
+            writer.WritePropertyName("completion_tokens"u8);
+            writer.WriteNumberValue(OutputTokenCount);
+            writer.WritePropertyName("prompt_tokens"u8);
+            writer.WriteNumberValue(InputTokenCount);
+            writer.WritePropertyName("total_tokens"u8);
+            writer.WriteNumberValue(TotalTokenCount);
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {

@@ -201,13 +201,10 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.modalities"u8);
                 writer.WriteEndArray();
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ReasoningEffortLevel) && !Patch.Contains("$.reasoning_effort"u8))
             {
-                if (Optional.IsDefined(ReasoningEffortLevel) && !Patch.Contains("$.reasoning_effort"u8))
-                {
-                    writer.WritePropertyName("reasoning_effort"u8);
-                    writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
-                }
+                writer.WritePropertyName("reasoning_effort"u8);
+                writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_completion_tokens"u8))
             {
@@ -234,13 +231,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
             {
-                if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
-                {
-                    writer.WritePropertyName("audio"u8);
-                    writer.WriteObjectValue(AudioOptions, options);
-                }
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(AudioOptions, options);
             }
             if (Optional.IsDefined(StoredOutputEnabled) && !Patch.Contains("$.store"u8))
             {
@@ -285,13 +279,10 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("n"u8);
                 writer.WriteNumberValue(N.Value);
             }
-            if (this._additionalBinaryDataProperties?.ContainsKey("prediction") != true)
+            if (Optional.IsDefined(OutputPrediction) && !Patch.Contains("$.prediction"u8))
             {
-                if (Optional.IsDefined(OutputPrediction) && !Patch.Contains("$.prediction"u8))
-                {
-                    writer.WritePropertyName("prediction"u8);
-                    writer.WriteObjectValue(OutputPrediction, options);
-                }
+                writer.WritePropertyName("prediction"u8);
+                writer.WriteObjectValue(OutputPrediction, options);
             }
             if (Optional.IsDefined(Seed) && !Patch.Contains("$.seed"u8))
             {
