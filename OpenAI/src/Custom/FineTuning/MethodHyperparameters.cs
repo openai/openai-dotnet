@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.FineTuning;
@@ -21,7 +22,7 @@ public partial class MethodHyperparameters
 
         try
         {
-            return float.Parse(data.ToString());
+            return float.Parse(data.ToString(), CultureInfo.InvariantCulture);
         }
         catch (FormatException)
         {
