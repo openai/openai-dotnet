@@ -146,26 +146,36 @@ public class AssistantsMockTests : ClientTestBase
         int updateCount = 0;
 
         // The run.created event surfaces normally, then the error event throws.
-        ClientResultException exception = IsAsync
-            ? Assert.ThrowsAsync<ClientResultException>(async () =>
-            {
-                await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+        if (IsAsync)
+        {
+            Assert.That(
+                async () =>
                 {
-                    updateCount++;
-                }
-            })
-            : Assert.Throws<ClientResultException>(() =>
-            {
-                foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+                    await foreach (StreamingUpdate update in client.CreateRunStreamingAsync("thread_abc", "asst_abc"))
+                    {
+                        updateCount++;
+                    }
+                },
+                Throws.TypeOf<ClientResultException>()
+                    .With.Message.Contains("server_error")
+                    .And.Message.Contains("The server had an error processing your request."));
+        }
+        else
+        {
+            Assert.That(
+                () =>
                 {
-                    updateCount++;
-                }
-            });
+                    foreach (StreamingUpdate update in client.CreateRunStreaming("thread_abc", "asst_abc"))
+                    {
+                        updateCount++;
+                    }
+                },
+                Throws.TypeOf<ClientResultException>()
+                    .With.Message.Contains("server_error")
+                    .And.Message.Contains("The server had an error processing your request."));
+        }
 
         Assert.That(updateCount, Is.EqualTo(1));
-        Assert.That(exception, Is.Not.Null);
-        Assert.That(exception!.Message, Does.Contain("server_error"));
-        Assert.That(exception.Message, Does.Contain("The server had an error processing your request."));
     }
 
     [Test]

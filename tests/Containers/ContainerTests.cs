@@ -756,17 +756,20 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
 
         // Test null content
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.UploadContainerFileAsync(_testContainerId, null, "multipart/form-data"));
+        Assert.That(
+            async () => await client.UploadContainerFileAsync(_testContainerId, null, "multipart/form-data"),
+            Throws.TypeOf<ArgumentNullException>());
 
         // Test null/empty container ID
         var testFormData = new MultiPartFormDataBinaryContent();
         testFormData.Add("test", "file", "test.txt", "text/plain");
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.UploadContainerFileAsync(null, testFormData, testFormData.ContentType));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.UploadContainerFileAsync("", testFormData, testFormData.ContentType));
+        Assert.That(
+            async () => await client.UploadContainerFileAsync(null, testFormData, testFormData.ContentType),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.UploadContainerFileAsync("", testFormData, testFormData.ContentType),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed");
     }
@@ -777,23 +780,31 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID and file ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.GetContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.GetContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.GetContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.GetContainerFileAsync("container123", ""));
+        Assert.That(
+            async () => await client.GetContainerFileAsync(null, "file123"),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.GetContainerFileAsync("", "file123"),
+            Throws.TypeOf<ArgumentException>());
+        Assert.That(
+            async () => await client.GetContainerFileAsync("container123", null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.GetContainerFileAsync("container123", ""),
+            Throws.TypeOf<ArgumentException>());
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DownloadContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DownloadContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DownloadContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DownloadContainerFileAsync("container123", ""));
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync(null, "file123"),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync("", "file123"),
+            Throws.TypeOf<ArgumentException>());
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync("container123", null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DownloadContainerFileAsync("container123", ""),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
     }
@@ -804,14 +815,18 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID and file ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DeleteContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DeleteContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.DeleteContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.DeleteContainerFileAsync("container123", ""));
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync(null, "file123"),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync("", "file123"),
+            Throws.TypeOf<ArgumentException>());
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync("container123", null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.DeleteContainerFileAsync("container123", ""),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed for DeleteContainerFile methods");
     }
@@ -822,10 +837,12 @@ public class ContainerTests : OpenAIRecordedTestBase
         ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () =>
-            await client.GetContainerAsync(null));
-        Assert.ThrowsAsync<ArgumentException>(async () =>
-            await client.GetContainerAsync(""));
+        Assert.That(
+            async () => await client.GetContainerAsync(null),
+            Throws.TypeOf<ArgumentNullException>());
+        Assert.That(
+            async () => await client.GetContainerAsync(""),
+            Throws.TypeOf<ArgumentException>());
 
         Console.WriteLine("Parameter validation tests passed for GetContainer methods");
     }

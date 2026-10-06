@@ -203,9 +203,10 @@ public class FilesTests : OpenAIRecordedTestBase
             string filename = "images_dog_and_cat.png";
             string path = Path.Combine("Assets", filename);
             FileUploadPurpose fakePurpose = new FileUploadPurpose("world_domination");
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.UploadFileAsync(path, fakePurpose));
-
-            Assert.That(ex.Status, Is.EqualTo(400));
+            Assert.That(
+                async () => await client.UploadFileAsync(path, fakePurpose),
+                Throws.TypeOf<ClientResultException>()
+                    .With.Property(nameof(ClientResultException.Status)).EqualTo(400));
         }
     }
 
@@ -243,9 +244,10 @@ public class FilesTests : OpenAIRecordedTestBase
     public void DeleteFileCanParseServiceError()
     {
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
-
-        Assert.That(ex.Status, Is.EqualTo(404));
+        Assert.That(
+            async () => await client.DeleteFileAsync("fake_id"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(404));
     }
 
     [RecordedTest]
@@ -291,9 +293,10 @@ public class FilesTests : OpenAIRecordedTestBase
     public void GetFileCanParseServiceError()
     {
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
-
-        Assert.That(ex.Status, Is.EqualTo(404));
+        Assert.That(
+            async () => await client.GetFileAsync("fake_id"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(404));
     }
 
     [RecordedTest]
@@ -334,9 +337,10 @@ public class FilesTests : OpenAIRecordedTestBase
     public void DownloadFileCanParseServiceError()
     {
         OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
-        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
-
-        Assert.That(ex.Status, Is.EqualTo(404));
+        Assert.That(
+            async () => await client.DownloadFileAsync("fake_id"),
+            Throws.TypeOf<ClientResultException>()
+                .With.Property(nameof(ClientResultException.Status)).EqualTo(404));
     }
 
     [RecordedTest]
