@@ -35,6 +35,11 @@ public partial class AudioTranslationOptions
             content.Add(ResponseFormat.ToString(), "response_format");
         }
 
+        if (Temperature is not null)
+        {
+            content.Add(Temperature.Value, "temperature");
+        }
+
         return content;
     }
 
