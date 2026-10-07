@@ -129,7 +129,6 @@ public partial class TranslationMockTests : ClientTestBase
     public async Task TranslateAudioSendsExplicitContentType()
     {
         string requestBody = null;
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"text":"translated"}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -137,7 +136,7 @@ public partial class TranslationMockTests : ClientTestBase
                 using MemoryStream stream = new();
                 message.Request.Content.WriteTo(stream);
                 requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
-                return response;
+                return new MockPipelineResponse(200).WithContent("""{"text":"translated"}""");
             })
             {
                 ExpectSyncPipeline = !IsAsync

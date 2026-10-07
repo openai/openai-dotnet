@@ -153,7 +153,6 @@ public partial class TranscriptionMockTests : ClientTestBase
     public async Task TranscribeAudioSendsExplicitContentType()
     {
         string requestBody = null;
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"text":"transcribed"}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -161,7 +160,7 @@ public partial class TranscriptionMockTests : ClientTestBase
                 using MemoryStream stream = new();
                 message.Request.Content.WriteTo(stream);
                 requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
-                return response;
+                return new MockPipelineResponse(200).WithContent("""{"text":"transcribed"}""");
             })
             {
                 ExpectSyncPipeline = !IsAsync

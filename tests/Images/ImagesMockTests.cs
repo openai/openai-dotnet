@@ -160,7 +160,6 @@ public class ImagesMockTests : ClientTestBase
     public async Task GenerateImageEditSendsExplicitImageContentType()
     {
         string requestBody = null;
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -168,7 +167,7 @@ public class ImagesMockTests : ClientTestBase
                 using MemoryStream stream = new();
                 message.Request.Content.WriteTo(stream);
                 requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
-                return response;
+                return new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
             })
             {
                 ExpectSyncPipeline = !IsAsync
@@ -206,7 +205,6 @@ public class ImagesMockTests : ClientTestBase
     public async Task GenerateImageEditProtocolApiSupportsExplicitContentType()
     {
         string requestBody = null;
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -214,7 +212,7 @@ public class ImagesMockTests : ClientTestBase
                 using MemoryStream stream = new();
                 message.Request.Content.WriteTo(stream);
                 requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
-                return response;
+                return new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
             })
             {
                 ExpectSyncPipeline = false
@@ -474,7 +472,6 @@ public class ImagesMockTests : ClientTestBase
     public async Task GenerateImageVariationSendsExplicitContentType()
     {
         string requestBody = null;
-        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -482,7 +479,7 @@ public class ImagesMockTests : ClientTestBase
                 using MemoryStream stream = new();
                 message.Request.Content.WriteTo(stream);
                 requestBody = BinaryData.FromBytes(stream.ToArray()).ToString();
-                return response;
+                return new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
             })
             {
                 ExpectSyncPipeline = !IsAsync
