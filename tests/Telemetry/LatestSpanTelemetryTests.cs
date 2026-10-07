@@ -30,11 +30,17 @@ public class LatestSpanTelemetryTests
     private static IEnumerable<TestCaseData> BufferedCases()
     {
         foreach (var responses in new[] { false, true })
-        foreach (var latest in new[] { false, true })
-        foreach (var useAsync in new[] { false, true })
-        foreach (var usage in new[] { "absent", "empty", "zero", "partial", "full", "empty_details" })
         {
-            yield return new TestCaseData(responses, latest, useAsync, usage);
+            foreach (var latest in new[] { false, true })
+            {
+                foreach (var useAsync in new[] { false, true })
+                {
+                    foreach (var usage in new[] { "absent", "empty", "zero", "partial", "full", "empty_details" })
+                    {
+                        yield return new TestCaseData(responses, latest, useAsync, usage);
+                    }
+                }
+            }
         }
     }
 
@@ -51,6 +57,7 @@ public class LatestSpanTelemetryTests
             ExpectSyncPipeline = !useAsync,
         };
         using var parent = new Activity("buffered-caller").Start();
+
         if (responses)
         {
             var client = new ResponsesClient(new ApiKeyCredential("not-a-real-key"), new ResponsesClientOptions
@@ -58,6 +65,7 @@ public class LatestSpanTelemetryTests
                 Endpoint = s_endpoint,
                 Transport = transport,
             });
+
             if (useAsync)
             {
                 await client.CreateResponseAsync(Options());
@@ -74,6 +82,7 @@ public class LatestSpanTelemetryTests
                 Endpoint = s_endpoint,
                 Transport = transport,
             });
+
             if (useAsync)
             {
                 await client.CompleteChatAsync([new UserChatMessage("sensitive input")]);
@@ -108,9 +117,11 @@ public class LatestSpanTelemetryTests
         };
         Assert.That(activity.GetTagItem("gen_ai.usage.input_tokens"), Is.EqualTo(input));
         Assert.That(activity.GetTagItem("gen_ai.usage.output_tokens"), Is.EqualTo(output));
+
         foreach (var direction in new[] { "input", "output" })
         {
             var expected = direction == "input" ? input : output;
+
             if (latest)
             {
                 var histogram = metrics.GetMeasurements($"gen_ai.client.inference.operation.{direction}_tokens");
@@ -125,6 +136,7 @@ public class LatestSpanTelemetryTests
                 Assert.That(measurement?.value, Is.EqualTo(expected));
             }
         }
+
         var hasDetails = (latest) && ((usageKind == "full") || (usageKind == "zero"));
         var cache = hasDetails ? (usageKind == "zero" ? 0L : 4L) : (long?)null;
         var reasoning = hasDetails ? (usageKind == "zero" ? 0L : 6L) : (long?)null;
@@ -138,12 +150,14 @@ public class LatestSpanTelemetryTests
             Is.EqualTo(((hasDetails) && (!responses)) ? (usageKind == "zero" ? 0L : 5L) : null));
         Assert.That(activity.GetTagItem("gen_ai.usage.text.input_tokens"), Is.Null);
         Assert.That(activity.GetTagItem("gen_ai.usage.audio.cache_read.input_tokens"), Is.Null);
+
         if (latest)
         {
             Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.cache_read.input_tokens")?.Single().value, Is.EqualTo(cache));
             Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.cache_write.input_tokens")?.Single().value, Is.EqualTo(written));
             Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.reasoning.output_tokens")?.Single().value, Is.EqualTo(reasoning));
         }
+
         AssertNoContent(activity);
     }
 
@@ -157,6 +171,7 @@ public class LatestSpanTelemetryTests
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
         using var activities = new TestActivityListener(ChatSource);
         var options = new ChatCompletionOptions();
+
         if (explicitValues)
         {
             options.Seed = 0;
@@ -165,9 +180,11 @@ public class LatestSpanTelemetryTests
             options.ReasoningEffortLevel = ChatReasoningEffortLevel.High;
             options.ServiceTier = ChatServiceTier.Default;
         }
+
         using (new OpenTelemetrySource("request-model", s_endpoint).StartChatScope(options))
         {
         }
+
         var activity = activities.Activities.Single();
         var populated = (latest) && (explicitValues);
         Assert.That(activity.GetTagItem("gen_ai.request.seed"), Is.EqualTo(populated ? 0L : null));
@@ -188,10 +205,12 @@ public class LatestSpanTelemetryTests
         using var metrics = new TestMeterListener(ChatSource);
         var completion = ModelReaderWriter.Read<ChatCompletion>(BinaryData.FromString(ResponseBody(false,
             """{"prompt_tokens":2,"completion_tokens":3,"prompt_tokens_details":{"audio_tokens":4},"completion_tokens_details":{"audio_tokens":5}}""")));
+
         using (var scope = new OpenTelemetrySource("request-model", s_endpoint).StartChatScope(new ChatCompletionOptions()))
         {
             scope.RecordChatCompletion(completion);
         }
+
         var activity = activities.Activities.Single();
         Assert.That(activity.GetTagItem("gen_ai.usage.audio.input_tokens"), Is.Null);
         Assert.That(activity.GetTagItem("gen_ai.usage.audio.output_tokens"), Is.Null);
@@ -227,9 +246,11 @@ public class LatestSpanTelemetryTests
                 _ => null,
             },
         };
+
         using (new OpenTelemetrySource("request-model", s_endpoint).StartChatScope(options))
         {
         }
+
         var activity = activities.Activities.Single();
         Assert.That(activity.GetTagItem("gen_ai.output.type"), Is.EqualTo(expected));
         Assert.That(activity.GetTagItem("openai.request.service_tier"), Is.Null);
@@ -239,10 +260,14 @@ public class LatestSpanTelemetryTests
     private static IEnumerable<TestCaseData> MetadataCases()
     {
         foreach (var useAsync in new[] { false, true })
-        foreach (var latest in new[] { false, true })
-        foreach (var first in new[] { "created", "in_progress", "queued" })
         {
-            yield return new TestCaseData(useAsync, latest, first);
+            foreach (var latest in new[] { false, true })
+            {
+                foreach (var first in new[] { "created", "in_progress", "queued" })
+                {
+                    yield return new TestCaseData(useAsync, latest, first);
+                }
+            }
         }
     }
 
@@ -267,6 +292,7 @@ public class LatestSpanTelemetryTests
         {
             count++;
             Assert.That(Activity.Current, Is.SameAs(parent));
+
             if (count < 3)
             {
                 Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
@@ -275,14 +301,22 @@ public class LatestSpanTelemetryTests
                 Assert.That(captured.GetTagItem("gen_ai.response.id"), Is.EqualTo(latest ? (count == 1 ? "response-id" : "later-id") : null));
             }
         }
+
         if (useAsync)
         {
-            await foreach (var update in client.CreateResponseStreamingAsync(Options(streaming: true))) { Observe(); }
+            await foreach (var update in client.CreateResponseStreamingAsync(Options(streaming: true)))
+            {
+                Observe();
+            }
         }
         else
         {
-            foreach (var update in client.CreateResponseStreaming(Options(streaming: true))) { Observe(); }
+            foreach (var update in client.CreateResponseStreaming(Options(streaming: true)))
+            {
+                Observe();
+            }
         }
+
         Assert.That(count, Is.EqualTo(3));
         var activity = activities.Activities.Single();
         Assert.That(activity.GetTagItem("gen_ai.response.id"), Is.EqualTo(latest ? "later-id" : null));
@@ -295,6 +329,7 @@ public class LatestSpanTelemetryTests
         var duration = metrics.GetMeasurements("gen_ai.client.operation.duration").Single();
         Assert.That(duration.tags.GetValueOrDefault("gen_ai.response.model"), Is.EqualTo(latest ? "later-model" : null));
         Assert.That(duration.tags.GetValueOrDefault("openai.response.system_fingerprint"), Is.EqualTo(latest ? "fp_test" : null));
+
         if (latest)
         {
             foreach (var name in new[] { "usage.input_tokens", "usage.output_tokens", "operation.input_tokens", "operation.output_tokens" })
@@ -305,9 +340,11 @@ public class LatestSpanTelemetryTests
                 Assert.That(measurement.tags["openai.response.system_fingerprint"], Is.EqualTo("fp_test"));
                 Assert.That(measurement.tags.ContainsKey("gen_ai.response.id"), Is.False);
             }
+
             var firstChunk = metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk").Single();
             Assert.That(firstChunk.tags["gen_ai.response.model"], Is.EqualTo("response-model"));
         }
+
         Assert.That(Activity.Current, Is.SameAs(parent));
         AssertNoContent(activity);
     }
@@ -315,10 +352,14 @@ public class LatestSpanTelemetryTests
     private static IEnumerable<TestCaseData> FinishCases()
     {
         foreach (var latest in new[] { false, true })
-        foreach (var state in new[] { "before_send", "typed_empty", "created", "queued", "output", "raw" })
-        foreach (var ending in new[] { "eof", "dispose", "exception" })
         {
-            yield return new TestCaseData(latest, state, ending);
+            foreach (var state in new[] { "before_send", "typed_empty", "created", "queued", "output", "raw" })
+            {
+                foreach (var ending in new[] { "eof", "dispose", "exception" })
+                {
+                    yield return new TestCaseData(latest, state, ending);
+                }
+            }
         }
     }
 
@@ -332,6 +373,7 @@ public class LatestSpanTelemetryTests
         using var parent = new Activity("state-caller").Start();
         var source = new OpenTelemetrySource(s_endpoint);
         var lifecycle = source.StartResponsesStreamingScope(Options(streaming: true));
+
         if (state == "raw")
         {
             lifecycle.Complete(SseCompletionKind.RawResponse);
@@ -339,6 +381,7 @@ public class LatestSpanTelemetryTests
         else if (state != "before_send")
         {
             lifecycle.OnTypedResponse();
+
             if ((state == "created") || (state == "queued"))
             {
                 lifecycle.OnEvent();
@@ -351,6 +394,7 @@ public class LatestSpanTelemetryTests
                     """{"type":"response.output_text.delta","sequence_number":1,"output_index":0,"delta":"sensitive output"}""")));
             }
         }
+
         if (ending == "exception")
         {
             lifecycle.OnException(new IOException("sensitive failure"));
@@ -359,6 +403,7 @@ public class LatestSpanTelemetryTests
         {
             lifecycle.Complete(ending == "eof" ? SseCompletionKind.EndOfStream : SseCompletionKind.Disposed);
         }
+
         lifecycle.Complete(SseCompletionKind.Disposed);
         lifecycle.OnException(new IOException("must not overwrite outcome"));
 
@@ -371,6 +416,7 @@ public class LatestSpanTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.input_tokens"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0, Is.EqualTo(state == "raw" ? 0 : 1));
+
         if ((latest) && ((state == "created") || (state == "queued")))
         {
             Assert.That(activity.GetTagItem("gen_ai.response.id"), Is.EqualTo("response-id"));
@@ -379,6 +425,7 @@ public class LatestSpanTelemetryTests
             Assert.That(duration.tags["gen_ai.response.model"], Is.EqualTo("response-model"));
             Assert.That(duration.tags["openai.response.system_fingerprint"], Is.EqualTo("fp_test"));
         }
+
         AssertNoContent(activity);
     }
 
@@ -408,13 +455,18 @@ public class LatestSpanTelemetryTests
         {
             if (useAsync)
             {
-                await foreach (var update in client.CreateResponseStreamingAsync(Options(streaming: true))) { }
+                await foreach (var update in client.CreateResponseStreamingAsync(Options(streaming: true)))
+                {
+                }
             }
             else
             {
-                foreach (var update in client.CreateResponseStreaming(Options(streaming: true))) { }
+                foreach (var update in client.CreateResponseStreaming(Options(streaming: true)))
+                {
+                }
             }
         }
+
         if (ending == "empty")
         {
             await Consume();
@@ -423,6 +475,7 @@ public class LatestSpanTelemetryTests
         {
             Assert.ThrowsAsync<IOException>(Consume);
         }
+
         var activity = activities.Activities.Single();
         Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.EqualTo(ending == "send_failure" ? null : new[] { "error" }));
         Assert.That(activity.GetTagItem("gen_ai.response.time_to_first_chunk"), Is.Null);
@@ -448,21 +501,26 @@ public class LatestSpanTelemetryTests
         var now = 1.25;
         var lifecycle = scope.CreateStreamingLifecycle(() => now);
         lifecycle.OnTypedResponse();
+
         if (!noEvents)
         {
             lifecycle.OnEvent();
             now = 9.5;
             lifecycle.OnUpdate(Update("response.created", ResponseBody(true, null)));
         }
+
         lifecycle.Complete(SseCompletionKind.EndOfStream);
+
         if (trace)
         {
             Assert.That(activities.Activities.Single().GetTagItem("gen_ai.response.time_to_first_chunk"), Is.EqualTo(noEvents ? null : 1.25));
         }
+
         if (measure)
         {
             var measurements = metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk");
             Assert.That(measurements?.Single().value, Is.EqualTo(noEvents ? null : 1.25));
+
             if ((trace) && (!noEvents))
             {
                 Assert.That(measurements.Single().value, Is.EqualTo(activities.Activities.Single().GetTagItem("gen_ai.response.time_to_first_chunk")));
@@ -481,11 +539,13 @@ public class LatestSpanTelemetryTests
         var transport = new MockPipelineTransport(_ =>
         {
             onSend?.Invoke();
+
             return new MockPipelineResponse(200) { ContentStream = streamFactory?.Invoke() ?? new MemoryStream(Encoding.UTF8.GetBytes(content)) };
         })
         {
             ExpectSyncPipeline = !useAsync,
         };
+
         return new ResponsesClient(new ApiKeyCredential("not-a-real-key"), new ResponsesClientOptions
         {
             Endpoint = s_endpoint,
@@ -497,6 +557,7 @@ public class LatestSpanTelemetryTests
     private static string ResponseBody(bool responses, string usage, bool metadata = true)
     {
         var body = new Dictionary<string, object>();
+
         if (responses)
         {
             body["created_at"] = 1;
@@ -509,6 +570,7 @@ public class LatestSpanTelemetryTests
             body["created"] = 1;
             body["choices"] = new[] { new { index = 0, finish_reason = "stop", message = new { role = "assistant", content = "sensitive output" } } };
         }
+
         if (metadata)
         {
             body["id"] = "response-id";
@@ -516,10 +578,12 @@ public class LatestSpanTelemetryTests
             body["service_tier"] = "default";
             body["system_fingerprint"] = "fp_test";
         }
+
         if (usage is not null)
         {
             body["usage"] = JsonSerializer.Deserialize<JsonElement>(usage);
         }
+
         return JsonSerializer.Serialize(body);
     }
 
@@ -529,26 +593,32 @@ public class LatestSpanTelemetryTests
         {
             return null;
         }
+
         if (kind == "empty")
         {
             return "{}";
         }
+
         var input = responses ? "input_tokens" : "prompt_tokens";
         var output = responses ? "output_tokens" : "completion_tokens";
         var usage = new Dictionary<string, object>
         {
             [input] = kind == "zero" ? 0 : 13,
         };
+
         if (kind != "partial")
         {
             usage[output] = kind == "zero" ? 0 : 23;
         }
+
         var inputDetails = new Dictionary<string, object>();
         var outputDetails = new Dictionary<string, object>();
+
         if ((kind == "full") || (kind == "zero"))
         {
             inputDetails["cached_tokens"] = kind == "zero" ? 0 : 4;
             outputDetails["reasoning_tokens"] = kind == "zero" ? 0 : 6;
+
             if (responses)
             {
                 inputDetails["cache_write_tokens"] = kind == "zero" ? 0 : 2;
@@ -561,6 +631,7 @@ public class LatestSpanTelemetryTests
         }
         usage[input + "_details"] = inputDetails;
         usage[output + "_details"] = outputDetails;
+
         return JsonSerializer.Serialize(usage);
     }
 
@@ -583,9 +654,12 @@ public class LatestSpanTelemetryTests
     private sealed class ImmediateReadFailureStream : MemoryStream
     {
         public override int Read(byte[] buffer, int offset, int count) => throw new IOException("sensitive read failure");
+
         public override int Read(Span<byte> buffer) => throw new IOException("sensitive read failure");
+
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => Task.FromException<int>(new IOException("sensitive read failure"));
+
         public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
             => ValueTask.FromException<int>(new IOException("sensitive read failure"));
     }

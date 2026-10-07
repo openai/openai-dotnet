@@ -26,8 +26,8 @@ internal sealed class OpenTelemetryTokenMetrics
         _operationOutput = CreateHistogram(meter, GenAiClientInferenceOperationOutputTokensMetricName, "Output tokens used per inference operation.");
     }
 
-    public bool Enabled => _input.Enabled || _output.Enabled || _cacheRead.Enabled || _cacheWrite.Enabled
-        || _reasoning.Enabled || _operationInput.Enabled || _operationOutput.Enabled;
+    public bool Enabled => (_input.Enabled) || (_output.Enabled) || (_cacheRead.Enabled) || (_cacheWrite.Enabled)
+        || (_reasoning.Enabled) || (_operationInput.Enabled) || (_operationOutput.Enabled);
 
     public void Record(OpenTelemetryTokenUsage usage, TagList tags)
     {
@@ -52,9 +52,11 @@ internal sealed class OpenTelemetryTokenMetrics
         }
 
         histogram.Record(total.Value, tags);
+
         if ((audio >= 0) && (audio <= total))
         {
             RecordCounter(counter, audio, "audio", tags);
+
             if (audio < total)
             {
                 RecordCounter(counter, total - audio, "unknown", tags);

@@ -49,6 +49,7 @@ internal partial class OpenTelemetryScope
             if (!_completed)
             {
                 _expectsTerminalResponse = true;
+
                 if (_responseStream is not null)
                 {
                     _responseStream.Detach();
@@ -64,6 +65,7 @@ internal partial class OpenTelemetryScope
             if (!_completed)
             {
                 _completed = true;
+
                 if (exception is not null)
                 {
                     _scope.RecordException(exception);
@@ -72,6 +74,7 @@ internal partial class OpenTelemetryScope
                 {
                     _scope.RecordMetrics(null, null, null, null, null);
                 }
+
                 _scope.Dispose();
             }
         }
@@ -82,9 +85,11 @@ internal partial class OpenTelemetryScope
             {
                 return;
             }
+
             _expectsTerminalResponse = true;
             RecordFirstChunk();
             _eventTime = _elapsedSeconds?.Invoke() ?? _scope._duration.Elapsed.TotalSeconds;
+
             if (!_receivedEvent)
             {
                 _receivedEvent = true;
@@ -109,10 +114,12 @@ internal partial class OpenTelemetryScope
                 StreamingResponseIncompleteUpdate incomplete => incomplete.Response,
                 _ => null,
             };
+
             if ((_scope._useLatestSemanticConventions) && (response is not null))
             {
                 _scope.RecordResponseMetadata(response);
             }
+
             RecordFirstChunk();
 
             if ((response is not null) && (update is StreamingResponseCompletedUpdate or StreamingResponseFailedUpdate or StreamingResponseIncompleteUpdate))
@@ -139,10 +146,12 @@ internal partial class OpenTelemetryScope
         private TagList GetTimingTags()
         {
             var tags = _scope._commonTags;
+
             if (_scope._responseMetadata.Model is not null)
             {
                 tags.Add(OpenTelemetryConstants.GenAiResponseModelKey, _scope._responseMetadata.Model);
             }
+
             return tags;
         }
 
@@ -152,10 +161,12 @@ internal partial class OpenTelemetryScope
             {
                 // The first event can supply the response model without buffering subsequent events.
                 s_responsesFirstChunk.Record(_firstChunkTime.Value, GetTimingTags());
+
                 if (_scope._activity?.IsAllDataRequested == true)
                 {
                     _scope._activity.SetTag(OpenTelemetryConstants.GenAiResponseTimeToFirstChunkKey, _firstChunkTime.Value);
                 }
+
                 _firstChunkTime = null;
             }
         }
@@ -175,11 +186,14 @@ internal partial class OpenTelemetryScope
                 StreamingResponseImageGenerationCallPartialImageUpdate image => image.OutputIndex,
                 _ => (int?)null,
             };
+
             if (outputIndex.HasValue)
             {
                 _outputItems.Add(outputIndex.Value);
+
                 return true;
             }
+
             if (update is StreamingResponseOutputItemDoneUpdate done)
             {
                 // A cumulative item is not another chunk when its deltas were already observed.
@@ -210,6 +224,7 @@ internal partial class OpenTelemetryScope
             if (!_completed)
             {
                 RecordFirstChunk();
+
                 if (completionKind == SseCompletionKind.RawResponse)
                 {
                     if (_responseStream is null)
@@ -234,11 +249,13 @@ internal partial class OpenTelemetryScope
                 _scope._useLatestSemanticConventions ? _scope._responseMetadata.ServiceTier : null,
                 errorType, null, null,
                 responseSystemFingerprint: _scope._useLatestSemanticConventions ? _scope._responseMetadata.SystemFingerprint : null);
+
             if (_scope._activity?.IsAllDataRequested == true)
             {
                 RecordInterruptedFinishReason();
                 _scope.RecordError(errorType, null);
             }
+
             _scope.Dispose();
         }
 

@@ -47,11 +47,15 @@ public class ResponseStreamTelemetryTests
         {
             if (useAsync)
             {
-                while (await stream.ReadAsync(buffer.AsMemory()) != 0) { }
+                while (await stream.ReadAsync(buffer.AsMemory()) != 0)
+                {
+                }
             }
             else
             {
-                while (stream.Read(buffer) != 0) { }
+                while (stream.Read(buffer) != 0)
+                {
+                }
             }
         }
         async Task Dispose()
@@ -65,6 +69,7 @@ public class ResponseStreamTelemetryTests
                 stream.Dispose();
             }
         }
+
         if (ending == "read-error")
         {
             Assert.ThrowsAsync<IOException>(Read);
@@ -77,6 +82,7 @@ public class ResponseStreamTelemetryTests
         {
             await Read();
         }
+
         if (ending == "dispose-error")
         {
             Assert.ThrowsAsync<IOException>(Dispose);
@@ -89,6 +95,7 @@ public class ResponseStreamTelemetryTests
         Assert.That(Activity.Current, Is.SameAs(reader));
         var failed = ending is "read-error" or "dispose-error" or "cancel";
         var activity = trace ? activities.Activities[0] : null;
+
         if (trace)
         {
             Assert.That(activities.Activities, Has.Count.EqualTo(1));
@@ -98,7 +105,9 @@ public class ResponseStreamTelemetryTests
             Assert.That(activity.GetTagItem("gen_ai.response.finish_reasons"), Is.Null);
             Assert.That(activity.GetTagItem("gen_ai.response.time_to_first_chunk"), Is.Null);
         }
+
         var durations = metrics.GetMeasurements("gen_ai.client.operation.duration");
+
         if (latest)
         {
             Assert.That(durations, Has.Count.EqualTo(1));
@@ -111,6 +120,7 @@ public class ResponseStreamTelemetryTests
             Assert.That(duration.tags["server.port"], Is.EqualTo(443));
             Assert.That(duration.tags.TryGetValue("error.type", out var errorType), Is.EqualTo(failed));
             Assert.That(errorType, Is.EqualTo(failed ? (ending == "cancel" ? typeof(OperationCanceledException).FullName : typeof(IOException).FullName) : null));
+
             if (trace)
             {
                 Assert.That(errorType, Is.EqualTo(activity.GetTagItem("error.type")));
@@ -120,9 +130,11 @@ public class ResponseStreamTelemetryTests
         {
             Assert.That(durations, Is.Null);
         }
+
         Assert.That(metrics.GetMeasurements("gen_ai.client.inference.usage.input_tokens"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk"), Is.Null);
+
         if (latest)
         {
             Assert.That(inner.CompletionContext, Is.SameAs(activity ?? reader));
@@ -160,14 +172,26 @@ public class ResponseStreamTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
 
         var buffer = new byte[1];
+
         switch (readApi)
         {
-            case "array": Assert.That(stream.Read(buffer, 0, 1), Is.Zero); break;
-            case "span": Assert.That(stream.Read(buffer.AsSpan()), Is.Zero); break;
-            case "async-array": Assert.That(await stream.ReadAsync(buffer, 0, 1), Is.Zero); break;
-            case "async-memory": Assert.That(await stream.ReadAsync(buffer.AsMemory()), Is.Zero); break;
-            case "byte": Assert.That(stream.ReadByte(), Is.EqualTo(-1)); break;
+            case "array":
+                Assert.That(stream.Read(buffer, 0, 1), Is.Zero);
+                break;
+            case "span":
+                Assert.That(stream.Read(buffer.AsSpan()), Is.Zero);
+                break;
+            case "async-array":
+                Assert.That(await stream.ReadAsync(buffer, 0, 1), Is.Zero);
+                break;
+            case "async-memory":
+                Assert.That(await stream.ReadAsync(buffer.AsMemory()), Is.Zero);
+                break;
+            case "byte":
+                Assert.That(stream.ReadByte(), Is.EqualTo(-1));
+                break;
         }
+
         Assert.That(activities.Activities, Has.Count.EqualTo(1));
         Assert.That(Activity.Current, Is.SameAs(parent));
         response.Dispose();
@@ -205,20 +229,26 @@ public class ResponseStreamTelemetryTests
     private sealed class ProbeStream(string ending) : MemoryStream(new byte[] { 1, 2, 3 })
     {
         public int Reads { get; private set; }
+
         public int Disposals { get; private set; }
+
         public Activity CompletionContext { get; private set; }
 
         private void BeforeRead()
         {
             Reads++;
+
             if (ending == "read-error")
             {
                 CompletionContext = Activity.Current;
+
                 throw new IOException("sensitive read failure");
             }
+
             if (ending == "cancel")
             {
                 CompletionContext = Activity.Current;
+
                 throw new OperationCanceledException("sensitive cancellation");
             }
         }
@@ -227,10 +257,12 @@ public class ResponseStreamTelemetryTests
         {
             BeforeRead();
             var read = base.Read(buffer, offset, count);
+
             if (read == 0)
             {
                 CompletionContext = Activity.Current;
             }
+
             return read;
         }
 
@@ -238,10 +270,12 @@ public class ResponseStreamTelemetryTests
         {
             BeforeRead();
             var read = base.Read(buffer);
+
             if (read == 0)
             {
                 CompletionContext = Activity.Current;
             }
+
             return read;
         }
 
@@ -249,6 +283,7 @@ public class ResponseStreamTelemetryTests
         {
             await Task.Yield();
             cancellationToken.ThrowIfCancellationRequested();
+
             return Read(buffer.Span);
         }
 
@@ -257,15 +292,18 @@ public class ResponseStreamTelemetryTests
             if (disposing)
             {
                 Disposals++;
+
                 if (ending is "dispose" or "dispose-error")
                 {
                     CompletionContext = Activity.Current;
                 }
+
                 if (ending == "dispose-error")
                 {
                     throw new IOException("sensitive disposal failure");
                 }
             }
+
             base.Dispose(disposing);
         }
     }

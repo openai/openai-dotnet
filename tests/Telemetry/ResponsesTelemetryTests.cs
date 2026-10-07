@@ -258,6 +258,7 @@ public class ResponsesTelemetryTests
             Sample = (ref ActivityCreationOptions<ActivityContext> options) =>
             {
                 creationTags = options.Tags.ToArray();
+
                 return ActivitySamplingResult.AllDataAndRecorded;
             },
         };
@@ -407,11 +408,13 @@ public class ResponsesTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Is.Null);
 
         using var parent = new Activity("parent").AddBaggage("caller-baggage", "retained").Start();
+
         for (var attempt = 0; attempt < 2; attempt++)
         {
             if (useAsync)
             {
                 await using var enumerator = async.GetAsyncEnumerator();
+
                 while (await enumerator.MoveNextAsync())
                 {
                     Assert.That(Activity.Current, Is.SameAs(parent));
@@ -420,15 +423,18 @@ public class ResponsesTelemetryTests
             else
             {
                 using var enumerator = sync.GetEnumerator();
+
                 while (enumerator.MoveNext())
                 {
                     Assert.That(Activity.Current, Is.SameAs(parent));
                 }
             }
+
             Assert.That(Activity.Current, Is.SameAs(parent));
         }
 
         Assert.That(activities.Activities, Has.Count.EqualTo(2));
+
         foreach (var activity in activities.Activities)
         {
             Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
@@ -440,6 +446,7 @@ public class ResponsesTelemetryTests
             AssertProviderAttribute(activity, latest);
             AssertSensitiveDataNotCaptured(activity);
         }
+
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(2));
         Assert.That(GetTotalUsageMeasurements(metrics, latest), Has.Count.EqualTo(4));
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk")?.Count ?? 0, Is.EqualTo(latest ? 2 : 0));
@@ -495,6 +502,7 @@ public class ResponsesTelemetryTests
             _ => SseEvent("""{"type":"response.future_event","sequence_number":1}"""),
         };
         var client = CreateStreamingClient(content, useAsync);
+
         if (ending == "malformed")
         {
             Assert.That(async () => await ConsumeStream(client, useAsync), Throws.InstanceOf<JsonException>());
@@ -529,10 +537,12 @@ public class ResponsesTelemetryTests
         var client = CreateStreamingClient(content, useAsync);
         var options = CreateOptions();
         options.StreamingEnabled = true;
+
         if (useAsync)
         {
             var enumerator = client.CreateResponseStreamingAsync(options, cancellation.Token).GetAsyncEnumerator();
             Assert.That(await enumerator.MoveNextAsync(), Is.True);
+
             if (cancel)
             {
                 cancellation.Cancel();
@@ -545,14 +555,17 @@ public class ResponsesTelemetryTests
         {
             var enumerator = client.CreateResponseStreaming(options, cancellation.Token).GetEnumerator();
             Assert.That(enumerator.MoveNext(), Is.True);
+
             if (cancel)
             {
                 cancellation.Cancel();
                 Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
             }
+
             enumerator.Dispose();
             enumerator.Dispose();
         }
+
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activities.Activities.Single().GetTagItem("error.type"),
             Is.EqualTo(cancel ? typeof(OperationCanceledException).FullName : "cancelled"));
@@ -573,6 +586,7 @@ public class ResponsesTelemetryTests
         options.StreamingEnabled = true;
         using var parent = new Activity("raw-caller").Start();
         PipelineResponse retainedResponse = null;
+
         try
         {
             if (useAsync)
@@ -582,10 +596,12 @@ public class ResponsesTelemetryTests
                     retainedResponse = page.GetRawResponse();
                     Assert.That(Activity.Current, Is.SameAs(parent));
                     Assert.That(retainedResponse.ContentStream.Position, Is.Zero);
+
                     if (consumeBody)
                     {
                         await retainedResponse.ContentStream.CopyToAsync(Stream.Null);
                     }
+
                     if (disposeEarly)
                     {
                         break;
@@ -599,16 +615,19 @@ public class ResponsesTelemetryTests
                     retainedResponse = page.GetRawResponse();
                     Assert.That(Activity.Current, Is.SameAs(parent));
                     Assert.That(retainedResponse.ContentStream.Position, Is.Zero);
+
                     if (consumeBody)
                     {
                         retainedResponse.ContentStream.CopyTo(Stream.Null);
                     }
+
                     if (disposeEarly)
                     {
                         break;
                     }
                 }
             }
+
             Assert.That(Activity.Current, Is.SameAs(parent));
             Assert.That(retainedResponse, Is.Not.Null);
             Assert.That(activities.Activities, Has.Count.EqualTo(((latest) && (!consumeBody)) ? 0 : 1));
@@ -619,6 +638,7 @@ public class ResponsesTelemetryTests
             if (!consumeBody)
             {
                 Assert.That(retainedResponse.ContentStream.Position, Is.Zero);
+
                 if (useAsync)
                 {
                     await retainedResponse.ContentStream.CopyToAsync(Stream.Null);
@@ -628,6 +648,7 @@ public class ResponsesTelemetryTests
                     retainedResponse.ContentStream.CopyTo(Stream.Null);
                 }
             }
+
             var activity = activities.Activities.Single();
             Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Unset));
             Assert.That(activity.GetTagItem("error.type"), Is.Null);
@@ -641,13 +662,16 @@ public class ResponsesTelemetryTests
         {
             retainedResponse?.Dispose();
         }
+
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activities.Activities, Has.Count.EqualTo(1));
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration")?.Count ?? 0, Is.EqualTo(latest ? 1 : 0));
+
         if (latest)
         {
             Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration").Single().tags.ContainsKey("error.type"), Is.False);
         }
+
         AssertNoStreamingTokenOrTimingMeasurements(metrics);
     }
 
@@ -663,6 +687,7 @@ public class ResponsesTelemetryTests
         var options = CreateOptions();
         options.StreamingEnabled = true;
         PipelineResponse raw = null;
+
         try
         {
             if (useAsync)
@@ -675,12 +700,17 @@ public class ResponsesTelemetryTests
                         raw = page.GetRawResponse();
                     }
                 }
+
                 if (rawFirst)
                 {
                     await ReadRaw();
                     Assert.That(activities.Activities, Is.Empty);
                 }
-                await foreach (var update in collection) { }
+
+                await foreach (var update in collection)
+                {
+                }
+
                 if (!rawFirst)
                 {
                     await ReadRaw();
@@ -689,17 +719,21 @@ public class ResponsesTelemetryTests
             else
             {
                 var collection = client.CreateResponseStreaming(options);
+
                 if (rawFirst)
                 {
                     raw = collection.GetRawPages().Single().GetRawResponse();
                     Assert.That(activities.Activities, Is.Empty);
                 }
+
                 collection.ToList();
+
                 if (!rawFirst)
                 {
                     raw = collection.GetRawPages().Single().GetRawResponse();
                 }
             }
+
             Assert.That(Activity.Current, Is.SameAs(parent));
             Assert.That(activities.Activities, Has.Count.EqualTo(1));
             Assert.That(metrics.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
@@ -729,6 +763,7 @@ public class ResponsesTelemetryTests
             () => throw new IOException("sensitive send failure"), maxRetries: 0);
         var options = CreateOptions();
         options.StreamingEnabled = true;
+
         if (useAsync)
         {
             Assert.ThrowsAsync<IOException>(async () =>
@@ -749,6 +784,7 @@ public class ResponsesTelemetryTests
                 }
             });
         }
+
         Assert.That(Activity.Current, Is.SameAs(parent));
         var activity = activities.Activities.Single();
         Assert.That(activity.Status, Is.EqualTo(ActivityStatusCode.Error));
@@ -766,6 +802,7 @@ public class ResponsesTelemetryTests
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk"), Is.Null);
         Assert.That(metrics.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
+
         foreach (var name in new[]
         {
             "usage.input_tokens", "usage.output_tokens",
@@ -788,14 +825,17 @@ public class ResponsesTelemetryTests
         using var activities = trace ? new TestActivityListener(ActivitySourceName) : null;
         using var metrics = measure ? new TestMeterListener(ActivitySourceName) : null;
         await ConsumeStream(CreateStreamingClient(TerminalEvent(), true), true);
+
         if (trace)
         {
             Assert.That(activities.Activities, Has.Count.EqualTo(1));
         }
+
         if (measure)
         {
             AssertMetrics(metrics, true);
         }
+
         Assert.That(Activity.Current, Is.Null);
     }
 
@@ -829,11 +869,13 @@ public class ResponsesTelemetryTests
             Sample = (ref ActivityCreationOptions<ActivityContext> creation) =>
             {
                 sampledTags.AddRange(creation.Tags);
+
                 return ActivitySamplingResult.AllDataAndRecorded;
             },
             SampleUsingParentId = (ref ActivityCreationOptions<string> creation) =>
             {
                 sampledTags.AddRange(creation.Tags);
+
                 return ActivitySamplingResult.AllDataAndRecorded;
             },
             ActivityStopped = stopped => activity = stopped,
@@ -844,14 +886,20 @@ public class ResponsesTelemetryTests
         var options = CreateOptions();
         options.Model = null;
         options.StreamingEnabled = true;
+
         if (useAsync)
         {
-            await foreach (var update in client.CreateResponseStreamingAsync(options)) { }
+            await foreach (var update in client.CreateResponseStreamingAsync(options))
+            {
+            }
         }
         else
         {
-            foreach (var update in client.CreateResponseStreaming(options)) { }
+            foreach (var update in client.CreateResponseStreaming(options))
+            {
+            }
         }
+
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
         Assert.That(activity.DisplayName, Is.EqualTo("chat"));
@@ -880,10 +928,12 @@ public class ResponsesTelemetryTests
         using var metrics = new TestMeterListener(ActivitySourceName);
         using var parent = new Activity("parent").Start();
         using var cancellation = new CancellationTokenSource();
+
         if (phase == "cancel")
         {
             cancellation.Cancel();
         }
+
         var client = CreateStreamingClient(TerminalEvent(), useAsync,
             onSend: () =>
             {
@@ -982,6 +1032,7 @@ public class ResponsesTelemetryTests
         var now = 1.0;
         var lifecycle = scope.CreateStreamingLifecycle(() => now);
         lifecycle.OnEvent();
+
         foreach (var kind in new[]
         {
             "response.output_text.delta", "response.refusal.delta", "response.reasoning_text.delta",
@@ -995,10 +1046,12 @@ public class ResponsesTelemetryTests
             lifecycle.OnEvent();
             var update = ModelReaderWriter.Read<StreamingResponseUpdate>(BinaryData.FromString(
                 $$"""{"type":"{{kind}}","sequence_number":1,"output_index":0,"delta":"c2Vuc2l0aXZlIG91dHB1dA==","partial_image_b64":"c2Vuc2l0aXZlIG91dHB1dA=="}"""));
+
             if (kind == "response.audio_transcript.delta")
             {
                 Assert.That(update.Kind, Is.EqualTo(StreamingResponseUpdateKind.ResponseAudioTranscriptDelta));
             }
+
             Assert.That(update.Kind.ToString(), Is.EqualTo(kind));
             lifecycle.OnUpdate(update);
         }
@@ -1041,6 +1094,7 @@ public class ResponsesTelemetryTests
             lifecycle.OnUpdate(update);
             now += 2;
         }
+
         lifecycle.Complete(SseCompletionKind.EndOfStream);
 
         var intervals = metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk");
@@ -1063,6 +1117,7 @@ public class ResponsesTelemetryTests
         lifecycle.OnEvent();
         lifecycle.OnUpdate(ModelReaderWriter.Read<StreamingResponseUpdate>(BinaryData.FromString(
             $$$"""{"type":"{{{kind}}}","sequence_number":0,"response":{"id":"resp_metadata","created_at":1,"model":"{{{ResponseModel}}}","service_tier":"default","output":[],"parallel_tool_calls":false}}""")));
+
         for (var sequence = 1; sequence <= 2; sequence++)
         {
             now += 2;
@@ -1070,18 +1125,21 @@ public class ResponsesTelemetryTests
             lifecycle.OnUpdate(ModelReaderWriter.Read<StreamingResponseUpdate>(BinaryData.FromString(
                 $$"""{"type":"response.output_text.delta","sequence_number":{{sequence}},"output_index":0,"content_index":0,"item_id":"message","delta":"sensitive output","logprobs":[]}""")));
         }
+
         lifecycle.Complete(SseCompletionKind.Disposed);
 
         var first = metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk").Single();
         var output = metrics.GetMeasurements("gen_ai.client.operation.time_per_output_chunk").Single();
         Assert.That(first.value, Is.EqualTo(1.0));
         Assert.That(output.value, Is.EqualTo(2.0));
+
         foreach (var measurement in new[] { first, output })
         {
             Assert.That(measurement.tags["gen_ai.response.model"], Is.EqualTo(ResponseModel));
             Assert.That(measurement.tags.ContainsKey("openai.response.service_tier"), Is.False);
             Assert.That(measurement.tags.ContainsKey("openai.response.system_fingerprint"), Is.False);
         }
+
         var duration = metrics.GetMeasurements("gen_ai.client.operation.duration").Single();
         Assert.That(duration.tags["gen_ai.response.model"], Is.EqualTo(ResponseModel));
         Assert.That(duration.tags["openai.response.service_tier"], Is.EqualTo("default"));
@@ -1104,12 +1162,14 @@ public class ResponsesTelemetryTests
             """{"type":"response.output_text.delta","sequence_number":3,"output_index":0,"delta":"third"}""",
             """{"type":"response.completed","sequence_number":4,"response":{"id":"resp_metadata","created_at":1,"model":"terminal-model","status":"completed","output":[],"parallel_tool_calls":false}}""",
         };
+
         foreach (var json in events)
         {
             lifecycle.OnEvent();
             lifecycle.OnUpdate(ModelReaderWriter.Read<StreamingResponseUpdate>(BinaryData.FromString(json)));
             now++;
         }
+
         lifecycle.Complete(SseCompletionKind.EndOfStream);
 
         var first = metrics.GetMeasurements("gen_ai.client.operation.time_to_first_chunk").Single();
@@ -1146,6 +1206,7 @@ public class ResponsesTelemetryTests
     private static string SseEvent(string json)
     {
         using var document = JsonDocument.Parse(json);
+
         return $"data: {JsonSerializer.Serialize(document.RootElement)}\n\n";
     }
 
@@ -1158,6 +1219,7 @@ public class ResponsesTelemetryTests
         var transport = new MockPipelineTransport(_ =>
         {
             onSend?.Invoke();
+
             return new MockPipelineResponse(200)
             {
                 ContentStream = streamFactory?.Invoke() ?? new MemoryStream(Encoding.UTF8.GetBytes(content)),
@@ -1171,22 +1233,28 @@ public class ResponsesTelemetryTests
             Endpoint = s_endpoint,
             Transport = transport,
         };
+
         if (maxRetries.HasValue)
         {
             options.RetryPolicy = new ClientRetryPolicy(maxRetries.Value);
         }
+
         return new ResponsesClient(new ApiKeyCredential("not-a-real-key"), options);
     }
 
     private sealed class ThrowingReadStream : MemoryStream
     {
         public override int Read(byte[] buffer, int offset, int count) => throw new IOException("sensitive read failure");
+
         public override int Read(Span<byte> buffer) => throw new IOException("sensitive read failure");
+
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
+
             throw new IOException("sensitive read failure");
         }
     }
@@ -1194,23 +1262,40 @@ public class ResponsesTelemetryTests
     private sealed class CancellableReadStream : Stream
     {
         public TaskCompletionSource<bool> Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             Started.TrySetResult(true);
             await Task.Delay(Timeout.Infinite, cancellationToken);
+
             return 0;
         }
+
         public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
         public override bool CanRead => true;
+
         public override bool CanSeek => false;
+
         public override bool CanWrite => false;
+
         public override long Length => throw new NotSupportedException();
-        public override long Position { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+
+        public override long Position
+        {
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
+        }
+
         public override void Flush() => throw new NotSupportedException();
+
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
         public override void SetLength(long value) => throw new NotSupportedException();
+
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 
@@ -1218,6 +1303,7 @@ public class ResponsesTelemetryTests
     {
         var options = CreateOptions();
         options.StreamingEnabled = true;
+
         if (useAsync)
         {
             await foreach (var update in client.CreateResponseStreamingAsync(options, cancellationToken))
@@ -1243,6 +1329,7 @@ public class ResponsesTelemetryTests
             Endpoint = s_endpoint,
             Transport = transport,
         };
+
         return new ResponsesClient(new ApiKeyCredential("not-a-real-key"), options);
     }
 
@@ -1272,6 +1359,7 @@ public class ResponsesTelemetryTests
             TopP = 0.8f,
         };
         options.Metadata["sensitive-key"] = "sensitive-value";
+
         return options;
     }
 
@@ -1351,6 +1439,7 @@ public class ResponsesTelemetryTests
 
         var usage = GetTotalUsageMeasurements(meterListener, useLatestSemanticConventions);
         Assert.That(usage, Has.Count.EqualTo(2));
+
         if (useLatestSemanticConventions)
         {
             Assert.That(meterListener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);

@@ -90,12 +90,13 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     // Continuation is not supported for SSE streams.
     public override ContinuationToken? GetContinuationToken(ClientResult page) => null;
 
-    public async override IAsyncEnumerable<ClientResult> GetRawPagesAsync()
+    public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
     {
         // We don't currently support resuming a dropped connection from the
         // last received event, so the response collection has a single element.
         var lifecycle = LifecycleFactory?.Invoke();
         ClientResult? page = null;
+
         try
         {
             using (lifecycle?.Enter())
@@ -108,18 +109,22 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 catch (Exception exception)
                 {
                     lifecycle?.OnException(exception);
+
                     throw;
                 }
             }
+
             if (lifecycle is not null)
             {
                 LazyInitializer.EnsureInitialized(ref _lifecycles)!.Add(page, lifecycle);
             }
+
             yield return page;
         }
         finally
         {
             lifecycle?.Complete(SseCompletionKind.RawResponse);
+
             if (page is not null)
             {
                 _lifecycles?.Remove(page);
@@ -127,7 +132,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         }
     }
 
-    protected async override IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)
+    protected override async IAsyncEnumerable<T> GetValuesFromPageAsync(ClientResult page)
     {
         SseLifecycle<T>? lifecycle = null;
         _lifecycles?.TryGetValue(page, out lifecycle);
@@ -147,6 +152,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         return (item) =>
         {
             using JsonDocument document = JsonDocument.Parse(item.Data);
+
             return jsonDeserializationFunc.Invoke(document.RootElement, ModelSerializationExtensions.WireOptions);
         };
     }
@@ -163,6 +169,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         return (item) =>
         {
             using JsonDocument document = JsonDocument.Parse(item.Data);
+
             return jsonDeserializationFunc.Invoke(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions);
         };
     }
@@ -176,7 +183,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
-        private List<Action> _additionalDisposalActions;
+        private readonly List<Action> _additionalDisposalActions;
 
         private readonly CancellationToken _cancellationToken;
         private readonly PipelineResponse _response;
@@ -218,9 +225,11 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         async ValueTask<bool> IAsyncEnumerator<U>.MoveNextAsync()
         {
             using var activation = _lifecycle?.Enter();
+
             try
             {
                 var hasNext = await MoveNextCoreAsync().ConfigureAwait(false);
+
                 if (hasNext)
                 {
                     _lifecycle?.OnUpdate(_current!);
@@ -229,18 +238,20 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 {
                     _lifecycle?.Complete(SseCompletionKind.EndOfStream);
                 }
+
                 return hasNext;
             }
             catch (Exception exception)
             {
                 _lifecycle?.OnException(exception);
+
                 throw;
             }
         }
 
         private async ValueTask<bool> MoveNextCoreAsync()
         {
-            if (_events is null && _started)
+            if ((_events is null) && (_started))
             {
                 throw new ObjectDisposedException(nameof(AsyncSseUpdateEnumerator<U>));
             }
@@ -249,9 +260,10 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             _events ??= CreateEventEnumeratorAsync();
             _started = true;
 
-            if (_updates is not null && _updates.MoveNext())
+            if ((_updates is not null) && (_updates.MoveNext()))
             {
                 _current = _updates.Current;
+
                 return true;
             }
 
@@ -275,9 +287,11 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 }
 
                 _lifecycle?.OnEvent();
+
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
+
                     return false;
                 }
 
@@ -288,11 +302,13 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
                 if (_updates.MoveNext())
                 {
                     _current = _updates.Current;
+
                     return true;
                 }
             }
 
             _current = default;
+
             return false;
         }
 
@@ -304,12 +320,14 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             }
 
             IAsyncEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(_response.ContentStream, (_, bytes) => bytes.ToArray()).EnumerateAsync();
+
             return enumerable.GetAsyncEnumerator(_cancellationToken);
         }
 
         public async ValueTask DisposeAsync()
         {
             using var activation = _lifecycle?.Enter();
+
             try
             {
                 await DisposeAsyncCore().ConfigureAwait(false);
@@ -318,6 +336,7 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             catch (Exception exception)
             {
                 _lifecycle?.OnException(exception);
+
                 throw;
             }
             finally
@@ -332,10 +351,13 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
             {
                 return;
             }
+
             _disposed = true;
+
             try
             {
                 _updates?.Dispose();
+
                 if (_events is not null)
                 {
                     await _events.DisposeAsync().ConfigureAwait(false);

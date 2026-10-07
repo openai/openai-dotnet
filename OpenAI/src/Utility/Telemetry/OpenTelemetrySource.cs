@@ -10,7 +10,7 @@ namespace OpenAI.Telemetry;
 internal class OpenTelemetrySource
 {
     private const string ChatOperationName = "chat";
-    private readonly bool IsOTelEnabled = AppContextSwitchHelper
+    private readonly bool _isOTelEnabled = AppContextSwitchHelper
         .GetConfigValue("OpenAI.Experimental.EnableOpenTelemetry", "OPENAI_EXPERIMENTAL_ENABLE_OPEN_TELEMETRY");
 
     private readonly string _providerAttributeKey;
@@ -34,7 +34,8 @@ internal class OpenTelemetrySource
         _serverAddress = endpoint.Host;
         _serverPort = endpoint.Port;
         _model = model;
-        if ((IsOTelEnabled) && (_useLatestSemanticConventions) && (loggingOptions?.EnableLogging != false))
+
+        if ((_isOTelEnabled) && (_useLatestSemanticConventions) && (loggingOptions?.EnableLogging != false))
         {
             _exceptionLogger = loggingOptions?.LoggerFactory?.CreateLogger(loggerCategory);
         }
@@ -47,25 +48,27 @@ internal class OpenTelemetrySource
 
     public OpenTelemetryScope StartChatScope(ChatCompletionOptions completionsOptions)
     {
-        return IsOTelEnabled
+        return _isOTelEnabled
             ? OpenTelemetryScope.StartChat(_model, ChatOperationName, _serverAddress, _serverPort, completionsOptions, _providerAttributeKey, _useLatestSemanticConventions, exceptionLogger: _exceptionLogger)
             : null;
     }
 
     public OpenTelemetryScope StartResponsesScope(CreateResponseOptions options)
     {
-        return IsOTelEnabled
+        return _isOTelEnabled
             ? OpenTelemetryScope.StartResponses(options?.Model, ChatOperationName, _serverAddress, _serverPort, options, _providerAttributeKey, _useLatestSemanticConventions, exceptionLogger: _exceptionLogger)
             : null;
     }
 
     public SseLifecycle<StreamingResponseUpdate> StartResponsesStreamingScope(CreateResponseOptions options)
     {
-        if (!IsOTelEnabled)
+        if (!_isOTelEnabled)
         {
             return null;
         }
+
         var previous = Activity.Current;
+
         try
         {
             return OpenTelemetryScope.StartResponses(options?.Model, ChatOperationName, _serverAddress, _serverPort,

@@ -191,6 +191,7 @@ public class SseUpdateCollectionTests
             try
             {
                 enumerator.MoveNext();
+
                 return (Exception)null;
             }
             catch (Exception ex)
@@ -213,6 +214,7 @@ public class SseUpdateCollectionTests
         {
             var lifecycle = new ProbeLifecycle();
             lifecycles.Add(lifecycle);
+
             return lifecycle;
         }
 
@@ -230,7 +232,10 @@ public class SseUpdateCollectionTests
             Assert.That(await second.MoveNextAsync(), Is.True);
             await first.DisposeAsync();
             await first.DisposeAsync();
-            while (await second.MoveNextAsync()) { }
+
+            while (await second.MoveNextAsync())
+            {
+            }
         }
         else
         {
@@ -245,7 +250,10 @@ public class SseUpdateCollectionTests
             Assert.That(second.MoveNext(), Is.True);
             first.Dispose();
             first.Dispose();
-            while (second.MoveNext()) { }
+
+            while (second.MoveNext())
+            {
+            }
         }
 
         Assert.That(lifecycles, Has.Count.EqualTo(2));
@@ -276,23 +284,28 @@ public class SseUpdateCollectionTests
         ClientResult Send()
         {
             Assert.That(lifecycle.Depth, Is.EqualTo(1));
+
             if (phase == "send")
             {
                 throw new IOException("send");
             }
+
             if (phase == "cancel")
             {
                 cancellation.Cancel();
             }
+
             return ClientResult.FromResponse(new MockPipelineResponse(200) { ContentStream = stream });
         }
         IEnumerable<string> Deserialize(SseItem<byte[]> item)
         {
             Assert.That(lifecycle.Depth, Is.EqualTo(1));
+
             if (phase == "deserialize")
             {
                 throw new IOException("deserialize");
             }
+
             return DeserializeEvent(item);
         }
 
@@ -305,7 +318,9 @@ public class SseUpdateCollectionTests
             };
             Assert.That(async () =>
             {
-                await foreach (var update in collection) { }
+                await foreach (var update in collection)
+                {
+                }
             }, Throws.Exception);
         }
         else
@@ -330,6 +345,7 @@ public class SseUpdateCollectionTests
         var lifecycle = new ProbeLifecycle();
         var stream = new FaultStream(StreamContent, "read");
         var page = ClientResult.FromResponse(new MockPipelineResponse(200) { ContentStream = stream });
+
         if (useAsync)
         {
             var collection = new AsyncSseUpdateCollection<string>(
@@ -337,6 +353,7 @@ public class SseUpdateCollectionTests
             {
                 LifecycleFactory = () => lifecycle,
             };
+
             await foreach (var raw in collection.GetRawPagesAsync())
             {
                 Assert.That(raw, Is.SameAs(page));
@@ -349,12 +366,14 @@ public class SseUpdateCollectionTests
             {
                 LifecycleFactory = () => lifecycle,
             };
+
             foreach (var raw in collection.GetRawPages())
             {
                 Assert.That(raw, Is.SameAs(page));
                 Assert.That(lifecycle.Depth, Is.Zero);
             }
         }
+
         Assert.That(lifecycle.Events, Is.Zero);
         Assert.That(lifecycle.TypedResponses, Is.Zero);
         Assert.That(lifecycle.CompletionKind, Is.EqualTo(SseCompletionKind.RawResponse));
@@ -386,10 +405,12 @@ public class SseUpdateCollectionTests
             await using var enumerator = collection.GetRawPagesAsync().GetAsyncEnumerator();
             Assert.That(await enumerator.MoveNextAsync(), Is.True);
             Assert.That(enumerator.Current, Is.SameAs(page));
+
             if (consumeBody)
             {
                 await stream.CopyToAsync(Stream.Null);
             }
+
             if (!disposeEarly)
             {
                 Assert.That(await enumerator.MoveNextAsync(), Is.False);
@@ -404,10 +425,12 @@ public class SseUpdateCollectionTests
             using var enumerator = collection.GetRawPages().GetEnumerator();
             Assert.That(enumerator.MoveNext(), Is.True);
             Assert.That(enumerator.Current, Is.SameAs(page));
+
             if (consumeBody)
             {
                 stream.CopyTo(Stream.Null);
             }
+
             if (!disposeEarly)
             {
                 Assert.That(enumerator.MoveNext(), Is.False);
@@ -421,11 +444,13 @@ public class SseUpdateCollectionTests
         Assert.That(lifecycle.TypedResponses, Is.Zero);
         Assert.That(lifecycle.Depth, Is.Zero);
         Assert.That(stream.Disposals, Is.Zero);
+
         if (!consumeBody)
         {
             Assert.That(stream.Position, Is.Zero);
             stream.CopyTo(Stream.Null);
         }
+
         Assert.That(stream.Position, Is.EqualTo(stream.Length));
         page.GetRawResponse().Dispose();
         Assert.That(stream.Disposals, Is.EqualTo(1));
@@ -440,6 +465,7 @@ public class SseUpdateCollectionTests
         ClientResult Send()
         {
             Assert.That(lifecycle.Depth, Is.EqualTo(1));
+
             throw exception;
         }
 
@@ -452,7 +478,9 @@ public class SseUpdateCollectionTests
             };
             Assert.That(async () =>
             {
-                await foreach (var page in collection.GetRawPagesAsync()) { }
+                await foreach (var page in collection.GetRawPagesAsync())
+                {
+                }
             }, Throws.Exception.SameAs(exception));
         }
         else
@@ -472,15 +500,21 @@ public class SseUpdateCollectionTests
     private sealed class ProbeLifecycle : SseLifecycle<string>
     {
         public int Depth { get; private set; }
+
         public int TypedResponses { get; private set; }
+
         public int Events { get; private set; }
+
         public List<string> Updates { get; } = [];
+
         public SseCompletionKind? CompletionKind { get; private set; }
+
         public Exception Exception { get; private set; }
 
         public override IDisposable Enter()
         {
             Depth++;
+
             return new Activation(this);
         }
 
@@ -499,6 +533,7 @@ public class SseUpdateCollectionTests
         }
 
         public override void OnException(Exception exception) => Exception ??= exception;
+
         public override void Complete(SseCompletionKind completionKind) => CompletionKind ??= completionKind;
 
         private sealed class Activation(ProbeLifecycle lifecycle) : IDisposable
@@ -510,6 +545,7 @@ public class SseUpdateCollectionTests
     private sealed class FaultStream(string content, string phase) : Stream
     {
         private readonly MemoryStream _inner = new(Encoding.UTF8.GetBytes(content));
+
         public int Disposals { get; private set; }
 
         public override int Read(byte[] buffer, int offset, int count)
@@ -524,21 +560,35 @@ public class SseUpdateCollectionTests
         public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
             await Task.Yield();
+
             if (phase == "read")
             {
                 throw new IOException("read");
             }
+
             return await _inner.ReadAsync(buffer, cancellationToken);
         }
 
         public override bool CanRead => true;
+
         public override bool CanSeek => false;
+
         public override bool CanWrite => false;
+
         public override long Length => _inner.Length;
-        public override long Position { get => _inner.Position; set => throw new NotSupportedException(); }
+
+        public override long Position
+        {
+            get => _inner.Position;
+            set => throw new NotSupportedException();
+        }
+
         public override void Flush() => throw new NotSupportedException();
+
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
         public override void SetLength(long value) => throw new NotSupportedException();
+
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
 
         protected override void Dispose(bool disposing)
@@ -546,6 +596,7 @@ public class SseUpdateCollectionTests
             Disposals++;
             _inner.Dispose();
             base.Dispose(disposing);
+
             if (phase == "dispose")
             {
                 throw new IOException("dispose");
@@ -567,25 +618,37 @@ public class SseUpdateCollectionTests
                 int copied = Math.Min(count, content.Length - _position);
                 Array.Copy(content, _position, buffer, offset, copied);
                 _position += copied;
+
                 return copied;
             }
 
             gate.Wait();
+
             return 0;
         }
 
         public override bool CanRead => true;
+
         public override bool CanSeek => false;
+
         public override bool CanWrite => false;
+
         public override long Length => throw new NotSupportedException();
+
         public override long Position
         {
             get => _position;
             set => throw new NotSupportedException();
         }
-        public override void Flush() { }
+
+        public override void Flush()
+        {
+        }
+
         public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
         public override void SetLength(long value) => throw new NotSupportedException();
+
         public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
     }
 
@@ -609,6 +672,7 @@ public class SseUpdateCollectionTests
         }
 
         using JsonDocument document = JsonDocument.Parse(item.Data);
+
         return [document.RootElement.GetProperty("value").GetString()!];
     }
 

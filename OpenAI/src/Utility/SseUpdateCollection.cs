@@ -98,6 +98,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         // last received event, so the response collection has a single element.
         var lifecycle = LifecycleFactory?.Invoke();
         ClientResult? page = null;
+
         try
         {
             using (lifecycle?.Enter())
@@ -110,18 +111,22 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 catch (Exception exception)
                 {
                     lifecycle?.OnException(exception);
+
                     throw;
                 }
             }
+
             if (lifecycle is not null)
             {
                 LazyInitializer.EnsureInitialized(ref _lifecycles)!.Add(page, lifecycle);
             }
+
             yield return page;
         }
         finally
         {
             lifecycle?.Complete(SseCompletionKind.RawResponse);
+
             if (page is not null)
             {
                 _lifecycles?.Remove(page);
@@ -135,6 +140,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         _lifecycles?.TryGetValue(page, out lifecycle);
         lifecycle?.OnTypedResponse();
         using IEnumerator<T> enumerator = new SseUpdateEnumerator<T>(_eventDeserializerFunc, page, _cancellationToken, AdditionalDisposalActions, lifecycle);
+
         while (enumerator.MoveNext())
         {
             yield return enumerator.Current;
@@ -145,7 +151,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;
 
-        private List<Action> _additionalDisposalActions;
+        private readonly List<Action> _additionalDisposalActions;
 
         private readonly CancellationToken _cancellationToken;
         private readonly PipelineResponse _response;
@@ -190,9 +196,11 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         public bool MoveNext()
         {
             using var activation = _lifecycle?.Enter();
+
             try
             {
                 var hasNext = MoveNextCore();
+
                 if (hasNext)
                 {
                     _lifecycle?.OnUpdate(_current!);
@@ -201,18 +209,20 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 {
                     _lifecycle?.Complete(SseCompletionKind.EndOfStream);
                 }
+
                 return hasNext;
             }
             catch (Exception exception)
             {
                 _lifecycle?.OnException(exception);
+
                 throw;
             }
         }
 
         private bool MoveNextCore()
         {
-            if (_events is null && _started)
+            if ((_events is null) && (_started))
             {
                 throw new ObjectDisposedException(typeof(U).Name);
             }
@@ -221,9 +231,10 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             _events ??= CreateEventEnumerator();
             _started = true;
 
-            if (_updates is not null && _updates.MoveNext())
+            if ((_updates is not null) && (_updates.MoveNext()))
             {
                 _current = _updates.Current;
+
                 return true;
             }
 
@@ -247,9 +258,11 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 }
 
                 _lifecycle?.OnEvent();
+
                 if (_events.Current.Data.AsSpan().SequenceEqual(TerminalData))
                 {
                     _current = default;
+
                     return false;
                 }
 
@@ -258,11 +271,13 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
                 if (_updates.MoveNext())
                 {
                     _current = _updates.Current;
+
                     return true;
                 }
             }
 
             _current = default;
+
             return false;
         }
 
@@ -274,6 +289,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             }
 
             IEnumerable<SseItem<byte[]>> enumerable = SseParser.Create(_response.ContentStream, (_, bytes) => bytes.ToArray()).Enumerate();
+
             return enumerable.GetEnumerator();
         }
 
@@ -285,6 +301,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
         public void Dispose()
         {
             using var activation = _lifecycle?.Enter();
+
             try
             {
                 Dispose(true);
@@ -293,6 +310,7 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             catch (Exception exception)
             {
                 _lifecycle?.OnException(exception);
+
                 throw;
             }
             finally
@@ -307,7 +325,9 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
             {
                 return;
             }
+
             _disposed = true;
+
             try
             {
                 _updates?.Dispose();

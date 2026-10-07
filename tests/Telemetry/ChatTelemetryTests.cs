@@ -114,6 +114,7 @@ public class ChatTelemetryTests
         var chatCompletion = CreateChatCompletion();
 
         Activity activity = null;
+
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             activity = Activity.Current;
@@ -156,6 +157,7 @@ public class ChatTelemetryTests
             Assert.That(Activity.Current.GetTagItem("gen_ai.request.max_tokens"), Is.EqualTo(options.MaxOutputTokenCount.Value));
             scope.RecordChatCompletion(chatCompletion);
         }
+
         Assert.That(Activity.Current, Is.Null);
 
         ValidateChatActivity(listener.Activities.Single(), chatCompletion, RequestModel, Host, Port, useLatestSemconv: false);
@@ -172,6 +174,7 @@ public class ChatTelemetryTests
         using var listener = new TestActivityListener("OpenAI.ChatClient");
 
         var error = new SocketException(42, "test error");
+
         using (var scope = telemetry.StartChatScope(new ChatCompletionOptions()))
         {
             scope.RecordException(error);
@@ -208,6 +211,7 @@ public class ChatTelemetryTests
         var tasks = new Task[5];
         int numberOfSuccessfulResponses = 3;
         int totalPromptTokens = 0, totalCompletionTokens = 0;
+
         for (int i = 0; i < tasks.Length; i++)
         {
             int t = i;
@@ -216,6 +220,7 @@ public class ChatTelemetryTests
             {
                 using var scope = source.StartChatScope(options);
                 await Task.Delay(10);
+
                 if (t < numberOfSuccessfulResponses)
                 {
                     var promptTokens = Random.Shared.Next(100);
@@ -310,6 +315,7 @@ public class ChatTelemetryTests
         if (useLatestSemconv)
         {
             Assert.That(listener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
+
             foreach (var direction in new[] { "input", "output" })
             {
                 var expected = direction == "input" ? inputTokens : outputTokens;
@@ -322,6 +328,7 @@ public class ChatTelemetryTests
                 ValidateChatMetricTags(counter, response, RequestModel, Host, Port, useLatestSemconv: true);
                 ValidateChatMetricTags(histogram, response, RequestModel, Host, Port, useLatestSemconv: true);
             }
+
             return;
         }
 

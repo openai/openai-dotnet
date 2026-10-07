@@ -108,6 +108,7 @@ internal partial class OpenTelemetryScope : IDisposable
             exceptionLogger: exceptionLogger);
         scope.Start(providerAttributeKey, useLatestSemanticConventions ? OpenAiApiTypeChatCompletionsValue : null);
         scope.RecordChatRequestAttributes(options);
+
         return scope;
     }
 
@@ -122,8 +123,9 @@ internal partial class OpenTelemetryScope : IDisposable
         bool streaming = false,
         ILogger exceptionLogger = null)
     {
-        var streamingMetricsEnabled = (streaming && useLatestSemanticConventions)
-            && (s_responsesFirstChunk.Enabled || s_responsesOutputChunk.Enabled);
+        var streamingMetricsEnabled = ((streaming) && (useLatestSemanticConventions))
+            && ((s_responsesFirstChunk.Enabled) || (s_responsesOutputChunk.Enabled));
+
         if ((!IsEnabled(s_responsesSource, s_responsesTokens, s_responsesInferenceTokens, s_responsesDuration, useLatestSemanticConventions, exceptionLogger)) && (!streamingMetricsEnabled))
         {
             return null;
@@ -146,6 +148,7 @@ internal partial class OpenTelemetryScope : IDisposable
             useLatestSemanticConventions ? OpenAiApiTypeResponsesValue : null,
             useLatestSemanticConventions ? streaming : null);
         scope.RecordResponsesRequestAttributes(options, useLatestSemanticConventions);
+
         return scope;
     }
 
@@ -167,6 +170,7 @@ internal partial class OpenTelemetryScope : IDisposable
             {
                 RecordResponseAttributes(completion.Id, completion.Model, completion.Usage?.InputTokenCount, completion.Usage?.OutputTokenCount);
             }
+
             SetChatFinishReasonAttribute(completion.FinishReason);
         }
     }
@@ -175,10 +179,12 @@ internal partial class OpenTelemetryScope : IDisposable
     {
         var errorType = GetResponseErrorType(response);
         var usage = _useLatestSemanticConventions ? OpenTelemetryTokenUsage.FromResponse(response.Usage) : default;
+
         if (_useLatestSemanticConventions)
         {
             RecordResponseMetadata(response);
         }
+
         RecordMetrics(
             _useLatestSemanticConventions ? _responseMetadata.Model : response.Model,
             _useLatestSemanticConventions ? _responseMetadata.ServiceTier : null, errorType,
@@ -195,6 +201,7 @@ internal partial class OpenTelemetryScope : IDisposable
             {
                 RecordResponseAttributes(response.Id, response.Model, response.Usage?.InputTokenCount, response.Usage?.OutputTokenCount);
             }
+
             SetResponseFinishReasonAttribute(response);
 
             if (_useLatestSemanticConventions)
@@ -219,14 +226,18 @@ internal partial class OpenTelemetryScope : IDisposable
             _exceptionLogged = true;
             OpenTelemetryExceptionLogger.Record(_exceptionLogger, ex);
         }
+
         var errorType = GetErrorType(ex);
+
         if (_useLatestSemanticConventions)
         {
             responseModel ??= _responseMetadata.Model;
             responseServiceTier ??= _responseMetadata.ServiceTier;
         }
+
         RecordMetrics(responseModel, responseServiceTier, errorType, null, null,
             responseSystemFingerprint: _useLatestSemanticConventions ? _responseMetadata.SystemFingerprint : null);
+
         if (_activity?.IsAllDataRequested == true)
         {
             if (_useLatestSemanticConventions)
@@ -234,6 +245,7 @@ internal partial class OpenTelemetryScope : IDisposable
                 SetActivityTagIfNotNull(GenAiResponseModelKey, responseModel);
                 SetActivityTagIfNotNull(OpenAiResponseServiceTierKey, responseServiceTier);
             }
+
             RecordError(errorType, _includeErrorDescription ? ex?.Message : null);
         }
     }
@@ -289,16 +301,19 @@ internal partial class OpenTelemetryScope : IDisposable
             { ServerPortKey, _serverPort },
             { GenAiOperationNameKey, _operationName },
         };
+
         if (!string.IsNullOrEmpty(_requestModel))
         {
             _commonTags.Add(GenAiRequestModelKey, _requestModel);
         }
 
         var activityTags = _commonTags;
+
         if (openAiApiType != null)
         {
             activityTags.Add(OpenAiApiTypeKey, openAiApiType);
         }
+
         if (streaming == true)
         {
             activityTags.Add("gen_ai.request.stream", streaming.Value);
@@ -321,16 +336,19 @@ internal partial class OpenTelemetryScope : IDisposable
             SetActivityTagIfNotNull(GenAiRequestMaxTokensKey, options?.MaxOutputTokenCount);
             SetActivityTagIfNotNull(GenAiRequestTemperatureKey, options?.Temperature);
             SetActivityTagIfNotNull(GenAiRequestTopPKey, options?.TopP);
+
             if (_useLatestSemanticConventions)
             {
                 SetActivityTagIfNotNull(GenAiRequestSeedKey, options?.Seed);
                 SetActivityTagIfNotNull(GenAiRequestFrequencyPenaltyKey, (double?)options?.FrequencyPenalty);
                 SetActivityTagIfNotNull(GenAiRequestPresencePenaltyKey, (double?)options?.PresencePenalty);
                 SetActivityTagIfNotNull(GenAiRequestReasoningLevelKey, options?.ReasoningEffortLevel?.ToString());
+
                 if ((options?.ServiceTier is ChatServiceTier serviceTier) && (serviceTier != ChatServiceTier.Auto))
                 {
                     SetActivityTagIfNotNull(OpenAiRequestServiceTierKey, serviceTier.ToString());
                 }
+
                 var formatType = options?.ResponseFormat?.GetType();
                 var outputType = formatType == s_chatTextFormatType ? "text"
                     : ((formatType == s_chatJsonObjectFormatType) || (formatType == s_chatJsonSchemaFormatType)) ? "json" : null;
@@ -359,7 +377,7 @@ internal partial class OpenTelemetryScope : IDisposable
         SetActivityTagIfNotNull(GenAiConversationIdKey, options?.ConversationOptions?.ConversationId);
         SetActivityTagIfNotNull(GenAiRequestReasoningLevelKey, options?.ReasoningOptions?.ReasoningEffortLevel?.ToString());
 
-        if (options?.ServiceTier is ResponseServiceTier serviceTier && serviceTier != ResponseServiceTier.Auto)
+        if ((options?.ServiceTier is ResponseServiceTier serviceTier) && (serviceTier != ResponseServiceTier.Auto))
         {
             SetActivityTagIfNotNull(OpenAiRequestServiceTierKey, serviceTier.ToString());
         }
@@ -381,10 +399,12 @@ internal partial class OpenTelemetryScope : IDisposable
         {
             tags.Add(GenAiResponseModelKey, responseModel);
         }
+
         if ((_useLatestSemanticConventions) && (responseServiceTier != null))
         {
             tags.Add(OpenAiResponseServiceTierKey, responseServiceTier);
         }
+
         if ((_useLatestSemanticConventions) && (responseSystemFingerprint != null))
         {
             tags.Add(OpenAiResponseSystemFingerprintKey, responseSystemFingerprint);
@@ -439,6 +459,7 @@ internal partial class OpenTelemetryScope : IDisposable
     private void RecordResponseMetadata(ResponseResult response)
     {
         _responseMetadata.Update(response);
+
         if (_activity?.IsAllDataRequested == true)
         {
             RecordResponseMetadataAttributes(_responseMetadata.Id, _responseMetadata.Model,
@@ -498,6 +519,7 @@ internal partial class OpenTelemetryScope : IDisposable
             ResponseStatus.Incomplete => "incomplete",
             _ => null,
         };
+
         if (reason != null)
         {
             _activity.SetTag(GenAiResponseFinishReasonKey, new[] { reason });
@@ -531,16 +553,19 @@ internal partial class OpenTelemetryScope : IDisposable
                 _ => "failed",
             };
         }
+
         if (response.Status == ResponseStatus.Cancelled)
         {
             return "cancelled";
         }
+
         return null;
     }
 
     private void RecordError(string errorType, string description)
     {
         _activity.SetTag(ErrorTypeKey, errorType);
+
         if (description is null)
         {
             _activity.SetStatus(ActivityStatusCode.Error);

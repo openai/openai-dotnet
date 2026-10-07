@@ -112,10 +112,12 @@ public class ExceptionLoggingTests
     public void LoggingHonorsAllEnablementGates(bool instrumentation, bool latest, bool logging, LogLevel minimum)
     {
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
+
         if (!instrumentation)
         {
             AppContext.SetSwitch("OpenAI.Experimental.EnableOpenTelemetry", false);
         }
+
         using var convention = TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(latest);
         using var capture = new OtlpLogCapture(minimum);
         var source = new OpenTelemetrySource(s_endpoint, new ClientLoggingOptions
@@ -151,6 +153,7 @@ public class ExceptionLoggingTests
             RetryPolicy = new ClientRetryPolicy(0),
             ClientLoggingOptions = new ClientLoggingOptions { LoggerFactory = capture.Factory, EnableMessageLogging = false },
         });
+
         if (responses)
         {
             Assert.Throws<IOException>(() => client.GetResponsesClient().CreateResponse(new CreateResponseOptions { Model = "model" }));
@@ -159,6 +162,7 @@ public class ExceptionLoggingTests
         {
             Assert.Throws<IOException>(() => client.GetChatClient("model").CompleteChat([new UserChatMessage("input")]));
         }
+
         AssertPrivate(capture.Records.Single(), typeof(IOException));
     }
 
@@ -189,12 +193,20 @@ public class ExceptionLoggingTests
     private static IEnumerable<TestCaseData> ApiStatusRetryCases()
     {
         foreach (var api in new[] { "chat", "response", "stream" })
-        foreach (var useAsync in new[] { false, true })
-        foreach (var status in new[] { 429, 500 })
-        foreach (var recover in new[] { false, true })
-        foreach (var latest in new[] { false, true })
         {
-            yield return new TestCaseData(api, useAsync, status, recover, latest);
+            foreach (var useAsync in new[] { false, true })
+            {
+                foreach (var status in new[] { 429, 500 })
+                {
+                    foreach (var recover in new[] { false, true })
+                    {
+                        foreach (var latest in new[] { false, true })
+                        {
+                            yield return new TestCaseData(api, useAsync, status, recover, latest);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -214,15 +226,19 @@ public class ExceptionLoggingTests
         {
             sends++;
             Assert.That(capture.Records, Is.Empty, "A retry attempt must not produce an operation exception event.");
+
             if ((!recover) || (sends == 1))
             {
                 return new MockPipelineResponse(status).WithContent(errorBody);
             }
+
             if (api == "stream")
             {
                 var streamBody = "data: {\"type\":\"response.completed\",\"sequence_number\":1,\"response\":" + responseBody + "}\n\n";
+
                 return new MockPipelineResponse(200) { ContentStream = new MemoryStream(Encoding.UTF8.GetBytes(streamBody)) };
             }
+
             return new MockPipelineResponse(200).WithContent(api == "chat" ? chatBody : responseBody);
         })
         {
@@ -240,6 +256,7 @@ public class ExceptionLoggingTests
                     RetryPolicy = new ImmediateRetryPolicy(),
                     ClientLoggingOptions = logging,
                 });
+
                 if (useAsync)
                 {
                     await client.CompleteChatAsync([new UserChatMessage("sensitive input")]);
@@ -248,6 +265,7 @@ public class ExceptionLoggingTests
                 {
                     client.CompleteChat([new UserChatMessage("sensitive input")]);
                 }
+
                 return;
             }
 
@@ -259,15 +277,20 @@ public class ExceptionLoggingTests
                 ClientLoggingOptions = logging,
             });
             var request = new CreateResponseOptions { Model = "model", StreamingEnabled = api == "stream" };
+
             if (api == "stream")
             {
                 if (useAsync)
                 {
-                    await foreach (var update in responses.CreateResponseStreamingAsync(request)) { }
+                    await foreach (var update in responses.CreateResponseStreamingAsync(request))
+                    {
+                    }
                 }
                 else
                 {
-                    foreach (var update in responses.CreateResponseStreaming(request)) { }
+                    foreach (var update in responses.CreateResponseStreaming(request))
+                    {
+                    }
                 }
             }
             else if (useAsync)
@@ -296,6 +319,7 @@ public class ExceptionLoggingTests
         Assert.That(activity.ParentId, Is.EqualTo(parent.Id));
         Assert.That(activity.Status, Is.EqualTo(recover ? ActivityStatusCode.Unset : ActivityStatusCode.Error));
         Assert.That(activity.GetTagItem("error.type"), Is.EqualTo(recover ? null : status.ToString()));
+
         if ((latest) && (!recover))
         {
             var record = capture.Records.Single();
@@ -338,15 +362,25 @@ public class ExceptionLoggingTests
         var transport = new MockPipelineTransport(_ =>
         {
             sends++;
+
             throw new IOException("sensitive transport body");
-        }) { ExpectSyncPipeline = !useAsync };
+        })
+        { ExpectSyncPipeline = !useAsync };
         var logging = new ClientLoggingOptions { LoggerFactory = capture.Factory, EnableMessageLogging = false };
+
         if (api == "chat")
         {
-            var options = new OpenAIClientOptions { Endpoint = s_endpoint, Transport = transport, RetryPolicy = new ClientRetryPolicy(1), ClientLoggingOptions = logging };
+            var options = new OpenAIClientOptions
+            {
+                Endpoint = s_endpoint,
+                Transport = transport,
+                RetryPolicy = new ClientRetryPolicy(1),
+                ClientLoggingOptions = logging,
+            };
             var client = suppliedPipeline
                 ? new SuppliedChatClient(ClientPipeline.Create(options), options)
                 : new ChatClient("model", new ApiKeyCredential("not-a-key"), options);
+
             if (useAsync)
             {
                 Assert.ThrowsAsync<AggregateException>(async () => await client.CompleteChatAsync([new UserChatMessage("input")]));
@@ -358,18 +392,27 @@ public class ExceptionLoggingTests
         }
         else
         {
-            var options = new ResponsesClientOptions { Endpoint = s_endpoint, Transport = transport, RetryPolicy = new ClientRetryPolicy(1), ClientLoggingOptions = logging };
+            var options = new ResponsesClientOptions
+            {
+                Endpoint = s_endpoint,
+                Transport = transport,
+                RetryPolicy = new ClientRetryPolicy(1),
+                ClientLoggingOptions = logging,
+            };
             var client = suppliedPipeline
                 ? new SuppliedResponsesClient(ClientPipeline.Create(options), options)
                 : new ResponsesClient(new ApiKeyCredential("not-a-key"), options);
             var request = new CreateResponseOptions { Model = "model", StreamingEnabled = api == "stream" };
+
             if (api == "stream")
             {
                 if (useAsync)
                 {
                     Assert.ThrowsAsync<AggregateException>(async () =>
                     {
-                        await foreach (var update in client.CreateResponseStreamingAsync(request)) { }
+                        await foreach (var update in client.CreateResponseStreamingAsync(request))
+                        {
+                        }
                     });
                 }
                 else
@@ -386,6 +429,7 @@ public class ExceptionLoggingTests
                 Assert.Throws<AggregateException>(() => client.CreateResponse(request));
             }
         }
+
         Assert.That(sends, Is.EqualTo(2));
         AssertPrivate(capture.Records.Single(), typeof(AggregateException));
         Assert.That(Activity.Current, Is.SameAs(parent));
@@ -425,11 +469,14 @@ public class ExceptionLoggingTests
             ClientLoggingOptions = new ClientLoggingOptions { LoggerFactory = capture.Factory, EnableMessageLogging = false },
         });
         var options = new CreateResponseOptions { Model = "model", StreamingEnabled = true };
+
         if (raw)
         {
             if (useAsync)
             {
-                await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync()) { }
+                await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
+                {
+                }
             }
             else
             {
@@ -440,8 +487,11 @@ public class ExceptionLoggingTests
         {
             async Task Consume()
             {
-                await foreach (var update in client.CreateResponseStreamingAsync(options)) { }
+                await foreach (var update in client.CreateResponseStreamingAsync(options))
+                {
+                }
             }
+
             if (failRead)
             {
                 Assert.ThrowsAsync<IOException>(Consume);
@@ -461,6 +511,7 @@ public class ExceptionLoggingTests
         }
 
         Assert.That(Activity.Current, Is.SameAs(parent));
+
         if ((!raw) && (failRead))
         {
             var record = capture.Records.Single();
@@ -493,6 +544,7 @@ public class ExceptionLoggingTests
         });
         var options = new CreateResponseOptions { Model = "model", StreamingEnabled = true };
         PipelineResponse retained = null;
+
         if (useAsync)
         {
             await foreach (var page in client.CreateResponseStreamingAsync(options).GetRawPagesAsync())
@@ -509,11 +561,13 @@ public class ExceptionLoggingTests
                 Assert.That(Activity.Current, Is.SameAs(parent));
             }
         }
+
         Assert.That(retained, Is.SameAs(response));
         Assert.That(Activity.Current, Is.SameAs(parent));
         Assert.That(capture.Records, Is.Empty);
 
         var buffer = new byte[1];
+
         if (useAsync)
         {
             Assert.ThrowsAsync<IOException>(async () => await retained.ContentStream.ReadExactlyAsync(buffer.AsMemory()));
@@ -522,6 +576,7 @@ public class ExceptionLoggingTests
         {
             Assert.Throws<IOException>(() => retained.ContentStream.ReadExactly(buffer, 0, buffer.Length));
         }
+
         Assert.That(Activity.Current, Is.SameAs(parent));
         var activity = activities.Activities.Single();
         var record = capture.Records.Single();
@@ -543,9 +598,12 @@ public class ExceptionLoggingTests
     private sealed class ThrowingReadStream : MemoryStream
     {
         public override int Read(byte[] buffer, int offset, int count) => throw new IOException("sensitive read");
+
         public override int Read(Span<byte> buffer) => throw new IOException("sensitive read");
+
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
             => Task.FromException<int>(new IOException("sensitive read"));
+
         public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
             => ValueTask.FromException<int>(new IOException("sensitive read"));
     }
@@ -609,13 +667,19 @@ public class ExceptionLoggingTests
         }
 
         public string EventName { get; }
+
         public ulong Severity { get; }
+
         public string Body { get; }
+
         public string TraceId { get; }
+
         public string SpanId { get; }
+
         public Dictionary<string, string> Attributes { get; }
 
         private static string Text(byte[] bytes) => Encoding.UTF8.GetString(bytes);
+
         private static string Hex(byte[] bytes) => bytes is null ? null : Convert.ToHexString(bytes).ToLowerInvariant();
     }
 
@@ -626,12 +690,14 @@ public class ExceptionLoggingTests
         protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Payloads.Add(request.Content.ReadAsByteArrayAsync(cancellationToken).GetAwaiter().GetResult());
+
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([]) };
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Payloads.Add(await request.Content.ReadAsByteArrayAsync(cancellationToken));
+
             return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent([]) };
         }
     }
@@ -642,10 +708,12 @@ public class ExceptionLoggingTests
     private static List<ProtoField> Fields(ReadOnlySpan<byte> bytes)
     {
         var fields = new List<ProtoField>();
+
         while (!bytes.IsEmpty)
         {
             var tag = ReadVarint(ref bytes);
             var number = checked((int)(tag >> 3));
+
             switch (tag & 7)
             {
                 case 0:
@@ -666,22 +734,26 @@ public class ExceptionLoggingTests
                     throw new InvalidDataException($"Unexpected protobuf wire type {tag & 7}.");
             }
         }
+
         return fields;
     }
 
     private static ulong ReadVarint(ref ReadOnlySpan<byte> bytes)
     {
         var value = 0UL;
+
         for (var shift = 0; shift < 64; shift += 7)
         {
             var next = bytes[0];
             bytes = bytes.Slice(1);
             value |= (ulong)(next & 0x7f) << shift;
+
             if ((next & 0x80) == 0)
             {
                 return value;
             }
         }
+
         throw new InvalidDataException("Invalid protobuf varint.");
     }
 }

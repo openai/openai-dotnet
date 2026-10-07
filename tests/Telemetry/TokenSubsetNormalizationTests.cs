@@ -20,17 +20,24 @@ namespace OpenAI.Tests.Telemetry;
 [Category("Smoke")]
 public class TokenSubsetNormalizationTests
 {
-    private static readonly Uri s_endpoint = new("https://example.invalid");
     private const string Prefix = "gen_ai.client.inference.";
+
+    private static readonly Uri s_endpoint = new("https://example.invalid");
 
     private static IEnumerable<TestCaseData> Cases()
     {
         foreach (var api in new[] { "chat", "response", "stream" })
-        foreach (var useAsync in new[] { false, true })
-        foreach (var latest in new[] { false, true })
-        foreach (var scenario in new[] { "exceeds", "equal", "zero", "unknown", "input_unknown", "output_unknown", "independent", "below" })
         {
-            yield return new TestCaseData(api, useAsync, latest, scenario);
+            foreach (var useAsync in new[] { false, true })
+            {
+                foreach (var latest in new[] { false, true })
+                {
+                    foreach (var scenario in new[] { "exceeds", "equal", "zero", "unknown", "input_unknown", "output_unknown", "independent", "below" })
+                    {
+                        yield return new TestCaseData(api, useAsync, latest, scenario);
+                    }
+                }
+            }
         }
     }
 
@@ -49,13 +56,16 @@ public class TokenSubsetNormalizationTests
             if (api == "stream")
             {
                 var content = "data: {\"type\":\"response.completed\",\"sequence_number\":1,\"response\":" + body + "}\n\n";
+
                 return new MockPipelineResponse(200) { ContentStream = new MemoryStream(Encoding.UTF8.GetBytes(content)) };
             }
+
             return new MockPipelineResponse(200).WithContent(body);
         })
         {
             ExpectSyncPipeline = !useAsync,
         };
+
         if (api == "chat")
         {
             var client = new ChatClient("request-model", new ApiKeyCredential("not-a-key"), new OpenAIClientOptions
@@ -63,6 +73,7 @@ public class TokenSubsetNormalizationTests
                 Endpoint = s_endpoint,
                 Transport = transport,
             });
+
             if (useAsync)
             {
                 await client.CompleteChatAsync([new UserChatMessage("input")]);
@@ -83,15 +94,20 @@ public class TokenSubsetNormalizationTests
             {
                 StreamingEnabled = api == "stream",
             };
+
             if (api == "stream")
             {
                 if (useAsync)
                 {
-                    await foreach (var update in client.CreateResponseStreamingAsync(request)) { }
+                    await foreach (var update in client.CreateResponseStreamingAsync(request))
+                    {
+                    }
                 }
                 else
                 {
-                    foreach (var update in client.CreateResponseStreaming(request)) { }
+                    foreach (var update in client.CreateResponseStreaming(request))
+                    {
+                    }
                 }
             }
             else if (useAsync)
@@ -131,6 +147,7 @@ public class TokenSubsetNormalizationTests
             {
                 Assert.That(metrics.GetMeasurements(Prefix + "usage." + suffix), Is.Null);
             }
+
             var measurements = metrics.GetMeasurements("gen_ai.client.token.usage");
             Assert.That(measurements, Has.Count.EqualTo(2));
             Assert.That(measurements.Single(measurement => measurement.tags["gen_ai.token.type"].Equals("input")).value, Is.EqualTo(values.Input ?? 0));
@@ -142,6 +159,7 @@ public class TokenSubsetNormalizationTests
     {
         var measurements = metrics.GetMeasurements(Prefix + "usage." + name);
         Assert.That(measurements?.Count ?? 0, Is.EqualTo(expected.HasValue ? 1 : 0), name);
+
         if (expected.HasValue)
         {
             var measurement = measurements.Single();
@@ -168,15 +186,19 @@ public class TokenSubsetNormalizationTests
         var inputName = chat ? "prompt_tokens" : "input_tokens";
         var outputName = chat ? "completion_tokens" : "output_tokens";
         var usage = new Dictionary<string, object>();
+
         if (values.Input.HasValue)
         {
             usage[inputName] = values.Input.Value;
         }
+
         if (values.Output.HasValue)
         {
             usage[outputName] = values.Output.Value;
         }
+
         var inputDetails = new Dictionary<string, object> { ["cached_tokens"] = values.Read };
+
         if (!chat)
         {
             inputDetails["cache_write_tokens"] = values.Write;
@@ -189,6 +211,7 @@ public class TokenSubsetNormalizationTests
             ["model"] = "response-model",
             ["usage"] = usage,
         };
+
         if (chat)
         {
             response["created"] = 1;
@@ -201,6 +224,7 @@ public class TokenSubsetNormalizationTests
             response["output"] = Array.Empty<object>();
             response["parallel_tool_calls"] = false;
         }
+
         return JsonSerializer.Serialize(response);
     }
 

@@ -21,6 +21,8 @@ namespace OpenAI.Tests.Telemetry;
 public class InferenceTokenMetricsTests
 {
     private const string Prefix = "gen_ai.client.inference.";
+    private static readonly Uri s_endpoint = new("https://example.invalid");
+
     private static readonly string[] s_names =
     [
         Prefix + "usage.input_tokens",
@@ -31,13 +33,16 @@ public class InferenceTokenMetricsTests
         Prefix + "operation.input_tokens",
         Prefix + "operation.output_tokens",
     ];
+
     private readonly bool _responses;
-    private string MeterName => _responses ? "OpenAI.ResponsesClient" : "OpenAI.ChatClient";
-    private string InputName => _responses ? "input_tokens" : "prompt_tokens";
-    private string OutputName => _responses ? "output_tokens" : "completion_tokens";
-    private static readonly Uri s_endpoint = new("https://example.invalid");
 
     public InferenceTokenMetricsTests(bool responses) => _responses = responses;
+
+    private string MeterName => _responses ? "OpenAI.ResponsesClient" : "OpenAI.ChatClient";
+
+    private string InputName => _responses ? "input_tokens" : "prompt_tokens";
+
+    private string OutputName => _responses ? "output_tokens" : "completion_tokens";
 
     [Test]
     public void InstrumentContractsAndRefinementDimensions()
@@ -54,6 +59,7 @@ public class InferenceTokenMetricsTests
             var instrument = listener.GetInstrument(name);
             Assert.That(instrument, Is.Not.Null, name);
             Assert.That(instrument.Unit, Is.EqualTo("{token}"));
+
             if (name.Contains(".operation."))
             {
                 Assert.That(instrument, Is.InstanceOf<Histogram<long>>());
@@ -73,6 +79,7 @@ public class InferenceTokenMetricsTests
                 AssertRefinements(measurement);
             }
         }
+
         if (_responses)
         {
             AssertValue(listener, "usage.cache_write.input_tokens", 3);
@@ -81,6 +88,7 @@ public class InferenceTokenMetricsTests
         {
             Assert.That(listener.GetMeasurements(Prefix + "usage.cache_write.input_tokens"), Is.Null);
         }
+
         Assert.That(listener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
         AssertValue(listener, "usage.input_tokens", 12);
         AssertValue(listener, "usage.output_tokens", 34);
@@ -119,10 +127,12 @@ public class InferenceTokenMetricsTests
         using var listener = new TestMeterListener(MeterName);
         using var scope = Start(new OpenTelemetrySource("request-model", s_endpoint));
         Record(scope, usage);
+
         foreach (var name in s_names)
         {
             Assert.That(listener.GetMeasurements(name), Is.Null, name);
         }
+
         Assert.That(listener.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
     }
 
@@ -151,6 +161,7 @@ public class InferenceTokenMetricsTests
         using var listener = new TestMeterListener(MeterName);
         using var scope = Start(new OpenTelemetrySource("request-model", s_endpoint));
         Record(scope, Usage(0, 0, """{"cached_tokens":0,"cache_write_tokens":0}""", """{"reasoning_tokens":0}"""));
+
         foreach (var name in s_names.Where(name => (_responses) || (!name.Contains("cache_write"))))
         {
             Assert.That(listener.GetMeasurements(name).Single().value, Is.EqualTo(0L), name);
@@ -191,6 +202,7 @@ public class InferenceTokenMetricsTests
         var input = listener.GetMeasurements(Prefix + "usage.input_tokens");
         Assert.That(input.Sum(measurement => (long)measurement.value), Is.EqualTo(12L));
         Assert.That(input.All(measurement => !measurement.tags["gen_ai.token.modality"].Equals("text")), Is.True);
+
         if (audio <= 12)
         {
             Assert.That(input.Single(measurement => measurement.tags["gen_ai.token.modality"].Equals("audio")).value, Is.EqualTo((long)audio));
@@ -199,6 +211,7 @@ public class InferenceTokenMetricsTests
         {
             Assert.That(input.Single().tags["gen_ai.token.modality"], Is.EqualTo("unknown"));
         }
+
         var output = listener.GetMeasurements(Prefix + "usage.output_tokens");
         Assert.That(output.Sum(measurement => (long)measurement.value), Is.EqualTo(34L));
         Assert.That(output.Single(measurement => measurement.tags["gen_ai.token.modality"].Equals("audio")).value, Is.EqualTo(4L));
@@ -215,15 +228,19 @@ public class InferenceTokenMetricsTests
         using var enabled = TestAppContextSwitchHelper.EnableOpenTelemetry();
         OpenTelemetrySource latest;
         OpenTelemetrySource legacy;
+
         using (TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(true))
         {
             latest = new OpenTelemetrySource("request-model", s_endpoint);
         }
+
         using (TestSemanticConventionOptIn.SetLatestGenAiSemanticConvention(false))
         {
             legacy = new OpenTelemetrySource("request-model", s_endpoint);
         }
+
         using var listener = new TestMeterListener(MeterName);
+
         foreach (var source in new[] { latest, legacy, latest, legacy })
         {
             using var scope = Start(source);
@@ -236,6 +253,7 @@ public class InferenceTokenMetricsTests
             && (!measurement.tags.ContainsKey("gen_ai.provider.name"))
             && (!measurement.tags.ContainsKey("openai.response.service_tier"))
             && (!measurement.tags.ContainsKey("openai.response.system_fingerprint"))), Is.True);
+
         foreach (var name in s_names.Where(name => !name.Contains("cache_") && !name.Contains("reasoning")))
         {
             var measurements = listener.GetMeasurements(name);
@@ -243,6 +261,7 @@ public class InferenceTokenMetricsTests
             Assert.That(measurements.All(measurement => (measurement.tags.ContainsKey("gen_ai.provider.name"))
                 && (!measurement.tags.ContainsKey("gen_ai.system"))), Is.True);
         }
+
         var durations = listener.GetMeasurements("gen_ai.client.operation.duration");
         Assert.That(durations, Has.Count.EqualTo(4));
         Assert.That(durations.Count(measurement => measurement.tags.ContainsKey("openai.response.system_fingerprint")), Is.EqualTo(2));
@@ -294,6 +313,7 @@ public class InferenceTokenMetricsTests
         {
             ExpectSyncPipeline = !useAsync,
         };
+
         if (_responses)
         {
             var client = new ResponsesClient(new ApiKeyCredential("not-a-real-key"), new ResponsesClientOptions
@@ -302,6 +322,7 @@ public class InferenceTokenMetricsTests
                 Transport = transport,
             });
             var options = new CreateResponseOptions("request-model", [ResponseItem.CreateUserMessageItem("input")]);
+
             if (useAsync)
             {
                 await client.CreateResponseAsync(options);
@@ -318,6 +339,7 @@ public class InferenceTokenMetricsTests
                 Endpoint = s_endpoint,
                 Transport = transport,
             });
+
             if (useAsync)
             {
                 await client.CompleteChatAsync([new UserChatMessage("input")]);
@@ -327,6 +349,7 @@ public class InferenceTokenMetricsTests
                 client.CompleteChat([new UserChatMessage("input")]);
             }
         }
+
         Assert.That(Activity.Current, Is.Null);
         Assert.That(listener.GetMeasurements("gen_ai.client.operation.duration"), Has.Count.EqualTo(1));
         Assert.That(listener.GetMeasurements("gen_ai.client.token.usage"), Is.Null);
@@ -344,6 +367,7 @@ public class InferenceTokenMetricsTests
     private void Record(OpenTelemetryScope scope, string usage)
     {
         var data = BinaryData.FromString(ResponseBody(usage));
+
         if (_responses)
         {
             scope.RecordResponseResult(ModelReaderWriter.Read<ResponseResult>(data));
@@ -357,6 +381,7 @@ public class InferenceTokenMetricsTests
     private string ResponseBody(string usage)
     {
         var usageProperty = usage is null ? "" : $",\"usage\":{usage}";
+
         return _responses
             ? $$"""{"id":"resp_sensitive","object":"response","created_at":1,"status":"completed","model":"response-model","output":[],"parallel_tool_calls":false,"tools":[],"service_tier":"default","system_fingerprint":"fp_test"{{usageProperty}}}"""
             : $$$"""{"id":"chatcmpl_sensitive","created":1,"model":"response-model","choices":[{"index":0,"finish_reason":"stop","message":{"role":"assistant","content":"sensitive"}}],"service_tier":"default","system_fingerprint":"fp_test"{{{usageProperty}}}}""";
@@ -366,6 +391,7 @@ public class InferenceTokenMetricsTests
     {
         var inputDetailProperty = inputDetails is null ? "" : $",\"{InputName}_details\":{inputDetails}";
         var outputDetailProperty = outputDetails is null ? "" : $",\"{OutputName}_details\":{outputDetails}";
+
         return $$"""{"{{InputName}}":{{input}},"{{OutputName}}":{{output}},"total_tokens":{{input + output}}{{inputDetailProperty}}{{outputDetailProperty}}}""";
     }
 
@@ -373,6 +399,7 @@ public class InferenceTokenMetricsTests
     {
         var measurement = listener.GetMeasurements(Prefix + suffix).Single();
         Assert.That(measurement.value, Is.EqualTo(value), suffix);
+
         if (suffix.StartsWith("usage."))
         {
             Assert.That(measurement.tags["gen_ai.token.modality"], Is.EqualTo("unknown"));
