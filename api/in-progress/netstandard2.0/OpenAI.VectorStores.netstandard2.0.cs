@@ -37,6 +37,8 @@ namespace OpenAI.VectorStores {
     public class VectorStoreClient {
         protected VectorStoreClient();
         public VectorStoreClient(VectorStoreClientSettings settings);
+        public VectorStoreClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public VectorStoreClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public VectorStoreClient(ApiKeyCredential credential);
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

@@ -9,6 +9,8 @@ namespace OpenAI.Evals {
     public class EvaluationClient {
         protected EvaluationClient();
         public EvaluationClient(EvaluationClientSettings settings);
+        public EvaluationClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public EvaluationClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public EvaluationClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public EvaluationClient(ApiKeyCredential credential);
         public EvaluationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

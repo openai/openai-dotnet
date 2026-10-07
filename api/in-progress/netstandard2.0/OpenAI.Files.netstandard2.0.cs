@@ -65,6 +65,8 @@ namespace OpenAI.Files {
     public class OpenAIFileClient {
         protected OpenAIFileClient();
         public OpenAIFileClient(OpenAIFileClientSettings settings);
+        public OpenAIFileClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public OpenAIFileClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);

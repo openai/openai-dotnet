@@ -11,6 +11,8 @@ namespace OpenAI.Embeddings {
         [Experimental("SCME0002")]
         public EmbeddingClient(EmbeddingClientSettings settings);
         protected internal EmbeddingClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public EmbeddingClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public EmbeddingClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions);
         public EmbeddingClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public EmbeddingClient(string model, ApiKeyCredential credential);
         [Experimental("OPENAI001")]

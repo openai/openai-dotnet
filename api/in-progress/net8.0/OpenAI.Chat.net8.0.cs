@@ -39,6 +39,8 @@ namespace OpenAI.Chat {
         [Experimental("SCME0002")]
         public ChatClient(ChatClientSettings settings);
         protected internal ChatClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
+        public ChatClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public ChatClient(string model, WorkloadIdentityFederationOptions workloadIdentityOptions);
         public ChatClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
         public ChatClient(string model, ApiKeyCredential credential);
         [Experimental("OPENAI001")]

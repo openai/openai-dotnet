@@ -72,6 +72,8 @@ namespace OpenAI.Files {
         protected OpenAIFileClient();
         [Experimental("SCME0002")]
         public OpenAIFileClient(OpenAIFileClientSettings settings);
+        public OpenAIFileClient(WorkloadIdentityFederationOptions workloadIdentityOptions, OpenAIClientOptions options);
+        public OpenAIFileClient(WorkloadIdentityFederationOptions workloadIdentityOptions);
         public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public OpenAIFileClient(ApiKeyCredential credential);
         [Experimental("OPENAI001")]
