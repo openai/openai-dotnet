@@ -48,6 +48,20 @@ public partial class TranslationTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task TranslationWithExplicitContentTypeAndUnicodeFilenameWorks()
+    {
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
+        using FileStream audio = File.OpenRead(Path.Combine("Assets", "audio_french.wav"));
+
+        AudioTranslation translation = await client.TranslateAudioAsync(
+            audio,
+            "音声.wav",
+            AudioFileContentType.Wav);
+
+        Assert.That(translation.Text.ToLowerInvariant(), Contains.Substring("whisper"));
+    }
+
+    [RecordedTest]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]
