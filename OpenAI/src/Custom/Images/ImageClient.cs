@@ -1236,18 +1236,18 @@ public partial class ImageClient
         ImageEditOptions options,
         ImageFileContentType imageContentType)
     {
-        options ??= new();
-        options.ImageContentType = imageContentType;
-        return options;
+        ImageEditOptions copiedOptions = options is null ? new() : options.GetClone();
+        copiedOptions.ImageContentType = imageContentType;
+        return copiedOptions;
     }
 
     private static ImageVariationOptions WithContentType(
         ImageVariationOptions options,
         ImageFileContentType contentType)
     {
-        options ??= new();
-        options.ImageContentType = contentType;
-        return options;
+        ImageVariationOptions copiedOptions = options is null ? new() : options.GetClone();
+        copiedOptions.ImageContentType = contentType;
+        return copiedOptions;
     }
 
     private void CreateImageGenerationOptions(string prompt, int? imageCount, ref ImageGenerationOptions options)

@@ -839,18 +839,18 @@ public partial class AudioClient
         AudioTranscriptionOptions options,
         AudioFileContentType contentType)
     {
-        options ??= new();
-        options.FileContentType = contentType;
-        return options;
+        AudioTranscriptionOptions copiedOptions = options is null ? new() : options.GetClone();
+        copiedOptions.FileContentType = contentType;
+        return copiedOptions;
     }
 
     private static AudioTranslationOptions WithContentType(
         AudioTranslationOptions options,
         AudioFileContentType contentType)
     {
-        options ??= new();
-        options.FileContentType = contentType;
-        return options;
+        AudioTranslationOptions copiedOptions = options is null ? new() : options.GetClone();
+        copiedOptions.FileContentType = contentType;
+        return copiedOptions;
     }
 
     private void CreateSpeechGenerationOptions(string text, GeneratedSpeechVoice voice, ref SpeechGenerationOptions options)

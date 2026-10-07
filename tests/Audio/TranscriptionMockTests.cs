@@ -153,7 +153,7 @@ public partial class TranscriptionMockTests : ClientTestBase
     public async Task TranscribeAudioSendsExplicitContentType()
     {
         string requestBody = null;
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"text":"transcribed"}""");
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"text":"transcribed"}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -168,11 +168,22 @@ public partial class TranscriptionMockTests : ClientTestBase
             }
         };
         AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential, clientOptions));
-        using Stream audio = new MemoryStream([0x01]);
+        AudioTranscriptionOptions options = new();
 
-        await client.TranscribeAudioAsync(audio, "音声.mp3", AudioFileContentType.Mpeg);
+        using (Stream audio = new MemoryStream([0x01]))
+        {
+            await client.TranscribeAudioAsync(audio, "音声.mp3", AudioFileContentType.Mpeg, options);
+        }
 
         Assert.That(requestBody, Does.Contain("Content-Type: audio/mpeg"));
+
+        requestBody = null;
+        using (Stream audio = new MemoryStream([0x01]))
+        {
+            await client.TranscribeAudioAsync(audio, "audio.mp3", options);
+        }
+
+        Assert.That(requestBody, Does.Not.Contain("Content-Type: audio/mpeg"));
     }
 
     [Test]

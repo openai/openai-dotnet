@@ -54,7 +54,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     public async Task TranscriptionWithExplicitContentTypeAndUnicodeFilenameWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
-        using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
+        using FileStream inputStream = File.OpenRead(Path.Join("Assets", "audio_hello_world.mp3"));
 
         AudioTranscription transcription = await client.TranscribeAudioAsync(
             inputStream,

@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
@@ -164,5 +165,21 @@ public partial class ImageEditOptions
         }
 
         return content;
+    }
+
+    internal ImageEditOptions GetClone()
+    {
+        ImageEditOptions copiedOptions = (ImageEditOptions)MemberwiseClone();
+
+        if (SerializedAdditionalRawData is not null)
+        {
+            copiedOptions.SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (KeyValuePair<string, BinaryData> sourcePair in SerializedAdditionalRawData)
+            {
+                copiedOptions.SerializedAdditionalRawData[sourcePair.Key] = sourcePair.Value;
+            }
+        }
+
+        return copiedOptions;
     }
 }

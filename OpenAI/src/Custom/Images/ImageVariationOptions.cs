@@ -1,5 +1,6 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OpenAI.Images;
@@ -77,5 +78,21 @@ public partial class ImageVariationOptions
         }
 
         return content;
+    }
+
+    internal ImageVariationOptions GetClone()
+    {
+        ImageVariationOptions copiedOptions = (ImageVariationOptions)MemberwiseClone();
+
+        if (SerializedAdditionalRawData is not null)
+        {
+            copiedOptions.SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (KeyValuePair<string, BinaryData> sourcePair in SerializedAdditionalRawData)
+            {
+                copiedOptions.SerializedAdditionalRawData[sourcePair.Key] = sourcePair.Value;
+            }
+        }
+
+        return copiedOptions;
     }
 }

@@ -51,7 +51,7 @@ public partial class TranslationTests : OpenAIRecordedTestBase
     public async Task TranslationWithExplicitContentTypeAndUnicodeFilenameWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
-        using FileStream audio = File.OpenRead(Path.Combine("Assets", "audio_french.wav"));
+        using FileStream audio = File.OpenRead(Path.Join("Assets", "audio_french.wav"));
 
         AudioTranslation translation = await client.TranslateAudioAsync(
             audio,

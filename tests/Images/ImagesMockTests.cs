@@ -160,7 +160,7 @@ public class ImagesMockTests : ClientTestBase
     public async Task GenerateImageEditSendsExplicitImageContentType()
     {
         string requestBody = null;
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -175,25 +175,38 @@ public class ImagesMockTests : ClientTestBase
             }
         };
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
-        using Stream image = new MemoryStream([0x01]);
-        using Stream mask = new MemoryStream([0x02]);
+        ImageEditOptions options = new();
 
-        await client.GenerateImageEditAsync(
-            image,
-            "ファイル.png",
-            ImageFileContentType.Png,
-            "prompt",
-            mask,
-            "маска.png");
+        using (Stream image = new MemoryStream([0x01]))
+        using (Stream mask = new MemoryStream([0x02]))
+        {
+            await client.GenerateImageEditAsync(
+                image,
+                "ファイル.png",
+                ImageFileContentType.Png,
+                "prompt",
+                mask,
+                "маска.png",
+                options);
+        }
 
         Assert.That(requestBody, Does.Contain("Content-Type: image/png"));
+
+        requestBody = null;
+        using (Stream image = new MemoryStream([0x01]))
+        using (Stream mask = new MemoryStream([0x02]))
+        {
+            await client.GenerateImageEditAsync(image, "image.png", "prompt", mask, "mask.png", options);
+        }
+
+        Assert.That(requestBody, Does.Not.Contain("Content-Type: image/png"));
     }
 
     [Test]
     public async Task GenerateImageEditProtocolApiSupportsExplicitContentType()
     {
         string requestBody = null;
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -461,7 +474,7 @@ public class ImagesMockTests : ClientTestBase
     public async Task GenerateImageVariationSendsExplicitContentType()
     {
         string requestBody = null;
-        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
+        using MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""{"data":[{}]}""");
         OpenAIClientOptions clientOptions = new()
         {
             Transport = new MockPipelineTransport(message =>
@@ -476,11 +489,22 @@ public class ImagesMockTests : ClientTestBase
             }
         };
         ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
-        using Stream image = new MemoryStream([0x01]);
+        ImageVariationOptions options = new();
 
-        await client.GenerateImageVariationAsync(image, "ファイル.webp", ImageFileContentType.Webp);
+        using (Stream image = new MemoryStream([0x01]))
+        {
+            await client.GenerateImageVariationAsync(image, "ファイル.webp", ImageFileContentType.Webp, options);
+        }
 
         Assert.That(requestBody, Does.Contain("Content-Type: image/webp"));
+
+        requestBody = null;
+        using (Stream image = new MemoryStream([0x01]))
+        {
+            await client.GenerateImageVariationAsync(image, "image.webp", options);
+        }
+
+        Assert.That(requestBody, Does.Not.Contain("Content-Type: image/webp"));
     }
 
     [Test]

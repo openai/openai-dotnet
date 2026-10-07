@@ -55,7 +55,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     public async Task GenerateImageEditWithExplicitContentTypeAndUnicodeFilenameWorks()
     {
         ImageClient client = GetProxiedOpenAIClient<ImageClient>();
-        using FileStream imageFile = File.OpenRead(Path.Combine("Assets", "images_empty_room_with_mask.png"));
+        using FileStream imageFile = File.OpenRead(Path.Join("Assets", "images_empty_room_with_mask.png"));
 
         GeneratedImage image = await client.GenerateImageEditAsync(
             imageFile,
