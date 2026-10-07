@@ -10,46 +10,42 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownToolChoiceObject : ResponseCustomToolChoice, IJsonModel<ResponseCustomToolChoice>
+    public partial class ResponseCustomCodeInterpreterToolChoice : ResponseCustomToolChoice, IJsonModel<ResponseCustomCodeInterpreterToolChoice>
     {
-        public InternalUnknownToolChoiceObject() : this(default, default)
-        {
-        }
-
         protected override ResponseCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCodeInterpreterToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeResponseCustomToolChoice(document.RootElement, data, options);
+                        return DeserializeResponseCustomCodeInterpreterToolChoice(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ResponseCustomToolChoice)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseCustomCodeInterpreterToolChoice)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCodeInterpreterToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ResponseCustomToolChoice)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseCustomCodeInterpreterToolChoice)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<ResponseCustomToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ResponseCustomCodeInterpreterToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        ResponseCustomToolChoice IPersistableModel<ResponseCustomToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ResponseCustomCodeInterpreterToolChoice IPersistableModel<ResponseCustomCodeInterpreterToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (ResponseCustomCodeInterpreterToolChoice)PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<ResponseCustomToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ResponseCustomCodeInterpreterToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<ResponseCustomToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ResponseCustomCodeInterpreterToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -66,10 +62,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCodeInterpreterToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseCustomToolChoice)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseCustomCodeInterpreterToolChoice)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -78,20 +74,20 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ResponseCustomToolChoice IJsonModel<ResponseCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ResponseCustomCodeInterpreterToolChoice IJsonModel<ResponseCustomCodeInterpreterToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ResponseCustomCodeInterpreterToolChoice)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseCustomCodeInterpreterToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseCustomToolChoice)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseCustomCodeInterpreterToolChoice)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseCustomToolChoice(document.RootElement, null, options);
+            return DeserializeResponseCustomCodeInterpreterToolChoice(document.RootElement, null, options);
         }
 
-        internal static InternalUnknownToolChoiceObject DeserializeInternalUnknownToolChoiceObject(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseCustomCodeInterpreterToolChoice DeserializeResponseCustomCodeInterpreterToolChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -110,7 +106,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownToolChoiceObject(kind, patch);
+            return new ResponseCustomCodeInterpreterToolChoice(kind, patch);
         }
     }
 }

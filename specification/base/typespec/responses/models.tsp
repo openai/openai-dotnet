@@ -405,7 +405,7 @@ model ResponseProperties {
     a response. See the `tools` parameter to see how to specify which tools
     the model can call.
     """)
-  tool_choice?: ToolChoiceOptions | ToolChoiceObject;
+  tool_choice?: DotNetResponseToolChoice;
 
   @doc("""
     The truncation strategy to use for the model response.
@@ -536,6 +536,13 @@ union ToolChoiceOptions {
   "required",
 }
 
+union DotNetResponseDefaultToolChoice {
+  string,
+  none: "none",
+  auto: "auto",
+  required: "required",
+}
+
 // Tool customization: Establish a discriminated type base
 /**
  * Indicates that the model should use a built-in tool to generate a response.
@@ -550,6 +557,10 @@ union ToolChoiceObjectType {
   image_generation: "image_generation",
   code_interpreter: "code_interpreter",
   mcp: "mcp",
+  custom: "custom",
+  programmatic_tool_calling: "programmatic_tool_calling",
+  apply_patch: "apply_patch",
+  shell: "shell"
 }
 @discriminator("type")
 model ToolChoiceObject {
@@ -572,8 +583,22 @@ model ToolChoiceObjectCodeInterpreter extends ToolChoiceObject {
 }
 model ToolChoiceObjectMCP extends ToolChoiceObject {
   type: ToolChoiceObjectType.mcp;
+  name: string;
+  server_label: string;
 }
-
+model ToolChoiceObjectCustom extends ToolChoiceObject {
+  type: ToolChoiceObjectType.custom;
+  name: string;
+}
+model ToolChoiceObjectProgrammaticToolCalling extends ToolChoiceObject {
+  type: ToolChoiceObjectType.programmatic_tool_calling;
+}
+model ToolChoiceObjectApplyPatch extends ToolChoiceObject {
+  type: ToolChoiceObjectType.apply_patch;
+}
+model ToolChoiceObjectShell extends ToolChoiceObject {
+  type: ToolChoiceObjectType.shell;
+}
 // Tool customization (apply_discriminator): Apply discriminated type base
 /** Use this option to force the model to call a specific function. */
 model ToolChoiceObjectFunction extends ToolChoiceObject {
@@ -584,6 +609,13 @@ model ToolChoiceObjectFunction extends ToolChoiceObject {
 
   /** The name of the function to call. */
   name: string;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetResponseToolChoice {
+  default_tool_choice?: DotNetResponseDefaultToolChoice;
+  custom_tool_choice?: ToolChoiceObject;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type base for tools
@@ -1502,7 +1534,7 @@ model TokenCountsBody {
   #suppress "@azure-tools/typespec-azure-core/no-nullable" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
-  tool_choice?: ToolChoiceObject | null | ToolChoiceOptions;
+  tool_choice?: DotNetResponseToolChoice | null;
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
